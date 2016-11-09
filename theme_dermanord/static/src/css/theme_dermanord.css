@@ -1,0 +1,31 @@
+﻿/*=============================================================
+                    Theme Dermanord
+ ============================================================ */
+
+#header_bg {
+    position: relative;
+    width: 100%;
+}
+
+#header_menu {
+    margin-top: 50px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    display: flex;
+}
+
+#header_left_menu {
+    display: flex;
+    align-items: center;
+}
+
+#header_right_menu {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+footer li {
+    list-style-type: none;
+}
