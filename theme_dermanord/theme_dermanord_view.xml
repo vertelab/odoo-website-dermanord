@@ -4,19 +4,19 @@
         <!-- top menus -->
         <template id="theme_dermanord.topmenu" name="Topmenu">
             <li>
-                <a href="/">Reselles</a>
+                <a href="/partners">Reselles</a>
             </li>
             <li>
-                <a href="/">Academy</a>
+                <a href="/event">Academy</a>
             </li>
             <li>
-                <a href="/">Careers</a>
+                <a href="/jobs">Careers</a>
             </li>
             <li>
-                <a href="/">Media &amp; press</a>
+                <a href="/page/media_press">Media &amp; press</a>
             </li>
             <li>
-                <a href="/">About</a>
+                <a href="/page/website.aboutus">About</a>
             </li>
         </template>
         <!-- Theme Dermanord -->
@@ -88,7 +88,7 @@
                         <div class="col-md-12">
                             <h4 class="text-center">Social</h4>
                         </div>
-                        <div class="col-md-2 col-md-offset-3 text-center">
+                        <div class="col-md-2 col-md-offset-1 text-center">
                             <a t-att-href="website.social_facebook" t-if="website.social_facebook"><i class="fa fa-facebook-square fa-3x"/></a>
                         </div>
                         <div class="col-md-2 text-center">
@@ -97,24 +97,27 @@
                         <div class="col-md-2 text-center">
                             <a t-att-href="website.social_twitter" t-if="website.social_twitter"><i class="fa fa-twitter fa-3x"/></a>
                         </div>
+                           <div class="col-md-2 text-center">
+                            <a href="http://snapchat.com" t-if="True"><i class="fa fa-snapchat fa-3x"/></a>
+                        </div>
                     </div>
                 </div>
                 <div class="container hidden-print mb32">
                     <div class="row">
                         <div class="col-md-3">
                             <h4>Delivery and returns</h4>
-                            <li><a href="/">Shipping</a></li>
-                            <li><a href="/">Returns</a></li>
+                            <li><a href="/page/shipping">Shipping</a></li>
+                            <li><a href="/page/contactus">Returns</a></li>
                         </div>
                         <div class="col-md-3">
                             <h4>Terms and conditions</h4>
-                            <li><a href="/">Terms &amp; conditions</a></li>
-                            <li><a href="/">Suggestion</a></li>
+                            <li><a href="/page/terms_conditions">Terms &amp; conditions</a></li>
+                            <li><a href="/page/contactus">Suggestion</a></li>
                         </div>
                         <div class="col-md-3">
                             <h4>Contact info and address</h4>
-                            <li><a href="/">Questions</a></li>
-                            <li><a href="/">Contact Customer Service</a></li>
+                            <li><a href="/forum/1">Questions</a></li>
+                            <li><a href="/page/contactus">Contact Customer Service</a></li>
                         </div>
                         <div class="col-md-3">
                             <h4>Payment</h4>
