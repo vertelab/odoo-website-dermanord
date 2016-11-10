@@ -131,7 +131,7 @@
                 <!-- Notes Cubes -->
                 <div id="notes_cubes">
                     <div class="oe_snippet_thumbnail">
-                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_features.png"/>
+                        <img class="oe_snippet_thumbnail_img" src="/snippet_dermanord/static/src/img/notes_cubes.png"/>
                         <span class="oe_snippet_thumbnail_title">Notes Cubes</span>
                     </div>
                     <section class="s_cubes oe_snippet_body">
@@ -168,7 +168,7 @@
                 <!-- TWO COLUMN -->
                 <div id="two_column_text">
                     <div class="oe_snippet_thumbnail">
-                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_text_block.png"/>
+                        <img class="oe_snippet_thumbnail_img" src="/snippet_dermanord/static/src/img/two_column_text.png"/>
                         <span class="oe_snippet_thumbnail_title">Two Column Text</span>
                     </div>
                     <section class="s_2_column_text oe_structure oe_snippet_body">
@@ -192,7 +192,7 @@
                 <!-- Color Blocks -->
                 <div id="color_blocks">
                     <div class="oe_snippet_thumbnail">
-                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_features.png"/>
+                        <img class="oe_snippet_thumbnail_img" src="/snippet_dermanord/static/src/img/color_blocks.png"/>
                         <span class="oe_snippet_thumbnail_title">Color Blocks</span>
                     </div>
                     <section class="s_color_blocks_4 oe_snippet_body">
@@ -222,7 +222,7 @@
                 <!-- Banner block -->
                 <div id="banner_block">
                     <div class="oe_snippet_thumbnail">
-                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/aqua.jpg"/>
+                        <img class="oe_snippet_thumbnail_img" src="/snippet_dermanord/static/src/img/banner_block.png"/>
                         <span class="oe_snippet_thumbnail_title">Banner Block</span>
                     </div>
                     <section class="oe_snippet_body">
@@ -276,7 +276,7 @@
                 <!--ROUND HOVER ICON BUTTONS-->
                 <div id="round_hover_icon_buttons">
                     <div class="oe_snippet_thumbnail">
-                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_big_picture.png"/>
+                        <img class="oe_snippet_thumbnail_img" src="/snippet_dermanord/static/src/img/round_hover_icon_buttons.png"/>
                         <span class="oe_snippet_thumbnail_title">Round Hover Icon Button</span>
                     </div>
                     <div class="oe_snippet_body oe_share">
@@ -325,7 +325,7 @@
                 <!-- Two column image -->
                 <div id="two_column_image">
                     <div class="oe_snippet_thumbnail">
-                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_features.png"/>
+                        <img class="oe_snippet_thumbnail_img" src="/snippet_dermanord/static/src/img/two_column_image.png"/>
                         <span class="oe_snippet_thumbnail_title">Two Column Image</span>
                     </div>
                     <div class="oe_snippet_body oe_share">
