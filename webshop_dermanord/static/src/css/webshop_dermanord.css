@@ -1,3 +1,11 @@
 ﻿/*=============================================================
                     Webshop Dermanord
  ============================================================ */
+
+.no_padding_div {
+    padding: 0px !important;
+}
+
+.no_padding_div .tab-pane {
+    padding-left: 15px;
+}
