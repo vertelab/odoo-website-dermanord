@@ -31,8 +31,11 @@
                 </div>
                 <hr/>
             </xpath>
-            <xpath expr="//div[@itemprop='description']" position="before">
+            <xpath expr="//div[@itemprop='description']" position="after">
                 <div class="oe_structure oe_empty mt32 mb32">
+                    <h1 class="text-center">This product’s experiences</h1>
+                    <h1 class="text-center">Product range</h1>
+                    <h1 class="text-center">Recently viewed</h1>
                 </div>
             </xpath>
         </template>
@@ -44,7 +47,6 @@
             <!-- Customize javascript -->
             <xpath expr="//body/script[last()]" position="after">
                 <script type="text/javascript" src="/webshop_dermanord/static/src/img/webshop_dermanord.js" />
-                <script />
             </xpath>
         </template>
     </data>

@@ -68,12 +68,25 @@
             <xpath expr="//ul[@id='top_menu']" position="attributes">
                 <attribute name="class">nav nav-justified mt4</attribute>
             </xpath>
+            <!-- Customize css -->
+            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
+                <link href="/theme_dermanord/static/src/css/theme_dermanord.css" rel="stylesheet" />
+            </xpath>
+            <!-- Customize javascript -->
+            <xpath expr="//body/script[last()]" position="after">
+                <script type="text/javascript" src="/theme_dermanord/static/src/img/theme_dermanord.js" />
+                <script />
+            </xpath>
+            <!-- Hide footer -->
+            <xpath expr="//div[@id='footer']" position="attributes">
+                <attribute name="class">hidden</attribute>
+            </xpath>
             <!-- Override footer -->
-            <xpath expr="//div[@id='footer']" position="replace">
-                <div class="container mt16 mb16">
+            <xpath expr="//div[@id='footer']" position="after">
+                <div class="container hidden-print mt16 mb16">
                     <div class="row">
                         <div class="col-md-12">
-                            <h1 class="text-center">Social</h1>
+                            <h4 class="text-center">Social</h4>
                         </div>
                         <div class="col-md-2 col-md-offset-3 text-center">
                             <a t-att-href="website.social_facebook" t-if="website.social_facebook"><i class="fa fa-facebook-square fa-3x"/></a>
@@ -109,15 +122,6 @@
                         </div>
                     </div>
                 </div>
-            </xpath>
-            <!-- Customize css -->
-            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
-                <link href="/theme_dermanord/static/src/css/theme_dermanord.css" rel="stylesheet" />
-            </xpath>
-            <!-- Customize javascript -->
-            <xpath expr="//body/script[last()]" position="after">
-                <script type="text/javascript" src="/theme_dermanord/static/src/img/theme_dermanord.js" />
-                <script />
             </xpath>
         </template>
         <!-- dermanord demo site template -->
