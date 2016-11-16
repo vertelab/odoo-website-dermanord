@@ -3,19 +3,19 @@
     <data>
         <!-- top menus -->
         <template id="theme_dermanord.topmenu" name="Topmenu">
-            <li>
+            <li class="extra_menu">
                 <a href="/partners">Reselles</a>
             </li>
-            <li>
+            <li class="extra_menu">
                 <a href="/event">Academy</a>
             </li>
-            <li>
+            <li class="extra_menu">
                 <a href="/jobs">Careers</a>
             </li>
-            <li>
+            <li class="extra_menu">
                 <a href="/page/media_press">Media &amp; press</a>
             </li>
-            <li>
+            <li class="extra_menu">
                 <a href="/page/website.aboutus">About</a>
             </li>
         </template>
@@ -62,6 +62,9 @@
                     </div>
                 </img>
             </xpath>
+            <xpath expr="//t[@t-foreach='website.menu_id.child_id']" position="after">
+                <t t-call="theme_dermanord.topmenu" />
+            </xpath>
             <xpath expr="//a[@class='navbar-brand logo']" position="attributes">
                 <attribute name="class">navbar-brand logo hidden</attribute>
             </xpath>
@@ -74,7 +77,7 @@
             </xpath>
             <!-- Customize javascript -->
             <xpath expr="//body/script[last()]" position="after">
-                <script type="text/javascript" src="/theme_dermanord/static/src/img/theme_dermanord.js" />
+                <script type="text/javascript" src="/theme_dermanord/static/src/js/theme_dermanord.js" />
                 <script />
             </xpath>
             <!-- Hide footer -->

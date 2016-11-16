@@ -29,3 +29,18 @@
 footer li {
     list-style-type: none;
 }
+
+#top_menu_top .extra_menu {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    #top_menu .extra_menu {
+        display: none;
+    }
+
+    #top_menu_top .extra_menu {
+        display: unset;
+    }
+}
+
