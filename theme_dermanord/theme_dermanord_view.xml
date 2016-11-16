@@ -1,24 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <!-- top menus -->
-        <template id="theme_dermanord.topmenu" name="Topmenu">
-            <li class="extra_menu">
-                <a href="/partners">Reselles</a>
-            </li>
-            <li class="extra_menu">
-                <a href="/event">Academy</a>
-            </li>
-            <li class="extra_menu">
-                <a href="/jobs">Careers</a>
-            </li>
-            <li class="extra_menu">
-                <a href="/page/media_press">Media &amp; press</a>
-            </li>
-            <li class="extra_menu">
-                <a href="/page/website.aboutus">About</a>
-            </li>
-        </template>
+        <!-- header_menu: used for menu in header -->
+        <record id="header_menu" model="website.menu">
+            <field name="name">Header Menu</field>
+            <field name="sequence">99</field>
+            <field name="url">/</field>
+            <field name="parent_id" ref="website.main_menu" />
+        </record>
         <!-- Theme Dermanord -->
         <template id="theme_dermanord" inherit_id="website.layout" customize_show="True" active="False" name="Theme Dermanord" priority="99">
             <xpath expr="//header/div" position="before">
@@ -54,7 +43,9 @@
                                 </div>
                                 <div class="collapse navbar-collapse navbar-top-collapse">
                                     <ul class="nav navbar-nav navbar-right" id="top_menu_top">
-                                        <t t-call="theme_dermanord.topmenu" />
+                                        <t t-foreach="website.menu_id.child_id.filtered(lambda m: m.id == m.env.ref('theme_dermanord.header_menu').id).child_id" t-as="submenu">
+                                            <t t-call="website.submenu" />
+                                        </t>
                                     </ul>
                                 </div>
                             </div>
@@ -62,8 +53,10 @@
                     </div>
                 </img>
             </xpath>
-            <xpath expr="//t[@t-foreach='website.menu_id.child_id']" position="after">
-                <t t-call="theme_dermanord.topmenu" />
+            <xpath expr="//t[@t-foreach='website.menu_id.child_id']" position="replace">
+                <t t-foreach="website.menu_id.child_id" t-as="submenu">
+                    <t t-call="website.submenu" />
+                </t>
             </xpath>
             <xpath expr="//a[@class='navbar-brand logo']" position="attributes">
                 <attribute name="class">navbar-brand logo hidden</attribute>
@@ -92,16 +85,24 @@
                             <h4 class="text-center">Social</h4>
                         </div>
                         <div class="col-md-2 col-md-offset-2 text-center">
-                            <a t-att-href="website.social_facebook" t-if="website.social_facebook"><i class="fa fa-facebook-square fa-3x"/></a>
+                            <a t-att-href="website.social_facebook" t-if="website.social_facebook">
+                                <i class="fa fa-facebook-square fa-3x" />
+                            </a>
                         </div>
                         <div class="col-md-2 text-center">
-                            <a t-att-href="website.social_googleplus" t-if="website.social_googleplus" rel="publisher"><i class="fa fa-google-plus-square fa-3x"/></a>
+                            <a t-att-href="website.social_googleplus" t-if="website.social_googleplus" rel="publisher">
+                                <i class="fa fa-google-plus-square fa-3x" />
+                            </a>
                         </div>
                         <div class="col-md-2 text-center">
-                            <a t-att-href="website.social_twitter" t-if="website.social_twitter"><i class="fa fa-twitter fa-3x"/></a>
+                            <a t-att-href="website.social_twitter" t-if="website.social_twitter">
+                                <i class="fa fa-twitter fa-3x" />
+                            </a>
                         </div>
                         <div class="col-md-2 text-center">
-                            <a href="http://snapchat.com" t-if="True"><i class="fa fa-snapchat fa-3x"/></a>
+                            <a href="http://snapchat.com" t-if="True">
+                                <i class="fa fa-snapchat fa-3x" />
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -109,19 +110,33 @@
                     <div class="row">
                         <div class="col-md-3">
                             <h4>Delivery and returns</h4>
-                            <li><a href="/page/shipping">Shipping</a></li>
-                            <li><a href="/page/contactus">Returns</a></li>
+                            <li>
+                                <a href="/page/shipping">Shipping</a>
+                            </li>
+                            <li>
+                                <a href="/page/contactus">Returns</a>
+                            </li>
                         </div>
                         <div class="col-md-3">
                             <h4>Terms and conditions</h4>
-                            <li><a href="/page/terms_conditions">Terms &amp; conditions</a></li>
-                            <li><a href="/page/contactus">Suggestion</a></li>
+                            <li>
+                                <a href="/page/terms_conditions">Terms &amp; conditions</a>
+                            </li>
+                            <li>
+                                <a href="/page/contactus">Suggestion</a>
+                            </li>
                         </div>
                         <div class="col-md-3">
                             <h4>Contact info and address</h4>
-                            <li><a href="/forum/1">Questions</a></li>
-                            <li><a href="/forum/how-to">FAQ</a></li>
-                            <li><a href="/page/contactus">Contact Customer Service</a></li>
+                            <li>
+                                <a href="/forum/1">Questions</a>
+                            </li>
+                            <li>
+                                <a href="/forum/how-to">FAQ</a>
+                            </li>
+                            <li>
+                                <a href="/page/contactus">Contact Customer Service</a>
+                            </li>
                         </div>
                         <div class="col-md-3">
                             <h4>Payment</h4>
@@ -129,6 +144,62 @@
                         </div>
                     </div>
                 </div>
+            </xpath>
+        </template>
+        <!-- inherit submenu template
+        Desktorp mode: when menu's parent is header_menu, it will apprear in top but not in main menu.
+        Mobile mode: when menu's parent is header_menu, it will not apprear in top but in toggle menu (without parent menu dropdown).
+        -->
+        <template id="submenu_inherit" inherit_id="website.submenu" name="Submenu Inherit">
+            <xpath expr="*" position="replace">
+                <li t-if="not submenu.child_id and submenu.parent_id.id != submenu.env.ref('theme_dermanord.header_menu').id" t-att-class="'active' if submenu.url and submenu.url != '/' and request.httprequest.path == submenu.url.replace('/page/website.', '/page/') else None">
+                    <a t-att-href="(website.menu_id.child_id[0] == submenu) and '/' or submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
+                        <span t-field="submenu.name" />
+                    </a>
+                </li>
+                <!-- submenus to header menu without child -->
+                <li t-if="not submenu.child_id and submenu.parent_id.id == submenu.env.ref('theme_dermanord.header_menu').id" t-att-class="'active header_menu' if submenu.url and submenu.url != '/' and request.httprequest.path == submenu.url.replace('/page/website.', '/page/') else 'header_menu'">
+                    <a t-att-href="(website.menu_id.child_id[0] == submenu) and '/' or submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
+                        <span t-field="submenu.name" />
+                    </a>
+                </li>
+                <li t-if="submenu.child_id and submenu.parent_id.id != submenu.env.ref('theme_dermanord.header_menu').id" t-attf-class="dropdown #{(submenu.url and submenu.url != '/' and any([request.httprequest.path == child.url.replace('/page/website.', '/page/') for child in submenu.child_id if child.url]) or(submenu.url and request.httprequest.path == submenu.url.replace('/page/website.', '/page/'))) and 'active'}">
+                    <t t-if="submenu.id != submenu.env.ref('theme_dermanord.header_menu').id">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <span t-field="submenu.name" />
+                            <span class="caret" t-ignore="true" />
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <t t-foreach="submenu.child_id" t-as="submenu">
+                                <t t-call="website.submenu" />
+                            </t>
+                        </ul>
+                    </t>
+                    <t t-if="submenu.id == submenu.env.ref('theme_dermanord.header_menu').id">
+                        <t t-foreach="submenu.child_id" t-as="submenu">
+                            <t t-call="website.submenu" />
+                        </t>
+                    </t>
+                </li>
+                <!-- submenus to header menu with child -->
+                <li t-if="submenu.child_id and submenu.parent_id.id == submenu.env.ref('theme_dermanord.header_menu').id" t-attf-class="header_menu dropdown #{(submenu.url and submenu.url != '/' and any([request.httprequest.path == child.url.replace('/page/website.', '/page/') for child in submenu.child_id if child.url]) or(submenu.url and request.httprequest.path == submenu.url.replace('/page/website.', '/page/'))) and 'active header_menu'}">
+                    <t t-if="submenu.id != submenu.env.ref('theme_dermanord.header_menu').id">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <span t-field="submenu.name" />
+                            <span class="caret" t-ignore="true" />
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <t t-foreach="submenu.child_id" t-as="submenu">
+                                <t t-call="website.submenu" />
+                            </t>
+                        </ul>
+                    </t>
+                    <t t-if="submenu.id == submenu.env.ref('theme_dermanord.header_menu').id">
+                        <t t-foreach="submenu.child_id" t-as="submenu">
+                            <t t-call="website.submenu" />
+                        </t>
+                    </t>
+                </li>
             </xpath>
         </template>
         <!-- dermanord demo site template -->
