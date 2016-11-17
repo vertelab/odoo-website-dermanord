@@ -18,14 +18,14 @@
                         </ul>
                     </div>
                     <div class="tab-content col-md-8 no_padding_div">
-                        <div id="remedy" t-if="variant.public_desc" class="tab-pane fade in active"><!-- TODO: find method that check if current user is a customer -->
-                            <p t-field="variant.public_desc" class="oe_structure text-muted"/>
+                        <div id="remedy" t-if="variant.public_desc" class="tab-pane fade in active">
+                            <p>Massage, Skin Care</p>
                         </div>
-                        <div id="skin_type" t-if="variant.public_desc" class="tab-pane fade in active"><!-- TODO: find method that check if current user is a customer -->
-                            <p t-field="variant.public_desc" class="oe_structure text-muted"/>
+                        <div id="skin_type" t-if="variant.public_desc" class="tab-pane fade in active">
+                            <p>Dry, Oily, Normal</p>
                         </div>
-                        <div id="texture" t-if="variant.public_desc" class="tab-pane fade in active"><!-- TODO: find method that check if current user is a customer -->
-                            <p t-field="variant.public_desc" class="oe_structure text-muted"/>
+                        <div id="texture" t-if="variant.public_desc" class="tab-pane fade in active">
+                            <p>Oily</p>
                         </div>
                         <div id="public_desc" t-if="variant.public_desc" class="tab-pane fade in active"><!-- TODO: find method that check if current user is a customer -->
                             <p t-field="variant.public_desc" class="oe_structure text-muted"/>
