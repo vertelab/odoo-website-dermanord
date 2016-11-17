@@ -2,6 +2,13 @@
                     Press Dermanord
  ============================================================ */
 
+.img_press_row {
+    display: flex;
+    align-content: center;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
 .img_press_block {
     padding: 16px;
 }
@@ -9,6 +16,10 @@
 .img_press_img {
     overflow: hidden;
     width: 100%;
+}
+
+.img_press_img img {
+    margin: auto;
 }
 
 .img_press_text {
