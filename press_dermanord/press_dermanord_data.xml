@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <record id="press_responsible" model="hr.employee.category">
+            <field name="name">Press Respnsible</field>
+        </record>
+
+        <record id="press_vd" model="hr.employee.category">
+            <field name="name">VD</field>
+        </record>
+
+        <record id="press_blog_blog" model="blog.blog">
+            <field name="name">Press</field>
+            <field name="subtitle">Press Release</field>
+            <field name="description">Press Release</field>
+        </record>
+
+        <!-- image thumbnail -->
+        <record id="image_thumbnail" model="image.recipe">
+            <field name="name">Image Thumbnail (4:3)</field>
+            <field name="description">Thumbnail size</field>
+            <field name="recipe">if image.width &gt;= image.height: #landscape
+    if float(image.width)/image.height &gt;= float(4)/3:
+        image.transform(resize='%sx>' %int(float(image.width)/image.height*200))
+    else:
+        image.transform(resize='%sx>' %int(float(200)*4/3*image.height/image.width))
+    image.crop(width=int(float(200)*4/3), height=200, gravity='center')
+else: #portrait
+    image.transform(resize='%sx>' %int(float(200)*4/3))
+            </field>
+        </record>
+        <!-- image website -->
+        <record id="image_website" model="image.recipe">
+            <field name="name">Image Website (max 800px)</field>
+            <field name="description">Website size</field>
+            <field name="recipe">image.transform(resize='800x>')</field>
+        </record>
+        <!-- image original -->
+        <record id="image_original" model="image.recipe">
+            <field name="name">Image Original</field>
+            <field name="description">Original size</field>
+            <field name="recipe">image.resize(image.width, image.height)</field>
+        </record>
+
+<!-- exampel images -->
+        <!-- default images -->
+        <record id="dermanord_image_field" model="ir.attachment">
+            <field name="name">Dermanord Image (field.jpg)</field>
+            <field name="type">url</field>
+            <field name="res_model">ir.ui.view</field>
+            <field name="url">/website/static/src/img/fields.jpg</field>
+        </record>
+        <record id="dermanord_image_island" model="ir.attachment">
+            <field name="name">Dermanord Image (island.jpg)</field>
+            <field name="type">url</field>
+            <field name="res_model">ir.ui.view</field>
+            <field name="url">/website/static/src/img/island.jpg</field>
+        </record>
+        <record id="dermanord_image_volcano" model="ir.attachment">
+            <field name="name">Dermanord Image (volcano.jpg)</field>
+            <field name="type">url</field>
+            <field name="res_model">ir.ui.view</field>
+            <field name="url">/website/static/src/img/volcano.jpg</field>
+        </record>
+
+    </data>
+</openerp>

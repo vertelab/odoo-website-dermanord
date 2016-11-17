@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Press Dermanord -->
+        <template id="press_dermanord_template" name="Press Dermanord">
+            <t t-call="website.layout">
+                <section>
+                    <div class="container mt16 mb16 a_bord">
+                        <div class="col-md-3 col-sm-3 col-xs-12 b_bord">
+                            <div id="press_ansvarig_block" class="container text-center mt16 mb16 c_bord">
+                                <t t-set="press_ansvarig" t-value="request.env['hr.employee.category'].browse(request.env.ref('press_dermanord.press_responsible').id).employee_ids[0]" />
+                                <h3>Pressansvarig</h3>
+                                <t t-if="press_ansvarig">
+                                    <h4 t-field="press_ansvarig.name" />
+                                    <h4 t-field="press_ansvarig.work_phone" />
+                                    <h4 t-field="press_ansvarig.work_email" />
+                                </t>
+                                <t t-if=" not press_ansvarig">
+                                    <h3>No Press Responsible</h3>
+                                </t>
+                            </div>
+                            <div id="twitter_block" class="container text-center mb16 c_bord">
+                                <h3>Twitter Links</h3>
+                                <t t-call="press_dermanord.twitter_link_block" />
+                            </div>
+                        </div>
+                        <div class="col-md-9 col-sm-9 col-xs-12 b_bord">
+                            <t t-call="press_dermanord.press_release_block" />
+                        </div>
+                    </div>
+                    <div class="container mt16 mb16 a_bord">
+                        <h3 class="text-center">Press Material</h3>
+                        <div class="col-md-3 col-sm-3 col-xs-12 b_bord">
+                            <t t-call="press_dermanord.press_vd_block" />
+                        </div>
+                        <div class="col-md-9 col-sm-9 col-xs-12 b_bord">
+                            <t t-call="press_dermanord.press_material_block" />
+                        </div>
+                    </div>
+                </section>
+                <section />
+            </t>
+        </template>
+        <template id="press_dermanord_css_js" inherit_id="website.layout" name="Customize CSS and JS for Dermanord press page">
+            <!-- Customize css -->
+            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
+                <link href="/press_dermanord/static/src/css/press_dermanord.css" rel="stylesheet" />
+            </xpath>
+            <!-- Customize javascript -->
+            <xpath expr="//body/script[last()]" position="after">
+                <script type="text/javascript" src="/press_dermanord/static/src/js/press_dermanord.js" />
+            </xpath>
+        </template>
+        <template id="twitter_link_block" name="Twitter Links Block">
+            <ul>
+                <li>
+                    <a href="http://twitter.com">Twitter Link</a>
+                </li>
+                <li>
+                    <a href="http://twitter.com">Twitter Link</a>
+                </li>
+                <li>
+                    <a href="http://twitter.com">Twitter Link</a>
+                </li>
+                <li>
+                    <a href="http://twitter.com">Twitter Link</a>
+                </li>
+                <li>
+                    <a href="http://twitter.com">Twitter Link</a>
+                </li>
+                <li>
+                    <a href="http://twitter.com">Twitter Link</a>
+                </li>
+                <li>
+                    <a href="http://twitter.com">Twitter Link</a>
+                </li>
+            </ul>
+        </template>
+        <template id="press_release_block" name="Press Release Block">
+            <t t-set="press_blog_blog" t-value="request.env.ref('press_dermanord.press_blog_blog')" />
+            <t t-set="press_blog_post" t-value="request.env['blog.post'].search([('blog_id', '=', press_blog_blog.id)])" />
+            <t t-esc="pager"/>
+<!--
+            <div class="oe_structure">
+                <section class="mb0">
+                    <div class="container">
+                        <div class="row">
+                            <t t-call="website.pager">
+                                <t t-set="classname">pull-right</t>
+                            </t>
+                            <div class="col-md-12 mb32 mt16 text-center">
+                                <h1 t-field="press_blog_blog.name" />
+                                <h3 class="text-muted" t-field="press_blog_blog.subtitle" />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+-->
+            <div id="press_release_block" class="container mt16 mb16 c_bord">
+                <h3 class="text-center">Press Releases</h3>
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2" t-ignore="True" id="main_column">
+                        <div t-if="not press_blog_post" class="container mb64">
+                            <p class="css_editable_hidden">
+                                <h1>No blog post yet.</h1>
+                            </p>
+                            <p groups="base.group_document_user">Click on "Content" on the top menu to write your first blog post.</p>
+                        </div>
+                        <div t-foreach="press_blog_post" t-as="bp" class="mb32">
+                            <span t-field="bp.author_avatar" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-circle pull-right mt16 media-object&quot;}" />
+                            <a t-attf-href="/blog/#{ slug(bp.blog_id) }/post/#{ slug(bp) }">
+                                <h3 t-field="bp.name" class="mb4" />
+                            </a>
+                            <div class="text-muted">
+                                <h4 t-field="bp.subtitle" class="mb4 mt4" />
+                                <div name="blog_post_data" class="mb0">
+                                    <span t-field="bp.author_id" style="display: inline-block;" t-field-options="{                                 &quot;widget&quot;: &quot;contact&quot;,                                 &quot;fields&quot;: [&quot;name&quot;]                             }" />
+                                    <span t-field="bp.create_date" t-field-options="{&quot;format&quot;: &quot;MMMM yyyy&quot;}" />
+                                    <span t-if="len(bp.message_ids) &gt; 0">
+                                        <t t-esc="len(bp.message_ids)" />
+                                        <t t-if="len(bp.message_ids) &lt;= 1">comment</t>
+                                        <t t-if="len(bp.message_ids) &gt; 1">comments</t>
+                                    </span>
+                                    <span t-if="not bp.website_published" class="label label-danger">not published</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="oe_structure" />
+        </template>
+        <template id="press_vd_block" name="Press VD">
+            <t t-set="press_vd" t-value="request.env['hr.employee.category'].browse(request.env.ref('press_dermanord.press_vd').id).employee_ids[0]" />
+            <t t-if="press_vd">
+                <h3 class="text-center" t-field="press_vd.name"/>
+                <h3 class="text-center" t-field="press_vd.work_phone"/>
+                <div class="img_press_block col-md-6 col-sm-6 col-xs-12 mt16 mb16 c_bord">
+                    <div class="img_press_img">
+                        <img class="img-responsive css_editable_mode_hidden img_press_thumbnail" t-att-src="'/website/image/hr.employee/%s/image_medium' %press_vd.id" />
+                    </div>
+                    <div class="container img_press_text">
+                        <h4 t-field="press_vd.name"/>
+<!--
+                        <span class="pull-left css_editable_mode_hidden">
+                            <a class="img_press_website" t-att-href="'/imagemagick/%s/id/%s' %(request.env.ref('press_dermanord.dermanord_image_field').id, request.env.ref('press_dermanord.image_website').id)">Website</a>
+                        </span>
+                        <span class="pull-right css_editable_mode_hidden">
+                            <a class="img_press_original" t-att-href="'/imagemagick/%s/id/%s' %(request.env.ref('press_dermanord.dermanord_image_field').id, request.env.ref('press_dermanord.image_original').id)">Original</a>
+                        </span>
+-->
+                    </div>
+                </div>
+                <div class="img_press_block col-md-6 col-sm-6 col-xs-12 mt16 mb16 c_bord">
+                    <div class="img_press_img">
+                        <img class="img-responsive css_editable_mode_hidden img_press_thumbnail" t-att-src="'/website/image/hr.employee/%s/image_medium' %press_vd.id" />
+                    </div>
+                    <div class="container img_press_text">
+                        <h4 t-field="press_vd.name"/>
+<!--
+                        <span class="pull-left css_editable_mode_hidden">
+                            <a class="img_press_website" t-att-href="'/imagemagick/%s/id/%s' %(request.env.ref('press_dermanord.dermanord_image_field').id, request.env.ref('press_dermanord.image_website').id)">Website</a>
+                        </span>
+                        <span class="pull-right css_editable_mode_hidden">
+                            <a class="img_press_original" t-att-href="'/imagemagick/%s/id/%s' %(request.env.ref('press_dermanord.dermanord_image_field').id, request.env.ref('press_dermanord.image_original').id)">Original</a>
+                        </span>
+-->
+                    </div>
+                </div>
+            </t>
+            <t t-if="not press_vd">
+                <h3>No Press VD</h3>
+            </t>
+        </template>
+        <template id="press_material_block" name="Press Material Block">
+            <h3 class="text-center">Images</h3>
+
+
+            <div class="container">
+                <div class="img_press_block col-md-4 col-sm-4 col-xs-12">
+                    <div class="img_press_img">
+                        <img class="img img-responsive" src="/website/static/src/img/fields.jpg"/>
+                    </div>
+                </div>
+                <div class="img_press_block col-md-4 col-sm-4 col-xs-12">
+                    <div class="img_press_img">
+                        <img class="img img-responsive" src="/website/static/src/img/fields.jpg"/>
+                    </div>
+                </div>
+                <div class="img_press_block col-md-4 col-sm-4 col-xs-12">
+                    <div class="img_press_img">
+                        <img class="img img-responsive" src="/website/static/src/img/fields.jpg"/>
+                    </div>
+                </div>
+                <div class="img_press_block col-md-4 col-sm-4 col-xs-12">
+                    <div class="img_press_img">
+                        <img class="img img-responsive" src="/website/static/src/img/fields.jpg"/>
+                    </div>
+                </div>
+                <div class="img_press_block col-md-4 col-sm-4 col-xs-12">
+                    <div class="img_press_img">
+                        <img class="img img-responsive" src="/website/static/src/img/fields.jpg"/>
+                    </div>
+                </div>
+                <div class="img_press_block col-md-4 col-sm-4 col-xs-12">
+                    <div class="img_press_img">
+                        <img class="img img-responsive" src="/website/static/src/img/fields.jpg"/>
+                    </div>
+                </div>
+            </div>
+
+
+<!--
+            <div class="img_press_block col-md-4 col-sm-4 col-xs-12 mt16 mb16 c_bord">
+                <div class="img_press_img">
+                    <img class="img-responsive css_non_editable_mode_hidden" src="/website/static/src/img/fields.jpg" />
+                    <img class="img-responsive css_editable_mode_hidden img_press_thumbnail" t-att-src="'/imagemagick/%s/id/%s' %(request.env.ref('press_dermanord.dermanord_image_field').id, request.env.ref('press_dermanord.image_website').id)" />
+                </div>
+                <div class="container img_press_text">
+                    <h4>Field</h4>
+                    <span class="pull-left css_editable_mode_hidden">
+                        <a class="img_press_website" t-att-href="'/imagemagick/%s/id/%s' %(request.env.ref('press_dermanord.dermanord_image_field').id, request.env.ref('press_dermanord.image_website').id)">Website</a>
+                    </span>
+                    <span class="pull-right css_editable_mode_hidden">
+                        <a class="img_press_original" t-att-href="'/imagemagick/%s/id/%s' %(request.env.ref('press_dermanord.dermanord_image_field').id, request.env.ref('press_dermanord.image_original').id)">Original</a>
+                    </span>
+                </div>
+            </div>
+-->
+        </template>
+    </data>
+</openerp>
