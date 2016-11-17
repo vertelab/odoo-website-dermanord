@@ -6,15 +6,27 @@
                 <t t-set="variant" t-value="product.product_variant_ids[0]"/><!-- TODO: find method that get the product vairant -->
                 <hr/>
                 <div class="col-md-12 no_padding_div">
-                    <div class="col-md-3 no_padding_div">
+                    <div class="col-md-4 no_padding_div">
                         <ul class="nav nav-pills nav-stacked">
-                            <li class="active"><a data-toggle="tab" href="#public_desc">Description</a></li>
-                            <li><a data-toggle="tab" href="#reseller_desc">Description</a></li>
+                            <li class="active"><a data-toggle="tab" href="#remedy">Remedy</a></li>
+                            <li><a data-toggle="tab" href="#skin_type">Skin Type</a></li>
+                            <li><a data-toggle="tab" href="#texture">Texture</a></li>
+                            <li group="base.group_public"><a data-toggle="tab" href="#public_desc">Description</a></li>
+                            <li groups="base.group_website_publisher"><a data-toggle="tab" href="#reseller_desc">Description</a></li>
                             <li><a data-toggle="tab" href="#use_desc">Manual</a></li>
                             <li><a data-toggle="tab" href="#ingredients">Ingredients</a></li>
                         </ul>
                     </div>
-                    <div class="tab-content col-md-9 no_padding_div">
+                    <div class="tab-content col-md-8 no_padding_div">
+                        <div id="remedy" t-if="variant.public_desc" class="tab-pane fade in active"><!-- TODO: find method that check if current user is a customer -->
+                            <p t-field="variant.public_desc" class="oe_structure text-muted"/>
+                        </div>
+                        <div id="skin_type" t-if="variant.public_desc" class="tab-pane fade in active"><!-- TODO: find method that check if current user is a customer -->
+                            <p t-field="variant.public_desc" class="oe_structure text-muted"/>
+                        </div>
+                        <div id="texture" t-if="variant.public_desc" class="tab-pane fade in active"><!-- TODO: find method that check if current user is a customer -->
+                            <p t-field="variant.public_desc" class="oe_structure text-muted"/>
+                        </div>
                         <div id="public_desc" t-if="variant.public_desc" class="tab-pane fade in active"><!-- TODO: find method that check if current user is a customer -->
                             <p t-field="variant.public_desc" class="oe_structure text-muted"/>
                         </div>
