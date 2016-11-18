@@ -2,12 +2,14 @@
                     Press Dermanord
  ============================================================ */
 
+/*
 .img_press_row {
     display: flex;
     align-content: center;
     justify-content: flex-end;
     align-items: flex-end;
 }
+*/
 
 .img_press_block {
     padding: 16px;
