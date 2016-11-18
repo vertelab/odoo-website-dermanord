@@ -18,6 +18,11 @@
     width: 100%;
 }
 
+.image_press_img .img_2_change {
+    width: 100%;
+    height: auto;
+}
+
 .img_press_img img {
     margin: auto;
 }

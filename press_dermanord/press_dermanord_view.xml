@@ -136,36 +136,56 @@
             <t t-if="press_vd">
                 <h3 class="text-center" t-field="press_vd.name"/>
                 <h3 class="text-center" t-field="press_vd.work_phone"/>
-                <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 c_bord">
+                <div class="img_press_block col-md-6 col-sm-6 col-xs-12">
                     <div class="img_press_img">
-                        <img class="img-responsive css_editable_mode_hidden img_press_thumbnail" t-att-src="'/website/image/hr.employee/%s/image_medium' %press_vd.id" />
+                        <img class="img img-responsive img_2_change" src="/website/static/src/img/fields.jpg"/>
                     </div>
                     <div class="container img_press_text">
-                        <h4 t-field="press_vd.name"/>
-<!--
                         <span class="pull-left css_editable_mode_hidden">
-                            <a class="img_press_website" t-att-href="'/imagemagick/%s/id/%s' %(request.env.ref('press_dermanord.dermanord_image_field').id, request.env.ref('press_dermanord.image_website').id)">Website</a>
+                            <a class="img_press_website" href="/"><i class="fa fa-globe"/></a>
                         </span>
                         <span class="pull-right css_editable_mode_hidden">
-                            <a class="img_press_original" t-att-href="'/imagemagick/%s/id/%s' %(request.env.ref('press_dermanord.dermanord_image_field').id, request.env.ref('press_dermanord.image_original').id)">Original</a>
+                            <a class="img_press_original" href="/"><i class="fa fa-file-o"/></a>
                         </span>
--->
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 c_bord">
+                <div class="img_press_block col-md-6 col-sm-6 col-xs-12">
                     <div class="img_press_img">
-                        <img class="img-responsive css_editable_mode_hidden img_press_thumbnail" t-att-src="'/website/image/hr.employee/%s/image_medium' %press_vd.id" />
+                        <img class="img img-responsive img_2_change" src="/website/static/src/img/fields.jpg"/>
                     </div>
                     <div class="container img_press_text">
-                        <h4 t-field="press_vd.name"/>
-<!--
                         <span class="pull-left css_editable_mode_hidden">
-                            <a class="img_press_website" t-att-href="'/imagemagick/%s/id/%s' %(request.env.ref('press_dermanord.dermanord_image_field').id, request.env.ref('press_dermanord.image_website').id)">Website</a>
+                            <a class="img_press_website" href="/"><i class="fa fa-globe"/></a>
                         </span>
                         <span class="pull-right css_editable_mode_hidden">
-                            <a class="img_press_original" t-att-href="'/imagemagick/%s/id/%s' %(request.env.ref('press_dermanord.dermanord_image_field').id, request.env.ref('press_dermanord.image_original').id)">Original</a>
+                            <a class="img_press_original" href="/"><i class="fa fa-file-o"/></a>
                         </span>
--->
+                    </div>
+                </div>
+                <div class="img_press_block col-md-6 col-sm-6 col-xs-12">
+                    <div class="img_press_img">
+                        <img class="img img-responsive img_2_change" src="/website/static/src/img/fields.jpg"/>
+                    </div>
+                    <div class="container img_press_text">
+                        <span class="pull-left css_editable_mode_hidden">
+                            <a class="img_press_website" href="/"><i class="fa fa-globe"/></a>
+                        </span>
+                        <span class="pull-right css_editable_mode_hidden">
+                            <a class="img_press_original" href="/"><i class="fa fa-file-o"/></a>
+                        </span>
+                    </div>
+                </div>
+                <div class="img_press_block col-md-6 col-sm-6 col-xs-12">
+                    <div class="img_press_img">
+                        <img class="img img-responsive img_2_change" src="/website/static/src/img/fields.jpg"/>
+                    </div>
+                    <div class="container img_press_text">
+                        <span class="pull-left css_editable_mode_hidden">
+                            <a class="img_press_website" href="/"><i class="fa fa-globe"/></a>
+                        </span>
+                        <span class="pull-right css_editable_mode_hidden">
+                            <a class="img_press_original" href="/"><i class="fa fa-file-o"/></a>
+                        </span>
                     </div>
                 </div>
             </t>
@@ -175,6 +195,7 @@
         </template>
         <template id="press_material_block" name="Press Material Block">
             <h3 class="text-center">Images</h3>
+            <p t-att-id="request.env.ref('press_dermanord.image_thumbnail').id" class="thumbnail_recipe hidden"/>
             <p t-att-id="request.env.ref('press_dermanord.image_website').id" class="website_recipe hidden"/>
             <p t-att-id="request.env.ref('press_dermanord.image_original').id" class="original_recipe hidden"/>
             <div class="container">
