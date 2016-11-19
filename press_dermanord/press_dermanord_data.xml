@@ -27,7 +27,8 @@
         image.transform(resize='%sx>' %int(float(200)*4/3*image.height/image.width))
     image.crop(width=int(float(200)*4/3), height=200, gravity='center')
 else: #portrait
-    image.transform(resize='%sx>' %int(float(200)*4/3))
+    image.transform(resize='200x>')
+    image.crop(width=int(float(200)/image.height*image.width), height=200, gravity='center')
             </field>
         </record>
         <!-- image website -->
