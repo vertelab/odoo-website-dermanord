@@ -104,7 +104,7 @@
         <template id="product_experiences" name="Product Experiences">
             <t t-foreach="product.blog_post_ids" t-as="post">
                 <t t-if="post.blog_id == request.env.ref('webshop_dermanord.blog_experiences')">
-                    <div class="col-md-4 col-sm-4 col-xs-12">
+                    <div class="col-md-4 col-sm-4 col-xs-12 blog_block">
                         <div class="image_block" t-att-style="&quot;background-image: url('/imagefieldurl/blog.post/background_image/%s/id/%s')&quot; %(post.id, request.env.ref('webshop_dermanord.image_four_three_small').id)">
                             <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text">
                                 <h3 t-field="post.name"/>
