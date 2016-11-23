@@ -47,29 +47,7 @@
                 <div class="oe_structure oe_empty mt32 mb32">
                     <div class="container">
                         <h1 class="text-center">This product’s experiences</h1>
-                        <t t-foreach="product.blog_post_ids" t-as="post">
-                            <t t-if="post.blog_id == request.env.ref('webshop_dermanord.blog_experiences')">
-                                <div class="col-md-4 col-sm-4 col-xs-12">
-                                    <div class="image_block" t-att-style="&quot;background-image: url('/imagefieldurl/blog.post/background_image/%s/id/%s')&quot; %(post.id, request.env.ref('webshop_dermanord.image_four_three').id)">
-                                        <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text">
-                                            <h3 t-field="post.name"/>
-<!--
-                                            <h4 t-field="post.subtitle"/>
--->
-                                        </a>
-                                    </div>
-                                </div>
-<!--
-                                <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)">
-                                    <div class="col-md-4 col-sm-4 col-sx-4 blog_block">
-                                        <div class="oe_img_bg text-center blog_bg" t-att-style="&quot;background-image: url('%s')&quot; %post.background_image">
-                                            <h3 t-field="post.name" class="blog_title"/>
-                                        </div>
-                                    </div>
-                                </a>
--->
-                            </t>
-                        </t>
+                        <t t-call="webshop_dermanord.product_experiences"/>
                     </div>
                     <h1 class="text-center">Product range</h1>
                     <h1 class="text-center">Recently viewed</h1>
@@ -85,6 +63,23 @@
             <xpath expr="//body/script[last()]" position="after">
                 <script type="text/javascript" src="/webshop_dermanord/static/src/img/webshop_dermanord.js" />
             </xpath>
+        </template>
+
+        <template id="product_experiences" name="Product Experiences">
+            <t t-foreach="product.blog_post_ids" t-as="post">
+                <t t-if="post.blog_id == request.env.ref('webshop_dermanord.blog_experiences')">
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <div class="image_block" t-att-style="&quot;background-image: url('/imagefieldurl/blog.post/background_image/%s/id/%s')&quot; %(post.id, request.env.ref('webshop_dermanord.image_four_three').id)">
+                            <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text">
+                                <h3 t-field="post.name"/>
+<!--
+                                <h4 t-field="post.subtitle"/>
+-->
+                            </a>
+                        </div>
+                    </div>
+                </t>
+            </t>
         </template>
 
         <record id="view_blog_post_form" model="ir.ui.view">
