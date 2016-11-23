@@ -25,3 +25,22 @@ from openerp.http import request
 from datetime import datetime
 from lxml import html
 import werkzeug
+
+import logging
+_logger = logging.getLogger(__name__)
+
+class blog_post(models.Model):
+    _inherit = 'blog.post'
+
+    product_public_categ_ids = fields.Many2many(comodel_name='product.public.category', string='Product Public Categories')
+    product_tmpl_ids = fields.Many2many(comodel_name='product.template', string='Product Templates')
+
+
+class product_template(models.Model):
+    _inherit = 'product.template'
+
+    @api.one
+    def _blog_post_ids(self):
+        blog_posts = self.env['blog.post'].search(['|', ('product_tmpl_ids', 'in', self.id), ('product_public_categ_ids', 'in', self.public_categ_ids.mapped('id'))])
+        self.blog_post_ids = [(6, 0, blog_posts.filtered(lambda b: b.website_published == True).mapped('id'))]
+    blog_post_ids = fields.Many2many(comodel_name='blog.post', string='Posts', compute='_blog_post_ids')
