@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!-- Blog Experiences -->
+        <record id="blog_experiences" model="blog.blog">
+            <field name="name">Experiences</field>
+            <field name="subtitle"></field>
+        </record>
+
+        <!-- image 4:3 -->
+        <record id="image_four_three" model="image.recipe">
+            <field name="name">Image Normal (4:3)</field>
+            <field name="description">For normal images, aspect ratio 4:3</field>
+            <field name="recipe">if image.width &gt;= image.height: #landscape
+    image.transform(resize='%sx>' %image.width)
+    if float(image.width)/float(image.height) &gt;= float(4)/float(3):
+        image.crop(width=int(image.height)*4/3, height=int(image.height), gravity='center')
+    else:
+        image.crop(width=int(image.width), height=int(image.width)*3/4, gravity='center')
+else: #portrait
+    image.transform(resize='%sx>' %image.height)
+            </field>
+        </record>
+    </data>
+</openerp>
