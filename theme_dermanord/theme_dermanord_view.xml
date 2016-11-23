@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data noupdate="1">
+
         <!-- header_menu: used for menu in header -->
         <record id="header_menu" model="website.menu">
             <field name="name">Header Menu</field>
@@ -8,10 +9,28 @@
             <field name="url">/</field>
             <field name="parent_id" ref="website.main_menu" />
         </record>
+
+        <!-- Carousel panorama -->
+<!--
+        <record id="carousel_panorama" model="image.recipe">
+            <field name="name">Carousel Panorama (21:9)</field>
+            <field name="description">For panorama images, aspect ratio 21:9</field>
+            <field name="recipe">if image.width &gt;= image.height: #landscape
+    image.transform(resize='%sx>' %image.width)
+    if float(image.width)/float(image.height) &gt;= float(21)/float(9):
+        image.crop(width=int(image.height)*21/9, height=int(image.height), gravity='center')
+    else:
+        image.crop(width=int(image.width), height=int(image.width)*9/21, gravity='center')
+else: #portrait
+    image.transform(resize='%sx>' %image.height)
+            </field>
+        </record>
+-->
+
     </data>
 
+<!--
     <data>
-        <!-- logo for website notbook page -->
         <record id="view_company_form" model="ir.ui.view">
             <field name="name">res.company.form.logo.website</field>
             <field name="model">res.company</field>
@@ -25,12 +44,13 @@
             </field>
         </record>
     </data>
+-->
 
     <data>
         <!-- Theme Dermanord -->
         <template id="theme_dermanord" inherit_id="website.layout" customize_show="True" active="False" name="Theme Dermanord" priority="99">
             <xpath expr="//header/div" position="before">
-                <img id="header_bg" class="img img-responsive" t-att-src="'data:image/png;base64,%s' %website.company_id.logo_website">
+                <img id="header_bg" class="img img-responsive" src="/website_logo.png">
                     <div id="header_menu">
                         <div id="header_left_menu" class="navbar container">
                             <div>
@@ -83,6 +103,11 @@
             <xpath expr="//ul[@id='top_menu']" position="attributes">
                 <attribute name="class">nav nav-justified mt4</attribute>
             </xpath>
+<!--
+            <xpath expr="//t[@t-raw='0']" position="before">
+                <p t-att-id="request.env.ref('theme_dermanord.carousel_panorama').id" class="carousel_panorama_recipe hidden"/>
+            </xpath>
+-->
             <!-- Customize css -->
             <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
                 <link href="/theme_dermanord/static/src/css/theme_dermanord.css" rel="stylesheet" />

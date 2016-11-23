@@ -30,7 +30,7 @@ Special theme for Dermanord AB
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website'],
+    'depends': ['website', 'website_logo', 'website_imagemagick'],
     'data': [
         'theme_dermanord_view.xml',
         'website_overwritten_templates.xml',
