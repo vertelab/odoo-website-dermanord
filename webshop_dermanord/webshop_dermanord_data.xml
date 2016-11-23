@@ -8,17 +8,18 @@
         </record>
 
         <!-- image 4:3 -->
-        <record id="image_four_three" model="image.recipe">
-            <field name="name">Image Normal (4:3)</field>
+        <record id="image_four_three_small" model="image.recipe">
+            <field name="name">Image Normal small (4:3)</field>
             <field name="description">For normal images, aspect ratio 4:3</field>
-            <field name="recipe">if image.width &gt;= image.height: #landscape
-    image.transform(resize='%sx>' %image.width)
-    if float(image.width)/float(image.height) &gt;= float(4)/float(3):
-        image.crop(width=int(image.height)*4/3, height=int(image.height), gravity='center')
+            <field name="recipe">if image.width >= image.height: #landscape
+    if float(image.width)/image.height >= float(4)/3:
+        image.transform(resize='%sx>' %int(float(image.width)/image.height*200))
     else:
-        image.crop(width=int(image.width), height=int(image.width)*3/4, gravity='center')
+        image.transform(resize='%sx>' %int(float(200)*4/3*image.height/image.width))
+    image.crop(width=int(float(200)*4/3), height=200, gravity='center')
 else: #portrait
-    image.transform(resize='%sx>' %image.height)
+    image.transform(resize='200x>')
+    image.crop(width=int(float(200)/image.height*image.width), height=200, gravity='center')
             </field>
         </record>
     </data>
