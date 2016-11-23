@@ -26,6 +26,11 @@ from datetime import datetime
 from lxml import html
 import werkzeug
 
+class res_company(models.Model):
+    _inherit = 'res.company'
+
+    logo_website = fields.Binary(string='Logo For Website', help='This company logo shows only on website')
+
 
 class ThemeDermanord(http.Controller):
     @http.route(['/logo500.png'], type='http', auth="public", cors="*")

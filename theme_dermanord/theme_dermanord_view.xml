@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
+    <data noupdate="1">
         <!-- header_menu: used for menu in header -->
         <record id="header_menu" model="website.menu">
             <field name="name">Header Menu</field>
@@ -8,10 +8,29 @@
             <field name="url">/</field>
             <field name="parent_id" ref="website.main_menu" />
         </record>
+    </data>
+
+    <data>
+        <!-- logo for website notbook page -->
+        <record id="view_company_form" model="ir.ui.view">
+            <field name="name">res.company.form.logo.website</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Logo For Website">
+                        <field name="logo_website" widget="image"/>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    </data>
+
+    <data>
         <!-- Theme Dermanord -->
         <template id="theme_dermanord" inherit_id="website.layout" customize_show="True" active="False" name="Theme Dermanord" priority="99">
             <xpath expr="//header/div" position="before">
-                <img id="header_bg" class="img-responsive" src="/website/static/src/img/banner/landscape.jpg">
+                <img id="header_bg" class="img img-responsive" t-att-src="'data:image/png;base64,%s' %website.company_id.logo_website">
                     <div id="header_menu">
                         <div id="header_left_menu" class="navbar container">
                             <div>
