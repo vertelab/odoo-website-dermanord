@@ -56,6 +56,7 @@
                         <t t-call="website_product_templates.product_view"/>
                     </t>
                     </div>
+                    <t t-set="useless_var_6446547657" t-value="website.sale_add_previous_product(product.id)"/>
                 </div>
             </xpath>
         </template>
