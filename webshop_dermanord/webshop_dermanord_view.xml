@@ -52,11 +52,12 @@
                     </div>
                     <h1 class="text-center">Product range</h1>
                     <h1 class="text-center">Recently viewed</h1>
-                    <div class=".oe_vertel_product_gridbox">
-                    <t t-foreach="website.sale_get_previous_products()" t-as="product">
-                        <t t-call="website_product_templates.product_view"/>
+                    <div class="oe_vertel_product_gridbox">
+                    <t t-foreach="website.sale_get_previous_products()" t-as="previous_product">
+                        <t t-call="website_product_templates.product_view"><t t-set="product" t-value="previous_product"/></t>
                     </t>
                     </div>
+                    <t t-set="useless_var_6446547657" t-value="website.sale_add_previous_product(product.id)"/>
                 </div>
             </xpath>
         </template>
