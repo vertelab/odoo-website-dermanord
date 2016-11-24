@@ -31,6 +31,16 @@
     background-repeat: no-repeat;
 }
 
+.image_block_wide {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
 .image_block_text {
     position: absolute;
     width: 100%;
@@ -42,11 +52,18 @@
     display: none;
 }
 
-.image_block h3, .image_block h4{
+.image_block_text h3 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 30px;
+    line-height: 125%;
+}
+
+.image_block h3, .image_block h4, .image_block_wide h3, .image_block_wide h4{
     color: #fff;
 }
 
-.image_block:hover .image_block_text {
+.image_block:hover .image_block_text, .image_block_wide:hover .image_block_text {
     display: flex;
     justify-content: center;
     align-items: center;
