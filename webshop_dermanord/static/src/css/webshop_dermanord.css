@@ -52,6 +52,13 @@
     display: none;
 }
 
+.image_block_text h3 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 30px;
+    line-height: 125%;
+}
+
 .image_block h3, .image_block h4, .image_block_wide h3, .image_block_wide h4{
     color: #fff;
 }

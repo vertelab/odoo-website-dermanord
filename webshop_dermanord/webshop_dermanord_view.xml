@@ -111,7 +111,7 @@
             <t t-foreach="blog_posts[:3]" t-as="post">
                 <div t-att-class="'col-md-4 %s col-sm-4 col-xs-12 blog_block' %(offset_value if post_index == 0 else '')">
                     <div class="image_block" t-att-style="&quot;background-image: url('/imagefieldurl/blog.post/background_image/%s/id/%s')&quot; %(post.id, request.env.ref('webshop_dermanord.experiences_four_three_small').id)">
-                        <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text">
+                        <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text text-center">
                             <h3 t-field="post.name"/>
                         </a>
                     </div>
@@ -126,7 +126,7 @@
             <t t-foreach="blog_posts[:2]" t-as="post">
                 <div t-att-class="'col-md-6 %s col-sm-6 col-xs-12 blog_block' %(offset_value if post_index == 0 else '')">
                     <div class="image_block_wide" t-att-style="&quot;background-image: url('/imagefieldurl/blog.post/background_image/%s/id/%s')&quot; %(post.id, request.env.ref('webshop_dermanord.experiences_sixteen_nine_small').id)">
-                        <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text">
+                        <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text text-center">
                             <h3 t-field="post.name"/>
                         </a>
                     </div>
