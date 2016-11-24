@@ -48,6 +48,7 @@
                     <div class="container">
                         <h1 class="text-center">This product’s experiences</h1>
                         <t t-call="webshop_dermanord.product_experiences"/>
+                        <t t-call="webshop_dermanord.product_experiences_wide"/>
                     </div>
                     <h1 class="text-center">Product range</h1>
                     <h1 class="text-center">Recently viewed</h1>
@@ -102,19 +103,33 @@
         </template>
 
         <template id="product_experiences" name="Product Experiences">
-            <t t-foreach="product.blog_post_ids" t-as="post">
-                <t t-if="post.blog_id == request.env.ref('webshop_dermanord.blog_experiences')">
-                    <div class="col-md-4 col-sm-4 col-xs-12 blog_block">
-                        <div class="image_block" t-att-style="&quot;background-image: url('/imagefieldurl/blog.post/background_image/%s/id/%s')&quot; %(post.id, request.env.ref('webshop_dermanord.image_four_three_small').id)">
-                            <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text">
-                                <h3 t-field="post.name"/>
-<!--
-                                <h4 t-field="post.subtitle"/>
--->
-                            </a>
-                        </div>
+            <t t-set="blog_posts" t-value="product.blog_post_ids.filtered(lambda p: p.blog_id == p.env.ref('webshop_dermanord.blog_experiences'))"/>
+            <t t-set="offset_value" t-value="0"/>
+            <t t-if="len(blog_posts) == 1"><t t-set="offset_value" t-value="'col-md-offset-4 col-sm-offset-4'"/></t>
+            <t t-if="len(blog_posts) == 2"><t t-set="offset_value" t-value="'col-md-offset-2 col-sm-offset-2'"/></t>
+            <t t-foreach="blog_posts[:3]" t-as="post">
+                <div t-att-class="'col-md-4 %s col-sm-4 col-xs-12 blog_block' %(offset_value if post_index == 0 else '')">
+                    <div class="image_block" t-att-style="&quot;background-image: url('/imagefieldurl/blog.post/background_image/%s/id/%s')&quot; %(post.id, request.env.ref('webshop_dermanord.experiences_four_three_small').id)">
+                        <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text">
+                            <h3 t-field="post.name"/>
+                        </a>
                     </div>
-                </t>
+                </div>
+            </t>
+        </template>
+
+        <template id="product_experiences_wide" name="Product Experiences Wide">
+            <t t-set="blog_posts" t-value="product.blog_post_ids.filtered(lambda p: p.blog_id == p.env.ref('webshop_dermanord.blog_experiences'))"/>
+            <t t-set="offset_value" t-value="0"/>
+            <t t-if="len(blog_posts) == 1"><t t-set="offset_value" t-value="'col-md-offset-3 col-sm-offset-3'"/></t>
+            <t t-foreach="blog_posts[:2]" t-as="post">
+                <div t-att-class="'col-md-6 %s col-sm-6 col-xs-12 blog_block' %(offset_value if post_index == 0 else '')">
+                    <div class="image_block_wide" t-att-style="&quot;background-image: url('/imagefieldurl/blog.post/background_image/%s/id/%s')&quot; %(post.id, request.env.ref('webshop_dermanord.experiences_sixteen_nine_small').id)">
+                        <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text">
+                            <h3 t-field="post.name"/>
+                        </a>
+                    </div>
+                </div>
             </t>
         </template>
 

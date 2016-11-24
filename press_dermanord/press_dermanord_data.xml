@@ -22,13 +22,13 @@
             <field name="description">Thumbnail size</field>
             <field name="recipe">if image.width &gt;= image.height: #landscape
     if float(image.width)/image.height &gt;= float(4)/3:
-        image.transform(resize='%sx>' %int(float(image.width)/image.height*200))
+        image.transform(resize='%sx&gt;' %int(float(image.width)/image.height*200))
     else:
-        image.transform(resize='%sx>' %int(float(200)*4/3*image.height/image.width))
-    image.crop(width=int(float(200)*4/3), height=200, gravity='center')
+        image.transform(resize='%sx&gt;' %int(float(4)/3*image.height/image.width*200))
+    image.crop(width=int(float(4)/3*200), height=200, gravity='center')
 else: #portrait
-    image.transform(resize='200x>')
-    image.crop(width=int(float(200)/image.height*image.width), height=200, gravity='center')
+    image.transform(resize='200x&gt;')
+    image.crop(width=int(float(3)/4*200), height=200, gravity='center')
             </field>
         </record>
         <!-- image website -->
