@@ -34,13 +34,13 @@
           </div>
           <div class="tab-content col-md-8 no_padding_div">
             <div id="remedy" class="tab-pane fade in active">
-              <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_remedy")).mapped("name"))'/>
+              <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_remedy")).mapped("value_ids").mapped("name"))'/>
             </div>
             <div id="skin_type" class="tab-pane fade in">
-              <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_skin_type")).mapped("name"))'/>
+              <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_skin_type")).mapped("value_ids").mapped("name"))'/>
             </div>
             <div id="texture" class="tab-pane fade in">
-                <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_texture")).mapped("name"))'/>
+                <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_texture")).mapped("value_ids").mapped("name"))'/>
             </div>
             <div id="public_desc" class="tab-pane fade in">
               <!-- TODO: find method that check if current user is a customer -->
@@ -73,10 +73,9 @@
               <t t-call="website_product_templates.product_view" />
             </div>
           </div>
-          <h1 class="text-center">Recently viewed</h1>
           <t t-set="useless_var_6446547657" t-value="website.sale_add_previous_product(product.id)" />
           <div class="container mt32">
-            <h3 class="text-center">Recently viewed</h3>
+            <h1 class="text-center">Recently viewed</h1>
             <div t-foreach="website.sale_get_previous_products().with_context(pid=product.id).filtered(lambda p: p.id != p.env.context['pid'])[:4]" t-as="p">
               <t t-call="website_product_templates.product_view" />
             </div>
