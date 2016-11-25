@@ -30,5 +30,18 @@ else:
 image.crop(width=int(float(16)/9*400), height=400, gravity='center')
             </field>
         </record>
+        
+        <!-- Facets -->
+        <record id="facet_remedy" model="product.facet">
+            <field name="name">Remedy</field>
+        </record>
+        <record id="facet_skin_type" model="product.facet">
+            <field name="name">Skin Type</field>
+        </record>
+        <record id="facet_texture" model="product.facet">
+            <field name="name">Texture</field>
+        </record>
+        
+        
     </data>
 </openerp>
