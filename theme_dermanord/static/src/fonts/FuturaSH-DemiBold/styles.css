@@ -1,0 +1,8 @@
+
+@font-face {
+  font-family: 'FuturaSH-DemiBold';
+  src: url('FuturaSH-DemiBold.eot?#iefix') format('embedded-opentype'),  url('FuturaSH-DemiBold.otf')  format('opentype'),
+	     url('FuturaSH-DemiBold.woff') format('woff'), url('FuturaSH-DemiBold.ttf')  format('truetype'), url('FuturaSH-DemiBold.svg#FuturaSH-DemiBold') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
