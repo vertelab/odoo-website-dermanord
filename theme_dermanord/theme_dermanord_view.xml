@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
 
         <!-- header_menu: used for menu in header -->
-        <record id="header_menu" model="website.menu">
-            <field name="name">Header Menu</field>
+        <record id="footer_menu" model="website.menu">
+            <field name="name">Footer Menu</field>
             <field name="sequence">99</field>
             <field name="url">/</field>
             <field name="parent_id" ref="website.main_menu" />
@@ -49,56 +49,37 @@ else: #portrait
     <data>
         <!-- Theme Dermanord -->
         <template id="theme_dermanord" inherit_id="website.layout" customize_show="True" active="False" name="Theme Dermanord" priority="99">
-            <xpath expr="//header/div" position="before">
-                <img id="header_bg" class="img img-responsive" src="/website_logo.png">
-                    <div id="header_menu">
-                        <div id="header_left_menu" class="navbar container">
-                            <div>
-                                <ul class="list-inline js_language_selector" t-if="(request.website_multilang and len(languages) &gt; 1) or editable">
-                                    <li t-foreach="languages" t-as="lg">
-                                        <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
-                                            <t t-esc="lg[1].split('/').pop()" />
-                                        </a>
-                                    </li>
-                                    <li groups="base.group_website_publisher">
-                                        <t t-set="url_return" t-value="url_for('', '[lang]') + '?' + keep_query()" />
-                                        <a t-attf-href="/web#action=base.action_view_base_language_install&amp;website_id=#{website.id}&amp;url_return=#{url_return}">
-                                            <i class="fa fa-plus-circle" />
-                                            Add a language...
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div id="header_right_menu" class="navbar nav-right">
-                            <div class="container">
-                                <div class="navbar-header">
-                                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-top-collapse">
-                                        <span class="sr-only">Toggle navigation</span>
-                                        <span class="icon-bar" />
-                                        <span class="icon-bar" />
-                                        <span class="icon-bar" />
-                                    </button>
-                                </div>
-                                <div class="collapse navbar-collapse navbar-top-collapse">
-                                    <ul class="nav navbar-nav navbar-right" id="top_menu_top">
-                                        <t t-foreach="website.menu_id.child_id.filtered(lambda m: m.id == m.env.ref('theme_dermanord.header_menu').id).child_id" t-as="submenu">
-                                            <t t-call="website.submenu" />
-                                        </t>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </img>
+            <xpath expr="//div[@id='wrapwrap']/header/div[@class='navbar navbar-default navbar-static-top']/div[@class='container']/div[@class='navbar-header']" position="replace">
+                <div class="navbar-header navbar-over">
+                    <button type="button" class="navbar-toggle menu-btn col-md-2" data-toggle="collapse" data-target=".navbar-top-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"/>
+                        <span class="icon-bar"/>
+                        <span class="icon-bar"/>
+                    </button>
+                    <ul class="list-inline js_language_selector hidden-xs col-md-2" t-if="(request.website_multilang and len(languages) &gt; 1) or editable">
+                        <li t-foreach="languages" t-as="lg">
+                            <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
+                                <t t-esc="lg[1].split('/').pop()" />
+                            </a>
+                        </li>
+                        <li groups="base.group_website_publisher">
+                            <t t-set="url_return" t-value="url_for('', '[lang]') + '?' + keep_query()" />
+                            <a t-attf-href="/web#action=base.action_view_base_language_install&amp;website_id=#{website.id}&amp;url_return=#{url_return}">
+                                <i class="fa fa-plus-circle" />
+                                Add a language...
+                            </a>
+                        </li>
+                    </ul>
+                    <a class="navbar-brand logo col-md-8" href="/"><p t-field="res_company.name"/></a>
+                    <i class="fa fa-search fa-2x search-btn col-md-2"/>
+                </div>
             </xpath>
+
             <xpath expr="//t[@t-foreach='website.menu_id.child_id']" position="replace">
                 <t t-foreach="website.menu_id.child_id" t-as="submenu">
                     <t t-call="website.submenu" />
                 </t>
-            </xpath>
-            <xpath expr="//a[@class='navbar-brand logo']" position="attributes">
-                <attribute name="class">navbar-brand logo hidden</attribute>
             </xpath>
             <xpath expr="//ul[@id='top_menu']" position="attributes">
                 <attribute name="class">nav nav-justified mt4</attribute>
@@ -113,21 +94,17 @@ else: #portrait
                 <link href="/theme_dermanord/static/src/css/theme_dermanord.css" rel="stylesheet" />
             </xpath>
             <!-- Customize javascript -->
-            <xpath expr="//body/script[last()]" position="after">
+            <xpath expr="//body" position="inside">
                 <script type="text/javascript" src="/theme_dermanord/static/src/js/theme_dermanord.js" />
-                <script />
             </xpath>
             <!-- Hide footer -->
-            <xpath expr="//div[@id='footer']" position="attributes">
+            <xpath expr="//footer/div" position="attributes">
                 <attribute name="class">hidden</attribute>
             </xpath>
             <!-- Override footer -->
-            <xpath expr="//div[@id='footer']" position="after">
-                <div class="container hidden-print mt16 mb16">
+            <xpath expr="//footer" position="inside">
+                <div class="container hidden-print hidden-xs mt16 mb16">
                     <div class="row">
-                        <div class="col-md-12">
-                            <h4 class="text-center">Social</h4>
-                        </div>
                         <div class="col-md-2 col-md-offset-2 text-center">
                             <a t-att-href="website.social_facebook" t-if="website.social_facebook">
                                 <i class="fa fa-facebook-square fa-3x" />
@@ -150,40 +127,38 @@ else: #portrait
                         </div>
                     </div>
                 </div>
-                <div class="container hidden-print mb32">
+                <div class="container hidden-print text-center">
                     <div class="row">
-                        <div class="col-md-3">
-                            <h4>Delivery and returns</h4>
-                            <li>
-                                <a href="/page/shipping">Shipping</a>
-                            </li>
-                            <li>
-                                <a href="/page/contactus">Returns</a>
-                            </li>
+                        <div class="col-md-3 mt32 mb32">
+                            <h4>STAY IN TOUCH</h4>
+                            <p>Sign up to the MA newsletter for latest news and exclusive offers:</p>
+                            <div class="input-group">
+                                <input name="" class="form-control" placeholder="Enter your email address..." type="text"/>
+                                <span class="input-group-addon"><i class="fa fa-chevron-right"/></span>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <h4>Terms and conditions</h4>
-                            <li>
-                                <a href="/page/terms_conditions">Terms &amp; conditions</a>
-                            </li>
-                            <li>
-                                <a href="/page/contactus">Suggestion</a>
-                            </li>
+                        <div class="col-md-3 mt32 mb32">
+                            <h4>MADE IN SWEDEN</h4>
+                            <div t-field="res_company.partner_id" t-field-options='{
+                "widget": "contact",
+                "fields": ["name", "address", "phone", "mobile", "fax", "email"]}'/>
                         </div>
-                        <div class="col-md-3">
-                            <h4>Contact info and address</h4>
-                            <li>
-                                <a href="/forum/1">Questions</a>
-                            </li>
-                            <li>
-                                <a href="/forum/how-to">FAQ</a>
-                            </li>
-                            <li>
-                                <a href="/page/contactus">Contact Customer Service</a>
-                            </li>
+                        <div class="col-md-3 mt32 mb32">
+                            <t t-if="len(website.env.ref('theme_dermanord.footer_menu')) &gt; 0">
+                                <t t-foreach="request.env.ref('theme_dermanord.footer_menu').child_id" t-as="submenu">
+                                    <li>
+                                        <a t-att-href="(website.menu_id.child_id[0] == submenu) and '/' or submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
+                                            <span t-field="submenu.name" />
+                                        </a>
+                                    </li>
+                                </t>
+                            </t>
                         </div>
-                        <div class="col-md-3">
-                            <h4>Payment</h4>
+                        <div class="col-md-3 mt32 mb32">
+                            <p>
+                                Copyright &amp;copy; <span t-field="res_company.name" itemprop="name">Company name</span>
+                            </p>
+                            <p>We accept the following payment methods:</p>
                             <img class="img-responsive" src="/theme_dermanord/static/src/img/cards.png" />
                         </div>
                     </div>
@@ -196,20 +171,21 @@ else: #portrait
         -->
         <template id="submenu_inherit" inherit_id="website.submenu" name="Submenu Inherit">
             <xpath expr="//li[@t-if='not submenu.child_id']" position="attributes">
-                <attribute name="t-if">not submenu.child_id and submenu.parent_id != submenu.env.ref('theme_dermanord.header_menu')</attribute>
+                <attribute name="t-if">not submenu.child_id and submenu.parent_id != submenu.env.ref('theme_dermanord.footer_menu')</attribute>
             </xpath>
             <xpath expr="//li[1]" position="after">
-                <li t-if="not submenu.child_id and submenu.parent_id == submenu.env.ref('theme_dermanord.header_menu')" t-att-class="'active header_menu' if submenu.url and submenu.url != '/' and request.httprequest.path == submenu.url.replace('/page/website.', '/page/') else 'header_menu'">
+                <li t-if="not submenu.child_id and submenu.parent_id == submenu.env.ref('theme_dermanord.footer_menu')" t-att-class="'active header_menu' if submenu.url and submenu.url != '/' and request.httprequest.path == submenu.url.replace('/page/website.', '/page/') else 'header_menu'">
                     <a t-att-href="(website.menu_id.child_id[0] == submenu) and '/' or submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
                         <span t-field="submenu.name" />
                     </a>
                 </li>
             </xpath>
             <xpath expr="//li[@t-if='submenu.child_id']" position="attributes">
-                <attribute name="t-if">submenu.child_id and submenu != submenu.env.ref('theme_dermanord.header_menu')</attribute>
+                <attribute name="t-if">submenu.child_id and submenu != submenu.env.ref('theme_dermanord.footer_menu')</attribute>
             </xpath>
             <xpath expr="//li[last()]" position="after">
-                <li t-if="submenu.child_id and submenu == submenu.env.ref('theme_dermanord.header_menu')" t-attf-class="header_menu dropdown #{(submenu.url and submenu.url != '/' and any([request.httprequest.path == child.url.replace('/page/website.', '/page/') for child in submenu.child_id if child.url]) or(submenu.url and request.httprequest.path == submenu.url.replace('/page/website.', '/page/'))) and 'active header_menu'}">
+                <li t-if="submenu.child_id and submenu == submenu.env.ref('theme_dermanord.footer_menu')" t-attf-class="header_menu dropdown hidden-lg hidden-md hidden-sm #{(submenu.url and submenu.url != '/' and any([request.httprequest.path == child.url.replace('/page/website.', '/page/') for child in submenu.child_id if child.url]) or(submenu.url and request.httprequest.path == submenu.url.replace('/page/website.', '/page/'))) and 'active header_menu'}">
+                    <hr/>
                     <t t-foreach="submenu.child_id" t-as="submenu">
                         <a t-att-href="(website.menu_id.child_id[0] == submenu) and '/' or submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
                             <span t-field="submenu.name" />

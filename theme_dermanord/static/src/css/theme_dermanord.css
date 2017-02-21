@@ -2,6 +2,31 @@
                     Theme Dermanord
  ============================================================ */
 
+.menu-btn {
+    float: left !important;
+    margin-left: 15px !important;
+    border: none !important;
+}
+
+.menu-btn .icon-bar {
+    background-color: #000 !important;
+}
+
+.search-btn {
+    float: right !important;
+}
+
+.navbar-over {
+    width: 100%;
+}
+
+#wrapwrap > header > .navbar-static-top {
+    background: #fff;
+}
+
+#wrapwrap > header > .navbar-static-top > .container > .navbar-top-collapse {
+}
+
 #header_bg {
     position: relative;
     width: 100%;
@@ -20,20 +45,29 @@
     align-items: center;
 }
 
-#header_right_menu {
-    display: flex;
-    align-items: center;
-    flex: 1;
+footer {
+    background-color: #000 !important;
+    color: #fff;
 }
 
 footer li {
     list-style-type: none;
 }
 
+footer a {
+    color: #fff;
+}
+
+footer input, footer .input-group-addon {
+    background-color: #000 !important;
+    color: #fff;
+}
+
 #top_menu_top .header_menu {
     display: none;
 }
 
+/*
 @media (min-width: 768px) {
     #top_menu .header_menu {
         display: none;
@@ -43,4 +77,5 @@ footer li {
         display: unset;
     }
 }
+*/
 
