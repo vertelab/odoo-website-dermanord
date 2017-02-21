@@ -13,6 +13,7 @@
                 <link href="/snippet_dermanord/static/src/css/cubes.css" rel="stylesheet"/>
                 <link href="/snippet_dermanord/static/src/css/fade_slider.css" rel="stylesheet"/>
                 <link href="/snippet_dermanord/static/src/css/blurbg_slider.css" rel="stylesheet"/>
+                <link href="/snippet_dermanord/static/src/css/buttons.css" rel="stylesheet"/>
             </xpath>
         </template>
 

@@ -13,7 +13,7 @@
                         <span class="oe_snippet_thumbnail_title">Banner Fade</span>
                     </div>
                     <section class="oe_snippet_body">
-                        <div class="carousel slide carousel-fade" data-ride="carousel" id="fade_carousel" style="height: 640px; overflow: hidden;">
+                        <div class="carousel slide carousel-fade" data-ride="carousel" id="fade_carousel" style=" overflow: hidden;">
                             <ol class="carousel-indicators">
                                 <li class="active" data-slide-to="0" data-target="fade_carousel"/>
                                 <li data-slide-to="1" data-target="fade_carousel"/>
@@ -22,41 +22,12 @@
                             <div class="carousel-inner">
                                 <div class="item active" style="">
                                     <img class="img-responsive" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
-                                     <div class="container" style="position: absolute; top: 20%; left: 20%;">
+                                     <div class="container" style="position: absolute; top: 0; left: 0;">
                                         <div class="row content">
-                                            <div class="col-md-6 col-sm-12">
-                                                <h2>Your Banner Title</h2>
-                                                <h3>Click here to add text</h3>
+                                            <div class="col-md-12 col-sm-12 text-center">
+                                                <h2 class="mb32">Deepskin organics guarantees the best organic nourishment for the skin, body and hair</h2>
                                                 <p>
-                                                    <a class="btn btn-success btn-large" href="/page/website.contactus">Contact us</a>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="item">
-                                    <img class="img-responsive" src="/website/static/src/img/island.jpg" style="position: relative;"/>
-                                    <div class="container" style="position: absolute; top: 20%; left: 20%;">
-                                        <div class="row content">
-                                            <div class="col-md-6 col-sm-12">
-                                                <h2>Your Banner Title</h2>
-                                                <h3>Click here to add text</h3>
-                                                <p>
-                                                    <a class="btn btn-success btn-large" href="/page/website.contactus">Contact us</a>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="item">
-                                    <img class="img-responsive" src="/website/static/src/img/volcano.jpg" style="position: relative;"/>
-                                    <div class="container" style="position: absolute; top: 20%; left: 20%;">
-                                        <div class="row content">
-                                            <div class="col-md-6 col-sm-12">
-                                                <h2>Your Banner Title</h2>
-                                                <h3>Click here to add text</h3>
-                                                <p>
-                                                    <a class="btn btn-success btn-large" href="/page/website.contactus">Contact us</a>
+                                                    <a class="dn_btn dn_primary" href="">DISCOVER MORE</a>
                                                 </p>
                                             </div>
                                         </div>
@@ -225,43 +196,27 @@
                         <img class="oe_snippet_thumbnail_img" src="/snippet_dermanord/static/src/img/banner_block.png"/>
                         <span class="oe_snippet_thumbnail_title">Banner Block</span>
                     </div>
-                    <section class="oe_snippet_body">
-                        <div class="container banner_block_section">
-                            <div class="row">
-                                <div class="container">
-                                    <section class="col-md-4 col-sm-4 col-xs-12" style="padding: 4px 4px 0px 4px;">
-                                        <section class="banner_block" style="background-image: url('/website/static/src/img/banner/flower_field.jpg');">
-                                            <div class="banner_block_field" style="background: #fff; right: 0px; bottom: 0px; width: 50%;">
-                                                <div class="banner_block_text">
-                                                    <h4 class="text-center"><strong>Title</strong></h4>
-                                                    <p class="text-center">Some subtitle</p>
-                                                    <a href="/"><p class="text-center">&gt; Read more</p></a>
-                                                </div>
-                                            </div>
-                                        </section>
-                                    </section>
-                                    <section class="col-md-4 col-sm-4 col-xs-12" style="padding: 4px 4px 0px 4px;">
-                                        <section class="banner_block" style="background-image: url('/website/static/src/img/banner/wood.jpg');">
-                                            <div class="banner_block_field" style="background: #fff; right: 0px; bottom: 0px; width: 50%;">
-                                                <div class="banner_block_text">
-                                                    <h4 class="text-center"><strong>Title</strong></h4>
-                                                    <p class="text-center">Some subtitle</p>
-                                                    <a href="/"><p class="text-center">&gt; Read more</p></a>
-                                                </div>
-                                            </div>
-                                        </section>
-                                    </section>
-                                    <section class="col-md-4 col-sm-4 col-xs-12" style="padding: 4px 4px 0px 4px;">
-                                        <section class="banner_block" style="background-image: url('/website/static/src/img/banner/greenfields.jpg');">
-                                            <div class="banner_block_field" style="background: #fff; right: 0px; bottom: 0px; width: 50%;">
-                                                <div class="banner_block_text">
-                                                    <h4 class="text-center"><strong>Title</strong></h4>
-                                                    <p class="text-center">Some subtitle</p>
-                                                    <a href="/"><p class="text-center">&gt; Read more</p></a>
-                                                </div>
-                                            </div>
-                                        </section>
-                                    </section>
+                    <section class="oe_snippet_body banner_block_section">
+                        <div class="container">
+                            <div class="row mt32 mb32">
+                                <h1 class="text-center mb16">SHOP DEEPSKIN ORGANICS</h1>
+                                <div class="col-md-4 col-sm-4 col-xs-12 banner_block" style="">
+                                    <img class="img-responsive banner_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
+                                     <div class="container" style="position: absolute; top: 50%; left: 10%;">
+                                        <h2 class="banner_block_text">HAIR</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12 banner_block" style="">
+                                    <img class="img-responsive banner_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
+                                     <div class="container" style="position: absolute; top: 50%; left: 10%;">
+                                        <h2 class="banner_block_text">BODY</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12 banner_block" style="">
+                                    <img class="img-responsive banner_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
+                                     <div class="container" style="position: absolute; top: 50%; left: 10%;">
+                                        <h2 class="banner_block_text">FACE</h2>
+                                    </div>
                                 </div>
                             </div>
                         </div>

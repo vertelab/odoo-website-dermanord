@@ -21,3 +21,18 @@
 .carousel-fade .carousel-control {
     z-index: 2;
 }
+.carousel-inner img {
+    height: 100% !important;
+    width: auto;
+}
+.carousel-inner .container {
+    top: 20% !important;
+    width: 100%;
+    margin: auto;
+    display: block;
+}
+.carousel-inner h2 {
+    max-width: 60%;
+    margin: auto;
+}
+
