@@ -1,0 +1,29 @@
+/*! Banner Block */
+.categ_block_section {
+    background-color: #000;
+}
+
+.categ_block_section h1 {
+    color: #fff;
+}
+
+.categ_block_section .categ_block{
+    padding: 10px 10px 0px 10px;
+}
+
+.categ_block_section .categ_block_img{
+}
+
+.categ_block_section .categ_block_text{
+    margin: 0px;
+}
+
+@media screen and (max-width: 768px) {
+    .extra_block {
+        display: none;
+    }
+    .show_more {
+        display: unset !important;
+        color: #fff;
+    }
+}

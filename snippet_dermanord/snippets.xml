@@ -190,32 +190,51 @@
                     </section>
                 </div><!-- End of Color Blocks -->
 
-                <!-- Banner block -->
-                <div id="banner_block">
+                <!-- categ block -->
+                <div id="categ_block">
                     <div class="oe_snippet_thumbnail">
                         <img class="oe_snippet_thumbnail_img" src="/snippet_dermanord/static/src/img/banner_block.png"/>
-                        <span class="oe_snippet_thumbnail_title">Banner Block</span>
+                        <span class="oe_snippet_thumbnail_title">Category Block</span>
                     </div>
-                    <section class="oe_snippet_body banner_block_section">
+                    <section class="oe_snippet_body categ_block_section">
                         <div class="container">
                             <div class="row mt32 mb32">
                                 <h1 class="text-center mb16">SHOP DEEPSKIN ORGANICS</h1>
-                                <div class="col-md-4 col-sm-4 col-xs-12 banner_block" style="">
-                                    <img class="img-responsive banner_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
+                                <div class="col-md-4 col-sm-4 col-xs-12 categ_block" style="">
+                                    <img class="img-responsive categ_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
                                      <div class="container" style="position: absolute; top: 50%; left: 10%;">
-                                        <h2 class="banner_block_text">HAIR</h2>
+                                        <h2 class="categ_block_text">HAIR</h2>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-sm-4 col-xs-12 banner_block" style="">
-                                    <img class="img-responsive banner_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
+                                <div class="col-md-4 col-sm-4 col-xs-12 categ_block" style="">
+                                    <img class="img-responsive categ_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
                                      <div class="container" style="position: absolute; top: 50%; left: 10%;">
-                                        <h2 class="banner_block_text">BODY</h2>
+                                        <h2 class="categ_block_text">BODY</h2>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-sm-4 col-xs-12 banner_block" style="">
-                                    <img class="img-responsive banner_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
+                                <a href="/"><p class="show_more text-center" style="display: none;">Show More</p></a>
+                                <div class="col-md-4 col-sm-4 col-xs-12 categ_block extra_block" style="">
+                                    <img class="img-responsive categ_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
                                      <div class="container" style="position: absolute; top: 50%; left: 10%;">
-                                        <h2 class="banner_block_text">FACE</h2>
+                                        <h2 class="categ_block_text">FACE</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12 categ_block extra_block" style="">
+                                    <img class="img-responsive categ_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
+                                     <div class="container" style="position: absolute; top: 50%; left: 10%;">
+                                        <h2 class="categ_block_text">SUN</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12 categ_block extra_block" style="">
+                                    <img class="img-responsive categ_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
+                                     <div class="container" style="position: absolute; top: 50%; left: 10%;">
+                                        <h2 class="categ_block_text">MAKE UP</h2>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12 categ_block extra_block" style="">
+                                    <img class="img-responsive categ_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
+                                     <div class="container" style="position: absolute; top: 50%; left: 10%;">
+                                        <h2 class="categ_block_text">BABY</h2>
                                     </div>
                                 </div>
                             </div>

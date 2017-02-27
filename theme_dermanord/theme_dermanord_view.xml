@@ -71,7 +71,13 @@ else: #portrait
                             </a>
                         </li>
                     </ul>
-                    <a class="navbar-brand logo col-md-8 text-center" href="/" t-field="res_company.name"/>
+                    <a class="navbar-brand logo col-md-8 text-center hidden-xs" href="/" t-field="res_company.name"/>
+                    <t t-set="w_config" t-value="request.env['website.config.settings'].search([])"/>
+                    <t t-if="w_config[0]">
+                        <a class="navbar-brand logo col-md-8 text-center hidden-lg hidden-md hidden-sm" href="/">
+                            <img t-att-src="'data:image/png;base64,%s' %w_config[0].logo"/>
+                        </a>
+                    </t>
                     <i class="fa fa-search fa-2x search-btn col-md-2"/>
                 </div>
             </xpath>
@@ -90,7 +96,7 @@ else: #portrait
             </xpath>
 -->
             <!-- Customize css -->
-            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
+            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
                 <link href="/theme_dermanord/static/src/css/theme_dermanord.css" rel="stylesheet" />
             </xpath>
             <!-- Customize javascript -->
