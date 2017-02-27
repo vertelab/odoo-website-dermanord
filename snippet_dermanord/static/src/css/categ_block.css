@@ -1,20 +1,20 @@
 /*! Banner Block */
-.categ_block_section {
+.categ_p_section {
     background-color: #000;
 }
 
-.categ_block_section h1 {
+.categ_p_section h1 {
     color: #fff;
 }
 
-.categ_block_section .categ_block{
+.categ_p_section .categ_block{
     padding: 10px 10px 0px 10px;
 }
 
-.categ_block_section .categ_block_img{
+.categ_p_section .categ_block_img{
 }
 
-.categ_block_section .categ_block_text{
+.categ_p_section .categ_block_text{
     margin: 0px;
 }
 

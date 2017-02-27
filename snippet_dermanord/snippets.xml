@@ -191,56 +191,20 @@
                 </div><!-- End of Color Blocks -->
 
                 <!-- categ block -->
-                <div id="categ_block">
+                <div id="categ_p_block">
                     <div class="oe_snippet_thumbnail">
-                        <img class="oe_snippet_thumbnail_img" src="/snippet_dermanord/static/src/img/banner_block.png"/>
-                        <span class="oe_snippet_thumbnail_title">Category Block</span>
+                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_features.png" />
+                        <span class="oe_snippet_thumbnail_title">Categories</span>
                     </div>
-                    <section class="oe_snippet_body categ_block_section">
+                    <section class="oe_snippet_body categ_p_section">
                         <div class="container">
                             <div class="row mt32 mb32">
-                                <h1 class="text-center mb16">SHOP DEEPSKIN ORGANICS</h1>
-                                <div class="col-md-4 col-sm-4 col-xs-12 categ_block" style="">
-                                    <img class="img-responsive categ_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
-                                     <div class="container" style="position: absolute; top: 50%; left: 10%;">
-                                        <h2 class="categ_block_text">HAIR</h2>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-4 col-xs-12 categ_block" style="">
-                                    <img class="img-responsive categ_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
-                                     <div class="container" style="position: absolute; top: 50%; left: 10%;">
-                                        <h2 class="categ_block_text">BODY</h2>
-                                    </div>
-                                </div>
-                                <a href="/"><p class="show_more text-center" style="display: none;">Show More</p></a>
-                                <div class="col-md-4 col-sm-4 col-xs-12 categ_block extra_block" style="">
-                                    <img class="img-responsive categ_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
-                                     <div class="container" style="position: absolute; top: 50%; left: 10%;">
-                                        <h2 class="categ_block_text">FACE</h2>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-4 col-xs-12 categ_block extra_block" style="">
-                                    <img class="img-responsive categ_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
-                                     <div class="container" style="position: absolute; top: 50%; left: 10%;">
-                                        <h2 class="categ_block_text">SUN</h2>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-4 col-xs-12 categ_block extra_block" style="">
-                                    <img class="img-responsive categ_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
-                                     <div class="container" style="position: absolute; top: 50%; left: 10%;">
-                                        <h2 class="categ_block_text">MAKE UP</h2>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-4 col-xs-12 categ_block extra_block" style="">
-                                    <img class="img-responsive categ_block_img" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
-                                     <div class="container" style="position: absolute; top: 50%; left: 10%;">
-                                        <h2 class="categ_block_text">BABY</h2>
-                                    </div>
-                                </div>
+                                <h2 class="text-center mt16 mb16">Categories</h2>
+                                <div class="category_div"/>
                             </div>
                         </div>
                     </section>
-                </div><!-- End of banner block -->
+                </div><!-- End of categ block -->
 
                 <!-- Product block -->
                 <div id="product_block">
@@ -370,6 +334,23 @@
 
         <!-- Snippet options -->
         <template id="more_snippet_options" inherit_id="website.snippet_options" name="More Snippet Options">
+
+            <xpath expr="." position="inside">
+                <div data-snippet-option-id="categ_p_option" data-selector=".categ_p_section">
+                    <li class="">
+                        <a tabindex="-1" href="#" class="oe_p_categories">Categories</a>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">Columns</a>
+                        <ul class="dropdown-menu">
+                            <li><a data-value="3" class="oe_c_col_change">Col-3</a></li>
+                            <li><a data-value="4" class="oe_c_col_change">Col-4</a></li>
+                            <li><a data-value="6" class="oe_c_col_change">Col-6</a></li>
+                            <li><a data-value="12" class="oe_c_col_change">Col-12</a></li>
+                        </ul>
+                    </li>
+                </div>
+            </xpath>
 
             <xpath expr="//div[@data-snippet-option-id='transform']" position="after">
                 <!-- Hover button options -->

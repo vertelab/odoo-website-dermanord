@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vim:fdl=1:
+-->
+<templates id="template" xml:space="preserve">
+    <t t-name="p_category_snippet">
+        <div class="col-xs-12 categ_block" style="">
+            <img class="img img-responsive categ_block_img" t-att-src="category_image" t-att-data-cke-saved-src="category_image" style="position: relative;"/>
+             <div class="container" style="position: absolute; top: 50%; left: 10%;">
+                <h2 class="categ_block_text" style="margin: 0px;"><t t-esc="category_name"/></h2>
+            </div>
+        </div>
+    </t>
+</templates>
+
