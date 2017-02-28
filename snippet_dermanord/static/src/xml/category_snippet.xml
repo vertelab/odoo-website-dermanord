@@ -13,7 +13,7 @@
                     <div class="col-md-12 col-sm-12 text-center">
                         <h3 class="mb32"><t t-esc="blog_name"/></h3>
                         <p>
-                            <a class="dn_btn dn_primary" href="/">DISCOVER MORE</a>
+                            <a class="dn_btn dn_primary" href="/blog/blog_id/post/post_id">DISCOVER MORE</a>
                         </p>
                     </div>
                 </div>

@@ -27,14 +27,13 @@ website.snippet.options.blog_banner_option = website.snippet.Option.extend({
                     var content = openerp.qweb.render('blog_banner_content', {
                         'item_content': i == 0 ? "item active" : "item",
                         'blog_name': data[key]['name'],
-                        'background_image': data[key]['background_image'] != null ? ("data:image/png;base64," + data[key]['background_image']) : '',
+                        'background_image': data[key]['background_image'] != null ? data[key]['background_image'] : '',
                     });
                     indicator_content += i_content;
-                    content = content.replace('href="/"', ('href="/blog/' + data[key]['blog_id'] + '/post/' + key + '"'));
+                    content = content.replace("/blog/blog_id/post/post_id", ("/blog/" + data[key]['blog_id'] + "/post/" + key));
                     blog_content += content;
                     i ++;
                 });
-                console.log(indicator_content);
                 self.$target.find(".blog_banner_indicators").html(indicator_content);
                 self.$target.find(".blog_banner_content").html(blog_content);
             });
