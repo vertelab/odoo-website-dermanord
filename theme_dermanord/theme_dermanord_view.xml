@@ -81,7 +81,7 @@ else: #portrait
                         </a>
                     </t>
                     <input id="search_input" type="text" style="width: 66.66%; display: none;"/>
-                    <i id="search-btn" class="fa fa-search fa-2x col-md-2"/>
+                    <i id="search-btn" onclick="show_me_input()" class="fa fa-search fa-2x col-md-2"/>
                 </div>
             </xpath>
 

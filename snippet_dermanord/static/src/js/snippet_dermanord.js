@@ -1,5 +1,5 @@
 var website = openerp.website;
-website.add_template_file('/snippet_dermanord/static/src/xml/category_snippet.xml');
+website.add_template_file('/snippet_dermanord/static/src/xml/snippets.xml');
 var categ_block_hidden_indicator = 1;
 
 website.snippet.options.blog_banner_option = website.snippet.Option.extend({
