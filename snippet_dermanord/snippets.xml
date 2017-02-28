@@ -169,7 +169,7 @@
                     <section class="oe_snippet_body categ_p_section">
                         <div class="container">
                             <div class="row mt32 mb32">
-                                <h2 class="text-center mt16 mb16">Categories</h2>
+                                <h2 class="text-center mt16 mb16" style="color: #fff;">Categories</h2>
                                 <div class="category_div"/>
                             </div>
                         </div>

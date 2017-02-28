@@ -30,7 +30,7 @@ class snippet(http.Controller):
 
     @http.route(['/category_snippet/get_p_categories'], type='json', auth="user", website=True)
     def get_p_categories(self, **kw):
-        categories = request.env['product.public.category'].search([])
+        categories = request.env['product.public.category'].search([('website_published', '=', True)], order='sequence')
         category_list = {}
         _logger.warn(categories)
         for c in categories:

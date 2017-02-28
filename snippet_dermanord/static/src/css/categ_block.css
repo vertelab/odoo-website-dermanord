@@ -8,14 +8,20 @@
 }
 
 .categ_p_section .categ_block{
-    padding: 10px 10px 0px 10px;
+    padding: 10px;
 }
 
 .categ_p_section .categ_block_img{
+    width: 100%;
 }
 
 .categ_p_section .categ_block_text{
     margin: 0px;
+}
+
+.categ_block_text a {
+    color: #000 !important;
+    text-decoration: none !important;
 }
 
 @media screen and (max-width: 768px) {
