@@ -2,17 +2,17 @@
                     Theme Dermanord
  ============================================================ */
 
-.menu-btn {
+#menu-btn {
     float: left !important;
     margin-left: 15px !important;
     border: none !important;
 }
 
-.menu-btn .icon-bar {
+#menu-btn .icon-bar {
     background-color: #000 !important;
 }
 
-.search-btn {
+#search-btn {
     float: right !important;
     margin-top: 11px;
 }
