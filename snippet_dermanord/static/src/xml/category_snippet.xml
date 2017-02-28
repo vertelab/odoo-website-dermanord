@@ -2,9 +2,11 @@
 <!-- vim:fdl=1:
 -->
 <templates id="template" xml:space="preserve">
+<!--
     <t t-name="blog_banner_indicators">
-        <li t-att-class="indicator" t-att-data-slide-to="slid_nr" data-target="blog_carousel"/>
+        <li t-att-class="indicator" t-att-data-slide-to="slid_nr" data-cke-saved-data-target="#blog_carousel"/>
     </t>
+-->
     <t t-name="blog_banner_content">
         <div t-att-class="item_content" style="">
             <img class="img-responsive" t-att-src="background_image" t-att-data-cke-saved-src="background_image" style="position: relative; height: auto !important;"/>
