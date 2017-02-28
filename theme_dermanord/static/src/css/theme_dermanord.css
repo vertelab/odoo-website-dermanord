@@ -17,10 +17,6 @@
     margin-top: 11px;
 }
 
-.navbar-over {
-    width: 100%;
-}
-
 #wrapwrap > header > .navbar-static-top {
     background: #fff;
 }
@@ -72,13 +68,31 @@ footer input, footer .input-group-addon {
     color: #000 !important;
 }
 
+#search_input {
+    margin-top: 8px;
+}
+
 @media (min-width: 768px) {
-    #top_menu .header_menu {
-        display: none;
+    .navbar-header {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    #top_menu {
+        background-color: #000;
     }
 
-    #top_menu_top .header_menu {
-        display: unset;
+    #top_menu a:hover {
+        background-color: #fff;
+    }
+
+    #top_menu a:hover span {
+        color: #000;
+    }
+
+    #top_menu span {
+        color: #fff;
     }
 }
 

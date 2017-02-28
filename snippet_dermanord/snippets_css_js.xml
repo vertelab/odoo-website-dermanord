@@ -5,7 +5,7 @@
         <template id="dermanord_snippet_css_and_js" inherit_id="website.layout" name="Dermanord Snippet Custom CSS and JS">
             <!-- Customize javascript -->
             <xpath expr="//body" position="inside">
-                <script type="text/javascript" src="/snippet_dermanord/static/src/js/categ_block.js" />
+                <script type="text/javascript" src="/snippet_dermanord/static/src/js/snippet_dermanord.js" />
             </xpath>
             <!-- Customize CSS -->
             <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
