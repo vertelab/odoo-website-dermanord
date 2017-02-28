@@ -160,36 +160,6 @@
                     </section>
                 </div><!-- END OF TWO COLUMN -->
 
-                <!-- Color Blocks -->
-                <div id="color_blocks">
-                    <div class="oe_snippet_thumbnail">
-                        <img class="oe_snippet_thumbnail_img" src="/snippet_dermanord/static/src/img/color_blocks.png"/>
-                        <span class="oe_snippet_thumbnail_title">Color Blocks</span>
-                    </div>
-                    <section class="s_color_blocks_4 oe_snippet_body">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-md-3 col-sm-6 text-center" style="padding: 64px 20px 64px 20px; height: 100%; min-height: 100%; background-color: #E4151D; color: #FFF;">
-                                    <h4>A COLOR BLOCK</h4>
-                                    <p>Color code : #E4151D</p>
-                                </div>
-                                <div class="col-md-3 col-sm-6 text-center" style="padding: 64px 20px 64px 20px; height: 100%; min-height: 100%; background-color: #C1C1C1; color: #111;">
-                                    <h4>A COLOR BLOCK</h4>
-                                    <p>Color code : #C1C1C1</p>
-                                </div>
-                                <div class="col-md-3 col-sm-6 text-center" style="padding: 64px 20px 64px 20px; height: 100%; min-height: 100%; background-color: #3B3D4D; color: #FFF;">
-                                    <h4>A COLOR BLOCK</h4>
-                                    <p>Color code : #3B3D4D</p>
-                                </div>
-                                <div class="col-md-3 col-sm-6 text-center" style="padding: 64px 20px 64px 20px; height: 100%; min-height: 100%; background-color: #E6FA16; color: #333;">
-                                    <h4>A COLOR BLOCK</h4>
-                                    <p>Color code : #E6FA16</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div><!-- End of Color Blocks -->
-
                 <!-- categ block -->
                 <div id="categ_p_block">
                     <div class="oe_snippet_thumbnail">
