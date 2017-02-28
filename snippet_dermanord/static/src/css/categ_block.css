@@ -19,11 +19,4 @@
 }
 
 @media screen and (max-width: 768px) {
-    .extra_block {
-        display: none;
-    }
-    .show_more {
-        display: unset !important;
-        color: #fff;
-    }
 }
