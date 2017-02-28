@@ -2,6 +2,46 @@ var website = openerp.website;
 website.add_template_file('/snippet_dermanord/static/src/xml/category_snippet.xml');
 var categ_block_hidden_indicator = 1;
 
+website.snippet.options.blog_banner_option = website.snippet.Option.extend({
+    start: function () {
+        var self = this;
+        this._super();
+        this.$el.find(".oe_blog_banner_change").on('click', function () {
+            self.get_blogs($(this).attr("data-value"));
+        });
+    },
+    get_blogs: function(blog_id){
+        if (blog_id != '') {
+            var self = this;
+            openerp.jsonRpc("/blog_banner_snippet/blog_banner_change", "call", {
+                'blog_id': blog_id,
+            }).done(function(data){
+                var indicator_content = '';
+                var blog_content = '';
+                i = 0;
+                $.each(data, function(key, info) {
+                    var i_content = openerp.qweb.render('blog_banner_indicators', {
+                        'indicator': i == 0 ? "active" : "",
+                        'slid_nr': i,
+                    });
+                    var content = openerp.qweb.render('blog_banner_content', {
+                        'item_content': i == 0 ? "item active" : "item",
+                        'blog_name': data[key]['name'],
+                        'background_image': data[key]['background_image'] != null ? ("data:image/png;base64," + data[key]['background_image']) : '',
+                    });
+                    indicator_content += i_content;
+                    content = content.replace('href="/"', ('href="/blog/' + data[key]['blog_id'] + '/post/' + key + '"'));
+                    blog_content += content;
+                    i ++;
+                });
+                console.log(indicator_content);
+                self.$target.find(".blog_banner_indicators").html(indicator_content);
+                self.$target.find(".blog_banner_content").html(blog_content);
+            });
+        }
+    }
+});
+
 website.snippet.options.categ_p_option = website.snippet.Option.extend({
     start: function () {
         var self = this;

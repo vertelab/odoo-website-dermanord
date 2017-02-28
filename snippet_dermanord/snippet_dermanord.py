@@ -28,11 +28,23 @@ _logger = logging.getLogger(__name__)
 
 class snippet(http.Controller):
 
+    @http.route(['/blog_banner_snippet/blog_banner_change'], type='json', auth="user", website=True)
+    def blog_banner_change(self, blog_id=None, **kw):
+        posts = request.env['blog.post'].search([('blog_id', '=', int(blog_id)), ('website_published', '=', True)], order='write_date')
+        posts_list = {}
+        if len(posts) > 0:
+            for p in posts:
+                posts_list[p.id] = {
+                    'name': p.name,
+                    'blog_id': p.blog_id.id,
+                    'background_image': p.background_image,
+                }
+        return posts_list
+
     @http.route(['/category_snippet/get_p_categories'], type='json', auth="user", website=True)
     def get_p_categories(self, **kw):
         categories = request.env['product.public.category'].search([('website_published', '=', True)], order='sequence')
         category_list = {}
-        _logger.warn(categories)
         for c in categories:
             category_list[c.id] = {
                 'name': c.name,

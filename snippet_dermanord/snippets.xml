@@ -6,6 +6,24 @@
         <template id="custom_snippets" inherit_id="website.snippets" name="Custom Snippets">
             <!-- Customize Structure -->
             <xpath expr="//div[@id='snippet_structure']" position="inside">
+                <div id="blog_banner_slide">
+                    <div class="oe_snippet_thumbnail">
+                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_banner.png"/>
+                        <span class="oe_snippet_thumbnail_title">Blog Banner</span>
+                    </div>
+                    <section class="oe_snippet_body blog_banner">
+                        <div class="carousel slide carousel-fade" data-ride="carousel" id="blog_carousel" style=" overflow: hidden;">
+                            <ol class="carousel-indicators blog_banner_indicators"/>
+                            <div class="carousel-inner blog_banner_content"/>
+                            <a class="left carousel-control" data-slide="prev" href="#blog_carousel">
+                                <i class="fa fa-chevron-left"/>
+                            </a>
+                            <a class="right carousel-control" data-slide="next" href="#blog_carousel">
+                                <i class="fa fa-chevron-right"/>
+                            </a>
+                        </div>
+                    </section>
+                </div>
                 <!--FADE SLIDER-->
                 <div id="fade_slide">
                     <div class="oe_snippet_thumbnail">
@@ -306,6 +324,19 @@
         <template id="more_snippet_options" inherit_id="website.snippet_options" name="More Snippet Options">
 
             <xpath expr="." position="inside">
+                <div data-snippet-option-id="blog_banner_option" data-selector=".blog_banner">
+                    <li class="dropdown-submenu">
+                        <t t-set="blogs" t-value="request.env['blog.blog'].search([])"/>
+                        <t t-if="len(blogs) &gt; 0">
+                            <a tabindex="-1" href="#">Blogs</a>
+                            <ul class="dropdown-menu">
+                                <t t-foreach="blogs" t-as="b">
+                                    <li><a t-att-data-value="b.id" class="oe_blog_banner_change"><t t-esc="b.name"/></a></li>
+                                </t>
+                            </ul>
+                        </t>
+                    </li>
+                </div>
                 <div data-snippet-option-id="categ_p_option" data-selector=".categ_p_section">
                     <li class="">
                         <a tabindex="-1" href="#" class="oe_p_categories">Categories</a>
