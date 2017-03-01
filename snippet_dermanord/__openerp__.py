@@ -35,6 +35,6 @@ Extra snippets for Dermanord.
         'snippets_css_js.xml',
         'snippets.xml',
     ],
-    'qweb': ['static/src/xml/category_snippet.xml'],
+    'qweb': ['static/src/xml/snippets.xml'],
     'application': True,
 }
