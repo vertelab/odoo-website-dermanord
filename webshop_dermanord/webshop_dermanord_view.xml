@@ -170,6 +170,31 @@
         </sheet>
       </field>
     </record>
-    
+
+    <record id="product_normal_form_view" model="ir.ui.view">
+        <field name="name">product.template.common.form.inherited.webshop_dermanord</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <field name="sale_ok" position="before">
+                <div>
+                    <field name="highlight"/>
+                    <label for="highlight"/>
+                </div>
+            </field>
+        </field>
+    </record>
+
+    <record id="product_search_form_view" model="ir.ui.view">
+        <field name="name">product.product.search.inherited.webshop_dermanord</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_search_form_view"/>
+        <field name="arch" type="xml">
+            <filter name="filter_to_sell" position="after">
+                <filter string="Highlight" name="highlight" domain="[('highlight', '=', 1)]"/>
+            </filter>
+        </field>
+    </record>
+
   </data>
 </openerp>

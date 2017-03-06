@@ -46,3 +46,9 @@ class product_template(models.Model):
             self.blog_post_ids = [(6, 0, [p['id'] for p in blog_posts])]
             #~ self.blog_post_ids = [(6, 0, blog_posts.filtered(lambda b: b.website_published == True).mapped('id'))]
     blog_post_ids = fields.Many2many(comodel_name='blog.post', string='Posts', compute='_blog_post_ids')
+
+
+class product_product(models.Model):
+    _inherit = 'product.product'
+
+    highlight = fields.Boolean(string='Highlighted', help='Check if this product should show in the product hightlight section')
