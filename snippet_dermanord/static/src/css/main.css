@@ -24,5 +24,18 @@
     text-decoration: none !important;
 }
 
+/*! Product Highlights */
+.ph_block img {
+    height: 300px;
+    width: auto;
+    margin: auto;
+}
+
+.ph_block a {
+    color: #000 !important;
+    text-decoration: none !important;
+}
+
+
 @media screen and (max-width: 768px) {
 }

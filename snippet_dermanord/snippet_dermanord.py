@@ -45,9 +45,26 @@ class snippet(http.Controller):
     def get_p_categories(self, **kw):
         categories = request.env['product.public.category'].search([('website_published', '=', True)], order='sequence')
         category_list = {}
-        for c in categories:
-            category_list[c.id] = {
-                'name': c.name,
-                'image': c.image_medium,
-            }
+        if len(categories) > 0:
+            for c in categories:
+                category_list[c.id] = {
+                    'name': c.name,
+                    'image': c.image_medium,
+                }
         return category_list
+
+    @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="user", website=True)
+    def get_highlighted_products(self, **kw):
+        products = request.env['product.template'].search([('active', '=', True), ('sale_ok', '=', True), ('highlight', '=', True)])
+        product_list = {}
+        if len(products) > 0:
+            for p in products:
+                product_image = None
+                if len(p.image_ids) > 0:
+                    product_image = p.image_ids[0].file_db_store
+                product_list[p.id] = {
+                    'name': p.name,
+                    'image': product_image,
+                    'description_sale': p.description_sale,
+                }
+        return product_list

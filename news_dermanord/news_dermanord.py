@@ -36,9 +36,9 @@ _logger = logging.getLogger(__name__)
 class newsDermanord(http.Controller):
 
     @http.route(['/news', '/news/page/<model("blog.post"):page>','/news/tagg/<model("blog.tag"):tag>'], type='http', auth="public", website=True)
-    def repord(self, **post,page=None,tag=None):
+    def repord(self, page=None, tag=None, **post):
         return request.website.render("news_dermanord.page", {'tag': tag, 'page': page})
-        
+
 class BlogTag(models.Model):
     _inherit = 'blog.tag'
 

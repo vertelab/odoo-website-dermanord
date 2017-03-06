@@ -32,5 +32,16 @@
             </div>
         </a>
     </t>
+    <t t-name="product_highlights_snippet">
+        <a href="shop/product/product_id">
+            <div class="col-xs-12 ph_block" style="padding: 20px 0px;">
+                <img class="img img-responsive ph_img" t-att-src="ph_image" t-att-data-cke-saved-src="ph_image" style="position: relative;"/>
+                <div class="container" style="position: absolute; bottom: 5%; left: 5%;">
+                    <h3><t t-esc="ph_name"/></h3>
+                    <p class="text-muted"><t t-esc="ph_description"/></p>
+                </div>
+            </div>
+        </a>
+    </t>
 </templates>
 

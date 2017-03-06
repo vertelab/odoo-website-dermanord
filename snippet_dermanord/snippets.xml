@@ -187,7 +187,7 @@
                     <section class="oe_snippet_body categ_p_section">
                         <div class="container">
                             <div class="row mt32 mb32">
-                                <h2 class="text-center mt16 mb16" style="color: #fff;">Categories</h2>
+                                <h2 class="text-center mt16 mb16" style="color: #fff;">CATEGORIES</h2>
                                 <div class="category_div"/>
                             </div>
                         </div>
@@ -198,40 +198,13 @@
                 <div id="product_block">
                     <div class="oe_snippet_thumbnail">
                         <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_big_picture.png"/>
-                        <span class="oe_snippet_thumbnail_title">Product Block</span>
+                        <span class="oe_snippet_thumbnail_title">Product Highlights</span>
                     </div>
-                    <section class="oe_snippet_body">
+                    <section class="oe_snippet_body product_highlights">
                         <div class="container">
                             <div class="row mt32 mb32">
-                                <h2 class="text-center mb16">PRODUCT HIGHLIGHTS</h2>
-                                <div class="col-md-3 col-sm-3 col-xs-12 banner_block" style="padding: 20px 0px;">
-                                    <img class="img-responsive banner_block_img" src="/website/static/src/img/fields.jpg" style="width: 100%"/>
-                                    <div class="container" style="position: absolute; bottom: 5%; left: 5%;">
-                                        <h3>HIGHLIGHT HEADLINE</h3>
-                                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-3 col-xs-12 banner_block" style="padding: 20px 0px;">
-                                    <img class="img-responsive banner_block_img" src="/website/static/src/img/fields.jpg" style="width: 100%;"/>
-                                    <div class="container" style="position: absolute; bottom: 5%; left: 5%;">
-                                        <h3>HIGHLIGHT HEADLINE</h3>
-                                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-3 col-xs-12 banner_block" style="padding: 20px 0px;">
-                                    <img class="img-responsive banner_block_img" src="/website/static/src/img/fields.jpg" style="width: 100%;"/>
-                                    <div class="container" style="position: absolute; bottom: 5%; left: 5%;">
-                                        <h3>HIGHLIGHT HEADLINE</h3>
-                                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-3 col-xs-12 banner_block" style="padding: 20px 0px;">
-                                    <img class="img-responsive banner_block_img" src="/website/static/src/img/fields.jpg" style="width: 100%;"/>
-                                    <div class="container" style="position: absolute; bottom: 5%; left: 5%;">
-                                        <h3>HIGHLIGHT HEADLINE</h3>
-                                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</p>
-                                    </div>
-                                </div>
+                                <h2 class="text-center mt16 mb16">PRODUCT HIGHLIGHTS</h2>
+                                <div class="product_div"/>
                             </div>
                         </div>
                     </section>
@@ -348,6 +321,20 @@
                             <li><a data-value="4" class="oe_c_col_change">Col-4</a></li>
                             <li><a data-value="6" class="oe_c_col_change">Col-6</a></li>
                             <li><a data-value="12" class="oe_c_col_change">Col-12</a></li>
+                        </ul>
+                    </li>
+                </div>
+                <div data-snippet-option-id="product_highlights_option" data-selector=".product_highlights">
+                    <li class="">
+                        <a tabindex="-1" href="#" class="oe_product_highlights">Product Highlights</a>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">Columns</a>
+                        <ul class="dropdown-menu">
+                            <li><a data-value="3" class="oe_ph_col_change">Col-3</a></li>
+                            <li><a data-value="4" class="oe_ph_col_change">Col-4</a></li>
+                            <li><a data-value="6" class="oe_ph_col_change">Col-6</a></li>
+                            <li><a data-value="12" class="oe_ph_col_change">Col-12</a></li>
                         </ul>
                     </li>
                 </div>

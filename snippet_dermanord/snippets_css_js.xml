@@ -9,7 +9,7 @@
             </xpath>
             <!-- Customize CSS -->
             <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
-                <link href="/snippet_dermanord/static/src/css/categ_block.css" rel="stylesheet"/>
+                <link href="/snippet_dermanord/static/src/css/main.css" rel="stylesheet"/>
                 <link href="/snippet_dermanord/static/src/css/round_hover_button.css" rel="stylesheet"/>
                 <link href="/snippet_dermanord/static/src/css/cubes.css" rel="stylesheet"/>
                 <link href="/snippet_dermanord/static/src/css/fade_slider.css" rel="stylesheet"/>
