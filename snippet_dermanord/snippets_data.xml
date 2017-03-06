@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="product_highlight" model="image.recipe">
+            <field name="name">Product Highlight (4:3)</field>
+            <field name="description">Product Highlight</field>
+            <field name="recipe">image.transform(resize='800x>')
+image.crop(0,0,width=800,height=800)
+            </field>
+        </record>
+
+    </data>
+</openerp>

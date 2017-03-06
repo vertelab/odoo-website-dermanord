@@ -59,12 +59,12 @@ class snippet(http.Controller):
         product_list = {}
         if len(products) > 0:
             for p in products:
-                product_image = None
+                product_image_url = '';
                 if len(p.image_ids) > 0:
-                    product_image = p.image_ids[0].file_db_store
+                    product_image_url = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(p.image_ids[0].id, 'snippet_dermanord.product_highlight')
                 product_list[p.id] = {
                     'name': p.name,
-                    'image': product_image,
+                    'image': product_image_url,
                     'description_sale': p.description_sale,
                 }
         return product_list

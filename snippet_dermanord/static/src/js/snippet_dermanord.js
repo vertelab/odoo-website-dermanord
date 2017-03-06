@@ -106,7 +106,7 @@ website.snippet.options.product_highlights_option = website.snippet.Option.exten
             $.each(data, function(key, info) {
                 var content = openerp.qweb.render('product_highlights_snippet', {
                     'ph_name': data[key]['name'],
-                    'ph_image': data[key]['image'] != null ? ("data:image/png;base64," + data[key]['image']) : '',
+                    'ph_image': data[key]['image'],
                     'ph_description': data[key]['description_sale'],
                 });
                 content = content.replace("shop/product/product_id", "/shop/product/" + key);
