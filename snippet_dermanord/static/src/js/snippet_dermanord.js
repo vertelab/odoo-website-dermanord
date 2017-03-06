@@ -22,7 +22,7 @@ website.snippet.options.blog_banner_option = website.snippet.Option.extend({
                     var content = openerp.qweb.render('blog_banner_content', {
                         'item_content': i == 0 ? "item active" : "item",
                         'blog_name': data[key]['name'],
-                        'background_image': data[key]['background_image'] != null ? data[key]['background_image'] : '',
+                        'background_image': data[key]['background_image'],
                     });
                     content = content.replace("/blog/blog_id/post/post_id", ("/blog/" + data[key]['blog_id'] + "/post/" + key));
                     blog_content += content;
@@ -53,13 +53,13 @@ website.snippet.options.blog_slide_option = website.snippet.Option.extend({
             $.each(data['posts'], function(key, info) {
                 //~ var i_content = openerp.qweb.render('blog_slide_indicators', {
                     //~ 'indicator': i == 0 ? "active" : "",
-                    //~ 'slid_nr': i,
+                    //~ 'slide_nr': i,
                 //~ });
                 var content = openerp.qweb.render('blog_slide_content', {
                     'item_content': i == 0 ? "item active" : "item",
                     'blog_name': data['posts'][key]['name'],
                     'blog_subtitle': data['posts'][key]['subtitle'],
-                    'background_image': data['posts'][key]['background_image'] != null ? data['posts'][key]['background_image'] : '',
+                    'background_image': data['posts'][key]['background_image'],
                 });
                 //~ indicator_content += i_content;
                 content = content.replace("/blog/blog_id/post/post_id", ("/blog/" + data['posts'][key]['blog_id'] + "/post/" + key));

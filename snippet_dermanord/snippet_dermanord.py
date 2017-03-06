@@ -34,10 +34,15 @@ class snippet(http.Controller):
         posts_list = {}
         if len(posts) > 0:
             for p in posts:
+                post_image_url = ''
+                if p.background_image and '/ir.attachment/' in p.background_image:
+                    start = str(p.background_image).index('/ir.attachment/') + len('/ir.attachment/')
+                    end = str(p.background_image).index('/datas', start )
+                    post_image_url = '/imagefield/ir.attachment/datas/%s/ref/%s' %(str(p.background_image)[start:end].split('_')[0], 'snippet_dermanord.img_blog_slide')
                 posts_list[p.id] = {
                     'name': p.name,
                     'blog_id': p.blog_id.id,
-                    'background_image': p.background_image,
+                    'background_image': post_image_url,
                 }
         return posts_list
 
@@ -48,11 +53,16 @@ class snippet(http.Controller):
         if len(posts) > 0:
             posts_list['blog_name'] = posts[0].blog_id.name
             for p in posts:
+                post_image_url = ''
+                if p.background_image and '/ir.attachment/' in p.background_image:
+                    start = str(p.background_image).index('/ir.attachment/') + len('/ir.attachment/')
+                    end = str(p.background_image).index('/datas', start )
+                    post_image_url = '/imagefield/ir.attachment/datas/%s/ref/%s' %(str(p.background_image)[start:end].split('_')[0], 'snippet_dermanord.img_blog_slide')
                 posts_list['posts'][p.id] = {
                     'name': p.name,
                     'subtitle': p.subtitle,
                     'blog_id': p.blog_id.id,
-                    'background_image': p.background_image,
+                    'background_image': post_image_url,
                 }
         return posts_list
 
@@ -76,7 +86,7 @@ class snippet(http.Controller):
             for p in products:
                 product_image_url = '';
                 if len(p.image_ids) > 0:
-                    product_image_url = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(p.image_ids[0].id, 'snippet_dermanord.product_highlight')
+                    product_image_url = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(p.image_ids[0].id, 'snippet_dermanord.img_sale_promotions')
                 product_list[p.id] = {
                     'name': p.name,
                     'image': product_image_url,
