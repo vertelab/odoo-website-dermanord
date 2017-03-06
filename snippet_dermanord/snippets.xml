@@ -24,6 +24,27 @@
                         </div>
                     </section>
                 </div>
+
+                <div id="blog_slide">
+                    <div class="oe_snippet_thumbnail">
+                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_banner.png"/>
+                        <span class="oe_snippet_thumbnail_title">Blog Slide</span>
+                    </div>
+                    <section class="oe_snippet_body blog_slide">
+                        <h2 class="text-center mt16 mb16 oe_bs_title">Blog Slide</h2>
+                        <div class="carousel slide" data-ride="carousel" id="blog_slide" style=" overflow: hidden; padding: 20px;">
+                            <ol class="carousel-indicators blog_indicators"/>
+                            <div class="carousel-inner blog_slide_content"/>
+                            <a class="left carousel-control" data-slide="prev" href="#blog_slide">
+                                <i class="fa fa-chevron-left"/>
+                            </a>
+                            <a class="right carousel-control" data-slide="next" href="#blog_slide">
+                                <i class="fa fa-chevron-right"/>
+                            </a>
+                        </div>
+                    </section>
+                </div>
+
                 <!--FADE SLIDER-->
                 <div id="fade_slide">
                     <div class="oe_snippet_thumbnail">
@@ -308,6 +329,13 @@
                                 </t>
                             </ul>
                         </t>
+                    </li>
+                </div>
+                <div data-snippet-option-id="blog_slide_option" data-selector=".blog_slide">
+                    <li class="dropdown-submenu">
+                        <li class="">
+                            <a tabindex="-1" href="#" class="oe_blog_slide">Sale / Promotions</a>
+                        </li>
                     </li>
                 </div>
                 <div data-snippet-option-id="categ_p_option" data-selector=".categ_p_section">

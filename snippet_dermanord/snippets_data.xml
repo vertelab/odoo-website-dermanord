@@ -2,6 +2,11 @@
 <openerp>
     <data>
 
+        <record id="sale_promotions" model="blog.blog">
+            <field name="name">Sale / Promotions</field>
+            <field name="description"></field>
+        </record>
+
         <record id="product_highlight" model="image.recipe">
             <field name="name">Product Highlight (4:3)</field>
             <field name="description">Product Highlight</field>

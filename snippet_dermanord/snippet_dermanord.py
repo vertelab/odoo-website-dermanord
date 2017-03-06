@@ -41,6 +41,21 @@ class snippet(http.Controller):
                 }
         return posts_list
 
+    @http.route(['/blog_slide_snippet/blog_slide_change'], type='json', auth="user", website=True)
+    def blog_slide_change(self, **kw):
+        posts = request.env['blog.post'].search([('blog_id', '=', request.env.ref('snippet_dermanord.sale_promotions').id), ('website_published', '=', True)], order='write_date')
+        posts_list = {'posts': {}}
+        if len(posts) > 0:
+            posts_list['blog_name'] = posts[0].blog_id.name
+            for p in posts:
+                posts_list['posts'][p.id] = {
+                    'name': p.name,
+                    'subtitle': p.subtitle,
+                    'blog_id': p.blog_id.id,
+                    'background_image': p.background_image,
+                }
+        return posts_list
+
     @http.route(['/category_snippet/get_p_categories'], type='json', auth="user", website=True)
     def get_p_categories(self, **kw):
         categories = request.env['product.public.category'].search([('website_published', '=', True)], order='sequence')

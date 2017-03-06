@@ -22,6 +22,21 @@
             </div>
         </div>
     </t>
+    <t t-name="blog_slide_content">
+        <a href="/blog/blog_id/post/post_id">
+            <div t-att-class="item_content" style="">
+                <img class="img-responsive" t-att-src="background_image" t-att-data-cke-saved-src="background_image" style="position: relative; width:100%; height: auto !important;"/>
+                 <div class="container" style="position: absolute; top: 10%; left: 0;">
+                    <div class="row content">
+                        <div class="col-md-12 col-sm-12">
+                            <h2 class="mb32" style="max-width: 100%;"><t t-esc="blog_name"/></h2>
+                            <h4 class="mb32"><t t-esc="blog_subtitle"/></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </t>
     <t t-name="p_category_snippet">
         <a href="/shop/category/category_id">
             <div class="col-xs-12 categ_block" style="">
