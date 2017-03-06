@@ -138,4 +138,10 @@ $(document).ready(function() {
             $(this).addClass("hidden-xs");
         });
     });
+    //~ $(".carousel-inner").swiperight(function() {
+        //~ $(this).parent().carousel('prev');
+    //~ });
+    //~ $(".carousel-inner").swipeleft(function() {
+        //~ $(this).parent().carousel('next');
+    //~ });
 });

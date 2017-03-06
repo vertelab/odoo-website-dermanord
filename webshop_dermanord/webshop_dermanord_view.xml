@@ -119,7 +119,7 @@
       </xpath>
       <!-- Customize javascript -->
       <xpath expr="//body/script[last()]" position="after">
-        <script type="text/javascript" src="/webshop_dermanord/static/src/img/webshop_dermanord.js" />
+        <script type="text/javascript" src="/webshop_dermanord/static/src/js/webshop_dermanord.js" />
       </xpath>
     </template>
     <template id="product_experiences" name="Product Experiences">
