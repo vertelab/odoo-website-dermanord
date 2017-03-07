@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
         <!-- Blog Experiences -->
         <record id="blog_experiences" model="blog.blog">
             <field name="name">Experiences</field>
@@ -32,7 +32,7 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
         </record>
 
         <record id="img_product_list" model="image.recipe">
-            <field name="name">Categories (?:?)</field>
+            <field name="name">Product List (?:?)</field>
             <field name="description">Define the canvas size to limit the image maximum size.
 Define the aspect ratio to resize the image.
 E.g. horizontal=1920, vertical=1080. The aspect ratio will be 16:9.

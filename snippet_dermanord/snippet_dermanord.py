@@ -72,9 +72,12 @@ class snippet(http.Controller):
         category_list = {}
         if len(categories) > 0:
             for c in categories:
+                image_url = ''
+                if c.image_medium:
+                    image_url = '/imagefield/product.public.category/image_medium/%s/ref/%s' %(c.id, 'snippet_dermanord.img_categories')
                 category_list[c.id] = {
                     'name': c.name,
-                    'image': c.image_medium,
+                    'image': image_url,
                 }
         return category_list
 
@@ -84,9 +87,9 @@ class snippet(http.Controller):
         product_list = {}
         if len(products) > 0:
             for p in products:
-                product_image_url = '';
+                product_image_url = ''
                 if len(p.image_ids) > 0:
-                    product_image_url = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(p.image_ids[0].id, 'snippet_dermanord.img_sale_promotions')
+                    product_image_url = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(p.image_ids[0].id, 'snippet_dermanord.img_product_highlights')
                 product_list[p.id] = {
                     'name': p.name,
                     'image': product_image_url,

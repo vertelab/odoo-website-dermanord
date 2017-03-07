@@ -4,11 +4,11 @@
 <templates id="template" xml:space="preserve">
     <t t-name="blog_banner_content">
         <div t-att-class="item_content" style="">
-            <img class="img-responsive" t-att-src="background_image" t-att-data-cke-saved-src="background_image" style="position: relative; width:100%; height: auto !important;"/>
+            <img class="img-responsive" t-att-src="background_image" t-att-data-cke-saved-src="background_image" style="position: relative; width:100%; height: auto !important; min-height: 600px;"/>
              <div class="container" style="position: absolute; top: 10%; left: 0%;">
                 <div class="row content">
                     <div class="col-md-12 col-sm-12 text-center">
-                        <h3 class="mb32"><t t-esc="blog_name"/></h3>
+                        <h3 class="mb32"><i><t t-esc="blog_name"/></i></h3>
                         <p>
                             <a class="dn_btn dn_primary" href="/blog/blog_id/post/post_id">DISCOVER MORE</a>
                         </p>
@@ -27,8 +27,8 @@
                  <div class="container" style="position: absolute; top: 10%; left: 0;">
                     <div class="row content">
                         <div class="col-md-12 col-sm-12">
-                            <h2 class="mb32" style="max-width: 100%;"><t t-esc="blog_name"/></h2>
-                            <h4 class="mb32"><t t-esc="blog_subtitle"/></h4>
+                            <h4 class="mb16 dn_uppercase" style="max-width: 100%;"><t t-esc="blog_name"/></h4>
+                            <h5 class="mb16"><t t-esc="blog_subtitle"/></h5>
                         </div>
                     </div>
                 </div>
@@ -39,8 +39,8 @@
         <a href="/shop/category/category_id">
             <div class="col-xs-12 categ_block" style="">
                 <img class="img img-responsive categ_block_img" t-att-src="category_image" t-att-data-cke-saved-src="category_image" style="position: relative;"/>
-                 <div class="container" style="position: absolute; top: 50%; left: 10%;">
-                    <h2 class="categ_block_text" style="margin: 0px;"><t t-esc="category_name"/></h2>
+                 <div class="container" style="position: absolute; top: 42%; left: 10%;">
+                    <h3 class="categ_block_text dn_uppercase" style="margin: 0px;"><t t-esc="category_name"/></h3>
                 </div>
             </div>
         </a>
@@ -50,8 +50,8 @@
             <div class="col-xs-12 ph_block" style="padding: 20px 0px;">
                 <img class="img img-responsive ph_img" t-att-src="ph_image" t-att-data-cke-saved-src="ph_image" style="position: relative;"/>
                 <div class="container" style="position: absolute; bottom: 5%; left: 5%;">
-                    <h3><t t-esc="ph_name"/></h3>
-                    <p class="text-muted"><t t-esc="ph_description"/></p>
+                    <h4 class="dn_uppercase"><t t-esc="ph_name"/></h4>
+                    <h5 class="text-muted"><t t-esc="ph_description"/></h5>
                 </div>
             </div>
         </a>

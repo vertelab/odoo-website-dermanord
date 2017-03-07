@@ -153,7 +153,7 @@ else: #portrait
                             </t>
                         </div>
                         <div class="col-md-3 mt32 mb32">
-                            <h4>MADE IN SWEDEN</h4>
+                            <h4><img src="/theme_dermanord/static/src/img/logo_black.png" style="height: 50px;"/> MADE IN SWEDEN</h4>
                             <div t-field="res_company.partner_id" t-field-options='{
                 "widget": "contact",
                 "fields": ["name", "address", "phone", "mobile", "fax", "email"]}'/>

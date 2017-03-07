@@ -33,6 +33,10 @@
     border-color: #CB683F;
 }
 
+h1, .dn_uppercase {
+    text-transform: uppercase;
+}
+
 #menu-btn {
     float: left !important;
     margin-left: 15px !important;

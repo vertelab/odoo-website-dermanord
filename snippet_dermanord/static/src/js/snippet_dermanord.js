@@ -94,7 +94,7 @@ website.snippet.options.categ_p_option = website.snippet.Option.extend({
             $.each(data, function(key, info) {
                 var content = openerp.qweb.render('p_category_snippet', {
                     'category_name': data[key]['name'],
-                    'category_image': data[key]['image'] != null ? ("data:image/png;base64," + data[key]['image']) : '',
+                    'category_image': data[key]['image'],
                 });
                 content = content.replace("/shop/category/category_id", "/shop/category/" + key);
                 category_content += i > categ_block_hidden_indicator ? content.replace("categ_block", "categ_block extra_block hidden-xs") : content;
@@ -174,10 +174,6 @@ $(document).ready(function() {
         $($(this).find("li")).each(function() {
             $(this).attr("data-target", "#" + carousel_id);
         });
-        if (!$(this).find(".touch_finger").length) {
-            var finger = '<br/><img src="/snippet_dermanord/static/src/img/finger.png" class="touch_finger" style="margin: auto;"/>';
-            $(this).find(".blog_slide_indicators").append(finger);
-        }
     });
     //~ $(".carousel-inner").swiperight(function() {
           //~ $(this).parent().carousel('prev');
