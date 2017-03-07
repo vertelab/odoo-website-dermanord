@@ -30,7 +30,7 @@ Extra snippets for Dermanord.
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website', 'product_multi_image', 'webshop_dermanord', 'website_imagemagick'],
+    'depends': ['website', 'webshop_dermanord', 'website_imagemagick'],
     'data': [
         'snippets_css_js.xml',
         'snippets.xml',

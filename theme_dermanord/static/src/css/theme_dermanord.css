@@ -14,7 +14,7 @@
 
 #search-btn {
     float: right !important;
-    margin-top: 11px;
+    padding: 9px 10px;
 }
 
 #wrapwrap > header > .navbar-static-top {

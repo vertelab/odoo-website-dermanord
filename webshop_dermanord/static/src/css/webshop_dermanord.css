@@ -2,6 +2,21 @@
                     Webshop Dermanord
  ============================================================ */
 
+.masonry { /* Masonry container */
+/*
+    column-count: 4;
+    column-gap: 1em;
+*/
+}
+
+.item { /* Masonry bricks or child elements */
+/*
+    display: inline-block;
+    margin: 0 0 1em;
+    width: 100%;
+*/
+}
+
 .no_padding_div {
     padding: 0px !important;
 }
@@ -67,5 +82,55 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.dn_product_div {
+    padding: 20px;
+}
+
+.dn_product_image img {
+    margin: auto;
+    width: 500px;
+    height: auto;
+}
+
+.dn_product_info a {
+    color: #000;
+}
+
+.dn_product_info {
+    text-overflow: ellipsis;
+}
+
+.dn_product_info h5 {
+    height: 1.1em;
+    overflow: hidden;
+    position: relative;
+}
+
+.dn_product_info h5::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10%;
+    height: 1.1em;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
+
+.dn_product_info h6 {
+    height: 2.2em;
+    overflow: hidden;
+    position: relative;
+}
+
+.dn_product_info h6::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10%;
+    height: 1.1em;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
