@@ -47,26 +47,26 @@ website.snippet.options.blog_slide_option = website.snippet.Option.extend({
         openerp.jsonRpc("/blog_slide_snippet/blog_slide_change", "call", {
         }).done(function(data){
             self.$target.find(".oe_bs_title").html(data['blog_name']);
-            //~ var indicator_content = '';
+            var indicator_content = '';
             var blog_content = '';
             i = 0;
             $.each(data['posts'], function(key, info) {
-                //~ var i_content = openerp.qweb.render('blog_slide_indicators', {
-                    //~ 'indicator': i == 0 ? "active" : "",
-                    //~ 'slide_nr': i,
-                //~ });
+                var i_content = openerp.qweb.render('blog_slide_indicators', {
+                    'indicator': i == 0 ? "active" : "",
+                    'slide_nr': i,
+                });
                 var content = openerp.qweb.render('blog_slide_content', {
                     'item_content': i == 0 ? "item active" : "item",
                     'blog_name': data['posts'][key]['name'],
                     'blog_subtitle': data['posts'][key]['subtitle'],
                     'background_image': data['posts'][key]['background_image'],
                 });
-                //~ indicator_content += i_content;
+                indicator_content += i_content;
                 content = content.replace("/blog/blog_id/post/post_id", ("/blog/" + data['posts'][key]['blog_id'] + "/post/" + key));
                 blog_content += content;
                 i ++;
             });
-            //~ self.$target.find(".blog_slide_indicators").html(indicator_content);
+            self.$target.find(".blog_slide_indicators").html(indicator_content);
             self.$target.find(".blog_slide_content").html(blog_content);
         });
     }
@@ -168,6 +168,16 @@ $(document).ready(function() {
         $.each($(".categ_p_section").find(".extra_block"), function(){
             $(this).addClass("hidden-xs");
         });
+    });
+    $(".carousel.slide").each(function() {
+        var carousel_id = $(this).attr("id");
+        $($(this).find("li")).each(function() {
+            $(this).attr("data-target", "#" + carousel_id);
+        });
+        if (!$(this).find(".touch_finger").length) {
+            var finger = '<br/><img src="/snippet_dermanord/static/src/img/finger.png" class="touch_finger" style="margin: auto;"/>';
+            $(this).find(".blog_slide_indicators").append(finger);
+        }
     });
     //~ $(".carousel-inner").swiperight(function() {
           //~ $(this).parent().carousel('prev');

@@ -36,6 +36,11 @@ a {
     color: #000 !important;
 }
 
+.blog_slide .carousel {
+    overflow: hidden;
+    padding: 20px 20px 100px 20px;
+}
+
 /*! Product Highlights */
 .ph_block img {
     margin: auto;

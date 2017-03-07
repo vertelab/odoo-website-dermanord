@@ -4,7 +4,7 @@
 <templates id="template" xml:space="preserve">
     <t t-name="blog_banner_content">
         <div t-att-class="item_content" style="">
-            <img class="img-responsive" t-att-src="background_image" t-att-data-cke-saved-src="background_image" style="position: relative; height: auto !important;"/>
+            <img class="img-responsive" t-att-src="background_image" t-att-data-cke-saved-src="background_image" style="position: relative; width:100%; height: auto !important;"/>
              <div class="container" style="position: absolute; top: 10%; left: 0%;">
                 <div class="row content">
                     <div class="col-md-12 col-sm-12 text-center">
@@ -17,11 +17,9 @@
             </div>
         </div>
     </t>
-<!--
     <t t-name="blog_slide_indicators">
-        <li t-att-class="indicator" t-att-data-slide-to="slide_nr" data-cke-saved-data-target="#blog_carousel"/>
+        <li t-att-class="indicator" t-att-data-slide-to="slide_nr" data-cke-saved-data-target="#blog_slide"/>
     </t>
--->
     <t t-name="blog_slide_content">
         <a href="/blog/blog_id/post/post_id">
             <div t-att-class="item_content" style="">
