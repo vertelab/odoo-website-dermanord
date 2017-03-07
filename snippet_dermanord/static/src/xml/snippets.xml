@@ -49,9 +49,9 @@
         <a href="shop/product/product_id">
             <div class="col-xs-12 ph_block" style="padding: 20px 0px;">
                 <img class="img img-responsive ph_img" t-att-src="ph_image" t-att-data-cke-saved-src="ph_image" style="position: relative;"/>
-                <div class="container" style="position: absolute; bottom: 5%; left: 5%;">
+                <div class="container desc_div" style="position: absolute; bottom: 5%; left: 5%; width: 80%">
                     <h4 class="dn_uppercase"><t t-esc="ph_name"/></h4>
-                    <h5 class="text-muted"><t t-esc="ph_description"/></h5>
+                    <h5 class="ph_desc text-muted"><t t-esc="ph_description"/></h5>
                 </div>
             </div>
         </a>

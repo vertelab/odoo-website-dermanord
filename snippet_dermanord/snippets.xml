@@ -31,7 +31,7 @@
                         <span class="oe_snippet_thumbnail_title">Blog Slide</span>
                     </div>
                     <section class="oe_snippet_body blog_slide mb16">
-                        <h3 class="text-center mt32 mb32 oe_bs_title">Blog Slide</h3>
+                        <h3 class="text-center mt32 mb32 oe_bs_title dn_uppercase">Blog Slide</h3>
                         <div class="carousel slide" data-ride="carousel" id="blog_slide">
                             <ol class="carousel-indicators blog_slide_indicators"/>
                             <div class="carousel-inner blog_slide_content"/>
