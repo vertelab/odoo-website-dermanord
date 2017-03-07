@@ -50,38 +50,41 @@ else: #portrait
         <!-- Theme Dermanord -->
         <template id="theme_dermanord" inherit_id="website.layout" customize_show="True" active="False" name="Theme Dermanord" priority="99">
             <xpath expr="//div[@id='wrapwrap']/header/div[@class='navbar navbar-default navbar-static-top']/div[@class='container']/div[@class='navbar-header']" position="replace">
-                <div class="navbar-header">
-                    <button type="button" id="menu-btn" class="navbar-toggle col-md-2" data-toggle="collapse" data-target=".navbar-top-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"/>
-                        <span class="icon-bar"/>
-                        <span class="icon-bar"/>
-                    </button>
-                    <ul class="list-inline js_language_selector hidden-xs col-md-2" t-if="(request.website_multilang and len(languages) &gt; 1) or editable">
-                        <li t-foreach="languages" t-as="lg">
-                            <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
-                                <t t-esc="lg[1].split('/').pop()" />
-                            </a>
-                        </li>
-                        <li groups="base.group_website_publisher">
-                            <t t-set="url_return" t-value="url_for('', '[lang]') + '?' + keep_query()" />
-                            <a t-attf-href="/web#action=base.action_view_base_language_install&amp;website_id=#{website.id}&amp;url_return=#{url_return}">
-                                <i class="fa fa-plus-circle" />
-                                Add a language...
-                            </a>
-                        </li>
-                    </ul>
-                    <a id="desktop_logo" class="navbar-brand logo col-md-8 text-center hidden-xs" href="/">
-                        <img src="/logo.png" />
-                    </a>
-                    <t t-set="w_config" t-value="request.env['website.config.settings'].search([])"/>
-                    <t t-if="w_config">
-                        <a id="mobile_logo" class="navbar-brand logo col-md-8 text-center hidden-lg hidden-md hidden-sm" href="/" style="width: 66.66%;">
-                            <img t-att-src="'data:image/png;base64,%s' %w_config[0].logo"/>
+                <div class="navbar-header" style="padding: 0px;">
+                    <div class="col-md-2 col-sm-2 col-xs-2">
+                        <button type="button" id="menu-btn" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-top-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"/>
+                            <span class="icon-bar"/>
+                            <span class="icon-bar"/>
+                        </button>
+                        <ul class="list-inline js_language_selector hidden-xs col-md-2 col-sm-2 col-xs-2" t-if="(request.website_multilang and len(languages) &gt; 1) or editable">
+                            <li t-foreach="languages" t-as="lg">
+                                <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
+                                    <t t-esc="lg[1].split('/').pop()" />
+                                </a>
+                            </li>
+                            <li groups="base.group_website_publisher">
+                                <t t-set="url_return" t-value="url_for('', '[lang]') + '?' + keep_query()" />
+                                <a t-attf-href="/web#action=base.action_view_base_language_install&amp;website_id=#{website.id}&amp;url_return=#{url_return}">
+                                    <i class="fa fa-plus-circle" />
+                                    Add a language...
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-8 col-sm-8 col-xs-8">
+                        <a id="desktop_logo" class="navbar-brand logo text-center hidden-xs" href="/" style="width: 100%;">
+                            <img src="/logo.png" />
                         </a>
-                    </t>
-                    <input id="search_input" type="text" style="width: 66.66%; display: none;"/>
-                    <i id="search-btn" onclick="show_me_input()" class="fa fa-search fa-2x col-md-2"/>
+                        <a id="mobile_logo" class="navbar-brand logo text-center hidden-lg hidden-md hidden-sm" href="/" style="width: 100%;">
+                            <img src="/website_logo.png"/>
+                        </a>
+                        <input id="search_input" type="text" style="display: none;"/>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-2">
+                        <i id="search-btn" onclick="show_me_input()" class="fa fa-search fa-2x"/>
+                    </div>
                 </div>
             </xpath>
 

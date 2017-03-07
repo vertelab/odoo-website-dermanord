@@ -1,3 +1,11 @@
+.carousel-control {
+    background: none !important;
+}
+
+a {
+    text-decoration: none !important;
+}
+
 /*! Category Block */
 .categ_p_section {
     background-color: #000;
@@ -21,8 +29,22 @@
 
 .categ_block_text a {
     color: #000 !important;
-    text-decoration: none !important;
 }
+
+/*! Blog Slide */
+.blog_slide a {
+    color: #000 !important;
+}
+
+/*! Product Highlights */
+.ph_block img {
+    margin: auto;
+}
+
+.ph_block a {
+    color: #000 !important;
+}
+
 
 @media screen and (max-width: 768px) {
 }

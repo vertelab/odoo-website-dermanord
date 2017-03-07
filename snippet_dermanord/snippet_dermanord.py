@@ -34,10 +34,35 @@ class snippet(http.Controller):
         posts_list = {}
         if len(posts) > 0:
             for p in posts:
+                post_image_url = ''
+                if p.background_image and '/ir.attachment/' in p.background_image:
+                    start = str(p.background_image).index('/ir.attachment/') + len('/ir.attachment/')
+                    end = str(p.background_image).index('/datas', start )
+                    post_image_url = '/imagefield/ir.attachment/datas/%s/ref/%s' %(str(p.background_image)[start:end].split('_')[0], 'snippet_dermanord.img_blog_slide')
                 posts_list[p.id] = {
                     'name': p.name,
                     'blog_id': p.blog_id.id,
-                    'background_image': p.background_image,
+                    'background_image': post_image_url,
+                }
+        return posts_list
+
+    @http.route(['/blog_slide_snippet/blog_slide_change'], type='json', auth="user", website=True)
+    def blog_slide_change(self, **kw):
+        posts = request.env['blog.post'].search([('blog_id', '=', request.env.ref('snippet_dermanord.sale_promotions').id), ('website_published', '=', True)], order='write_date')
+        posts_list = {'posts': {}}
+        if len(posts) > 0:
+            posts_list['blog_name'] = posts[0].blog_id.name
+            for p in posts:
+                post_image_url = ''
+                if p.background_image and '/ir.attachment/' in p.background_image:
+                    start = str(p.background_image).index('/ir.attachment/') + len('/ir.attachment/')
+                    end = str(p.background_image).index('/datas', start )
+                    post_image_url = '/imagefield/ir.attachment/datas/%s/ref/%s' %(str(p.background_image)[start:end].split('_')[0], 'snippet_dermanord.img_blog_slide')
+                posts_list['posts'][p.id] = {
+                    'name': p.name,
+                    'subtitle': p.subtitle,
+                    'blog_id': p.blog_id.id,
+                    'background_image': post_image_url,
                 }
         return posts_list
 
@@ -45,9 +70,26 @@ class snippet(http.Controller):
     def get_p_categories(self, **kw):
         categories = request.env['product.public.category'].search([('website_published', '=', True)], order='sequence')
         category_list = {}
-        for c in categories:
-            category_list[c.id] = {
-                'name': c.name,
-                'image': c.image_medium,
-            }
+        if len(categories) > 0:
+            for c in categories:
+                category_list[c.id] = {
+                    'name': c.name,
+                    'image': c.image_medium,
+                }
         return category_list
+
+    @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="user", website=True)
+    def get_highlighted_products(self, **kw):
+        products = request.env['product.template'].sudo().search([('active', '=', True), ('sale_ok', '=', True), ('highlight', '=', True)])
+        product_list = {}
+        if len(products) > 0:
+            for p in products:
+                product_image_url = '';
+                if len(p.image_ids) > 0:
+                    product_image_url = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(p.image_ids[0].id, 'snippet_dermanord.img_sale_promotions')
+                product_list[p.id] = {
+                    'name': p.name,
+                    'image': product_image_url,
+                    'description_sale': p.description_sale,
+                }
+        return product_list
