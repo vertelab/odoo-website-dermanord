@@ -27,14 +27,21 @@
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" class="dn_product_div col-md-4 col-sm-6 col-xs-12">
                     <div class="dn_product_image">
-                        <a itemprop="url" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
-                            <t t-if="len(product.image_ids) &gt; 0">
-                                <img itemprop="image" class="img img-responsive" t-att-src="'/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(product.image_ids[0].id, 'webshop_dermanord.img_product_list')" t-att-alt="product.name" />
-                            </t>
-                            <t t-if="len(product.image_ids) == 0">
-                                <img itemprop="image" class="img img-responsive" t-att-src="website.image_url(product, 'image', None if product_image_big else '300x300')" t-att-alt="product.name" />
-                            </t>
-                        </a>
+                        <div class="dn_product_image_div">
+                            <a itemprop="url" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
+                                <t t-if="len(product.image_ids) &gt; 0">
+                                    <img itemprop="image" class="img img-responsive" t-att-src="'/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(product.image_ids[0].id, 'webshop_dermanord.img_product_list')" t-att-alt="product.name" />
+                                </t>
+                                <t t-if="len(product.image_ids) == 0">
+                                    <img itemprop="image" class="img img-responsive" t-att-src="website.image_url(product, 'image', None if product_image_big else '300x300')" t-att-alt="product.name" />
+                                </t>
+                                <div class="dn_product_image_hover_btn text-center hidden-xs">
+                                    <p>
+                                        <a class="dn_btn dn_primary" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">DETAILS</a>
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                     <div class="dn_product_info text-center">
                         <h5>
@@ -66,11 +73,17 @@
             </form>
         </template>
         <template id="dermanord_product_detail" inherit_id="website_sale.product">
+            <xpath expr="//div[@class='col-sm-5 col-md-5 col-lg-4 col-lg-offset-1']" position="attributes">
+                <attribute name="class">col-sm-5 col-md-5 col-lg-4 col-lg-offset-1 text-center</attribute>
+            </xpath>
+            <xpath expr="//a[@id='add_to_cart']" position="attributes">
+                <attribute name="class">dn_btn dn_primary mt8 js_check_product a-submit</attribute>
+            </xpath>
             <xpath expr="//p[@t-field='product.description_sale']" position="after">
                 <t t-set="variant" t-value="product.product_variant_ids[0]" />
                 <!-- TODO: find method that get the product vairant -->
                 <hr />
-                <div class="col-md-12 no_padding_div">
+                <div class="col-md-12 no_padding_div hidden">
                     <div class="col-md-4 no_padding_div">
                         <ul class="nav nav-pills nav-stacked">
                             <li class="active">
@@ -175,6 +188,11 @@
                     </b>
                 </div>
             </div>
+        </template>
+        <template id="product_quantity" inherit_id="website_sale.product_quantity">
+            <xpath expr="//div[@class='css_quantity input-group oe_website_spinner']" position="attributes">
+                <attribute name="style">margin: auto;</attribute>
+            </xpath>
         </template>
         <template id="webshop_dermanord" inherit_id="website.layout" name="Webshop Dermanord">
             <!-- Customize css -->

@@ -2,6 +2,37 @@
                     Theme Dermanord
  ============================================================ */
 
+.dn_btn {
+    display: inline-block;
+    padding: 12px 32px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: opx;
+}
+
+.dn_btn:hover, .dn_btn:active, .dn_btn:focus {
+    color: #fff;
+    text-decoration: none;
+}
+
+.dn_primary {
+    color: #fff;
+    background-color: #CB683F;
+    border-color: #CB683F;
+}
+
 #menu-btn {
     float: left !important;
     margin-left: 15px !important;
