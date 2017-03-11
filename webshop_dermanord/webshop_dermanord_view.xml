@@ -75,11 +75,8 @@
             </form>
         </template>
         <template id="dermanord_product_detail" inherit_id="website_sale.product">
-            <xpath expr="//div[@class='col-sm-5 col-md-5 col-lg-4 col-lg-offset-1']" position="attributes">
-                <attribute name="class">col-sm-5 col-md-5 col-lg-4 col-lg-offset-1 text-center</attribute>
-            </xpath>
             <xpath expr="//a[@id='add_to_cart']" position="attributes">
-                <attribute name="class">dn_btn dn_primary mt8 js_check_product a-submit</attribute>
+                <attribute name="class">dn_btn dn_primary mt8 js_check_product a-submit text-center</attribute>
             </xpath>
             <xpath expr="//p[@class='text-muted']" position="attributes">
                 <attribute name="class">text-muted hidden</attribute>
@@ -195,9 +192,11 @@
             </div>
         </template>
         <template id="product_quantity" inherit_id="website_sale.product_quantity">
+<!--
             <xpath expr="//div[@class='css_quantity input-group oe_website_spinner']" position="attributes">
-                <attribute name="style">margin: auto;</attribute>
+                <attribute name="class">css_quantity input-group oe_website_spinner text-center</attribute>
             </xpath>
+-->
         </template>
         <template id="webshop_dermanord" inherit_id="website.layout" name="Webshop Dermanord">
             <!-- Customize css -->
@@ -268,6 +267,19 @@
                         <label for="highlight" />
                     </div>
                 </field>
+                <field name="active" position="after">
+                    <field name="sequence"/>
+                </field>
+            </field>
+        </record>
+        <record id="product_template_tree_view" model="ir.ui.view">
+            <field name="name">product.template.product.tree.inherited.webshop_dermanord</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="sequence" widget="handle"/>
+                </field>
             </field>
         </record>
         <record id="product_template_search_view" model="ir.ui.view">
@@ -278,6 +290,16 @@
                 <filter name="filter_to_sell" position="after">
                     <filter string="Highlight" name="highlight" domain="[('highlight', '=', 1)]" />
                 </filter>
+            </field>
+        </record>
+        <record id="product_public_category_form_view" model="ir.ui.view">
+            <field name="name">product.public.category.form.inherited.webshop_dermanord</field>
+            <field name="model">product.public.category</field>
+            <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+            <field name="arch" type="xml">
+                <field name="sequence" position="attributes">
+                    <attribute name="widget">handle</attribute>
+                </field>
             </field>
         </record>
     </data>

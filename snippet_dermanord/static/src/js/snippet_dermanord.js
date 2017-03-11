@@ -93,10 +93,10 @@ website.snippet.options.categ_p_option = website.snippet.Option.extend({
             i = 0;
             $.each(data, function(key, info) {
                 var content = openerp.qweb.render('p_category_snippet', {
-                    'category_name': data[key]['name'],
-                    'category_image': data[key]['image'],
+                    'category_name': data[key][0]['name'],
+                    'category_image': data[key][0]['image'],
                 });
-                content = content.replace("/shop/category/category_id", "/shop/category/" + key);
+                content = content.replace("/shop/category/category_id", "/shop/category/" + data[key][0]['id']);
                 category_content += i > categ_block_hidden_indicator ? content.replace("categ_block", "categ_block extra_block hidden-xs") : content;
                 if(i == categ_block_hidden_indicator){
                     category_content += show_more_block;
@@ -136,11 +136,11 @@ website.snippet.options.product_highlights_option = website.snippet.Option.exten
             var ph_content = '';
             $.each(data, function(key, info) {
                 var content = openerp.qweb.render('product_highlights_snippet', {
-                    'ph_name': data[key]['name'],
-                    'ph_image': data[key]['image'],
-                    'ph_description': data[key]['description_sale'],
+                    'ph_name': data[key][0]['name'],
+                    'ph_image': data[key][0]['image'],
+                    'ph_description': data[key][0]['description_sale'],
                 });
-                content = content.replace("shop/product/product_id", "/shop/product/" + key);
+                content = content.replace("shop/product/product_id", "/shop/product/" + data[key][0]['id']);
                 ph_content += content;
             });
             self.$target.find(".product_div").html(ph_content);

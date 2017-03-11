@@ -69,30 +69,36 @@ class snippet(http.Controller):
     @http.route(['/category_snippet/get_p_categories'], type='json', auth="user", website=True)
     def get_p_categories(self, **kw):
         categories = request.env['product.public.category'].search([('website_published', '=', True)], order='sequence')
-        category_list = {}
+        category_list = []
         if len(categories) > 0:
             for c in categories:
                 image_url = ''
                 if c.image_medium:
                     image_url = '/imagefield/product.public.category/image_medium/%s/ref/%s' %(c.id, 'snippet_dermanord.img_categories')
-                category_list[c.id] = {
-                    'name': c.name,
-                    'image': image_url,
-                }
+                category_list.append(
+                    [{
+                        'id': c.id,
+                        'name': c.name,
+                        'image': image_url,
+                    }]
+                )
         return category_list
 
     @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="user", website=True)
     def get_highlighted_products(self, **kw):
-        products = request.env['product.template'].sudo().search([('active', '=', True), ('sale_ok', '=', True), ('highlight', '=', True)])
-        product_list = {}
+        products = request.env['product.template'].sudo().search([('active', '=', True), ('sale_ok', '=', True), ('highlight', '=', True)], order='sequence')
+        product_list = []
         if len(products) > 0:
             for p in products:
                 product_image_url = ''
                 if len(p.image_ids) > 0:
                     product_image_url = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(p.image_ids[0].id, 'snippet_dermanord.img_product_highlights')
-                product_list[p.id] = {
-                    'name': p.name,
-                    'image': product_image_url,
-                    'description_sale': p.description_sale,
-                }
+                product_list.append(
+                    [{
+                        'id': p.id,
+                        'name': p.name,
+                        'image': product_image_url,
+                        'description_sale': p.description_sale,
+                    }]
+                )
         return product_list

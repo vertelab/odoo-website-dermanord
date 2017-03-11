@@ -4,7 +4,7 @@
 <templates id="template" xml:space="preserve">
     <t t-name="blog_banner_content">
         <div t-att-class="item_content" style="">
-            <img class="img-responsive" t-att-src="background_image" t-att-data-cke-saved-src="background_image" style="position: relative; width:100%; height: auto !important; min-height: 600px;"/>
+            <img class="img-responsive" t-att-src="background_image" t-att-data-cke-saved-src="background_image" style="position: relative; width:100%; height: auto !important;"/>
              <div class="container" style="position: absolute; top: 10%; left: 0%;">
                 <div class="row content">
                     <div class="col-md-12 col-sm-12 text-center">
@@ -48,8 +48,8 @@
     <t t-name="product_highlights_snippet">
         <a href="shop/product/product_id">
             <div class="col-xs-12 ph_block" style="padding: 20px 0px;">
-                <img class="img img-responsive ph_img" t-att-src="ph_image" t-att-data-cke-saved-src="ph_image" style="position: relative;"/>
-                <div class="container desc_div" style="position: absolute; bottom: 5%; left: 5%; width: 80%">
+                <img class="img img-responsive ph_img" t-att-src="ph_image" t-att-data-cke-saved-src="ph_image"/>
+                <div class="container desc_div">
                     <h4 class="dn_uppercase"><t t-esc="ph_name"/></h4>
                     <h5 class="ph_desc text-muted"><t t-esc="ph_description"/></h5>
                 </div>
