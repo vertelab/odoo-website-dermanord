@@ -86,7 +86,7 @@ class snippet(http.Controller):
 
     @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="user", website=True)
     def get_highlighted_products(self, **kw):
-        products = request.env['product.template'].sudo().search([('active', '=', True), ('sale_ok', '=', True), ('highlight', '=', True)], order='sequence')
+        products = request.env['product.template'].sudo().search([('active', '=', True), ('sale_ok', '=', True), ('highlight', '=', True)])
         product_list = []
         if len(products) > 0:
             for p in products:
