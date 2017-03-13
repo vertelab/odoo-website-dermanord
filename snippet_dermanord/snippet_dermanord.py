@@ -19,6 +19,7 @@
 #
 ##############################################################################
 from openerp.exceptions import except_orm, Warning, RedirectWarning
+from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
 import werkzeug
@@ -86,19 +87,21 @@ class snippet(http.Controller):
 
     @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="user", website=True)
     def get_highlighted_products(self, **kw):
-        products = request.env['product.template'].sudo().search([('active', '=', True), ('sale_ok', '=', True), ('highlight', '=', True)])
+        campaigns = request.env['crm.tracking.campaign'].sudo().search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today())])
         product_list = []
-        if len(products) > 0:
-            for p in products:
-                product_image_url = ''
-                if len(p.image_ids) > 0:
-                    product_image_url = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(p.image_ids[0].id, 'snippet_dermanord.img_product_highlights')
-                product_list.append(
-                    [{
-                        'id': p.id,
-                        'name': p.name,
-                        'image': product_image_url,
-                        'description_sale': p.description_sale,
-                    }]
-                )
+        if len(campaigns) > 0:
+            if len(campaigns[0].product_ids) > 0:
+                pcc = campaigns[0].product_ids.sorted(key=lambda p: p.sequence)
+                for p in pcc:
+                    product_image_url = ''
+                    if len(p.product_id.image_ids) > 0:
+                        product_image_url = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(p.product_id.image_ids[0].id, 'webshop_dermanord.img_products')
+                    product_list.append(
+                        [{
+                            'id': p.product_id.id,
+                            'name': p.product_id.name,
+                            'image': product_image_url,
+                            'description_sale': p.product_id.description_sale,
+                        }]
+                    )
         return product_list

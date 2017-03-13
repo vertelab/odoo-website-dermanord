@@ -120,10 +120,16 @@
     padding: 20px;
 }
 
+.dn_product_image {
+    height: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .dn_product_image img {
     margin: auto;
-    width: 500px;
-    height: auto;
+    max-height: 350px;
 }
 
 .dn_product_image_div {
@@ -136,14 +142,13 @@
     height: 100%;
     top: 0px;
     left: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .dn_product_image_hover_btn p {
     display: none;
-}
-
-.dn_product_image_hover_btn:hover > p > a {
-    margin-top: 40% !important;
 }
 
 .dn_product_image_hover_btn:hover > p {

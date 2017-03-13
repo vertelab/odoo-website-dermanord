@@ -42,7 +42,7 @@ class ProductIngredients(models.Model):
 
     name = fields.Char(string="Name")
     description = fields.Text(string="Description")
-    image = fields.Binary(string='Image',)
-    product_ids = fields.Many2many(comodel_name='product.template', relation='product_ingredient_rel',column1='ingredient_id',column2='product_id',)
+    image = fields.Binary(string='Image')
+    product_ids = fields.Many2many(comodel_name='product.template', relation='product_ingredient_rel',column1='ingredient_id',column2='product_id')
     sequence = fields.Integer()
-    
+

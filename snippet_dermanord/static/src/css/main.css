@@ -42,9 +42,6 @@ a {
 }
 
 /*! Product Highlights */
-.ph_block img {
-    margin: auto;
-}
 
 .ph_block a {
     color: #000;
@@ -55,12 +52,15 @@ a {
 }
 
 .ph_img {
-    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    max-height: 250px;
 }
 
 .desc_div {
     padding: 10px !important;
-    position: absolute;
     bottom: 0px;
     left: 0px;
     background: rgba(255, 255, 255, 0.7);
@@ -68,7 +68,23 @@ a {
 }
 
 .ph_block h4 {
+    height: 2em;
     padding: 15px 0px;
+    line-height: 1.5em;
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+    color: #000;
+}
+
+.ph_block h4::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10%;
+    height: 1.1em;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
 .ph_block .ph_desc {
