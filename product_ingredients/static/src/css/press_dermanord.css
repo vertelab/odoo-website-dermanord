@@ -1,0 +1,65 @@
+﻿/*=============================================================
+                    Press Dermanord
+ ============================================================ */
+
+/*
+.img_press_row {
+    display: flex;
+    align-content: center;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+*/
+
+.img_press_block {
+    padding: 16px;
+}
+
+.img_press_img {
+    overflow: hidden;
+    width: 100%;
+}
+
+.image_press_img .img_2_change {
+    width: 100%;
+    height: auto;
+}
+
+.img_press_img img {
+    margin: auto;
+}
+
+.img_press_text {
+    text-align: center;
+}
+
+#twitter_block ul {
+    padding: 0px;
+}
+
+#twitter_block li {
+    list-style-type: none
+}
+
+#twitter_block, #press_ansvarig_block, #press_release_block {
+    padding: 16px;
+}
+
+.a_bord {
+    background-color: #eee;
+}
+
+/*
+.a_bord {
+    padding: 0px !important;
+    border: 1px solid #f00;
+}
+
+.b_bord {
+    border: 1px solid #000;
+}
+
+.c_bord {
+    border: 1px solid #00f;
+}
+*/
