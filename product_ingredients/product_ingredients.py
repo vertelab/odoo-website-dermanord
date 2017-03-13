@@ -24,15 +24,6 @@ from openerp.http import request
 import logging
 _logger = logging.getLogger(__name__)
 
-#~ class website(models.Model):
-    #~ _inherit = 'website'
-
-    #~ @api.model
-    #~ def get_id_from_url(self, url):
-        #~ _logger.warn('Haojun')
-        #~ pass
-
-
 
 class WebsiteIngredients(http.Controller):
 
@@ -40,17 +31,18 @@ class WebsiteIngredients(http.Controller):
     def repord(self, ingredient=None, **post):
         return request.website.render("product_ingredients.page", {'ingredient': ingredient})
 
-class ProductProduct(models.Model):
-    _inherit = 'product.product'
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
 
-    ingredient_ids = fields.Many2many(comodel_name='product.ingredient')
+    ingredient_ids = fields.Many2many(comodel_name='product.ingredient', relation='product_ingredient_rel',column1='product_id',column2='ingredient_id', string="Ingredients")
 
 class ProductIngredients(models.Model):
     _name = 'product.ingredient'
+    _order = 'sequence, name, id'
 
     name = fields.Char(string="Name")
-    description = fields.Html(string="Description")
+    description = fields.Text(string="Description")
     image = fields.Binary(string='Image',)
-    product_ids = fields.One2many(comodel_name='product.product')
+    product_ids = fields.Many2many(comodel_name='product.template', relation='product_ingredient_rel',column1='ingredient_id',column2='product_id',)
     sequence = fields.Integer()
     
