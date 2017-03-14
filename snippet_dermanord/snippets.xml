@@ -9,7 +9,7 @@
                 <div id="blog_banner_slide">
                     <div class="oe_snippet_thumbnail">
                         <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_banner.png"/>
-                        <span class="oe_snippet_thumbnail_title">Experiences</span>
+                        <span class="oe_snippet_thumbnail_title">Experiences Banner</span>
                     </div>
                     <section class="oe_snippet_body blog_banner">
                         <div class="carousel slide carousel-fade" data-ride="carousel" id="blog_carousel" style=" overflow: hidden;">
