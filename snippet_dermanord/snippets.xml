@@ -79,60 +79,6 @@
                 </div>
                 <!--END OF FADE SLIDER-->
 
-                <!--BLUR BACKGROUND SLIDER-->
-                <div id="blurbg_slide">
-                    <div class="oe_snippet_thumbnail">
-                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_banner.png"/>
-                        <span class="oe_snippet_thumbnail_title">Banner Blur Background</span>
-                    </div>
-                    <section class="oe_snippet_body">
-                        <div class="carousel slide carousel-blurbg" data-ride="carousel" id="blurbg_arousel" style="height: 640px; overflow: hidden;">
-                            <div class="carousel-inner">
-                                <div class="item active" style="">
-                                    <img class="img-responsive" src="/website/static/src/img/fields.jpg" style="position: relative;"/>
-                                     <div class="container" style="position: absolute; top: 20%; width: 100%;">
-                                        <div class="row content text-center">
-                                            <div class="col-md-12 col-sm-12" style="color: #fff; font-size: 4em;">
-                                                <p><strong>Your Banner Title</strong></p>
-                                                <p><strong>Click here to add text</strong></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="item">
-                                    <img class="img-responsive" src="/website/static/src/img/island.jpg" style="position: relative;"/>
-                                    <div class="container" style="position: absolute; top: 20%; width: 100%;">
-                                        <div class="row content text-center">
-                                            <div class="col-md-12 col-sm-12" style="color: #fff; font-size: 4em;">
-                                                <p><strong>Your Banner Title</strong></p>
-                                                <p><strong>Click here to add text</strong></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="item">
-                                    <img class="img-responsive" src="/website/static/src/img/volcano.jpg" style="position: relative;"/>
-                                    <div class="container" style="position: absolute; top: 20%; width: 100%;">
-                                        <div class="row content text-center">
-                                            <div class="col-md-12 col-sm-12" style="color: #fff; font-size: 4em;">
-                                                <p><strong>Your Banner Title</strong></p>
-                                                <p><strong>Click here to add text</strong></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <a class="left carousel-control" data-slide="prev" href="#blurbg_arousel">
-                                <i class="fa fa-angle-left"/>
-                            </a>
-                            <a class="right carousel-control" data-slide="next" href="#blurbg_arousel">
-                                <i class="fa fa-angle-right"/>
-                            </a>
-                        </div>
-                    </section>
-                </div>
-                <!--END OF BLUR BACKGROUND SLIDER-->
-
                 <!-- Notes Cubes -->
                 <div id="notes_cubes">
                     <div class="oe_snippet_thumbnail">
@@ -230,55 +176,6 @@
 
             <!-- Customize Content -->
             <xpath expr="//div[@id='snippet_content']" position="inside">
-
-                <!--ROUND HOVER ICON BUTTONS-->
-                <div id="round_hover_icon_buttons">
-                    <div class="oe_snippet_thumbnail">
-                        <img class="oe_snippet_thumbnail_img" src="/snippet_dermanord/static/src/img/round_hover_icon_buttons.png"/>
-                        <span class="oe_snippet_thumbnail_title">Round Hover Icon Button</span>
-                    </div>
-                    <div class="oe_snippet_body oe_share">
-                        <div class="container mt64 mb64">
-                            <div class="col-md-3 col-sm-6" style="padding: 15px;">
-                                <div class="round-icon">
-                                    <a href="#">
-                                        <div class="text-center">
-                                            <i class="fa fa-phone fa-5x" style="padding-top: 33%;"/>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6" style="padding: 15px;">
-                                <div class="round-icon">
-                                    <a href="#">
-                                        <div class="text-center">
-                                            <i class="fa fa-mobile fa-5x" style="padding-top: 33%;"/>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6" style="padding: 15px;">
-                                <div class="round-icon">
-                                    <a href="#">
-                                        <div class="text-center">
-                                            <i class="fa fa-envelope fa-5x" style="padding-top: 33%;"/>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6" style="padding: 15px;">
-                                <div class="round-icon">
-                                    <a href="#">
-                                        <div class="text-center">
-                                            <i class="fa fa-home fa-5x" style="padding-top: 33%;"/>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--END OF ROUND HOVER ICON BUTTONS-->
 
                 <!-- Two column image -->
                 <div id="two_column_image">

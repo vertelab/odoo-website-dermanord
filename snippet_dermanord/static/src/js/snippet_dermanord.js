@@ -1,7 +1,6 @@
 (function () {
     'use strict';
     var website = openerp.website;
-    console.log('vad som helst');
     website.add_template_file('/snippet_dermanord/static/src/xml/snippets.xml');
     var categ_block_hidden_indicator = 1;
 

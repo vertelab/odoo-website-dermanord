@@ -33,6 +33,11 @@ import werkzeug
 
 
 class ThemeDermanord(http.Controller):
+
+    @http.route(['/page/dermanord_demo'], type='http', auth="public", website=True)
+    def dermanord_demo(self):
+        return request.website.render('theme_dermanord.dermanord_demo_page', {})
+
     @http.route(['/logo500.png'], type='http', auth="public", cors="*")
     def company_logo500(self):
         user = request.registry['res.users'].browse(request.cr, request.uid, request.uid)
