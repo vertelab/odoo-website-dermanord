@@ -33,7 +33,7 @@ Nice formatted ingredients
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_imagemagick','product','website'],
+    'depends': ['website_imagemagick','product','website_sale'],
     'data': [
         'security/ir.model.access.csv',
         'product_ingredients_view.xml',
