@@ -128,9 +128,7 @@ a {
     justify-content: center;
     align-items: center;
     margin: auto;
-/*
-    max-height: 250px;
-*/
+    height: 350px;
 }
 
 .desc_div {
