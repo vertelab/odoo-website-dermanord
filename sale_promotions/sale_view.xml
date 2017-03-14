@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+     
+    <record id="view_sale_promotion_tree" model="ir.ui.view">
+      <field name="name">sale.promotion.tree</field>
+      <field name="model">sale.promotion</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="sequence" widget="handle" />
+          <field name="website_published"/>
+          <field name="name" />
+          <field name="description" />
+          <field name="url"/>
+        </tree>
+      </field>
+    </record>
+     
+    <record id="view_sale_promotion_form" model="ir.ui.view">
+      <field name="name">sale.promotion.tree</field>
+      <field name="model">sale.promotion</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Sales Promotions">
+          <sheet>
+            <div class="oe_title oe_left">
+              <div class="oe_edit_only">
+                  <label for="name"/>
+              </div>
+              <h1>
+                <field name="name"/>
+              </h1>
+            </div>
+            <group>
+              <field name="website_published"/>
+              <field name="sequence"/>
+              <field name="description" />
+              <field name="url"/>
+              <field name="image"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    
+    <record id="view_sale_promotion_search" model="ir.ui.view">
+        <field name="name">sale.promotion.search</field>
+        <field name="model">sale.promotion</field>
+        <field name="arch" type="xml">
+            <search string="Sales Promotions">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="url"/>
+<!--
+                <field name="website_published"/>
+-->
+                <filter icon="terp-check" string="Published" domain="[('website_published','=',True)]"/>
+                <filter icon="terp-check" string="Unpublished" domain="[('website_published','=',False)]"/>
+            </search>
+        </field>
+    </record>
+    
+    <record model="ir.actions.act_window" id="action_sale_promotion_form">
+        <field name="name">Sales Promotions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.promotion</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form,diagram</field>
+        <field name="view_id" ref="view_sale_promotion_tree"/>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_sale_promotion_search"/>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to create a sales promotion.
+          </p>
+        </field>
+    </record>
+    
+    <menuitem name="Sales Promotions" id="menu_sale_promotion" sequence="10"
+            groups="base.group_user" parent="base.marketing_menu"/>
+    
+    <menuitem id="menu_sale_promotion_form" parent="menu_sale_promotion" action="action_sale_promotion_form" sequence="10"/>
+  </data>
+</openerp>

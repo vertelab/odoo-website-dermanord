@@ -1,0 +1,4 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_promotion_luser,Sales Promotion - Public,model_sale_promotion,base.group_public,1,0,0,0
+access_sale_promotion_user,Sales Promotion - User,model_sale_promotion,marketing.group_marketing_user,1,0,0,0
+access_sale_promotion_marketing_user,Sales Promotion - Marketing User,model_sale_promotion,marketing.group_marketing_user,1,1,1,1
