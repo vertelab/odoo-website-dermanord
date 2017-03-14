@@ -2,23 +2,54 @@
                     Theme Dermanord
  ============================================================ */
 
-.menu-btn {
+.dn_btn {
+    display: inline-block;
+    padding: 12px 32px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: opx;
+}
+
+.dn_btn:hover, .dn_btn:active, .dn_btn:focus {
+    color: #fff;
+    text-decoration: none;
+}
+
+.dn_primary {
+    color: #fff;
+    background-color: #CB683F;
+    border-color: #CB683F;
+}
+
+h1, .dn_uppercase {
+    text-transform: uppercase;
+}
+
+#menu-btn {
     float: left !important;
     margin-left: 15px !important;
     border: none !important;
 }
 
-.menu-btn .icon-bar {
+#menu-btn .icon-bar {
     background-color: #000 !important;
 }
 
-.search-btn {
+#search-btn {
     float: right !important;
-    margin-top: 11px;
-}
-
-.navbar-over {
-    width: 100%;
+    padding: 9px 10px;
 }
 
 #wrapwrap > header > .navbar-static-top {
@@ -72,19 +103,38 @@ footer input, footer .input-group-addon {
     color: #000 !important;
 }
 
+#search_input {
+    margin-top: 8px;
+}
+
 @media (min-width: 768px) {
-    #top_menu .header_menu {
-        display: none;
+    .navbar-header {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    #top_menu {
+        background-color: #000;
     }
 
-    #top_menu_top .header_menu {
-        display: unset;
+    #top_menu a:hover {
+        background-color: #fff;
+    }
+
+    #top_menu a:hover span {
+        color: #000;
+    }
+
+    #top_menu span {
+        color: #fff;
     }
 }
 
 @font-face {
   font-family: 'Futura-Medium';
-  src: url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.eot?#iefix') format('embedded-opentype'),  url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.woff') format('woff'), url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.ttf')  format('truetype'), url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.svg#Futura-Medium') format('svg');
+/*  src: url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.eot?#iefix') format('embedded-opentype'),  url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.woff') format('woff'), url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.ttf')  format('truetype'), url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.svg#Futura-Medium') format('svg'); */
+  src: url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.eot?#iefix') format('embedded-opentype'), url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.svg#Futura-Medium') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -98,5 +148,5 @@ footer input, footer .input-group-addon {
 }
 
 body {
-    font-family: 'Futura-Medium';
+    font-family: 'Futura-Medium' !important;
 }

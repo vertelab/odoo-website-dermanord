@@ -19,6 +19,7 @@
 #
 ##############################################################################
 from openerp.exceptions import except_orm, Warning, RedirectWarning
+from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
 import werkzeug
@@ -34,20 +35,73 @@ class snippet(http.Controller):
         posts_list = {}
         if len(posts) > 0:
             for p in posts:
+                post_image_url = ''
+                if p.background_image and '/ir.attachment/' in p.background_image:
+                    start = str(p.background_image).index('/ir.attachment/') + len('/ir.attachment/')
+                    end = str(p.background_image).index('/datas', start )
+                    post_image_url = '/imagefield/ir.attachment/datas/%s/ref/%s' %(str(p.background_image)[start:end].split('_')[0], 'snippet_dermanord.img_blog_slide')
                 posts_list[p.id] = {
                     'name': p.name,
                     'blog_id': p.blog_id.id,
-                    'background_image': p.background_image,
+                    'background_image': post_image_url,
+                }
+        return posts_list
+
+    @http.route(['/blog_slide_snippet/blog_slide_change'], type='json', auth="user", website=True)
+    def blog_slide_change(self, **kw):
+        posts = request.env['blog.post'].search([('blog_id', '=', request.env.ref('snippet_dermanord.sale_promotions').id), ('website_published', '=', True)], order='write_date')
+        posts_list = {'posts': {}}
+        if len(posts) > 0:
+            posts_list['blog_name'] = posts[0].blog_id.name
+            for p in posts:
+                post_image_url = ''
+                if p.background_image and '/ir.attachment/' in p.background_image:
+                    start = str(p.background_image).index('/ir.attachment/') + len('/ir.attachment/')
+                    end = str(p.background_image).index('/datas', start )
+                    post_image_url = '/imagefield/ir.attachment/datas/%s/ref/%s' %(str(p.background_image)[start:end].split('_')[0], 'snippet_dermanord.img_blog_slide')
+                posts_list['posts'][p.id] = {
+                    'name': p.name,
+                    'subtitle': p.subtitle,
+                    'blog_id': p.blog_id.id,
+                    'background_image': post_image_url,
                 }
         return posts_list
 
     @http.route(['/category_snippet/get_p_categories'], type='json', auth="user", website=True)
     def get_p_categories(self, **kw):
         categories = request.env['product.public.category'].search([('website_published', '=', True)], order='sequence')
-        category_list = {}
-        for c in categories:
-            category_list[c.id] = {
-                'name': c.name,
-                'image': c.image_medium,
-            }
+        category_list = []
+        if len(categories) > 0:
+            for c in categories:
+                image_url = ''
+                if c.image_medium:
+                    image_url = '/imagefield/product.public.category/image_medium/%s/ref/%s' %(c.id, 'snippet_dermanord.img_categories')
+                category_list.append(
+                    [{
+                        'id': c.id,
+                        'name': c.name,
+                        'image': image_url,
+                    }]
+                )
         return category_list
+
+    @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="user", website=True)
+    def get_highlighted_products(self, **kw):
+        campaigns = request.env['crm.tracking.campaign'].sudo().search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today())])
+        product_list = []
+        if len(campaigns) > 0:
+            if len(campaigns[0].product_ids) > 0:
+                pcc = campaigns[0].product_ids.sorted(key=lambda p: p.sequence)
+                for p in pcc:
+                    product_image_url = ''
+                    if len(p.product_id.image_ids) > 0:
+                        product_image_url = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(p.product_id.image_ids[0].id, 'webshop_dermanord.img_products')
+                    product_list.append(
+                        [{
+                            'id': p.product_id.id,
+                            'name': p.product_id.name,
+                            'image': product_image_url,
+                            'description_sale': p.product_id.description_sale,
+                        }]
+                    )
+        return product_list

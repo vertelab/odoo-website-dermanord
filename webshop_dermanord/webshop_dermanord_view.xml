@@ -1,175 +1,270 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-  <data>
-    <template id="dermanord_product_detail" inherit_id="website_sale.product">
-      <xpath expr="//p[@t-field='product.description_sale']" position="after">
-        <t t-set="variant" t-value="product.product_variant_ids[0]" />
-        <!-- TODO: find method that get the product vairant -->
-        <hr />
-        <div class="col-md-12 no_padding_div">
-          <div class="col-md-4 no_padding_div">
-            <ul class="nav nav-pills nav-stacked">
-              <li class="active">
-                <a data-toggle="tab" href="#remedy">Remedy</a>
-              </li>
-              <li>
-                <a data-toggle="tab" href="#skin_type">Skin Type</a>
-              </li>
-              <li>
-                <a data-toggle="tab" href="#texture">Texture</a>
-              </li>
-              <li group="base.group_public">
-                <a data-toggle="tab" href="#public_desc">Description</a>
-              </li>
-              <li groups="base.group_website_publisher">
-                <a data-toggle="tab" href="#reseller_desc">Description</a>
-              </li>
-              <li>
-                <a data-toggle="tab" href="#use_desc">Manual</a>
-              </li>
-              <li>
-                <a data-toggle="tab" href="#ingredients">Ingredients</a>
-              </li>
-            </ul>
-          </div>
-          <div class="tab-content col-md-8 no_padding_div">
-            <div id="remedy" class="tab-pane fade in active">
-              <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_remedy")).mapped("value_ids").mapped("name"))'/>
-            </div>
-            <div id="skin_type" class="tab-pane fade in">
-              <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_skin_type")).mapped("value_ids").mapped("name"))'/>
-            </div>
-            <div id="texture" class="tab-pane fade in">
-                <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_texture")).mapped("value_ids").mapped("name"))'/>
-            </div>
-            <div id="public_desc" class="tab-pane fade in">
-              <!-- TODO: find method that check if current user is a customer -->
-              <p>public description</p>
-            </div>
-            <div id="reseller_desc" class="tab-pane fade in">
-              <!-- TODO: find method that check if current user is a saller -->
-              <p>reseller</p>
-            </div>
-            <div id="use_desc" class="tab-pane fade in">
-              <p>useage</p>
-            </div>
-            <div id="ingredients" class="tab-pane fade in">
-              <p>ingredients</p>
-            </div>
-          </div>
-        </div>
-        <hr />
-      </xpath>
-      <xpath expr="//div[@itemprop='description']" position="after">
-        <div class="oe_structure oe_empty mt32 mb32">
-          <div class="container">
-            <h1 class="text-center">This product’s experiences</h1>
-            <t t-call="webshop_dermanord.product_experiences" />
-            <t t-call="webshop_dermanord.product_experiences_wide" />
-          </div>
-          <div class="container mt32">
-            <h1 class="text-center">Product range</h1>
-            <div t-foreach="request.env['product.template'].search([('public_categ_ids','in',product.public_categ_ids.mapped('id')),('website_published','=',True),('id','!=',product.id)])[:4]" t-as="p">
-              <t t-call="website_product_templates.product_view" />
-            </div>
-          </div>
-          <t t-set="useless_var_6446547657" t-value="website.sale_add_previous_product(product.id)" />
-          <div class="container mt32">
-            <h1 class="text-center">Recently viewed</h1>
-            <div t-foreach="website.sale_get_previous_products().with_context(pid=product.id).filtered(lambda p: p.id != p.env.context['pid'])[:4]" t-as="p">
-              <t t-call="website_product_templates.product_view" />
-            </div>
-          </div>
-        </div>
-      </xpath>
-    </template>
-    <!-- Produktvisning enskild produkt -->
-    <template id="product_view" name="Product View">
-      <div t-att-class="'col-md-2 %s col-sm-3 col-xs-4   thumbnail' % ('col-md-offset-2 col-sm-offset-1 col-xs-offset-2' if p_index == 0 else '')" style="webkit-justify-content: center;
+    <data>
+        <template id="products" name="Products">
+            <t t-call="website.layout">
+                <t t-set="additional_title">Shop</t>
+                <div id="wrap" class="js_sale">
+                    <div class="oe_structure" />
+                    <div class="container oe_website_sale">
+                        <div class="products_pager">
+                            <div class="row" style="width: 100%;">
+                                <t t-call="website_sale.search"><t t-set="search_class">pagination form-inline col-md-3</t></t>
+                                <t t-call="website.pager"/>
+                            </div>
+                        </div>
+                        <div class="masonry">
+                            <t t-foreach="products" t-as="product">
+                                <div class="item" t-call="webshop_dermanord.products_item"/>
+                            </t>
+                        </div>
+                    </div>
+                    <div class="oe_structure mb32" />
+                </div>
+            </t>
+        </template>
+        <template id="products_item" name="Product item">
+            <form action="/shop/cart/update" method="post">
+                <div itemscope="itemscope" itemtype="http://schema.org/Product" class="dn_product_div col-md-4 col-sm-6 col-xs-12">
+                    <div class="dn_product_image">
+                        <div class="dn_product_image_div">
+                            <a itemprop="url" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
+                                <t t-if="len(product.image_ids) &gt; 0">
+                                    <img itemprop="image" class="img img-responsive" t-att-src="'/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(product.image_ids[0].id, 'webshop_dermanord.img_products')" t-att-alt="product.name" />
+                                </t>
+                                <t t-if="len(product.image_ids) == 0">
+                                    <img itemprop="image" class="img img-responsive" t-att-src="website.image_url(product, 'image', None if product_image_big else '300x300')" t-att-alt="product.name" />
+                                </t>
+                                <div class="dn_product_image_hover_btn text-center hidden-xs">
+                                    <p>
+                                        <a class="dn_btn dn_primary" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">DETAILS</a>
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="dn_product_info text-center">
+                        <h4 class="p_name">
+                            <strong>
+                                <a itemprop="name" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))" t-field="product.name" />
+                            </strong>
+                        </h4>
+                        <h5 class="p_desc"><t t-esc="product.description_sale"/></h5>
+                        <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price" t-if="product.product_variant_ids">
+                            <b class="text-muted">
+                                <h4>
+                                    <t t-if="(compute_currency(product.lst_price) - product.price) &gt; 0.1">
+                                        <del class="text-danger" style="white-space: nowrap;" t-field="product.lst_price" t-field-options='{
+                      "widget": "monetary",
+                      "from_currency": "product.company_id.currency_id",
+                      "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                    }' />
+                                        &amp;nbsp;
+                                    </t>
+                                    <span t-field="product.price" style="white-space: nowrap;" t-field-options='{
+                       "widget": "monetary",
+                       "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                   }' />
+                                    <span itemprop="price" style="display:none;" t-esc="product.price" />
+                                    <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding" />
+                                </h4>
+                            </b>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </template>
+        <template id="dermanord_product_detail" inherit_id="website_sale.product">
+            <xpath expr="//a[@id='add_to_cart']" position="attributes">
+                <attribute name="class">dn_btn dn_primary mt8 js_check_product a-submit text-center</attribute>
+            </xpath>
+            <xpath expr="//p[@class='text-muted']" position="attributes">
+                <attribute name="class">text-muted hidden</attribute>
+            </xpath>
+            <xpath expr="//p[@t-field='product.description_sale']" position="after">
+                <t t-set="variant" t-value="product.product_variant_ids[0]" />
+                <!-- TODO: find method that get the product vairant -->
+                <hr />
+                <div class="col-md-12 no_padding_div hidden">
+                    <div class="col-md-4 no_padding_div">
+                        <ul class="nav nav-pills nav-stacked">
+                            <li class="active">
+                                <a data-toggle="tab" href="#remedy">Remedy</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#skin_type">Skin Type</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#texture">Texture</a>
+                            </li>
+                            <li group="base.group_public">
+                                <a data-toggle="tab" href="#public_desc">Description</a>
+                            </li>
+                            <li groups="base.group_website_publisher">
+                                <a data-toggle="tab" href="#reseller_desc">Description</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#use_desc">Manual</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#ingredients">Ingredients</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content col-md-8 no_padding_div">
+                        <div id="remedy" class="tab-pane fade in active">
+                            <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_remedy")).mapped("value_ids").mapped("name"))' />
+                        </div>
+                        <div id="skin_type" class="tab-pane fade in">
+                            <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_skin_type")).mapped("value_ids").mapped("name"))' />
+                        </div>
+                        <div id="texture" class="tab-pane fade in">
+                            <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_texture")).mapped("value_ids").mapped("name"))' />
+                        </div>
+                        <div id="public_desc" class="tab-pane fade in">
+                            <!-- TODO: find method that check if current user is a customer -->
+                            <p>public description</p>
+                        </div>
+                        <div id="reseller_desc" class="tab-pane fade in">
+                            <!-- TODO: find method that check if current user is a saller -->
+                            <p>reseller</p>
+                        </div>
+                        <div id="use_desc" class="tab-pane fade in">
+                            <p>useage</p>
+                        </div>
+                        <div id="ingredients" class="tab-pane fade in">
+                            <p>ingredients</p>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+            </xpath>
+            <xpath expr="//div[@itemprop='description']" position="after">
+                <div class="oe_structure oe_empty mt32 mb32">
+                    <div class="container">
+                        <h1 class="text-center">This product’s experiences</h1>
+                        <t t-call="webshop_dermanord.product_experiences" />
+                        <t t-call="webshop_dermanord.product_experiences_wide" />
+                    </div>
+                    <div class="container mt32">
+                        <h1 class="text-center">Product range</h1>
+                        <div t-foreach="request.env['product.template'].search([('public_categ_ids','in',product.public_categ_ids.mapped('id')),('website_published','=',True),('id','!=',product.id)])[:4]" t-as="p">
+                            <t t-call="website_product_templates.product_view" />
+                        </div>
+                    </div>
+                    <t t-set="useless_var_6446547657" t-value="website.sale_add_previous_product(product.id)" />
+                    <div class="container mt32">
+                        <h1 class="text-center">Recently viewed</h1>
+                        <div t-foreach="website.sale_get_previous_products().with_context(pid=product.id).filtered(lambda p: p.id != p.env.context['pid'])[:4]" t-as="p">
+                            <t t-call="website_product_templates.product_view" />
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+        <!-- Produktvisning enskild produkt -->
+        <template id="product_view" name="Product View">
+            <div t-att-class="'col-md-2 %s col-sm-3 col-xs-4   thumbnail' % ('col-md-offset-2 col-sm-offset-1 col-xs-offset-2' if p_index == 0 else '')" style="webkit-justify-content: center;
   justify-content: center;
   display: flex; margin-right: 5px; height: 250px;">
-        <div class='mt16 text-center' style="padding: 0 15px;">
-          <span t-field="p.image_small" t-field-options='{"widget": "image", "class": "img-rounded shadow" }' />
-          <h5>
-            <a t-attf-href="/shop/product/#{ slug(p) }" style="display: block">
-              <span t-field='p.name' style="display: block" />
-            </a>
-          </h5>
-          <b>
-            <t t-if="(compute_currency(p.lst_price) - p.price) &gt; 0.1">
-              <del class="text-danger oe_vertel_product_view_old_price" t-field="p.lst_price" t-field-options='{
+                <div class='mt16 text-center' style="padding: 0 15px;">
+                    <span t-field="p.image_small" t-field-options='{"widget": "image", "class": "img-rounded shadow" }' />
+                    <h5>
+                        <a t-attf-href="/shop/product/#{ slug(p) }" style="display: block">
+                            <span t-field='p.name' style="display: block" />
+                        </a>
+                    </h5>
+                    <b>
+                        <t t-if="(compute_currency(p.lst_price) - p.price) &gt; 0.1">
+                            <del class="text-danger oe_vertel_product_view_old_price" t-field="p.lst_price" t-field-options='{
                 "widget": "monetary",
                 "from_currency": "p.company_id.currency_id",
                 "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
               }' />
-              &amp;nbsp;
-            </t>
-            <span class="oe_vertel_product_view_price" t-field="p.price" t-field-options='{
+                            &amp;nbsp;
+                        </t>
+                        <span class="oe_vertel_product_view_price" t-field="p.price" t-field-options='{
                  "widget": "monetary",
                  "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
              }' />
-          </b>
-        </div>
-      </div>
-    </template>
-    <template id="webshop_dermanord" inherit_id="website.layout" name="Webshop Dermanord">
-      <!-- Customize css -->
-      <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
-        <link href="/webshop_dermanord/static/src/css/webshop_dermanord.css" rel="stylesheet" />
-      </xpath>
-      <!-- Customize javascript -->
-      <xpath expr="//body/script[last()]" position="after">
-        <script type="text/javascript" src="/webshop_dermanord/static/src/img/webshop_dermanord.js" />
-      </xpath>
-    </template>
-    <template id="product_experiences" name="Product Experiences">
-      <t t-set="blog_posts" t-value="product.blog_post_ids.filtered(lambda p: p.blog_id == p.env.ref('webshop_dermanord.blog_experiences'))" />
-      <t t-set="offset_value" t-value="0" />
-      <t t-if="len(blog_posts) == 1">
-        <t t-set="offset_value" t-value="'col-md-offset-4 col-sm-offset-4'" />
-      </t>
-      <t t-if="len(blog_posts) == 2">
-        <t t-set="offset_value" t-value="'col-md-offset-2 col-sm-offset-2'" />
-      </t>
-      <t t-foreach="blog_posts[:3]" t-as="post">
-        <div t-att-class="'col-md-4 %s col-sm-4 col-xs-12 blog_block' %(offset_value if post_index == 0 else '')">
-          <div class="image_block" t-att-style="&quot;background-image: url('/imagefieldurl/blog.post/background_image/%s/id/%s')&quot; %(post.id, request.env.ref('webshop_dermanord.experiences_four_three_small').id)">
-            <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text text-center">
-              <h3 t-field="post.name" />
-            </a>
-          </div>
-        </div>
-      </t>
-    </template>
-    <template id="product_experiences_wide" name="Product Experiences Wide">
-      <t t-set="blog_posts" t-value="product.blog_post_ids.filtered(lambda p: p.blog_id == p.env.ref('webshop_dermanord.blog_experiences'))" />
-      <t t-set="offset_value" t-value="0" />
-      <t t-if="len(blog_posts) == 1">
-        <t t-set="offset_value" t-value="'col-md-offset-3 col-sm-offset-3'" />
-      </t>
-      <t t-foreach="blog_posts[:2]" t-as="post">
-        <div t-att-class="'col-md-6 %s col-sm-6 col-xs-12 blog_block' %(offset_value if post_index == 0 else '')">
-          <div class="image_block_wide" t-att-style="&quot;background-image: url('/imagefieldurl/blog.post/background_image/%s/id/%s')&quot; %(post.id, request.env.ref('webshop_dermanord.experiences_sixteen_nine_small').id)">
-            <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text text-center">
-              <h3 t-field="post.name" />
-            </a>
-          </div>
-        </div>
-      </t>
-    </template>
-    <record id="view_blog_post_form" model="ir.ui.view">
-      <field name="name">blog.post.form.webshop</field>
-      <field name="model">blog.post</field>
-      <field name="inherit_id" ref="website_blog.view_blog_post_form" />
-      <field name="arch" type="xml">
-        <sheet position="inside">
-          <group>
-            <field name="product_tmpl_ids" widget="many2many_tags" />
-            <field name="product_public_categ_ids" widget="many2many_tags" />
-          </group>
-        </sheet>
-      </field>
-    </record>
-    
-  </data>
+                    </b>
+                </div>
+            </div>
+        </template>
+        <template id="product_quantity" inherit_id="website_sale.product_quantity">
+<!--
+            <xpath expr="//div[@class='css_quantity input-group oe_website_spinner']" position="attributes">
+                <attribute name="class">css_quantity input-group oe_website_spinner text-center</attribute>
+            </xpath>
+-->
+        </template>
+        <template id="webshop_dermanord" inherit_id="website.layout" name="Webshop Dermanord">
+            <!-- Customize css -->
+            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
+                <link href="/webshop_dermanord/static/src/css/webshop_dermanord.css" rel="stylesheet" />
+            </xpath>
+            <!-- Customize javascript -->
+            <xpath expr="//body/script[last()]" position="after">
+                <script type="text/javascript" src="/webshop_dermanord/static/src/js/webshop_dermanord.js" />
+            </xpath>
+        </template>
+        <template id="product_experiences" name="Product Experiences">
+            <t t-set="blog_posts" t-value="product.blog_post_ids.filtered(lambda p: p.blog_id == p.env.ref('webshop_dermanord.blog_experiences'))" />
+            <t t-set="offset_value" t-value="0" />
+            <t t-if="len(blog_posts) == 1">
+                <t t-set="offset_value" t-value="'col-md-offset-4 col-sm-offset-4'" />
+            </t>
+            <t t-if="len(blog_posts) == 2">
+                <t t-set="offset_value" t-value="'col-md-offset-2 col-sm-offset-2'" />
+            </t>
+            <t t-foreach="blog_posts[:3]" t-as="post">
+                <div t-att-class="'col-md-4 %s col-sm-4 col-xs-12 blog_block' %(offset_value if post_index == 0 else '')">
+                    <div class="image_block" t-att-style="&quot;background-image: url('/imagefieldurl/blog.post/background_image/%s/id/%s')&quot; %(post.id, request.env.ref('webshop_dermanord.experiences_four_three_small').id)">
+                        <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text text-center">
+                            <h3 t-field="post.name" />
+                        </a>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="product_experiences_wide" name="Product Experiences Wide">
+            <t t-set="blog_posts" t-value="product.blog_post_ids.filtered(lambda p: p.blog_id == p.env.ref('webshop_dermanord.blog_experiences'))" />
+            <t t-set="offset_value" t-value="0" />
+            <t t-if="len(blog_posts) == 1">
+                <t t-set="offset_value" t-value="'col-md-offset-3 col-sm-offset-3'" />
+            </t>
+            <t t-foreach="blog_posts[:2]" t-as="post">
+                <div t-att-class="'col-md-6 %s col-sm-6 col-xs-12 blog_block' %(offset_value if post_index == 0 else '')">
+                    <div class="image_block_wide" t-att-style="&quot;background-image: url('/imagefieldurl/blog.post/background_image/%s/id/%s')&quot; %(post.id, request.env.ref('webshop_dermanord.experiences_sixteen_nine_small').id)">
+                        <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text text-center">
+                            <h3 t-field="post.name" />
+                        </a>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <record id="view_blog_post_form" model="ir.ui.view">
+            <field name="name">blog.post.form.webshop</field>
+            <field name="model">blog.post</field>
+            <field name="inherit_id" ref="website_blog.view_blog_post_form" />
+            <field name="arch" type="xml">
+                <sheet position="inside">
+                    <group>
+                        <field name="product_tmpl_ids" widget="many2many_tags" />
+                        <field name="product_public_categ_ids" widget="many2many_tags" />
+                    </group>
+                </sheet>
+            </field>
+        </record>
+        <record id="product_public_category_form_view" model="ir.ui.view">
+            <field name="name">product.public.category.form.inherited.webshop_dermanord</field>
+            <field name="model">product.public.category</field>
+            <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+            <field name="arch" type="xml">
+                <field name="sequence" position="attributes">
+                    <attribute name="widget">handle</attribute>
+                </field>
+            </field>
+        </record>
+    </data>
 </openerp>

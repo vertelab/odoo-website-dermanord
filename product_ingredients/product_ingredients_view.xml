@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+    <record id="product_ingredients_tree" model="ir.ui.view">
+      <field name="name">product.ingredient.tree</field>
+      <field name="model">product.ingredient</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="sequence" widget="handle" />
+          <field name="name" />
+        </tree>
+      </field>
+    </record>
+    <record id="product_ingredients_view" model="ir.ui.view">
+      <field name="name">product.ingredient.form</field>
+      <field name="model">product.ingredient</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Product Ingredients">
+          <sheet string="Product Ingredients">
+            <group>
+              <div class="oe_left" style="width: 500px;">
+                <field name="image" widget="image" class="oe_avatar oe_left" />
+                <div class="oe_title" style="width: 390px;">
+                  <label class="oe_edit_only" for="name" string="Ingredient Name" />
+                  <h1>
+                    <field name="name" class="oe_inline" />
+                  </h1>
+                </div>
+              </div>
+            </group>
+            <notebook>
+              <page string="Description">
+                <field name="description" nolabel="1" />
+              </page>
+              <page string="Products">
+                <field name="product_ids" widget="many2many_tags" nolabel="1" />
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record id="product_ingredients_search" model="ir.ui.view">
+      <field name="name">product.ingredient.search</field>
+      <field name="model">product.ingredient</field>
+      <field name="arch" type="xml">
+        <search string="Product Ingredients">
+          <field name="name" />
+          <group expand="1" string="Group By" />
+        </search>
+      </field>
+    </record>
+    <record id="action_product_ingredients_view" model="ir.actions.act_window">
+      <field name="name">product.ingredient.act</field>
+      <field name="res_model">product.ingredient</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem action="action_product_ingredients_view" id="product_ingredients" name="Product Ingredients" parent="base.menu_product" sequence="80" />
+    <!-- product -->
+    <record id="product_template_form_view" model="ir.ui.view">
+      <field name="name">product.template.ingredients.website.form</field>
+      <field name="model">product.template</field>
+      <field name="inherit_id" ref="website_sale.product_template_form_view" />
+      <field name="arch" type="xml">
+        <group name="website" position="inside">
+          <field name="ingredient_ids" widget="many2many_tags" />
+        </group>
+      </field>
+    </record>
+    <!-- Blog Post List: Displaying a list of Blog Posts -->
+    <!--
+         <template id="page" name="Product Ingredients">
+         
+         
+         
+         <div class="text-muted">
+         <h4
+         t-field="blog_post.subtitle"
+         class="mb4 mt4"/>
+         <div name='blog_post_data' class='mb0'>
+         <span t-field="blog_post.author_id" style="display: inline-block;" t-field-options='{
+         "widget": "contact",
+         "fields": ["name"]
+         }'/>
+         &#5760; <span t-field="blog_post.create_date" t-field-options='{"format": "MMMM yyyy"}'/>
+         <span t-if="len(blog_post.message_ids) &gt; 0">
+         &#5760; <t t-esc="len(blog_post.message_ids)"/>
+         <t t-if="len(blog_post.message_ids) &lt;= 1" >comment</t>
+         <t t-if="len(blog_post.message_ids) > 1">comments</t>
+         </span>
+         
+         <span t-if="not blog_post.website_published" class="label label-danger">not published</span>
+         </div>
+         </div>
+         
+         
+         
+         <div class="oe_structure"/>
+         
+         </template>
+    -->
+  </data>
+</openerp>

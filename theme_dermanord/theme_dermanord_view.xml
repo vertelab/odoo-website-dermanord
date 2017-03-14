@@ -2,7 +2,7 @@
 <openerp>
     <data noupdate="0">
 
-        <!-- header_menu: used for menu in header -->
+        <!-- footer_menu: used for menu in header -->
         <record id="footer_menu" model="website.menu">
             <field name="name">Footer Menu</field>
             <field name="sequence">99</field>
@@ -50,35 +50,41 @@ else: #portrait
         <!-- Theme Dermanord -->
         <template id="theme_dermanord" inherit_id="website.layout" customize_show="True" active="False" name="Theme Dermanord" priority="99">
             <xpath expr="//div[@id='wrapwrap']/header/div[@class='navbar navbar-default navbar-static-top']/div[@class='container']/div[@class='navbar-header']" position="replace">
-                <div class="navbar-header navbar-over">
-                    <button type="button" class="navbar-toggle menu-btn col-md-2" data-toggle="collapse" data-target=".navbar-top-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"/>
-                        <span class="icon-bar"/>
-                        <span class="icon-bar"/>
-                    </button>
-                    <ul class="list-inline js_language_selector hidden-xs col-md-2" t-if="(request.website_multilang and len(languages) &gt; 1) or editable">
-                        <li t-foreach="languages" t-as="lg">
-                            <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
-                                <t t-esc="lg[1].split('/').pop()" />
-                            </a>
-                        </li>
-                        <li groups="base.group_website_publisher">
-                            <t t-set="url_return" t-value="url_for('', '[lang]') + '?' + keep_query()" />
-                            <a t-attf-href="/web#action=base.action_view_base_language_install&amp;website_id=#{website.id}&amp;url_return=#{url_return}">
-                                <i class="fa fa-plus-circle" />
-                                Add a language...
-                            </a>
-                        </li>
-                    </ul>
-                    <a class="navbar-brand logo col-md-8 text-center hidden-xs" href="/" t-field="res_company.name"/>
-                    <t t-set="w_config" t-value="request.env['website.config.settings'].search([])"/>
-                    <t t-if="w_config">
-                        <a class="navbar-brand logo col-md-8 text-center hidden-lg hidden-md hidden-sm" href="/">
-                            <img t-att-src="'data:image/png;base64,%s' %w_config[0].logo"/>
+                <div class="navbar-header" style="padding: 0px;">
+                    <div class="col-md-2 col-sm-2 col-xs-2">
+                        <button type="button" id="menu-btn" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-top-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"/>
+                            <span class="icon-bar"/>
+                            <span class="icon-bar"/>
+                        </button>
+                        <ul class="list-inline js_language_selector hidden-xs col-md-2 col-sm-2 col-xs-2" t-if="(request.website_multilang and len(languages) &gt; 1) or editable">
+                            <li t-foreach="languages" t-as="lg">
+                                <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
+                                    <t t-esc="lg[1].split('/').pop()" />
+                                </a>
+                            </li>
+                            <li groups="base.group_website_publisher">
+                                <t t-set="url_return" t-value="url_for('', '[lang]') + '?' + keep_query()" />
+                                <a t-attf-href="/web#action=base.action_view_base_language_install&amp;website_id=#{website.id}&amp;url_return=#{url_return}">
+                                    <i class="fa fa-plus-circle" />
+                                    Add a language...
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-8 col-sm-8 col-xs-8">
+                        <a id="desktop_logo" class="navbar-brand logo text-center hidden-xs" href="/" style="width: 100%;">
+                            <img src="/logo.png" />
                         </a>
-                    </t>
-                    <i class="fa fa-search fa-2x search-btn col-md-2"/>
+                        <a id="mobile_logo" class="navbar-brand logo text-center hidden-lg hidden-md hidden-sm" href="/" style="width: 100%;">
+                            <img src="/website_logo.png"/>
+                        </a>
+                        <input id="search_input" type="text" style="display: none;"/>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-2">
+                        <i id="search-btn" onclick="show_me_input()" class="fa fa-search fa-2x"/>
+                    </div>
                 </div>
             </xpath>
 
@@ -147,7 +153,7 @@ else: #portrait
                             </t>
                         </div>
                         <div class="col-md-3 mt32 mb32">
-                            <h4>MADE IN SWEDEN</h4>
+                            <h4><img src="/theme_dermanord/static/src/img/logo_black.png" style="height: 50px;"/> MADE IN SWEDEN</h4>
                             <div t-field="res_company.partner_id" t-field-options='{
                 "widget": "contact",
                 "fields": ["name", "address", "phone", "mobile", "fax", "email"]}'/>
@@ -172,15 +178,15 @@ else: #portrait
             </xpath>
         </template>
         <!-- inherit submenu template
-        Desktorp mode: when menu's parent is header_menu, it will apprear in top but not in main menu.
-        Mobile mode: when menu's parent is header_menu, it will not apprear in top but in toggle menu (without parent menu dropdown).
+        Desktorp mode: when menu's parent is footer_menu, it will apprear in top but not in main menu.
+        Mobile mode: when menu's parent is footer_menu, it will not apprear in top but in toggle menu (without parent menu dropdown).
         -->
         <template id="submenu_inherit" inherit_id="website.submenu" name="Submenu Inherit">
             <xpath expr="//li[@t-if='not submenu.child_id']" position="attributes">
                 <attribute name="t-if">not submenu.child_id and submenu.parent_id != submenu.env.ref('theme_dermanord.footer_menu')</attribute>
             </xpath>
             <xpath expr="//li[1]" position="after">
-                <li t-if="not submenu.child_id and submenu.parent_id == submenu.env.ref('theme_dermanord.footer_menu')" t-att-class="'active header_menu' if submenu.url and submenu.url != '/' and request.httprequest.path == submenu.url.replace('/page/website.', '/page/') else 'header_menu'">
+                <li t-if="not submenu.child_id and submenu.parent_id == submenu.env.ref('theme_dermanord.footer_menu')" t-att-class="'active footer_menu' if submenu.url and submenu.url != '/' and request.httprequest.path == submenu.url.replace('/page/website.', '/page/') else 'footer_menu'">
                     <a t-att-href="(website.menu_id.child_id[0] == submenu) and '/' or submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
                         <span t-field="submenu.name" />
                     </a>
@@ -190,7 +196,7 @@ else: #portrait
                 <attribute name="t-if">submenu.child_id and submenu != submenu.env.ref('theme_dermanord.footer_menu')</attribute>
             </xpath>
             <xpath expr="//li[last()]" position="after">
-                <li t-if="submenu.child_id and submenu == submenu.env.ref('theme_dermanord.footer_menu')" t-attf-class="header_menu dropdown hidden-lg hidden-md hidden-sm #{(submenu.url and submenu.url != '/' and any([request.httprequest.path == child.url.replace('/page/website.', '/page/') for child in submenu.child_id if child.url]) or(submenu.url and request.httprequest.path == submenu.url.replace('/page/website.', '/page/'))) and 'active header_menu'}">
+                <li t-if="submenu.child_id and submenu == submenu.env.ref('theme_dermanord.footer_menu')" t-attf-class="footer_menu dropdown hidden-lg hidden-md hidden-sm #{(submenu.url and submenu.url != '/' and any([request.httprequest.path == child.url.replace('/page/website.', '/page/') for child in submenu.child_id if child.url]) or(submenu.url and request.httprequest.path == submenu.url.replace('/page/website.', '/page/'))) and 'active footer_menu'}">
                     <hr/>
                     <t t-foreach="submenu.child_id" t-as="submenu">
                         <a t-att-href="(website.menu_id.child_id[0] == submenu) and '/' or submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">

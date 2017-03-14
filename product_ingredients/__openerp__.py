@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution, third party addon
-#    Copyright (C) 2004-2015 Vertel AB (<http://vertel.se>).
+#    Copyright (C) 2004-2017 Vertel AB (<http://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,21 +20,23 @@
 ##############################################################################
 
 {
-    'name': 'Webshop Dermanord',
+    'name': 'Product Ingredients',
     'version': '1.0',
-    'category': '',
+    'category': 'website',
     'summary': '',
     'description': """
-Special layout for Dermanord AB webshop
-====================
+Product Ingredients
+===================
+Nice formatted ingredients
+
+
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_sale', 'product_multi_image', 'website_blog', 'website_sale_previous_products','website_product_pcategory','website_imagemagick', 'product_crm_campaign'#'product_facets'
-    ],
+    'depends': ['website_imagemagick','product','website'],
     'data': [
-        'webshop_dermanord_view.xml',
-        'webshop_dermanord_data.xml',
+        'security/ir.model.access.csv',
+        'product_ingredients_view.xml',
 ],
     'application': False,
 }

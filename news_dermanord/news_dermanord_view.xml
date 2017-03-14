@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- News Dermanord -->
+        <template id="page" name="News Dermanord">
+            <t t-call="website.layout">
+                <p t-att-id="request.env.ref('press_dermanord.image_thumbnail').id" class="thumbnail_recipe hidden"/>
+                <p t-att-id="request.env.ref('press_dermanord.image_website').id" class="website_recipe hidden"/>
+                <p t-att-id="request.env.ref('press_dermanord.image_original').id" class="original_recipe hidden"/>
+                <section>
+                    <div class="container mt16 mb16 a_bord">
+                        <div class="col-md-3 col-sm-3 col-xs-12 b_bord">
+                            <div id="press_ansvarig_block" class="container text-center mt16 mb16 c_bord">
+                                <t t-set="press_ansvarig" t-value="request.env['hr.employee.category'].browse(request.env.ref('press_dermanord.press_responsible').id).employee_ids[0]" />
+                                <h3>Pressansvarig</h3>
+                                <t t-if="press_ansvarig">
+                                    <h4 t-field="press_ansvarig.name" />
+                                    <h4 t-field="press_ansvarig.work_phone" />
+                                    <h4 t-field="press_ansvarig.work_email" />
+                                </t>
+                                <t t-if="not press_ansvarig">
+                                    <h3>No News Responsible</h3>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="col-md-9 col-sm-9 col-xs-12 b_bord">
+                            <t t-call="press_dermanord.press_release_block" />
+                        </div>
+                    </div>
+               
+                </section>
+                <section />
+            </t>
+        </template>
+
+<!-- Blog Post List: Displaying a list of Blog Posts -->
+<template id="post" name="News Posts">
+
+    
+
+                  <div class="text-muted">
+                      <h4
+                        t-field="blog_post.subtitle"
+                        class="mb4 mt4"/>
+                    <div name='blog_post_data' class='mb0'>
+                         <span t-field="blog_post.author_id" style="display: inline-block;" t-field-options='{
+                                "widget": "contact",
+                                "fields": ["name"]
+                            }'/>
+                        &#5760; <span t-field="blog_post.create_date" t-field-options='{"format": "MMMM yyyy"}'/>
+                        <span t-if="len(blog_post.message_ids) &gt; 0">
+                            &#5760; <t t-esc="len(blog_post.message_ids)"/>
+                            <t t-if="len(blog_post.message_ids) &lt;= 1" >comment</t>
+                            <t t-if="len(blog_post.message_ids) > 1">comments</t>
+                        </span>
+
+                        <span t-if="not blog_post.website_published" class="label label-danger">not published</span>
+                    </div>
+                  </div>
+
+          
+
+        <div class="oe_structure"/>
+ 
+</template>
+
+
+
+    </data>
+</openerp>

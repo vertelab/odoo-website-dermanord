@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
         <!-- Blog Experiences -->
         <record id="blog_experiences" model="blog.blog">
             <field name="name">Experiences</field>
@@ -30,7 +30,24 @@ else:
 image.crop(width=int(float(16)/9*400), height=400, gravity='center')
             </field>
         </record>
-        
+
+        <record id="img_products" model="image.recipe">
+            <field name="name">Products</field>
+            <field name="description">Define the canvas size to limit the image maximum size.
+PS: The canvas will always be the given size</field>
+            <field name="recipe">if image.width &gt;= image.height:
+    image.resize(int(canvas_size), int(float(canvas_size)*float(image.height)/float(image.width)))
+else:
+    image.resize(int(float(canvas_size)*float(image.width)/float(image.height)), int(canvas_size))
+            </field>
+        </record>
+
+        <record id="img_products_param_canvas" model="image.recipe.param">
+            <field name="name">canvas_size</field>
+            <field name="value">500</field>
+            <field name="recipe_id" ref="webshop_dermanord.img_products"/>
+        </record>
+
         <!-- Facets -->
         <record id="facet_remedy" model="product.facet">
             <field name="name">Remedy</field>
@@ -41,7 +58,7 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
         <record id="facet_texture" model="product.facet">
             <field name="name">Texture</field>
         </record>
-        
-        
+
+
     </data>
 </openerp>

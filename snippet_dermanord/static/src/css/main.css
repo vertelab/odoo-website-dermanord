@@ -1,0 +1,109 @@
+.carousel-control {
+    background: none !important;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+/*! Category Block */
+.categ_p_section {
+    background-color: #000;
+}
+
+.categ_p_section h1 {
+    color: #fff;
+}
+
+.categ_p_section .categ_block{
+    padding: 15px;
+}
+
+.categ_p_section .categ_block_img{
+    width: 100%;
+}
+
+.categ_p_section .categ_block_text{
+    margin: 0px;
+}
+
+.categ_block_text a {
+    color: #000 !important;
+}
+
+/*! Blog Slide */
+.blog_slide a {
+    color: #000 !important;
+}
+
+.blog_slide .carousel {
+    overflow: hidden;
+    padding: 20px 20px 80px 20px;
+}
+
+/*! Product Highlights */
+
+.ph_block a {
+    color: #000;
+}
+
+.ph_block > .container > .text-muted > a {
+    color: #777 !important;
+}
+
+.ph_img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    max-height: 250px;
+}
+
+.desc_div {
+    padding: 10px !important;
+    bottom: 0px;
+    left: 0px;
+    background: rgba(255, 255, 255, 0.7);
+    text-overflow: ellipsis;
+}
+
+.ph_block h4 {
+    height: 2em;
+    padding: 15px 0px;
+    line-height: 1.5em;
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+    color: #000;
+}
+
+.ph_block h4::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10%;
+    height: 1.1em;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
+
+.ph_block .ph_desc {
+    height: 4.3em;
+    margin-bottom: 30px;
+    line-height: 1.5em;
+    overflow: hidden;
+    position: relative;
+}
+
+.ph_block .ph_desc::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10%;
+    height: 1.1em;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
+
+@media screen and (max-width: 768px) {
+}

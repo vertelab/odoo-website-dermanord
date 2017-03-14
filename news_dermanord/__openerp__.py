@@ -20,21 +20,20 @@
 ##############################################################################
 
 {
-    'name': 'Webshop Dermanord',
+    'name': 'News Dermanord',
     'version': '1.0',
-    'category': '',
+    'category': 'website',
     'summary': '',
     'description': """
-Special layout for Dermanord AB webshop
+News page for Dermanord
 ====================
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_sale', 'product_multi_image', 'website_blog', 'website_sale_previous_products','website_product_pcategory','website_imagemagick', 'product_crm_campaign'#'product_facets'
-    ],
+    'depends': ['website_imagemagick','website_blog'],
     'data': [
-        'webshop_dermanord_view.xml',
-        'webshop_dermanord_data.xml',
+        'news_dermanord_view.xml',
+        'news_dermanord_data.xml',
 ],
     'application': False,
 }
