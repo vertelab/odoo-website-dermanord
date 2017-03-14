@@ -1,0 +1,19 @@
+.oe_dermexp_body {
+    background: #000;
+    color: #fff;
+}
+
+.oe_dermexp_body > .dropdown > a {
+    background: #000;
+    color: #fff;
+}
+
+.oe_dermexp_body > .dropdown > .dropdown-menu > li > a {
+    background: #000;
+    color: #fff;
+}
+
+.oe_dermexp_body > .dropdown > .dropdown-menu {
+    background: #000;
+    color: #fff;
+}

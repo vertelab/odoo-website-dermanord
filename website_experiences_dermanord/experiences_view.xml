@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+    
+    <record model="ir.ui.view" id="blog_tag_tree">
+      <field name="name">blog_tag_tree.experience</field>
+      <field name="model">blog.tag</field>
+      <field name="inherit_id" ref="website_blog.blog_tag_tree"/>
+      <field name="arch" type="xml">
+        <field name="name" position="after">
+          <field name="experience"/>
+        </field>
+      </field>
+    </record>
+    
+    <record model="ir.ui.view" id="blog_tag_form">
+      <field name="name">blog_tag_form.experience</field>
+      <field name="model">blog.tag</field>
+      <field name="inherit_id" ref="website_blog.blog_tag_form"/>
+      <field name="arch" type="xml">
+        <field name="name" position="after">
+          <field name="experience"/>
+        </field>
+      </field>
+    </record>
+    
+    <template id="assets_frontend" inherit_id="website.assets_frontend" name="Website assets - Dermanord Experiences">
+      <xpath expr="." position="inside">
+        <link rel="stylesheet" href='/website_experiences_dermanord/static/src/css/experiences.css' t-ignore="true"/>
+        <script type="text/javascript" src="/website_experiences_dermanord/static/src/js/experiences.js"></script>
+      </xpath>
+    </template>
+    
+    <template id="experiences" name="Experiences">
+      <t t-call="website.layout">
+        
+      </t>
+    </template>
+    
+    <template id="custom_snippets" inherit_id="website.snippets" name="Custom Snippets">
+      
+      <!-- Customize Structure -->
+      <xpath expr="//div[@id='snippet_structure']" position="inside">
+          <!-- EXPERIENCES SNIPPET -->
+          <div id="dermanord_experiences">
+              <div class="oe_snippet_thumbnail">
+                  <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_banner.png"/>
+                  <span class="oe_snippet_thumbnail_title">Dermanord Experiences</span>
+              </div>
+              <section class="oe_snippet_body oe_dermexp_body">
+                  <div class="" style=" overflow: hidden;">
+                    <div class="dropdown">
+                      <a href="#" data-toggle="dropdown" class="dropdown-toggle oe_dermexp_menu"><h3>SELECT CONTENT <i class="fa fa-chevron-down"/></h3></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">test</a></li>
+                      </ul>
+                    </div>
+                    
+                    
+                    
+                    <div id="dermanord_experiences_carousel" style="height: 320px;">
+                    </div>
+                  </div>
+                  
+                  
+                  
+              </section>
+          </div>
+
+      </xpath>
+
+            <!-- Customize Content -->
+            <xpath expr="//div[@id='snippet_content']" position="inside">
+
+                
+            </xpath>
+
+            <!-- Customize Features -->
+            <xpath expr="//div[@id='snippet_feature']" position="inside">
+
+            </xpath>
+
+    </template>
+    
+    <template id="snippet_options" inherit_id="website.snippet_options" name="Dermanord Experiences Snippet Options">
+<!--
+      <xpath expr="." position="inside">
+        <div data-snippet-option-id='dermanord_experiences'
+          data-selector="oe_dermexp_body">
+          <li class="dropdown-submenu">
+            <a tabindex="-1" href="#">Experiences</a>
+            <ul class="dropdown-menu">
+              <li data-js="dermatest"><a>Static</a></li>
+            </ul>
+          </li>
+        </div>
+      </xpath>
+-->
+    </template>
+    
+  </data>
+</openerp>
