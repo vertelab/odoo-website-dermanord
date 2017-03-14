@@ -106,7 +106,7 @@ website.snippet.options.categ_p_option = website.snippet.Option.extend({
             category_content += show_less_block;
             self.$target.find(".category_div").html(category_content);
         });
-    },
+    }
     //~ col_change: function(col) {
         //~ var self = this;
         //~ self.$target.find(".categ_block:not(.extra_block)").attr({
@@ -145,7 +145,7 @@ website.snippet.options.product_highlights_option = website.snippet.Option.exten
             });
             self.$target.find(".product_div").html(ph_content);
         });
-    },
+    }
     //~ col_change: function(col) {
         //~ var self = this;
         //~ self.$target.find(".ph_block").attr({
@@ -155,26 +155,7 @@ website.snippet.options.product_highlights_option = website.snippet.Option.exten
 });
 
 $(document).ready(function() {
-    $("#show_more_block").click(function() {
-        $("#show_less_block").removeClass("hidden");
-        $("#show_more_block").addClass("hidden");
-        $.each($(".categ_p_section").find(".extra_block"), function(){
-            $(this).removeClass("hidden-xs");
-        });
-    });
-    $("#show_less_block").click(function() {
-        $("#show_more_block").removeClass("hidden");
-        $("#show_less_block").addClass("hidden");
-        $.each($(".categ_p_section").find(".extra_block"), function(){
-            $(this).addClass("hidden-xs");
-        });
-    });
-    $(".carousel.slide").each(function() {
-        var carousel_id = $(this).attr("id");
-        $($(this).find("li")).each(function() {
-            $(this).attr("data-target", "#" + carousel_id);
-        });
-    });
+
     $(function update_categories(){
         openerp.jsonRpc("/category_snippet/get_p_categories", "call", {
         }).done(function(data){
@@ -192,6 +173,21 @@ $(document).ready(function() {
             });
             category_content += show_less_block;
             $(".category_div").html(category_content).text();
+            $("#show_more_block").click(function() {
+                console.log('hej');
+                $("#show_less_block").removeClass("hidden");
+                $("#show_more_block").addClass("hidden");
+                $.each($(".categ_p_section").find(".extra_block"), function(){
+                    $(this).removeClass("hidden-xs");
+                });
+            });
+            $("#show_less_block").click(function() {
+                $("#show_more_block").removeClass("hidden");
+                $("#show_less_block").addClass("hidden");
+                $.each($(".categ_p_section").find(".extra_block"), function(){
+                    $(this).addClass("hidden-xs");
+                });
+            });
         });
     });
     $(function update_product_highlights(){
@@ -203,6 +199,12 @@ $(document).ready(function() {
                 ph_content += content;
             });
             $(".product_div").html(ph_content).text();
+        });
+    });
+    $(".carousel.slide").each(function() {
+        var carousel_id = $(this).attr("id");
+        $($(this).find("li")).each(function() {
+            $(this).attr("data-target", "#" + carousel_id);
         });
     });
     //~ $(".carousel-inner").swiperight(function() {
