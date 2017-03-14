@@ -79,6 +79,15 @@
             <xpath expr="//ul[@id='top_menu']" position="attributes">
                 <attribute name="class">nav nav-justified</attribute>
             </xpath>
+            <!-- Customize css -->
+            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
+                <link href="https://fonts.googleapis.com/css?family=Neuton:400i" rel="stylesheet" />
+                <link href="/theme_dermanord/static/src/css/theme_dermanord.css" rel="stylesheet" />
+            </xpath>
+            <!-- Customize javascript -->
+            <xpath expr="//body" position="inside">
+                <script type="text/javascript" src="/theme_dermanord/static/src/js/theme_dermanord.js" />
+            </xpath>
             <!-- Hide footer -->
             <xpath expr="//footer/div" position="attributes">
                 <attribute name="class">hidden</attribute>
@@ -145,13 +154,6 @@
                         </div>
                     </div>
                 </div>
-            </xpath>
-        </template>
-        <template id="theme_dermanord_css_and_js" inherit_id="website.assets_frontend" name="Theme Dermanord Custom CSS and JS">
-            <xpath expr="." position="inside">
-                <link href="https://fonts.googleapis.com/css?family=Neuton:400i" rel="stylesheet" />
-                <link href="/theme_dermanord/static/src/css/theme_dermanord.css" rel="stylesheet" />
-                <script type="text/javascript" src="/theme_dermanord/static/src/js/theme_dermanord.js" />
             </xpath>
         </template>
         <!-- inherit submenu template

@@ -198,9 +198,13 @@
             </xpath>
 -->
         </template>
-        <template id="webshop_dermanord_css_js" inherit_id="website.assets_frontend" name="Webshop Dermanord CSS JS">
-            <xpath expr="." position="inside">
+        <template id="webshop_dermanord" inherit_id="website.layout" name="Webshop Dermanord">
+            <!-- Customize css -->
+            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
                 <link href="/webshop_dermanord/static/src/css/webshop_dermanord.css" rel="stylesheet" />
+            </xpath>
+            <!-- Customize javascript -->
+            <xpath expr="//body/script[last()]" position="after">
                 <script type="text/javascript" src="/webshop_dermanord/static/src/js/webshop_dermanord.js" />
             </xpath>
         </template>
