@@ -19,8 +19,26 @@ a {
     padding: 15px;
 }
 
+.categ_block .container {
+    position: absolute;
+    top: 42%;
+    left: 10%;
+}
+
+.categ_block h3 {
+    margin: 0px;
+    color: #000;
+}
+
 .categ_p_section .categ_block_img{
     width: 100%;
+    position: relative;
+}
+
+.categ_block_img .container {
+    position: absolute;
+    top: 42%;
+    left: 10%;
 }
 
 .categ_p_section .categ_block_text{
