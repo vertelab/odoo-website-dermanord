@@ -17,18 +17,18 @@
             </div>
         </div>
     </t>
-    <t t-name="blog_slide_indicators">
-        <li t-att-class="indicator" t-att-data-slide-to="slide_nr" data-cke-saved-data-target="#blog_slide"/>
+    <t t-name="sale_promotions_indicators">
+        <li t-att-class="indicator" t-att-data-slide-to="slide_nr" data-cke-saved-data-target="#sale_promotions"/>
     </t>
-    <t t-name="blog_slide_content">
-        <a href="/blog/blog_id/post/post_id">
+    <t t-name="sale_promotions_content">
+        <a t-att-href="sp_url">
             <div t-att-class="item_content" style="">
                 <img class="img-responsive" t-att-src="background_image" t-att-data-cke-saved-src="background_image" style="position: relative; width:100%; height: auto !important;"/>
                  <div class="container" style="position: absolute; top: 10%; left: 0;">
                     <div class="row content">
                         <div class="col-md-12 col-sm-12">
-                            <h4 class="mb16 dn_uppercase" style="max-width: 100%;"><t t-esc="blog_name"/></h4>
-                            <h5 class="mb16"><t t-esc="blog_subtitle"/></h5>
+                            <h4 class="mb16 dn_uppercase" style="max-width: 100%;"><t t-esc="sp_name"/></h4>
+                            <h5 class="mb16"><t t-esc="sp_description"/></h5>
                         </div>
                     </div>
                 </div>

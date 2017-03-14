@@ -25,16 +25,16 @@
                     </section>
                 </div>
 
-                <div id="blog_slide">
+                <div id="sale_promotions">
                     <div class="oe_snippet_thumbnail">
                         <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_banner.png"/>
-                        <span class="oe_snippet_thumbnail_title">Blog Slide</span>
+                        <span class="oe_snippet_thumbnail_title">Sale / Promotions</span>
                     </div>
-                    <section class="oe_snippet_body blog_slide mb16">
-                        <h3 class="text-center mt32 mb32 oe_bs_title dn_uppercase">Blog Slide</h3>
-                        <div class="carousel slide" data-ride="carousel" id="blog_slide">
-                            <ol class="carousel-indicators blog_slide_indicators"/>
-                            <div class="carousel-inner blog_slide_content"/>
+                    <section class="oe_snippet_body sale_promotions mb16">
+                        <h3 class="text-center mt32 mb32 oe_bs_title dn_uppercase">Sale / Promotions</h3>
+                        <div class="carousel slide" data-ride="carousel" id="sale_promotions">
+                            <ol class="carousel-indicators sale_promotions_indicators"/>
+                            <div class="carousel-inner sale_promotions_content"/>
                         </div>
                         <img src="/snippet_dermanord/static/src/img/finger.png" class="touch_finger" style="margin: auto; display: block;"/>
                     </section>
@@ -223,10 +223,10 @@
                         </t>
                     </li>
                 </div>
-                <div data-snippet-option-id="blog_slide_option" data-selector=".blog_slide">
+                <div data-snippet-option-id="sale_promotions_option" data-selector=".sale_promotions">
                     <li class="dropdown-submenu">
                         <li class="">
-                            <a tabindex="-1" href="#" class="oe_blog_slide">Sale / Promotions</a>
+                            <a tabindex="-1" href="#" class="oe_sale_promotions">Sale / Promotions</a>
                         </li>
                     </li>
                 </div>

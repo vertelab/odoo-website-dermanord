@@ -1,50 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
-
-        <record id="sale_promotions" model="blog.blog">
-            <field name="name">Sale / Promotions</field>
-            <field name="description"></field>
-        </record>
-
-    </data>
-
     <data>
-
-        <record id="img_sale_promotions" model="image.recipe">
-            <field name="name">Sale / Promotions (?:?)</field>
-            <field name="description">Define the canvas size to limit the image maximum size.
-Define the aspect ratio to resize the image.
-E.g. horizontal=1920, vertical=1080. The aspect ratio will be 16:9.
-PS: The canvas will always be the given size</field>
-            <field name="recipe">if float(image.width)/image.height >= float(horizontal)/float(vertical):
-    image.transform(resize='%sx>' %int(float(image.width)/image.height*image.width))
-    image.crop(width=int(float(horizontal)/float(vertical)*image.height), height=image.height, gravity='center')
-    image.resize(int(canvas_size), int(float(canvas_size)*float(vertical)/float(horizontal)))
-else:
-    image.transform(resize='%sx>' %int(float(horizontal)/float(vertical)*image.width))
-    image.crop(width=image.width, height=int(float(vertical)/float(horizontal)*image.width), gravity='center')
-    image.resize(int(float(canvas_size)*float(horizontal)/float(vertical)), int(canvas_size))
-            </field>
-        </record>
-
-        <record id="img_sale_promotions_param_canvas" model="image.recipe.param">
-            <field name="name">canvas_size</field>
-            <field name="value">1920</field>
-            <field name="recipe_id" ref="snippet_dermanord.img_sale_promotions"/>
-        </record>
-
-        <record id="img_sale_promotions_param_horizontal" model="image.recipe.param">
-            <field name="name">horizontal</field>
-            <field name="value">1</field>
-            <field name="recipe_id" ref="snippet_dermanord.img_sale_promotions"/>
-        </record>
-
-        <record id="img_sale_promotions_param_vertical" model="image.recipe.param">
-            <field name="name">vertical</field>
-            <field name="value">1</field>
-            <field name="recipe_id" ref="snippet_dermanord.img_sale_promotions"/>
-        </record>
 
         <record id="img_blog_slide" model="image.recipe">
             <field name="name">Blog Slide (?:?)</field>
@@ -65,20 +21,55 @@ else:
 
         <record id="img_blog_slide_param_canvas" model="image.recipe.param">
             <field name="name">canvas_size</field>
-            <field name="value">800</field>
+            <field name="value">1920</field>
             <field name="recipe_id" ref="snippet_dermanord.img_blog_slide"/>
         </record>
 
         <record id="img_blog_slide_param_horizontal" model="image.recipe.param">
             <field name="name">horizontal</field>
-            <field name="value">4</field>
+            <field name="value">1</field>
             <field name="recipe_id" ref="snippet_dermanord.img_blog_slide"/>
         </record>
 
         <record id="img_blog_slide_param_vertical" model="image.recipe.param">
             <field name="name">vertical</field>
-            <field name="value">3</field>
+            <field name="value">1</field>
             <field name="recipe_id" ref="snippet_dermanord.img_blog_slide"/>
+        </record>
+
+        <record id="img_sale_promotions" model="image.recipe">
+            <field name="name">Sale Promotions</field>
+            <field name="description">Define the canvas size to limit the image maximum size.
+Define the aspect ratio to resize the image.
+E.g. horizontal=1920, vertical=1080. The aspect ratio will be 16:9.
+PS: The canvas will always be the given size</field>
+            <field name="recipe">if float(image.width)/image.height >= float(horizontal)/float(vertical):
+    image.transform(resize='%sx>' %int(float(image.width)/image.height*image.width))
+    image.crop(width=int(float(horizontal)/float(vertical)*image.height), height=image.height, gravity='center')
+    image.resize(int(canvas_size), int(float(canvas_size)*float(vertical)/float(horizontal)))
+else:
+    image.transform(resize='%sx>' %int(float(horizontal)/float(vertical)*image.width))
+    image.crop(width=image.width, height=int(float(vertical)/float(horizontal)*image.width), gravity='center')
+    image.resize(int(float(canvas_size)*float(horizontal)/float(vertical)), int(canvas_size))
+            </field>
+        </record>
+
+        <record id="img_sale_promotions_param_canvas" model="image.recipe.param">
+            <field name="name">canvas_size</field>
+            <field name="value">800</field>
+            <field name="recipe_id" ref="snippet_dermanord.img_sale_promotions"/>
+        </record>
+
+        <record id="img_sale_promotions_param_horizontal" model="image.recipe.param">
+            <field name="name">horizontal</field>
+            <field name="value">4</field>
+            <field name="recipe_id" ref="snippet_dermanord.img_sale_promotions"/>
+        </record>
+
+        <record id="img_sale_promotions_param_vertical" model="image.recipe.param">
+            <field name="name">vertical</field>
+            <field name="value">3</field>
+            <field name="recipe_id" ref="snippet_dermanord.img_sale_promotions"/>
         </record>
 
         <record id="img_categories" model="image.recipe">
