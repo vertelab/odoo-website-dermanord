@@ -79,9 +79,9 @@ website.snippet.options.categ_p_option = website.snippet.Option.extend({
         this.$el.find(".oe_p_categories").on('click', function () {
             self.get_categories();
         });
-        this.$el.find(".oe_c_col_change").on('click', function () {
-            self.col_change($(this).attr("data-value"));
-        });
+        //~ this.$el.find(".oe_c_col_change").on('click', function () {
+            //~ self.col_change($(this).attr("data-value"));
+        //~ });
     },
     get_categories: function(){
         var self = this;
@@ -107,15 +107,15 @@ website.snippet.options.categ_p_option = website.snippet.Option.extend({
             self.$target.find(".category_div").html(category_content);
         });
     },
-    col_change: function(col) {
-        var self = this;
-        self.$target.find(".categ_block:not(.extra_block)").attr({
-            "class": "categ_block col-md-" + col
-        });
-        self.$target.find(".extra_block").attr({
-            "class": "categ_block extra_block hidden-xs col-md-" + col
-        });
-    }
+    //~ col_change: function(col) {
+        //~ var self = this;
+        //~ self.$target.find(".categ_block:not(.extra_block)").attr({
+            //~ "class": "categ_block col-md-" + col
+        //~ });
+        //~ self.$target.find(".extra_block").attr({
+            //~ "class": "categ_block extra_block hidden-xs col-md-" + col
+        //~ });
+    //~ }
 });
 
 website.snippet.options.product_highlights_option = website.snippet.Option.extend({
@@ -125,9 +125,9 @@ website.snippet.options.product_highlights_option = website.snippet.Option.exten
         this.$el.find(".oe_product_highlights").on('click', function () {
             self.get_highlighted_products();
         });
-        this.$el.find(".oe_ph_col_change").on('click', function () {
-            self.col_change($(this).attr("data-value"));
-        });
+        //~ this.$el.find(".oe_ph_col_change").on('click', function () {
+            //~ self.col_change($(this).attr("data-value"));
+        //~ });
     },
     get_highlighted_products: function(){
         var self = this;
@@ -146,12 +146,12 @@ website.snippet.options.product_highlights_option = website.snippet.Option.exten
             self.$target.find(".product_div").html(ph_content);
         });
     },
-    col_change: function(col) {
-        var self = this;
-        self.$target.find(".ph_block").attr({
-            "class": "ph_block col-md-" + col
-        });
-    }
+    //~ col_change: function(col) {
+        //~ var self = this;
+        //~ self.$target.find(".ph_block").attr({
+            //~ "class": "ph_block col-md-" + col
+        //~ });
+    //~ }
 });
 
 $(document).ready(function() {
@@ -173,6 +173,25 @@ $(document).ready(function() {
         var carousel_id = $(this).attr("id");
         $($(this).find("li")).each(function() {
             $(this).attr("data-target", "#" + carousel_id);
+        });
+    });
+    $(function update_categories(){
+        openerp.jsonRpc("/category_snippet/get_p_categories", "call", {
+        }).done(function(data){
+            var category_content = '';
+            var show_more_block = "<h3 id='show_more_block' class='text-center mt16 mb16 hidden-lg hidden-md hidden-sm' style='color: #fff; text-decoration: underline;'>Show More <i class='fa fa-angle-down'/></h3>";
+            var show_less_block = "<h3 id='show_less_block' class='text-center mt16 mb16 hidden-lg hidden-md hidden-sm hidden' style='color: #fff; text-decoration: underline;'>Show Less <i class='fa fa-angle-up'/></h3>";
+            i = 0;
+            $.each(data, function(key, info) {
+                var content = '<a href="/shop/category/' + data[key][0]['id'] + '"><div class="categ_block col-md-4 col-xs-12"><img class="img img-responsive categ_block_img" src="' + data[key][0]['image'] + '"/><div class="container"><h3 class="categ_block_text dn_uppercase">' + '<span>' + data[key][0]['name'] + '</span></h3></div></div></a>';
+                category_content += i > categ_block_hidden_indicator ? content.replace("categ_block", "categ_block extra_block hidden-xs") : content;
+                if(i == categ_block_hidden_indicator){
+                    category_content += show_more_block;
+                }
+                i ++;
+            });
+            category_content += show_less_block;
+            $(".category_div").html(category_content).text();
         });
     });
     $(function update_product_highlights(){

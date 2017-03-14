@@ -234,6 +234,7 @@
                     <li class="">
                         <a tabindex="-1" href="#" class="oe_p_categories">Categories</a>
                     </li>
+<!--
                     <li class="dropdown-submenu">
                         <a tabindex="-1" href="#">Columns</a>
                         <ul class="dropdown-menu">
@@ -243,11 +244,13 @@
                             <li><a data-value="12" class="oe_c_col_change">Col-12</a></li>
                         </ul>
                     </li>
+-->
                 </div>
                 <div data-snippet-option-id="product_highlights_option" data-selector=".product_highlights">
                     <li class="">
                         <a tabindex="-1" href="#" class="oe_product_highlights">Product Highlights</a>
                     </li>
+<!--
                     <li class="dropdown-submenu">
                         <a tabindex="-1" href="#">Columns</a>
                         <ul class="dropdown-menu">
@@ -257,6 +260,7 @@
                             <li><a data-value="12" class="oe_ph_col_change">Col-12</a></li>
                         </ul>
                     </li>
+-->
                 </div>
             </xpath>
 
