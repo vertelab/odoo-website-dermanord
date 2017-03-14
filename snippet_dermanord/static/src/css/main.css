@@ -112,7 +112,7 @@ a {
 /*! Product Highlights */
 
 .ph_block {
-    padding: 20px 0px;
+    padding: 20px 0px !important;
 }
 
 .ph_block a {
@@ -128,7 +128,9 @@ a {
     justify-content: center;
     align-items: center;
     margin: auto;
+/*
     max-height: 250px;
+*/
 }
 
 .desc_div {
