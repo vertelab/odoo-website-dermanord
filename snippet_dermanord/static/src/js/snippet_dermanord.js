@@ -46,7 +46,6 @@ website.snippet.options.sale_promotions_option = website.snippet.Option.extend({
         var self = this;
         openerp.jsonRpc("/get_sale_promotions", "call", {
         }).done(function(data){
-            console.log(data);
             var indicator_content = '';
             var sp_content = '';
             i = 0;
@@ -193,7 +192,6 @@ $(document).ready(function() {
     $(function update_sale_promotions(){
         openerp.jsonRpc("/get_sale_promotions", "call", {
         }).done(function(data){
-            console.log(data);
             var sp_content = '';
             i = 0;
             $.each(data, function(key, info) {
@@ -204,7 +202,6 @@ $(document).ready(function() {
             });
             $(".sale_promotions_content").html(sp_content);
             $(".sale_promotions").find(".carousel.slide").each(function() {
-                console.log($(this).attr("id"));
                 var carousel_id = $(this).attr("id");
                 $($(this).find("li")).each(function() {
                     $(this).attr("data-target", "#" + carousel_id);
