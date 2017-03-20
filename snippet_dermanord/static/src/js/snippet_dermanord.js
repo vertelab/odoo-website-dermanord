@@ -137,9 +137,9 @@ website.snippet.options.product_highlights_option = website.snippet.Option.exten
                 var content = openerp.qweb.render('product_highlights_snippet', {
                     'ph_name': data[key]['name'],
                     'ph_image': data[key]['image'],
-                    'ph_description': data[key]['description_sale'],
+                    'ph_description': data[key]['description'],
                 });
-                content = content.replace("shop/product/product_id", "/shop/product/" + data[key]['id']);
+                content = content.replace("product_highlight_link", data[key]['url']);
                 ph_content += content;
             });
             self.$target.find(".product_div").html(ph_content);
@@ -215,7 +215,7 @@ $(document).ready(function() {
         }).done(function(data){
             var ph_content = '';
             $.each(data, function(key, info) {
-                var content = '<a href="shop/product/' + data[key]['id'] + '"><div class="ph_block col-md-3 col-xs-12" style="padding: 20px 0px;"><img class="img img-responsive ph_img" src="' + data[key]['image'] + '"/><div class="container desc_div"><h4 class="dn_uppercase"><span>' + data[key]['name'] + '</span></h4><h5 class="ph_desc text-muted"><span>' + data[key]['description_sale'] + '</span></h5></div></div></a>';
+                var content = '<a href="' + data[key]['url'] + '"><div class="ph_block col-md-3 col-xs-12" style="padding: 20px 0px;"><img class="img img-responsive ph_img" src="' + data[key]['image'] + '"/><div class="container desc_div"><h4 class="dn_uppercase"><span>' + data[key]['name'] + '</span></h4><h5 class="ph_desc text-muted"><span>' + data[key]['description'] + '</span></h5></div></div></a>';
                 ph_content += content;
             });
             $(".product_div").html(ph_content).text();

@@ -85,20 +85,32 @@ class snippet(http.Controller):
     @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="user", website=True)
     def get_highlighted_products(self, **kw):
         campaigns = request.env['crm.tracking.campaign'].sudo().search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today())])
-        product_list = []
+        object_list = []
         if len(campaigns) > 0:
-            if len(campaigns[0].product_ids) > 0:
-                pcc = campaigns[0].product_ids.sorted(key=lambda p: p.sequence)
-                for p in pcc:
-                    product_image_url = ''
-                    if len(p.product_id.image_ids) > 0:
-                        product_image_url = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(p.product_id.image_ids[0].id, 'webshop_dermanord.img_products')
-                    product_list.append(
+            occs = request.env['object.crm.campaign'].browse([])
+            for c in campaigns:
+                if len(c.object_ids) > 0:
+                    for occ in c.object_ids:
+                        occs |= occ
+            if len(occs) > 0:
+                occs = occs.sorted(key=lambda o: o.sequence)
+                for occ in occs:
+                    url = ''
+                    if occ.object_id._name == 'product.template':
+                        url = '/shop/product/%s' %occ.object_id.id
+                    elif occ.object_id._name == 'product.product':
+                        url = '/shop/product/%s/variant/%s' %(occ.object_id.product_tmpl_id.id, occ.object_id.id)
+                    elif occ.object_id._name == 'product.public.category':
+                        url = '/shop/category/%s' %occ.object_id.id
+                    elif occ.object_id._name == 'blog.post':
+                        url = '/blog/%s/post/%s' %(occ.object_id.blog_id.id, occ.object_id.id)
+                    object_list.append(
                         {
-                            'id': p.product_id.id,
-                            'name': p.product_id.name,
-                            'image': product_image_url,
-                            'description_sale': p.product_id.description_sale,
+                            'id': occ.id,
+                            'name': occ.name,
+                            'image': '/imagefield/object.crm.campaign/image/%s/ref/%s' %(occ.id, 'webshop_dermanord.img_products') if occ.image else '',
+                            'description': occ.description,
+                            'url': url,
                         }
                     )
-        return product_list
+        return object_list

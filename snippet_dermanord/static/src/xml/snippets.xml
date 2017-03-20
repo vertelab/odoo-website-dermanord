@@ -46,7 +46,7 @@
         </a>
     </t>
     <t t-name="product_highlights_snippet">
-        <a href="shop/product/product_id">
+        <a href="product_highlight_link">
             <div class="ph_block col-md-3 col-xs-12">
                 <img class="img img-responsive ph_img" t-att-src="ph_image" t-att-data-cke-saved-src="ph_image"/>
                 <div class="container desc_div">
