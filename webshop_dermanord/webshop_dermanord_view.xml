@@ -266,5 +266,28 @@
                 </field>
             </field>
         </record>
+        <record id="product_normal_form_view" model="ir.ui.view">
+            <field name="name">product.product.common.form.inherited.webshop_dermanord</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='options']" position="inside">
+                    <div>
+                        <field name="default_variant"/>
+                        <label for="default_variant"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+        <record id="product_product_tree_view" model="ir.ui.view">
+            <field name="name">product.product.tree.inherited.webshop_dermanord</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="ean13" position="after">
+                    <field name="default_variant"/>
+                </field>
+            </field>
+        </record>
     </data>
 </openerp>
