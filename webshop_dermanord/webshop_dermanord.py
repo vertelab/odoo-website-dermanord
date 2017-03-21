@@ -128,3 +128,12 @@ class website_sale(website_sale):
         }
         return request.website.render("webshop_dermanord.products", values)
 
+
+class webshop_dermanord(http.Controller):
+    @http.route(['/get/product_variant_value'], type='json', auth="public", website=True)
+    def product_variant_value(self, product_id=None, value_id=None, **kw):
+        if product_id and value_id:
+            product = request.env['product.template'].browse(int(product_id))
+            if product:
+                variants = product.product_variant_ids.filtered(lambda v: int(value_id) in v.attribute_value_ids.mapped("id"))
+                return variants[0].ingredients if len(variants) > 0 else ''
