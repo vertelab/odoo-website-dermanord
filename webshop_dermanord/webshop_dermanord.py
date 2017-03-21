@@ -127,3 +127,4 @@ class website_sale(website_sale):
             'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
         }
         return request.website.render("webshop_dermanord.products", values)
+

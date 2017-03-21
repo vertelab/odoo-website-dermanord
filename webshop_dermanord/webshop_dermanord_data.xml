@@ -44,7 +44,7 @@ else:
 
         <record id="img_products_param_canvas" model="image.recipe.param">
             <field name="name">canvas_size</field>
-            <field name="value">500</field>
+            <field name="value">300</field>
             <field name="recipe_id" ref="webshop_dermanord.img_products"/>
         </record>
 

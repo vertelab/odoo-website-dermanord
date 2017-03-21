@@ -47,25 +47,22 @@ class snippet(http.Controller):
                 }
         return posts_list
 
-    @http.route(['/blog_slide_snippet/blog_slide_change'], type='json', auth="user", website=True)
-    def blog_slide_change(self, **kw):
-        posts = request.env['blog.post'].search([('blog_id', '=', request.env.ref('snippet_dermanord.sale_promotions').id), ('website_published', '=', True)], order='write_date')
-        posts_list = {'posts': {}}
-        if len(posts) > 0:
-            posts_list['blog_name'] = posts[0].blog_id.name
-            for p in posts:
-                post_image_url = ''
-                if p.background_image and '/ir.attachment/' in p.background_image:
-                    start = str(p.background_image).index('/ir.attachment/') + len('/ir.attachment/')
-                    end = str(p.background_image).index('/datas', start )
-                    post_image_url = '/imagefield/ir.attachment/datas/%s/ref/%s' %(str(p.background_image)[start:end].split('_')[0], 'snippet_dermanord.img_blog_slide')
-                posts_list['posts'][p.id] = {
-                    'name': p.name,
-                    'subtitle': p.subtitle,
-                    'blog_id': p.blog_id.id,
-                    'background_image': post_image_url,
-                }
-        return posts_list
+    @http.route(['/get_sale_promotions'], type='json', auth="user", website=True)
+    def get_sale_promotions(self, **kw):
+        sps = request.env['sale.promotion'].sudo().search([('website_published', '=', True)], order='sequence')
+        sp_list = []
+        if len(sps) > 0:
+            for sp in sps.sorted(key=lambda s: s.sequence):
+                sp_list.append(
+                    {
+                        'id': sp.id,
+                        'name': sp.name,
+                        'description': sp.description,
+                        'url': sp.url,
+                        'image': '/imagefield/sale.promotion/image/%s/ref/%s' %(sp.id, 'snippet_dermanord.img_sale_promotions'),
+                    }
+                )
+        return sp_list
 
     @http.route(['/category_snippet/get_p_categories'], type='json', auth="user", website=True)
     def get_p_categories(self, **kw):
@@ -77,31 +74,43 @@ class snippet(http.Controller):
                 if c.image_medium:
                     image_url = '/imagefield/product.public.category/image_medium/%s/ref/%s' %(c.id, 'snippet_dermanord.img_categories')
                 category_list.append(
-                    [{
+                    {
                         'id': c.id,
                         'name': c.name,
                         'image': image_url,
-                    }]
+                    }
                 )
         return category_list
 
     @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="user", website=True)
     def get_highlighted_products(self, **kw):
         campaigns = request.env['crm.tracking.campaign'].sudo().search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today())])
-        product_list = []
+        object_list = []
         if len(campaigns) > 0:
-            if len(campaigns[0].product_ids) > 0:
-                pcc = campaigns[0].product_ids.sorted(key=lambda p: p.sequence)
-                for p in pcc:
-                    product_image_url = ''
-                    if len(p.product_id.image_ids) > 0:
-                        product_image_url = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(p.product_id.image_ids[0].id, 'webshop_dermanord.img_products')
-                    product_list.append(
-                        [{
-                            'id': p.product_id.id,
-                            'name': p.product_id.name,
-                            'image': product_image_url,
-                            'description_sale': p.product_id.description_sale,
-                        }]
+            occs = request.env['object.crm.campaign'].browse([])
+            for c in campaigns:
+                if len(c.object_ids) > 0:
+                    for occ in c.object_ids:
+                        occs |= occ
+            if len(occs) > 0:
+                occs = occs.sorted(key=lambda o: o.sequence)
+                for occ in occs:
+                    url = ''
+                    if occ.object_id._name == 'product.template':
+                        url = '/shop/product/%s' %occ.object_id.id
+                    elif occ.object_id._name == 'product.product':
+                        url = '/shop/product/%s/variant/%s' %(occ.object_id.product_tmpl_id.id, occ.object_id.id)
+                    elif occ.object_id._name == 'product.public.category':
+                        url = '/shop/category/%s' %occ.object_id.id
+                    elif occ.object_id._name == 'blog.post':
+                        url = '/blog/%s/post/%s' %(occ.object_id.blog_id.id, occ.object_id.id)
+                    object_list.append(
+                        {
+                            'id': occ.id,
+                            'name': occ.name,
+                            'image': '/imagefield/object.crm.campaign/image/%s/ref/%s' %(occ.id, 'webshop_dermanord.img_products') if occ.image else '',
+                            'description': occ.description,
+                            'url': url,
+                        }
                     )
-        return product_list
+        return object_list
