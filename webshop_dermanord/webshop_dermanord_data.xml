@@ -61,6 +61,7 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
         </record>
 
         <!-- Facets -->
+<!--
         <record id="facet_remedy" model="product.facet">
             <field name="name">Remedy</field>
         </record>
@@ -70,6 +71,7 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
         <record id="facet_texture" model="product.facet">
             <field name="name">Texture</field>
         </record>
+-->
 
 
     </data>
