@@ -22,7 +22,7 @@
 {
     'name': 'Product Ingredients',
     'version': '1.0',
-    'category': 'website',
+    'category': 'Website',
     'summary': '',
     'description': """
 Product Ingredients
@@ -37,7 +37,8 @@ Nice formatted ingredients
     'data': [
         'security/ir.model.access.csv',
         'product_ingredients_view.xml',
-],
-    'application': False,
+    ],
+    'qweb': ['static/src/xml/*.xml'],
+    'application': True,
 }
 

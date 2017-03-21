@@ -2,9 +2,6 @@
     //~ 'use strict';
 
     //~ var website = openerp.website;
-
-
-
     //~ website.snippet.options.dermanord_experience = website.snippet.Option.extend({
         //~ dermatest: function () {
 
