@@ -154,6 +154,7 @@
                         </ul>
                     </div>
                     <div class="tab-content col-md-8 no_padding_div">
+<!--
                         <div id="remedy" class="tab-pane fade in active">
                             <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_remedy")).mapped("value_ids").mapped("name"))' />
                         </div>
@@ -163,6 +164,7 @@
                         <div id="texture" class="tab-pane fade in">
                             <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_texture")).mapped("value_ids").mapped("name"))' />
                         </div>
+-->
                         <div id="public_desc" class="tab-pane fade in">
                             <!-- TODO: find method that check if current user is a customer -->
                             <p>public description</p>
