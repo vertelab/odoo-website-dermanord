@@ -107,9 +107,9 @@ class snippet(http.Controller):
                     object_list.append(
                         {
                             'id': occ.id,
-                            'name': occ.name,
+                            'name': occ.name if occ.name else '',
                             'image': '/imagefield/object.crm.campaign/image/%s/ref/%s' %(occ.id, 'snippet_dermanord.img_product') if occ.image else '',
-                            'description': occ.description,
+                            'description': occ.description if occ.description else '',
                             'url': url,
                         }
                     )
