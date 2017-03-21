@@ -78,7 +78,8 @@
             <xpath expr="//div[@itemprop='description']" position="before">
                 <t t-set="ingredients" t-value="request.env['product.ingredient'].search([('product_ids', 'in', product.id)])"/>
                 <t t-if="len(ingredients) &gt; 0">
-                    <div class="conatiner hidden-xs">
+                    <h2 class="mt32 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>
+                    <div class="conatiner mb16 hidden-xs">
                         <div class="col-md-12">
                             <t t-foreach="ingredients" t-as="ingredient">
                                 <div class="col-md-2">
@@ -89,12 +90,12 @@
                             </t>
                         </div>
                     </div>
-                    <div class="conatiner hidden-lg hidden-md hidden-sm">
+                    <div class="conatiner mb16 hidden-lg hidden-md hidden-sm">
                         <div class="col-md-12">
-                            <div class="carousel slide" id="ingredient_carousel" data-ride="carousel" style="overflow: hidden;">
-                                <div class="carousel-inner">
+                            <div class="carousel slide" id="ingredient_carousel" data-ride="carousel">
+                                <div class="carousel-inner" style="padding-bottom: 40px;">
                                     <t t-foreach="ingredients" t-as="ingredient">
-                                        <div t-att-class="'item %s' %('active' if index_ingredient == 0 else '')">
+                                        <div t-att-class="'item %s' %('active' if ingredient_index == 0 else '')">
                                             <img class="img img-responsive" style="margin: auto;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
                                             <h6 style="color: #D27153;" class="text-center" t-field="ingredient.name"/>
                                             <h5 class="text-muted text-center" t-field="ingredient.description"/>
@@ -103,7 +104,7 @@
                                 </div>
                                 <ol class="carousel-indicators">
                                     <t t-foreach="ingredients" t-as="ingredient">
-                                        <li t-att-class="'active' if index_ingredient == 0 else ''" t-att-data-slide-to="index_ingredient" data-target="ingredient_carousel"/>
+                                        <li t-att-class="'active' if ingredient_index == 0 else ''" t-att-data-slide-to="'0' if ingredient_index == 0 else ingredient_index" data-target="#ingredient_carousel"/>
                                     </t>
                                 </ol>
                             </div>
@@ -112,7 +113,9 @@
                     </div>
                 </t>
                 <div class="conatiner">
-                    <p><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" t-field="product_product.ingredients"/></p>
+                    <div class="col-md-12">
+                        <p><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" t-field="product_product.ingredients"/></p>
+                    </div>
                 </div>
             </xpath>
         </template>
