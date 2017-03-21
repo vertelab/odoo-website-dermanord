@@ -22,7 +22,7 @@
 {
     'name': 'Product Ingredients',
     'version': '1.0',
-    'category': 'website',
+    'category': 'Website',
     'summary': '',
     'description': """
 Product Ingredients
@@ -33,11 +33,12 @@ Nice formatted ingredients
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_imagemagick','product','website'],
+    'depends': ['website_imagemagick','product','website_sale', 'website', 'web'],
     'data': [
         'security/ir.model.access.csv',
         'product_ingredients_view.xml',
-],
-    'application': False,
+    ],
+    'qweb': ['static/src/xml/*.xml'],
+    'application': True,
 }
 

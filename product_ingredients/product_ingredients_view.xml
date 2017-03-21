@@ -1,6 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
   <data>
+    
+    <template id="ingredient_slide_indicators">
+        <li t-att-class="indicator" t-att-data-slide-to="slide_nr" data-cke-saved-data-target="#ingredient_slide"/>
+    </template>
+    
+    <template inherit_id="website_sale.product" customize_show="True" name="Ingredient Slide" id="ingredient_slide">
+      <xpath expr="//div[@t-field='product.website_description']" position="after">
+        <section class="ingredient_slide mb16" t-att-data-product="product.id">
+          <h3 class="text-center mt32 mb32 oe_bs_title dn_uppercase">Ingredient Slide</h3>
+          <div class="carousel slide" data-ride="carousel" id="ingredient_slide">
+            <ol class="carousel-indicators ingredient_slide_indicators"/>
+            <div class="carousel-inner ingredient_slide_content"/>
+          </div>
+          <img src="/snippet_dermanord/static/src/img/finger.png" class="touch_finger" style="margin: auto; display: block;"/>
+        </section>
+      </xpath>
+    </template>
+    
+    <template id="assets_frontend" inherit_id="website.assets_frontend" name="Website assets - Ingredients">
+      <xpath expr="." position="inside">
+<!--
+        <link rel="stylesheet" href='/product_ingredients/static/src/css/experiences.css' t-ignore="true"/>
+-->
+        <script type="text/javascript" src="/product_ingredients/static/src/js/product_ingredients.js" t-raw="init"></script>
+      </xpath>
+    </template>
+    
+
+<!--
+    <template id="custom_snippets" inherit_id="website.snippets" name="Custom Snippets">
+      <xpath expr="//div[@id='snippet_structure']" position="inside">
+        <div id="ingredient_slide">
+          <div class="oe_snippet_thumbnail">
+            <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_banner.png"/>
+            <span class="oe_snippet_thumbnail_title">Ingredient Slide</span>
+          </div>
+          <section class="oe_snippet_body ingredient_slide mb16">
+            <h3 class="text-center mt32 mb32 oe_bs_title dn_uppercase">Ingredient Slide</h3>
+            <div class="carousel slide" data-ride="carousel" id="ingredient_slide">
+              <ol class="carousel-indicators ingredient_slide_indicators"/>
+              <div class="carousel-inner ingredient_slide_content"/>
+            </div>
+            <img src="/snippet_dermanord/static/src/img/finger.png" class="touch_finger" style="margin: auto; display: block;"/>
+          </section>
+        </div>
+      </xpath>
+    </template>
+-->
+            
     <record id="product_ingredients_tree" model="ir.ui.view">
       <field name="name">product.ingredient.tree</field>
       <field name="model">product.ingredient</field>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        
+        <record id="recipe_product_shadow" model="image.recipe">
+            <field name="name">Product Shadow</field>
+            <field name="description">Add a shadow to a product.
+
+===Parameters===
+* shadow_color 	The color of the shadow (string). rgba([red, 0 - 255], [green, 0 - 255], [blue, 0 - 255], [opacity, 0.0 - 1.0])
+* shadow_x 	    Shadow x-position, pixels (integer).
+* shadow_y 	    Shadow y-position, pixels (integer).
+* gauss_radius 	Shadow bluriness radius, pixels (integer).
+* gauss_sigma 	Shadow bluriness standard deviation, pixels (integer).
+* background    Path to background image.
+
+See http://www.imagemagick.org/script/color.php for a detailed description of valid color strings.
+            </field>
+            <field name="recipe">shadow = Image()
+shadow.blank(width=image.width, height=image.height, background=Color(shadow_color))
+shadow.format = 'png'
+shadow.alpha_channel = True
+x = int(shadow_x)
+y = int(shadow_y)
+#Transfer alpha to shadow image to create item shadow.
+shadow.composite_channel('alpha', image, 'darken', x, y)
+#Shadow created dark bars along edges. Create 'punch image' to make them transparent again.
+punch = Image()
+punch.blank(width=image.width, height=abs(y), background=Color('rgba(0, 0, 0 ,0)'))
+punch.format = 'png'
+punch.alpha_channel = True
+#Transfer alpha from punch to shadow.
+shadow.composite_channel('alpha', punch, 'darken', 0, 0 if y > 0 else image.height + y)
+punch.blank(width=abs(x), height=image.height, background=Color('rgba(0, 0, 0 ,0)'))
+shadow.composite_channel('alpha', punch, 'darken', 0 if x > 0 else image.width + x, 0)
+#Add bluriness to shadow
+shadow.gaussian_blur(int(gauss_radius), int(gauss_sigma))
+#Add item on top of shadow
+shadow.composite(image, 0, 0)
+if background:
+    bg = Image()
+    bg.read(filename=background)
+    res = Image()
+    res.blank(width=image.width, height=image.height, background=Color('rgba(0, 0, 0 ,0)'))
+    res.composite(bg, (image.width - bg.width) / 2, (image.height - bg.height) / 2)
+    res.composite(shadow, 0, 0)
+else:
+    res = shadow</field>
+            <field name="param_ids" eval="[(0, 0, {'name': 'shadow_color', 'value': 'rgba(0, 0, 0, 0.2)'}), (0, 0, {'name': 'shadow_x', 'value': '-50'}), (0, 0, {'name': 'shadow_y', 'value': '50'}), (0, 0, {'name': 'gauss_radius', 'value': '6'}), (0, 0, {'name': 'gauss_sigma', 'value': '3'}), (0, 0, {'name': 'background', 'value': '/usr/share/odoo-website-dermanord/theme_dermanord/static/src/img/product_bg/birch.jpg'})]"/>
+        </record>
+        
+    </data>
+</openerp>
