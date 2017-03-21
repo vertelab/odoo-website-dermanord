@@ -90,7 +90,7 @@
                             </t>
                         </div>
                     </div>
-                    <div class="conatiner mb16 hidden-lg hidden-md hidden-sm">
+                    <div class="container mb16 hidden-lg hidden-md hidden-sm">
                         <div class="col-md-12">
                             <div class="carousel slide" id="ingredient_carousel" data-ride="carousel">
                                 <div class="carousel-inner" style="padding-bottom: 40px;">
@@ -112,7 +112,7 @@
                         </div>
                     </div>
                 </t>
-                <div class="conatiner">
+                <div class="container">
                     <div class="col-md-12">
                         <p><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" t-field="product_product.ingredients"/></p>
                     </div>
