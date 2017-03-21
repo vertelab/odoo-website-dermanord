@@ -99,7 +99,7 @@ class snippet(http.Controller):
                     if occ.object_id._name == 'product.template':
                         url = '/shop/product/%s' %occ.object_id.id
                     elif occ.object_id._name == 'product.product':
-                        url = '/shop/product/%s/variant/%s' %(occ.object_id.product_tmpl_id.id, occ.object_id.id)
+                        url = '/shop/variant/%s' %(occ.object_id.id)
                     elif occ.object_id._name == 'product.public.category':
                         url = '/shop/category/%s' %occ.object_id.id
                     elif occ.object_id._name == 'blog.post':
@@ -108,7 +108,7 @@ class snippet(http.Controller):
                         {
                             'id': occ.id,
                             'name': occ.name,
-                            'image': '/imagefield/object.crm.campaign/image/%s/ref/%s' %(occ.id, 'webshop_dermanord.img_products') if occ.image else '',
+                            'image': '/imagefield/object.crm.campaign/image/%s/ref/%s' %(occ.id, 'snippet_dermanord.img_product') if occ.image else '',
                             'description': occ.description,
                             'url': url,
                         }
