@@ -52,12 +52,6 @@ class product_template(models.Model):
     blog_post_ids = fields.Many2many(comodel_name='blog.post', string='Posts', compute='_blog_post_ids')
 
 
-class product_product(models.Model):
-    _inherit = 'product.product'
-
-    default_variant = fields.Boolean(string='Default Variant')
-
-
 class website_sale(website_sale):
 
     @http.route([
@@ -134,8 +128,3 @@ class website_sale(website_sale):
         }
         return request.website.render("webshop_dermanord.products", values)
 
-    @http.route([
-        '/shop/<model("product.template"):template>/variant/<model("product.product"):product>'
-    ], type='http', auth="public", website=True)
-    def dn_product_variant(self, template=None, product=None, **post):
-        return request.website.render('website_sale.product', {'product': template, 'product_product': product})
