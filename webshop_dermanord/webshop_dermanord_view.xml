@@ -78,8 +78,8 @@
             <xpath expr="//div[@itemprop='description']" position="before">
                 <t t-set="ingredients" t-value="request.env['product.ingredient'].search([('product_ids', 'in', product.id)])"/>
                 <t t-if="len(ingredients) &gt; 0">
-                    <h2 class="mt32 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>
-                    <div class="conatiner mb16 hidden-xs">
+                    <h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>
+                    <div class="container mb16 hidden-xs">
                         <div class="col-md-12">
                             <t t-foreach="ingredients" t-as="ingredient">
                                 <div class="col-md-2">
@@ -91,7 +91,7 @@
                         </div>
                     </div>
                     <div class="container mb16 hidden-lg hidden-md hidden-sm">
-                        <div class="col-md-12">
+                        <div class="col-md-12 mb16">
                             <div class="carousel slide" id="ingredient_carousel" data-ride="carousel">
                                 <div class="carousel-inner" style="padding-bottom: 40px;">
                                     <t t-foreach="ingredients" t-as="ingredient">
@@ -113,7 +113,7 @@
                     </div>
                 </t>
                 <div class="container">
-                    <div class="col-md-12">
+                    <div class="col-md-12 mt32">
                         <p><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" t-field="product_product.ingredients"/></p>
                     </div>
                 </div>
