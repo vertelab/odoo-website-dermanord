@@ -19,12 +19,21 @@
 }
 
 body {
+/*
     font-family: 'Futura-Medium' !important;
+*/
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 500;
 }
 
 h6 {
     font-family: 'Neuton', serif;
     font-size: 24px;
+}
+
+h7 {
+    font-family: 'Oxygen', sans-serif;
+    font-size: 30px;
 }
 
 .dn_btn {

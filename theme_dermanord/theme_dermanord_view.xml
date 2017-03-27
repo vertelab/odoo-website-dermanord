@@ -82,6 +82,8 @@
             <!-- Customize css -->
             <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
                 <link href="https://fonts.googleapis.com/css?family=Neuton:400i" rel="stylesheet" />
+                <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,700" rel="stylesheet"/>
+                <link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet"/>
                 <link href="/theme_dermanord/static/src/css/theme_dermanord.css" rel="stylesheet" />
             </xpath>
             <!-- Customize javascript -->
@@ -227,12 +229,13 @@
                             <div class="container">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <h1 class="text-center">H1 Rubrik-text</h1>
-                                        <h2 class="text-center">H2 Rubrik-text</h2>
-                                        <h3 class="text-center">H3 Rubrik-text</h3>
-                                        <h4 class="text-center">H4 Rubrik-text</h4>
-                                        <h5 class="text-center">H5 Rubrik-text</h5>
-                                        <h6 class="text-center">H6 Rubrik-text</h6>
+                                        <h1 class="text-center">H1 Rubrik-text (Quicksand - Alt: Futura Medium)</h1>
+                                        <h2 class="text-center">H2 Rubrik-text (Quicksand - Alt: Futura Medium)</h2>
+                                        <h3 class="text-center">H3 Rubrik-text (Quicksand - Alt: Futura Medium)</h3>
+                                        <h4 class="text-center">H4 Rubrik-text (Quicksand - Alt: Futura Medium)</h4>
+                                        <h5 class="text-center">H5 Rubrik-text (Quicksand - Alt: Futura Medium)</h5>
+                                        <h6 class="text-center">H6 Rubrik-text (Neuton)</h6>
+                                        <h7 class="text-center">H7 Rubrik-text (Oxygen - Alt: Futura Medium)</h7>
                                         <p/>
                                         <h1 style="text-align: center;">
                                             Subsript
