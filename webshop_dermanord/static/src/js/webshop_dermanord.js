@@ -26,16 +26,6 @@ $(document).ready(function(){
                 $(".ingredients_description").find(".text-muted").html(data['ingredients']);
             }
         });
-        console.log("send: " + $(event_source).val());
-        if ($(event_source).val() !== '') {
-            openerp.jsonRpc("/get/product_variant_data", "call", {
-                'product_id': product_id,
-                'value_id': $(event_source).val(),
-            }).done(function(data){
-                console.log(data);
-                $(".ingredients_description").find("span").html(data);
-            });
-        }
         $img.parent().attr('data-oe-model', 'product.product').attr('data-oe-id', product_id)
             .data('oe-model', 'product.product').data('oe-id', product_id);
     }
