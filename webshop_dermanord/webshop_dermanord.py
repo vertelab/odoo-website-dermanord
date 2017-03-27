@@ -130,13 +130,15 @@ class website_sale(website_sale):
 
 
 class webshop_dermanord(http.Controller):
-    @http.route(['/get/product_img'], type='json', auth="public", website=True)
-    def product_img(self, product_id=None, **kw):
+    @http.route(['/get/product_variant_data'], type='json', auth="public", website=True)
+    def product_variant_data(self, product_id=None, **kw):
+        value = {}
         if product_id:
             product = request.env['product.product'].browse(int(product_id))
             if product:
-                img = product.image_ids[0].id
-                return img
+                value['image_id'] = product.image_ids[0].id
+                value['ingredients'] = product.ingredients
+        return value
 
     @http.route(['/get/product_variant_value'], type='json', auth="public", website=True)
     def product_variant_value(self, product_id=None, value_id=None, **kw):

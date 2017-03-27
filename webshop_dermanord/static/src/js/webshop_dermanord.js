@@ -15,15 +15,20 @@ $(document).ready(function(){
     function update_product_image(event_source, product_id) {
         var $img = $(event_source).closest('tr.js_product, .oe_website_sale').find('span[data-oe-model^="product."][data-oe-type="image"] img:first, img.product_detail_img');
         var $img_thumb = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_nav").find("li:first").find("img");
-        openerp.jsonRpc("/get/product_img", "call", {
+        openerp.jsonRpc("/get/product_variant_data", "call", {
             'product_id': product_id,
         }).done(function(data){
-            $img.attr("src", "/imagefield/base_multi_image.image/file_db_store/" + data + "/ref/website_sale_product_gallery.img_product_detail");
-            $img_thumb.attr("src", "/imagefield/base_multi_image.image/file_db_store/" + data + "/ref/website_sale_product_gallery.img_product_thumbnail");
+            if (data['image_id'] != undefined) {
+                $img.attr("src", "/imagefield/base_multi_image.image/file_db_store/" + data['image_id'] + "/ref/website_sale_product_gallery.img_product_detail");
+                $img_thumb.attr("src", "/imagefield/base_multi_image.image/file_db_store/" + data['image_id'] + "/ref/website_sale_product_gallery.img_product_thumbnail");
+            }
+            if (data['ingredients'] != undefined) {
+                $(".ingredients_description").find(".text-muted").html(data['ingredients']);
+            }
         });
         console.log("send: " + $(event_source).val());
         if ($(event_source).val() !== '') {
-            openerp.jsonRpc("/get/product_variant_value", "call", {
+            openerp.jsonRpc("/get/product_variant_data", "call", {
                 'product_id': product_id,
                 'value_id': $(event_source).val(),
             }).done(function(data){
