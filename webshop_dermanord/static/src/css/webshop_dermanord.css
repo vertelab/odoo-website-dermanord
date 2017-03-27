@@ -199,3 +199,19 @@
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
+.facet_div {
+    padding: 0px 10px 0px 0 !important;
+    overflow: hidden;
+    position: relative;
+    height: 124px;
+}
+
+.facet_div ::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10%;
+    height: 2em;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}

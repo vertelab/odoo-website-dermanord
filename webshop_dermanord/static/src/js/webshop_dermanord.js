@@ -1,5 +1,17 @@
 $(document).ready(function(){
 
+    $(".show_more_facet").click(function(){
+        $(this).addClass("hidden");
+        $(".hide_more_facet").removeClass("hidden");
+        $(".facet_container").removeClass("hidden-xs");
+    });
+
+    $(".hide_more_facet").click(function(){
+        $(this).addClass("hidden");
+        $(".show_more_facet").removeClass("hidden");
+        $(".facet_container").addClass("hidden-xs");
+    });
+
     function update_product_image(event_source, product_id) {
         var $img = $(event_source).closest('tr.js_product, .oe_website_sale').find('span[data-oe-model^="product."][data-oe-type="image"] img:first, img.product_detail_img');
         var $img_thumb = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_nav").find("li:first").find("img");
