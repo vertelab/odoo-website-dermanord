@@ -251,8 +251,10 @@
             <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
                 <link href="/webshop_dermanord/static/src/css/webshop_dermanord.css" rel="stylesheet" />
             </xpath>
+        </template>
+        <template id="assets_frontend_override" inherit_id="website_sale.assets_frontend">
             <!-- Customize javascript -->
-            <xpath expr="//body/script[last()]" position="after">
+            <xpath expr="//script[@src='/website_sale/static/src/js/website_sale.js']" position="replace">
                 <script type="text/javascript" src="/webshop_dermanord/static/src/js/webshop_dermanord.js" />
             </xpath>
         </template>
