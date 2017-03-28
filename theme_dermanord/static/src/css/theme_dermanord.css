@@ -148,6 +148,14 @@ footer input, footer .input-group-addon {
 }
 
 @media (max-width: 768px) {
+    .nav-justified > li > a {
+        color: #fff !important;
+    }
+
+    .nav-justified > li > a:hover {
+        color: #000 !important;
+    }
+
     #top_menu {
         background-color: #000;
     }
