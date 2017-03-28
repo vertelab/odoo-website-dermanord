@@ -34,8 +34,6 @@ Extra snippets for Dermanord.
         'webshop_dermanord',
         'website_imagemagick',
         'sale_promotions',
-        'blog_crm_campaign',
-        'product_crm_campaign',
     ],
     'data': [
         'snippets_css_js.xml',
