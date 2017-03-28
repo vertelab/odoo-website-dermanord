@@ -115,6 +115,10 @@ a {
     padding: 20px 0px !important;
 }
 
+.ph_block:hover {
+    border: 1px solid #CB683F;
+}
+
 .ph_block a {
     color: #000;
 }
