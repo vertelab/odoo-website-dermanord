@@ -93,11 +93,13 @@
                             </t>
                         </div>
                     </t>
+                    <t t-if="product_product">
+                        <p t-field="product_product.reseller_desc" class="text-muted reseller_desc" groups="base.group_website_publisher"/>
+                    </t>
                 </div>
                 <h4 class="hide_more_facet text-center hidden-lg hidden-md hidden-sm hidden" style="text-decoration: underline;">Less info <i class="fa fa-angle-up"/></h4>
                 <t t-set="variant" t-value="product.product_variant_ids[0]" />
                 <!-- TODO: find method that get the product vairant -->
-                <hr />
                 <div class="col-md-12 no_padding_div hidden">
                     <div class="col-md-4 no_padding_div">
                         <ul class="nav nav-pills nav-stacked">
@@ -152,7 +154,13 @@
                         </div>
                     </div>
                 </div>
-                <hr />
+            </xpath>
+            <xpath expr="//p[@t-field='product.description_sale']" position="replace">
+                <p t-field="product.description_sale" class="text-muted"/>
+                <t t-if="product_product">
+                    <p t-field="product_product.use_desc" class="text-muted use_desc"/>
+                    <hr/>
+                </t>
             </xpath>
             <xpath expr="//div[@itemprop='description']" position="before">
                 <t t-set="ingredients" t-value="request.env['product.ingredient'].search([('product_ids', 'in', product.id)], order='sequence')"/>

@@ -215,3 +215,15 @@
     height: 2em;
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
+
+#image_nav > li.active > a > img {
+    border: 1px solid #CB683F;
+}
+
+#image_nav > li > a > img {
+    border: 1px solid #ddd;
+}
+
+#image_nav > li.active > a, #image_nav > li.active > a:hover, #image_nav > li.active > a:focus {
+    background-color: #fff !important;
+}
