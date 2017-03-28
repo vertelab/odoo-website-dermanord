@@ -26,6 +26,7 @@ website.snippet.options.blog_banner_option = website.snippet.Option.extend({
                     });
                     //~ content = content.replace("/blog/blog_id/post/post_id", ("/blog/" + data[key]['blog_id'] + "/post/" + key));
                     blog_content += content;
+                    console.log(blog_content);
                     i ++;
                 });
                 self.$target.find(".blog_banner_content").html(blog_content);

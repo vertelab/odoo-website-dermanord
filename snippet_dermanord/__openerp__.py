@@ -26,14 +26,17 @@
     'summary': 'A Snippet Library',
     'description': """
 Extra snippets for Dermanord.
-====================
+=============================
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
     'depends': [
+        'product_multi_image',
         'webshop_dermanord',
         'website_imagemagick',
         'sale_promotions',
+        'crm_campaign_product',
+        'crm_campaign_blog',
     ],
     'data': [
         'snippets_css_js.xml',

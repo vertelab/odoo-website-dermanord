@@ -87,7 +87,7 @@ class snippet(http.Controller):
         campaigns = request.env['crm.tracking.campaign'].sudo().search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today())])
         object_list = []
         if len(campaigns) > 0:
-            occs = request.env['object.crm.campaign'].browse([])
+            occs = request.env['crm.campaign.object'].browse([])
             for c in campaigns:
                 if len(c.object_ids) > 0:
                     for occ in c.object_ids:
@@ -108,7 +108,7 @@ class snippet(http.Controller):
                         {
                             'id': occ.id,
                             'name': occ.name if occ.name else '',
-                            'image': '/imagefield/object.crm.campaign/image/%s/ref/%s' %(occ.id, 'snippet_dermanord.img_product') if occ.image else '',
+                            'image': '/imagefield/crm.campaign.object/image/%s/ref/%s' %(occ.id, 'snippet_dermanord.img_product') if occ.image else '',
                             'description': occ.description if occ.description else '',
                             'url': url,
                         }
