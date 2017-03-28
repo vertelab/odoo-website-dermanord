@@ -30,7 +30,7 @@ Special layout for Dermanord AB webshop
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_sale_product_gallery', 'website_blog', 'product_dermanord', 'website_sale_previous_products','website_product_pcategory','website_imagemagick', 'product_ingredients', 'product_facets'
+    'depends': ['product_multi_image', 'website_sale_product_gallery', 'website_blog', 'product_dermanord', 'website_sale_previous_products','website_product_pcategory','website_imagemagick', 'product_ingredients', 'product_facets'
     ],
     'data': [
         'webshop_dermanord_view.xml',
