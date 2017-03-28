@@ -93,7 +93,7 @@
                             </t>
                         </div>
                     </t>
-                    <div class="col-md-12">
+                    <div class="col-md-12 no_padding_div">
                         <t t-if="product_product">
                             <p t-field="product_product.reseller_desc" class="text-muted reseller_desc" groups="base.group_website_publisher"/>
                         </t>
