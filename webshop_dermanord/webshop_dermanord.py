@@ -130,6 +130,12 @@ class website_sale(website_sale):
 
 
 class webshop_dermanord(http.Controller):
+    
+    @http.route(['/dn_shop/search'], type='json', auth="public", website=True)
+    def search(self, **kw):
+        raise Warning(kw)
+        return value
+    
     @http.route(['/get/product_variant_data'], type='json', auth="public", website=True)
     def product_variant_data(self, product_id=None, **kw):
         value = {}
