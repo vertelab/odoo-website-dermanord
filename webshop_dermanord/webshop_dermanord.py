@@ -143,7 +143,9 @@ class webshop_dermanord(http.Controller):
             product = request.env['product.product'].browse(int(product_id))
             if product:
                 value['image_id'] = product.image_ids[0].id
-                value['ingredients'] = product.ingredients
+                value['ingredients'] = product.ingredients or ''
+                value['use_desc'] = product.use_desc or ''
+                value['reseller_desc'] = product.reseller_desc or ''
         return value
 
     @http.route(['/get/product_variant_value'], type='json', auth="public", website=True)

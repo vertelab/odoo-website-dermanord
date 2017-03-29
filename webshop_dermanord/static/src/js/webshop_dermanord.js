@@ -18,13 +18,14 @@ $(document).ready(function(){
         openerp.jsonRpc("/get/product_variant_data", "call", {
             'product_id': product_id,
         }).done(function(data){
+            console.log(data);
             if (data['image_id'] != undefined) {
                 $img.attr("src", "/imagefield/base_multi_image.image/file_db_store/" + data['image_id'] + "/ref/website_sale_product_gallery.img_product_detail");
                 $img_thumb.attr("src", "/imagefield/base_multi_image.image/file_db_store/" + data['image_id'] + "/ref/website_sale_product_gallery.img_product_thumbnail");
             }
-            if (data['ingredients'] != undefined) {
-                $(".ingredients_description").find(".text-muted").html(data['ingredients']);
-            }
+            $(".ingredients_description").find(".text-muted").html(data['ingredients']);
+            $(".use_desc").html(data['use_desc']);
+            $(".reseller_desc").html(data['reseller_desc']);
         });
         $img.parent().attr('data-oe-model', 'product.product').attr('data-oe-id', product_id)
             .data('oe-model', 'product.product').data('oe-id', product_id);
