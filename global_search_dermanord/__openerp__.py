@@ -30,7 +30,7 @@ Global search function
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['theme_dermanord'],
+    'depends': ['website_sale', 'theme_dermanord', 'website_fts'],
     'data': [
         'search_view.xml',
 ],
