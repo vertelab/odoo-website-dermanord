@@ -81,9 +81,20 @@ h1, .dn_uppercase {
     background-color: #000 !important;
 }
 
+#search_div {
+    margin-top: 10px;
+}
+
 #search-btn {
     float: right !important;
     padding: 9px 10px;
+}
+
+#search_input {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 999;
 }
 
 #wrapwrap > header > .navbar-static-top {
@@ -135,10 +146,6 @@ footer input, footer .input-group-addon {
 
 .nav-justified > li > a {
     color: #000 !important;
-}
-
-#search_input {
-    margin-top: 8px;
 }
 
 @media (min-width: 768px) {

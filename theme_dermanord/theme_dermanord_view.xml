@@ -63,11 +63,22 @@
                         <a id="mobile_logo" class="navbar-brand logo text-center hidden-lg hidden-md hidden-sm" href="/" style="width: 100%;">
                             <img src="/website_logo.png"/>
                         </a>
-                        <input id="search_input" type="text" style="display: none;"/>
                     </div>
-                    <div class="col-md-2 col-sm-2 col-xs-2">
-                        <i id="search-btn" onclick="show_me_input()" class="fa fa-search fa-2x"/>
+                    <div id="search_div" class="col-md-2 col-sm-2 col-xs-2">
+                        <div class="hidden-lg hidden-md hidden-sm">
+                            <i id="search-btn-modal" class="fa fa-search fa-2x"/>
+                        </div>
                     </div>
+<!--
+                    <div id="search_div" class="col-md-10 col-sm-10 col-xs-10 col-md-offset-2 col-sm-offset-2 col-xs-offset-2" style="padding: 0px; top: 0px; left: 0px;">
+                        <div id="search_input" class="col-md-10 col-sm-10 col-xs-10" style="display: none; z-index: 999px;">
+                            <input class="form-control" type="text"/>
+                        </div>
+                        <div class="col-md-2 col-sm-2 col-xs-2 col-md-offset-10 col-sm-offset-10 col-xs-offset-10">
+                            <i id="search-btn" class="fa fa-search fa-2x"/>
+                        </div>
+                    </div>
+-->
                 </div>
             </xpath>
 
