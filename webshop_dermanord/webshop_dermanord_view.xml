@@ -23,7 +23,7 @@
                 </div>
             </t>
         </template>
-        
+
         <template id="products_attributes" inherit_id="products" active="False" customize_show="True" name="Product Attribute's Search">
             <xpath expr="//t[@t-call='website_sale.search']" position="after">
                 <div>
@@ -44,7 +44,7 @@
                 </div>
             </xpath>
         </template>
-        
+
         <template id="products_item" name="Product item">
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" class="dn_product_div col-md-4 col-sm-6 col-xs-12">
@@ -96,6 +96,18 @@
                 </div>
             </form>
         </template>
+
+        <template id="search_result" inherit_id="website_fts.search_result">
+            <xpath expr="//t[@t-foreach='docs']" position="replace">
+                <t t-foreach="docs" t-as="product">
+                    <a t-att-href="'shop/product/%s' %product.id">
+                        <h3><t t-esc="product.name"/></h3>
+                    </a>
+                    <h4 class="text-muted"><t t-esc="product.description_sale"/></h4>
+                </t>
+            </xpath>
+        </template>
+
         <template id="dermanord_product_detail" inherit_id="website_sale.product">
             <xpath expr="//a[@id='add_to_cart']" position="attributes">
                 <attribute name="class">dn_btn dn_primary mt8 js_check_product a-submit text-center</attribute>
