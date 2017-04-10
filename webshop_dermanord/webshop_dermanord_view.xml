@@ -132,7 +132,7 @@
                             <h3><t t-esc="term.model_record.product_tmpl_id.name"/></h3>
                         </a>
                         <t t-foreach="term.model_record.product_tmpl_id.facet_line_ids.with_context({'res_id': term.res_id}).filtered(lambda f: f.id == f._context.get('res_id'))[0].value_ids" t-as="value">
-                            <span class="dn_tags" t-esc="'%s ' %value.name"/>
+                            <span class="dn_facets" t-esc="'%s ' %value.name"/>
                         </t>
                         <h4 class="text-muted"><t t-esc="term.model_record.product_tmpl_id.description_sale"/></h4>
                     </t>

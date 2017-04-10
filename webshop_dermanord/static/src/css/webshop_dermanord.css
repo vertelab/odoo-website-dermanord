@@ -231,10 +231,15 @@
 /* fts search */
 
 .fts_result .dn_tags {
-    color: #fff;
     padding: 3px 5px;
     margin-right: 5px;
-    background-color: #054F74;
+    border: 1px solid #CB683F;
+}
+
+.fts_result .dn_facets {
+    padding: 3px 5px;
+    margin-right: 5px;
+    border: 1px solid #3FA2CC;
 }
 
 .dn_kw {
