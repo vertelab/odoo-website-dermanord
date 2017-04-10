@@ -227,3 +227,16 @@
 #image_nav > li.active > a, #image_nav > li.active > a:hover, #image_nav > li.active > a:focus {
     background-color: #fff !important;
 }
+
+/* fts search */
+
+.fts_result .dn_tags {
+    color: #fff;
+    padding: 3px 5px;
+    margin-right: 5px;
+    background-color: #054F74;
+}
+
+.dn_kw {
+    background-color: #ff3;
+}

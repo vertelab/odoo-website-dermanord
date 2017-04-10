@@ -99,12 +99,22 @@
 
         <template id="search_result" inherit_id="website_fts.search_result">
             <xpath expr="//t[@t-foreach='terms']" position="replace">
+                <script>var dermanord_kw = "<t t-esc='kw'/>";</script>
                 <t t-foreach="terms" t-as="term">
                     <t t-if="term.res_model == 'product.template'">
                         <a t-att-href="'/shop/product/%s' %term.res_id">
                             <h3><t t-esc="term.model_record.name"/></h3>
                         </a>
                         <h4 class="text-muted"><t t-esc="term.model_record.description_sale"/></h4>
+                    </t>
+                    <t t-if="term.res_model == 'product.product'">
+                        <a t-att-href="'/shop/variant/%s' %term.res_id">
+                            <h3><t t-esc="term.model_record.name"/></h3>
+                        </a>
+                        <t t-foreach="term.model_record.attribute_value_ids" t-as="value">
+                            <span class="dn_tags" t-esc="'%s ' %value.name"/>
+                        </t>
+                        <h4 class="text-muted"><t t-esc="term.model_record.product_tmpl_id.description_sale"/></h4>
                     </t>
                     <t t-if="term.res_model == 'product.public.category'">
                         <a t-att-href="'/shop/category/%s' %term.res_id">
@@ -116,6 +126,15 @@
                             <h3><t t-esc="term.model_record.name"/></h3>
                         </a>
                         <h4 class="text-muted"><t t-esc="term.model_record.subtitle"/></h4>
+                    </t>
+                    <t t-if="term.res_model == 'product.facet.line'">
+                        <a t-att-href="'/shop/product/%s' %term.model_record.product_tmpl_id">
+                            <h3><t t-esc="term.model_record.product_tmpl_id.name"/></h3>
+                        </a>
+                        <t t-foreach="term.model_record.product_tmpl_id.facet_line_ids.with_context({'res_id': term.res_id}).filtered(lambda f: f.id == f._context.get('res_id'))[0].value_ids" t-as="value">
+                            <span class="dn_tags" t-esc="'%s ' %value.name"/>
+                        </t>
+                        <h4 class="text-muted"><t t-esc="term.model_record.product_tmpl_id.description_sale"/></h4>
                     </t>
                 </t>
             </xpath>
