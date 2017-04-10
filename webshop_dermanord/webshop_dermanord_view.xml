@@ -99,11 +99,24 @@
 
         <template id="search_result" inherit_id="website_fts.search_result">
             <xpath expr="//t[@t-foreach='terms']" position="replace">
-                <t t-foreach="terms.filtered(lambda t: t.res_model == 'product.template')" t-as="product">
-                    <a t-att-href="'shop/product/%s' %product.res_id">
-                        <h3><t t-esc="product.model_record.name"/></h3>
-                    </a>
-                    <h4 class="text-muted"><t t-esc="product.model_record.description_sale"/></h4>
+                <t t-foreach="terms" t-as="term">
+                    <t t-if="term.res_model == 'product.template'">
+                        <a t-att-href="'/shop/product/%s' %term.res_id">
+                            <h3><t t-esc="term.model_record.name"/></h3>
+                        </a>
+                        <h4 class="text-muted"><t t-esc="term.model_record.description_sale"/></h4>
+                    </t>
+                    <t t-if="term.res_model == 'product.public.category'">
+                        <a t-att-href="'/shop/category/%s' %term.res_id">
+                            <h3><t t-esc="term.model_record.name"/></h3>
+                        </a>
+                    </t>
+                    <t t-if="term.res_model == 'blog.post'">
+                        <a t-att-href="'/blog/%s/post/%s' %(request.env['blog.post'].browse(term.res_id).blog_id.id, term.res_id)">
+                            <h3><t t-esc="term.model_record.name"/></h3>
+                        </a>
+                        <h4 class="text-muted"><t t-esc="term.model_record.subtitle"/></h4>
+                    </t>
                 </t>
             </xpath>
         </template>
