@@ -263,7 +263,7 @@
             </xpath>
             <xpath expr="//p[@t-field='product.description_sale']" position="replace">
                 <p t-field="product.description_sale" class="text-muted"/>
-                <t t-if="product_product">
+                <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') not in user_id.groups_id">
                     <p t-field="product_product.use_desc" class="text-muted use_desc"/>
                     <hr/>
                 </t>
