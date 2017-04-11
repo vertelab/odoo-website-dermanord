@@ -195,8 +195,11 @@
                         </div>
                     </t>
                     <div class="col-md-12 no_padding_div">
-                        <t t-if="product_product">
-                            <p t-field="product_product.reseller_desc" class="text-muted reseller_desc" groups="base.group_website_publisher"/>
+                        <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') in user_id.groups_id">
+                            <p t-field="product_product.reseller_desc" class="text-muted reseller_desc"/>
+                        </t>
+                        <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') not in user_id.groups_id">
+                            <p t-field="product_product.public_desc" class="text-muted public_desc"/>
                         </t>
                     </div>
                 </div>
