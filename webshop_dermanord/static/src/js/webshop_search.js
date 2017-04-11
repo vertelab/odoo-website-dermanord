@@ -1,15 +1,27 @@
 var times = 0;
 
+$.expr[":"].contains = $.expr.createPseudo(function(arg) {
+    return function( elem ) {
+        return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+    };
+});
+
+jQuery.fn.highlight = function (str, className) {
+    var regex = new RegExp(str, "gi");
+    return this.each(function () {
+        $(this).contents().filter(function() {
+            return this.nodeType == 3 && regex.test(this.nodeValue);
+        }).replaceWith(function() {
+            return (this.nodeValue || "").replace(regex, function(match) {
+                return "<span class=\"" + className + "\">" + match + "</span>";
+            });
+        });
+    });
+};
+
 $(document).ready(function(){
 
-    $(".fts_result").find("h3, h4, h5, span").each(function(){
-        console.log($(this).text());
-        if($(this).text().toLowerCase().indexOf(dermanord_kw) > -1){
-            var content = $(this).text();
-            var content_arr = content.split(dermanord_kw); //TODO: case insensitve on regex
-            $(this).html(content_arr[0] + "<span class='dn_kw'>" + dermanord_kw + "</span>" + content_arr[1]);
-        }
-    });
+    $(".fts_result *").highlight(dermanord_kw, "highlight");
 
     $(document).ready(function(){
         $(".oe_select9_dn_search").select9();
