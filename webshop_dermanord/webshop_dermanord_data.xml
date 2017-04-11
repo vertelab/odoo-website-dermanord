@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data noupdate="0">
-
+        <!-- ingredients -->
         <record id="img_ingredients" model="image.recipe">
             <field name="name">Ingredients</field>
             <field name="description">Define the canvas size to limit the image maximum size.
@@ -28,6 +28,35 @@ res = bg
             <field name="name">bg_color</field>
             <field name="value">#ffffff</field>
             <field name="recipe_id" ref="webshop_dermanord.img_ingredients"/>
+        </record>
+
+        <!-- search result -->
+        <record id="img_search_result" model="image.recipe">
+            <field name="name">Search Result</field>
+            <field name="description">Define the canvas size to limit the image maximum size.
+PS: The canvas will always be the given size</field>
+            <field name="recipe">bg = Image()
+bg.blank(width=int(canvas_size), height=int(canvas_size), background=Color(bg_color))
+bg.format = 'png'
+image.transform(resize='%sx%s' %(int(canvas_size), int(canvas_size)))
+if image.width &gt;= image.height:
+    bg.composite(image, 0, (int(canvas_size)-image.height)/2)
+else:
+    bg.composite(image, (int(canvas_size)-image.width)/2, 0)
+res = bg
+            </field>
+        </record>
+
+        <record id="img_search_result_param_canvas" model="image.recipe.param">
+            <field name="name">canvas_size</field>
+            <field name="value">150</field>
+            <field name="recipe_id" ref="webshop_dermanord.img_search_result"/>
+        </record>
+
+        <record id="img_search_result_param_bg_color" model="image.recipe.param">
+            <field name="name">bg_color</field>
+            <field name="value">#ffffff</field>
+            <field name="recipe_id" ref="webshop_dermanord.img_search_result"/>
         </record>
 
         <!-- Blog Experiences -->

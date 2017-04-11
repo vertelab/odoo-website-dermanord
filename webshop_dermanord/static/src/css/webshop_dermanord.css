@@ -230,6 +230,10 @@
 
 /* fts search */
 
+.fts_result a {
+    color: #CB683F;
+}
+
 .fts_result .dn_tags {
     padding: 3px 5px;
     margin-right: 5px;
