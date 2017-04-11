@@ -1,11 +1,5 @@
 var times = 0;
 
-$.expr[":"].contains = $.expr.createPseudo(function(arg) {
-    return function( elem ) {
-        return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
-    };
-});
-
 jQuery.fn.highlight = function (str, className) {
     var regex = new RegExp(str, "gi");
     return this.each(function () {
@@ -21,11 +15,31 @@ jQuery.fn.highlight = function (str, className) {
 
 $(document).ready(function(){
 
-    $(".fts_result *").highlight(dermanord_kw, "dn_highlight");
+    if(typeof dermanord_kw !== 'undefined') {
+        $(".fts_result *").highlight(dermanord_kw, "dn_highlight");
+    }
 
-    $(document).ready(function(){
-        $(".oe_select9_dn_search").select9();
-    });
+    //~ var input_field = $("inupt[search]");
+    //~ if(input_field.val().length == 0) {
+        //~ $("#searchbox").find(".title_history").removeClass("hidden");
+        //~ $("#searchbox").find(".result_history").removeClass("hidden");
+        //~ $("#searchbox").find(".title_suggestion").addClass("hidden");
+        //~ $("#searchbox").find(".result_suggestion").addClass("hidden");
+        //~ $("#searchbox").find(".title_popular").removeClass("hidden");
+        //~ $("#searchbox").find(".result_popular").removeClass("hidden");
+    //~ }
+    //~ else {
+        //~ $("#searchbox").find(".title_history").addClass("hidden");
+        //~ $("#searchbox").find(".result_history").addClass("hidden");
+        //~ $("#searchbox").find(".title_suggestion").removeClass("hidden");
+        //~ $("#searchbox").find(".result_suggestion").removeClass("hidden");
+        //~ $("#searchbox").find(".title_popular").addClass("hidden");
+        //~ $("#searchbox").find(".result_popular").addClass("hidden");
+    //~ }
+
+    //~ $(document).ready(function(){
+        //~ $(".oe_select9_dn_search").select9();
+    //~ });
 
 });
 
