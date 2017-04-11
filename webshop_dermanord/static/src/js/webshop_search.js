@@ -21,7 +21,7 @@ jQuery.fn.highlight = function (str, className) {
 
 $(document).ready(function(){
 
-    $(".fts_result *").highlight(dermanord_kw, "highlight");
+    $(".fts_result *").highlight(dermanord_kw, "dn_highlight");
 
     $(document).ready(function(){
         $(".oe_select9_dn_search").select9();
