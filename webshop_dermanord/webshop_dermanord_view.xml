@@ -337,6 +337,29 @@
                 </div>
             </xpath>
         </template>
+        <template id="product_price" inherit_id="website_sale.product_price">
+            <xpath expr="//span[@class='text-danger oe_default_price']" position="attributes">
+                <attribute name="class">text-danger oe_default_price hidden</attribute>
+            </xpath>
+            <xpath expr="//b[@class='oe_price']" position="attributes">
+                <attribute name="class">oe_price hidden</attribute>
+            </xpath>
+            <xpath expr="//b[@t-field='product.price']" position="after">
+                <span class="text-danger oe_default_price" style="text-decoration: line-through; white-space: nowrap;"
+                    t-field="product.list_price_tax"
+                    t-field-options='{
+                      "widget": "monetary",
+                      "from_currency": "product.company_id.currency_id",
+                      "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                   }'/>
+                  <b class="oe_price" style="white-space: nowrap;"
+                    t-field="product.price_tax"
+                    t-field-options='{
+                       "widget": "monetary",
+                       "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                   }'/>
+            </xpath>
+        </template>
         <!-- Produktvisning enskild produkt -->
         <template id="product_view" name="Product View">
             <div t-att-class="'col-md-2 %s col-sm-3 col-xs-4   thumbnail' % ('col-md-offset-2 col-sm-offset-1 col-xs-offset-2' if p_index == 0 else '')" style="webkit-justify-content: center;

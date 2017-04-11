@@ -51,6 +51,24 @@ class product_template(models.Model):
             #~ self.blog_post_ids = [(6, 0, blog_posts.filtered(lambda b: b.website_published == True).mapped('id'))]
     blog_post_ids = fields.Many2many(comodel_name='blog.post', string='Posts', compute='_blog_post_ids')
 
+    list_price_tax = fields.Float(compute='get_product_tax')
+    price_tax = fields.Float(compute='get_product_tax')
+
+    @api.one
+    def get_product_tax(self):
+        res = 0
+        for c in self.taxes_id.compute_all(
+                self.list_price, 1, None,
+                self.env.user.partner_id)['taxes']:
+            res += c.get('amount', 0.0)
+        self.list_price_tax = self.list_price + res
+
+        res = 0
+        for c in self.taxes_id.compute_all(
+                self.price, 1, None,
+                self.env.user.partner_id)['taxes']:
+            res += c.get('amount', 0.0)
+        self.price_tax = self.price + res
 
 class website_sale(website_sale):
 
@@ -130,12 +148,12 @@ class website_sale(website_sale):
 
 
 class webshop_dermanord(http.Controller):
-    
+
     @http.route(['/dn_shop/search'], type='json', auth="public", website=True)
     def search(self, **kw):
         raise Warning(kw)
         return value
-    
+
     @http.route(['/get/product_variant_data'], type='json', auth="public", website=True)
     def product_variant_data(self, product_id=None, **kw):
         value = {}
