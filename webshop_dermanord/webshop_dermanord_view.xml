@@ -114,10 +114,10 @@
                                 <t t-foreach="products" t-as="product">
                                     <tr>
                                         <td>
-                                            <h4 t-field="product.default_code"/>
+                                            <h5 t-field="product.default_code"/>
                                         </td>
                                         <td>
-                                            <h4>
+                                            <h5>
                                                 <strong>
                                                     <a t-att-href="keep('/shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
                                                         <span itemprop="name" t-field="product.name"/>
@@ -128,7 +128,7 @@
                                                         </t>
                                                     </a>
                                                 </strong>
-                                            </h4>
+                                            </h5>
                                         </td>
                                     </tr>
                                     <tr>
