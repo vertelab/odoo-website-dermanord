@@ -188,6 +188,40 @@ class website_sale(website_sale):
         }
         return request.website.render("webshop_dermanord.products_list_reseller_view", values)
 
+    @http.route(['/shop/cart'], type='http', auth="public", website=True)
+    def cart(self, **post):
+        cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
+        order = request.website.sale_get_order()
+        if order:
+            from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
+            to_currency = order.pricelist_id.currency_id
+            compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
+        else:
+            compute_currency = lambda price: price
+
+        values = {
+            'order': order,
+            'compute_currency': compute_currency,
+            'suggested_products': [],
+            'shop_list': post.get('shop_list') or None,
+        }
+        if order:
+            _order = order
+            if not context.get('pricelist'):
+                _order = order.with_context(pricelist=order.pricelist_id.id)
+            values['suggested_products'] = _order._cart_accessories()
+
+        return request.website.render("website_sale.cart", values)
+
+    @http.route(['/shop/cart/update'], type='http', auth="public", methods=['POST'], website=True)
+    def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
+        cr, uid, context = request.cr, request.uid, request.context
+        request.website.sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
+        request.context.update({'shop_list': True})
+        if kw.get('shop_list'):
+            return request.redirect("/shop/cart?shop_list=%s" %kw.get('shop_list'))
+        return request.redirect("/shop/cart")
+
     #~ @http.route([
         #~ '/shop_list',
         #~ '/shop_list/page/<int:page>',

@@ -12,6 +12,21 @@ $(document).ready(function(){
         $(".facet_container").addClass("hidden-xs");
     });
 
+    $(".oe_shop_list").on('click', 'a.js_add_cart_json', function (ev) {
+        ev.preventDefault();
+        var $link = $(ev.currentTarget);
+        var $input = $link.parent().parent().find("input");
+        var min = parseFloat($input.data("min") || 0);
+        var max = parseFloat($input.data("max") || Infinity);
+        var quantity = ($link.has(".fa-minus").length ? -1 : 1) + parseFloat($input.val(),10);
+        $input.val(quantity > min ? (quantity < max ? quantity : max) : min);
+        return false;
+    });
+
+    $('.oe_shop_list .a-submit, #comment .a-submit').off('click').on('click', function () {
+        $(this).closest('form').submit();
+    });
+
     function update_product_image(event_source, product_id) {
         var $img = $(event_source).closest('tr.js_product, .oe_website_sale').find('span[data-oe-model^="product."][data-oe-type="image"] img:first, img.product_detail_img');
         var $img_thumb = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_nav").find("li:first").find("img");
