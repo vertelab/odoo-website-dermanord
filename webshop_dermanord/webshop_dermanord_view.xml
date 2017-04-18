@@ -112,7 +112,7 @@
                         <table class="product_list_table table-responsive" style="width: 100%;">
                             <tbody>
                                 <t t-foreach="products" t-as="product">
-                                    <tr>
+                                    <tr class="col-md-6 col-xs-12">
                                         <td>
                                             <h5 t-field="product.default_code"/>
                                         </td>
@@ -131,8 +131,8 @@
                                             </h5>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>
+                                    <tr class="col-md-6 col-xs-12">
+                                        <td style="width: 120px;">
                                             <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price">
                                                 <b>
 <!--
