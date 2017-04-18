@@ -87,7 +87,7 @@ class website_sale(website_sale):
 
         domain = self._get_search_domain(search, category, attrib_values)
 
-        keep = QueryURL('/shop', category=category and int(category), search=search, attrib=attrib_list)
+        keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
@@ -97,7 +97,7 @@ class website_sale(website_sale):
 
         product_obj = pool.get('product.template')
 
-        url = "/shop"
+        url = "/dn_shop"
         product_count = product_obj.search_count(cr, uid, domain, context=context)
         if search:
             post["search"] = search
@@ -145,6 +145,83 @@ class website_sale(website_sale):
             'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
         }
         return request.website.render("webshop_dermanord.products", values)
+
+    @http.route([
+        '/shop_list',
+        '/shop_list/page/<int:page>',
+    ], type='http', auth="public", website=True)
+    def shop_list(self, page=0, category=None, search='', **post):
+        cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
+
+        domain = self._get_search_domain(search, category, None)
+
+        keep = QueryURL('/shop_list', category=category and int(category), search=search, attrib=None)
+
+        if not context.get('pricelist'):
+            pricelist = self.get_pricelist()
+            context['pricelist'] = int(pricelist)
+        else:
+            pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
+
+        product_obj = pool.get('product.product')
+
+        url = "/shop_list"
+        product_count = product_obj.search_count(cr, uid, domain, context=context)
+        if search:
+            post["search"] = search
+        pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
+        product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=self._get_search_order(post), context=context)
+        products = product_obj.browse(cr, uid, product_ids, context=context)
+
+        from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
+        to_currency = pricelist.currency_id
+        compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
+
+        values = {
+            'search': search,
+            'pager': pager,
+            'pricelist': pricelist,
+            'products': products,
+            'rows': PPR,
+            'compute_currency': compute_currency,
+            'keep': keep,
+        }
+        return request.website.render("webshop_dermanord.products_list_reseller_view", values)
+
+    #~ @http.route([
+        #~ '/shop_list',
+        #~ '/shop_list/page/<int:page>',
+    #~ ], type='http', auth="public", website=True)
+    #~ def shop_list(self, page=0, search='', **post):
+        #~ context = request.context
+        #~ domain = self._get_search_domain(search, None, None)
+        #~ keep = QueryURL('/shop_list', category=0, search=search, attrib=None)
+
+        #~ if not context.get('pricelist'):
+            #~ pricelist = self.get_pricelist()
+            #~ context['pricelist'] = int(pricelist)
+        #~ else:
+            #~ pricelist = request.env['product.pricelist'].browse(context['pricelist'])
+
+        #~ url = "/shop_list"
+        #~ product_obj = request.env['product.product']
+        #~ product_count = product_obj.search_count(domain, context=context)
+        #~ products = product_obj.with_context(context).search([], order=self._get_search_order(post))
+        #~ pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
+
+        #~ from_currency = request.env['product.price.type']._get_field_currency('list_price', context)
+        #~ to_currency = pricelist.currency_id
+        #~ compute_currency = lambda price: request.env['res.currency']._compute(from_currency, to_currency, price, context=context)
+
+        #~ values = {
+            #~ 'search': search,
+            #~ 'pricelist': pricelist,
+            #~ 'products': products,
+            #~ 'pager': pager,
+            #~ 'keep': keep,
+            #~ 'compute_currency': compute_currency,
+        #~ }
+        #~ return request.website.render("webshop_dermanord.products_list_reseller_view", values)
 
 
 class webshop_dermanord(http.Controller):

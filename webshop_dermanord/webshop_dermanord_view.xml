@@ -97,6 +97,99 @@
             </form>
         </template>
 
+        <template id="products_list_reseller_view" name="Product List For Reseller">
+            <t t-call="website.layout">
+                <t t-set="additional_title">Shop</t>
+                <div id="wrap" class="js_sale">
+                    <div class="oe_structure"/>
+                    <div class="container oe_website_sale">
+                        <div class="products_pager">
+                            <div class="row" style="width: 100%;">
+                                <t t-call="website_sale.search"><t t-set="search_class">pagination form-inline col-md-3</t></t>
+                                <t t-call="website.pager"/>
+                            </div>
+                        </div>
+                        <table class="product_list_table">
+                            <tbody>
+                                <t t-foreach="products" t-as="product">
+                                    <form action="/shop/cart/update" method="post">
+                                        <div itemscope="itemscope" itemtype="http://schema.org/Product">
+                                            <tr>
+                                                <td>
+                                                    <h5 t-field="product.default_code"/>
+                                                </td>
+                                                <td>
+                                                    <h5>
+                                                        <strong>
+                                                            <a t-att-href="keep('/shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
+                                                                <span itemprop="name" t-field="product.name"/>
+                                                                <t t-if="len(product.attribute_value_ids) &gt; 0">
+                                                                    <t t-foreach="product.attribute_value_ids" t-as="att">
+                                                                        <t t-esc="', %s' %att.name"/>
+                                                                    </t>
+                                                                </t>
+                                                            </a>
+                                                        </strong>
+                                                    </h5>
+                                                </td>
+                                                <td>
+                                                    <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price">
+                                                        <b>
+                                                            <t t-if="(compute_currency(product.lst_price) - product.price) &gt; 0.1">
+                                                                <del class="text-danger" style="white-space: nowrap;" t-field="product.lst_price" t-field-options='{
+                                                                    "widget": "monetary",
+                                                                    "from_currency": "product.company_id.currency_id",
+                                                                    "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                                                }'/>&amp;nbsp;
+                                                            </t>
+                                                            <span t-field="product.price" style="white-space: nowrap;"  t-field-options='{
+                                                                   "widget": "monetary",
+                                                                   "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                                                }'>
+                                                            </span>
+                                                            <span itemprop="price" style="display:none;" t-esc="product.price">
+                                                                <a class="btn btn-default btn-xs fa fa-shopping-cart" t-att-href="keep('/shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))"/>
+                                                            </span>
+                                                            <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding"/>
+                                                        </b>
+                                                    </div>
+                                                </td>
+<!--
+                                                <td>
+                                                    <input type="hidden" class="product_id" name="product_id" t-att-value="int(product)" />
+                                                    <div class="css_quantity input-group oe_website_spinner">
+                                                        <span class="input-group-addon">
+                                                            <a t-attf-href="#" class="mb8 js_add_cart_json">
+                                                                <i class="fa fa-minus"></i>
+                                                            </a>
+                                                        </span>
+                                                        <input type="text" class="js_quantity form-control" data-min="1" name="add_qty" value="1"/>
+                                                        <span class="input-group-addon">
+                                                            <a t-attf-href="#" class="mb8 float_left js_add_cart_json">
+                                                                <i class="fa fa-plus"></i>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a id="add_to_cart" class="btn btn-primary btn-sm js_check_product a-submit" href="#">Buy</a>
+                                                </td>
+-->
+                                          </tr>
+                                        </div>
+                                    </form>
+                                </t>
+                            </tbody>
+                        </table>
+                        <div class="products_pager">
+                            <t t-call="website.pager"/>
+                        </div>
+                    </div>
+                    <div class="oe_structure mb32"/>
+                </div>
+            </t>
+        </template>
+
         <template id="search_result" inherit_id="website_fts.search_result">
             <xpath expr="//t[@t-foreach='terms']" position="replace">
                 <script>var dermanord_kw = "<t t-esc='kw'/>";</script>
@@ -337,6 +430,7 @@
                 </div>
             </xpath>
         </template>
+
         <template id="product_price" inherit_id="website_sale.product_price">
             <xpath expr="//span[@class='text-danger oe_default_price']" position="attributes">
                 <attribute name="class">text-danger oe_default_price hidden</attribute>
@@ -360,6 +454,7 @@
                    }'/>
             </xpath>
         </template>
+
         <!-- Produktvisning enskild produkt -->
         <template id="product_view" name="Product View">
             <div t-att-class="'col-md-2 %s col-sm-3 col-xs-4   thumbnail' % ('col-md-offset-2 col-sm-offset-1 col-xs-offset-2' if p_index == 0 else '')" style="webkit-justify-content: center;
@@ -389,6 +484,7 @@
                 </div>
             </div>
         </template>
+
         <template id="product_quantity" inherit_id="website_sale.product_quantity">
 <!--
             <xpath expr="//div[@class='css_quantity input-group oe_website_spinner']" position="attributes">
@@ -396,12 +492,14 @@
             </xpath>
 -->
         </template>
+
         <template id="webshop_dermanord" inherit_id="website.layout" name="Webshop Dermanord">
             <!-- Customize css -->
             <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
                 <link href="/webshop_dermanord/static/src/css/webshop_dermanord.css" rel="stylesheet" />
             </xpath>
         </template>
+
         <template id="assets_frontend_override" inherit_id="website_sale.assets_frontend">
             <!-- Customize javascript -->
             <xpath expr="//script[@src='/website_sale/static/src/js/website_sale.js']" position="replace">
@@ -411,6 +509,7 @@
                 <script type="text/javascript" src="/webshop_dermanord/static/src/js/webshop_search.js" />
             </xpath>
         </template>
+
         <template id="product_experiences" name="Product Experiences">
             <t t-set="blog_posts" t-value="product.blog_post_ids.filtered(lambda p: p.blog_id == p.env.ref('webshop_dermanord.blog_experiences'))" />
             <t t-set="offset_value" t-value="0" />
@@ -430,6 +529,7 @@
                 </div>
             </t>
         </template>
+
         <template id="product_experiences_wide" name="Product Experiences Wide">
             <t t-set="blog_posts" t-value="product.blog_post_ids.filtered(lambda p: p.blog_id == p.env.ref('webshop_dermanord.blog_experiences'))" />
             <t t-set="offset_value" t-value="0" />
@@ -446,6 +546,7 @@
                 </div>
             </t>
         </template>
+
         <record id="view_blog_post_form" model="ir.ui.view">
             <field name="name">blog.post.form.webshop</field>
             <field name="model">blog.post</field>

@@ -249,3 +249,8 @@
 .dn_highlight {
     background-color: #ff2;
 }
+
+/* product listing */
+.product_list_table td {
+    padding: 0px 10px;
+}
