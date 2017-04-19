@@ -445,7 +445,7 @@
 
         <template id="variants" inherit_id="website_sale.variants">
             <xpath expr="//option[@t-att-value='value_id.id']" position="replace">
-                <option t-att-value="value_id.id">
+                <option t-att-value="value_id.id" t-att="{'selected': 'checked'} if value_id.id in variant_list else {}">
                     <span t-field="value_id.name"/>
                 </option>
             </xpath>
