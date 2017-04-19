@@ -33,8 +33,7 @@ $(document).ready(function(){
         openerp.jsonRpc("/get/product_variant_data", "call", {
             'product_id': product_id,
         }).done(function(data){
-            console.log(data);
-            if (data['image_id'] != undefined) {
+            if (data['image_id'] != null) {
                 $img.attr("src", "/imagefield/base_multi_image.image/file_db_store/" + data['image_id'] + "/ref/website_sale_product_gallery.img_product_detail");
                 $img_thumb.attr("src", "/imagefield/base_multi_image.image/file_db_store/" + data['image_id'] + "/ref/website_sale_product_gallery.img_product_thumbnail");
             }
@@ -240,6 +239,7 @@ $(document).ready(function(){
             var $product_id = $parent.find('input.product_id').first();
             var $price = $parent.find(".oe_price:first .oe_currency_value");
             var $default_price = $parent.find(".oe_default_price:first .oe_currency_value");
+            var $recommended_price = $parent.find(".oe_recommended_price:first .oe_currency_value");
             var $optional_price = $parent.find(".oe_optional:first .oe_currency_value");
             var variant_ids = $ul.data("attribute_value_ids");
             var values = [];
@@ -251,10 +251,12 @@ $(document).ready(function(){
 
             var product_id = false;
             for (var k in variant_ids) {
+                console.log(variant_ids[k]);
                 if (_.isEmpty(_.difference(variant_ids[k][1], values))) {
                     openerp.website.ready().then(function() {
                         $price.html(price_to_str(variant_ids[k][2]));
                         $default_price.html(price_to_str(variant_ids[k][3]));
+                        $recommended_price.html(price_to_str(variant_ids[k][4]));
                     });
                     if (variant_ids[k][3]-variant_ids[k][2]>0.2) {
                         $default_price.closest('.oe_website_sale').addClass("discount");

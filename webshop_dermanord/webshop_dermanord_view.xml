@@ -24,7 +24,7 @@
             </t>
         </template>
 
-        <template id="products_attributes" inherit_id="products" active="False" customize_show="True" name="Product Attribute's Search">
+        <template id="products_attributes_search" inherit_id="products" active="False" customize_show="True" name="Product Attribute's Search">
             <xpath expr="//t[@t-call='website_sale.search']" position="after">
                 <div>
                     <form class="js_attributes" method="get">
@@ -444,6 +444,17 @@
         </template>
 
         <template id="product_price" inherit_id="website_sale.product_price">
+            <xpath expr="//span[@class='text-danger oe_default_price']" position="replace">
+                <div>
+                    <span>Rek.pris</span> <span class="oe_recommended_price" style="display: inline;" t-field="product.lst_price"
+                    t-field-options='{
+                      "widget": "monetary",
+                      "from_currency": "product.company_id.currency_id",
+                      "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                   }'/>
+               </div>
+            </xpath>
+<!--
             <xpath expr="//span[@class='text-danger oe_default_price']" position="attributes">
                 <attribute name="class">text-danger oe_default_price hidden</attribute>
             </xpath>
@@ -465,6 +476,7 @@
                        "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                    }'/>
             </xpath>
+-->
         </template>
 
         <!-- Produktvisning enskild produkt -->

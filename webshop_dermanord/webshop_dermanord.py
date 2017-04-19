@@ -53,6 +53,7 @@ class product_template(models.Model):
 
     list_price_tax = fields.Float(compute='get_product_tax')
     price_tax = fields.Float(compute='get_product_tax')
+    recommended_price = fields.Float(compute='get_product_tax')
 
     @api.one
     def get_product_tax(self):
@@ -69,8 +70,43 @@ class product_template(models.Model):
                 self.env.user.partner_id)['taxes']:
             res += c.get('amount', 0.0)
         self.price_tax = self.price + res
+        self.recommended_price = 0.0
+
+
+class product_product(models.Model):
+    _inherit = 'product.product'
+
+    recommended_price = fields.Float(compute='get_product_tax')
+
+    @api.one
+    def get_product_tax(self):
+        res = 0
+        price = self.env.ref('product.list0').price_get(self.id, 1)[1]
+        for c in self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']:
+            res += c.get('amount', 0.0)
+        self.recommended_price = price + res
+
 
 class website_sale(website_sale):
+
+    def get_attribute_value_ids(self, product):
+        cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
+        currency_obj = pool['res.currency']
+        attribute_value_ids = []
+        visible_attrs = set(l.attribute_id.id
+                                for l in product.attribute_line_ids
+                                    if len(l.value_ids) > 1)
+        if request.website.pricelist_id.id != context['pricelist']:
+            website_currency_id = request.website.currency_id.id
+            currency_id = self.get_pricelist().currency_id.id
+            for p in product.product_variant_ids:
+                price = currency_obj.compute(cr, uid, website_currency_id, currency_id, p.lst_price)
+                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price])
+        else:
+            attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price]
+                for p in product.product_variant_ids]
+
+        return attribute_value_ids
 
     @http.route([
         '/dn_shop',
@@ -222,41 +258,6 @@ class website_sale(website_sale):
             return request.redirect("/shop/cart?shop_list=%s" %kw.get('shop_list'))
         return request.redirect("/shop/cart")
 
-    #~ @http.route([
-        #~ '/shop_list',
-        #~ '/shop_list/page/<int:page>',
-    #~ ], type='http', auth="public", website=True)
-    #~ def shop_list(self, page=0, search='', **post):
-        #~ context = request.context
-        #~ domain = self._get_search_domain(search, None, None)
-        #~ keep = QueryURL('/shop_list', category=0, search=search, attrib=None)
-
-        #~ if not context.get('pricelist'):
-            #~ pricelist = self.get_pricelist()
-            #~ context['pricelist'] = int(pricelist)
-        #~ else:
-            #~ pricelist = request.env['product.pricelist'].browse(context['pricelist'])
-
-        #~ url = "/shop_list"
-        #~ product_obj = request.env['product.product']
-        #~ product_count = product_obj.search_count(domain, context=context)
-        #~ products = product_obj.with_context(context).search([], order=self._get_search_order(post))
-        #~ pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
-
-        #~ from_currency = request.env['product.price.type']._get_field_currency('list_price', context)
-        #~ to_currency = pricelist.currency_id
-        #~ compute_currency = lambda price: request.env['res.currency']._compute(from_currency, to_currency, price, context=context)
-
-        #~ values = {
-            #~ 'search': search,
-            #~ 'pricelist': pricelist,
-            #~ 'products': products,
-            #~ 'pager': pager,
-            #~ 'keep': keep,
-            #~ 'compute_currency': compute_currency,
-        #~ }
-        #~ return request.website.render("webshop_dermanord.products_list_reseller_view", values)
-
 
 class webshop_dermanord(http.Controller):
 
@@ -271,7 +272,7 @@ class webshop_dermanord(http.Controller):
         if product_id:
             product = request.env['product.product'].browse(int(product_id))
             if product:
-                value['image_id'] = product.image_ids[0].id
+                value['image_id'] = product.image_ids[0].id if len(product.image_ids) > 0 else None
                 value['ingredients'] = product.ingredients or ''
                 value['use_desc'] = product.use_desc or ''
                 value['reseller_desc'] = product.reseller_desc or ''
