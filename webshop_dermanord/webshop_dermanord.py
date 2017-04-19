@@ -58,14 +58,14 @@ class product_template(models.Model):
     @api.one
     def get_product_tax(self):
         res = 0
-        for c in self.taxes_id.compute_all(
+        for c in self.sudo().taxes_id.compute_all(
                 self.list_price, 1, None,
                 self.env.user.partner_id)['taxes']:
             res += c.get('amount', 0.0)
         self.list_price_tax = self.list_price + res
 
         res = 0
-        for c in self.taxes_id.compute_all(
+        for c in self.sudo().taxes_id.compute_all(
                 self.price, 1, None,
                 self.env.user.partner_id)['taxes']:
             res += c.get('amount', 0.0)
@@ -76,13 +76,13 @@ class product_template(models.Model):
 class product_product(models.Model):
     _inherit = 'product.product'
 
-    recommended_price = fields.Float(compute='get_product_tax')
+    recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True)
 
     @api.one
     def get_product_tax(self):
         res = 0
         price = self.env.ref('product.list0').price_get(self.id, 1)[1]
-        for c in self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']:
+        for c in self.sudo().taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']:
             res += c.get('amount', 0.0)
         self.recommended_price = price + res
 
