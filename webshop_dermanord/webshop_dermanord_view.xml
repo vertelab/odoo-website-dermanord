@@ -443,15 +443,25 @@
             </xpath>
         </template>
 
+        <template id="variants" inherit_id="website_sale.variants">
+            <xpath expr="//option[@t-att-value='value_id.id']" position="replace">
+                <option t-att-value="value_id.id">
+                    <span t-field="value_id.name"/>
+                </option>
+            </xpath>
+        </template>
+
         <template id="product_price" inherit_id="website_sale.product_price">
             <xpath expr="//span[@class='text-danger oe_default_price']" position="replace">
                 <div>
-                    <span>Rek.pris</span> <span class="oe_recommended_price" style="display: inline;" t-field="product.lst_price"
-                    t-field-options='{
-                      "widget": "monetary",
-                      "from_currency": "product.company_id.currency_id",
-                      "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-                   }'/>
+                    <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
+                        <span>Rek.pris</span> <span class="oe_recommended_price" style="display: inline;" t-field="product.lst_price"
+                        t-field-options='{
+                          "widget": "monetary",
+                          "from_currency": "product.company_id.currency_id",
+                          "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                       }'/>
+                   </t>
                </div>
             </xpath>
 <!--
@@ -594,5 +604,17 @@
                 </field>
             </field>
         </record>
+
+        <record id="product_pricelist_view" model="ir.ui.view">
+            <field name="name">product.pricelist.form</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view"/>
+            <field name="arch" type="xml">
+                <field name="active" position="after">
+                    <field name="for_reseller"/>
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>

@@ -251,7 +251,6 @@ $(document).ready(function(){
 
             var product_id = false;
             for (var k in variant_ids) {
-                console.log(variant_ids[k]);
                 if (_.isEmpty(_.difference(variant_ids[k][1], values))) {
                     openerp.website.ready().then(function() {
                         $price.html(price_to_str(variant_ids[k][2]));

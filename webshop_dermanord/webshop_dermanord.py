@@ -87,6 +87,12 @@ class product_product(models.Model):
         self.recommended_price = price + res
 
 
+class product_pricelist(models.Model):
+    _inherit = 'product.pricelist'
+
+    for_reseller = fields.Boolean(string='For Reseller')
+
+
 class website_sale(website_sale):
 
     def get_attribute_value_ids(self, product):
@@ -103,8 +109,7 @@ class website_sale(website_sale):
                 price = currency_obj.compute(cr, uid, website_currency_id, currency_id, p.lst_price)
                 attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price])
         else:
-            attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price]
-                for p in product.product_variant_ids]
+            attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price] for p in product.sudo().product_variant_ids]
 
         return attribute_value_ids
 
@@ -285,3 +290,4 @@ class webshop_dermanord(http.Controller):
             if product:
                 variants = product.product_variant_ids.filtered(lambda v: int(value_id) in v.attribute_value_ids.mapped("id"))
                 return variants[0].ingredients if len(variants) > 0 else ''
+
