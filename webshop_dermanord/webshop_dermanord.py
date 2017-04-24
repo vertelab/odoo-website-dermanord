@@ -130,8 +130,6 @@ class website_sale(website_sale):
         attrib_set = set([v[1] for v in attrib_values])
 
         domain = self._get_search_domain(search, category, attrib_values)
-        if domain_append:
-            domain.append(domain_append)
 
         keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
