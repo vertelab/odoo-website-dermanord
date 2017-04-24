@@ -120,9 +120,6 @@ class website_sale(website_sale):
         #~ '/dn_shop/category/<model("product.public.category"):category>/page/<int:page>'
     ], type='http', auth="public", website=True)
     def dn_shop(self, page=0, category=None, search='', **post):
-        return self.get_products(page=0, category=None, search='', **post)
-
-    def get_products(self, page=0, category=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
         attrib_list = request.httprequest.args.getlist('attrib')
