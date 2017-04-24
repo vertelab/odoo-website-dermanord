@@ -120,28 +120,9 @@ class website_sale(website_sale):
         #~ '/dn_shop/category/<model("product.public.category"):category>/page/<int:page>'
     ], type='http', auth="public", website=True)
     def dn_shop(self, page=0, category=None, search='', **post):
-        return self.get_products(page=0, category=None, search='', domain_append=None, **post)
+        return self.get_products(page=0, category=None, search='', **post)
 
-    @http.route([
-        '/dn_shop_filtered',
-        '/dn_shop_filtered/page/<int:page>',
-    ], type='http', auth="public", website=True)
-    def dn_shop_filtered(self, page=0, category=None, search='', **post):
-        facet_ids = map(int, post.values())
-        products_with_facets = request.env['product.template'].search([('facet_line_ids', '!=', None)])
-        facets = request.env['product.facet.value'].search([('id', 'in', facet_ids)])
-        products = request.env['product.template'].browse([])
-        for product in products_with_facets:
-            facet_value_ids = request.env['product.facet.value'].browse([])
-            for facet_line in product.facet_line_ids:
-                facet_value_ids |= facet_line.value_ids
-            for facet in facets:
-                if facet in facet_value_ids:
-                    products |= product
-        extra_domain = ('id', 'in', products.mapped('id')) if len(products) != 0 else None
-        return self.get_products(page=0, category=None, search='', domain_append=extra_domain, **post)
-
-    def get_products(self, page=0, category=None, search='', domain_append=None, **post):
+    def get_products(self, page=0, category=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
         attrib_list = request.httprequest.args.getlist('attrib')

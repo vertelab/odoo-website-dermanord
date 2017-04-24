@@ -17,18 +17,6 @@
                             <t t-foreach="products" t-as="product">
                                 <div class="item" t-call="webshop_dermanord.products_item"/>
                             </t>
-                            <form action="/dn_shop_filtered" method="post">
-                                <t t-set="facets" t-value="request.env['product.facet.value'].search([])"/>
-                                <t t-if="len(facets) &gt; 0">
-                                    <t t-foreach="facets" t-as="facet">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" t-att-name="facet.name" t-att-value="facet.id"/><t t-esc="facet.name"/></label>
-                                        </div>
-                                    </t>
-                                </t>
-                                <button class="btn btn-info" type="submit">OK</button>
-                            </form>
                         </div>
                     </div>
                     <div class="oe_structure mb32" />
