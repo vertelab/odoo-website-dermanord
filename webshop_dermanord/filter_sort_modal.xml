@@ -4,8 +4,8 @@
 
         <template id="main_filter_sort_layout" inherit_id="website.layout">
             <xpath expr="//div[@id='wrapwrap']/main" position="inside">
-                <t t-set="facets" t-value="request.env['product.facet'].search([])"/>
-                <t t-set="categories" t-value="request.env['product.public.category'].search([])"/>
+                <t t-set="filter_facets" t-value="request.env['product.facet'].search([])"/>
+                <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])"/>
                 <div id="filter_modal" class="modal fade" role="dialog">
                     <div class="modal-dialog" style="margin: 0px;">
                         <div class="modal-content">
@@ -55,10 +55,10 @@
             <form t-att-action="'/dn_list' if url == '/dn_list' else '/dn_shop'" method="post">
                 <div class="container">
                     <t t-set="first_facet" t-value="0"/>
-                    <t t-if="len(facets) &gt; 0">
+                    <t t-if="len(filter_facets) &gt; 0">
                         <div class="col-md-5 col-sm-5 col-xs-5">
                             <ul class="nav nav-stacked">
-                                <t t-foreach="facets" t-as="facet">
+                                <t t-foreach="filter_facets" t-as="facet">
                                     <li t-att-class="'active' if facet_index == 0 else ''"><a data-toggle="tab" t-att-href="'#facet_%s' %facet.id"><h5><t t-esc="facet.name"/> <i class="fa fa-angle-right"/></h5></a></li>
                                 </t>
                                 <li><a data-toggle="tab" href="#category"><h5>Categories <i class="fa fa-angle-right"/></h5></a></li>
@@ -66,7 +66,7 @@
                         </div>
                         <div class="col-md-7 col-sm-7 col-xs-7">
                             <div class="tab-content">
-                                <t t-foreach="facets" t-as="facet">
+                                <t t-foreach="filter_facets" t-as="facet">
                                     <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])"/>
                                     <div t-att-id="'facet_%s' %facet.id" t-att-class="'tab-pane fade %s' %('in active' if facet_index == 0 else '')">
                                         <t t-if="len(facet_values) &gt; 0">
@@ -87,8 +87,8 @@
                                     </div>
                                 </t>
                                 <div id="category" class="'tab-pane fade">
-                                    <t t-if="len(categories) &gt; 0">
-                                        <t t-foreach="categories" t-as="category">
+                                    <t t-if="len(filter_categories) &gt; 0">
+                                        <t t-foreach="filter_categories" t-as="category">
                                             <div class="checkbox">
                                                 <h5>
                                                     <label>
@@ -178,7 +178,7 @@
                         </t>
                     </ul>
                 </div>
-                <t t-foreach="facets" t-as="facet">
+                <t t-foreach="filter_facets" t-as="facet">
                     <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])"/>
                     <t t-if="len(facet_values) &gt; 0">
                         <t t-foreach="facet_values" t-as="facet_value">
@@ -188,8 +188,8 @@
                         </t>
                     </t>
                 </t>
-                <t t-if="len(categories) &gt; 0">
-                    <t t-foreach="categories" t-as="category">
+                <t t-if="len(filter_categories) &gt; 0">
+                    <t t-foreach="filter_categories" t-as="category">
                         <t t-if="form_values">
                             <input type="hidden" t-att-name="'category_%s' %category.id" t-att-value="form_values.get('category_%s' %category.id) if form_values.get('category_%s' %category.id) else ''"/>
                         </t>
