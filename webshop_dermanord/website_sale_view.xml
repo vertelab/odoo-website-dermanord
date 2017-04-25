@@ -380,14 +380,17 @@
             <xpath expr="//span[@class='text-danger oe_default_price']" position="replace">
                 <div>
                     <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
-                        <span>Rek.pris</span> <span class="oe_recommended_price" style="display: inline;" t-field="product.lst_price"
+                        <span class="oe_recommended_price" t-field="product.lst_price"
                         t-field-options='{
                           "widget": "monetary",
                           "from_currency": "product.company_id.currency_id",
                           "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-                       }'/>
+                       }'/> <span style="display: inline;">(rek ink moms)</span>
                    </t>
                </div>
+            </xpath>
+            <xpath expr="//span[@itemprop='priceCurrency']" position="after">
+                <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller"> <span style="display: inline;">(ditt ex moms)</span></t>
             </xpath>
 <!--
             <xpath expr="//span[@class='text-danger oe_default_price']" position="attributes">
@@ -429,16 +432,16 @@
                     <b>
                         <t t-if="(compute_currency(p.lst_price) - p.price) &gt; 0.1">
                             <del class="text-danger oe_vertel_product_view_old_price" t-field="p.lst_price" t-field-options='{
-                "widget": "monetary",
-                "from_currency": "p.company_id.currency_id",
-                "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-              }' />
+                                "widget": "monetary",
+                                "from_currency": "p.company_id.currency_id",
+                                "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                            }' />
                             &amp;nbsp;
                         </t>
                         <span class="oe_vertel_product_view_price" t-field="p.price" t-field-options='{
-                 "widget": "monetary",
-                 "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-             }' />
+                            "widget": "monetary",
+                            "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                        }' />
                     </b>
                 </div>
             </div>
