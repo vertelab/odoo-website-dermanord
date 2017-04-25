@@ -210,7 +210,13 @@
                         <div class="col-md-6 facet_div" t-foreach="request.env['product.facet'].search([])" t-as="facet">
                             <t t-if="facet.name in [f.name for f in product.facet_line_ids.mapped('facet_id')]">
                                 <h4 class="dn_uppercase" t-field="facet.name"/>
-                                <p t-esc="', '.join(product.facet_line_ids.with_context({'facet_id': facet.id}).filtered(lambda f: f.facet_id.id == f._context.get('facet_id')).mapped('value_ids').mapped('name'))"/>
+                                <t t-set="facet_value_ids" t-value="product.facet_line_ids.with_context({'facet_id': facet.id}).filtered(lambda f: f.facet_id.id == f._context.get('facet_id')).mapped('value_ids')"/>
+                                <t t-foreach="facet_value_ids" t-as="value">
+                                    <a t-att-href="'/dn_shop/?facet_%s=%s' %(facet.id, value.id)"><span t-field="value.name"/></a><span t-if="value_index != len(facet_value_ids)-1">, </span>
+                                </t>
+<!--
+                                    <p t-esc="', '.join(product.facet_line_ids.with_context({'facet_id': facet.id}).filtered(lambda f: f.facet_id.id == f._context.get('facet_id')).mapped('value_ids').mapped('name'))"/>
+-->
                             </t>
                         </div>
                     </t>
@@ -288,18 +294,45 @@
                     <hr/>
                 </t>
             </xpath>
-            <xpath expr="//div[@itemprop='description']" position="before">
+            <xpath expr="//div[@itemprop='description']" position="after">
+                <div class="oe_structure oe_empty mt32 mb32">
+                    <div class="container">
+                        <h1 class="text-center">This product’s experiences</h1>
+                        <t t-call="webshop_dermanord.product_experiences" />
+                        <t t-call="webshop_dermanord.product_experiences_wide" />
+                    </div>
+                    <div class="container mt32">
+                        <h1 class="text-center">Product range</h1>
+                        <div t-foreach="request.env['product.template'].search([('public_categ_ids','in',product.public_categ_ids.mapped('id')),('website_published','=',True),('id','!=',product.id)])[:4]" t-as="p">
+                            <t t-call="website_product_templates.product_view" />
+                        </div>
+                    </div>
+                    <t t-set="useless_var_6446547657" t-value="website.sale_add_previous_product(product.id)" />
+                    <div class="container mt32">
+                        <h1 class="text-center">Recently viewed</h1>
+                        <div t-foreach="website.sale_get_previous_products().with_context(pid=product.id).filtered(lambda p: p.id != p.env.context['pid'])[:4]" t-as="p">
+                            <t t-call="website_product_templates.product_view" />
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+
+        <template id="ingredients" inherit_id="website_sale_product_gallery.product">
+            <xpath expr="//div[@class='col-sm-7 col-md-7 col-lg-7']" position="inside">
                 <t t-set="ingredients" t-value="request.env['product.ingredient'].search([('product_ids', 'in', product.id)], order='sequence')"/>
                 <t t-if="len(ingredients) &gt; 0">
                     <h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>
                     <div class="container mb16 hidden-xs">
                         <div class="col-md-12">
                             <t t-foreach="ingredients" t-as="ingredient">
-                                <div class="col-md-2">
-                                    <img class="img img-responsive" style="margin: auto;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
-                                    <h6 style="color: #D27153;" class="text-center" t-field="ingredient.name"/>
-                                    <h5 class="text-muted text-center" t-field="ingredient.description"/>
-                                </div>
+                                <a t-att-href="'/dn_shop/?ingredient_%s=%s' %(ingredient.id, ingredient.id)">
+                                    <div class="col-md-2">
+                                        <img class="img img-responsive" style="margin: auto;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
+                                        <h6 style="color: #D27153;" class="text-center" t-field="ingredient.name"/>
+                                        <h5 class="text-muted text-center" t-field="ingredient.description"/>
+                                    </div>
+                                </a>
                             </t>
                         </div>
                     </div>
@@ -331,28 +364,6 @@
                         <t t-if="product_product and product_product.ingredients">
                             <p><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" t-field="product_product.ingredients"/></p>
                         </t>
-                    </div>
-                </div>
-            </xpath>
-            <xpath expr="//div[@itemprop='description']" position="after">
-                <div class="oe_structure oe_empty mt32 mb32">
-                    <div class="container">
-                        <h1 class="text-center">This product’s experiences</h1>
-                        <t t-call="webshop_dermanord.product_experiences" />
-                        <t t-call="webshop_dermanord.product_experiences_wide" />
-                    </div>
-                    <div class="container mt32">
-                        <h1 class="text-center">Product range</h1>
-                        <div t-foreach="request.env['product.template'].search([('public_categ_ids','in',product.public_categ_ids.mapped('id')),('website_published','=',True),('id','!=',product.id)])[:4]" t-as="p">
-                            <t t-call="website_product_templates.product_view" />
-                        </div>
-                    </div>
-                    <t t-set="useless_var_6446547657" t-value="website.sale_add_previous_product(product.id)" />
-                    <div class="container mt32">
-                        <h1 class="text-center">Recently viewed</h1>
-                        <div t-foreach="website.sale_get_previous_products().with_context(pid=product.id).filtered(lambda p: p.id != p.env.context['pid'])[:4]" t-as="p">
-                            <t t-call="website_product_templates.product_view" />
-                        </div>
                     </div>
                 </div>
             </xpath>

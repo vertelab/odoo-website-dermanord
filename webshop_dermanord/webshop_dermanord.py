@@ -126,52 +126,56 @@ class website_sale(website_sale):
     @http.route([
         '/dn_shop',
         '/dn_shop/page/<int:page>',
-        #~ '/dn_shop/category/<model("product.public.category"):category>',
-        #~ '/dn_shop/category/<model("product.public.category"):category>/page/<int:page>'
     ], type='http', auth="public", website=True)
     def dn_shop(self, page=0, category=None, search='', **post):
-        #~ facet_ids = map(int, post.values())
-        #~ products_with_facets = request.env['product.template'].search([('facet_line_ids', '!=', None)])
-        #~ products = request.env['product.template'].browse([])
-        #~ for product in products_with_facets:
-            #~ facet_value_ids = request.env['product.facet.value'].browse([])
-            #~ for facet_line in product.facet_line_ids:
-                #~ facet_value_ids |= facet_line.value_ids
-            #~ for facet in facets:
-                #~ if facet in facet_value_ids:
-                    #~ products |= product
-        #~ extra_domain = ('id', 'in', products.mapped('id')) if len(products) != 0 else None
         return self.get_products(page=page, category=category, search=search, **post)
 
     def get_domain_append(self, post):
         facet_ids = []
         category_ids = []
+        ingredient_ids = []
         for k, v in post.iteritems():
             if k.split('_')[0] == 'facet':
                 if v:
                     facet_ids.append(int(v))
-            elif k.split('_')[0] == 'category':
+            if k.split('_')[0] == 'category':
                 if v:
                     category_ids.append(int(v))
-        facets = request.env['product.facet.value'].search([('id', 'in', facet_ids)])
-        facet = {}
-        categories = request.env['product.public.category'].search([('id', 'in', category_ids)])
-        category = {}
-        for f in facets:
-            if facet.get(f.name):
-                facet[f.name].append(f.id)
-            else:
-                facet[f.name] = [f.id]
-        for c in categories:
-            if category.get(c.name):
-                category[c.name].append(c.id)
-            else:
-                category[c.name] = [c.id]
+            if k.split('_')[0] == 'ingredient':
+                if v:
+                    ingredient_ids.append(int(v))
+
         domain_append = []
-        for f, r in facet.iteritems():
-            domain_append.append(('facet_line_ids.value_ids', 'in', r))
-        for c, r in category.iteritems():
-            domain_append.append(('public_categ_ids', 'in', r))
+        if len(facet_ids) != 0:
+            facets = request.env['product.facet.value'].search([('id', 'in', facet_ids)])
+            facet = {}
+            for f in facets:
+                if facet.get(f.name):
+                    facet[f.name].append(f.id)
+                else:
+                    facet[f.name] = [f.id]
+            for f, r in facet.iteritems():
+                domain_append.append(('facet_line_ids.value_ids', 'in', r))
+        if len(category_ids) != 0:
+            categories = request.env['product.public.category'].search([('id', 'in', category_ids)])
+            category = {}
+            for c in categories:
+                if category.get(c.name):
+                    category[c.name].append(c.id)
+                else:
+                    category[c.name] = [c.id]
+            for c, r in category.iteritems():
+                domain_append.append(('public_categ_ids', 'in', r))
+        if len(ingredient_ids) != 0:
+            ingredients = request.env['product.ingredient'].search([('id', 'in', ingredient_ids)])
+            ingredient = {}
+            for i in ingredients:
+                if ingredient.get(i.name):
+                    ingredient[i.name].append(i.id)
+                else:
+                    ingredient[i.name] = [i.id]
+            for i, r in ingredient.iteritems():
+                domain_append.append(('ingredient_ids', 'in', r))
         return domain_append
 
     def get_products(self, page=0, category=None, search='', **post):
