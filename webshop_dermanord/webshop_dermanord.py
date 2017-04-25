@@ -120,13 +120,46 @@ class website_sale(website_sale):
         #~ '/dn_shop/category/<model("product.public.category"):category>/page/<int:page>'
     ], type='http', auth="public", website=True)
     def dn_shop(self, page=0, category=None, search='', **post):
+        #~ facet_ids = map(int, post.values())
+        #~ products_with_facets = request.env['product.template'].search([('facet_line_ids', '!=', None)])
+        #~ products = request.env['product.template'].browse([])
+        #~ for product in products_with_facets:
+            #~ facet_value_ids = request.env['product.facet.value'].browse([])
+            #~ for facet_line in product.facet_line_ids:
+                #~ facet_value_ids |= facet_line.value_ids
+            #~ for facet in facets:
+                #~ if facet in facet_value_ids:
+                    #~ products |= product
+        #~ extra_domain = ('id', 'in', products.mapped('id')) if len(products) != 0 else None
+        return self.get_products(page=page, category=category, search=search, **post)
+
+    def get_facet_domain(self, post):
+        facet_ids = []
+        for k, v in post.iteritems():
+            if k.split('_')[0] == 'facet':
+                if v:
+                    facet_ids.append(int(v))
+        facets = request.env['product.facet.value'].search([('id', 'in', facet_ids)])
+        facet = {}
+        for f in facets:
+            if facet.get(f.name):
+                facet[f.name].append(f.id)
+            else:
+                facet[f.name] = [f.id]
+        domain_append = []
+        for f, r in facet.iteritems():
+            domain_append.append(('facet_line_ids.value_ids', 'in', r))
+        return domain_append
+
+    def get_products(self, page=0, category=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
         attrib_list = request.httprequest.args.getlist('attrib')
         attrib_values = [map(int, v.split("-")) for v in attrib_list if v]
         attrib_set = set([v[1] for v in attrib_values])
-
+        _logger.warn(post)
         domain = self._get_search_domain(search, category, attrib_values)
+        domain += self.get_facet_domain(post)
 
         keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
@@ -184,19 +217,21 @@ class website_sale(website_sale):
             'keep': keep,
             'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
             'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
+            'form_values': post,
         }
         return request.website.render("webshop_dermanord.products", values)
 
     @http.route([
-        '/shop_list',
-        '/shop_list/page/<int:page>',
+        '/dn_list',
+        '/dn_list/page/<int:page>',
     ], type='http', auth="public", website=True)
-    def shop_list(self, page=0, category=None, search='', **post):
+    def dn_list(self, page=0, category=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
         domain = self._get_search_domain(search, category, None)
+        domain += self.get_facet_domain(post)
 
-        keep = QueryURL('/shop_list', category=category and int(category), search=search, attrib=None)
+        keep = QueryURL('/dn_list', category=category and int(category), search=search, attrib=None)
 
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
@@ -206,7 +241,7 @@ class website_sale(website_sale):
 
         product_obj = pool.get('product.product')
 
-        url = "/shop_list"
+        url = "/dn_list"
         product_count = product_obj.search_count(cr, uid, domain, context=context)
         if search:
             post["search"] = search
@@ -226,6 +261,8 @@ class website_sale(website_sale):
             'rows': PPR,
             'compute_currency': compute_currency,
             'keep': keep,
+            'url': url,
+            'form_values': post,
         }
         return request.website.render("webshop_dermanord.products_list_reseller_view", values)
 
@@ -244,7 +281,7 @@ class website_sale(website_sale):
             'order': order,
             'compute_currency': compute_currency,
             'suggested_products': [],
-            'shop_list': post.get('shop_list') or None,
+            'dn_list': post.get('dn_list') or None,
         }
         if order:
             _order = order
@@ -258,9 +295,9 @@ class website_sale(website_sale):
     def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
         cr, uid, context = request.cr, request.uid, request.context
         request.website.sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
-        request.context.update({'shop_list': True})
-        if kw.get('shop_list'):
-            return request.redirect("/shop/cart?shop_list=%s" %kw.get('shop_list'))
+        request.context.update({'dn_list': True})
+        if kw.get('dn_list'):
+            return request.redirect("/shop/cart?dn_list=%s" %kw.get('dn_list'))
         return request.redirect("/shop/cart")
 
 

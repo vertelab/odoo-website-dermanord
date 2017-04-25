@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <template id="main_filter_sort_layout" inherit_id="website.layout">
+            <xpath expr="//div[@id='wrapwrap']/main" position="inside">
+                <t t-set="facets" t-value="request.env['product.facet'].search([])"/>
+                <div id="filter_modal" class="modal fade" role="dialog">
+                    <div class="modal-dialog" style="margin: 0px;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Product Filter
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&amp;times;</span>
+                                    </button>
+                                </h5>
+                            </div>
+                            <div class="modal-body" style="padding: 0px;">
+                                <t t-call="webshop_dermanord.dn_filter_form"/>
+                            </div>
+                            <div class="modal-footer hidden">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="sort_modal" class="modal fade" role="dialog">
+                    <div class="modal-dialog" style="margin: 0px;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Product Sort
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&amp;times;</span>
+                                    </button>
+                                </h5>
+                            </div>
+                            <div class="modal-body">
+                                <t t-call="webshop_dermanord.dn_sort_form"/>
+                            </div>
+                            <div class="modal-footer hidden">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="bottom_div" class="container">
+                    <h4 id="filter-btn-modal" data-toggle="modal" data-target="#filter_modal" class="pull-left"><i class="fa fa-filter"/> Filter</h4>
+                    <h4 id="sort-btn-modal" data-toggle="modal" data-target="#sort_modal" class="pull-right"><i class="fa fa-sort"/> Sort</h4>
+                </div>
+            </xpath>
+        </template>
+
+        <template id="dn_filter_form" name="DN Filter Form">
+            <form t-att-action="'/dn_list' if url == '/dn_list' else '/dn_shop'" method="post">
+                <div class="container">
+                    <t t-set="first_facet" t-value="0"/>
+                    <t t-if="len(facets) &gt; 0">
+                        <div class="col-md-5 col-sm-5 col-xs-5">
+                            <ul class="nav nav-stacked">
+                                <t t-foreach="facets" t-as="facet">
+                                    <li t-att-class="'active' if facet_index == 0 else ''"><a data-toggle="tab" t-att-href="'#facet_%s' %facet.id"><h5><t t-esc="facet.name"/> <i class="fa fa-angle-right"/></h5></a></li>
+                                </t>
+                            </ul>
+                        </div>
+                        <div class="col-md-7 col-sm-7 col-xs-7">
+                            <div class="tab-content">
+                                <t t-foreach="facets" t-as="facet">
+                                    <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])"/>
+                                    <div t-att-id="'facet_%s' %facet.id" t-att-class="'tab-pane fade %s' %('in active' if facet_index == 0 else '')">
+                                        <t t-if="len(facet_values) &gt; 0">
+                                            <t t-foreach="facet_values" t-as="facet_value">
+                                                <div class="checkbox">
+                                                    <h5>
+                                                        <label>
+                                                            <t t-if="form_values">
+                                                                <input type="checkbox" t-att-name="'facet_%s' %facet_value.id" t-att-value="facet_value.id" t-att="{'checked': '1'} if form_values.get('facet_%s' %facet_value.id) else {}"/><t t-esc="facet_value.name"/></t>
+                                                            <t t-if="not form_values">
+                                                                <input type="checkbox" t-att-name="'facet_%s' %facet_value.id" t-att-value="facet_value.id"/><t t-esc="facet_value.name"/>
+                                                            </t>
+                                                        </label>
+                                                    </h5>
+                                                </div>
+                                            </t>
+                                        </t>
+                                    </div>
+                                </t>
+                                <t t-if="form_values">
+                                    <input type="hidden" name="order" t-att-value="form_values.get('order') if form_values.get('order') else ''"/>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+                <button class="mt32 dn_btn dn_primary" type="submit">OK</button>
+            </form>
+        </template>
+
+        <template id="dn_sort_form" name="DN Sort Form">
+            <form t-att-action="'/dn_list' if url == '/dn_list' else '/dn_shop'" method="post">
+                <div class="container">
+                    <ul>
+                        <li><div class="radio"><label>
+                            <t t-if="form_values">
+                                <input type="radio" name="order" value="name asc" t-att="{'checked': '1'} if form_values.get('order') == 'name asc' else {}"/> Name Ascending
+                            </t>
+                            <t t-if="not form_values">
+                                <input type="radio" name="order" value="name asc"/> Name Ascending
+                            </t>
+                        </label></div></li>
+                        <li><div class="radio"><label>
+                            <t t-if="form_values">
+                                <input type="radio" name="order" value="name desc" t-att="{'checked': '1'} if form_values.get('order') == 'name desc' else {}"/> Name Descending
+                            </t>
+                            <t t-if="not form_values">
+                                <input type="radio" name="order" value="name desc"/> Name Descending
+                            </t>
+                        </label></div></li>
+                        <li><div class="radio"><label>
+                            <t t-if="form_values">
+                                <input type="radio" name="order" value="list_price asc" t-att="{'checked': '1'} if form_values.get('order') == 'list_price asc' else {}"/> Price Ascending
+                            </t>
+                            <t t-if="not form_values">
+                                <input type="radio" name="order" value="list_price asc"/> Price Ascending
+                            </t>
+                        </label></div></li>
+                        <li><div class="radio"><label>
+                            <t t-if="form_values">
+                                <input type="radio" name="order" value="list_price desc" t-att="{'checked': '1'} if form_values.get('order') == 'list_price desc' else {}"/> Price Descending
+                            </t>
+                            <t t-if="not form_values">
+                                <input type="radio" name="order" value="list_price desc"/> Price Descending
+                            </t>
+                        </label></div></li>
+                    </ul>
+                </div>
+                <t t-foreach="facets" t-as="facet">
+                    <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])"/>
+                    <t t-if="len(facet_values) &gt; 0">
+                        <t t-foreach="facet_values" t-as="facet_value">
+                            <t t-if="form_values">
+                                <input type="hidden" t-att-name="'facet_%s' %facet_value.id" t-att-value="form_values.get('facet_%s' %facet_value.id) if form_values.get('facet_%s' %facet_value.id) else ''"/>
+                            </t>
+                        </t>
+                    </t>
+                </t>
+                <button class="mt32 dn_btn dn_primary" type="submit">OK</button>
+            </form>
+        </template>
+
+    </data>
+</openerp>

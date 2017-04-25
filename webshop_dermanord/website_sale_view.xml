@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="products" name="Products">
+            <t t-call="website.layout">
+                <t t-set="additional_title">Shop</t>
+                <div id="wrap" class="js_sale">
+                    <div class="oe_structure" />
+                    <div class="container oe_website_sale">
+                        <div class="products_pager">
+                            <div class="row" style="width: 100%;">
+                                <t t-call="website_sale.search"><t t-set="search_class">pagination form-inline col-md-3</t></t>
+                                <t t-call="website.pager"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <t t-foreach="products" t-as="product">
+                                <div class="item" t-call="webshop_dermanord.products_item"/>
+                            </t>
+                        </div>
+                        <div class="products_pager">
+                            <t t-call="website.pager"/>
+                        </div>
+                    </div>
+                    <div class="oe_structure mb32" />
+                </div>
+            </t>
+        </template>
+
+        <template id="products_attributes_search" inherit_id="products" active="False" customize_show="True" name="Product Attribute's Search">
+            <xpath expr="//t[@t-call='website_sale.search']" position="after">
+                <div>
+                    <form class="js_attributes" method="get">
+                        <input type="hidden" name="search" t-att-value="search"/>
+                        <select class="oe_select2_search js-states form-control" multiple="multiple" name="attrib">
+                            <t t-foreach="attributes" t-as="a">
+                                <t t-if="a.value_ids and a.type != 'hidden'">
+                                    <optgroup t-att-label="a.name">
+                                        <t t-foreach="a.value_ids" t-as="v">
+                                            <option t-att-value="'%s-%s' % (a.id,v.id)" t-att-selected="'selected' if v.id in attrib_set else ''"><t t-esc="'%s: %s' % (a.name, v.name)"/></option>
+                                        </t>
+                                    </optgroup>
+                                </t>
+                            </t>
+                        </select>
+                    </form>
+                </div>
+            </xpath>
+        </template>
+
+        <template id="products_item" name="Product item">
+            <form action="/shop/cart/update" method="post">
+                <div itemscope="itemscope" itemtype="http://schema.org/Product" class="dn_product_div col-md-4 col-sm-6 col-xs-12">
+                    <div class="dn_product_image">
+                        <div class="dn_product_image_div">
+                            <a itemprop="url" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
+                                <t t-if="len(product.image_ids) &gt; 0">
+                                    <img itemprop="image" class="img img-responsive" t-att-src="'/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(product.image_ids[0].id, 'snippet_dermanord.img_product')" t-att-alt="product.name" />
+                                </t>
+                                <t t-if="len(product.image_ids) == 0">
+                                    <img itemprop="image" class="img img-responsive" t-att-src="website.image_url(product, 'image', None if product_image_big else '300x300')" t-att-alt="product.name" />
+                                </t>
+                                <div class="dn_product_image_hover_btn text-center hidden-xs">
+                                    <p>
+                                        <a class="dn_btn dn_primary" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">DETAILS</a>
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="dn_product_info text-center">
+                        <h4 class="p_name">
+                            <strong>
+                                <a itemprop="name" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))" t-field="product.name" />
+                            </strong>
+                        </h4>
+                        <h5 class="p_desc"><t t-esc="product.description_sale"/></h5>
+                        <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price" t-if="product.product_variant_ids">
+                            <b class="text-muted">
+                                <h4>
+                                    <t t-if="(compute_currency(product.list_price_tax) - product.price_tax) &gt; 0.1">
+                                        <del class="text-danger" style="white-space: nowrap;" t-field="product.list_price_tax" t-field-options='{
+                      "widget": "monetary",
+                      "from_currency": "product.company_id.currency_id",
+                      "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                    }' />
+                                        &amp;nbsp;
+                                    </t>
+                                    <span t-field="product.price_tax" style="white-space: nowrap;" t-field-options='{
+                       "widget": "monetary",
+                       "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                   }' />
+                                    <span itemprop="price" style="display:none;" t-esc="product.price" />
+                                    <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding" />
+                                </h4>
+                            </b>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </template>
+
+        <template id="products_list_reseller_view" name="Product List For Reseller">
+            <t t-call="website.layout">
+                <t t-set="additional_title">Shop</t>
+                <div id="wrap" class="js_sale">
+                    <div class="oe_structure"/>
+                    <div class="container oe_website_sale">
+                        <div class="products_pager">
+                            <div class="row" style="width: 100%;">
+                                <t t-call="website_sale.search"><t t-set="search_class">pagination form-inline col-md-3</t></t>
+                                <t t-call="website.pager"/>
+                            </div>
+                        </div>
+                        <table class="product_list_table table-responsive" style="width: 100%;">
+                            <tbody>
+                                <t t-foreach="products" t-as="product">
+                                    <tr class="col-md-6 col-xs-12">
+                                        <td>
+                                            <h5 t-field="product.default_code"/>
+                                        </td>
+                                        <td>
+                                            <h5>
+                                                <strong>
+                                                    <a t-att-href="keep('/shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
+                                                        <span itemprop="name" t-field="product.name"/>
+                                                        <t t-if="len(product.attribute_value_ids) &gt; 0">
+                                                            <t t-foreach="product.attribute_value_ids" t-as="att">
+                                                                <t t-esc="', %s' %att.name"/>
+                                                            </t>
+                                                        </t>
+                                                    </a>
+                                                </strong>
+                                            </h5>
+                                        </td>
+                                    </tr>
+                                    <tr class="col-md-6 col-xs-12">
+                                        <td style="width: 120px;">
+                                            <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price">
+                                                <b>
+<!--
+                                                    <t t-if="(compute_currency(product.lst_price) - product.price) &gt; 0.1">
+                                                        <del class="text-danger" style="white-space: nowrap;" t-field="product.lst_price" t-field-options='{
+                                                            "widget": "monetary",
+                                                            "from_currency": "product.company_id.currency_id",
+                                                            "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                                        }'/>&amp;nbsp;
+                                                    </t>
+-->
+                                                    <span t-field="product.price" style="white-space: nowrap;"  t-field-options='{
+                                                           "widget": "monetary",
+                                                           "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                                        }'>
+                                                    </span>
+                                                    <span itemprop="price" style="display:none;" t-esc="product.price">
+                                                        <a class="btn btn-default btn-xs fa fa-shopping-cart" t-att-href="keep('/shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))"/>
+                                                    </span>
+                                                    <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding"/>
+                                                </b>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <form t-att-action="keep('/shop/cart/update')" class="oe_dn_list" t-att-data-attribute_value_ids="product.id" method="POST">
+                                                <div class="product_shop col-md-12">
+                                                    <input type="hidden" class="product_id" name="product_id" t-att-value="int(product)" />
+                                                    <input type="hidden" name="dn_list" t-att-value="True" />
+                                                    <div class="css_quantity input-group oe_website_spinner">
+                                                        <span class="input-group-addon">
+                                                            <a t-attf-href="#" class="mb8 js_add_cart_json">
+                                                                <i class="fa fa-minus"></i>
+                                                            </a>
+                                                        </span>
+                                                        <input type="text" class="js_quantity form-control" data-min="1" name="add_qty" value="1"/>
+                                                        <span class="input-group-addon">
+                                                            <a t-attf-href="#" class="mb8 float_left js_add_cart_json">
+                                                                <i class="fa fa-plus"></i>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                    <a id="add_to_cart" class="btn btn-default js_check_product a-submit" href="#"><i class="fa fa-shopping-cart a-submit" style="color: #CB683F;"/> <span class="hidden-xs">Add to Cart</span></a>
+                                                </div>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <div class="products_pager">
+                            <t t-call="website.pager"/>
+                        </div>
+                    </div>
+                    <div class="oe_structure mb32"/>
+                </div>
+            </t>
+        </template>
+
+        <template id="continue_shopping" inherit_id="website_sale.continue_shopping">
+            <xpath expr="//a[@href='/shop']" position="replace">
+                <t t-if="dn_list">
+                    <a href="/dn_list" class="btn btn-default mb32"><span class="fa fa-long-arrow-left"/> <span class="hidden-xs">Continue Shopping</span><span class="visible-xs-inline">Continue</span></a>
+                </t>
+                <t t-if="not dn_list">
+                    <a href="/shop" class="btn btn-default mb32"><span class="fa fa-long-arrow-left"/> <span class="hidden-xs">Continue Shopping</span><span class="visible-xs-inline">Continue</span></a>
+                </t>
+            </xpath>
+        </template>
+
+        <template id="dermanord_product_detail" inherit_id="website_sale.product">
+            <xpath expr="//a[@id='add_to_cart']" position="attributes">
+                <attribute name="class">dn_btn dn_primary mt8 js_check_product a-submit text-center</attribute>
+            </xpath>
+            <xpath expr="//p[@class='text-muted']" position="attributes">
+                <attribute name="class">text-muted hidden</attribute>
+            </xpath>
+            <xpath expr="//p[@t-field='product.description_sale']" position="after">
+                <h4 class="show_more_facet text-center hidden-lg hidden-md hidden-sm" style="text-decoration: underline;">More info <i class="fa fa-angle-down"/></h4>
+                <div class="container facet_container hidden-xs">
+                    <t t-if="len(product.facet_line_ids) &gt; 0">
+                        <hr/>
+                        <div class="col-md-6 facet_div" t-foreach="request.env['product.facet'].search([])" t-as="facet">
+                            <t t-if="facet.name in [f.name for f in product.facet_line_ids.mapped('facet_id')]">
+                                <h4 class="dn_uppercase" t-field="facet.name"/>
+                                <p t-esc="', '.join(product.facet_line_ids.with_context({'facet_id': facet.id}).filtered(lambda f: f.facet_id.id == f._context.get('facet_id')).mapped('value_ids').mapped('name'))"/>
+                            </t>
+                        </div>
+                    </t>
+                    <div class="col-md-12 no_padding_div">
+                        <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') in user_id.groups_id">
+                            <p t-field="product_product.reseller_desc" class="text-muted reseller_desc"/>
+                        </t>
+                        <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') not in user_id.groups_id">
+                            <p t-field="product_product.public_desc" class="text-muted public_desc"/>
+                        </t>
+                    </div>
+                </div>
+                <h4 class="hide_more_facet text-center hidden-lg hidden-md hidden-sm hidden" style="text-decoration: underline;">Less info <i class="fa fa-angle-up"/></h4>
+                <t t-set="variant" t-value="product.product_variant_ids[0]" />
+                <!-- TODO: find method that get the product vairant -->
+                <div class="col-md-12 no_padding_div hidden">
+                    <div class="col-md-4 no_padding_div">
+                        <ul class="nav nav-pills nav-stacked">
+                            <li class="active">
+                                <a data-toggle="tab" href="#remedy">Remedy</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#skin_type">Skin Type</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#texture">Texture</a>
+                            </li>
+                            <li group="base.group_public">
+                                <a data-toggle="tab" href="#public_desc">Description</a>
+                            </li>
+                            <li groups="base.group_website_publisher">
+                                <a data-toggle="tab" href="#reseller_desc">Description</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#use_desc">Manual</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#ingredients">Ingredients</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content col-md-8 no_padding_div">
+<!--
+                        <div id="remedy" class="tab-pane fade in active">
+                            <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_remedy")).mapped("value_ids").mapped("name"))' />
+                        </div>
+                        <div id="skin_type" class="tab-pane fade in">
+                            <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_skin_type")).mapped("value_ids").mapped("name"))' />
+                        </div>
+                        <div id="texture" class="tab-pane fade in">
+                            <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_texture")).mapped("value_ids").mapped("name"))' />
+                        </div>
+-->
+                        <div id="public_desc" class="tab-pane fade in">
+                            <!-- TODO: find method that check if current user is a customer -->
+                            <p>public description</p>
+                        </div>
+                        <div id="reseller_desc" class="tab-pane fade in">
+                            <!-- TODO: find method that check if current user is a saller -->
+                            <p>reseller</p>
+                        </div>
+                        <div id="use_desc" class="tab-pane fade in">
+                            <p>useage</p>
+                        </div>
+                        <div id="ingredients" class="tab-pane fade in">
+                            <p>ingredients</p>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//p[@t-field='product.description_sale']" position="replace">
+                <p t-field="product.description_sale" class="text-muted"/>
+                <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') not in user_id.groups_id">
+                    <p t-field="product_product.use_desc" class="text-muted use_desc"/>
+                    <hr/>
+                </t>
+            </xpath>
+            <xpath expr="//div[@itemprop='description']" position="before">
+                <t t-set="ingredients" t-value="request.env['product.ingredient'].search([('product_ids', 'in', product.id)], order='sequence')"/>
+                <t t-if="len(ingredients) &gt; 0">
+                    <h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>
+                    <div class="container mb16 hidden-xs">
+                        <div class="col-md-12">
+                            <t t-foreach="ingredients" t-as="ingredient">
+                                <div class="col-md-2">
+                                    <img class="img img-responsive" style="margin: auto;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
+                                    <h6 style="color: #D27153;" class="text-center" t-field="ingredient.name"/>
+                                    <h5 class="text-muted text-center" t-field="ingredient.description"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                    <div class="container mb16 hidden-lg hidden-md hidden-sm">
+                        <div class="col-md-12 mb16">
+                            <div class="carousel slide" id="ingredient_carousel" data-ride="carousel">
+                                <div class="carousel-inner" style="padding-bottom: 40px;">
+                                    <t t-foreach="ingredients" t-as="ingredient">
+                                        <div t-att-class="'item %s' %('active' if ingredient_index == 0 else '')">
+                                            <img class="img img-responsive" style="margin: auto;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
+                                            <h6 style="color: #D27153;" class="text-center" t-field="ingredient.name"/>
+                                            <h5 class="text-muted text-center" t-field="ingredient.description"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <ol class="carousel-indicators">
+                                    <t t-foreach="ingredients" t-as="ingredient">
+                                        <li t-att-class="'active' if ingredient_index == 0 else ''" t-att-data-slide-to="'0' if ingredient_index == 0 else ingredient_index" data-target="#ingredient_carousel"/>
+                                    </t>
+                                </ol>
+                            </div>
+                            <img src="/snippet_dermanord/static/src/img/finger.png" class="touch_finger hidden-lg hidden-md hidden-sm" style="margin: auto; display: block;"/>
+                        </div>
+                    </div>
+                </t>
+                <p id="current_product_id" t-att-data-value="product.id" class="hidden"/>
+                <div class="container ingredients_description">
+                    <div class="col-md-12 mt32">
+                        <t t-if="product_product and product_product.ingredients">
+                            <p><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" t-field="product_product.ingredients"/></p>
+                        </t>
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//div[@itemprop='description']" position="after">
+                <div class="oe_structure oe_empty mt32 mb32">
+                    <div class="container">
+                        <h1 class="text-center">This product’s experiences</h1>
+                        <t t-call="webshop_dermanord.product_experiences" />
+                        <t t-call="webshop_dermanord.product_experiences_wide" />
+                    </div>
+                    <div class="container mt32">
+                        <h1 class="text-center">Product range</h1>
+                        <div t-foreach="request.env['product.template'].search([('public_categ_ids','in',product.public_categ_ids.mapped('id')),('website_published','=',True),('id','!=',product.id)])[:4]" t-as="p">
+                            <t t-call="website_product_templates.product_view" />
+                        </div>
+                    </div>
+                    <t t-set="useless_var_6446547657" t-value="website.sale_add_previous_product(product.id)" />
+                    <div class="container mt32">
+                        <h1 class="text-center">Recently viewed</h1>
+                        <div t-foreach="website.sale_get_previous_products().with_context(pid=product.id).filtered(lambda p: p.id != p.env.context['pid'])[:4]" t-as="p">
+                            <t t-call="website_product_templates.product_view" />
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+
+        <template id="variants" inherit_id="website_sale.variants">
+            <xpath expr="//option[@t-att-value='value_id.id']" position="replace">
+                <option t-att-value="value_id.id" t-att="{'selected': 'checked'} if value_id.id in variant_list else {}">
+                    <span t-field="value_id.name"/>
+                </option>
+            </xpath>
+        </template>
+
+        <template id="product_price" inherit_id="website_sale.product_price">
+            <xpath expr="//span[@class='text-danger oe_default_price']" position="replace">
+                <div>
+                    <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
+                        <span>Rek.pris</span> <span class="oe_recommended_price" style="display: inline;" t-field="product.lst_price"
+                        t-field-options='{
+                          "widget": "monetary",
+                          "from_currency": "product.company_id.currency_id",
+                          "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                       }'/>
+                   </t>
+               </div>
+            </xpath>
+<!--
+            <xpath expr="//span[@class='text-danger oe_default_price']" position="attributes">
+                <attribute name="class">text-danger oe_default_price hidden</attribute>
+            </xpath>
+            <xpath expr="//b[@class='oe_price']" position="attributes">
+                <attribute name="class">oe_price hidden</attribute>
+            </xpath>
+            <xpath expr="//b[@t-field='product.price']" position="after">
+                <span class="text-danger oe_default_price" style="text-decoration: line-through; white-space: nowrap;"
+                    t-field="product.list_price_tax"
+                    t-field-options='{
+                      "widget": "monetary",
+                      "from_currency": "product.company_id.currency_id",
+                      "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                   }'/>
+                  <b class="oe_price" style="white-space: nowrap;"
+                    t-field="product.price_tax"
+                    t-field-options='{
+                       "widget": "monetary",
+                       "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                   }'/>
+            </xpath>
+-->
+        </template>
+
+        <!-- Produktvisning enskild produkt -->
+        <template id="product_view" name="Product View">
+            <div t-att-class="'col-md-2 %s col-sm-3 col-xs-4   thumbnail' % ('col-md-offset-2 col-sm-offset-1 col-xs-offset-2' if p_index == 0 else '')" style="webkit-justify-content: center;
+  justify-content: center;
+  display: flex; margin-right: 5px; height: 250px;">
+                <div class='mt16 text-center' style="padding: 0 15px;">
+                    <span t-field="p.image_small" t-field-options='{"widget": "image", "class": "img-rounded shadow" }' />
+                    <h5>
+                        <a t-attf-href="/shop/product/#{ slug(p) }" style="display: block">
+                            <span t-field='p.name' style="display: block" />
+                        </a>
+                    </h5>
+                    <b>
+                        <t t-if="(compute_currency(p.lst_price) - p.price) &gt; 0.1">
+                            <del class="text-danger oe_vertel_product_view_old_price" t-field="p.lst_price" t-field-options='{
+                "widget": "monetary",
+                "from_currency": "p.company_id.currency_id",
+                "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+              }' />
+                            &amp;nbsp;
+                        </t>
+                        <span class="oe_vertel_product_view_price" t-field="p.price" t-field-options='{
+                 "widget": "monetary",
+                 "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+             }' />
+                    </b>
+                </div>
+            </div>
+        </template>
+
+        <template id="product_quantity" inherit_id="website_sale.product_quantity">
+<!--
+            <xpath expr="//div[@class='css_quantity input-group oe_website_spinner']" position="attributes">
+                <attribute name="class">css_quantity input-group oe_website_spinner text-center</attribute>
+            </xpath>
+-->
+        </template>
+
+        <template id="product_experiences" name="Product Experiences">
+            <t t-set="blog_posts" t-value="product.blog_post_ids.filtered(lambda p: p.blog_id == p.env.ref('webshop_dermanord.blog_experiences'))" />
+            <t t-set="offset_value" t-value="0" />
+            <t t-if="len(blog_posts) == 1">
+                <t t-set="offset_value" t-value="'col-md-offset-4 col-sm-offset-4'" />
+            </t>
+            <t t-if="len(blog_posts) == 2">
+                <t t-set="offset_value" t-value="'col-md-offset-2 col-sm-offset-2'" />
+            </t>
+            <t t-foreach="blog_posts[:3]" t-as="post">
+                <div t-att-class="'col-md-4 %s col-sm-4 col-xs-12 blog_block' %(offset_value if post_index == 0 else '')">
+                    <div class="image_block" t-att-style="&quot;background-image: url('/imagefieldurl/blog.post/background_image/%s/id/%s')&quot; %(post.id, request.env.ref('webshop_dermanord.experiences_four_three_small').id)">
+                        <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text text-center">
+                            <h3 t-field="post.name" />
+                        </a>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="product_experiences_wide" name="Product Experiences Wide">
+            <t t-set="blog_posts" t-value="product.blog_post_ids.filtered(lambda p: p.blog_id == p.env.ref('webshop_dermanord.blog_experiences'))" />
+            <t t-set="offset_value" t-value="0" />
+            <t t-if="len(blog_posts) == 1">
+                <t t-set="offset_value" t-value="'col-md-offset-3 col-sm-offset-3'" />
+            </t>
+            <t t-foreach="blog_posts[:2]" t-as="post">
+                <div t-att-class="'col-md-6 %s col-sm-6 col-xs-12 blog_block' %(offset_value if post_index == 0 else '')">
+                    <div class="image_block_wide" t-att-style="&quot;background-image: url('/imagefieldurl/blog.post/background_image/%s/id/%s')&quot; %(post.id, request.env.ref('webshop_dermanord.experiences_sixteen_nine_small').id)">
+                        <a t-att-href="'/blog/%s/post/%s' %(post.blog_id.id, post.id)" class="image_block_text text-center">
+                            <h3 t-field="post.name" />
+                        </a>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</openerp>

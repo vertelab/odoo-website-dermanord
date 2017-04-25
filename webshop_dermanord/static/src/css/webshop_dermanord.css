@@ -259,3 +259,30 @@
     display: inline-flex;
     margin-top: 8px;
 }
+
+#filter_modal .modal-body .container {
+    padding: 0px;
+}
+
+#filter_modal .modal-body .container .col-xs-5, #filter_modal .modal-body .container .col-xs-7 {
+    padding-left: 0px;
+}
+
+#filter_modal .modal-content {
+    padding: 15px;
+}
+
+#sort_modal ul{
+    list-style-type: none;
+}
+
+#bottom_div {
+    width: 100%;
+    position: fixed;
+    z-index: 99;
+    bottom: 0px;
+    left: 0px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 5px 20px;
+}
