@@ -26,6 +26,7 @@ from datetime import datetime
 from lxml import html
 from openerp.addons.website_sale.controllers.main import website_sale, QueryURL, table_compute
 import werkzeug
+from heapq import nlargest
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -50,10 +51,19 @@ class product_template(models.Model):
             self.blog_post_ids = [(6, 0, [p['id'] for p in blog_posts])]
             #~ self.blog_post_ids = [(6, 0, blog_posts.filtered(lambda b: b.website_published == True).mapped('id'))]
     blog_post_ids = fields.Many2many(comodel_name='blog.post', string='Posts', compute='_blog_post_ids')
-
     list_price_tax = fields.Float(compute='get_product_tax')
     price_tax = fields.Float(compute='get_product_tax')
     recommended_price = fields.Float(compute='get_product_tax')
+    sold_times = fields.Integer(string='Sold', compute='_get_sold_time', store=True)
+
+    @api.multi
+    def _get_sold_time(self):
+        so_lines = self.env['sale.order.line'].search([('product_id', 'in', self.product_variant_ids.mapped('id'))])
+        sold = 0
+        if len(so_lines) > 0:
+            for line in so_lines:
+                sold += int(line.product_uom_qty)
+        self.sold_times = sold
 
     @api.one
     def get_product_tax(self):
@@ -195,6 +205,7 @@ class website_sale(website_sale):
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
         product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=self._get_search_order(post), context=context)
         products = product_obj.browse(cr, uid, product_ids, context=context)
+        #~ popular_products = nlargest(20, products.mapped('sold_times'))
 
         style_obj = pool['product.style']
         style_ids = style_obj.search(cr, uid, [], context=context)
@@ -309,7 +320,7 @@ class website_sale(website_sale):
         request.website.sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
         request.context.update({'dn_list': True})
         if kw.get('dn_list'):
-            return request.redirect("/shop/cart?dn_list=%s" %kw.get('dn_list'))
+            return request.redirect("/dn_list?dn_list=%s" %kw.get('dn_list'))
         return request.redirect("/shop/cart")
 
 

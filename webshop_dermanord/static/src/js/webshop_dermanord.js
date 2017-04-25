@@ -12,10 +12,10 @@ $(document).ready(function(){
         $(".facet_container").addClass("hidden-xs");
     });
 
-    $(".oe_shop_list").on('click', 'a.js_add_cart_json', function (ev) {
+    $(".oe_dn_list").on('click', 'a.js_add_cart_json', function (ev) {
         ev.preventDefault();
         var $link = $(ev.currentTarget);
-        var $input = $link.parent().parent().find("input");
+        var $input = $link.closest(".css_quantity").find("input");
         var min = parseFloat($input.data("min") || 0);
         var max = parseFloat($input.data("max") || Infinity);
         var quantity = ($link.has(".fa-minus").length ? -1 : 1) + parseFloat($input.val(),10);

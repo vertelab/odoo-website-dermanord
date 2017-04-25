@@ -120,10 +120,18 @@
                     <ul>
                         <li><div class="radio"><label>
                             <t t-if="form_values">
+                                <input type="radio" name="order" value="sold_times desc" t-att="{'checked': '1'} if form_values.get('order') == 'sold_times desc' else {}"/> Most Sold
+                            </t>
+                            <t t-if="not form_values">
+                                <input type="radio" name="order" value="sold_times desc" checked="1"/> Most Sold
+                            </t>
+                        </label></div></li>
+                        <li><div class="radio"><label>
+                            <t t-if="form_values">
                                 <input type="radio" name="order" value="name asc" t-att="{'checked': '1'} if form_values.get('order') == 'name asc' else {}"/> Name Ascending
                             </t>
                             <t t-if="not form_values">
-                                <input type="radio" name="order" value="name asc" checked="1"/> Name Ascending
+                                <input type="radio" name="order" value="name asc"/> Name Ascending
                             </t>
                         </label></div></li>
                         <li><div class="radio"><label>
