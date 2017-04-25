@@ -206,13 +206,12 @@
                 <h4 class="show_more_facet text-center hidden-lg hidden-md hidden-sm" style="text-decoration: underline;">More info <i class="fa fa-angle-down"/></h4>
                 <div class="container facet_container hidden-xs">
                     <t t-if="len(product.facet_line_ids) &gt; 0">
-                        <hr/>
                         <div class="col-md-6 facet_div" t-foreach="request.env['product.facet'].search([])" t-as="facet">
                             <t t-if="facet.name in [f.name for f in product.facet_line_ids.mapped('facet_id')]">
                                 <h4 class="dn_uppercase" t-field="facet.name"/>
                                 <t t-set="facet_value_ids" t-value="product.facet_line_ids.with_context({'facet_id': facet.id}).filtered(lambda f: f.facet_id.id == f._context.get('facet_id')).mapped('value_ids')"/>
                                 <t t-foreach="facet_value_ids" t-as="value">
-                                    <a t-att-href="'/dn_shop/?facet_%s=%s' %(facet.id, value.id)"><span t-field="value.name"/></a><span t-if="value_index != len(facet_value_ids)-1">, </span>
+                                    <a t-att-href="'/dn_shop/?facet_%s=%s' %(facet.id, value.id)" class="text-muted"><span t-field="value.name"/></a><span t-if="value_index != len(facet_value_ids)-1">, </span>
                                 </t>
 <!--
                                     <p t-esc="', '.join(product.facet_line_ids.with_context({'facet_id': facet.id}).filtered(lambda f: f.facet_id.id == f._context.get('facet_id')).mapped('value_ids').mapped('name'))"/>
