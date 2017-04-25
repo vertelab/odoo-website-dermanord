@@ -5,6 +5,7 @@
         <template id="main_filter_sort_layout" inherit_id="website.layout">
             <xpath expr="//div[@id='wrapwrap']/main" position="inside">
                 <t t-set="facets" t-value="request.env['product.facet'].search([])"/>
+                <t t-set="categories" t-value="request.env['product.public.category'].search([])"/>
                 <div id="filter_modal" class="modal fade" role="dialog">
                     <div class="modal-dialog" style="margin: 0px;">
                         <div class="modal-content">
@@ -60,6 +61,7 @@
                                 <t t-foreach="facets" t-as="facet">
                                     <li t-att-class="'active' if facet_index == 0 else ''"><a data-toggle="tab" t-att-href="'#facet_%s' %facet.id"><h5><t t-esc="facet.name"/> <i class="fa fa-angle-right"/></h5></a></li>
                                 </t>
+                                <li><a data-toggle="tab" href="#category"><h5>Categories <i class="fa fa-angle-right"/></h5></a></li>
                             </ul>
                         </div>
                         <div class="col-md-7 col-sm-7 col-xs-7">
@@ -84,8 +86,25 @@
                                         </t>
                                     </div>
                                 </t>
+                                <div id="category" class="'tab-pane fade">
+                                    <t t-if="len(categories) &gt; 0">
+                                        <t t-foreach="categories" t-as="category">
+                                            <div class="checkbox">
+                                                <h5>
+                                                    <label>
+                                                        <t t-if="form_values">
+                                                            <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id" t-att="{'checked': '1'} if form_values.get('category_%s' %category.id) else {}"/><t t-esc="category.name"/></t>
+                                                        <t t-if="not form_values">
+                                                            <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id"/><t t-esc="category.name"/>
+                                                        </t>
+                                                    </label>
+                                                </h5>
+                                            </div>
+                                        </t>
+                                    </t>
+                                </div>
                                 <t t-if="form_values">
-                                    <input type="hidden" name="order" t-att-value="form_values.get('order') if form_values.get('order') else ''"/>
+                                    <input type="hidden" name="order" t-att-value="form_values.get('order') if form_values.get('order') else 'name asc'"/>
                                 </t>
                             </div>
                         </div>
@@ -104,7 +123,7 @@
                                 <input type="radio" name="order" value="name asc" t-att="{'checked': '1'} if form_values.get('order') == 'name asc' else {}"/> Name Ascending
                             </t>
                             <t t-if="not form_values">
-                                <input type="radio" name="order" value="name asc"/> Name Ascending
+                                <input type="radio" name="order" value="name asc" checked="1"/> Name Ascending
                             </t>
                         </label></div></li>
                         <li><div class="radio"><label>
@@ -131,6 +150,24 @@
                                 <input type="radio" name="order" value="list_price desc"/> Price Descending
                             </t>
                         </label></div></li>
+                        <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
+                            <li><div class="radio"><label>
+                                <t t-if="form_values">
+                                    <input type="radio" name="order" value="default_code asc" t-att="{'checked': '1'} if form_values.get('order') == 'default_code asc' else {}"/> Article No. Ascending
+                                </t>
+                                <t t-if="not form_values">
+                                    <input type="radio" name="order" value="default_code asc"/> Article No. Ascending
+                                </t>
+                            </label></div></li>
+                            <li><div class="radio"><label>
+                                <t t-if="form_values">
+                                    <input type="radio" name="order" value="default_code desc" t-att="{'checked': '1'} if form_values.get('order') == 'default_code desc' else {}"/> Article No. Descending
+                                </t>
+                                <t t-if="not form_values">
+                                    <input type="radio" name="order" value="default_code desc"/> Article No. Descending
+                                </t>
+                            </label></div></li>
+                        </t>
                     </ul>
                 </div>
                 <t t-foreach="facets" t-as="facet">

@@ -133,22 +133,35 @@ class website_sale(website_sale):
         #~ extra_domain = ('id', 'in', products.mapped('id')) if len(products) != 0 else None
         return self.get_products(page=page, category=category, search=search, **post)
 
-    def get_facet_domain(self, post):
+    def get_domain_append(self, post):
         facet_ids = []
+        category_ids = []
         for k, v in post.iteritems():
             if k.split('_')[0] == 'facet':
                 if v:
                     facet_ids.append(int(v))
+            elif k.split('_')[0] == 'category':
+                if v:
+                    category_ids.append(int(v))
         facets = request.env['product.facet.value'].search([('id', 'in', facet_ids)])
         facet = {}
+        categories = request.env['product.public.category'].search([('id', 'in', category_ids)])
+        category = {}
         for f in facets:
             if facet.get(f.name):
                 facet[f.name].append(f.id)
             else:
                 facet[f.name] = [f.id]
+        for c in categories:
+            if category.get(c.name):
+                category[c.name].append(c.id)
+            else:
+                category[c.name] = [c.id]
         domain_append = []
         for f, r in facet.iteritems():
             domain_append.append(('facet_line_ids.value_ids', 'in', r))
+        for c, r in category.iteritems():
+            domain_append.append(('public_categ_ids', 'in', r))
         return domain_append
 
     def get_products(self, page=0, category=None, search='', **post):
@@ -157,9 +170,8 @@ class website_sale(website_sale):
         attrib_list = request.httprequest.args.getlist('attrib')
         attrib_values = [map(int, v.split("-")) for v in attrib_list if v]
         attrib_set = set([v[1] for v in attrib_values])
-        _logger.warn(post)
         domain = self._get_search_domain(search, category, attrib_values)
-        domain += self.get_facet_domain(post)
+        domain += self.get_domain_append(post)
 
         keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
@@ -229,7 +241,7 @@ class website_sale(website_sale):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
         domain = self._get_search_domain(search, category, None)
-        domain += self.get_facet_domain(post)
+        domain += self.get_domain_append(post)
 
         keep = QueryURL('/dn_list', category=category and int(category), search=search, attrib=None)
 

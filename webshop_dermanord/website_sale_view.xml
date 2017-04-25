@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+
         <template id="products" name="Products">
             <t t-call="website.layout">
                 <t t-set="additional_title">Shop</t>
@@ -112,10 +113,10 @@
                                 <t t-call="website.pager"/>
                             </div>
                         </div>
-                        <table class="product_list_table table-responsive" style="width: 100%;">
+                        <table class="product_list_table table table-striped" style="width: 100%;">
                             <tbody>
                                 <t t-foreach="products" t-as="product">
-                                    <tr class="col-md-6 col-xs-12">
+                                    <tr class="">
                                         <td>
                                             <h5 t-field="product.default_code"/>
                                         </td>
@@ -133,20 +134,9 @@
                                                 </strong>
                                             </h5>
                                         </td>
-                                    </tr>
-                                    <tr class="col-md-6 col-xs-12">
-                                        <td style="width: 120px;">
+                                        <td>
                                             <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price">
                                                 <b>
-<!--
-                                                    <t t-if="(compute_currency(product.lst_price) - product.price) &gt; 0.1">
-                                                        <del class="text-danger" style="white-space: nowrap;" t-field="product.lst_price" t-field-options='{
-                                                            "widget": "monetary",
-                                                            "from_currency": "product.company_id.currency_id",
-                                                            "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-                                                        }'/>&amp;nbsp;
-                                                    </t>
--->
                                                     <span t-field="product.price" style="white-space: nowrap;"  t-field-options='{
                                                            "widget": "monetary",
                                                            "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
