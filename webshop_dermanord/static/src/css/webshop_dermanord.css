@@ -277,3 +277,9 @@ span[data-oe-model="product.ingredient"] > img {
     width: 100%;
     margin: auto;
 }
+
+@media (max-width: 768px) {
+    .list_product_name {
+        text-align: center;
+    }
+}

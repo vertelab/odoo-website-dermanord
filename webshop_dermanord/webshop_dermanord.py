@@ -175,8 +175,10 @@ class website_sale(website_sale):
                     facet[f.name].append(f.id)
                 else:
                     facet[f.name] = [f.id]
+            value_ids = []
             for f, r in facet.iteritems():
-                domain_append.append(('facet_line_ids.value_ids', 'in', r))
+                value_ids += r
+            domain_append.append(('facet_line_ids.value_ids', 'in', value_ids))
         if len(category_ids) != 0:
             categories = request.env['product.public.category'].search([('id', 'in', category_ids)])
             category = {}
@@ -185,8 +187,10 @@ class website_sale(website_sale):
                     category[c.name].append(c.id)
                 else:
                     category[c.name] = [c.id]
+            value_ids = []
             for c, r in category.iteritems():
-                domain_append.append(('public_categ_ids', 'in', r))
+                value_ids += r
+            domain_append.append(('public_categ_ids', 'in', value_ids))
         if len(ingredient_ids) != 0:
             ingredients = request.env['product.ingredient'].search([('id', 'in', ingredient_ids)])
             ingredient = {}
@@ -195,8 +199,10 @@ class website_sale(website_sale):
                     ingredient[i.name].append(i.id)
                 else:
                     ingredient[i.name] = [i.id]
+            value_ids = []
             for i, r in ingredient.iteritems():
-                domain_append.append(('ingredient_ids', 'in', r))
+                value_ids += r
+            domain_append.append(('ingredient_ids', 'in', value_ids))
         return domain_append
 
     def get_products(self, page=0, category=None, search='', **post):
