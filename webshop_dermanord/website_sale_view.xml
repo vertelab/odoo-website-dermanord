@@ -7,46 +7,36 @@
                 <t t-set="additional_title">Shop</t>
                 <div id="wrap" class="js_sale">
                     <div class="oe_structure" />
-                    <div class="container oe_website_sale">
-                        <div class="products_pager">
-                            <div class="row" style="width: 100%;">
-                                <t t-call="website_sale.search"><t t-set="search_class">pagination form-inline col-md-3</t></t>
-                                <t t-call="website.pager"/>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <t t-foreach="products" t-as="product">
-                                <div class="item" t-call="webshop_dermanord.products_item"/>
-                            </t>
-                        </div>
-                        <div class="products_pager">
-                            <t t-call="website.pager"/>
-                        </div>
-                    </div>
+                        <t t-call="webshop_dermanord.dn_shop"/>
                     <div class="oe_structure mb32" />
                 </div>
             </t>
         </template>
 
-        <template id="products_attributes_search" inherit_id="products" active="False" customize_show="True" name="Product Attribute's Search">
-            <xpath expr="//t[@t-call='website_sale.search']" position="after">
-                <div>
-                    <form class="js_attributes" method="get">
-                        <input type="hidden" name="search" t-att-value="search"/>
-                        <select class="oe_select2_search js-states form-control" multiple="multiple" name="attrib">
-                            <t t-foreach="attributes" t-as="a">
-                                <t t-if="a.value_ids and a.type != 'hidden'">
-                                    <optgroup t-att-label="a.name">
-                                        <t t-foreach="a.value_ids" t-as="v">
-                                            <option t-att-value="'%s-%s' % (a.id,v.id)" t-att-selected="'selected' if v.id in attrib_set else ''"><t t-esc="'%s: %s' % (a.name, v.name)"/></option>
-                                        </t>
-                                    </optgroup>
-                                </t>
-                            </t>
-                        </select>
-                    </form>
+        <template id="dn_shop" name="DN Shop">
+            <t t-if="ingredient">
+                <div class="container">
+                    <h1 class="text-center"><span t-field="ingredient.name"/></h1>
+                    <span itemprop="image" t-field="ingredient.image" t-field-options='{"widget": "image", "alt-field": "name"}'/>
+                    <p class="text-center"><span t-field="ingredient.description"/></p>
                 </div>
-            </xpath>
+            </t>
+            <div class="container oe_website_sale">
+                <div class="products_pager">
+                    <div class="row" style="width: 100%;">
+                        <t t-call="website_sale.search"><t t-set="search_class">pagination form-inline col-md-3</t></t>
+                        <t t-call="website.pager"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <t t-foreach="products" t-as="product">
+                        <div t-call="webshop_dermanord.products_item"/>
+                    </t>
+                </div>
+                <div class="products_pager">
+                    <t t-call="website.pager"/>
+                </div>
+            </div>
         </template>
 
         <template id="products_item" name="Product item">
@@ -192,6 +182,27 @@
                 <t t-if="not dn_list">
                     <a href="/shop" class="btn btn-default mb32"><span class="fa fa-long-arrow-left"/> <span class="hidden-xs">Continue Shopping</span><span class="visible-xs-inline">Continue</span></a>
                 </t>
+            </xpath>
+        </template>
+
+        <template id="products_attributes_search" inherit_id="products" active="False" customize_show="True" name="Product Attribute's Search">
+            <xpath expr="//t[@t-call='website_sale.search']" position="after">
+                <div>
+                    <form class="js_attributes" method="get">
+                        <input type="hidden" name="search" t-att-value="search"/>
+                        <select class="oe_select2_search js-states form-control" multiple="multiple" name="attrib">
+                            <t t-foreach="attributes" t-as="a">
+                                <t t-if="a.value_ids and a.type != 'hidden'">
+                                    <optgroup t-att-label="a.name">
+                                        <t t-foreach="a.value_ids" t-as="v">
+                                            <option t-att-value="'%s-%s' % (a.id,v.id)" t-att-selected="'selected' if v.id in attrib_set else ''"><t t-esc="'%s: %s' % (a.name, v.name)"/></option>
+                                        </t>
+                                    </optgroup>
+                                </t>
+                            </t>
+                        </select>
+                    </form>
+                </div>
             </xpath>
         </template>
 

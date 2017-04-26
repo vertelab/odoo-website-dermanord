@@ -147,6 +147,10 @@ class website_sale(website_sale):
     def dn_shop(self, page=0, category=None, search='', **post):
         return self.get_products(page=page, category=category, search=search, **post)
 
+    #~ @http.route(['/dn_ingredient/<model("product.ingredient"):ingredient>'], type='http', auth="public", website=True)
+    #~ def dn_ingredient(self, ingredient=None, page=0, category=None, search='', **post):
+        #~ return self.get_products(page=page, category=category, search=search, **post)
+
     def get_domain_append(self, post):
         facet_ids = []
         category_ids = []
@@ -158,7 +162,7 @@ class website_sale(website_sale):
             if k.split('_')[0] == 'category':
                 if v:
                     category_ids.append(int(v))
-            if k.split('_')[0] == 'ingredient':
+            if k == 'ingredient':
                 if v:
                     ingredient_ids.append(int(v))
 
@@ -262,6 +266,7 @@ class website_sale(website_sale):
             'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
             'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
             'form_values': post,
+            'ingredient': request.env['product.ingredient'].browse(int(post.get('ingredient'))) if post.get('ingredient') else None,
         }
         return request.website.render("webshop_dermanord.products", values)
 

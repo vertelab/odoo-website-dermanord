@@ -34,21 +34,6 @@
     border-color: #CB683F;
 }
 
-.masonry { /* Masonry container */
-/*
-    column-count: 4;
-    column-gap: 1em;
-*/
-}
-
-.item { /* Masonry bricks or child elements */
-/*
-    display: inline-block;
-    margin: 0 0 1em;
-    width: 100%;
-*/
-}
-
 .no_padding_div {
     padding: 0px !important;
 }
@@ -287,3 +272,7 @@
     padding: 5px 20px;
 }
 
+span[data-oe-model="product.ingredient"] > img {
+    max-width: 500px;
+    width: 100%;
+}
