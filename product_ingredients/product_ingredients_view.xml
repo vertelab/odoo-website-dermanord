@@ -6,7 +6,7 @@
         <li t-att-class="indicator" t-att-data-slide-to="slide_nr" data-cke-saved-data-target="#ingredient_slide"/>
     </template>
 
-    <template id="ingredients" inherit_id="website_sale_product_gallery.product" customize_show="True" name="Ingredients">
+    <template id="ingredients" inherit_id="website_sale_product_gallery.product" active="False" customize_show="True" name="Ingredients">
         <xpath expr="//div[@class='col-sm-7 col-md-7 col-lg-7']" position="inside">
             <t t-set="ingredients" t-value="request.env['product.ingredient'].search([('product_ids', 'in', product.id)], order='sequence')"/>
             <t t-if="len(ingredients) &gt; 0">
@@ -29,13 +29,13 @@
                         <div class="carousel slide" id="ingredient_carousel" data-ride="carousel">
                             <div class="carousel-inner" style="padding-bottom: 40px;">
                                 <t t-foreach="ingredients" t-as="ingredient">
-                                    <a t-att-href="'/dn_shop/?ingredient_%s=%s' %(ingredient.id, ingredient.id)">
-                                        <div t-att-class="'item %s' %('active' if ingredient_index == 0 else '')">
+                                    <div t-att-class="'item %s' %('active' if ingredient_index == 0 else '')">
+                                        <a t-att-href="'/dn_shop/?ingredient_%s=%s' %(ingredient.id, ingredient.id)">
                                             <img class="img img-responsive" style="margin: auto;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
                                             <h6 style="color: #D27153;" class="text-center" t-field="ingredient.name"/>
                                             <h5 class="text-muted text-center" t-field="ingredient.description"/>
-                                        </div>
-                                    </a>
+                                        </a>
+                                    </div>
                                 </t>
                             </div>
                             <ol class="carousel-indicators">
