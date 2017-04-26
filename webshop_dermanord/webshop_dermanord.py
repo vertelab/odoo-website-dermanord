@@ -54,25 +54,7 @@ class product_template(models.Model):
     list_price_tax = fields.Float(compute='get_product_tax')
     price_tax = fields.Float(compute='get_product_tax')
     recommended_price = fields.Float(compute='get_product_tax')
-    sold_qty = fields.Integer(string='Sold')
-    #~ sold_qty = fields.Integer(string='Sold', compute='_sold_qty', store=True)
-
-    #~ @api.one
-    #~ @api.depends('product_variant_ids.so_line_ids.state',  'product_variant_ids.so_line_ids.product_uom_qty','product_variant_ids.so_line_ids.order_id.date_confirm')
-    #~ def _sold_qty(self):
-        #~ res = 0
-        #~ for variant in self.product_variant_ids:
-            #~ res += sum(variant.so_line_ids.filtered(lambda l: l.order_id.date_confirm and fields.Date.from_string(l.order_id.date_confirm) > (date.today() - timedelta(days=30)) and l.state in ['confirmed', 'done']).mapped('product_uom_qty'))
-        #~ self.sold_qty = res
-
-    #~ @api.one
-    #~ def _get_sold_qty(self):
-        #~ so_lines = self.env['sale.order.line'].search([('product_id', 'in', self.product_variant_ids.mapped('id'))])
-        #~ sold = 0
-        #~ if len(so_lines) > 0:
-            #~ for line in so_lines:
-                #~ sold += int(line.product_uom_qty)
-        #~ self.sold_qty = sold
+    sold_qty = fields.Integer(string='Sold', default=0)
 
     @api.one
     def get_product_tax(self):
@@ -97,13 +79,30 @@ class product_product(models.Model):
 
     recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True)
     so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
-    sold_qty = fields.Integer(string='Sold')
-    #~ sold_qty = fields.Integer(string='Sold', compute='_sold_qty', store=True)
+    sold_qty = fields.Integer(string='Sold', default=0)
 
-    #~ @api.one
-    #~ @api.depends('so_line_ids.state',  'so_line_ids.product_uom_qty','so_line_ids.order_id.date_confirm')
-    #~ def _sold_qty(self):
-        #~ self.sold_qty = sum(self.so_line_ids.filtered(lambda l: l.order_id.date_confirm and fields.Date.from_string(l.order_id.date_confirm) > (date.today() - timedelta(days=30)) and l.state in ['confirmed', 'done']).mapped('product_uom_qty'))
+    @api.model
+    def update_sold_qty(self):
+        for t in self.env['product.template'].search([]):
+            t.sold_qty = 0
+            for v in t.product_variant_ids:
+                v.sold_qty = 0
+        so_lines = self.env['sale.order'].search([('date_confirm', '>', fields.Date.to_string(date.today() - timedelta(days=30)))]).mapped('order_line').filtered(lambda l : l.state in ['confirmed', 'done'])
+        templates = []
+        products = {}
+        if len(so_lines) > 0:
+            for line in so_lines:
+                if products.get(line.product_id):
+                    products[line.product_id] += sum(line.mapped('product_uom_qty'))
+                else:
+                    products[line.product_id] = sum(line.mapped('product_uom_qty'))
+            for k, v in products.iteritems():
+                k.sold_qty = v
+                if k.product_tmpl_id not in templates:
+                    templates.append(k.product_tmpl_id)
+            for template in templates:
+                template.sold_qty = sum(template.product_variant_ids.mapped('sold_qty'))
+        raise Warning(templates, products)
 
     @api.one
     def get_product_tax(self):
@@ -382,4 +381,3 @@ class webshop_dermanord(http.Controller):
             if product:
                 variants = product.product_variant_ids.filtered(lambda v: int(value_id) in v.attribute_value_ids.mapped("id"))
                 return variants[0].ingredients if len(variants) > 0 else ''
-
