@@ -22,7 +22,7 @@
 from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from lxml import html
 from openerp.addons.website_sale.controllers.main import website_sale, QueryURL, table_compute
 import werkzeug
@@ -54,16 +54,24 @@ class product_template(models.Model):
     list_price_tax = fields.Float(compute='get_product_tax')
     price_tax = fields.Float(compute='get_product_tax')
     recommended_price = fields.Float(compute='get_product_tax')
-    sold_times = fields.Integer(string='Sold', compute='_get_sold_time', store=True)
+    sold_qty = fields.Integer(string='Sold', compute='_sold_qty', store=True)
 
-    @api.multi
-    def _get_sold_time(self):
-        so_lines = self.env['sale.order.line'].search([('product_id', 'in', self.product_variant_ids.mapped('id'))])
-        sold = 0
-        if len(so_lines) > 0:
-            for line in so_lines:
-                sold += int(line.product_uom_qty)
-        self.sold_times = sold
+    @api.one
+    @api.depends('product_variant_ids.so_line_ids.state',  'product_variant_ids.so_line_ids.product_uom_qty','product_variant_ids.so_line_ids.order_id.date_confirm')
+    def _sold_qty(self):
+        res = 0
+        for variant in self.product_variant_ids:
+            res += sum(variant.so_line_ids.filtered(lambda l: l.order_id.date_confirm and fields.Date.from_string(l.order_id.date_confirm) > (date.today() - timedelta(days=30)) and l.state in ['confirmed', 'done']).mapped('product_uom_qty'))
+        self.sold_qty = res
+
+    #~ @api.one
+    #~ def _get_sold_qty(self):
+        #~ so_lines = self.env['sale.order.line'].search([('product_id', 'in', self.product_variant_ids.mapped('id'))])
+        #~ sold = 0
+        #~ if len(so_lines) > 0:
+            #~ for line in so_lines:
+                #~ sold += int(line.product_uom_qty)
+        #~ self.sold_qty = sold
 
     @api.one
     def get_product_tax(self):
@@ -87,6 +95,13 @@ class product_product(models.Model):
     _inherit = 'product.product'
 
     recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True)
+    so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
+    sold_qty = fields.Integer(string='Sold', compute='_sold_qty', store=True)
+
+    @api.one
+    @api.depends('so_line_ids.state',  'so_line_ids.product_uom_qty','so_line_ids.order_id.date_confirm')
+    def _sold_qty(self):
+        self.sold_qty = sum(self.so_line_ids.filtered(lambda l: l.order_id.date_confirm and fields.Date.from_string(l.order_id.date_confirm) > (date.today() - timedelta(days=30)) and l.state in ['confirmed', 'done']).mapped('product_uom_qty'))
 
     @api.one
     def get_product_tax(self):
@@ -209,7 +224,7 @@ class website_sale(website_sale):
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
         product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=self._get_search_order(post), context=context)
         products = product_obj.browse(cr, uid, product_ids, context=context)
-        #~ popular_products = nlargest(20, products.mapped('sold_times'))
+        #~ popular_products = nlargest(20, products.mapped('sold_qty'))
 
         style_obj = pool['product.style']
         style_ids = style_obj.search(cr, uid, [], context=context)
