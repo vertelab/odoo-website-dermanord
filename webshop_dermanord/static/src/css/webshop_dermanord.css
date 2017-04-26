@@ -275,4 +275,5 @@
 span[data-oe-model="product.ingredient"] > img {
     max-width: 500px;
     width: 100%;
+    margin: auto;
 }
