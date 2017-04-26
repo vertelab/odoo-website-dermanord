@@ -54,15 +54,16 @@ class product_template(models.Model):
     list_price_tax = fields.Float(compute='get_product_tax')
     price_tax = fields.Float(compute='get_product_tax')
     recommended_price = fields.Float(compute='get_product_tax')
-    sold_qty = fields.Integer(string='Sold', compute='_sold_qty', store=True)
+    sold_qty = fields.Integer(string='Sold')
+    #~ sold_qty = fields.Integer(string='Sold', compute='_sold_qty', store=True)
 
-    @api.one
-    @api.depends('product_variant_ids.so_line_ids.state',  'product_variant_ids.so_line_ids.product_uom_qty','product_variant_ids.so_line_ids.order_id.date_confirm')
-    def _sold_qty(self):
-        res = 0
-        for variant in self.product_variant_ids:
-            res += sum(variant.so_line_ids.filtered(lambda l: l.order_id.date_confirm and fields.Date.from_string(l.order_id.date_confirm) > (date.today() - timedelta(days=30)) and l.state in ['confirmed', 'done']).mapped('product_uom_qty'))
-        self.sold_qty = res
+    #~ @api.one
+    #~ @api.depends('product_variant_ids.so_line_ids.state',  'product_variant_ids.so_line_ids.product_uom_qty','product_variant_ids.so_line_ids.order_id.date_confirm')
+    #~ def _sold_qty(self):
+        #~ res = 0
+        #~ for variant in self.product_variant_ids:
+            #~ res += sum(variant.so_line_ids.filtered(lambda l: l.order_id.date_confirm and fields.Date.from_string(l.order_id.date_confirm) > (date.today() - timedelta(days=30)) and l.state in ['confirmed', 'done']).mapped('product_uom_qty'))
+        #~ self.sold_qty = res
 
     #~ @api.one
     #~ def _get_sold_qty(self):
@@ -96,12 +97,13 @@ class product_product(models.Model):
 
     recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True)
     so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
-    sold_qty = fields.Integer(string='Sold', compute='_sold_qty', store=True)
+    sold_qty = fields.Integer(string='Sold')
+    #~ sold_qty = fields.Integer(string='Sold', compute='_sold_qty', store=True)
 
-    @api.one
-    @api.depends('so_line_ids.state',  'so_line_ids.product_uom_qty','so_line_ids.order_id.date_confirm')
-    def _sold_qty(self):
-        self.sold_qty = sum(self.so_line_ids.filtered(lambda l: l.order_id.date_confirm and fields.Date.from_string(l.order_id.date_confirm) > (date.today() - timedelta(days=30)) and l.state in ['confirmed', 'done']).mapped('product_uom_qty'))
+    #~ @api.one
+    #~ @api.depends('so_line_ids.state',  'so_line_ids.product_uom_qty','so_line_ids.order_id.date_confirm')
+    #~ def _sold_qty(self):
+        #~ self.sold_qty = sum(self.so_line_ids.filtered(lambda l: l.order_id.date_confirm and fields.Date.from_string(l.order_id.date_confirm) > (date.today() - timedelta(days=30)) and l.state in ['confirmed', 'done']).mapped('product_uom_qty'))
 
     @api.one
     def get_product_tax(self):
