@@ -226,13 +226,11 @@
                                 <t t-foreach="facet_value_ids" t-as="value">
                                     <a t-att-href="'/dn_shop/?facet_%s=%s' %(facet.id, value.id)" class="text-muted"><span t-field="value.name"/></a><span t-if="value_index != len(facet_value_ids)-1">, </span>
                                 </t>
-<!--
-                                    <p t-esc="', '.join(product.facet_line_ids.with_context({'facet_id': facet.id}).filtered(lambda f: f.facet_id.id == f._context.get('facet_id')).mapped('value_ids').mapped('name'))"/>
--->
                             </t>
                         </div>
+                        <hr/>
                     </t>
-                    <div class="col-md-12 no_padding_div">
+                    <div class="col-md-12 no_padding_div mt16">
                         <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') in user_id.groups_id">
                             <p t-field="product_product.reseller_desc" class="text-muted reseller_desc"/>
                         </t>
@@ -328,6 +326,7 @@
                     </div>
                 </div>
             </xpath>
+            <xpath expr="//p[@class='text-muted' and not(@t-field='product.description_sale')]" position="replace"/>
         </template>
 
         <template id="variants" inherit_id="website_sale.variants">
