@@ -83,10 +83,8 @@ class product_product(models.Model):
 
     @api.model
     def update_sold_qty(self):
-        for t in self.env['product.template'].search([]):
-            t.sold_qty = 0
-            for v in t.product_variant_ids:
-                v.sold_qty = 0
+        self._cr.execute('UPDATE product_template SET sold_qty = 0')
+        self._cr.execute('UPDATE product_product SET sold_qty = 0')
         so_lines = self.env['sale.order'].search([('date_confirm', '>', fields.Date.to_string(date.today() - timedelta(days=30)))]).mapped('order_line').filtered(lambda l : l.state in ['confirmed', 'done'])
         templates = []
         products = {}
@@ -102,7 +100,7 @@ class product_product(models.Model):
                     templates.append(k.product_tmpl_id)
             for template in templates:
                 template.sold_qty = sum(template.product_variant_ids.mapped('sold_qty'))
-        raise Warning(templates, products)
+        raise None
 
     @api.one
     def get_product_tax(self):

@@ -272,7 +272,13 @@
     padding: 5px 20px;
 }
 
-span[data-oe-model="product.ingredient"] > img {
+span[data-oe-expression="ingredient.image"] > img {
+    max-width: 500px;
+    width: 100%;
+    margin: auto;
+}
+
+#ingredient_div img {
     max-width: 500px;
     width: 100%;
     margin: auto;

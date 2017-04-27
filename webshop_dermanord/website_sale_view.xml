@@ -15,7 +15,7 @@
 
         <template id="dn_shop" name="DN Shop">
             <t t-if="ingredient">
-                <div class="container">
+                <div id="ingredient_div" class="container">
                     <h1 class="text-center"><span t-field="ingredient.name"/></h1>
                     <span itemprop="image" t-field="ingredient.image" t-field-options='{"widget": "image", "alt-field": "name"}'/>
                     <h4 class="text-center mt16"><span t-field="ingredient.description"/></h4>
@@ -96,79 +96,81 @@
                 <t t-set="additional_title">Shop</t>
                 <div id="wrap" class="js_sale">
                     <div class="oe_structure"/>
-                    <div class="container oe_website_sale">
-                        <div class="products_pager">
-                            <div class="row" style="width: 100%;">
-                                <t t-call="website_sale.search"><t t-set="search_class">pagination form-inline col-md-3</t></t>
+                    <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
+                        <div class="container oe_website_sale">
+                            <div class="products_pager">
+                                <div class="row" style="width: 100%;">
+                                    <t t-call="website_sale.search"><t t-set="search_class">pagination form-inline col-md-3</t></t>
+                                    <t t-call="website.pager"/>
+                                </div>
+                            </div>
+                            <table class="product_list_table table table-striped" style="width: 100%;">
+                                <tbody>
+                                    <t t-foreach="products" t-as="product">
+                                        <tr>
+                                            <td>
+                                                <h5 class="col-md-6 col-sm-6 col-xs-12 list_product_name">
+                                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <span t-field="product.default_code"/>
+                                                    </div>
+                                                    <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price col-md-6 col-sm-6 col-xs-12">
+                                                        <strong>
+                                                            <a t-att-href="keep('/shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
+                                                                <span itemprop="name" t-field="product.name"/>
+                                                                <t t-if="len(product.attribute_value_ids) &gt; 0">
+                                                                    <t t-foreach="product.attribute_value_ids" t-as="att">
+                                                                        <t t-esc="', %s' %att.name"/>
+                                                                    </t>
+                                                                </t>
+                                                            </a>
+                                                        </strong>
+                                                    </div>
+                                                </h5>
+                                                <div class="col-md-6 col-sm-6 col-xs-12 text-center">
+                                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <h5><b>
+                                                            <span t-field="product.price" style="white-space: nowrap;"  t-field-options='{
+                                                                   "widget": "monetary",
+                                                                   "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                                                }'>
+                                                            </span>
+                                                            <span itemprop="price" style="display:none;" t-esc="product.price">
+                                                                <a class="btn btn-default btn-xs fa fa-shopping-cart" t-att-href="keep('/shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))"/>
+                                                            </span>
+                                                            <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding"/>
+                                                        </b></h5>
+                                                    </div>
+                                                    <form t-att-action="keep('/shop/cart/update')" class="oe_dn_list" t-att-data-attribute_value_ids="product.id" method="POST">
+                                                        <div class="product_shop col-md-6 col-sm-6 col-xs-12" style="margin: 0px;">
+                                                            <input type="hidden" class="product_id" name="product_id" t-att-value="int(product)" />
+                                                            <input type="hidden" name="dn_list" t-att-value="True" />
+                                                            <div class="css_quantity input-group oe_website_spinner">
+                                                                <span class="input-group-addon">
+                                                                    <a t-attf-href="#" class="mb8 js_add_cart_json">
+                                                                        <i class="fa fa-minus"></i>
+                                                                    </a>
+                                                                </span>
+                                                                <input type="text" class="js_quantity form-control" data-min="1" name="add_qty" value="1"/>
+                                                                <span class="input-group-addon">
+                                                                    <a t-attf-href="#" class="mb8 float_left js_add_cart_json">
+                                                                        <i class="fa fa-plus"></i>
+                                                                    </a>
+                                                                </span>
+                                                            </div>
+                                                            <a id="add_to_cart" class="btn btn-default js_check_product a-submit" href="#"><i class="fa fa-shopping-cart a-submit" style="color: #CB683F;"/> <span class="hidden-xs">Add to Cart</span></a>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                            <div class="products_pager">
                                 <t t-call="website.pager"/>
                             </div>
                         </div>
-                        <table class="product_list_table table table-striped" style="width: 100%;">
-                            <tbody>
-                                <t t-foreach="products" t-as="product">
-                                    <tr>
-                                        <td>
-                                            <h5 class="col-md-6 col-sm-6 col-xs-12 list_product_name">
-                                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                                    <span t-field="product.default_code"/>
-                                                </div>
-                                                <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price col-md-6 col-sm-6 col-xs-12">
-                                                    <strong>
-                                                        <a t-att-href="keep('/shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
-                                                            <span itemprop="name" t-field="product.name"/>
-                                                            <t t-if="len(product.attribute_value_ids) &gt; 0">
-                                                                <t t-foreach="product.attribute_value_ids" t-as="att">
-                                                                    <t t-esc="', %s' %att.name"/>
-                                                                </t>
-                                                            </t>
-                                                        </a>
-                                                    </strong>
-                                                </div>
-                                            </h5>
-                                            <div class="col-md-6 col-sm-6 col-xs-12 text-center">
-                                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                                    <h5><b>
-                                                        <span t-field="product.price" style="white-space: nowrap;"  t-field-options='{
-                                                               "widget": "monetary",
-                                                               "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-                                                            }'>
-                                                        </span>
-                                                        <span itemprop="price" style="display:none;" t-esc="product.price">
-                                                            <a class="btn btn-default btn-xs fa fa-shopping-cart" t-att-href="keep('/shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))"/>
-                                                        </span>
-                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding"/>
-                                                    </b></h5>
-                                                </div>
-                                                <form t-att-action="keep('/shop/cart/update')" class="oe_dn_list" t-att-data-attribute_value_ids="product.id" method="POST">
-                                                    <div class="product_shop col-md-6 col-sm-6 col-xs-12" style="margin: 0px;">
-                                                        <input type="hidden" class="product_id" name="product_id" t-att-value="int(product)" />
-                                                        <input type="hidden" name="dn_list" t-att-value="True" />
-                                                        <div class="css_quantity input-group oe_website_spinner">
-                                                            <span class="input-group-addon">
-                                                                <a t-attf-href="#" class="mb8 js_add_cart_json">
-                                                                    <i class="fa fa-minus"></i>
-                                                                </a>
-                                                            </span>
-                                                            <input type="text" class="js_quantity form-control" data-min="1" name="add_qty" value="1"/>
-                                                            <span class="input-group-addon">
-                                                                <a t-attf-href="#" class="mb8 float_left js_add_cart_json">
-                                                                    <i class="fa fa-plus"></i>
-                                                                </a>
-                                                            </span>
-                                                        </div>
-                                                        <a id="add_to_cart" class="btn btn-default js_check_product a-submit" href="#"><i class="fa fa-shopping-cart a-submit" style="color: #CB683F;"/> <span class="hidden-xs">Add to Cart</span></a>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </t>
-                            </tbody>
-                        </table>
-                        <div class="products_pager">
-                            <t t-call="website.pager"/>
-                        </div>
-                    </div>
+                    </t>
                     <div class="oe_structure mb32"/>
                 </div>
             </t>
