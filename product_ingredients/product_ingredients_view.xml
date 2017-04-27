@@ -29,13 +29,13 @@
                         <div class="carousel slide" id="ingredient_carousel" data-ride="carousel">
                             <div class="carousel-inner" style="padding-bottom: 40px;">
                                 <t t-foreach="ingredients" t-as="ingredient">
-                                    <a t-att-href="'/dn_shop/?ingredient=%s' %ingredient.id">
-                                        <div t-att-class="'item %s' %('active' if ingredient_index == 0 else '')">
+                                    <div t-att-class="'item %s' %('active' if ingredient_index == 0 else '')">
+                                        <a t-att-href="'/dn_shop/?ingredient=%s' %ingredient.id">
                                             <img class="img img-responsive" style="margin: auto;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
                                             <h6 style="color: #D27153;" class="text-center" t-field="ingredient.name"/>
                                             <h5 class="text-muted text-center" t-field="ingredient.description"/>
-                                        </div>
-                                    </a>
+                                        </a>
+                                    </div>
                                 </t>
                             </div>
                             <ol class="carousel-indicators">
