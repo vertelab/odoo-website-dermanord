@@ -100,7 +100,7 @@ class product_product(models.Model):
                     templates.append(k.product_tmpl_id)
             for template in templates:
                 template.sold_qty = sum(template.product_variant_ids.mapped('sold_qty'))
-        raise None
+        return None
 
     @api.one
     def get_product_tax(self):
