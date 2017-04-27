@@ -81,6 +81,14 @@ class product_product(models.Model):
     so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
     sold_qty = fields.Integer(string='Sold', default=0)
 
+    @api.one
+    def get_product_tax(self):
+        res = 0
+        price = self.env.ref('product.list0').price_get(self.id, 1)[1]
+        for c in self.sudo().taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']:
+            res += c.get('amount', 0.0)
+        self.recommended_price = price + res
+
     @api.model
     def update_sold_qty(self):
         self._cr.execute('UPDATE product_template SET sold_qty = 0')
@@ -101,14 +109,6 @@ class product_product(models.Model):
             for template in templates:
                 template.sold_qty = sum(template.product_variant_ids.mapped('sold_qty'))
         return None
-
-    @api.one
-    def get_product_tax(self):
-        res = 0
-        price = self.env.ref('product.list0').price_get(self.id, 1)[1]
-        for c in self.sudo().taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']:
-            res += c.get('amount', 0.0)
-        self.recommended_price = price + res
 
 
 class product_pricelist(models.Model):
