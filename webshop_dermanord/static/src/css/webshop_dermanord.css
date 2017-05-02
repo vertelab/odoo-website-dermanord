@@ -284,6 +284,13 @@ span[data-oe-expression="ingredient.image"] > img {
     margin: auto;
 }
 
+.filter_match {
+    background-color: #CB683F;
+    color: #fff;
+    padding: 0px 5px;
+    border-radius: 10px;
+}
+
 @media (max-width: 768px) {
     .list_product_name {
         text-align: center;

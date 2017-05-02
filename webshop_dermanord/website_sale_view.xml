@@ -224,7 +224,7 @@
                                 <h4 class="dn_uppercase" t-field="facet.name"/>
                                 <t t-set="facet_value_ids" t-value="product.facet_line_ids.with_context({'facet_id': facet.id}).filtered(lambda f: f.facet_id.id == f._context.get('facet_id')).mapped('value_ids')"/>
                                 <t t-foreach="facet_value_ids" t-as="value">
-                                    <a t-att-href="'/dn_shop/?facet_%s=%s' %(facet.id, value.id)" class="text-muted"><span t-field="value.name"/></a><span t-if="value_index != len(facet_value_ids)-1">, </span>
+                                    <a t-att-href="'/dn_shop/?facet_%s_%s=%s' %(facet.id, value.id, value.id)" class="text-muted"><span t-field="value.name"/></a><span t-if="value_index != len(facet_value_ids)-1">, </span>
                                 </t>
                             </t>
                         </div>

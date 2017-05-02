@@ -58,79 +58,141 @@
                     <t t-set="first_facet" t-value="0"/>
                     <t t-if="len(filter_facets) &gt; 0">
                         <div class="col-md-5 col-sm-5 col-xs-5">
-                            <ul class="nav nav-stacked">
-                                <t t-foreach="filter_facets" t-as="facet">
-                                    <li t-att-class="'active' if facet_index == 0 else ''"><a data-toggle="tab" t-att-href="'#facet_%s' %facet.id"><h5><t t-esc="facet.name"/> <i class="fa fa-angle-right"/></h5></a></li>
-                                </t>
-                                <li><a data-toggle="tab" href="#category"><h5>Categories <i class="fa fa-angle-right"/></h5></a></li>
-                                <li><a data-toggle="tab" href="#ingredient"><h5>Ingredients <i class="fa fa-angle-right"/></h5></a></li>
-                            </ul>
+                            <t t-call="webshop_dermanord.dn_filter_navigator"/>
                         </div>
                         <div class="col-md-7 col-sm-7 col-xs-7">
-                            <div class="tab-content">
-                                <t t-foreach="filter_facets" t-as="facet">
-                                    <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])"/>
-                                    <div t-att-id="'facet_%s' %facet.id" t-att-class="'tab-pane fade %s' %('in active' if facet_index == 0 else '')">
-                                        <t t-if="len(facet_values) &gt; 0">
-                                            <t t-foreach="facet_values" t-as="facet_value">
-                                                <div class="checkbox">
-                                                    <h5>
-                                                        <label>
-                                                            <t t-if="form_values">
-                                                                <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id" t-att="{'checked': '1'} if (form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) and form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) == str(facet_value.id)) else {}"/><t t-esc="facet_value.name"/></t>
-                                                            <t t-if="not form_values">
-                                                                <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id"/><t t-esc="facet_value.name"/>
-                                                            </t>
-                                                        </label>
-                                                    </h5>
-                                                </div>
-                                            </t>
-                                        </t>
-                                    </div>
-                                </t>
-                                <div id="category" class="tab-pane fade">
-                                    <t t-if="len(filter_categories) &gt; 0">
-                                        <t t-foreach="filter_categories" t-as="category">
-                                            <div class="checkbox">
-                                                <h5>
-                                                    <label>
-                                                        <t t-if="form_values">
-                                                            <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id" t-att="{'checked': '1'} if form_values.get('category_%s' %category.id) == str(category.id) else {}"/><t t-esc="category.name"/></t>
-                                                        <t t-if="not form_values">
-                                                            <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id"/><t t-esc="category.name"/>
-                                                        </t>
-                                                    </label>
-                                                </h5>
-                                            </div>
-                                        </t>
-                                    </t>
-                                </div>
-                                <div id="ingredient" class="tab-pane fade">
-                                    <t t-if="len(filter_ingredients) &gt; 0">
-                                        <t t-foreach="filter_ingredients" t-as="ingredient">
-                                            <div class="checkbox">
-                                                <h5>
-                                                    <label>
-                                                        <t t-if="form_values">
-                                                            <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if form_values.get('ingredient_%s' %ingredient.id) == str(ingredient.id) else {}"/><t t-esc="ingredient.name"/></t>
-                                                        <t t-if="not form_values">
-                                                            <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id"/><t t-esc="ingredient.name"/>
-                                                        </t>
-                                                    </label>
-                                                </h5>
-                                            </div>
-                                        </t>
-                                    </t>
-                                </div>
-                                <t t-if="form_values">
-                                    <input type="hidden" name="order" t-att-value="form_values.get('order') if form_values.get('order') else 'name asc'"/>
-                                </t>
-                            </div>
+                            <t t-call="webshop_dermanord.dn_filter_content"/>
                         </div>
                     </t>
                 </div>
                 <button class="mt32 dn_btn dn_primary" type="submit">OK</button>
             </form>
+        </template>
+
+        <template id="dn_filter_navigator" name="DN Filter Navigator">
+            <ul class="nav nav-stacked">
+                <t t-foreach="filter_facets" t-as="facet">
+                    <li t-att-class="'active' if facet_index == 0 else ''">
+                        <a data-toggle="tab" t-att-href="'#facet_%s' %facet.id">
+                            <h5>
+                                <span t-esc="facet.name"/>
+                                <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])"/>
+                                <t t-if="len(facet_values) &gt; 0 and form_values">
+                                    <t t-set="facet_values_count" t-value="0"/>
+                                    <t t-foreach="facet_values" t-as="facet_value">
+                                        <t t-if="'facet_%s_%s' %(facet.id, facet_value.id) in form_values.keys()">
+                                            <t t-set="facet_values_count" t-value="facet_values_count + 1"/>
+                                        </t>
+                                    </t>
+                                    <t t-if="facet_values_count != 0">
+                                        <span class="filter_match" t-esc="facet_values_count"/>
+                                    </t>
+                                </t>
+                                <i class="fa fa-angle-right"/>
+                            </h5>
+                        </a>
+                    </li>
+                </t>
+                <li>
+                    <a data-toggle="tab" href="#category">
+                        <h5>Categories
+                            <t t-if="len(filter_categories) &gt; 0 and form_values">
+                                <t t-set="category_count" t-value="0"/>
+                                <t t-foreach="filter_categories" t-as="category">
+                                    <t t-if="'category_%s' %category.id in form_values.keys()">
+                                        <t t-set="category_count" t-value="category_count + 1"/>
+                                    </t>
+                                </t>
+                                <t t-if="category_count != 0">
+                                    <span class="filter_match" t-esc="category_count"/>
+                                </t>
+                            </t>
+                            <i class="fa fa-angle-right"/>
+                        </h5>
+                    </a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="#ingredient">
+                        <h5>Ingredients
+                            <t t-if="len(filter_ingredients) &gt; 0 and form_values">
+                                <t t-set="ingredient_count" t-value="0"/>
+                                <t t-foreach="filter_ingredients" t-as="ingredient">
+                                    <t t-if="'ingredient_%s' %ingredient.id in form_values.keys()">
+                                        <t t-set="ingredient_count" t-value="ingredient_count + 1"/>
+                                    </t>
+                                </t>
+                                <t t-if="ingredient_count != 0">
+                                    <span class="filter_match" t-esc="ingredient_count"/>
+                                </t>
+                            </t>
+                            <i class="fa fa-angle-right"/>
+                        </h5>
+                    </a>
+                </li>
+            </ul>
+        </template>
+
+        <template id="dn_filter_content" name="DN Filter Content">
+            <div class="tab-content">
+                <t t-foreach="filter_facets" t-as="facet">
+                    <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])"/>
+                    <div t-att-id="'facet_%s' %facet.id" t-att-class="'tab-pane fade %s' %('in active' if facet_index == 0 else '')">
+                        <t t-if="len(facet_values) &gt; 0">
+                            <t t-foreach="facet_values" t-as="facet_value">
+                                <div class="checkbox">
+                                    <h5>
+                                        <label>
+                                            <t t-if="form_values">
+                                                <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id" t-att="{'checked': '1'} if (form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) and form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) == str(facet_value.id)) else {}"/><t t-esc="facet_value.name"/></t>
+                                            <t t-if="not form_values">
+                                                <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id"/><t t-esc="facet_value.name"/>
+                                            </t>
+                                        </label>
+                                    </h5>
+                                </div>
+                            </t>
+                        </t>
+                    </div>
+                </t>
+                <div id="category" class="tab-pane fade">
+                    <t t-if="len(filter_categories) &gt; 0">
+                        <t t-foreach="filter_categories" t-as="category">
+                            <div class="checkbox">
+                                <h5>
+                                    <label>
+                                        <t t-if="form_values">
+                                            <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id" t-att="{'checked': '1'} if form_values.get('category_%s' %category.id) == str(category.id) else {}"/><t t-esc="category.name"/>
+                                        </t>
+                                        <t t-if="not form_values">
+                                            <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id"/><t t-esc="category.name"/>
+                                        </t>
+                                    </label>
+                                </h5>
+                            </div>
+                        </t>
+                    </t>
+                </div>
+                <div id="ingredient" class="tab-pane fade">
+                    <t t-if="len(filter_ingredients) &gt; 0">
+                        <t t-foreach="filter_ingredients" t-as="ingredient">
+                            <div class="checkbox">
+                                <h5>
+                                    <label>
+                                        <t t-if="form_values">
+                                            <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if form_values.get('ingredient_%s' %ingredient.id) == str(ingredient.id) else {}"/><t t-esc="ingredient.name"/></t>
+                                        <t t-if="not form_values">
+                                            <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id"/><t t-esc="ingredient.name"/>
+                                        </t>
+                                    </label>
+                                </h5>
+                            </div>
+                        </t>
+                    </t>
+                </div>
+                <t t-if="form_values">
+                    <input type="hidden" name="order" t-att-value="form_values.get('order') if form_values.get('order') else 'name asc'"/>
+                </t>
+            </div>
         </template>
 
         <template id="dn_sort_form" name="DN Sort Form">
