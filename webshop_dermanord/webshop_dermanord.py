@@ -152,7 +152,9 @@ class website_sale(website_sale):
         facet_ids = []
         category_ids = []
         ingredient_ids = []
-        ingredient = None
+        current_ingredient = None
+        current_ingredient_key = None
+
         for k, v in post.iteritems():
             if k.split('_')[0] == 'facet':
                 if v:
@@ -163,6 +165,15 @@ class website_sale(website_sale):
             if k.split('_')[0] == 'ingredient':
                 if v:
                     ingredient_ids.append(int(v))
+            if k == 'current_ingredient':
+                if v:
+                    current_ingredient = v
+                    current_ingredient_key = 'ingredient_' + v
+                    ingredient_ids.append(int(v))
+
+        if current_ingredient:
+            post['current_ingredient'] = int(current_ingredient)
+            post[current_ingredient_key] = current_ingredient
 
         domain_append = []
         if len(facet_ids) != 0:
@@ -201,9 +212,6 @@ class website_sale(website_sale):
             for i, r in ingredient.iteritems():
                 value_ids += r
             domain_append.append(('ingredient_ids', 'in', value_ids))
-
-        if len(ingredient_ids) == 1:
-            post['ingredient'] = request.env['product.ingredient'].browse(ingredient_ids[0])
 
         return domain_append
 
@@ -274,7 +282,7 @@ class website_sale(website_sale):
             'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
             'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
             'form_values': post,
-            'ingredient': post.get('ingredient'),
+            'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
         }
         return request.website.render("webshop_dermanord.products", values)
 
@@ -322,7 +330,7 @@ class website_sale(website_sale):
             'keep': keep,
             'url': url,
             'form_values': post,
-            'ingredient': post.get('ingredient'),
+            'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
         }
         return request.website.render("webshop_dermanord.products_list_reseller_view", values)
 

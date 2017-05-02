@@ -77,9 +77,9 @@
                                                     <h5>
                                                         <label>
                                                             <t t-if="form_values">
-                                                                <input type="checkbox" t-att-name="'facet_%s' %facet.id" t-att-value="facet_value.id" t-att="{'checked': '1'} if (form_values.get('facet_%s' %facet.id) and form_values.get('facet_%s' %facet.id) == str(facet_value.id)) else {}"/><t t-esc="facet_value.name"/></t>
+                                                                <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id" t-att="{'checked': '1'} if (form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) and form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) == str(facet_value.id)) else {}"/><t t-esc="facet_value.name"/></t>
                                                             <t t-if="not form_values">
-                                                                <input type="checkbox" t-att-name="'facet_%s' %facet_value.id" t-att-value="facet_value.id"/><t t-esc="facet_value.name"/>
+                                                                <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id"/><t t-esc="facet_value.name"/>
                                                             </t>
                                                         </label>
                                                     </h5>
@@ -88,7 +88,7 @@
                                         </t>
                                     </div>
                                 </t>
-                                <div id="category" class="'tab-pane fade">
+                                <div id="category" class="tab-pane fade">
                                     <t t-if="len(filter_categories) &gt; 0">
                                         <t t-foreach="filter_categories" t-as="category">
                                             <div class="checkbox">
@@ -105,7 +105,7 @@
                                         </t>
                                     </t>
                                 </div>
-                                <div id="ingredient" class="'tab-pane fade">
+                                <div id="ingredient" class="tab-pane fade">
                                     <t t-if="len(filter_ingredients) &gt; 0">
                                         <t t-foreach="filter_ingredients" t-as="ingredient">
                                             <div class="checkbox">
@@ -202,7 +202,7 @@
                     <t t-if="len(facet_values) &gt; 0">
                         <t t-foreach="facet_values" t-as="facet_value">
                             <t t-if="form_values">
-                                <input type="hidden" t-att-name="'facet_%s' %facet.id" t-att-value="form_values.get('facet_%s' %facet.id) if form_values.get('facet_%s' %facet.id) else ''"/>
+                                <input type="hidden" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) if form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) else ''"/>
                             </t>
                         </t>
                     </t>
