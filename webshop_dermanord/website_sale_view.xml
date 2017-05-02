@@ -239,6 +239,8 @@
                         </t>
                     </div>
                 </div>
+
+                <!-- remove later -->
                 <h4 class="hide_more_facet text-center hidden-lg hidden-md hidden-sm hidden" style="text-decoration: underline;">Less info <i class="fa fa-angle-up"/></h4>
                 <t t-set="variant" t-value="product.product_variant_ids[0]" />
                 <!-- TODO: find method that get the product vairant -->
