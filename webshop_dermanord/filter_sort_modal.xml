@@ -6,6 +6,7 @@
             <xpath expr="//div[@id='wrapwrap']/main" position="inside">
                 <t t-set="filter_facets" t-value="request.env['product.facet'].search([])"/>
                 <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])"/>
+                <t t-set="filter_ingredients" t-value="request.env['product.ingredient'].search([])"/>
                 <div id="filter_modal" class="modal fade" role="dialog">
                     <div class="modal-dialog" style="margin: 0px;">
                         <div class="modal-content">
@@ -62,6 +63,7 @@
                                     <li t-att-class="'active' if facet_index == 0 else ''"><a data-toggle="tab" t-att-href="'#facet_%s' %facet.id"><h5><t t-esc="facet.name"/> <i class="fa fa-angle-right"/></h5></a></li>
                                 </t>
                                 <li><a data-toggle="tab" href="#category"><h5>Categories <i class="fa fa-angle-right"/></h5></a></li>
+                                <li><a data-toggle="tab" href="#ingredient"><h5>Ingredients <i class="fa fa-angle-right"/></h5></a></li>
                             </ul>
                         </div>
                         <div class="col-md-7 col-sm-7 col-xs-7">
@@ -75,7 +77,7 @@
                                                     <h5>
                                                         <label>
                                                             <t t-if="form_values">
-                                                                <input type="checkbox" t-att-name="'facet_%s' %facet_value.id" t-att-value="facet_value.id" t-att="{'checked': '1'} if form_values.get('facet_%s' %facet_value.id) else {}"/><t t-esc="facet_value.name"/></t>
+                                                                <input type="checkbox" t-att-name="'facet_%s' %facet.id" t-att-value="facet_value.id" t-att="{'checked': '1'} if (form_values.get('facet_%s' %facet.id) and form_values.get('facet_%s' %facet.id) == str(facet_value.id)) else {}"/><t t-esc="facet_value.name"/></t>
                                                             <t t-if="not form_values">
                                                                 <input type="checkbox" t-att-name="'facet_%s' %facet_value.id" t-att-value="facet_value.id"/><t t-esc="facet_value.name"/>
                                                             </t>
@@ -93,9 +95,26 @@
                                                 <h5>
                                                     <label>
                                                         <t t-if="form_values">
-                                                            <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id" t-att="{'checked': '1'} if form_values.get('category_%s' %category.id) else {}"/><t t-esc="category.name"/></t>
+                                                            <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id" t-att="{'checked': '1'} if form_values.get('category_%s' %category.id) == str(category.id) else {}"/><t t-esc="category.name"/></t>
                                                         <t t-if="not form_values">
                                                             <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id"/><t t-esc="category.name"/>
+                                                        </t>
+                                                    </label>
+                                                </h5>
+                                            </div>
+                                        </t>
+                                    </t>
+                                </div>
+                                <div id="ingredient" class="'tab-pane fade">
+                                    <t t-if="len(filter_ingredients) &gt; 0">
+                                        <t t-foreach="filter_ingredients" t-as="ingredient">
+                                            <div class="checkbox">
+                                                <h5>
+                                                    <label>
+                                                        <t t-if="form_values">
+                                                            <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if form_values.get('ingredient_%s' %ingredient.id) == str(ingredient.id) else {}"/><t t-esc="ingredient.name"/></t>
+                                                        <t t-if="not form_values">
+                                                            <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id"/><t t-esc="ingredient.name"/>
                                                         </t>
                                                     </label>
                                                 </h5>
@@ -183,7 +202,7 @@
                     <t t-if="len(facet_values) &gt; 0">
                         <t t-foreach="facet_values" t-as="facet_value">
                             <t t-if="form_values">
-                                <input type="hidden" t-att-name="'facet_%s' %facet_value.id" t-att-value="form_values.get('facet_%s' %facet_value.id) if form_values.get('facet_%s' %facet_value.id) else ''"/>
+                                <input type="hidden" t-att-name="'facet_%s' %facet.id" t-att-value="form_values.get('facet_%s' %facet.id) if form_values.get('facet_%s' %facet.id) else ''"/>
                             </t>
                         </t>
                     </t>
@@ -192,6 +211,13 @@
                     <t t-foreach="filter_categories" t-as="category">
                         <t t-if="form_values">
                             <input type="hidden" t-att-name="'category_%s' %category.id" t-att-value="form_values.get('category_%s' %category.id) if form_values.get('category_%s' %category.id) else ''"/>
+                        </t>
+                    </t>
+                </t>
+                <t t-if="len(filter_ingredients) &gt; 0">
+                    <t t-foreach="filter_ingredients" t-as="ingredient">
+                        <t t-if="form_values">
+                            <input type="hidden" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="form_values.get('ingredient_%s' %ingredient.id) if form_values.get('ingredient_%s' %ingredient.id) else ''"/>
                         </t>
                     </t>
                 </t>

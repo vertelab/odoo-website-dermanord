@@ -22,9 +22,11 @@
 from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
+from openerp.tools.translate import _
 from datetime import datetime, date, timedelta
 from lxml import html
 from openerp.addons.website_sale.controllers.main import website_sale, QueryURL, table_compute
+from openerp.addons.website.models.website import slug
 import werkzeug
 from heapq import nlargest
 
@@ -140,26 +142,25 @@ class website_sale(website_sale):
     @http.route([
         '/dn_shop',
         '/dn_shop/page/<int:page>',
+        '/dn_shop/category/<model("product.public.category"):category>',
+        '/dn_shop/category/<model("product.public.category"):category>/page/<int:page>',
     ], type='http', auth="public", website=True)
     def dn_shop(self, page=0, category=None, search='', **post):
         return self.get_products(page=page, category=category, search=search, **post)
-
-    #~ @http.route(['/dn_ingredient/<model("product.ingredient"):ingredient>'], type='http', auth="public", website=True)
-    #~ def dn_ingredient(self, ingredient=None, page=0, category=None, search='', **post):
-        #~ return self.get_products(page=page, category=category, search=search, **post)
 
     def get_domain_append(self, post):
         facet_ids = []
         category_ids = []
         ingredient_ids = []
+        ingredient = None
         for k, v in post.iteritems():
             if k.split('_')[0] == 'facet':
                 if v:
                     facet_ids.append(int(v))
             if k.split('_')[0] == 'category':
                 if v:
-                    category_ids.append(int(v))
-            if k == 'ingredient':
+                     category_ids.append(int(v))
+            if k.split('_')[0] == 'ingredient':
                 if v:
                     ingredient_ids.append(int(v))
 
@@ -200,6 +201,10 @@ class website_sale(website_sale):
             for i, r in ingredient.iteritems():
                 value_ids += r
             domain_append.append(('ingredient_ids', 'in', value_ids))
+
+        if len(ingredient_ids) == 1:
+            post['ingredient'] = request.env['product.ingredient'].browse(ingredient_ids[0])
+
         return domain_append
 
     def get_products(self, page=0, category=None, search='', **post):
@@ -269,13 +274,15 @@ class website_sale(website_sale):
             'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
             'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
             'form_values': post,
-            'ingredient': request.env['product.ingredient'].browse(int(post.get('ingredient'))) if post.get('ingredient') else None,
+            'ingredient': post.get('ingredient'),
         }
         return request.website.render("webshop_dermanord.products", values)
 
     @http.route([
         '/dn_list',
         '/dn_list/page/<int:page>',
+        '/dn_list/category/<model("product.public.category"):category>',
+        '/dn_list/category/<model("product.public.category"):category>/page/<int:page>',
     ], type='http', auth="public", website=True)
     def dn_list(self, page=0, category=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
@@ -315,6 +322,7 @@ class website_sale(website_sale):
             'keep': keep,
             'url': url,
             'form_values': post,
+            'ingredient': post.get('ingredient'),
         }
         return request.website.render("webshop_dermanord.products_list_reseller_view", values)
 
