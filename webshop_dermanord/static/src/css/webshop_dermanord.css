@@ -18,13 +18,12 @@
     -ms-user-select: none;
     user-select: none;
     background-image: none;
-    border: 1px solid transparent;
     border-radius: opx;
     text-transform: uppercase;
 }
 
 .dn_btn:hover, .dn_btn:active, .dn_btn:focus {
-    color: #fff;
+    color: inherit !important;
     text-decoration: none;
 }
 
@@ -32,6 +31,16 @@
     color: #fff;
     background-color: #CB683F;
     border-color: #CB683F;
+}
+
+.dn_primary:hover {
+    color: #eee !important;
+}
+
+.dn_default {
+    color: #000;
+    background-color: #fff;
+    border-color: #ddd;
 }
 
 .no_padding_div {
@@ -255,6 +264,10 @@
 
 #filter_modal .modal-content {
     padding: 15px;
+}
+
+#filter_btn_group {
+    padding: 0px 20px 20px 20px;
 }
 
 #sort_modal ul{

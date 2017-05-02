@@ -7,7 +7,7 @@
                 <t t-set="filter_facets" t-value="request.env['product.facet'].search([])"/>
                 <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])"/>
                 <t t-set="filter_ingredients" t-value="request.env['product.ingredient'].search([])"/>
-                <div id="filter_modal" class="modal fade" role="dialog">
+                <div id="dn_filter_modal" class="modal fade" role="dialog">
                     <div class="modal-dialog" style="margin: 0px;">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="sort_modal" class="modal fade" role="dialog">
+                <div id="dn_sort_modal" class="modal fade" role="dialog">
                     <div class="modal-dialog" style="margin: 0px;">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -46,8 +46,8 @@
                     </div>
                 </div>
                 <div id="bottom_div" class="container">
-                    <h4 id="filter-btn-modal" data-toggle="modal" data-target="#filter_modal" class="pull-left"><i class="fa fa-filter"/> Filter</h4>
-                    <h4 id="sort-btn-modal" data-toggle="modal" data-target="#sort_modal" class="pull-right"><i class="fa fa-sort"/> Sort</h4>
+                    <h4 id="filter-btn-modal" data-toggle="modal" data-target="#dn_filter_modal" class="pull-left"><i class="fa fa-filter"/> Filter</h4>
+                    <h4 id="sort-btn-modal" data-toggle="modal" data-target="#dn_sort_modal" class="pull-right"><i class="fa fa-sort"/> Sort</h4>
                 </div>
             </xpath>
         </template>
@@ -65,7 +65,10 @@
                         </div>
                     </t>
                 </div>
-                <button class="mt32 dn_btn dn_primary" type="submit">OK</button>
+                <div id="filter_btn_group" class="btn-group">
+                    <button class="mt32 dn_btn dn_primary" type="submit">OK</button>
+                    <button class="mt32 dn_btn dn_default" type="button" onclick="restore_filter()"><i class="fa fa-trash-o"/> Restore</button>
+                </div>
             </form>
         </template>
 

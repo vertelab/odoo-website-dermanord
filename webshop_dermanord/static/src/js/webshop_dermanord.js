@@ -327,3 +327,13 @@ $(document).ready(function(){
         $(oe_website_sale).find("select[name='shipping_country_id']").change();
     });
 });
+
+function restore_filter() {
+    $("#dn_filter_modal").find(".modal-body").find("input[type=checkbox]").each(
+        function() {
+            if($(this).is(":checked")) {
+                $(this).removeAttr('checked');
+            }
+        }
+    );
+}
