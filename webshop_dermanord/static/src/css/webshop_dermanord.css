@@ -280,7 +280,7 @@
     z-index: 99;
     bottom: 0px;
     left: 0px;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 1);
     color: #fff;
     padding: 5px 20px;
 }
