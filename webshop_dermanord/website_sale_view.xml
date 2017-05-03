@@ -360,6 +360,33 @@
                     <span t-field="value_id.name"/>
                 </option>
             </xpath>
+            <xpath expr="//label[@t-attf-style='background-color:#{value_id.color or value_id.name}']" position="replace">
+                <t t-if="value_id.image">
+                    <label t-attf-style="background-image:url('data:image/png;base64,#{value_id.image}') !important; background-size: cover; background-repeat:no-repeat; background-position: center center; background-color:#{value_id.color or value_id.name}" t-attf-class="css_attribute_color #{'active' if not inc else ''}">
+                        <input type="radio" class="js_variant_change"
+                        t-att-checked="'checked' if not inc else ''"
+                        t-att-name="'attribute-%s-%s' % (product.id, variant_id.attribute_id.id)"
+                        t-att-value="value_id.id"
+                        data-toggle="popover"
+                        data-trigger="focus"
+                        data-placement="top"
+                        t-att-data-content="value_id.name"/>
+                    </label>
+                </t>
+                <t t-if="not value_id.image">
+                    <label t-attf-style="background-color:#{value_id.color or value_id.name}"
+                      t-attf-class="css_attribute_color #{'active' if not inc else ''}">
+                        <input type="radio" class="js_variant_change"
+                        t-att-checked="'checked' if not inc else ''"
+                        t-att-name="'attribute-%s-%s' % (product.id, variant_id.attribute_id.id)"
+                        t-att-value="value_id.id"
+                        data-toggle="popover"
+                        data-trigger="focus"
+                        data-placement="top"
+                        t-att-data-content="value_id.name"/>
+                    </label>
+                </t>
+            </xpath>
         </template>
 
         <template id="product_price" inherit_id="website_sale.product_price">

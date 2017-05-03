@@ -46,21 +46,21 @@
                     </div>
                 </div>
                 <div id="bottom_div" class="container">
-                    <h4 id="filter-btn-modal" data-toggle="modal" data-target="#dn_filter_modal" class="pull-left"><i class="fa fa-filter"/> Filter</h4>
-                    <h4 id="sort-btn-modal" data-toggle="modal" data-target="#dn_sort_modal" class="pull-right"><i class="fa fa-sort"/> Sort</h4>
+                    <a href="#" id="filter-btn-modal" data-toggle="modal" data-target="#dn_filter_modal" class="pull-left" style="color: #fff; font-size: 1.3em; padding: 5px;"><i class="fa fa-filter"/> Filter</a>
+                    <a href="#" id="sort-btn-modal" data-toggle="modal" data-target="#dn_sort_modal" class="pull-right" style="color: #fff; font-size: 1.3em; padding: 5px;"><i class="fa fa-sort"/> Sort</a>
                 </div>
             </xpath>
         </template>
 
         <template id="dn_filter_form" name="DN Filter Form">
             <form t-att-action="'/dn_list' if url == '/dn_list' else '/dn_shop'" method="post">
-                <div class="container">
+                <div class="container" style="padding: 0px;">
                     <t t-set="first_facet" t-value="0"/>
                     <t t-if="len(filter_facets) &gt; 0">
-                        <div class="col-md-5 col-sm-5 col-xs-5">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
                             <t t-call="webshop_dermanord.dn_filter_navigator"/>
                         </div>
-                        <div class="col-md-7 col-sm-7 col-xs-7">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
                             <t t-call="webshop_dermanord.dn_filter_content"/>
                         </div>
                     </t>
@@ -200,8 +200,8 @@
 
         <template id="dn_sort_form" name="DN Sort Form">
             <form t-att-action="'/dn_list' if url == '/dn_list' else '/dn_shop'" method="post">
-                <div class="container">
-                    <ul>
+                <div class="container" style="padding: 0px;">
+                    <ul style="list-style-type: none;">
                         <li><div class="radio"><label>
                             <t t-if="form_values">
                                 <input type="radio" name="order" value="sold_qty desc" t-att="{'checked': '1'} if form_values.get('order') == 'sold_qty desc' else {}"/> Most Sold

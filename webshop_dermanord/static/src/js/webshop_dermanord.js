@@ -1,5 +1,7 @@
 $(document).ready(function(){
 
+    $('[data-toggle="popover"]').popover();
+
     $(".show_more_facet").click(function(){
         $(this).addClass("hidden");
         $(".hide_more_facet").removeClass("hidden");
