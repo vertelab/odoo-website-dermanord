@@ -267,7 +267,9 @@
                     <t t-if="len(facet_values) &gt; 0">
                         <t t-foreach="facet_values" t-as="facet_value">
                             <t t-if="form_values">
-                                <input type="hidden" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) if form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) else ''"/>
+                                <t t-if="form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) == str(facet_value.id)">
+                                    <input type="hidden" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id"/>
+                                </t>
                             </t>
                         </t>
                     </t>
@@ -275,14 +277,18 @@
                 <t t-if="len(filter_categories) &gt; 0">
                     <t t-foreach="filter_categories" t-as="category">
                         <t t-if="form_values">
-                            <input type="hidden" t-att-name="'category_%s' %category.id" t-att-value="form_values.get('category_%s' %category.id) if form_values.get('category_%s' %category.id) else ''"/>
+                            <t t-if="form_values.get('category_%s' %category.id) == str(category.id)">
+                                <input type="hidden" t-att-name="'category_%s' %category.id" t-att-value="category.id"/>
+                            </t>
                         </t>
                     </t>
                 </t>
                 <t t-if="len(filter_ingredients) &gt; 0">
                     <t t-foreach="filter_ingredients" t-as="ingredient">
                         <t t-if="form_values">
-                            <input type="hidden" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="form_values.get('ingredient_%s' %ingredient.id) if form_values.get('ingredient_%s' %ingredient.id) else ''"/>
+                            <t t-if="form_values.get('ingredient_%s' %ingredient.id) == str(ingredient.id)">
+                                <input type="hidden" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id"/>
+                            </t>
                         </t>
                     </t>
                 </t>
