@@ -39,12 +39,48 @@
             </div>
         </template>
 
+        <template id="form_values" name="Form Values">
+            <t t-set="filter_facets" t-value="request.env['product.facet'].search([])"/>
+                <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])"/>
+                <t t-set="filter_ingredients" t-value="request.env['product.ingredient'].search([])"/>
+                <input type="hidden" name="order" t-att-value="form_values.get('order') if form_values.get('order') else 'name asc'"/>
+                <t t-if="len(filter_facets) &gt; 0">
+                    <t t-foreach="filter_facets" t-as="facet">
+                        <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])"/>
+                        <t t-if="len(facet_values) &gt; 0">
+                            <t t-foreach="facet_values" t-as="facet_value">
+                                <t t-if="form_values">
+                                    <input type="hidden" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) if form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) else ''"/>
+                                </t>
+                            </t>
+                        </t>
+                    </t>
+                </t>
+                <t t-if="len(filter_categories) &gt; 0">
+                    <t t-foreach="filter_categories" t-as="category">
+                        <t t-if="form_values">
+                            <input type="hidden" t-att-name="'category_%s' %category.id" t-att-value="form_values.get('category_%s' %category.id) if form_values.get('category_%s' %category.id) else ''"/>
+                        </t>
+                    </t>
+                </t>
+                <t t-if="len(filter_ingredients) &gt; 0">
+                    <t t-foreach="filter_ingredients" t-as="ingredient">
+                        <t t-if="form_values">
+                            <input type="hidden" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="form_values.get('ingredient_%s' %ingredient.id) if form_values.get('ingredient_%s' %ingredient.id) else ''"/>
+                        </t>
+                    </t>
+                </t>
+        </template>
+
         <template id="products_item" name="Product item">
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" class="dn_product_div col-md-4 col-sm-6 col-xs-12">
                     <div class="dn_product_image">
                         <div class="dn_product_image_div">
-                            <a itemprop="url" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
+                            <a itemprop="url" t-att-href="keep('/dn_shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
+
+                                <t t-call="webshop_dermanord.form_values"/>
+
                                 <t t-if="len(product.image_ids) &gt; 0">
                                     <img itemprop="image" class="img img-responsive" t-att-src="'/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(product.image_ids[0].id, 'snippet_dermanord.img_product')" t-att-alt="product.name" />
                                 </t>
@@ -53,7 +89,7 @@
                                 </t>
                                 <div class="dn_product_image_hover_btn text-center hidden-xs">
                                     <p>
-                                        <a class="dn_btn dn_primary" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">DETAILS</a>
+                                        <a class="dn_btn dn_primary" t-att-href="keep('/dn_shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">DETAILS</a>
                                     </p>
                                 </div>
                             </a>
@@ -62,7 +98,7 @@
                     <div class="dn_product_info text-center">
                         <h4 class="p_name">
                             <strong>
-                                <a itemprop="name" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))" t-field="product.name" />
+                                <a itemprop="name" t-att-href="keep('/dn_shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))" t-field="product.name" />
                             </strong>
                         </h4>
                         <h5 class="p_desc"><t t-esc="product.description_sale"/></h5>
@@ -125,6 +161,7 @@
                                 <div class="row" style="width: 100%;">
                                     <t t-call="website_sale.search"><t t-set="search_class">pagination form-inline col-md-3</t></t>
                                     <t t-call="website.pager"/>
+                                    <t t-call="webshop_dermanord.form_values"/>
                                 </div>
                             </div>
                             <table class="product_list_table table table-striped" style="width: 100%;">
@@ -138,7 +175,7 @@
                                                     </div>
                                                     <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price col-md-6 col-sm-6 col-xs-12">
                                                         <strong>
-                                                            <a t-att-href="keep('/shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
+                                                            <a t-att-href="keep('/dn_shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
                                                                 <span itemprop="name" t-field="product.name"/>
                                                                 <t t-if="len(product.attribute_value_ids) &gt; 0">
                                                                     <t t-foreach="product.attribute_value_ids" t-as="att">
@@ -158,7 +195,7 @@
                                                                 }'>
                                                             </span>
                                                             <span itemprop="price" style="display:none;" t-esc="product.price">
-                                                                <a class="btn btn-default btn-xs fa fa-shopping-cart" t-att-href="keep('/shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))"/>
+                                                                <a class="btn btn-default btn-xs fa fa-shopping-cart" t-att-href="keep('/dn_shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))"/>
                                                             </span>
                                                             <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding"/>
                                                         </b></h5>
@@ -466,7 +503,7 @@
                 <div class='mt16 text-center' style="padding: 0 15px;">
                     <span t-field="p.image_small" t-field-options='{"widget": "image", "class": "img-rounded shadow" }' />
                     <h5>
-                        <a t-attf-href="/shop/product/#{ slug(p) }" style="display: block">
+                        <a t-attf-href="/dn_shop/product/#{ slug(p) }" style="display: block">
                             <span t-field='p.name' style="display: block" />
                         </a>
                     </h5>

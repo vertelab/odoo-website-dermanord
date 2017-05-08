@@ -249,7 +249,6 @@ class website_sale(website_sale):
             default_order = post.get('order')
         product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
         products = product_obj.browse(cr, uid, product_ids, context=context)
-        #~ popular_products = nlargest(20, products.mapped('sold_qty'))
 
         style_obj = pool['product.style']
         style_ids = style_obj.search(cr, uid, [], context=context)
@@ -266,6 +265,9 @@ class website_sale(website_sale):
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
+
+        if post.get('ok', False):
+            request.session['form_values'] = post
 
         values = {
             'search': search,
@@ -288,6 +290,54 @@ class website_sale(website_sale):
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
         }
         return request.website.render("webshop_dermanord.products", values)
+
+    @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
+    def product(self, product, category='', search='', **kwargs):
+        cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
+        category_obj = pool['product.public.category']
+        template_obj = pool['product.template']
+
+        context.update(active_id=product.id)
+
+        if category:
+            category = category_obj.browse(cr, uid, int(category), context=context)
+            category = category if category.exists() else False
+
+        attrib_list = request.httprequest.args.getlist('attrib')
+        attrib_values = [map(int,v.split("-")) for v in attrib_list if v]
+        attrib_set = set([v[1] for v in attrib_values])
+
+        keep = QueryURL('/dn_shop', category=category and category.id, search=search, attrib=attrib_list)
+
+        category_ids = category_obj.search(cr, uid, [], context=context)
+        category_list = category_obj.name_get(cr, uid, category_ids, context=context)
+        category_list = sorted(category_list, key=lambda category: category[1])
+
+        pricelist = self.get_pricelist()
+
+        from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
+        to_currency = pricelist.currency_id
+        compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
+
+        if not context.get('pricelist'):
+            context['pricelist'] = int(self.get_pricelist())
+            product = template_obj.browse(cr, uid, int(product), context=context)
+
+        values = {
+            'search': search,
+            'category': category,
+            'pricelist': pricelist,
+            'attrib_values': attrib_values,
+            'compute_currency': compute_currency,
+            'attrib_set': attrib_set,
+            'keep': keep,
+            'category_list': category_list,
+            'main_object': product,
+            'product': product,
+            'get_attribute_value_ids': self.get_attribute_value_ids,
+            'form_values': request.session.get('form_values'),
+        }
+        return request.website.render("website_sale.product", values)
 
     #controller only for reseller
     @http.route([
@@ -340,6 +390,57 @@ class website_sale(website_sale):
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
         }
         return request.website.render("webshop_dermanord.products_list_reseller_view", values)
+
+    @http.route([
+        '/dn_shop/variant/<model("product.product"):variant>'
+    ], type='http', auth="public", website=True)
+    def dn_product_variant(self, variant, category='', search='', **kwargs):
+        cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
+        category_obj = pool['product.public.category']
+        template_obj = pool['product.template']
+
+        context.update(active_id=variant.product_tmpl_id.id)
+
+        if category:
+            category = category_obj.browse(cr, uid, int(category), context=context)
+            category = category if category.exists() else False
+
+        attrib_list = request.httprequest.args.getlist('attrib')
+        attrib_values = [map(int,v.split("-")) for v in attrib_list if v]
+        attrib_set = set([v[1] for v in attrib_values])
+
+        keep = QueryURL('/shop', category=category and category.id, search=search, attrib=attrib_list)
+
+        category_ids = category_obj.search(cr, uid, [], context=context)
+        category_list = category_obj.name_get(cr, uid, category_ids, context=context)
+        category_list = sorted(category_list, key=lambda category: category[1])
+
+        pricelist = self.get_pricelist()
+
+        from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
+        to_currency = pricelist.currency_id
+        compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
+
+        if not context.get('pricelist'):
+            context['pricelist'] = int(self.get_pricelist())
+            product = template_obj.browse(cr, uid, variant.product_tmpl_id.id, context=context)
+
+        values = {
+            'search': search,
+            'category': category,
+            'pricelist': pricelist,
+            'attrib_values': attrib_values,
+            'compute_currency': compute_currency,
+            'attrib_set': attrib_set,
+            'keep': keep,
+            'category_list': category_list,
+            'main_object': product,
+            'product': product,
+            'product_product': variant,
+            'get_attribute_value_ids': self.get_attribute_value_ids,
+            'form_values': request.session.get('form_values'),
+        }
+        return request.website.render("website_sale.product", values)
 
     @http.route(['/shop/cart'], type='http', auth="public", website=True)
     def cart(self, **post):

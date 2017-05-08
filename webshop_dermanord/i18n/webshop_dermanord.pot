@@ -1,0 +1,308 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* webshop_dermanord
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0-20170501\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-08 11:50+0000\n"
+"PO-Revision-Date: 2017-05-08 11:50+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.product_view
+#: view:website:webshop_dermanord.products_item
+msgid "&nbsp;"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website.layout
+msgid "&times;"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.products_item
+#: view:website:website_sale.product_price
+msgid "(ditt ex moms)"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.products_item
+#: view:website:website_sale.product_price
+msgid "(rek ink moms)"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.products_list_reseller_view
+msgid "Add to Cart"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.dn_sort_form
+msgid "Article No. Ascending"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.dn_sort_form
+msgid "Article No. Descending"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.dn_filter_navigator
+msgid "Categories"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.dn_filter_form
+msgid "Clear All"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website.layout
+msgid "Close"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.cart
+msgid "Continue"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.cart
+msgid "Continue Shopping"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.products_item
+msgid "DETAILS"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "Description"
+msgstr ""
+
+#. module: webshop_dermanord
+#: model:ir.model,name:webshop_dermanord.model_blog_post
+msgid "Document Page"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website.layout
+msgid "Filter"
+msgstr ""
+
+#. module: webshop_dermanord
+#: field:product.pricelist,for_reseller:0
+msgid "For Reseller"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.dn_filter_navigator
+#: view:website:website_sale.product
+msgid "Ingredients"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "Less info"
+msgstr ""
+
+#. module: webshop_dermanord
+#: field:product.product,list_price_tax:0
+#: field:product.template,list_price_tax:0
+msgid "List price tax"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "Manual"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "More info"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.dn_sort_form
+msgid "Most Sold"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.dn_sort_form
+msgid "Name Ascending"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.dn_sort_form
+msgid "Name Descending"
+msgstr ""
+
+#. module: webshop_dermanord
+#: field:product.product,blog_post_ids:0
+#: field:product.template,blog_post_ids:0
+msgid "Posts"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.dn_sort_form
+msgid "Price Ascending"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.dn_sort_form
+msgid "Price Descending"
+msgstr ""
+
+#. module: webshop_dermanord
+#: field:product.product,price_tax:0
+#: field:product.template,price_tax:0
+msgid "Price tax"
+msgstr ""
+
+#. module: webshop_dermanord
+#: model:ir.model,name:webshop_dermanord.model_product_pricelist
+msgid "Pricelist"
+msgstr ""
+
+#. module: webshop_dermanord
+#: model:ir.model,name:webshop_dermanord.model_product_product
+msgid "Product"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website.layout
+msgid "Product Filter"
+msgstr ""
+
+#. module: webshop_dermanord
+#: field:blog.post,product_public_categ_ids:0
+msgid "Product Public Categories"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website.layout
+msgid "Product Sort"
+msgstr ""
+
+#. module: webshop_dermanord
+#: model:ir.model,name:webshop_dermanord.model_product_template
+msgid "Product Template"
+msgstr ""
+
+#. module: webshop_dermanord
+#: field:blog.post,product_tmpl_ids:0
+msgid "Product Templates"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "Product range"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "Recently viewed"
+msgstr ""
+
+#. module: webshop_dermanord
+#: field:product.product,recommended_price:0
+#: field:product.template,recommended_price:0
+msgid "Recommended price"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "Remedy"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.products
+#: view:website:webshop_dermanord.products_list_reseller_view
+msgid "Shop"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "Skin Type"
+msgstr ""
+
+#. module: webshop_dermanord
+#: field:product.product,so_line_ids:0
+msgid "So line ids"
+msgstr ""
+
+#. module: webshop_dermanord
+#: field:product.product,sold_qty:0
+#: field:product.template,sold_qty:0
+msgid "Sold"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website.layout
+msgid "Sort"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "Texture"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "This product’s experiences"
+msgstr ""
+
+#. module: webshop_dermanord
+#: model:ir.model,name:webshop_dermanord.model_website
+msgid "Website"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "dn_btn dn_primary mt8 js_check_product a-submit text-center"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:product.public.category:webshop_dermanord.product_public_category_form_view
+msgid "handle"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "ingredients"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.dn_shop
+#: view:website:webshop_dermanord.products_list_reseller_view
+msgid "pagination form-inline col-md-3"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "public description"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "reseller"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "text-muted hidden"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "useage"
+msgstr ""
+

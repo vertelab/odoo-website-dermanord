@@ -66,8 +66,8 @@
                     </t>
                 </div>
                 <div id="filter_btn_group" class="btn-group">
-                    <button class="mt32 dn_btn dn_primary" type="submit">OK</button>
-                    <button class="mt32 dn_btn dn_default" type="button" onclick="restore_filter()"><i class="fa fa-trash-o"/> Restore</button>
+                    <button class="mt32 dn_btn dn_primary" name="ok" type="submit">OK</button>
+                    <button class="mt32 dn_btn dn_default" type="button" onclick="restore_filter()"><i class="fa fa-trash-o"/> Clear All</button>
                 </div>
             </form>
         </template>
@@ -286,7 +286,7 @@
                         </t>
                     </t>
                 </t>
-                <button class="mt32 dn_btn dn_primary" type="submit">OK</button>
+                <button class="mt32 dn_btn dn_primary" name="ok" type="submit">OK</button>
             </form>
         </template>
 
