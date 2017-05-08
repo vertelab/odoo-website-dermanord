@@ -8,7 +8,7 @@
                 <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])"/>
                 <t t-set="filter_ingredients" t-value="request.env['product.ingredient'].search([])"/>
                 <div id="dn_filter_modal" class="modal fade" role="dialog">
-                    <div class="modal-dialog" style="margin: 0px;">
+                    <div class="modal-dialog" style="margin: 0px; width: 100%;">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">Product Filter
@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div id="dn_sort_modal" class="modal fade" role="dialog">
-                    <div class="modal-dialog" style="margin: 0px;">
+                    <div class="modal-dialog" style="margin: 0px; width: 100%;">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">Product Sort
