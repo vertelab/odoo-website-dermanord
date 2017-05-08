@@ -244,7 +244,10 @@ class website_sale(website_sale):
         if attrib_list:
             post['attrib'] = attrib_list
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
-        product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=self._get_search_order(post), context=context)
+        default_order = self._get_search_order(post)
+        if post.get('order'):
+            default_order = post.get('order')
+        product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
         products = product_obj.browse(cr, uid, product_ids, context=context)
         #~ popular_products = nlargest(20, products.mapped('sold_qty'))
 
@@ -286,6 +289,7 @@ class website_sale(website_sale):
         }
         return request.website.render("webshop_dermanord.products", values)
 
+    #controller only for reseller
     @http.route([
         '/dn_list',
         '/dn_list/page/<int:page>',
@@ -313,7 +317,10 @@ class website_sale(website_sale):
         if search:
             post["search"] = search
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
-        product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=self._get_search_order(post), context=context)
+        default_order = self._get_search_order(post)
+        if post.get('order'):
+            default_order = post.get('order')
+        product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
         products = product_obj.browse(cr, uid, product_ids, context=context)
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
