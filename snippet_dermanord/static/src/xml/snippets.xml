@@ -36,7 +36,7 @@
         </div>
     </t>
     <t t-name="p_category_snippet">
-        <a href="/shop/category/category_id">
+        <a href="/dn_shop/category/category_id">
             <div class="categ_block col-md-4 col-xs-12">
                 <img class="img img-responsive categ_block_img" t-att-src="category_image" t-att-data-cke-saved-src="category_image"/>
                  <div class="container">

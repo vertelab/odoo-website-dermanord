@@ -224,6 +224,9 @@ class website_sale(website_sale):
         domain = self._get_search_domain(search, category, attrib_values)
         domain += self.get_domain_append(post)
 
+        if category:
+            post['category_' + str(int(category))] = str(int(category))
+
         keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
         if not context.get('pricelist'):
@@ -348,9 +351,11 @@ class website_sale(website_sale):
     ], type='http', auth="public", website=True)
     def dn_list(self, page=0, category=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
-
         domain = self._get_search_domain(search, category, None)
         domain += self.get_domain_append(post)
+
+        if category:
+            post['category_' + str(int(category))] = str(int(category))
 
         keep = QueryURL('/dn_list', category=category and int(category), search=search, attrib=None)
 
