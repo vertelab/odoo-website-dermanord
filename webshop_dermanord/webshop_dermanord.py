@@ -300,12 +300,12 @@ class website_sale(website_sale):
         to_currency = pricelist.currency_id
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
+        if post.get('post_form') and post.get('post_form') == 'ok':
+            request.session['form_values'] = post
         request.session['url'] = url
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(request.session.get('form_values'))
         request.session['sort_name'] = self.get_chosen_order(request.session.get('form_values'))[0]
         request.session['sort_order'] = self.get_chosen_order(request.session.get('form_values'))[1]
-        if post.get('post_form') and post.get('post_form') == 'ok':
-            request.session['form_values'] = post
 
         values = {
             'search': search,
@@ -421,12 +421,12 @@ class website_sale(website_sale):
         to_currency = pricelist.currency_id
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
+        if post.get('post_form') and post.get('post_form') == 'ok':
+            request.session['form_values'] = post
         request.session['url'] = url
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(request.session.get('form_values'))
         request.session['sort_name'] = self.get_chosen_order(request.session.get('form_values'))[0]
         request.session['sort_order'] = self.get_chosen_order(request.session.get('form_values'))[1]
-        if post.get('post_form') and post.get('post_form') == 'ok':
-            request.session['form_values'] = post
 
         values = {
             'search': search,
@@ -471,12 +471,13 @@ class website_sale(website_sale):
         to_currency = pricelist.currency_id
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
-        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(request.session.get('form_values'))
-        request.session['sort_name'] = self.get_chosen_order(request.session.get('form_values'))[0]
-        request.session['sort_order'] = self.get_chosen_order(request.session.get('form_values'))[1]
         if not context.get('pricelist'):
             context['pricelist'] = int(self.get_pricelist())
             product = template_obj.browse(cr, uid, variant.product_tmpl_id.id, context=context)
+
+        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(request.session.get('form_values'))
+        request.session['sort_name'] = self.get_chosen_order(request.session.get('form_values'))[0]
+        request.session['sort_order'] = self.get_chosen_order(request.session.get('form_values'))[1]
 
         values = {
             'search': search,
