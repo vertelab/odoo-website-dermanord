@@ -48,19 +48,19 @@
                 <div id="bottom_div" class="container">
                     <a href="#" id="filter-btn-modal" data-toggle="modal" data-target="#dn_filter_modal" class="pull-left" style="color: #fff; font-size: 1.3em; padding: 5px;">
                         <i class="fa fa-filter"/> Filter
-                        <span class="filter_match" t-if="chosen_filter_qty &gt; 0">
-                            <t t-esc="chosen_filter_qty"/>
+                        <span class="filter_match" t-if="request.session.get('chosen_filter_qty') &gt; 0">
+                            <t t-esc="request.session.get('chosen_filter_qty')"/>
                         </span>
                     </a>
                     <a href="#" id="sort-btn-modal" data-toggle="modal" data-target="#dn_sort_modal" class="pull-right" style="color: #fff; font-size: 1.3em; padding: 5px;">
                         <i class="fa fa-sort"/> Sort
-                        <span class="sort_match" t-if="sort_name and sort_order">
-                            <i class="fa fa-trophy" t-if="sort_name == 'sold_qty'"/>
-                            <i class="fa fa-font" t-if="sort_name == 'name'"/>
-                            <i class="fa fa-dollar" t-if="sort_name == 'list_price'"/>
-                            <i class="fa fa-barcode" t-if="sort_name == 'default_code'"/>
-                            <i class="fa fa-sort-asc" t-if="sort_order == 'asc'"/>
-                            <i class="fa fa-sort-desc" t-if="sort_order == 'desc'"/>
+                        <span class="sort_match" t-if="request.session.get('sort_name') and request.session.get('sort_order')">
+                            <i class="fa fa-trophy" t-if="request.session.get('sort_name') == 'sold_qty'"/>
+                            <i class="fa fa-font" t-if="request.session.get('sort_name') == 'name'"/>
+                            <i class="fa fa-dollar" t-if="request.session.get('sort_name') == 'list_price'"/>
+                            <i class="fa fa-barcode" t-if="request.session.get('sort_name') == 'default_code'"/>
+                            <i class="fa fa-sort-asc" t-if="request.session.get('sort_order') == 'asc'"/>
+                            <i class="fa fa-sort-desc" t-if="request.session.get('sort_order') == 'desc'"/>
                         </span>
                     </a>
                 </div>
@@ -95,10 +95,10 @@
                             <h5>
                                 <span t-esc="facet.name"/>
                                 <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])"/>
-                                <t t-if="len(facet_values) &gt; 0 and form_values">
+                                <t t-if="len(facet_values) &gt; 0 and request.session.get('form_values')">
                                     <t t-set="facet_values_count" t-value="0"/>
                                     <t t-foreach="facet_values" t-as="facet_value">
-                                        <t t-if="'facet_%s_%s' %(facet.id, facet_value.id) in form_values.keys()">
+                                        <t t-if="'facet_%s_%s' %(facet.id, facet_value.id) in request.session.get('form_values').keys()">
                                             <t t-set="facet_values_count" t-value="facet_values_count + 1"/>
                                         </t>
                                     </t>
@@ -114,10 +114,10 @@
                 <li>
                     <a data-toggle="tab" href="#category">
                         <h5>Categories
-                            <t t-if="len(filter_categories) &gt; 0 and form_values">
+                            <t t-if="len(filter_categories) &gt; 0 and request.session.get('form_values')">
                                 <t t-set="category_count" t-value="0"/>
                                 <t t-foreach="filter_categories" t-as="category">
-                                    <t t-if="'category_%s' %category.id in form_values.keys()">
+                                    <t t-if="'category_%s' %category.id in request.session.get('form_values').keys()">
                                         <t t-set="category_count" t-value="category_count + 1"/>
                                     </t>
                                 </t>
@@ -132,10 +132,10 @@
                 <li>
                     <a data-toggle="tab" href="#ingredient">
                         <h5>Ingredients
-                            <t t-if="len(filter_ingredients) &gt; 0 and form_values">
+                            <t t-if="len(filter_ingredients) &gt; 0 and request.session.get('form_values')">
                                 <t t-set="ingredient_count" t-value="0"/>
                                 <t t-foreach="filter_ingredients" t-as="ingredient">
-                                    <t t-if="'ingredient_%s' %ingredient.id in form_values.keys()">
+                                    <t t-if="'ingredient_%s' %ingredient.id in request.session.get('form_values').keys()">
                                         <t t-set="ingredient_count" t-value="ingredient_count + 1"/>
                                     </t>
                                 </t>
@@ -160,9 +160,10 @@
                                 <div class="checkbox">
                                     <h5>
                                         <label>
-                                            <t t-if="form_values">
-                                                <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id" t-att="{'checked': '1'} if (form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) and form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) == str(facet_value.id)) else {}"/><t t-esc="facet_value.name"/></t>
-                                            <t t-if="not form_values">
+                                            <t t-if="request.session.get('form_values')">
+                                                <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id" t-att="{'checked': '1'} if (request.session.get('form_values').get('facet_%s_%s' %(facet.id, facet_value.id)) and request.session.get('form_values').get('facet_%s_%s' %(facet.id, facet_value.id)) == str(facet_value.id)) else {}"/><t t-esc="facet_value.name"/>
+                                            </t>
+                                            <t t-if="not request.session.get('form_values')">
                                                 <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id"/><t t-esc="facet_value.name"/>
                                             </t>
                                         </label>
@@ -178,10 +179,10 @@
                             <div class="checkbox">
                                 <h5>
                                     <label>
-                                        <t t-if="form_values">
-                                            <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id" t-att="{'checked': '1'} if form_values.get('category_%s' %category.id) == str(category.id) else {}"/><t t-esc="category.name"/>
+                                        <t t-if="request.session.get('form_values')">
+                                            <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id" t-att="{'checked': '1'} if request.session.get('form_values').get('category_%s' %category.id) == str(category.id) else {}"/><t t-esc="category.name"/>
                                         </t>
-                                        <t t-if="not form_values">
+                                        <t t-if="not request.session.get('form_values')">
                                             <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id"/><t t-esc="category.name"/>
                                         </t>
                                     </label>
@@ -196,9 +197,9 @@
                             <div class="checkbox">
                                 <h5>
                                     <label>
-                                        <t t-if="form_values">
-                                            <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if form_values.get('ingredient_%s' %ingredient.id) == str(ingredient.id) else {}"/><t t-esc="ingredient.name"/></t>
-                                        <t t-if="not form_values">
+                                        <t t-if="request.session.get('form_values')">
+                                            <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('ingredient_%s' %ingredient.id) == str(ingredient.id) else {}"/><t t-esc="ingredient.name"/></t>
+                                        <t t-if="not request.session.get('form_values')">
                                             <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id"/><t t-esc="ingredient.name"/>
                                         </t>
                                     </label>
@@ -207,8 +208,8 @@
                         </t>
                     </t>
                 </div>
-                <t t-if="form_values">
-                    <input type="hidden" name="order" t-att-value="form_values.get('order') if form_values.get('order') else 'name asc'"/>
+                <t t-if="request.session.get('form_values')">
+                    <input type="hidden" name="order" t-att-value="request.session.get('form_values').get('order') if request.session.get('form_values').get('order') else 'name asc'"/>
                 </t>
             </div>
         </template>
@@ -218,59 +219,59 @@
                 <div class="container" style="padding: 0px;">
                     <ul style="list-style-type: none;">
                         <li><div class="radio"><label>
-                            <t t-if="form_values">
-                                <input type="radio" name="order" value="sold_qty desc" t-att="{'checked': '1'} if form_values.get('order') == 'sold_qty desc' else {}"/> Most Sold
+                            <t t-if="request.session.get('form_values')">
+                                <input type="radio" name="order" value="sold_qty desc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'sold_qty desc' else {}"/> Most Sold
                             </t>
-                            <t t-if="not form_values">
+                            <t t-if="not request.session.get('form_values')">
                                 <input type="radio" name="order" value="sold_qty desc" checked="1"/> Most Sold
                             </t>
                         </label></div></li>
                         <li><div class="radio"><label>
-                            <t t-if="form_values">
-                                <input type="radio" name="order" value="name asc" t-att="{'checked': '1'} if form_values.get('order') == 'name asc' else {}"/> Name Ascending
+                            <t t-if="request.session.get('form_values')">
+                                <input type="radio" name="order" value="name asc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'name asc' else {}"/> Name Ascending
                             </t>
-                            <t t-if="not form_values">
+                            <t t-if="not request.session.get('form_values')">
                                 <input type="radio" name="order" value="name asc"/> Name Ascending
                             </t>
                         </label></div></li>
                         <li><div class="radio"><label>
-                            <t t-if="form_values">
-                                <input type="radio" name="order" value="name desc" t-att="{'checked': '1'} if form_values.get('order') == 'name desc' else {}"/> Name Descending
+                            <t t-if="request.session.get('form_values')">
+                                <input type="radio" name="order" value="name desc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'name desc' else {}"/> Name Descending
                             </t>
-                            <t t-if="not form_values">
+                            <t t-if="not request.session.get('form_values')">
                                 <input type="radio" name="order" value="name desc"/> Name Descending
                             </t>
                         </label></div></li>
                         <li><div class="radio"><label>
-                            <t t-if="form_values">
-                                <input type="radio" name="order" value="list_price asc" t-att="{'checked': '1'} if form_values.get('order') == 'list_price asc' else {}"/> Price Ascending
+                            <t t-if="request.session.get('form_values')">
+                                <input type="radio" name="order" value="list_price asc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'list_price asc' else {}"/> Price Ascending
                             </t>
-                            <t t-if="not form_values">
+                            <t t-if="not request.session.get('form_values')">
                                 <input type="radio" name="order" value="list_price asc"/> Price Ascending
                             </t>
                         </label></div></li>
                         <li><div class="radio"><label>
-                            <t t-if="form_values">
-                                <input type="radio" name="order" value="list_price desc" t-att="{'checked': '1'} if form_values.get('order') == 'list_price desc' else {}"/> Price Descending
+                            <t t-if="request.session.get('form_values')">
+                                <input type="radio" name="order" value="list_price desc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'list_price desc' else {}"/> Price Descending
                             </t>
-                            <t t-if="not form_values">
+                            <t t-if="not request.session.get('form_values')">
                                 <input type="radio" name="order" value="list_price desc"/> Price Descending
                             </t>
                         </label></div></li>
                         <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                             <li><div class="radio"><label>
-                                <t t-if="form_values">
-                                    <input type="radio" name="order" value="default_code asc" t-att="{'checked': '1'} if form_values.get('order') == 'default_code asc' else {}"/> Article No. Ascending
+                                <t t-if="request.session.get('form_values')">
+                                    <input type="radio" name="order" value="default_code asc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'default_code asc' else {}"/> Article No. Ascending
                                 </t>
-                                <t t-if="not form_values">
+                                <t t-if="not request.session.get('form_values')">
                                     <input type="radio" name="order" value="default_code asc"/> Article No. Ascending
                                 </t>
                             </label></div></li>
                             <li><div class="radio"><label>
-                                <t t-if="form_values">
-                                    <input type="radio" name="order" value="default_code desc" t-att="{'checked': '1'} if form_values.get('order') == 'default_code desc' else {}"/> Article No. Descending
+                                <t t-if="request.session.get('form_values')">
+                                    <input type="radio" name="order" value="default_code desc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'default_code desc' else {}"/> Article No. Descending
                                 </t>
-                                <t t-if="not form_values">
+                                <t t-if="not request.session.get('form_values')">
                                     <input type="radio" name="order" value="default_code desc"/> Article No. Descending
                                 </t>
                             </label></div></li>
@@ -281,8 +282,8 @@
                     <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])"/>
                     <t t-if="len(facet_values) &gt; 0">
                         <t t-foreach="facet_values" t-as="facet_value">
-                            <t t-if="form_values">
-                                <t t-if="form_values.get('facet_%s_%s' %(facet.id, facet_value.id)) == str(facet_value.id)">
+                            <t t-if="request.session.get('form_values')">
+                                <t t-if="request.session.get('form_values').get('facet_%s_%s' %(facet.id, facet_value.id)) == str(facet_value.id)">
                                     <input type="hidden" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id"/>
                                 </t>
                             </t>
@@ -291,8 +292,8 @@
                 </t>
                 <t t-if="len(filter_categories) &gt; 0">
                     <t t-foreach="filter_categories" t-as="category">
-                        <t t-if="form_values">
-                            <t t-if="form_values.get('category_%s' %category.id) == str(category.id)">
+                        <t t-if="request.session.get('form_values')">
+                            <t t-if="request.session.get('form_values').get('category_%s' %category.id) == str(category.id)">
                                 <input type="hidden" t-att-name="'category_%s' %category.id" t-att-value="category.id"/>
                             </t>
                         </t>
@@ -300,8 +301,8 @@
                 </t>
                 <t t-if="len(filter_ingredients) &gt; 0">
                     <t t-foreach="filter_ingredients" t-as="ingredient">
-                        <t t-if="form_values">
-                            <t t-if="form_values.get('ingredient_%s' %ingredient.id) == str(ingredient.id)">
+                        <t t-if="request.session.get('form_values')">
+                            <t t-if="request.session.get('form_values').get('ingredient_%s' %ingredient.id) == str(ingredient.id)">
                                 <input type="hidden" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id"/>
                             </t>
                         </t>

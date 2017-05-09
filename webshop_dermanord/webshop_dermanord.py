@@ -285,6 +285,9 @@ class website_sale(website_sale):
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
         request.session['url'] = url
+        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(request.session.get('form_values'))
+        request.session['sort_name'] = self.get_chosen_order(request.session.get('form_values'))[0]
+        request.session['sort_order'] = self.get_chosen_order(request.session.get('form_values'))[1]
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
 
@@ -306,10 +309,6 @@ class website_sale(website_sale):
             'url': url,
             'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
             'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
-            'form_values': request.session.get('form_values'),
-            'chosen_filter_qty': self.get_chosen_filter_qty(request.session.get('form_values')),
-            'sort_name': self.get_chosen_order(request.session.get('form_values'))[0],
-            'sort_order': self.get_chosen_order(request.session.get('form_values'))[1],
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
         }
         return request.website.render("webshop_dermanord.products", values)
@@ -346,6 +345,10 @@ class website_sale(website_sale):
             context['pricelist'] = int(self.get_pricelist())
             product = template_obj.browse(cr, uid, int(product), context=context)
 
+        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(request.session.get('form_values'))
+        request.session['sort_name'] = self.get_chosen_order(request.session.get('form_values'))[0]
+        request.session['sort_order'] = self.get_chosen_order(request.session.get('form_values'))[1]
+
         values = {
             'search': search,
             'category': category,
@@ -359,10 +362,6 @@ class website_sale(website_sale):
             'main_object': product,
             'product': product,
             'get_attribute_value_ids': self.get_attribute_value_ids,
-            'form_values': request.session.get('form_values'),
-            'chosen_filter_qty': self.get_chosen_filter_qty(request.session.get('form_values')),
-            'sort_name': self.get_chosen_order(request.session.get('form_values'))[0],
-            'sort_order': self.get_chosen_order(request.session.get('form_values'))[1],
         }
         return request.website.render("website_sale.product", values)
 
@@ -407,6 +406,9 @@ class website_sale(website_sale):
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
         request.session['url'] = url
+        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(request.session.get('form_values'))
+        request.session['sort_name'] = self.get_chosen_order(request.session.get('form_values'))[0]
+        request.session['sort_order'] = self.get_chosen_order(request.session.get('form_values'))[1]
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
 
@@ -419,10 +421,6 @@ class website_sale(website_sale):
             'compute_currency': compute_currency,
             'keep': keep,
             'url': url,
-            'form_values': request.session.get('form_values'),
-            'chosen_filter_qty': self.get_chosen_filter_qty(request.session.get('form_values')),
-            'sort_name': self.get_chosen_order(request.session.get('form_values'))[0],
-            'sort_order': self.get_chosen_order(request.session.get('form_values'))[1],
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
         }
         return request.website.render("webshop_dermanord.products_list_reseller_view", values)
@@ -457,6 +455,9 @@ class website_sale(website_sale):
         to_currency = pricelist.currency_id
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
+        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(request.session.get('form_values'))
+        request.session['sort_name'] = self.get_chosen_order(request.session.get('form_values'))[0]
+        request.session['sort_order'] = self.get_chosen_order(request.session.get('form_values'))[1]
         if not context.get('pricelist'):
             context['pricelist'] = int(self.get_pricelist())
             product = template_obj.browse(cr, uid, variant.product_tmpl_id.id, context=context)
@@ -475,10 +476,6 @@ class website_sale(website_sale):
             'product': product,
             'product_product': variant,
             'get_attribute_value_ids': self.get_attribute_value_ids,
-            'form_values': request.session.get('form_values'),
-            'chosen_filter_qty': self.get_chosen_filter_qty(request.session.get('form_values')),
-            'sort_name': self.get_chosen_order(request.session.get('form_values'))[0],
-            'sort_order': self.get_chosen_order(request.session.get('form_values'))[1],
         }
         return request.website.render("website_sale.product", values)
 
