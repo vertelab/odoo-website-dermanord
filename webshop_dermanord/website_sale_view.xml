@@ -247,6 +247,12 @@
             </xpath>
         </template>
 
+        <template id="header" inherit_id="website.layout" name="Header Shop My Cart Link DN Shop">
+            <xpath expr="//sup[@t-attf-class='my_cart_quantity label label-primary']" position="replace">
+                <sup t-attf-class="my_cart_quantity label label-primary dn_cart_qty" t-esc="len(website_sale_order.order_line) if website_sale_order else (website_sale_order and website_sale_order.cart_quantity or '')"/>
+            </xpath>
+        </template>
+
         <template id="products_attributes_search" inherit_id="products" active="False" customize_show="True" name="Product Attribute's Search">
             <xpath expr="//t[@t-call='website_sale.search']" position="after">
                 <div>

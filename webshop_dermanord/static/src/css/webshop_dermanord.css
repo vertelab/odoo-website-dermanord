@@ -297,11 +297,11 @@ span[data-oe-expression="ingredient.image"] > img {
     margin: auto;
 }
 
-.filter_match, .sort_match {
-    background-color: #CB683F;
+.filter_match, .sort_match, .dn_cart_qty {
+    background-color: #CB683F !important;
     color: #fff;
-    padding: 0px 6px;
-    border-radius: 12px;
+    padding: 0px 6px !important;
+    border-radius: 12px !important;
 }
 
 .like_icon {
