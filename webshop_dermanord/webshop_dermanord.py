@@ -139,15 +139,6 @@ class website_sale(website_sale):
 
         return attribute_value_ids
 
-    @http.route([
-        '/dn_shop',
-        '/dn_shop/page/<int:page>',
-        '/dn_shop/category/<model("product.public.category"):category>',
-        '/dn_shop/category/<model("product.public.category"):category>/page/<int:page>',
-    ], type='http', auth="public", website=True)
-    def dn_shop(self, page=0, category=None, search='', **post):
-        return self.get_products(page=page, category=category, search=search, **post)
-
     def get_domain_append(self, post):
         facet_ids = []
         category_ids = []
@@ -215,7 +206,31 @@ class website_sale(website_sale):
 
         return domain_append
 
-    def get_products(self, page=0, category=None, search='', **post):
+    def get_chosen_filter_qty(self, post):
+        chosen_filter_qty = 0
+        for k, v in post.iteritems():
+            if k not in ['post_form', 'order']:
+                chosen_filter_qty += 1
+        return chosen_filter_qty
+
+    def get_chosen_order(self, post):
+        sort_name = 'sold_qty'
+        sort_order = 'desc'
+        for k, v in post.iteritems():
+            if k == 'order':
+                sort_name = post.get('order').split(' ')[0]
+                sort_order = post.get('order').split(' ')[1]
+                break
+        return [sort_name, sort_order]
+
+
+    @http.route([
+        '/dn_shop',
+        '/dn_shop/page/<int:page>',
+        '/dn_shop/category/<model("product.public.category"):category>',
+        '/dn_shop/category/<model("product.public.category"):category>/page/<int:page>',
+    ], type='http', auth="public", website=True)
+    def dn_shop(self, page=0, category=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
         attrib_list = request.httprequest.args.getlist('attrib')
@@ -225,7 +240,7 @@ class website_sale(website_sale):
         domain += self.get_domain_append(post)
 
         if category:
-            post['category_' + str(int(category))] = str(int(category))
+            request.session['form_values']['category_' + str(int(category))] = str(int(category))
 
         keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
@@ -269,7 +284,8 @@ class website_sale(website_sale):
         to_currency = pricelist.currency_id
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
-        if post.get('ok', False):
+        request.session['url'] = url
+        if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
 
         values = {
@@ -287,9 +303,13 @@ class website_sale(website_sale):
             'attributes': attributes,
             'compute_currency': compute_currency,
             'keep': keep,
+            'url': url,
             'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
             'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
-            'form_values': post,
+            'form_values': request.session.get('form_values'),
+            'chosen_filter_qty': self.get_chosen_filter_qty(request.session.get('form_values')),
+            'sort_name': self.get_chosen_order(request.session.get('form_values'))[0],
+            'sort_order': self.get_chosen_order(request.session.get('form_values'))[1],
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
         }
         return request.website.render("webshop_dermanord.products", values)
@@ -334,11 +354,15 @@ class website_sale(website_sale):
             'compute_currency': compute_currency,
             'attrib_set': attrib_set,
             'keep': keep,
+            'url': request.session.get('url'),
             'category_list': category_list,
             'main_object': product,
             'product': product,
             'get_attribute_value_ids': self.get_attribute_value_ids,
             'form_values': request.session.get('form_values'),
+            'chosen_filter_qty': self.get_chosen_filter_qty(request.session.get('form_values')),
+            'sort_name': self.get_chosen_order(request.session.get('form_values'))[0],
+            'sort_order': self.get_chosen_order(request.session.get('form_values'))[1],
         }
         return request.website.render("website_sale.product", values)
 
@@ -355,7 +379,7 @@ class website_sale(website_sale):
         domain += self.get_domain_append(post)
 
         if category:
-            post['category_' + str(int(category))] = str(int(category))
+            request.session['form_values']['category_' + str(int(category))] = str(int(category))
 
         keep = QueryURL('/dn_list', category=category and int(category), search=search, attrib=None)
 
@@ -382,6 +406,10 @@ class website_sale(website_sale):
         to_currency = pricelist.currency_id
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
+        request.session['url'] = url
+        if post.get('post_form') and post.get('post_form') == 'ok':
+            request.session['form_values'] = post
+
         values = {
             'search': search,
             'pager': pager,
@@ -391,7 +419,10 @@ class website_sale(website_sale):
             'compute_currency': compute_currency,
             'keep': keep,
             'url': url,
-            'form_values': post,
+            'form_values': request.session.get('form_values'),
+            'chosen_filter_qty': self.get_chosen_filter_qty(request.session.get('form_values')),
+            'sort_name': self.get_chosen_order(request.session.get('form_values'))[0],
+            'sort_order': self.get_chosen_order(request.session.get('form_values'))[1],
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
         }
         return request.website.render("webshop_dermanord.products_list_reseller_view", values)
@@ -414,7 +445,7 @@ class website_sale(website_sale):
         attrib_values = [map(int,v.split("-")) for v in attrib_list if v]
         attrib_set = set([v[1] for v in attrib_values])
 
-        keep = QueryURL('/shop', category=category and category.id, search=search, attrib=attrib_list)
+        keep = QueryURL('/dn_shop', category=category and category.id, search=search, attrib=attrib_list)
 
         category_ids = category_obj.search(cr, uid, [], context=context)
         category_list = category_obj.name_get(cr, uid, category_ids, context=context)
@@ -438,12 +469,16 @@ class website_sale(website_sale):
             'compute_currency': compute_currency,
             'attrib_set': attrib_set,
             'keep': keep,
+            'url': request.session.get('url'),
             'category_list': category_list,
             'main_object': product,
             'product': product,
             'product_product': variant,
             'get_attribute_value_ids': self.get_attribute_value_ids,
             'form_values': request.session.get('form_values'),
+            'chosen_filter_qty': self.get_chosen_filter_qty(request.session.get('form_values')),
+            'sort_name': self.get_chosen_order(request.session.get('form_values'))[0],
+            'sort_order': self.get_chosen_order(request.session.get('form_values'))[1],
         }
         return request.website.render("website_sale.product", values)
 

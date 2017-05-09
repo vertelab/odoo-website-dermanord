@@ -46,8 +46,23 @@
                     </div>
                 </div>
                 <div id="bottom_div" class="container">
-                    <a href="#" id="filter-btn-modal" data-toggle="modal" data-target="#dn_filter_modal" class="pull-left" style="color: #fff; font-size: 1.3em; padding: 5px;"><i class="fa fa-filter"/> Filter</a>
-                    <a href="#" id="sort-btn-modal" data-toggle="modal" data-target="#dn_sort_modal" class="pull-right" style="color: #fff; font-size: 1.3em; padding: 5px;"><i class="fa fa-sort"/> Sort</a>
+                    <a href="#" id="filter-btn-modal" data-toggle="modal" data-target="#dn_filter_modal" class="pull-left" style="color: #fff; font-size: 1.3em; padding: 5px;">
+                        <i class="fa fa-filter"/> Filter
+                        <span class="filter_match" t-if="chosen_filter_qty &gt; 0">
+                            <t t-esc="chosen_filter_qty"/>
+                        </span>
+                    </a>
+                    <a href="#" id="sort-btn-modal" data-toggle="modal" data-target="#dn_sort_modal" class="pull-right" style="color: #fff; font-size: 1.3em; padding: 5px;">
+                        <i class="fa fa-sort"/> Sort
+                        <span class="sort_match" t-if="sort_name and sort_order">
+                            <i class="fa fa-trophy" t-if="sort_name == 'sold_qty'"/>
+                            <i class="fa fa-font" t-if="sort_name == 'name'"/>
+                            <i class="fa fa-dollar" t-if="sort_name == 'list_price'"/>
+                            <i class="fa fa-barcode" t-if="sort_name == 'default_code'"/>
+                            <i class="fa fa-sort-asc" t-if="sort_order == 'asc'"/>
+                            <i class="fa fa-sort-desc" t-if="sort_order == 'desc'"/>
+                        </span>
+                    </a>
                 </div>
             </xpath>
         </template>
@@ -66,8 +81,8 @@
                     </t>
                 </div>
                 <div id="filter_btn_group" class="btn-group">
-                    <button class="mt32 dn_btn dn_primary" name="ok" type="submit">OK</button>
-                    <button class="mt32 dn_btn dn_default" type="button" onclick="restore_filter()"><i class="fa fa-trash-o"/> Clear All</button>
+                    <button class="mt32 dn_btn dn_primary" name="post_form" value="ok" type="submit">OK</button>
+                    <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="restore_filter()"><i class="fa fa-trash-o"/> Clear All</button>
                 </div>
             </form>
         </template>
@@ -292,7 +307,7 @@
                         </t>
                     </t>
                 </t>
-                <button class="mt32 dn_btn dn_primary" name="ok" type="submit">OK</button>
+                <button class="mt32 dn_btn dn_primary" name="post_form" value="ok" type="submit">OK</button>
             </form>
         </template>
 
