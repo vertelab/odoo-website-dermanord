@@ -143,6 +143,7 @@ class website_sale(website_sale):
         facet_ids = []
         category_ids = []
         ingredient_ids = []
+        not_ingredient_ids = []
         current_ingredient = None
         current_ingredient_key = None
 
@@ -156,6 +157,9 @@ class website_sale(website_sale):
             if k.split('_')[0] == 'ingredient':
                 if v:
                     ingredient_ids.append(int(v))
+            if k.split('_')[0] == 'notingredient':
+                if v:
+                    not_ingredient_ids.append(int(v))
             if k == 'current_ingredient':
                 if v:
                     current_ingredient = v
@@ -203,6 +207,18 @@ class website_sale(website_sale):
             for i, r in ingredient.iteritems():
                 value_ids += r
             domain_append.append(('ingredient_ids', 'in', value_ids))
+        if len(not_ingredient_ids) != 0:
+            ingredients = request.env['product.ingredient'].search([('id', 'in', not_ingredient_ids)])
+            ingredient = {}
+            for i in ingredients:
+                if ingredient.get(i.name):
+                    ingredient[i.name].append(i.id)
+                else:
+                    ingredient[i.name] = [i.id]
+            value_ids = []
+            for i, r in ingredient.iteritems():
+                value_ids += r
+            domain_append.append(('ingredient_ids', 'not in', value_ids))
 
         return domain_append
 

@@ -304,6 +304,16 @@ span[data-oe-expression="ingredient.image"] > img {
     border-radius: 12px;
 }
 
+.like_icon {
+    margin-top: 5px;
+    color: #2f2;
+}
+
+.unlike_icon {
+    margin-top: 5px;
+    color: #f22;
+}
+
 @media (max-width: 768px) {
     .list_product_name {
         text-align: center;

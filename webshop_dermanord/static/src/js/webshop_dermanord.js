@@ -29,6 +29,18 @@ $(document).ready(function(){
         $(this).closest('form').submit();
     });
 
+    $(".like").click(function(){
+        if($(this).is(":checked")) {
+            $(this).closest("h5").find(".unlike").removeAttr('checked');
+        }
+    });
+
+    $(".unlike").click(function(){
+        if($(this).is(":checked")) {
+            $(this).closest("h5").find(".like").removeAttr('checked');
+        }
+    });
+
     function update_product_image(event_source, product_id) {
         var $img = $(event_source).closest('tr.js_product, .oe_website_sale').find('span[data-oe-model^="product."][data-oe-type="image"] img:first, img.product_detail_img');
         var $img_thumb = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_nav").find("li:first").find("img");
