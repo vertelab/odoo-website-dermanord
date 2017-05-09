@@ -309,9 +309,9 @@ class website_sale(website_sale):
         if category:
             self.get_form_values()['category_' + str(int(category))] = str(int(category))
         request.session['url'] = url
-        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(request.session.get('form_values'))
-        request.session['sort_name'] = self.get_chosen_order(request.session.get('form_values'))[0]
-        request.session['sort_order'] = self.get_chosen_order(request.session.get('form_values'))[1]
+        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
+        request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
+        request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
 
         values = {
             'search': search,
@@ -367,9 +367,9 @@ class website_sale(website_sale):
             context['pricelist'] = int(self.get_pricelist())
             product = template_obj.browse(cr, uid, int(product), context=context)
 
-        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(request.session.get('form_values'))
-        request.session['sort_name'] = self.get_chosen_order(request.session.get('form_values'))[0]
-        request.session['sort_order'] = self.get_chosen_order(request.session.get('form_values'))[1]
+        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
+        request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
+        request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
 
         values = {
             'search': search,
@@ -431,9 +431,9 @@ class website_sale(website_sale):
         if category:
             self.get_form_values()['category_' + str(int(category))] = str(int(category))
         request.session['url'] = url
-        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(request.session.get('form_values'))
-        request.session['sort_name'] = self.get_chosen_order(request.session.get('form_values'))[0]
-        request.session['sort_order'] = self.get_chosen_order(request.session.get('form_values'))[1]
+        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
+        request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
+        request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
 
         values = {
             'search': search,
@@ -482,9 +482,9 @@ class website_sale(website_sale):
             context['pricelist'] = int(self.get_pricelist())
             product = template_obj.browse(cr, uid, variant.product_tmpl_id.id, context=context)
 
-        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(request.session.get('form_values'))
-        request.session['sort_name'] = self.get_chosen_order(request.session.get('form_values'))[0]
-        request.session['sort_order'] = self.get_chosen_order(request.session.get('form_values'))[1]
+        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
+        request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
+        request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
 
         values = {
             'search': search,
