@@ -222,6 +222,11 @@ class website_sale(website_sale):
 
         return domain_append
 
+    def get_form_values(self):
+        if not request.session.get('form_values'):
+            request.session['form_values'] = {}
+        return request.session.get('form_values')
+
     def get_chosen_filter_qty(self, post):
         chosen_filter_qty = 0
         for k, v in post.iteritems():
@@ -254,9 +259,8 @@ class website_sale(website_sale):
         attrib_set = set([v[1] for v in attrib_values])
         domain = self._get_search_domain(search, category, attrib_values)
         domain += self.get_domain_append(post)
-
         if category:
-            request.session['form_values']['category_' + str(int(category))] = str(int(category))
+            domain += self.get_domain_append(self.get_form_values())
 
         keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
@@ -302,6 +306,8 @@ class website_sale(website_sale):
 
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
+        if category:
+            self.get_form_values()['category_' + str(int(category))] = str(int(category))
         request.session['url'] = url
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(request.session.get('form_values'))
         request.session['sort_name'] = self.get_chosen_order(request.session.get('form_values'))[0]
@@ -392,9 +398,8 @@ class website_sale(website_sale):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
         domain = self._get_search_domain(search, category, None)
         domain += self.get_domain_append(post)
-
         if category:
-            request.session['form_values']['category_' + str(int(category))] = str(int(category))
+            domain += self.get_domain_append(self.get_form_values())
 
         keep = QueryURL('/dn_list', category=category and int(category), search=search, attrib=None)
 
@@ -423,6 +428,8 @@ class website_sale(website_sale):
 
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
+        if category:
+            self.get_form_values()['category_' + str(int(category))] = str(int(category))
         request.session['url'] = url
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(request.session.get('form_values'))
         request.session['sort_name'] = self.get_chosen_order(request.session.get('form_values'))[0]
