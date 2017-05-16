@@ -252,7 +252,7 @@
                 <li class="hidden-xs">
                     <a href="/shop/cart">
                         <i class="fa fa-shopping-cart"></i>
-                        My cart <sup t-attf-class="my_cart_quantity label label-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or ''"/>
+                        My cart <sup t-attf-class="my_cart_quantity label label-primary dn_cart_qty" t-esc="website_sale_order and website_sale_order.cart_quantity or ''"/>
                     </a>
                 </li>
             </xpath>
