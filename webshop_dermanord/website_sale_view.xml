@@ -275,6 +275,14 @@
         </template>
 
         <template id="dermanord_product_detail" inherit_id="website_sale.product">
+            <xpath expr="//form[@class='js_add_cart_variants']" position="after">
+                <div>
+                    <h3>Lagerstatus</h3>
+                    <span t-if="product.qty_available &gt; 5">I lager</span>
+                    <span t-if="product.qty_available &gt; 2 and product.qty_available &lt; 6">Få i lager</span>
+                    <span t-if="product.qty_available &lt; 2">Slut</span>
+                </div>
+            </xpath>
             <xpath expr="//a[@id='add_to_cart']" position="attributes">
                 <attribute name="class">dn_btn dn_primary mt8 js_check_product a-submit text-center</attribute>
             </xpath>
