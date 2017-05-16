@@ -34,7 +34,7 @@
         <template id="theme_dermanord" inherit_id="website.layout" customize_show="True" active="False" name="Theme Dermanord" priority="99">
             <xpath expr="//div[@id='wrapwrap']/header/div[@class='navbar navbar-default navbar-static-top']/div[@class='container']/div[@class='navbar-header']" position="replace">
                 <div class="navbar-header" style="padding: 0px;">
-                    <div class="col-md-2 col-sm-2 col-xs-2">
+                    <div class="col-md-4 col-sm-4 col-xs-4">
                         <button type="button" id="menu-btn" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-top-collapse">
                             <span class="sr-only">Toggle navigation</span>
                             <span class="icon-bar"/>
@@ -56,7 +56,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="col-md-4 col-sm-4 col-xs-4">
                         <a id="desktop_logo" class="navbar-brand logo text-center hidden-xs" href="/" style="width: 100%;">
                             <img src="/logo.png" />
                         </a>
