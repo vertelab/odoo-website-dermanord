@@ -56,7 +56,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="col-md-8 col-sm-8 col-xs-8">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
                         <a id="desktop_logo" class="navbar-brand logo text-center hidden-xs" href="/" style="width: 100%;">
                             <img src="/logo.png" />
                         </a>
@@ -67,6 +67,11 @@
                     <div id="search_div" class="col-md-2 col-sm-2 col-xs-2">
                         <div class="hidden-lg hidden-md hidden-sm">
                             <a href="#" id="search-btn-modal" data-toggle="modal" data-target="#search_modal" style="color: #000;"><i class="fa fa-search fa-2x"/></a>
+                        </div>
+                    </div>
+                    <div id="shop_cart_div" class="col-md-2 col-sm-2 col-xs-2">
+                        <div class="hidden-lg hidden-md hidden-sm">
+                            <a href="/shop/cart"><i class="fa fa-shopping-cart fa-2x"/><sup t-attf-class="my_cart_quantity label label-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or ''"/></a>
                         </div>
                     </div>
 <!--

@@ -80,7 +80,7 @@ h1, .dn_uppercase {
     background-color: #000 !important;
 }
 
-#search_div {
+#search_div, #shop_cart_div {
     margin-top: 10px;
 }
 
