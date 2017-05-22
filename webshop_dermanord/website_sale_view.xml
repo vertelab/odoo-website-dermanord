@@ -101,6 +101,7 @@
                                 <a itemprop="name" t-att-href="keep('/dn_shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))" t-field="product.name" />
                             </strong>
                         </h4>
+                        <h5 class="text-muted" t-field="product.default_code"/>
                         <h5 class="p_desc"><t t-esc="product.description_sale"/></h5>
                         <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price" t-if="product.product_variant_ids">
                             <b class="text-muted">
@@ -280,6 +281,9 @@
         </template>
 
         <template id="dermanord_product_detail" inherit_id="website_sale.product">
+            <xpath expr="//h1[@itemprop='name']" position="after">
+                <h5 class="text-muted default_code" t-field="product_product.default_code"/>
+            </xpath>
             <xpath expr="//form[@class='js_add_cart_variants']" position="after">
                 <div>
                     <h3>Lagerstatus</h3>
@@ -318,65 +322,9 @@
                         </t>
                     </div>
                 </div>
-
-                <!-- remove later -->
-                <h4 class="hide_more_facet text-center hidden-lg hidden-md hidden-sm hidden" style="text-decoration: underline;">Less info <i class="fa fa-angle-up"/></h4>
-                <t t-set="variant" t-value="product.product_variant_ids[0]" />
-                <!-- TODO: find method that get the product vairant -->
-                <div class="col-md-12 no_padding_div hidden">
-                    <div class="col-md-4 no_padding_div">
-                        <ul class="nav nav-pills nav-stacked">
-                            <li class="active">
-                                <a data-toggle="tab" href="#remedy">Remedy</a>
-                            </li>
-                            <li>
-                                <a data-toggle="tab" href="#skin_type">Skin Type</a>
-                            </li>
-                            <li>
-                                <a data-toggle="tab" href="#texture">Texture</a>
-                            </li>
-                            <li group="base.group_public">
-                                <a data-toggle="tab" href="#public_desc">Description</a>
-                            </li>
-                            <li groups="base.group_website_publisher">
-                                <a data-toggle="tab" href="#reseller_desc">Description</a>
-                            </li>
-                            <li>
-                                <a data-toggle="tab" href="#use_desc">Manual</a>
-                            </li>
-                            <li>
-                                <a data-toggle="tab" href="#ingredients">Ingredients</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="tab-content col-md-8 no_padding_div">
 <!--
-                        <div id="remedy" class="tab-pane fade in active">
-                            <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_remedy")).mapped("value_ids").mapped("name"))' />
-                        </div>
-                        <div id="skin_type" class="tab-pane fade in">
-                            <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_skin_type")).mapped("value_ids").mapped("name"))' />
-                        </div>
-                        <div id="texture" class="tab-pane fade in">
-                            <span t-esc='", ".join(product.facet_line_ids.filtered(lambda p: p.facet_id == p.env.ref("webshop_dermanord.facet_texture")).mapped("value_ids").mapped("name"))' />
-                        </div>
+                <t t-set="variant" t-value="product.product_variant_ids[0]" />
 -->
-                        <div id="public_desc" class="tab-pane fade in">
-                            <!-- TODO: find method that check if current user is a customer -->
-                            <p>public description</p>
-                        </div>
-                        <div id="reseller_desc" class="tab-pane fade in">
-                            <!-- TODO: find method that check if current user is a saller -->
-                            <p>reseller</p>
-                        </div>
-                        <div id="use_desc" class="tab-pane fade in">
-                            <p>useage</p>
-                        </div>
-                        <div id="ingredients" class="tab-pane fade in">
-                            <p>ingredients</p>
-                        </div>
-                    </div>
-                </div>
             </xpath>
             <xpath expr="//p[@t-field='product.description_sale']" position="replace">
                 <p t-field="product.description_sale" class="text-muted"/>
@@ -395,14 +343,24 @@
                     <div class="container mt32">
                         <h1 class="text-center">Product range</h1>
                         <div t-foreach="request.env['product.template'].search([('public_categ_ids','in',product.public_categ_ids.mapped('id')),('website_published','=',True),('id','!=',product.id)])[:4]" t-as="p">
+<!--
                             <t t-call="website_product_templates.product_view" />
+-->
+                            <t t-call="webshop_dermanord.products_item">
+                                <t t-set="pager" t-value="{'page': {'num': 1}}"/>
+                            </t>
                         </div>
                     </div>
                     <t t-set="useless_var_6446547657" t-value="website.sale_add_previous_product(product.id)" />
                     <div class="container mt32">
                         <h1 class="text-center">Recently viewed</h1>
                         <div t-foreach="website.sale_get_previous_products().with_context(pid=product.id).filtered(lambda p: p.id != p.env.context['pid'])[:4]" t-as="p">
+<!--
                             <t t-call="website_product_templates.product_view" />
+-->
+                            <t t-call="webshop_dermanord.products_item">
+                                <t t-set="pager" t-value="{'page': {'num': 1}}"/>
+                            </t>
                         </div>
                     </div>
                 </div>

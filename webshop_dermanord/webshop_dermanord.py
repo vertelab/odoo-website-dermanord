@@ -553,6 +553,7 @@ class webshop_dermanord(http.Controller):
             if product:
                 value['image_id'] = product.image_ids[0].id if len(product.image_ids) > 0 else None
                 value['ingredients'] = product.ingredients or ''
+                value['default_code'] = product.default_code or ''
                 value['use_desc'] = product.use_desc or ''
                 value['reseller_desc'] = product.reseller_desc or ''
         return value
