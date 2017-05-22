@@ -259,6 +259,18 @@
             </xpath>
         </template>
 
+        <template id="main_search_layout" inherit_id="website_fts.main_search_layout">
+            <xpath expr="//t[@t-foreach='website.sale_get_previous_products()']/li/a" position="attributes">
+                <attribute name="t-att-href">'/dn_shop/product/%s' %p.id</attribute>
+            </xpath>
+        </template>
+
+        <template id="search_layout" inherit_id="website_fts_popular.search_layout">
+            <xpath expr="//t[@t-foreach='popular_terms']/li/a" position="attributes">
+                <attribute name="t-att-href">'/dn_shop?search=%s' %pt.name</attribute>
+            </xpath>
+        </template>
+
         <template id="products_attributes_search" inherit_id="products" active="False" customize_show="True" name="Product Attribute's Search">
             <xpath expr="//t[@t-call='website_sale.search']" position="after">
                 <div>

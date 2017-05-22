@@ -29,6 +29,7 @@
                             <a t-att-href="'/shop/variant/%s' %term.res_id">
                                 <h3><t t-esc="term.model_record.name"/></h3>
                             </a>
+                            <h5 class="text-muted"><t t-esc="term.model_record.default_code"/></h5>
                             <t t-foreach="term.model_record.attribute_value_ids" t-as="value">
                                 <span class="dn_tags" t-esc="'%s ' %value.name"/>
                             </t>
@@ -94,6 +95,13 @@
             </xpath>
             <xpath expr="//script[last()]" position="after">
                 <script type="text/javascript" src="/webshop_dermanord/static/src/js/webshop_search.js" />
+            </xpath>
+        </template>
+
+        <template id="assets_frontend_fts_override" inherit_id="website_fts.assets_frontend">
+            <!-- override fts javascript -->
+            <xpath expr="//script[@src='/website_fts/static/src/js/main.js']" position="replace">
+                <script type="text/javascript" src="/webshop_dermanord/static/src/js/fts_search.js" />
             </xpath>
         </template>
 
