@@ -1,6 +1,9 @@
 $(document).ready(function(){
 
-    $('[data-toggle="popover"]').popover();
+    $("input[data-toggle='tooltip']").click(function() {
+        $("input[data-toggle='tooltip']").tooltip('hide');
+        $(this).tooltip();
+    });
 
     $(".show_more_facet").click(function(){
         $(this).addClass("hidden");
@@ -352,3 +355,4 @@ function restore_filter() {
         }
     );
 }
+

@@ -299,9 +299,9 @@
             <xpath expr="//form[@class='js_add_cart_variants']" position="after">
                 <div>
                     <h3>Lagerstatus</h3>
-                    <span t-if="product.qty_available &gt; 5">I lager</span>
-                    <span t-if="product.qty_available &gt; 2 and product.qty_available &lt; 6">Få i lager</span>
-                    <span t-if="product.qty_available &lt; 2">Slut</span>
+                    <span t-if="product.sudo().qty_available &gt; 5">I lager</span>
+                    <span t-if="product.sudo().qty_available &gt; 2 and product.sudo().qty_available &lt; 6">Få i lager</span>
+                    <span t-if="product.sudo().qty_available &lt; 2">Slut</span>
                 </div>
             </xpath>
             <xpath expr="//a[@id='add_to_cart']" position="attributes">
@@ -393,10 +393,10 @@
                         t-att-checked="'checked' if not inc else ''"
                         t-att-name="'attribute-%s-%s' % (product.id, variant_id.attribute_id.id)"
                         t-att-value="value_id.id"
-                        data-toggle="popover"
-                        data-trigger="focus"
+                        data-toggle="tooltip"
+                        data-trigger="click"
                         data-placement="top"
-                        t-att-data-content="value_id.name"/>
+                        t-att-title="value_id.name"/>
                     </label>
                 </t>
                 <t t-if="not value_id.image">
@@ -406,10 +406,10 @@
                         t-att-checked="'checked' if not inc else ''"
                         t-att-name="'attribute-%s-%s' % (product.id, variant_id.attribute_id.id)"
                         t-att-value="value_id.id"
-                        data-toggle="popover"
-                        data-trigger="focus"
+                        data-toggle="tooltip"
+                        data-trigger="click"
                         data-placement="top"
-                        t-att-data-content="value_id.name"/>
+                        t-att-title="value_id.name"/>
                     </label>
                 </t>
             </xpath>
