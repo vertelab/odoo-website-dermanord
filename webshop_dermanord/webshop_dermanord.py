@@ -179,6 +179,7 @@ class website_sale(website_sale):
                     facet[f.name].append(f.id)
                 else:
                     facet[f.name] = [f.id]
+                request.session['form_values']['facet_%s_%s' %(f.facet_id.id, f.id)] = str(f.id)
             value_ids = []
             for f, r in facet.iteritems():
                 value_ids += r
@@ -203,6 +204,7 @@ class website_sale(website_sale):
                     ingredient[i.name].append(i.id)
                 else:
                     ingredient[i.name] = [i.id]
+                request.session['form_values']['ingredient_%s' %i.id] = str(i.id)
             value_ids = []
             for i, r in ingredient.iteritems():
                 value_ids += r
@@ -225,6 +227,7 @@ class website_sale(website_sale):
     def get_form_values(self):
         if not request.session.get('form_values'):
             request.session['form_values'] = {}
+        _logger.warn(request.session.get('form_values'))
         return request.session.get('form_values')
 
     def get_chosen_filter_qty(self, post):
@@ -332,6 +335,7 @@ class website_sale(website_sale):
             'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
             'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
+            'shop_footer': True,
         }
         return request.website.render("webshop_dermanord.products", values)
 
@@ -384,6 +388,7 @@ class website_sale(website_sale):
             'main_object': product,
             'product': product,
             'get_attribute_value_ids': self.get_attribute_value_ids,
+            'shop_footer': True,
         }
         return request.website.render("website_sale.product", values)
 
@@ -445,6 +450,7 @@ class website_sale(website_sale):
             'keep': keep,
             'url': url,
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
+            'shop_footer': True,
         }
         return request.website.render("webshop_dermanord.products_list_reseller_view", values)
 
@@ -500,6 +506,7 @@ class website_sale(website_sale):
             'product': product,
             'product_product': variant,
             'get_attribute_value_ids': self.get_attribute_value_ids,
+            'shop_footer': True,
         }
         return request.website.render("website_sale.product", values)
 

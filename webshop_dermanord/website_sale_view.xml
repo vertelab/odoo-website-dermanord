@@ -101,7 +101,7 @@
                                 <a itemprop="name" t-att-href="keep('/dn_shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))" t-field="product.name" />
                             </strong>
                         </h4>
-                        <h5 class="text-muted" t-field="product.default_code"/>
+                        <h5 class="text-muted" style="height: 15px;" t-field="product.default_code"/>
                         <h5 class="p_desc"><t t-esc="product.description_sale"/></h5>
                         <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price" t-if="product.product_variant_ids">
                             <b class="text-muted">
@@ -294,8 +294,9 @@
 
         <template id="dermanord_product_detail" inherit_id="website_sale.product">
             <xpath expr="//h1[@itemprop='name']" position="after">
-                <h5 class="text-muted default_code" t-field="product_product.default_code"/>
+                <h5 class="text-muted default_code" style="height: 15px;" t-field="product_product.default_code"/>
             </xpath>
+<!--
             <xpath expr="//form[@class='js_add_cart_variants']" position="after">
                 <div>
                     <h3>Lagerstatus</h3>
@@ -304,6 +305,7 @@
                     <span t-if="product.sudo().qty_available &lt; 2">Slut</span>
                 </div>
             </xpath>
+-->
             <xpath expr="//a[@id='add_to_cart']" position="attributes">
                 <attribute name="class">dn_btn dn_primary mt8 js_check_product a-submit text-center</attribute>
             </xpath>
