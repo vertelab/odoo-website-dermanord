@@ -35,6 +35,8 @@ _logger = logging.getLogger(__name__)
 
 PPG = 20 # Products Per Page
 PPR = 4  # Products Per Row
+DOMAIN = []
+ORDER = None
 
 class blog_post(models.Model):
     _inherit = 'blog.post'
@@ -264,6 +266,7 @@ class website_sale(website_sale):
         domain += self.get_domain_append(post)
         if category:
             domain += self.get_domain_append(self.get_form_values())
+        DOMAIN = domain
 
         keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
@@ -286,6 +289,7 @@ class website_sale(website_sale):
             post['attrib'] = attrib_list
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
         default_order = self._get_search_order(post)
+        ORDER = self._get_search_order(post)
         if post.get('order'):
             default_order = post.get('order')
         product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
@@ -337,7 +341,48 @@ class website_sale(website_sale):
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
             'shop_footer': True,
         }
+        _logger.warn(request.website.render("webshop_dermanord.products", values))
         return request.website.render("webshop_dermanord.products", values)
+
+    @http.route(['/dn_shop_json'], type='json', auth='user', website=True)
+    def dn_shop_json(self, page=0, **kw):
+        cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
+
+        if not context.get('pricelist'):
+            pricelist = self.get_pricelist()
+            context['pricelist'] = int(pricelist)
+        else:
+            pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
+
+        product_obj = pool.get('product.template')
+
+        url = "/dn_shop"
+        product_count = product_obj.search_count(cr, uid, DOMAIN, context=context)
+        pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=None)
+        product_ids = product_obj.search(cr, uid, DOMAIN, limit=PPG, offset=pager['offset'], order=ORDER, context=context)
+        products = product_obj.browse(cr, uid, product_ids, context=context)
+
+        from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
+        to_currency = pricelist.currency_id
+        compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
+
+        products_dict = {}
+        for product in products:
+            products_dict[product.id] = {
+                'name': product.name,
+                'image': product.image,
+                'price': product.price,
+                'list_price_tax': product.list_price_tax,
+                'currency': request.env.user.partner_id.property_product_pricelist.currency_id.name,
+                'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
+            }
+
+        values = {
+            'products': products_dict,
+            'url': url,
+        }
+
+        return values
 
     @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
     def product(self, product, category='', search='', **kwargs):

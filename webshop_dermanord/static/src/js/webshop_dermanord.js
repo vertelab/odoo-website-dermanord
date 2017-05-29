@@ -1,3 +1,6 @@
+var website = openerp.website;
+website.add_template_file('/webshop_dermanord/static/src/xml/product.xml');
+
 $(document).ready(function(){
 
     $("input[data-toggle='tooltip']").click(function() {
@@ -344,7 +347,34 @@ $(document).ready(function(){
         });
         $(oe_website_sale).find("select[name='shipping_country_id']").change();
     });
+
+    $(window).scroll(function() {
+        if($(window).scrollTop() + $(window).height() == $(document).height()) {
+            load_products_grid(2);
+        }
+    });
 });
+
+function load_products_grid(page){
+    openerp.jsonRpc("/dn_shop_json", "call", {
+        'page': page.toString(),
+    }).done(function(data){
+        var products_content = '';
+        console.log(data);
+        //~ i = 0;
+        //~ $.each(data, function(key, info) {
+            //~ var content = openerp.qweb.render('blog_banner_content', {
+                //~ 'item_content': i == 0 ? "item active" : "item",
+                //~ 'blog_name': data[key]['name'],
+                //~ 'background_image': data[key]['background_image'],
+            //~ });
+            //~ blog_content += content;
+            //~ console.log(blog_content);
+            //~ i ++;
+        //~ });
+        //~ self.$target.find(".blog_banner_content").html(blog_content);
+    });
+}
 
 function restore_filter() {
     $("#dn_filter_modal").find(".modal-body").find("input[type=checkbox]").each(

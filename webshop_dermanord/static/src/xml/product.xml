@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vim:fdl=1:
+-->
+<templates id="template" xml:space="preserve">
+    <t t-name="products_item_grid">
+        <form action="/shop/cart/update" method="post">
+            <div itemscope="itemscope" itemtype="http://schema.org/Product" class="dn_product_div col-md-4 col-sm-6 col-xs-12">
+                <div class="dn_product_image">
+                    <div class="dn_product_image_div">
+                        <a itemprop="url" t-att-href="'/dn_shop/product/%s' % product">
+
+                            <t t-call="webshop_dermanord.form_values"/>
+
+                            <t t-if="len(product.image_ids) &gt; 0">
+                                <img itemprop="image" class="img img-responsive" t-att-src="'/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(product.image_ids[0].id, 'snippet_dermanord.img_product')" t-att-alt="product_name" />
+                            </t>
+                            <t t-if="len(product.image_ids) == 0">
+                                <img itemprop="image" class="img img-responsive" t-att-src="website.image_url(product, 'image', None if product_image_big else '300x300')" t-att-alt="product_name" />
+                            </t>
+                            <div class="dn_product_image_hover_btn text-center hidden-xs">
+                                <p>
+                                    <a class="dn_btn dn_primary" t-att-href="'/dn_shop/product/%s' % product">DETAILS</a>
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="dn_product_info text-center">
+                    <h4 class="p_name">
+                        <strong>
+                            <a itemprop="name" t-att-href="'/dn_shop/product/%s' % product" t-field="product_name" />
+                        </strong>
+                    </h4>
+                    <h5 class="text-muted" style="height: 15px;" t-field="product.default_code"/>
+                    <h5 class="p_desc"><t t-esc="product.description_sale"/></h5>
+                    <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price" t-if="product.product_variant_ids">
+                        <b class="text-muted">
+                            <h4>
+                                <t t-if="user_id.partner_id.property_product_pricelist and not user_id.partner_id.property_product_pricelist.for_reseller">
+<!--
+                                    <t t-if="(compute_currency(product.list_price_tax) - product.price_tax) &gt; 0.1">
+                                        <del class="text-danger" style="white-space: nowrap;" t-field="product.list_price_tax" t-field-options='{
+                                      "widget": "monetary",
+                                      "from_currency": "product.company_id.currency_id",
+                                      "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                    }' />
+                                    &amp;nbsp;
+                                    </t>
+-->
+                                    <span t-field="product.price_tax" style="white-space: nowrap;" t-field-options='{
+                                       "widget": "monetary",
+                                       "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                   }' />
+                                </t>
+
+                                <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
+                                    <div>
+                                        <span class="oe_recommended_price" t-field="product.list_price_tax"/> <span style="display: inline;">(rek ink moms)</span>
+<!--
+                                        <span class="oe_recommended_price" t-field="product.list_price_tax"
+                                        t-field-options='{
+                                          "widget": "monetary",
+                                          "from_currency": "product.company_id.currency_id",
+                                          "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                       }'/> <span style="display: inline;">(rek ink moms)</span>
+-->
+                                    </div>
+                                    <div>
+                                        <b class="oe_price" style="white-space: nowrap;"
+                                        t-field="product.price"/>
+                                        <t t-if="is_reseller"> <span style="display: inline;">(ditt ex moms)</span></t>
+<!--
+                                       <b class="oe_price" style="white-space: nowrap;"
+                                        t-field="product.price"
+                                        t-field-options='{
+                                           "widget": "monetary",
+                                           "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                       }'/>
+                                       <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller"> <span style="display: inline;">(ditt ex moms)</span></t>
+-->
+                                    </div>
+                                </t>
+
+                                <span itemprop="price" style="display:none;" t-esc="product.price" />
+                                <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding" />
+                            </h4>
+                        </b>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </t>
+<!--
+    <t t-name="products_item_list">
+        <div t-att-class="item_content">
+            <a t-att-href="sp_url">
+                <img class="img-responsive sale_promotions_img" t-att-src="background_image" t-att-data-cke-saved-src="background_image"/>
+                 <div class="container">
+                    <div class="row content">
+                        <div class="col-md-12 col-sm-12">
+                            <h4 class="mb16 dn_uppercase"><t t-esc="sp_name"/></h4>
+                            <h5 class="mb16"><t t-esc="sp_description"/></h5>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </t>
+-->
+</templates>
+

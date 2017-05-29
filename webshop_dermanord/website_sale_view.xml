@@ -22,12 +22,14 @@
                 </div>
             </t>
             <div class="container oe_website_sale">
+<!--
                 <div class="products_pager">
                     <div class="row" style="width: 100%;">
                         <t t-call="website_sale.search"><t t-set="search_class">pagination form-inline col-md-3</t></t>
                         <t t-call="website.pager"/>
                     </div>
                 </div>
+-->
                 <div class="row">
                     <t t-foreach="products" t-as="product">
                         <div t-call="webshop_dermanord.products_item"/>
@@ -158,13 +160,17 @@
                     <div class="oe_structure"/>
                     <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                         <div class="container oe_website_sale">
+<!--
                             <div class="products_pager">
                                 <div class="row" style="width: 100%;">
                                     <t t-call="website_sale.search"><t t-set="search_class">pagination form-inline col-md-3</t></t>
                                     <t t-call="website.pager"/>
-                                    <t t-call="webshop_dermanord.form_values"/>
                                 </div>
                             </div>
+-->
+
+                            <t t-call="webshop_dermanord.form_values"/>
+
                             <table class="product_list_table table table-striped" style="width: 100%;">
                                 <tbody>
                                     <t t-foreach="products" t-as="product">
