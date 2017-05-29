@@ -325,7 +325,17 @@
                         </t>
                     </t>
                 </t>
-                <button class="mt32 dn_btn dn_primary" name="post_form" value="ok" type="submit">OK</button>
+                <div class="btn-group">
+                    <button class="mt32 dn_btn dn_primary" name="post_form" value="ok" type="submit">OK</button>
+                    <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
+                        <t t-if="url == '/dn_list'">
+                            <button class="mt32 dn_btn dn_primary" formaction="/dn_shop" type="submit" title="Swith to grid view"><i class="fa fa-th"/></button>
+                        </t>
+                        <t t-if="url == '/dn_shop'">
+                            <button class="mt32 dn_btn dn_primary" formaction="/dn_list" type="submit" title="Swith to list view"><i class="fa fa-th-list"/></button>
+                        </t>
+                    </t>
+                </div>
             </form>
         </template>
 
