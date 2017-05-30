@@ -35,8 +35,8 @@ _logger = logging.getLogger(__name__)
 
 PPG = 20 # Products Per Page
 PPR = 4  # Products Per Row
-DOMAIN = []
-ORDER = None
+current_domain = []
+current_order = None
 
 class blog_post(models.Model):
     _inherit = 'blog.post'
@@ -265,7 +265,7 @@ class website_sale(website_sale):
         domain += self.get_domain_append(post)
         if category:
             domain += self.get_domain_append(self.get_form_values())
-        DOMAIN = domain
+        current_domain = domain
 
         keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
@@ -288,7 +288,7 @@ class website_sale(website_sale):
             post['attrib'] = attrib_list
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
         default_order = self._get_search_order(post)
-        ORDER = self._get_search_order(post)
+        current_order = self._get_search_order(post)
         if post.get('order'):
             default_order = post.get('order')
         product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
@@ -360,9 +360,9 @@ class website_sale(website_sale):
         product_obj = pool.get('product.template')
 
         url = "/dn_shop"
-        product_count = product_obj.search_count(cr, uid, DOMAIN, context=context)
+        product_count = product_obj.search_count(cr, uid, current_domain, context=context)
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=None)
-        product_ids = product_obj.search(cr, uid, DOMAIN, limit=PPG, offset=pager['offset'], order=ORDER, context=context)
+        product_ids = product_obj.search(cr, uid, current_domain, limit=PPG, offset=pager['offset'], order=current_order, context=context)
         products = product_obj.browse(cr, uid, product_ids, context=context)
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
@@ -375,7 +375,7 @@ class website_sale(website_sale):
             is_reseller = False
             currency = ''
             if len(product.image_ids) > 0:
-                image_src = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(product_first_img_id, 'snippet_dermanord.img_product')
+                image_src = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(product.image_ids[0].id, 'snippet_dermanord.img_product')
             elif len(product.image_ids) == 0:
                 image_src = request.website.image_url(product, 'image', '300x300')
             partner_pricelist = request.env.user.partner_id.property_product_pricelist
@@ -387,14 +387,14 @@ class website_sale(website_sale):
                 'product_href': '/dn_shop/product/%s' %product.id,
                 'product_name': product.name,
                 'product_img_src': image_src,
-                'price': product.price,
-                'price_tax': product.price_tax,
-                'list_price_tax': product.list_price_tax,
+                'price': "%.2f" % product.price,
+                'price_tax': "%.2f" % product.price_tax,
+                'list_price_tax': "%.2f" % product.list_price_tax,
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
-                'is_reseller': is_reseller,
-                'default_code': product.default_code,
-                'description_sale': product.description_sale,
+                'is_reseller': 'yes' if is_reseller else 'no',
+                'default_code': product.default_code or '',
+                'description_sale': product.description_sale or '',
                 'product_variant_ids': True if product.product_variant_ids else False,
             }
 
