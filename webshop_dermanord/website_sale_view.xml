@@ -424,7 +424,7 @@
         </template>
 
         <template id="product_price" inherit_id="website_sale.product_price">
-            <xpath expr="//h4[@class='oe_price_h4 css_editable_mode_hidden decimal_precision']" position="replace">
+            <xpath expr="//h4" position="replace">
                 <h4 class="oe_price_h4 css_editable_mode_hidden decimal_precision"
                     t-att-data-precision="user_id.partner_id.property_product_pricelist.currency_id.rounding">
                     <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
