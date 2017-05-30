@@ -29,14 +29,13 @@ from openerp.addons.website_sale.controllers.main import website_sale, QueryURL,
 from openerp.addons.website.models.website import slug
 import werkzeug
 from heapq import nlargest
+import math
 
 import logging
 _logger = logging.getLogger(__name__)
 
-PPG = 20 # Products Per Page
-PPR = 4  # Products Per Row
-current_domain = []
-current_order = None
+PPG = 21 # Products Per Page
+PPR = 3  # Products Per Row
 
 class blog_post(models.Model):
     _inherit = 'blog.post'
@@ -265,7 +264,7 @@ class website_sale(website_sale):
         domain += self.get_domain_append(post)
         if category:
             domain += self.get_domain_append(self.get_form_values())
-        current_domain = domain
+        request.session['current_domain'] = domain
 
         keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
@@ -288,7 +287,7 @@ class website_sale(website_sale):
             post['attrib'] = attrib_list
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
         default_order = self._get_search_order(post)
-        current_order = self._get_search_order(post)
+        request.session['current_order'] = self._get_search_order(post)
         if post.get('order'):
             default_order = post.get('order')
         product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
@@ -344,10 +343,10 @@ class website_sale(website_sale):
         #~ _logger.warn(re.render())
         #~ view_obj = request.env["ir.ui.view"]
         #~ res = request.env['ir.qweb'].render("webshop_dermanord.products", values, loader=view_obj.loader("webshop_dermanord.products"))
-        #~ _logger.warn(res)
+        #~ _logger.warn(re)
         return request.website.render("webshop_dermanord.products", values)
 
-    @http.route(['/dn_shop_json'], type='json', auth='user', website=True)
+    @http.route(['/dn_shop_json'], type='json', auth='public', website=True)
     def dn_shop_json(self, page=0, **kw):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
@@ -358,18 +357,22 @@ class website_sale(website_sale):
             pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
 
         product_obj = pool.get('product.template')
-
         url = "/dn_shop"
-        product_count = product_obj.search_count(cr, uid, current_domain, context=context)
+
+        domain = request.session.get('current_domain')
+        order = request.session.get('current_order')
+
+        product_count = product_obj.search_count(cr, uid, domain, context=context)
+        page_count = int(math.ceil(float(product_count) / float(PPG)))
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=None)
-        product_ids = product_obj.search(cr, uid, current_domain, limit=PPG, offset=pager['offset'], order=current_order, context=context)
+        product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=order, context=context)
         products = product_obj.browse(cr, uid, product_ids, context=context)
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
-        products_dict = {}
+        products_list = []
         for product in products:
             image_src = ''
             is_reseller = False
@@ -383,7 +386,7 @@ class website_sale(website_sale):
                 currency = partner_pricelist.currency_id.name
                 if partner_pricelist.for_reseller:
                     is_reseller = True
-            products_dict[product.id] = {
+            products_list.append({
                 'product_href': '/dn_shop/product/%s' %product.id,
                 'product_name': product.name,
                 'product_img_src': image_src,
@@ -396,11 +399,12 @@ class website_sale(website_sale):
                 'default_code': product.default_code or '',
                 'description_sale': product.description_sale or '',
                 'product_variant_ids': True if product.product_variant_ids else False,
-            }
+            })
 
         values = {
-            'products': products_dict,
+            'products': products_list,
             'url': url,
+            'page_count': page_count,
         }
 
         return values

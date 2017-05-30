@@ -1,6 +1,7 @@
 var website = openerp.website;
 website.add_template_file('/webshop_dermanord/static/src/xml/product.xml');
 var current_page = 2;
+var page_count = 0;
 
 $(document).ready(function(){
 
@@ -360,28 +361,31 @@ function load_products_grid(page){
     openerp.jsonRpc("/dn_shop_json", "call", {
         'page': current_page.toString(),
     }).done(function(data){
-        var products_content = '';
-        $.each(data['products'], function(key, info) {
-            var content = openerp.qweb.render('products_item_grid', {
-                'url': data['url'],
-                'product_id': key,
-                'product_href': data['products'][key]['product_href'],
-                'product_name': data['products'][key]['product_name'],
-                'product_img_src': data['products'][key]['product_img_src'],
-                'price': data['products'][key]['price'],
-                'price_tax': data['products'][key]['price_tax'],
-                'list_price_tax': data['products'][key]['list_price_tax'],
-                'currency': data['products'][key]['currency'],
-                'rounding': data['products'][key]['rounding'],
-                'is_reseller': data['products'][key]['is_reseller'],
-                'default_code': data['products'][key]['default_code'],
-                'description_sale': data['products'][key]['description_sale'],
-                'product_variant_ids': data['products'][key]['product_variant_ids']
+        page_count = data['page_count'];
+        if (page_count >= current_page) {
+            var products_content = '';
+            $.each(data['products'], function(key, info) {
+                var content = openerp.qweb.render('products_item_grid', {
+                    'url': data['url'],
+                    'product_id': key,
+                    'product_href': data['products'][key]['product_href'],
+                    'product_name': data['products'][key]['product_name'],
+                    'product_img_src': data['products'][key]['product_img_src'],
+                    'price': data['products'][key]['price'],
+                    'price_tax': data['products'][key]['price_tax'],
+                    'list_price_tax': data['products'][key]['list_price_tax'],
+                    'currency': data['products'][key]['currency'],
+                    'rounding': data['products'][key]['rounding'],
+                    'is_reseller': data['products'][key]['is_reseller'],
+                    'default_code': data['products'][key]['default_code'],
+                    'description_sale': data['products'][key]['description_sale'],
+                    'product_variant_ids': data['products'][key]['product_variant_ids']
+                });
+                products_content += content;
             });
-            products_content += content;
-        });
-        $(".oe_website_sale").find('.row').append(products_content);
-        current_page ++;
+            $(".oe_website_sale").find('.row').append(products_content);
+            current_page ++;
+        }
     });
 }
 
