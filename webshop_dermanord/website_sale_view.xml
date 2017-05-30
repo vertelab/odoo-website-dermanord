@@ -35,9 +35,11 @@
                         <div t-call="webshop_dermanord.products_item"/>
                     </t>
                 </div>
+<!--
                 <div class="products_pager">
                     <t t-call="website.pager"/>
                 </div>
+-->
             </div>
         </template>
 
