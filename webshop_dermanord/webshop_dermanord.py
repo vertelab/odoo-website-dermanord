@@ -229,7 +229,6 @@ class website_sale(website_sale):
     def get_form_values(self):
         if not request.session.get('form_values'):
             request.session['form_values'] = {}
-        _logger.warn(request.session.get('form_values'))
         return request.session.get('form_values')
 
     def get_chosen_filter_qty(self, post):
@@ -341,7 +340,11 @@ class website_sale(website_sale):
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
             'shop_footer': True,
         }
-        _logger.warn(request.website.render("webshop_dermanord.products", values))
+        #~ re = request.render("webshop_dermanord.products", values)
+        #~ _logger.warn(re.render())
+        #~ view_obj = request.env["ir.ui.view"]
+        #~ res = request.env['ir.qweb'].render("webshop_dermanord.products", values, loader=view_obj.loader("webshop_dermanord.products"))
+        #~ _logger.warn(res)
         return request.website.render("webshop_dermanord.products", values)
 
     @http.route(['/dn_shop_json'], type='json', auth='user', website=True)
@@ -368,13 +371,31 @@ class website_sale(website_sale):
 
         products_dict = {}
         for product in products:
+            image_src = ''
+            is_reseller = False
+            currency = ''
+            if len(product.image_ids) > 0:
+                image_src = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(product_first_img_id, 'snippet_dermanord.img_product')
+            elif len(product.image_ids) == 0:
+                image_src = request.website.image_url(product, 'image', '300x300')
+            partner_pricelist = request.env.user.partner_id.property_product_pricelist
+            if partner_pricelist:
+                currency = partner_pricelist.currency_id.name
+                if partner_pricelist.for_reseller:
+                    is_reseller = True
             products_dict[product.id] = {
-                'name': product.name,
-                'image': product.image,
+                'product_href': '/dn_shop/product/%s' %product.id,
+                'product_name': product.name,
+                'product_img_src': image_src,
                 'price': product.price,
+                'price_tax': product.price_tax,
                 'list_price_tax': product.list_price_tax,
-                'currency': request.env.user.partner_id.property_product_pricelist.currency_id.name,
-                'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
+                'currency': currency,
+                'rounding': request.website.pricelist_id.currency_id.rounding,
+                'is_reseller': is_reseller,
+                'default_code': product.default_code,
+                'description_sale': product.description_sale,
+                'product_variant_ids': True if product.product_variant_ids else False,
             }
 
         values = {
