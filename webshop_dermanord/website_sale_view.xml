@@ -267,7 +267,7 @@
             </xpath>
         </template>
 
-        <template id="main_search_layout" inherit_id="website_fts.main_search_layout">
+        <template id="main_search_layout" inherit_id="website_sale_previous_products.main_search_layout">
             <xpath expr="//t[@t-foreach='website.sale_get_previous_products()']/li/a" position="attributes">
                 <attribute name="t-att-href">'/dn_shop/product/%s' %p.id</attribute>
             </xpath>
