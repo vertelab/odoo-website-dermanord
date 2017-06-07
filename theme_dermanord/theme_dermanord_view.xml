@@ -101,12 +101,6 @@
                 </div>
             </xpath>
 
-<!--
-            <xpath expr="//div[@id='wrapwrap']/header/div[@class='navbar navbar-default navbar-static-top']" position="attributes">
-                <attribute name="class">navbar navbar-default navbar-static-top navbar-fixed-top</attribute>
-            </xpath>
--->
-
             <xpath expr="//t[@t-foreach='website.menu_id.child_id']" position="replace">
                 <t t-foreach="website.menu_id.child_id" t-as="submenu">
                     <t t-call="website.submenu" />
