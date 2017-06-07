@@ -80,7 +80,13 @@ h1, .dn_uppercase {
     background-color: #000 !important;
 }
 
-#search_div, #shop_cart_div {
+#menu_div, #search_div, #logo_div, #my_page_div, #shop_cart_div {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+#search_div, #my_page_div, #shop_cart_div {
     margin-top: 10px;
 }
 
