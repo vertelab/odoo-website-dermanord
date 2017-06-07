@@ -17,7 +17,7 @@
                     <div class="col-md-12">
                         <t t-foreach="ingredients" t-as="ingredient">
                             <a t-att-href="'/dn_shop/?current_ingredient=%s' %ingredient.id">
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-sm-2">
                                     <img class="img img-responsive" style="margin: auto;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
                                     <h6 style="color: #D27153;" class="text-center" t-field="ingredient.name"/>
                                     <h5 class="text-muted text-center" t-field="ingredient.description"/>
@@ -46,9 +46,14 @@
                                 <t t-foreach="ingredients" t-as="ingredient">
                                     <div t-att-class="'item %s' %('active' if ingredient_index == 0 else '')">
                                         <a t-att-href="'/dn_shop/?current_ingredient=%s' %ingredient.id">
-                                            <img class="img img-responsive" style="margin: auto;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
+                                            <img class="img img-responsive" style="margin: auto; height: 230px !important;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
                                             <h6 style="color: #D27153;" class="text-center" t-field="ingredient.name"/>
-                                            <h5 class="text-muted text-center" t-field="ingredient.description"/>
+                                            <t t-if="ingredient.description">
+                                                <h5 class="text-muted text-center" t-field="ingredient.description"/>
+                                            </t>
+                                            <t t-if="not ingredient.description">
+                                                <h5><br/></h5>
+                                            </t>
                                         </a>
                                     </div>
                                 </t>
@@ -127,7 +132,7 @@
         </tree>
       </field>
     </record>
-    <record id="product_ingredients_view" model="ir.ui.view">
+    <record id="product_ingredients_form" model="ir.ui.view">
       <field name="name">product.ingredient.form</field>
       <field name="model">product.ingredient</field>
       <field name="type">form</field>
