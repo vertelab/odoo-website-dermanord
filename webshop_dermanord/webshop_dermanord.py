@@ -410,7 +410,7 @@ class website_sale(website_sale):
         return values
 
     @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
-    def product(self, product, category='', search='', **kwargs):
+    def dn_product(self, product, category='', search='', **kwargs):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
         category_obj = pool['product.public.category']
         template_obj = pool['product.template']
