@@ -33,6 +33,7 @@ Blog snippet for Dermanord AB website
     'depends': ['website_blog', 'website_imagemagick'],
     'data': [
         'experiences_view.xml',
+        'experiences_data.xml',
 ],
     'application': False,
 }

@@ -17,3 +17,56 @@
     background: #000;
     color: #fff;
 }
+
+.dn_header_banner {
+    padding: 0px;
+    height: 540px;
+}
+
+.dn_header_nav {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    background-color: #000;
+}
+
+.dn_header_nav ul {
+    list-style-type: none;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+}
+
+.dn_header_nav_tab {
+    background-color: #000;
+    color: #fff;
+}
+
+.dn_header_nav > .nav-pills > li.active > a {
+    background-color: #fff !important;
+    color: #000 !important;
+}
+
+.dn_header_nav_tab:active, .dn_header_nav_tab:focus, .dn_header_nav_tab:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+.dn_header_img {
+    margin: auto;
+    width: 100%;
+    position: relative;
+    min-height: 550px;
+}
+
+.dn_page_header_img {
+    width: 100%;
+    position: relative;
+}
+
+.dn_page_header_content {
+    top: 45%;
+    right: 10%;
+    position: absolute;
+    padding: 15px;
+}

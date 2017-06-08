@@ -1,10 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-  <data>
-    
-    <record id="experience_blog" model="blog.blog">
-      <field name="name">Dermanord Experiences</field>
-    </record>
-    
-  </data>
+    <data>
+<!--
+        <record id="experience_blog" model="blog.blog">
+            <field name="name">Dermanord Experiences</field>
+        </record>
+-->
+
+        <record id="menu_experiences" model="website.menu">
+            <field name="name">Experiences</field>
+            <field name="url">/page/experiences</field>
+            <field name="parent_id" ref="website.main_menu"/>
+        </record>
+
+        <record id="menu_experiences_spa" model="website.menu">
+            <field name="name">Spa</field>
+            <field name="url">/page/experiences-spa</field>
+            <field name="parent_id" ref="website_experiences_dermanord.menu_experiences"/>
+        </record>
+        <record id="menu_experiences_evening" model="website.menu">
+            <field name="name">Evening</field>
+            <field name="url">/page/experiences-evening</field>
+            <field name="parent_id" ref="website_experiences_dermanord.menu_experiences"/>
+        </record>
+        <record id="menu_experiences_daytime" model="website.menu">
+            <field name="name">Daytime</field>
+            <field name="url">/page/experiences-daytime</field>
+            <field name="parent_id" ref="website_experiences_dermanord.menu_experiences"/>
+        </record>
+        <record id="menu_experiences_travel" model="website.menu">
+            <field name="name">Travel</field>
+            <field name="url">/page/experiences-travel</field>
+            <field name="parent_id" ref="website_experiences_dermanord.menu_experiences"/>
+        </record>
+        <record id="menu_experiences_work" model="website.menu">
+            <field name="name">Work</field>
+            <field name="url">/page/experiences-work</field>
+            <field name="parent_id" ref="website_experiences_dermanord.menu_experiences"/>
+        </record>
+        <record id="menu_experiences_experiment" model="website.menu">
+            <field name="name">Experiment</field>
+            <field name="url">/page/experiences-experiment</field>
+            <field name="parent_id" ref="website_experiences_dermanord.menu_experiences"/>
+        </record>
+        <record id="menu_experiences_deep_skin" model="website.menu">
+            <field name="name">Deep Skin</field>
+            <field name="url">/page/experiences-deep_skin</field>
+            <field name="parent_id" ref="website_experiences_dermanord.menu_experiences"/>
+        </record>
+        <record id="menu_experiences_relaxation" model="website.menu">
+            <field name="name">Relaxation</field>
+            <field name="url">/page/experiences-relaxation</field>
+            <field name="parent_id" ref="website_experiences_dermanord.menu_experiences"/>
+        </record>
+        <record id="menu_experiences_disorders" model="website.menu">
+            <field name="name">Disorders</field>
+            <field name="url">/page/experiences-disorders</field>
+            <field name="parent_id" ref="website_experiences_dermanord.menu_experiences"/>
+        </record>
+        <record id="menu_experiences_skin_types" model="website.menu">
+            <field name="name">Skin Types</field>
+            <field name="url">/page/experiences-skin_types</field>
+            <field name="parent_id" ref="website_experiences_dermanord.menu_experiences"/>
+        </record>
+
+        <template id="website.experiences" name="Experiences" page="True">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                        <div class="container" style="width: 100%; padding: 0px;">
+                            <t t-set="experiences_menus" t-value="request.env['website.menu'].search([('parent_id', '=', request.env.ref('website_experiences_dermanord.menu_experiences').id)])"/>
+                            <div t-if="experiences_menus" class="col-md-12 dn_header_banner">
+                                <div class="col-md-4 col-xs-12 dn_header_banner">
+                                    <div class="dn_header_nav">
+                                        <ul class="nav nav-pills nav-stacked">
+                                            <t t-foreach="experiences_menus" t-as="submenu">
+                                                <li t-att-class="'hidden-xs %s' %('active' if submenu_index == 0 else '')">
+                                                    <a t-att-href="submenu.url" class="dn_header_nav_tab">
+                                                        <span class="text-center dn_uppercase"><t t-esc="submenu.name"/></span>
+                                                    </a>
+                                                </li>
+                                                <li t-att-class="'hidden-lg hidden-md hidden-sm %s' %('active' if submenu_index == 0 else '')">
+                                                    <a t-att-href="submenu.url" class="dn_header_nav_tab">
+                                                        <span class="text-center dn_uppercase"><t t-esc="submenu.name"/></span>
+                                                    </a>
+                                                </li>
+                                            </t>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 dn_header_banner hidden-xs">
+                                    <div class="tab-content">
+                                        <t t-foreach="experiences_menus" t-as="submenu">
+                                            <div t-att-id="submenu.name[0].lower()" t-att-class="'tab-pane fade %s' %('in active' if submenu_index == 0 else '')">
+                                                <img class="img img-responsive dn_header_img" src="/website/static/src/img/fields.jpg">
+                                                    <a t-att-href="submenu.url" class="dn_btn dn_primary" style="position: absolute; top: 45%; left: 45%;">
+                                                        <h4>Explore</h4>
+                                                    </a>
+                                                </img>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </template>
+
+        <template id="website.experiences-spa" name="Spa" page="True">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg">
+                            <div class="dn_page_header_content">
+                                <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
+                            </div>
+                        </img>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="website.experiences-evening" name="Evening" page="True">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg">
+                            <div class="dn_page_header_content">
+                                <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
+                            </div>
+                        </img>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="website.experiences-daytime" name="Daytime" page="True">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <img class="img img-responsive dn_header_img" src="/website/static/src/img/fields.jpg"/>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="website.experiences-travel" name="Travel" page="True">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </template>
+
+        <template id="website.experiences-work" name="Work" page="True">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </template>
+
+        <template id="website.experiences-experiement" name="Experiement" page="True">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </template>
+
+        <template id="website.experiences-deep_skin" name="Deep Skin" page="True">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </template>
+
+        <template id="website.experiences-relaxation" name="Relaxation" page="True">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </template>
+
+        <template id="website.experiences-disorders" name="Disorders" page="True">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </template>
+
+        <template id="website.experiences-skin_types" name="Skin Types" page="True">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </template>
+
+    </data>
 </openerp>
