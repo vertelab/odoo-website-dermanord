@@ -68,43 +68,108 @@
             <t t-call="website.layout">
                 <div id="wrap">
                     <div class="oe_structure"/>
-                        <div class="container" style="width: 100%; padding: 0px;">
-                            <t t-set="experiences_menus" t-value="request.env['website.menu'].search([('parent_id', '=', request.env.ref('website_experiences_dermanord.menu_experiences').id)])"/>
-                            <div t-if="experiences_menus" class="col-md-12 dn_header_banner">
-                                <div class="col-md-4 col-xs-12 dn_header_banner">
-                                    <div class="dn_header_nav">
-                                        <ul class="nav nav-pills nav-stacked">
-                                            <t t-foreach="experiences_menus" t-as="submenu">
-                                                <li t-att-class="'hidden-xs %s' %('active' if submenu_index == 0 else '')">
-                                                    <a t-att-href="submenu.url" class="dn_header_nav_tab">
-                                                        <span class="text-center dn_uppercase"><t t-esc="submenu.name"/></span>
-                                                    </a>
-                                                </li>
-                                                <li t-att-class="'hidden-lg hidden-md hidden-sm %s' %('active' if submenu_index == 0 else '')">
-                                                    <a t-att-href="submenu.url" class="dn_header_nav_tab">
-                                                        <span class="text-center dn_uppercase"><t t-esc="submenu.name"/></span>
-                                                    </a>
-                                                </li>
-                                            </t>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 dn_header_banner hidden-xs">
-                                    <div class="tab-content">
+                    <div class="container" style="width: 100%; padding: 0px;">
+                        <t t-set="experiences_menus" t-value="request.env['website.menu'].search([('parent_id', '=', request.env.ref('website_experiences_dermanord.menu_experiences').id)])"/>
+                        <div t-if="experiences_menus" class="col-md-12 dn_header_banner">
+                            <div class="col-md-4 col-xs-12 dn_header_banner">
+                                <div class="dn_header_nav">
+                                    <ul class="nav nav-pills nav-stacked">
                                         <t t-foreach="experiences_menus" t-as="submenu">
-                                            <div t-att-id="submenu.name[0].lower()" t-att-class="'tab-pane fade %s' %('in active' if submenu_index == 0 else '')">
-                                                <img class="img img-responsive dn_header_img" src="/website/static/src/img/fields.jpg">
-                                                    <a t-att-href="submenu.url" class="dn_btn dn_primary" style="position: absolute; top: 45%; left: 45%;">
-                                                        <h4>Explore</h4>
-                                                    </a>
-                                                </img>
-                                            </div>
+                                            <li t-att-class="'hidden-xs %s' %('active' if submenu_index == 0 else '')">
+                                                <a t-att-href="submenu.url" class="dn_header_nav_tab">
+                                                    <span class="text-center dn_uppercase">
+                                                        <t t-esc="submenu.name"/>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li t-att-class="'hidden-lg hidden-md hidden-sm %s' %('active' if submenu_index == 0 else '')">
+                                                <a t-att-href="submenu.url" class="dn_header_nav_tab">
+                                                    <span class="text-center dn_uppercase">
+                                                        <t t-esc="submenu.name"/>
+                                                    </span>
+                                                </a>
+                                            </li>
                                         </t>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-8 dn_header_banner hidden-xs">
+                                <div class="tab-content">
+                                    <t t-foreach="experiences_menus" t-as="submenu">
+                                        <div t-att-id="submenu.name[0].lower()" t-att-class="'tab-pane fade %s' %('in active' if submenu_index == 0 else '')">
+                                            <img class="img img-responsive dn_header_img" src="/website/static/src/img/fields.jpg">
+                                                <a t-att-href="submenu.url" class="dn_btn dn_primary" style="position: absolute; top: 45%; left: 45%;">
+                                                    <h4>Explore</h4>
+                                                </a>
+                                            </img>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="oe_structure">
+                        <div class="container oe_dark" style="width: 100%; padding: 32px 0px;">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <h1 class="text-center">customer moods</h1>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-sm-4 col-xs-12">
+                                    <img alt="Odoo - Sample 1 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/desert_thumb.jpg" style="width: 165px; height: 165px; margin: auto;"/>
+                                </div>
+                                <div class="col-md-2 col-sm-4 col-xs-12">
+                                    <img alt="Odoo - Sample 2 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/deers_thumb.jpg" style="width: 165px; height: 165px; margin: auto;"/>
+                                </div>
+                                <div class="col-md-2 col-sm-4 col-xs-12">
+                                    <img alt="Odoo - Sample 3 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/china_thumb.jpg" style="width: 165px; height: 165px; margin: auto;"/>
+                                </div>
+                                <div class="col-md-2 col-sm-4 col-xs-12">
+                                    <img alt="Odoo - Sample 4 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/desert_thumb.jpg" style="width: 165px; height: 165px; margin: auto;"/>
+                                </div>
+                                <div class="col-md-2 col-sm-4 col-xs-12">
+                                    <img alt="Odoo - Sample 5 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/deers_thumb.jpg" style="width: 165px; height: 165px; margin: auto;"/>
+                                </div>
+                                <div class="col-md-2 col-sm-4 col-xs-12">
+                                    <img alt="Odoo - Sample 6 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/china_thumb.jpg" style="width: 165px; height: 165px; margin: auto;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="oe_structure">
+                        <div class="container" style="width: 100%; padding: 32px 0px;">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12 mt32 mb32">
+                                    <h1 class="text-center">pure cell treatment stories</h1>
+                                </div>
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12 col-xs-12 oe_dark mt32" style="position: relative; padding-top: 64px;">
+                                        <h4 class="text-center mt32">Lorem ipsum</h4>
+                                        <p class="text-center text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vitae arcu eu turpis varius iaculis ac id lacus. Donec efficitur suscipit urna, a finibus mi auctor eu. Aenean accumsan turpis elit, sed feugiat est sagittis malesuada. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
+                                        <img alt="Odoo - Sample 1 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/desert_thumb.jpg" style="width: 100px; height: 100px; margin: auto; position: absolute; top: -30px; left: 45%; border-radius: 50%;"/>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12 col-xs-12 oe_dark mt32" style="position: relative; padding-top: 64px;">
+                                        <h4 class="text-center mt32">Lorem ipsum</h4>
+                                        <p class="text-center text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vitae arcu eu turpis varius iaculis ac id lacus. Donec efficitur suscipit urna, a finibus mi auctor eu. Aenean accumsan turpis elit, sed feugiat est sagittis malesuada. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
+                                        <img alt="Odoo - Sample 1 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/desert_thumb.jpg" style="width: 100px; height: 100px; margin: auto; position: absolute; top: -30px; left: 45%; border-radius: 50%;"/>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12 col-xs-12 oe_dark mt32" style="position: relative; padding-top: 64px;">
+                                        <h4 class="text-center mt32">Lorem ipsum</h4>
+                                        <p class="text-center text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vitae arcu eu turpis varius iaculis ac id lacus. Donec efficitur suscipit urna, a finibus mi auctor eu. Aenean accumsan turpis elit, sed feugiat est sagittis malesuada. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
+                                        <img alt="Odoo - Sample 1 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/desert_thumb.jpg" style="width: 100px; height: 100px; margin: auto; position: absolute; top: -30px; left: 45%; border-radius: 50%;"/>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12 col-xs-12 oe_dark mt32" style="position: relative; padding-top: 64px;">
+                                        <h4 class="text-center mt32">Lorem ipsum</h4>
+                                        <p class="text-center text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vitae arcu eu turpis varius iaculis ac id lacus. Donec efficitur suscipit urna, a finibus mi auctor eu. Aenean accumsan turpis elit, sed feugiat est sagittis malesuada. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
+                                        <img alt="Odoo - Sample 1 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/desert_thumb.jpg" style="width: 100px; height: 100px; margin: auto; position: absolute; top: -30px; left: 45%; border-radius: 50%;"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    <div class="oe_structure"/>
+                    </div>
                 </div>
             </t>
         </template>
@@ -113,7 +178,7 @@
             <t t-call="website.layout">
                 <div id="wrap">
                     <div class="oe_structure">
-                        <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg">
+                        <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
                             <div class="dn_page_header_content">
                                 <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
                             </div>
@@ -127,7 +192,7 @@
             <t t-call="website.layout">
                 <div id="wrap">
                     <div class="oe_structure">
-                        <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg">
+                        <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
                             <div class="dn_page_header_content">
                                 <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
                             </div>
