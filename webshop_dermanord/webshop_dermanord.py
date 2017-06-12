@@ -132,11 +132,11 @@ class website_sale(website_sale):
         if request.website.pricelist_id.id != context['pricelist']:
             website_currency_id = request.website.currency_id.id
             currency_id = self.get_pricelist().currency_id.id
-            for p in product.product_variant_ids:
+            for p in product.product_variant_ids.filtered(lambda v: v.sale_ok == True):
                 price = currency_obj.compute(cr, uid, website_currency_id, currency_id, p.lst_price)
                 attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price])
         else:
-            attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price] for p in product.sudo().product_variant_ids]
+            attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price] for p in product.sudo().product_variant_ids.filtered(lambda v: v.sale_ok == True)]
 
         return attribute_value_ids
 
