@@ -222,9 +222,7 @@
                         </t>
                     </t>
                 </div>
-                <t t-if="request.session.get('form_values')">
-                    <input type="hidden" name="order" t-att-value="request.session.get('form_values').get('order') if request.session.get('form_values').get('order') else 'name asc'"/>
-                </t>
+                <input type="hidden" name="order" t-att-value="request.session.get('form_values', {}).get('order') or 'name asc'"/>
             </div>
         </template>
 

@@ -47,7 +47,7 @@
             <t t-set="filter_facets" t-value="request.env['product.facet'].search([])"/>
                 <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])"/>
                 <t t-set="filter_ingredients" t-value="request.env['product.ingredient'].search([])"/>
-                <input type="hidden" name="order" t-att-value="request.session.get('form_values').get('order') if (request.session.get('form_values') and request.session.get('form_values').get('order')) else 'name asc'"/>
+                <input type="hidden" name="order" t-att-value="request.session.get('form_values', {}).get('order') or 'name asc'"/>
                 <t t-if="len(filter_facets) &gt; 0">
                     <t t-foreach="filter_facets" t-as="facet">
                         <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])"/>
