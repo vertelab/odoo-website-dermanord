@@ -2,6 +2,18 @@
                     Theme Dermanord
  ============================================================ */
 
+#top_menu {
+    width: 100%;
+/*
+    overflow: hidden;
+*/
+}
+
+#top_menu a {
+    white-space: nowrap;
+}
+
+
 @font-face {
   font-family: 'Futura-Medium';
 /*  src: url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.eot?#iefix') format('embedded-opentype'),  url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.woff') format('woff'), url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.ttf')  format('truetype'), url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.svg#Futura-Medium') format('svg'); */
@@ -149,8 +161,20 @@ footer input, footer .input-group-addon {
     display: none;
 }
 
-.nav-justified > li > a {
+#top_menu > li{
+    display: inline;
+}
+
+#top_menu > li > a {
     color: #000 !important;
+}
+
+#more_dropdown li.dropdown ul.dropdown-menu {
+    top: 0px;
+}
+
+#more_dropdown li.dropdown:hover .dropdown-menu {
+    display: block;
 }
 
 @media (min-width: 768px) {
@@ -160,11 +184,11 @@ footer input, footer .input-group-addon {
 }
 
 @media (max-width: 768px) {
-    .nav-justified > li > a {
+    #top_menu > li > a {
         color: #fff !important;
     }
 
-    .nav-justified > li > a:hover {
+    #top_menu > li > a:hover {
         color: #000 !important;
     }
 

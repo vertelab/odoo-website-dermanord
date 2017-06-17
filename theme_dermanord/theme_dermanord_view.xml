@@ -107,7 +107,19 @@
                 </t>
             </xpath>
             <xpath expr="//ul[@id='top_menu']" position="attributes">
-                <attribute name="class">nav nav-justified</attribute>
+                <attribute name="class">nav navbar-nav</attribute>
+            </xpath>
+            <xpath expr="//t[@t-foreach='website.menu_id.child_id']" position="after">
+                <li class="dropdown" id="more_dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <span>More</span> <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <t t-foreach="website.menu_id.child_id" t-as="submenu">
+                            <t t-call="website.submenu" />
+                        </t>
+                    </ul>
+                </li>
             </xpath>
             <!-- Customize css -->
             <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
