@@ -31,6 +31,35 @@ import werkzeug
 
     #~ logo_website = fields.Binary(string='Logo For Website', help='This company logo shows only on website')
 
+class website(models.Model):
+    _inherit = 'website'
+
+    def current_menu(self, path):
+        return self.env['website.menu'].search([('url', '=', path)])
+
+    def current_submenu(self, path):
+        menu = self.env['website.menu'].search([('url', '=', path)])
+        if menu.parent_id != self.env.ref('website.main_menu'):
+            return menu.parent_id
+        else:
+            return menu
+
+    def get_breadcrumb(self, path):
+        menu = self.env['website.menu'].search([('url', '=', path)])
+        breadcrumb = []
+        while menu != self.env.ref('website.main_menu'):
+            breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
+            menu = menu.parent_id
+        breadcrumb.append('<li><a href="/">home</a></li>')
+        return '<ol class="breadcrumb">%s</ol>' %''.join(reversed(breadcrumb))
+
+
+class website_menu(models.Model):
+    _inherit = 'website.menu'
+
+    page_title = fields.Char(default='Page Title')
+    image = fields.Binary()
+
 
 class ThemeDermanord(http.Controller):
 

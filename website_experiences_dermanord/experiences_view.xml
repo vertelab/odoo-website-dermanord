@@ -23,9 +23,78 @@
         </record>
         <template id="assets_frontend" inherit_id="website.assets_frontend" name="Website assets - Dermanord Experiences">
             <xpath expr="." position="inside">
-                <link rel="stylesheet" href='/website_experiences_dermanord/static/src/css/experiences.css' t-ignore="true" />
+                <link rel="stylesheet" href="/website_experiences_dermanord/static/src/css/experiences.css" t-ignore="true" />
                 <script type="text/javascript" src="/website_experiences_dermanord/static/src/js/experiences.js" />
             </xpath>
+        </template>
+        <template id="website.experiences" name="Experiences" page="True">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container oe_dark" style="width: 100%; padding: 32px 0px;">
+                            <t t-set="blog_customer_moods" t-value="request.env.ref('website_experiences_dermanord.customer_moods')"/>
+                            <t t-set="posts_customer_moods" t-value="request.env['blog.post'].search([('blog_id', '=', blog_customer_moods.id), ('website_published', '=', True)], order='website_published desc')"/>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <h2 class="text-center dn_uppercase" t-field="blog_customer_moods.name"/>
+                                </div>
+                                <div t-if="len(posts_customer_moods) &gt; 0" class="col-md-12 col-sm-12 col-xs-12">
+                                    <t t-foreach="posts_customer_moods[:6] or posts_customer_moods" t-as="blog_post">
+                                        <div class="col-md-2 col-sm-4 col-xs-12">
+                                            <a t-att-href="'/blog/%s/post/%s' %(blog_customer_moods.id, blog_post.id)">
+                                                <div t-attf-style="background-image: url(#{blog_post.background_image})" class="customer_moods_list_img mt16 mb16"/>
+                                            </a>
+                                        </div>
+                                    </t>
+                                </div>
+                                <a t-if="len(posts_customer_moods) &gt; 6" t-att-href="'/blog/%s' %blog_customer_moods.id"><h6 class="text-center" style="text-decoration: underline; color: #000;">See more</h6></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="oe_structure">
+                        <div class="container" style="width: 100%; padding: 32px 0px;">
+                            <t t-set="blog_pure_cell_treatment_stories" t-value="request.env.ref('website_experiences_dermanord.pure_cell_treatment_stories')"/>
+                            <t t-set="posts_pure_cell_treatment_stories" t-value="request.env['blog.post'].search([('blog_id', '=', blog_pure_cell_treatment_stories.id),  ('website_published', '=', True)], order='website_published desc')"/>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12 mt32 mb32">
+                                    <h2 class="text-center dn_uppercase" t-field="blog_pure_cell_treatment_stories.name"/>
+                                </div>
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="carousel slide mb32" id="pure_cell_treatment_stories_slide">
+                                        <div class="carousel-inner">
+                                            <t t-foreach="posts_pure_cell_treatment_stories" t-as="blog_post">
+                                                <a t-att-href="'/blog/%s/post/%s' %(blog_pure_cell_treatment_stories.id, blog_post.id)">
+                                                    <div t-att-class="'col-md-6 col-sm-12 col-xs-12 oe_dark mt32 pure_cell_treatment_stories_list_block item %s' %('active' if blog_post_index == 0 else '')">
+                                                        <h6 class="text-center mt32" style="color: #000;" t-field="blog_post.name"/>
+                                                        <p class="text-center text-muted"><t t-esc="(blog_post.content[:300] + '...') if len(blog_post.content) &gt;= 300 else blog_post.content"/></p>
+                                                        <div class="pure_cell_treatment_stories_list_img_block col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="col-md-4 col-sm-4 col-xs-4"/>
+                                                            <div class="col-md-4 col-sm-4 col-xs-4">
+                                                                <span itemprop="image" t-field="blog_post.author_avatar" t-field-options='{"widget": "image", "class": "pure_cell_treatment_stories_list_img mt16 mb16", "alt-field": "name"}'/>
+                                                            </div>
+                                                            <div class="col-md-4 col-sm-4 col-xs-4"/>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </t>
+                                        </div>
+                                        <t t-if="len(posts_pure_cell_treatment_stories) &gt; 2">
+                                            <div class="carousel-control left" data-slide="prev" data-target="#pure_cell_treatment_stories_slide" href="#pure_cell_treatment_stories_slide" style="width: 10%">
+                                                <i class="fa fa-chevron-left"/>
+                                            </div>
+                                            <div class="carousel-control right" data-slide="next" data-target="#pure_cell_treatment_stories_slide" href="#pure_cell_treatment_stories_slide" style="width: 10%">
+                                                <i class="fa fa-chevron-right"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
         </template>
         <template id="custom_snippets" inherit_id="website.snippets" name="Custom Snippets">
             <!-- Customize Structure -->

@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-<!--
-        <record id="experience_blog" model="blog.blog">
-            <field name="name">Dermanord Experiences</field>
-        </record>
--->
-
+        <!-- experiences menu -->
         <record id="menu_experiences" model="website.menu">
             <field name="name">Experiences</field>
             <field name="url">/page/experiences</field>
@@ -63,85 +58,29 @@
             <field name="url">/page/experiences-skin_types</field>
             <field name="parent_id" ref="website_experiences_dermanord.menu_experiences"/>
         </record>
-
-        <template id="website.experiences" name="Experiences" page="True">
-            <t t-call="website.layout">
-                <div id="wrap">
-                    <div class="oe_structure">
-                        <div class="container oe_dark" style="width: 100%; padding: 32px 0px;">
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                    <h1 class="text-center">customer moods</h1>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-2 col-sm-4 col-xs-12">
-                                    <img alt="Odoo - Sample 1 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/desert_thumb.jpg" style="width: 165px; height: 165px; margin: auto;"/>
-                                </div>
-                                <div class="col-md-2 col-sm-4 col-xs-12">
-                                    <img alt="Odoo - Sample 2 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/deers_thumb.jpg" style="width: 165px; height: 165px; margin: auto;"/>
-                                </div>
-                                <div class="col-md-2 col-sm-4 col-xs-12">
-                                    <img alt="Odoo - Sample 3 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/china_thumb.jpg" style="width: 165px; height: 165px; margin: auto;"/>
-                                </div>
-                                <div class="col-md-2 col-sm-4 col-xs-12">
-                                    <img alt="Odoo - Sample 4 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/desert_thumb.jpg" style="width: 165px; height: 165px; margin: auto;"/>
-                                </div>
-                                <div class="col-md-2 col-sm-4 col-xs-12">
-                                    <img alt="Odoo - Sample 5 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/deers_thumb.jpg" style="width: 165px; height: 165px; margin: auto;"/>
-                                </div>
-                                <div class="col-md-2 col-sm-4 col-xs-12">
-                                    <img alt="Odoo - Sample 6 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/china_thumb.jpg" style="width: 165px; height: 165px; margin: auto;"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="oe_structure">
-                        <div class="container" style="width: 100%; padding: 32px 0px;">
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12 col-xs-12 mt32 mb32">
-                                    <h1 class="text-center">pure cell treatment stories</h1>
-                                </div>
-                            </div>
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-6 col-sm-12 col-xs-12 oe_dark mt32" style="position: relative; padding-top: 64px;">
-                                        <h4 class="text-center mt32">Lorem ipsum</h4>
-                                        <p class="text-center text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vitae arcu eu turpis varius iaculis ac id lacus. Donec efficitur suscipit urna, a finibus mi auctor eu. Aenean accumsan turpis elit, sed feugiat est sagittis malesuada. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-                                        <img alt="Odoo - Sample 1 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/desert_thumb.jpg" style="width: 100px; height: 100px; margin: auto; position: absolute; top: -30px; left: 45%; border-radius: 50%;"/>
-                                    </div>
-                                    <div class="col-md-6 col-sm-12 col-xs-12 oe_dark mt32" style="position: relative; padding-top: 64px;">
-                                        <h4 class="text-center mt32">Lorem ipsum</h4>
-                                        <p class="text-center text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vitae arcu eu turpis varius iaculis ac id lacus. Donec efficitur suscipit urna, a finibus mi auctor eu. Aenean accumsan turpis elit, sed feugiat est sagittis malesuada. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-                                        <img alt="Odoo - Sample 1 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/desert_thumb.jpg" style="width: 100px; height: 100px; margin: auto; position: absolute; top: -30px; left: 45%; border-radius: 50%;"/>
-                                    </div>
-                                    <div class="col-md-6 col-sm-12 col-xs-12 oe_dark mt32" style="position: relative; padding-top: 64px;">
-                                        <h4 class="text-center mt32">Lorem ipsum</h4>
-                                        <p class="text-center text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vitae arcu eu turpis varius iaculis ac id lacus. Donec efficitur suscipit urna, a finibus mi auctor eu. Aenean accumsan turpis elit, sed feugiat est sagittis malesuada. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-                                        <img alt="Odoo - Sample 1 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/desert_thumb.jpg" style="width: 100px; height: 100px; margin: auto; position: absolute; top: -30px; left: 45%; border-radius: 50%;"/>
-                                    </div>
-                                    <div class="col-md-6 col-sm-12 col-xs-12 oe_dark mt32" style="position: relative; padding-top: 64px;">
-                                        <h4 class="text-center mt32">Lorem ipsum</h4>
-                                        <p class="text-center text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vitae arcu eu turpis varius iaculis ac id lacus. Donec efficitur suscipit urna, a finibus mi auctor eu. Aenean accumsan turpis elit, sed feugiat est sagittis malesuada. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-                                        <img alt="Odoo - Sample 1 for three columns" class="img img-responsive mt16 mb16" src="/website/static/src/img/desert_thumb.jpg" style="width: 100px; height: 100px; margin: auto; position: absolute; top: -30px; left: 45%; border-radius: 50%;"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </t>
-        </template>
+    </data>
+    <data>
+        <!-- blogs -->
+        <record id="customer_moods" model="blog.blog">
+            <field name="name">Customer moods</field>
+        </record>
+        <record id="pure_cell_treatment_stories" model="blog.blog">
+            <field name="name">Pure cell treatment stories</field>
+        </record>
+    </data>
+    <data>
 
         <template id="website.experiences-spa" name="Spa" page="True">
             <t t-call="website.layout">
                 <div id="wrap">
                     <div class="oe_structure">
-                        <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
-                            <div class="dn_page_header_content">
-                                <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
-                            </div>
-                        </img>
+                        <div class="container dn_page_header">
+                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
+                                <div class="dn_page_header_content">
+                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
+                                </div>
+                            </img>
+                        </div>
                     </div>
                 </div>
             </t>
@@ -151,11 +90,13 @@
             <t t-call="website.layout">
                 <div id="wrap">
                     <div class="oe_structure">
-                        <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
-                            <div class="dn_page_header_content">
-                                <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
-                            </div>
-                        </img>
+                        <div class="container dn_page_header">
+                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
+                                <div class="dn_page_header_content">
+                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
+                                </div>
+                            </img>
+                        </div>
                     </div>
                 </div>
             </t>
@@ -165,7 +106,13 @@
             <t t-call="website.layout">
                 <div id="wrap">
                     <div class="oe_structure">
-                        <img class="img img-responsive dn_header_img" src="/website/static/src/img/fields.jpg"/>
+                        <div class="container dn_page_header">
+                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
+                                <div class="dn_page_header_content">
+                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
+                                </div>
+                            </img>
+                        </div>
                     </div>
                 </div>
             </t>
@@ -174,7 +121,15 @@
         <template id="website.experiences-travel" name="Travel" page="True">
             <t t-call="website.layout">
                 <div id="wrap">
-                    <div class="oe_structure"/>
+                    <div class="oe_structure">
+                        <div class="container dn_page_header">
+                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
+                                <div class="dn_page_header_content">
+                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
+                                </div>
+                            </img>
+                        </div>
+                    </div>
                 </div>
             </t>
         </template>
@@ -182,7 +137,15 @@
         <template id="website.experiences-work" name="Work" page="True">
             <t t-call="website.layout">
                 <div id="wrap">
-                    <div class="oe_structure"/>
+                    <div class="oe_structure">
+                        <div class="container dn_page_header">
+                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
+                                <div class="dn_page_header_content">
+                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
+                                </div>
+                            </img>
+                        </div>
+                    </div>
                 </div>
             </t>
         </template>
@@ -190,7 +153,15 @@
         <template id="website.experiences-experiement" name="Experiement" page="True">
             <t t-call="website.layout">
                 <div id="wrap">
-                    <div class="oe_structure"/>
+                    <div class="oe_structure">
+                        <div class="container dn_page_header">
+                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
+                                <div class="dn_page_header_content">
+                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
+                                </div>
+                            </img>
+                        </div>
+                    </div>
                 </div>
             </t>
         </template>
@@ -198,7 +169,15 @@
         <template id="website.experiences-deep_skin" name="Deep Skin" page="True">
             <t t-call="website.layout">
                 <div id="wrap">
-                    <div class="oe_structure"/>
+                    <div class="oe_structure">
+                        <div class="container dn_page_header">
+                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
+                                <div class="dn_page_header_content">
+                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
+                                </div>
+                            </img>
+                        </div>
+                    </div>
                 </div>
             </t>
         </template>
@@ -206,7 +185,15 @@
         <template id="website.experiences-relaxation" name="Relaxation" page="True">
             <t t-call="website.layout">
                 <div id="wrap">
-                    <div class="oe_structure"/>
+                    <div class="oe_structure">
+                        <div class="container dn_page_header">
+                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
+                                <div class="dn_page_header_content">
+                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
+                                </div>
+                            </img>
+                        </div>
+                    </div>
                 </div>
             </t>
         </template>
@@ -214,7 +201,15 @@
         <template id="website.experiences-disorders" name="Disorders" page="True">
             <t t-call="website.layout">
                 <div id="wrap">
-                    <div class="oe_structure"/>
+                    <div class="oe_structure">
+                        <div class="container dn_page_header">
+                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
+                                <div class="dn_page_header_content">
+                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
+                                </div>
+                            </img>
+                        </div>
+                    </div>
                 </div>
             </t>
         </template>
@@ -222,7 +217,15 @@
         <template id="website.experiences-skin_types" name="Skin Types" page="True">
             <t t-call="website.layout">
                 <div id="wrap">
-                    <div class="oe_structure"/>
+                    <div class="oe_structure">
+                        <div class="container dn_page_header">
+                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
+                                <div class="dn_page_header_content">
+                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
+                                </div>
+                            </img>
+                        </div>
+                    </div>
                 </div>
             </t>
         </template>

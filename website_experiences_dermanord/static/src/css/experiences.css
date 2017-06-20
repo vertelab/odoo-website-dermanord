@@ -17,3 +17,46 @@
     background: #000;
     color: #fff;
 }
+
+.dn_page_header {
+    width: 100%;
+    padding: 0px;
+}
+
+.dn_page_header_img {
+    width: 100%;
+}
+
+/* blogs */
+.customer_moods_list_img {
+    width: 150px;
+    height: 150px;
+/*
+    padding-top:100%;
+*/
+    margin: auto;
+}
+
+.pure_cell_treatment_stories_list_block {
+    position: relative;
+    padding-top: 64px;
+    align-content: center;
+    display: flex;
+    justify-content: center;
+}
+
+#pure_cell_treatment_stories_slide {
+    padding: 0px 30px;
+}
+
+.pure_cell_treatment_stories_list_img_block {
+    position: absolute;
+    top: -25%;
+}
+
+.pure_cell_treatment_stories_list_img {
+    max-width: 100px;
+    max-height: 100px;
+    margin: auto;
+    border-radius: 50%;
+}

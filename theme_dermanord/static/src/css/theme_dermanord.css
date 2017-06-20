@@ -216,11 +216,22 @@ footer input, footer .input-group-addon {
     color: #000;
 }
 
-.dn_header_img {
+.dn_header_container {
     margin: auto;
     width: 100%;
     position: relative;
     height: 540px;
+}
+
+.dn_header_container img {
+    width: 100%;
+    height: 100%
+}
+
+.page_title {
+    position: absolute;
+    top: 45%;
+    left: 45%;
 }
 
 .dn_page_header_img {
