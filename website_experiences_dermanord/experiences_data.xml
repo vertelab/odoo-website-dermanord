@@ -67,47 +67,6 @@
         <template id="website.experiences" name="Experiences" page="True">
             <t t-call="website.layout">
                 <div id="wrap">
-                    <div class="oe_structure"/>
-                    <div class="container" style="width: 100%; padding: 0px;">
-                        <t t-set="experiences_menus" t-value="request.env['website.menu'].search([('parent_id', '=', request.env.ref('website_experiences_dermanord.menu_experiences').id)])"/>
-                        <div t-if="experiences_menus" class="col-md-12 dn_header_banner">
-                            <div class="col-md-4 col-xs-12 dn_header_banner">
-                                <div class="dn_header_nav">
-                                    <ul class="nav nav-pills nav-stacked">
-                                        <t t-foreach="experiences_menus" t-as="submenu">
-                                            <li t-att-class="'hidden-xs %s' %('active' if submenu_index == 0 else '')">
-                                                <a t-att-href="submenu.url" class="dn_header_nav_tab">
-                                                    <span class="text-center dn_uppercase">
-                                                        <t t-esc="submenu.name"/>
-                                                    </span>
-                                                </a>
-                                            </li>
-                                            <li t-att-class="'hidden-lg hidden-md hidden-sm %s' %('active' if submenu_index == 0 else '')">
-                                                <a t-att-href="submenu.url" class="dn_header_nav_tab">
-                                                    <span class="text-center dn_uppercase">
-                                                        <t t-esc="submenu.name"/>
-                                                    </span>
-                                                </a>
-                                            </li>
-                                        </t>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-8 dn_header_banner hidden-xs">
-                                <div class="tab-content">
-                                    <t t-foreach="experiences_menus" t-as="submenu">
-                                        <div t-att-id="submenu.name[0].lower()" t-att-class="'tab-pane fade %s' %('in active' if submenu_index == 0 else '')">
-                                            <img class="img img-responsive dn_header_img" src="/website/static/src/img/fields.jpg">
-                                                <a t-att-href="submenu.url" class="dn_btn dn_primary" style="position: absolute; top: 45%; left: 45%;">
-                                                    <h4>Explore</h4>
-                                                </a>
-                                            </img>
-                                        </div>
-                                    </t>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="oe_structure">
                         <div class="container oe_dark" style="width: 100%; padding: 32px 0px;">
                             <div class="row">
