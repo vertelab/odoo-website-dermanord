@@ -18,13 +18,17 @@
     color: #fff;
 }
 
-.dn_page_header {
+.oe_dermexp_div {
+    position: relative;
     width: 100%;
     padding: 0px;
 }
 
-.dn_page_header_img {
-    width: 100%;
+.oe_dermexp_content {
+    top: 45%;
+    right: 10%;
+    position: absolute;
+    padding: 15px;
 }
 
 /* blogs */

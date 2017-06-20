@@ -59,6 +59,7 @@
             <field name="parent_id" ref="website_experiences_dermanord.menu_experiences"/>
         </record>
     </data>
+
     <data>
         <!-- blogs -->
         <record id="customer_moods" model="blog.blog">
@@ -68,165 +69,83 @@
             <field name="name">Pure cell treatment stories</field>
         </record>
     </data>
+
     <data>
+        <template id="experiences_menu_content">
+            <div id="wrap">
+                <div class="oe_structure">
+                    <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path) or None"/>
+                    <t t-if="current_menu">
+                        <h3 class="css_non_editable_mode_hidden">Page Title for <b>"<t t-esc="current_menu.name"/>"</b></h3>
+                        <h3 class="css_non_editable_mode_hidden" t-field="current_menu.page_title"/>
+                        <div class="container oe_dermexp_div">
+                            <span itemprop="image" t-field="current_menu.image" t-field-options='{"widget": "image", "class": "dn_page_header_img", "alt-field": "name"}'/>
+                            <div class="oe_dermexp_content">
+                                <h3 t-field="current_menu.page_title"/>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </template>
 
         <template id="website.experiences-spa" name="Spa" page="True">
             <t t-call="website.layout">
-                <div id="wrap">
-                    <div class="oe_structure">
-                        <div class="container dn_page_header">
-                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
-                                <div class="dn_page_header_content">
-                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
-                                </div>
-                            </img>
-                        </div>
-                    </div>
-                </div>
+                <t t-call="website_experiences_dermanord.experiences_menu_content"/>
             </t>
         </template>
 
         <template id="website.experiences-evening" name="Evening" page="True">
             <t t-call="website.layout">
-                <div id="wrap">
-                    <div class="oe_structure">
-                        <div class="container dn_page_header">
-                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
-                                <div class="dn_page_header_content">
-                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
-                                </div>
-                            </img>
-                        </div>
-                    </div>
-                </div>
+                <t t-call="website_experiences_dermanord.experiences_menu_content"/>
             </t>
         </template>
 
         <template id="website.experiences-daytime" name="Daytime" page="True">
             <t t-call="website.layout">
-                <div id="wrap">
-                    <div class="oe_structure">
-                        <div class="container dn_page_header">
-                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
-                                <div class="dn_page_header_content">
-                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
-                                </div>
-                            </img>
-                        </div>
-                    </div>
-                </div>
+                <t t-call="website_experiences_dermanord.experiences_menu_content"/>
             </t>
         </template>
 
         <template id="website.experiences-travel" name="Travel" page="True">
             <t t-call="website.layout">
-                <div id="wrap">
-                    <div class="oe_structure">
-                        <div class="container dn_page_header">
-                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
-                                <div class="dn_page_header_content">
-                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
-                                </div>
-                            </img>
-                        </div>
-                    </div>
-                </div>
+                <t t-call="website_experiences_dermanord.experiences_menu_content"/>
             </t>
         </template>
 
         <template id="website.experiences-work" name="Work" page="True">
             <t t-call="website.layout">
-                <div id="wrap">
-                    <div class="oe_structure">
-                        <div class="container dn_page_header">
-                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
-                                <div class="dn_page_header_content">
-                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
-                                </div>
-                            </img>
-                        </div>
-                    </div>
-                </div>
+                <t t-call="website_experiences_dermanord.experiences_menu_content"/>
             </t>
         </template>
 
         <template id="website.experiences-experiement" name="Experiement" page="True">
             <t t-call="website.layout">
-                <div id="wrap">
-                    <div class="oe_structure">
-                        <div class="container dn_page_header">
-                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
-                                <div class="dn_page_header_content">
-                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
-                                </div>
-                            </img>
-                        </div>
-                    </div>
-                </div>
+                <t t-call="website_experiences_dermanord.experiences_menu_content"/>
             </t>
         </template>
 
         <template id="website.experiences-deep_skin" name="Deep Skin" page="True">
             <t t-call="website.layout">
-                <div id="wrap">
-                    <div class="oe_structure">
-                        <div class="container dn_page_header">
-                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
-                                <div class="dn_page_header_content">
-                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
-                                </div>
-                            </img>
-                        </div>
-                    </div>
-                </div>
+                <t t-call="website_experiences_dermanord.experiences_menu_content"/>
             </t>
         </template>
 
         <template id="website.experiences-relaxation" name="Relaxation" page="True">
             <t t-call="website.layout">
-                <div id="wrap">
-                    <div class="oe_structure">
-                        <div class="container dn_page_header">
-                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
-                                <div class="dn_page_header_content">
-                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
-                                </div>
-                            </img>
-                        </div>
-                    </div>
-                </div>
+                <t t-call="website_experiences_dermanord.experiences_menu_content"/>
             </t>
         </template>
 
         <template id="website.experiences-disorders" name="Disorders" page="True">
             <t t-call="website.layout">
-                <div id="wrap">
-                    <div class="oe_structure">
-                        <div class="container dn_page_header">
-                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
-                                <div class="dn_page_header_content">
-                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
-                                </div>
-                            </img>
-                        </div>
-                    </div>
-                </div>
+                <t t-call="website_experiences_dermanord.experiences_menu_content"/>
             </t>
         </template>
 
         <template id="website.experiences-skin_types" name="Skin Types" page="True">
             <t t-call="website.layout">
-                <div id="wrap">
-                    <div class="oe_structure">
-                        <div class="container dn_page_header">
-                            <img class="img img-responsive dn_page_header_img" src="/website/static/src/img/fields.jpg" style="min-height: 300px;">
-                                <div class="dn_page_header_content">
-                                    <h3>Evening with Maria Åkerberg's' Deepskin organics</h3>
-                                </div>
-                            </img>
-                        </div>
-                    </div>
-                </div>
+                <t t-call="website_experiences_dermanord.experiences_menu_content"/>
             </t>
         </template>
 
