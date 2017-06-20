@@ -8,6 +8,10 @@ var more_menu_items = [];
 $("#top_menu").children().each(function() {
     if($(this).attr("id") == "fts_search_btn")
         return false;
+    else if($(this).attr("class") == "hidden-xs")
+        return false;
+    else if($(this).attr("class") == "divider")
+        return false;
     else if($(this).attr("id") != "more_dropdown")
         menu_items.push($(this));
 });
