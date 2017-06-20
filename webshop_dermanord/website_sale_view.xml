@@ -320,42 +320,40 @@
             <xpath expr="//p[@class='text-muted']" position="attributes">
                 <attribute name="class">text-muted hidden</attribute>
             </xpath>
-            <xpath expr="//p[@t-field='product.description_sale']" position="after">
+            <xpath expr="//p[@t-field='product.description_sale']" position="replace">
+                <p t-field="product.description_sale" class="text-muted"/>
                 <h4 class="show_more_facet text-center hidden-lg hidden-md hidden-sm" style="text-decoration: underline;">More info <i class="fa fa-angle-down"/></h4>
                 <div class="container facet_container hidden-xs">
-                    <t t-if="len(product.facet_line_ids) &gt; 0">
-                        <div class="col-md-6 facet_div" t-foreach="request.env['product.facet'].search([])" t-as="facet">
-                            <t t-if="facet.name in [f.name for f in product.facet_line_ids.mapped('facet_id')]">
-                                <h4 class="dn_uppercase" t-field="facet.name"/>
-                                <t t-set="facet_value_ids" t-value="product.facet_line_ids.with_context({'facet_id': facet.id}).filtered(lambda f: f.facet_id.id == f._context.get('facet_id')).mapped('value_ids')"/>
-                                <t t-foreach="facet_value_ids" t-as="value">
-                                    <a t-att-href="'/dn_shop/?facet_%s_%s=%s' %(facet.id, value.id, value.id)" class="text-muted"><span t-field="value.name"/></a><span t-if="value_index != len(facet_value_ids)-1">, </span>
-                                </t>
+                    <div class="col-md-12 no_padding_div mt16">
+                        <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') not in user_id.groups_id">
+                            <p t-field="product_product.public_desc" class="text-muted public_desc"/>
+                        </t>
+                        <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') not in user_id.groups_id">
+                            <p t-field="product_product.use_desc" class="text-muted use_desc"/>
+                            <hr/>
+                        </t>
+                        <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') in user_id.groups_id">
+                            <p t-field="product_product.reseller_desc" class="text-muted reseller_desc"/>
+                        </t>
+                        
+                    </div>
+                    <t t-if="product.facet_line_ids">
+                        <div class="col-md-6 facet_div" t-foreach="product.facet_line_ids.mapped('facet_id')" t-as="facet">
+                            <h4 class="dn_uppercase" t-field="facet.name"/>
+                            <t t-set="facet_value_ids" t-value="product.facet_line_ids.with_context({'facet_id': facet.id}).filtered(lambda f: f.facet_id.id == f._context.get('facet_id')).mapped('value_ids')"/>
+                            <t t-foreach="facet_value_ids" t-as="value">
+                                <a t-att-href="'/dn_shop/?facet_%s_%s=%s' %(facet.id, value.id, value.id)" class="text-muted"><span t-field="value.name"/></a><span t-if="value_index != len(facet_value_ids)-1">, </span>
                             </t>
                         </div>
                         <hr/>
                     </t>
-                    <div class="col-md-12 no_padding_div mt16">
-                        <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') in user_id.groups_id">
-                            <p t-field="product_product.reseller_desc" class="text-muted reseller_desc"/>
-                        </t>
-                        <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') not in user_id.groups_id">
-                            <p t-field="product_product.public_desc" class="text-muted public_desc"/>
-                        </t>
-                    </div>
                 </div>
                 <h4 class="hide_more_facet text-center hidden-lg hidden-md hidden-sm hidden" style="text-decoration: underline;">Less info <i class="fa fa-angle-up"/></h4>
 <!--
                 <t t-set="variant" t-value="product.product_variant_ids[0]" />
 -->
             </xpath>
-            <xpath expr="//p[@t-field='product.description_sale']" position="replace">
-                <p t-field="product.description_sale" class="text-muted"/>
-                <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') not in user_id.groups_id">
-                    <p t-field="product_product.use_desc" class="text-muted use_desc"/>
-                    <hr/>
-                </t>
-            </xpath>
+            
             <xpath expr="//div[@itemprop='description']" position="after">
                 <div class="oe_structure oe_empty mt32 mb32">
                     <div class="container">
@@ -459,7 +457,7 @@
                           "from_currency": "product.company_id.currency_id",
                           "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                        }'/>
-                      <b class="" style="white-space: nowrap;"
+                      <b class="oe_price" style="white-space: nowrap;"
                         t-field="product.price_tax"
                         t-field-options='{
                            "widget": "monetary",
