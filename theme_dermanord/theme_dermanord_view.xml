@@ -261,14 +261,14 @@
                             <div class="dn_header_nav">
                                 <ul class="nav nav-pills nav-stacked">
                                     <t t-foreach="website.current_submenu(request.httprequest.path).child_id" t-as="submenu">
-                                        <li t-att-class="'hidden-xs %s' %('active' if submenu_index == 0 else '')">
+                                        <li t-att-class="'hidden-xs %s' %('active' if submenu == website.current_menu(request.httprequest.path) else '')">
                                             <a t-att-href="submenu.url" class="dn_header_nav_tab">
                                                 <span class="text-center dn_uppercase">
                                                     <t t-esc="submenu.name"/>
                                                 </span>
                                             </a>
                                         </li>
-                                        <li t-att-class="'hidden-lg hidden-md hidden-sm %s' %('active' if submenu_index == 0 else '')">
+                                        <li class="hidden-lg hidden-md hidden-sm">
                                             <a t-att-href="submenu.url" class="dn_header_nav_tab">
                                                 <span class="text-center dn_uppercase">
                                                     <t t-esc="submenu.name"/>
