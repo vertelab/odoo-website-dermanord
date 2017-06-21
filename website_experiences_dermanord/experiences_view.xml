@@ -71,21 +71,23 @@
                                             <t t-foreach="posts_pure_cell_treatment_stories" t-as="blog_post">
 -->
                                             <t t-foreach="posts_list" t-as="post_list">
-                                                <div t-att-class="'col-md-12 col-sm-12 col-xs-12 oe_dark mt32 item %s' %('active' if post_list_index == 0 else '')">
+                                                <div t-att-class="'col-md-12 col-sm-12 col-xs-12 mt32 item %s' %('active' if post_list_index == 0 else '')">
                                                     <div class="container">
                                                         <div class="row content">
                                                             <t t-foreach="post_list" t-as="blog_post">
                                                                 <a t-att-href="'/blog/%s/post/%s' %(blog_pure_cell_treatment_stories.id, blog_post.id)">
                                                                     <div class="col-md-6 col-sm-6 col-xs-6">
-                                                                        <div class="pure_cell_treatment_stories_list_block container">
+                                                                        <div class="pure_cell_treatment_stories_list_block container oe_dark">
                                                                             <div class="pure_cell_treatment_stories_list_img_block col-md-12 col-sm-12 col-xs-12">
                                                                                 <span itemprop="image" t-field="blog_post.author_avatar" t-field-options='{"widget": "image", "class": "pure_cell_treatment_stories_list_img mt16 mb16", "alt-field": "name"}'/>
                                                                             </div>
                                                                             <div class="col-md-12 col-sm-12 col-xs-12">
                                                                                 <h6 class="text-center mt32" style="color: #000;" t-field="blog_post.name"/>
                                                                             </div>
-                                                                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                                                                <p class="text-center text-muted"><t t-esc="(blog_post.content[:300] + '...') if len(blog_post.content) &gt;= 300 else blog_post.content"/></p>
+                                                                            <div class="col-md-12 col-sm-12 col-xs-12 mb32">
+                                                                                <p class="text-center text-muted" t-field="blog_post.subtitle"/>
+<!--                                                                           <p class="text-center text-muted"><span t-raw="(blog_post.content[:300] + '...') if len(blog_post.content) &gt;= 300 else blog_post.content"/></p>
+-->
                                                                             </div>
                                                                         </div>
                                                                     </div>
