@@ -309,6 +309,7 @@
                         </t>
                     </div>
                 </div>
+                <t t-raw="0"/>
             </t>
         </template>
 
