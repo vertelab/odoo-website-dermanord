@@ -66,7 +66,7 @@
                                         <div class="carousel-inner">
                                             <t t-foreach="posts_pure_cell_treatment_stories" t-as="blog_post">
                                                 <a t-att-href="'/blog/%s/post/%s' %(blog_pure_cell_treatment_stories.id, blog_post.id)">
-                                                    <div t-att-class="'col-md-6 col-sm-12 col-xs-12 oe_dark mt32 pure_cell_treatment_stories_list_block item %s' %('active' if blog_post_index == 0 else '')">
+                                                    <div t-att-class="'col-md-6 col-sm-6 col-xs-12 oe_dark mt32 pure_cell_treatment_stories_list_block item %s' %('active' if blog_post_index == 0 else '')">
                                                         <h6 class="text-center mt32" style="color: #000;" t-field="blog_post.name"/>
                                                         <p class="text-center text-muted"><t t-esc="(blog_post.content[:300] + '...') if len(blog_post.content) &gt;= 300 else blog_post.content"/></p>
                                                         <div class="pure_cell_treatment_stories_list_img_block col-md-12 col-sm-12 col-xs-12">
