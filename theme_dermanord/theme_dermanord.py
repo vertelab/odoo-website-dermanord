@@ -26,6 +26,9 @@ from datetime import datetime
 from lxml import html
 import werkzeug
 
+import logging
+_logger = logging.getLogger(__name__)
+
 #~ class res_company(models.Model):
     #~ _inherit = 'res.company'
 
@@ -47,7 +50,7 @@ class website(models.Model):
     def get_breadcrumb(self, path):
         menu = self.env['website.menu'].search([('url', '=', path)])
         breadcrumb = []
-        while menu != self.env.ref('website.main_menu'):
+        while menu and menu != self.env.ref('website.main_menu'):
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
             menu = menu.parent_id
         breadcrumb.append('<li><a href="/">home</a></li>')
