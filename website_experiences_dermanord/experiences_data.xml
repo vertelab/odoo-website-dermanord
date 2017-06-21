@@ -75,7 +75,7 @@
             <div id="wrap">
                 <div class="oe_structure">
                     <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path) or None"/>
-                    <t t-if="current_menu">
+                    <t t-if="current_menu and not no_breadcrumb">
                         <h3 class="css_non_editable_mode_hidden">Page Title for <b>"<t t-esc="current_menu.name"/>"</b></h3>
                         <h3 class="css_non_editable_mode_hidden" t-field="current_menu.page_title"/>
                         <div class="container oe_dermexp_div">

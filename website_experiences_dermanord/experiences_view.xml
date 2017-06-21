@@ -54,40 +54,57 @@
                     <div class="oe_structure">
                         <div class="container" style="width: 100%; padding: 32px 0px;">
                             <t t-set="blog_pure_cell_treatment_stories" t-value="request.env.ref('website_experiences_dermanord.pure_cell_treatment_stories')"/>
+<!--
                             <t t-set="posts_pure_cell_treatment_stories" t-value="request.env['blog.post'].search([('blog_id', '=', blog_pure_cell_treatment_stories.id),  ('website_published', '=', True)], order='website_published desc')"/>
+-->
                             <div class="row">
                                 <div class="col-md-12 col-sm-12 col-xs-12 mt32 mb32">
                                     <h2 class="text-center dn_uppercase" t-field="blog_pure_cell_treatment_stories.name"/>
                                 </div>
                             </div>
                             <div class="container">
+                                <t t-set="posts_list" t-value="request.env['blog.post'].blog_post_list([('blog_id', '=', request.env.ref('website_experiences_dermanord.pure_cell_treatment_stories').id)], 'write_date', 2)"/>
                                 <div class="row">
                                     <div class="carousel slide mb32" id="pure_cell_treatment_stories_slide">
                                         <div class="carousel-inner">
+<!--
                                             <t t-foreach="posts_pure_cell_treatment_stories" t-as="blog_post">
-                                                <a t-att-href="'/blog/%s/post/%s' %(blog_pure_cell_treatment_stories.id, blog_post.id)">
-                                                    <div t-att-class="'col-md-6 col-sm-6 col-xs-12 oe_dark mt32 pure_cell_treatment_stories_list_block item %s' %('active' if blog_post_index == 0 else '')">
-                                                        <h6 class="text-center mt32" style="color: #000;" t-field="blog_post.name"/>
-                                                        <p class="text-center text-muted"><t t-esc="(blog_post.content[:300] + '...') if len(blog_post.content) &gt;= 300 else blog_post.content"/></p>
-                                                        <div class="pure_cell_treatment_stories_list_img_block col-md-12 col-sm-12 col-xs-12">
-                                                            <div class="col-md-4 col-sm-4 col-xs-4"/>
-                                                            <div class="col-md-4 col-sm-4 col-xs-4">
-                                                                <span itemprop="image" t-field="blog_post.author_avatar" t-field-options='{"widget": "image", "class": "pure_cell_treatment_stories_list_img mt16 mb16", "alt-field": "name"}'/>
-                                                            </div>
-                                                            <div class="col-md-4 col-sm-4 col-xs-4"/>
+-->
+                                            <t t-foreach="posts_list" t-as="post_list">
+                                                <div t-att-class="'col-md-12 col-sm-12 col-xs-12 oe_dark mt32 item %s' %('active' if post_list_index == 0 else '')">
+                                                    <div class="container">
+                                                        <div class="row content">
+                                                            <t t-foreach="post_list" t-as="blog_post">
+                                                                <a t-att-href="'/blog/%s/post/%s' %(blog_pure_cell_treatment_stories.id, blog_post.id)">
+                                                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                                                        <div class="pure_cell_treatment_stories_list_block container">
+                                                                            <div class="pure_cell_treatment_stories_list_img_block col-md-12 col-sm-12 col-xs-12">
+                                                                                <span itemprop="image" t-field="blog_post.author_avatar" t-field-options='{"widget": "image", "class": "pure_cell_treatment_stories_list_img mt16 mb16", "alt-field": "name"}'/>
+                                                                            </div>
+                                                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                                                <h6 class="text-center mt32" style="color: #000;" t-field="blog_post.name"/>
+                                                                            </div>
+                                                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                                                <p class="text-center text-muted"><t t-esc="(blog_post.content[:300] + '...') if len(blog_post.content) &gt;= 300 else blog_post.content"/></p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                            </t>
                                                         </div>
                                                     </div>
-                                                </a>
+                                                </div>
                                             </t>
+<!--
+                                            </t>
+-->
                                         </div>
-                                        <t t-if="len(posts_pure_cell_treatment_stories) &gt; 2">
-                                            <div class="carousel-control left" data-slide="prev" data-target="#pure_cell_treatment_stories_slide" href="#pure_cell_treatment_stories_slide" style="width: 10%">
-                                                <i class="fa fa-chevron-left"/>
-                                            </div>
-                                            <div class="carousel-control right" data-slide="next" data-target="#pure_cell_treatment_stories_slide" href="#pure_cell_treatment_stories_slide" style="width: 10%">
-                                                <i class="fa fa-chevron-right"/>
-                                            </div>
-                                        </t>
+                                        <div class="carousel-control left" data-slide="prev" data-target="#pure_cell_treatment_stories_slide" href="#pure_cell_treatment_stories_slide" style="width: 10%">
+                                            <i class="fa fa-chevron-left"/>
+                                        </div>
+                                        <div class="carousel-control right" data-slide="next" data-target="#pure_cell_treatment_stories_slide" href="#pure_cell_treatment_stories_slide" style="width: 10%">
+                                            <i class="fa fa-chevron-right"/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -28,22 +28,40 @@ _logger = logging.getLogger(__name__)
 
 class BlogTag(models.Model):
     _inherit = 'blog.tag'
-    
+
     experience = fields.Boolean(string='Is Experience', help="Show blog posts with this tag as an experience on the website.")
     sequence = fields.Integer('Sequence')
 
+
+class blog_post(models.Model):
+    _inherit = 'blog.post'
+
+    @api.model
+    def blog_post_list(self, domain, order, row):
+        domain += [('website_published', '=', True)]
+        posts = self.env['blog.post'].sudo().search(domain, order=order)
+        posts_list = []
+        posts_tmp = []
+        for i, post in enumerate(list(posts)):
+            posts_tmp.append(post)
+            if (i+1)%row == 0:
+                posts_list.append(posts_tmp)
+                posts_tmp = []
+        return posts_list
+
+
 class ExperiencesController(http.Controller):
-    
+
     @http.route('/experiences', auth="public", website=True)
     def experiences(self, **post):
         return http.request.render('website_experiences_dermanord.experiences', {})
-    
+
     @http.route('/experiences/<model("blog.post"):blog_post>', auth="public") #????
     def experiences(self, **post):
         pass
-    
+
     @http.route('/experiences/json/get_experiences', type='json', auth="public", website=True)
-    def experiences(self, **post):    
+    def experiences(self, **post):
         tags = env['blog.tag'].search([('experience', '=', True)], order="sequence")
         res = []
         exp_blog = env.ref('website_experience_dermanord')
@@ -54,9 +72,9 @@ class ExperiencesController(http.Controller):
                 'name': tag.name,
                 'posts': [{'id': p.id, 'name': p.name, 'image': p.background_image} for p in blog_posts]
             })
-    
-    
-    
-    
-        
-        
+
+
+
+
+
+
