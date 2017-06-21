@@ -119,7 +119,7 @@
             </t>
         </template>
 
-        <template id="website.experiences-experiement" name="Experiement" page="True">
+        <template id="website.experiences-experiment" name="Experiment" page="True">
             <t t-call="website.layout">
                 <t t-call="website_experiences_dermanord.experiences_menu_content"/>
             </t>
