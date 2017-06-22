@@ -257,12 +257,12 @@
                 <t t-set="no_breadcrumb" t-value="True"/>
                 <div id="dn_header" class="container" style="width: 100%; padding: 0px;">
                     <div t-if="website.current_submenu(request.httprequest.path).child_id" class="col-md-12 dn_header_banner">
-                        <div class="col-md-4 col-sm-4 col-xs-12 dn_header_banner">
+                        <div class="col-md-2 col-sm-2 col-xs-12 dn_header_banner">
                             <div class="dn_header_nav">
                                 <ul class="nav nav-pills nav-stacked">
                                     <t t-foreach="website.current_submenu(request.httprequest.path).child_id" t-as="submenu">
                                         <li t-att-class="'hidden-xs %s' %('active' if submenu == website.current_menu(request.httprequest.path) else '')">
-                                            <a t-att-href="submenu.url" class="dn_header_nav_tab">
+                                            <a t-att-href="submenu.url" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
                                                 <span class="text-center dn_uppercase">
                                                     <t t-esc="submenu.name"/>
                                                 </span>
@@ -279,7 +279,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-md-8 col-sm-8 dn_header_banner hidden-xs">
+                        <div class="col-md-10 col-sm-10 dn_header_banner hidden-xs">
                             <div class="container dn_header_container">
                                 <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path)"/>
                                 <span itemprop="image" t-field="current_menu.image" t-field-options='{"widget": "image", "class": "", "alt-field": "name"}'/>
