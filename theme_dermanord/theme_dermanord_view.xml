@@ -302,9 +302,7 @@
                             <h3 class="css_non_editable_mode_hidden" t-field="current_menu.page_title"/>
                             <div class="container oe_dermexp_div">
                                 <span itemprop="image" t-field="current_menu.image" t-field-options='{"widget": "image", "class": "dn_page_header_img", "alt-field": "name"}'/>
-                                <div class="oe_dermexp_content">
-                                    <h3 t-field="current_menu.page_title"/>
-                                </div>
+                                <h6 class="oe_dermexp_content page_title"><span t-field="current_menu.page_title"/></h6>
                             </div>
                         </t>
                     </div>

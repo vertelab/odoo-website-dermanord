@@ -237,6 +237,15 @@ footer input, footer .input-group-addon {
     color: #fff;
 }
 
+.oe_dermexp_content {
+    position: absolute;
+    top: 45%;
+    right: 10%;
+    padding: 32px;
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+}
+
 .dn_page_header_img {
     width: 100%;
     position: relative;
