@@ -283,7 +283,7 @@
                             <div class="container dn_header_container">
                                 <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path)"/>
                                 <span itemprop="image" t-field="current_menu.image" t-field-options='{"widget": "image", "class": "", "alt-field": "name"}'/>
-                                <h4 class="page_title"><span t-field="current_menu.page_title"/></h4>
+                                <h6 class="page_title"><span t-field="current_menu.page_title"/></h6>
                             </div>
                         </div>
                     </div>
