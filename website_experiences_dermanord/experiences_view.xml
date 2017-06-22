@@ -76,7 +76,7 @@
                                                         <div class="row content">
                                                             <t t-foreach="post_list" t-as="blog_post">
                                                                 <a t-att-href="'/blog/%s/post/%s' %(blog_pure_cell_treatment_stories.id, blog_post.id)">
-                                                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                                                    <div class="col-md-6 col-sm-6 col-xs-12">
                                                                         <div class="pure_cell_treatment_stories_list_block container oe_dark">
                                                                             <div class="pure_cell_treatment_stories_list_img_block col-md-12 col-sm-12 col-xs-12">
                                                                                 <span itemprop="image" t-field="blog_post.author_avatar" t-field-options='{"widget": "image", "class": "pure_cell_treatment_stories_list_img mt16 mb16", "alt-field": "name"}'/>
