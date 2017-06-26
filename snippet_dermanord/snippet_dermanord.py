@@ -97,11 +97,11 @@ class snippet(http.Controller):
                 for occ in occs:
                     url = ''
                     if occ.object_id._name == 'product.template':
-                        url = '/shop/product/%s' %occ.object_id.id
+                        url = '/dn_shop/product/%s' %occ.object_id.id
                     elif occ.object_id._name == 'product.product':
-                        url = '/shop/variant/%s' %(occ.object_id.id)
+                        url = '/dn_shop/variant/%s' %(occ.object_id.id)
                     elif occ.object_id._name == 'product.public.category':
-                        url = '/shop/category/%s' %occ.object_id.id
+                        url = '/dn_shop/category/%s' %occ.object_id.id
                     elif occ.object_id._name == 'blog.post':
                         url = '/blog/%s/post/%s' %(occ.object_id.blog_id.id, occ.object_id.id)
                     object_list.append(
