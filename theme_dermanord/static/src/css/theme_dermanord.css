@@ -230,8 +230,8 @@ footer input, footer .input-group-addon {
 
 .page_title {
     position: absolute;
-    top: 45%;
-    left: 45%;
+    top: 40%;
+    right: 45%;
     padding: 32px;
     background: rgba(0,0,0,0.4);
     color: #fff;

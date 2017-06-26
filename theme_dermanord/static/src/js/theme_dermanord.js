@@ -28,6 +28,10 @@ else if(menu_items.length != 0) {
     li_width_init += more_menu.width();
 }
 
+jQuery.expr[':'].contains = function(a, i, m) {
+    return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
+};
+
 $(document).ready(function() {
     $("#search-btn").click(function(){ $("#search_input").toggle(); });
     if($(window).width() > 758) {
@@ -43,6 +47,13 @@ $(document).ready(function() {
             }
         });
     }
+    var brand = $('*:contains("MARIA ÅKERBERG")');
+    brand.each(function(index) {
+        if ($(brand[index]).is("h1, h2, h3, h4, h5, h6, p, a, strong, b, u, mark, small")) {
+            var brand_text = brand[index].innerHTML.replace(/MARIA ÅKERBERG/g, "MARIA&#160;ÅKERBERG");
+            $(brand[index]).html(brand_text);
+        }
+    });
 });
 
 $(window).resize(function() {
