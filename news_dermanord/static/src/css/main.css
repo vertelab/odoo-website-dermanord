@@ -26,10 +26,3 @@
     bottom: 9px;
     left: 30px;
 }
-
-.blog_background_image {
-    width: 100%;
-    min-height: 500px;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
