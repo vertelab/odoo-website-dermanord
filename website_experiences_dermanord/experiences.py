@@ -52,26 +52,26 @@ class blog_post(models.Model):
 
 class ExperiencesController(http.Controller):
 
-    @http.route('/experiences', auth="public", website=True)
+    @http.route(['/experiences'], type='http', auth="public", website=True)
     def experiences(self, **post):
-        return http.request.render('website_experiences_dermanord.experiences', {})
+        return request.website.render('website_experiences_dermanord.experiences', {})
 
-    @http.route('/experiences/<model("blog.post"):blog_post>', auth="public") #????
-    def experiences(self, **post):
-        pass
+    #~ @http.route('/experiences/<model("blog.post"):blog_post>', auth="public") #????
+    #~ def experiences(self, **post):
+        #~ pass
 
-    @http.route('/experiences/json/get_experiences', type='json', auth="public", website=True)
-    def experiences(self, **post):
-        tags = env['blog.tag'].search([('experience', '=', True)], order="sequence")
-        res = []
-        exp_blog = env.ref('website_experience_dermanord')
-        for tag in tags:
-            blog_posts = env['blog.post'].search([('tag_ids', '=', tag.id), ('blog_id', '=', exp_blog.id), ('website_published', '=', True)])
-            res.append({
-                'id': tag.id,
-                'name': tag.name,
-                'posts': [{'id': p.id, 'name': p.name, 'image': p.background_image} for p in blog_posts]
-            })
+    #~ @http.route('/experiences/json/get_experiences', type='json', auth="public", website=True)
+    #~ def experiences(self, **post):
+        #~ tags = env['blog.tag'].search([('experience', '=', True)], order="sequence")
+        #~ res = []
+        #~ exp_blog = env.ref('website_experience_dermanord')
+        #~ for tag in tags:
+            #~ blog_posts = env['blog.post'].search([('tag_ids', '=', tag.id), ('blog_id', '=', exp_blog.id), ('website_published', '=', True)])
+            #~ res.append({
+                #~ 'id': tag.id,
+                #~ 'name': tag.name,
+                #~ 'posts': [{'id': p.id, 'name': p.name, 'image': p.background_image} for p in blog_posts]
+            #~ })
 
 
 

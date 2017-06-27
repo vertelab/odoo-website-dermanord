@@ -1,6 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <!-- News Template -->
+        <template id="news_template" name="News Template">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="container mt32 mb32">
+                        <div class="row">
+                            <t t-foreach="request.env['blog.post'].search([('blog_id', '=', request.env.ref('website_blog.blog_blog_1').id)])" t-as="news_post">
+                                <div class="col-md-6 col-sm-6 col-xs-12 blog_background_image_list" t-attf-style="background-image: url(#{news_post.background_image});"/>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <h6 t-field="news_post.name"/>
+                                    <h4 class="text-muted"><t t-esc="str(news_post.write_date)[:10]"/></h4>
+                                    <p t-field="news_post.subtitle" class="text-muted mt16"/>
+                                    <a t-att-href="'/blog/%s/post/%s' %(news_post.blog_id.id, news_post.id)"><p style="text-decoration: underline; color: #000;">Read more</p></a>
+                                    <h4 class="dn_uppercase">tags:</h4>
+                                    <t t-foreach="news_post.tag_ids" t-as="tag">
+                                        <a t-att-href="'/blog/%s/tag/%s' %(news_post.blog_id.id, tag.id)"><span t-field="tag.name" class="post_tag dn_uppercase"/></a>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="news_detail" name="News Detail">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="container mt32 mb32" style="width: 100%; padding: 0px;">
+                        <div class="blog_background_image" t-attf-style="background-image: url(#{blog_post.background_image});" t-ignore="True">
+                            <div class="container">
+                              <div class="container text-right mt16">
+                                <div class="btn-group css_non_editable_mode_hidden">
+                                    <a id="change_cover" class="btn btn-primary">
+                                        Change Cover
+                                    </a>
+                                    <a id="clear_cover" class="btn btn-danger">
+                                        <span class="fa fa-times"/>
+                                    </a>
+                                </div>
+                                <div class="cover-storage oe_hidden"/>
+                                <t t-call="website.publish_management">
+                                    <t t-set="object" t-value="blog_post"/>
+                                    <t t-set="publish_edit" t-value="True"/>
+                                    <li>
+                                        <form class="duplicate hidden" action="/blogpost/duplicate">
+                                            <input name="blog_post_id" t-att-value="blog_post.id"/>
+                                        </form>
+                                        <a href="#" class="duplicate" onclick="$(this).prev('form').submit()">Duplicate</a>
+                                    </li>
+                                </t>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="container" style="max-width: 1170px;">
+                            <h6 t-field="blog_post.name"/>
+                            <h4 class="text-muted"><t t-esc="str(blog_post.write_date)[:10]"/></h4>
+                            <div id="blog_content" t-field="blog_post.content" class="mt32"/>
+                            <h4 class="dn_uppercase">tags:</h4>
+                            <t t-foreach="blog_post.tag_ids" t-as="tag">
+                                <a t-att-href="'/blog/%s/tag/%s' %(blog_post.blog_id.id, tag.id)"><span t-field="tag.name" class="post_tag dn_uppercase"/></a>
+                            </t>
+                            <section id="comments" class="read_width">
+                                <hr/>
+                                <ul class="media-list" id="comments-list">
+                                    <li t-foreach="comments" t-as="message" class="media">
+                                        <span class="pull-left">
+                                            <img class="media-object img img-circle" t-att-src="website.image_url(message, 'author_avatar')" style="width: 30px"/>
+                                        </span>
+                                        <div class="media-body">
+                                            <t t-call="website.publish_short">
+                                                <t t-set="object" t-value="message"/>
+                                            </t>
+                                            <!-- <strong t-field="message.author_id"/> -->
+                                            <span t-field="message.author_id" style="display: inline-block;" t-field-options="{                             &quot;widget&quot;: &quot;contact&quot;,                             &quot;fields&quot;: [&quot;name&quot;]                         }"/>
+                                            <span class="text-muted">on <span t-field="message.date"/></span>
+                                            <div t-field="message.body" class="discussion_scroll_post"/>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
         <!-- News Dermanord -->
         <template id="page" name="News Dermanord">
             <t t-call="website.layout">
@@ -27,16 +112,29 @@
                             <t t-call="press_dermanord.press_release_block" />
                         </div>
                     </div>
-               
+
                 </section>
                 <section />
             </t>
         </template>
 
+        <template id="news_dermanord_css" inherit_id="website.layout" name="News Dermanord CSS">
+            <!-- Customize css -->
+            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
+                <link href="/news_dermanord/static/src/css/main.css" rel="stylesheet" />
+            </xpath>
+        </template>
+
+        <template id="assets_frontend_override" inherit_id="website_sale.assets_frontend">
+            <xpath expr="//script[last()]" position="after">
+                <script type="text/javascript" src="/news_dermanord/static/src/js/main.js" />
+            </xpath>
+        </template>
+
 <!-- Blog Post List: Displaying a list of Blog Posts -->
 <template id="post" name="News Posts">
 
-    
+
 
                   <div class="text-muted">
                       <h4
@@ -58,10 +156,10 @@
                     </div>
                   </div>
 
-          
+
 
         <div class="oe_structure"/>
- 
+
 </template>
 
 

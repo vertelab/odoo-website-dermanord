@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution, third party addon
-#    Copyright (C) 2017- Vertel AB (<http://vertel.se>).
+#    Copyright (C) 2004-2015 Vertel AB (<http://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,20 +20,19 @@
 ##############################################################################
 
 {
-    'name': 'News Dermanord',
+    'name': 'Website Blog Dermanord',
     'version': '1.0',
     'category': 'website',
     'summary': '',
     'description': """
-News page for Dermanord
-====================
+Blog configuration for Dermanord AB
+===================================
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_imagemagick','website_blog_dermanord'],
+    'depends': ['website_blog'],
     'data': [
-        'news_dermanord_view.xml',
-        'news_dermanord_data.xml',
+        'website_blog_view.xml',
 ],
     'application': False,
 }

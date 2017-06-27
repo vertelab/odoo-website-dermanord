@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_blog_blog_form" model="ir.ui.view">
+            <field name="name">blog.blog.form</field>
+            <field name="model">blog.blog</field>
+            <field name="inherit_id" ref="website_blog.view_blog_blog_form"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="post_short"/>
+                    <field name="post_complete"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
