@@ -39,7 +39,7 @@
                             </div>
                             <div class="col-md-8 col-sm-8 dn_header_banner hidden-xs">
                                 <div class="container dn_header_container">
-                                    <t t-set="current_menu" t-value="website.current_menu(news_blog_url)"/>
+                                    <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path)"/>
                                     <span itemprop="image" t-field="current_menu.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;&quot;, &quot;alt-field&quot;: &quot;name&quot;}"/>
                                     <h6 class="page_title">
                                         <span class="" t-field="current_menu.page_title"/>
