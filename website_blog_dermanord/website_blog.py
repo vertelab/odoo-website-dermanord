@@ -25,6 +25,7 @@ from openerp.http import request
 from openerp.addons.website_blog.controllers.main import WebsiteBlog
 from openerp.addons.website.models.website import slug
 from openerp.osv.orm import browse_record
+from openerp import SUPERUSER_ID
 import werkzeug
 
 import logging
