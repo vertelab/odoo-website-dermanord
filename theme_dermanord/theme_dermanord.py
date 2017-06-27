@@ -38,7 +38,11 @@ class website(models.Model):
     _inherit = 'website'
 
     def current_menu(self, path):
-        return self.env['website.menu'].search([('url', '=', path)])
+        menu = self.env['website.menu'].search([('url', '=', path)])
+        if not menu:
+            menu = self.env['website.menu'].search(
+                [('url', '=', '/'.join([x.split('-')[-1] if x.split('-')[-1].isdigit() else x for x in path.split('/')]))])
+        return menu
 
     def current_submenu(self, path):
         menu = self.env['website.menu'].search([('url', '=', path)])
