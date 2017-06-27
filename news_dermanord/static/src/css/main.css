@@ -18,12 +18,13 @@
 .blog_content_div {
     position: relative;
     height: 300px;
+    padding-left: 30px;
 }
 
 .blog_tag_div {
     position: absolute;
     bottom: 9px;
-    left: 20px;
+    left: 30px;
 }
 
 .blog_background_image {
