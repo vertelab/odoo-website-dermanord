@@ -255,6 +255,10 @@ footer input, footer .input-group-addon {
     padding: 15px;
 }
 
+.navbar.navbar-default.navbar-static-top > .container > .navbar-header {
+    width: 100%;
+}
+
 @media (max-width: 767px) {
     #top_menu > li > a {
         color: #fff !important;
