@@ -8,16 +8,20 @@
                     <div class="container mt32 mb32">
                         <div class="row">
                             <t t-foreach="request.env['blog.post'].search([('blog_id', '=', request.env.ref('website_blog.blog_blog_1').id)])" t-as="news_post">
-                                <div class="col-md-6 col-sm-6 col-xs-12 blog_background_image_list" t-attf-style="background-image: url(#{news_post.background_image});"/>
-                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <h6 t-field="news_post.name"/>
-                                    <h4 class="text-muted"><t t-esc="str(news_post.write_date)[:10]"/></h4>
-                                    <p t-field="news_post.subtitle" class="text-muted mt16"/>
-                                    <a t-att-href="'/blog/%s/post/%s' %(news_post.blog_id.id, news_post.id)"><p style="text-decoration: underline; color: #000;">Read more</p></a>
-                                    <h4 class="dn_uppercase">tags:</h4>
-                                    <t t-foreach="news_post.tag_ids" t-as="tag">
-                                        <a t-att-href="'/blog/%s/tag/%s' %(news_post.blog_id.id, tag.id)"><span t-field="tag.name" class="post_tag dn_uppercase"/></a>
-                                    </t>
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list" t-attf-style="background-image: url(#{news_post.background_image});"/>
+                                    <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_content_div">
+                                        <h6 t-field="news_post.name"/>
+                                        <h4 class="text-muted"><t t-esc="str(news_post.write_date)[:10]"/></h4>
+                                        <p t-field="news_post.subtitle" class="text-muted mt16"/>
+                                        <a t-att-href="'/blog/%s/post/%s' %(news_post.blog_id.id, news_post.id)"><p style="text-decoration: underline; color: #000;">Read more</p></a>
+                                        <div class="blog_tag_div">
+                                            <h4 class="dn_uppercase blog_content_tag">tags:</h4>
+                                            <t t-foreach="news_post.tag_ids" t-as="tag">
+                                                <a t-att-href="'/blog/%s/tag/%s' %(news_post.blog_id.id, tag.id)"><span t-field="tag.name" class="post_tag dn_uppercase"/></a>
+                                            </t>
+                                        </div>
+                                    </div>
                                 </div>
                             </t>
                         </div>
