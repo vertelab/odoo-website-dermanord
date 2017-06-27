@@ -18,11 +18,17 @@
 .blog_content_div {
     position: relative;
     height: 300px;
-    padding-left: 30px;
+    padding-left: 30px !important;
 }
 
 .blog_tag_div {
     position: absolute;
     bottom: 9px;
     left: 30px;
+}
+
+@media (max-width: 768px) {
+    .blog_content_div {
+        padding-left: 0px !important;
+    }
 }

@@ -15,7 +15,7 @@
                                         <h4 class="text-muted"><t t-esc="str(news_post.write_date)[:10]"/></h4>
                                         <p t-field="news_post.subtitle" class="text-muted mt16"/>
                                         <a t-att-href="'/blog/%s/post/%s' %(news_post.blog_id.id, news_post.id)"><p style="text-decoration: underline; color: #000;">Read more</p></a>
-                                        <div class="blog_tag_div" style="padding-left: 30px;">
+                                        <div class="blog_tag_div">
                                             <h4 class="dn_uppercase blog_content_tag">tags:</h4>
                                             <t t-foreach="news_post.tag_ids" t-as="tag">
                                                 <a t-att-href="'/blog/%s/tag/%s' %(news_post.blog_id.id, tag.id)"><span t-field="tag.name" class="post_tag dn_uppercase"/></a>
