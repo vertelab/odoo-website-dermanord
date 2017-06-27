@@ -54,20 +54,22 @@ class website(models.Model):
                 home_menu = self.env.ref('website.menu_homepage')
                 blog_id = path[(path.index('/blog/')+len('/blog/')):path.index('/post/')].split('-')[-1]
                 post_id = path.split('/post/')[-1].split('-')[-1]
-                if isinstance(blog_id, int) and isinstance(post_id, int):
+                try:
                     blog = request.env['blog.blog'].browse(int(blog_id))
                     post = request.env['blog.post'].browse(int(post_id))
-                    if blog and post:
-                        breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="/blog/%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name, post.id, post.name))
-                        return '<ol class="breadcrumb">%s</ol>' %breadcrumb[0]
+                    breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="/blog/%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name, post.id, post.name))
+                    return '<ol class="breadcrumb">%s</ol>' %breadcrumb[0]
+                except:
+                    _logger.error('Blog post does not exist')
             else:
                 home_menu = self.env.ref('website.menu_homepage')
                 blog_id = path.split('/blog/')[-1].split('-')[-1]
-                if isinstance(blog_id, int):
+                try:
                     blog = request.env['blog.blog'].browse(int(blog_id))
-                    if blog:
-                        breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name))
-                        return '<ol class="breadcrumb">%s</ol>' %breadcrumb[0]
+                    breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name))
+                    return '<ol class="breadcrumb">%s</ol>' %breadcrumb[0]
+                except:
+                    _logger.error('Blog does not exist')
         else: # url is a normal menu or submenu
             menu = self.env['website.menu'].search([('url', '=', path)])
             while menu and menu != self.env.ref('website.main_menu') and menu != self.env.ref('website.menu_homepage'):
