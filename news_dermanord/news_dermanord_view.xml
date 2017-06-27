@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <!-- News Template -->
-        <template id="news_template" name="News Template">
+        <template id="news_list" name="News List">
             <t t-call="website.layout">
                 <div id="wrap">
                     <div class="container mt32 mb32">
