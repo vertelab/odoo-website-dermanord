@@ -5,6 +5,49 @@
         <template id="news_list" name="News List">
             <t t-call="website.layout">
                 <div id="wrap">
+                    <t t-set="no_breadcrumb" t-value="True"/>
+                    <t t-set="news_blog_url" t-value="'/blog/%s' %request.env.ref('website_blog.blog_blog_1').id"/>
+                    <div id="dn_header" class="container" style="width: 100%; padding: 0px;">
+                        <div t-if="news_blog_url and website.current_submenu(news_blog_url).child_id" class="col-md-12 dn_header_banner">
+                            <div class="col-md-4 col-sm-4 col-xs-12 dn_header_banner">
+                                <div class="dn_header_nav">
+                                    <ul class="nav nav-pills nav-stacked">
+                                        <t t-set="current_path" t-value="request.httprequest.path"/>
+                                        <t t-if="'/tag/' in current_path">
+                                            <t t-set="current_blog_id" t-value="current_path[(current_path.index('/blog/')+len('/blog/')):current_path.index('/tag/')].split('-')[-1]"/>
+                                            <t t-set="current_tag_id" t-value="current_path.split('/tag/')[-1].split('-')[-1]"/>
+                                            <t t-set="current_path" t-value="'/blog/%s/tag/%s' %(current_blog_id, current_tag_id)"/>
+                                        </t>
+                                        <t t-foreach="website.current_submenu(news_blog_url).child_id" t-as="submenu">
+                                            <li t-att-class="'hidden-xs %s' %('active' if submenu.url == current_path else '')">
+                                                <a t-att-href="submenu.url" class="dn_header_nav_tab">
+                                                    <span class="text-center dn_uppercase">
+                                                        <t t-esc="submenu.name"/>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li class="hidden-lg hidden-md hidden-sm">
+                                                <a t-att-href="submenu.url" class="dn_header_nav_tab">
+                                                    <span class="text-center dn_uppercase">
+                                                        <t t-esc="submenu.name"/>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        </t>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-8 dn_header_banner hidden-xs">
+                                <div class="container dn_header_container">
+                                    <t t-set="current_menu" t-value="website.current_menu(news_blog_url)"/>
+                                    <span itemprop="image" t-field="current_menu.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;&quot;, &quot;alt-field&quot;: &quot;name&quot;}"/>
+                                    <h6 class="page_title">
+                                        <span class="" t-field="current_menu.page_title"/>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="container mb32">
                         <div class="row">
                             <t t-set="news_blog" t-value="request.env['blog.post'].search([('blog_id', '=', request.env.ref('website_blog.blog_blog_1').id), ('website_published', '=', True)])"/>
