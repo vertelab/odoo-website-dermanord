@@ -48,13 +48,30 @@ class website(models.Model):
             return menu
 
     def get_breadcrumb(self, path):
-        menu = self.env['website.menu'].search([('url', '=', path)])
         breadcrumb = []
-        while menu and menu != self.env.ref('website.main_menu'):
-            breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
-            menu = menu.parent_id
-        breadcrumb.append('<li><a href="/">home</a></li>')
-        return '<ol class="breadcrumb">%s</ol>' %''.join(reversed(breadcrumb))
+        if path.startswith('/blog/'): # url is a blog
+            if '/post/' in path:
+                home_menu = self.env.ref('website.menu_homepage')
+                blog_id = path[(path.index('/blog/')+len('/blog/')):path.index('/post/')].split('-')[-1]
+                post_id = path.split('/post/')[-1].split('-')[-1]
+                blog = request.env['blog.blog'].browse(int(blog_id))
+                post = request.env['blog.post'].browse(int(post_id))
+                breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="/blog/%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name, post.id, post.name))
+                return '<ol class="breadcrumb">%s</ol>' %breadcrumb[0]
+            else:
+                home_menu = self.env.ref('website.menu_homepage')
+                blog_id = path.split('/blog/')[-1].split('-')[-1]
+                blog = request.env['blog.blog'].browse(int(blog_id))
+                breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name))
+                return '<ol class="breadcrumb">%s</ol>' %breadcrumb[0]
+        else: # url is a normal menu or submenu
+            menu = self.env['website.menu'].search([('url', '=', path)])
+            while menu and menu != self.env.ref('website.main_menu') and menu != self.env.ref('website.menu_homepage'):
+                breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
+                menu = menu.parent_id
+            home_menu = self.env.ref('website.menu_homepage')
+            breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
+            return '<ol class="breadcrumb">%s</ol>' %''.join(reversed(breadcrumb))
 
 
 class website_menu(models.Model):
