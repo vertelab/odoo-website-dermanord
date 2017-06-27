@@ -3,10 +3,7 @@
  ============================================================ */
 
 #top_menu {
-    width: 100%;
-/*
-    overflow: hidden;
-*/
+    margin: auto;
 }
 
 #top_menu a {
@@ -258,13 +255,7 @@ footer input, footer .input-group-addon {
     padding: 15px;
 }
 
-@media (min-width: 768px) {
-    .navbar-header {
-        width: 100%;
-    }
-}
-
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     #top_menu > li > a {
         color: #fff !important;
     }
@@ -293,8 +284,14 @@ footer input, footer .input-group-addon {
         margin-top: 50px !important;
     }
 
-    .navbar.navbar-default.navbar-static-top {
+    .navbar.navbar-default.navbar-static-top > .container {
+        padding: 0px;
+    }
+
+    .navbar.navbar-default.navbar-static-top > .container > .navbar-header {
+        background-color: #fff;
         width: 100%;
+        margin: 0px;
         position: fixed;
         top: 0px;
         left: 0px;
