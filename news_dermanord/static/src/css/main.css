@@ -12,7 +12,9 @@
     width: 100%;
     height: 300px;
     background-repeat: no-repeat;
-    background-size: cover;
+    -o-background-size: cover;
+    -moz-background-size: cover;
+    -webkit-background-size: cover;
 }
 
 .blog_content_div {
