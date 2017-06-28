@@ -1,8 +1,8 @@
-var search_icron = $("#search-btn-modal").closest("li");
-var shop_cart = $("a[href='/shop/cart']").closest("li");
-var divider = $(".divider").closest("li");
-var my_account = $(".dropdown-menu.js_usermenu").closest("li");
-var more_menu = $("li#more_dropdown");
+var search_icron = $("#top_menu").find("#search-btn-modal").closest("li");
+var shop_cart = $("#top_menu").find("a[href='/shop/cart']").closest("li");
+var divider = $("#top_menu").find(".divider").closest("li");
+var my_account = $("#top_menu").find(".dropdown-menu.js_usermenu").closest("li");
+var more_menu = $("#top_menu").find("li#more_dropdown");
 var menu_items = [];
 var more_menu_items = [];
 $("#top_menu").children().each(function() {
@@ -15,7 +15,7 @@ $("#top_menu").children().each(function() {
     else if($(this).attr("id") != "more_dropdown")
         menu_items.push($(this));
 });
-$("#more_dropdown").find("ul").children().each(function() {
+$("#top_menu").find("#more_dropdown").find("ul").children().each(function() {
     more_menu_items.push($(this));
 });
 
