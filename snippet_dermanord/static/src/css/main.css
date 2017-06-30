@@ -99,6 +99,12 @@ a {
     max-width: 100%;
 }
 
+.sale_promotions_text {
+    background-color: rgba(0,0,0,0.4);
+    color: #fff;
+    margin-left: 3%;
+}
+
 /*! Blog Slide */
 .blog_slide a {
     color: #000 !important;
