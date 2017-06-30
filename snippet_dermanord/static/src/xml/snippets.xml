@@ -7,7 +7,7 @@
             <img class="img-responsive blog_banner_img" t-att-src="background_image" t-att-data-cke-saved-src="background_image"/>
              <div class="container">
                 <div class="row content">
-                    <div class="text-center sale_promotions_text">
+                    <div class="col-md-12 col-sm-12 text-center">
                         <h6 class="mb32"><i><t t-esc="blog_name"/></i></h6>
                         <p>
                             <a class="dn_btn dn_primary" href="/page/experiences">DISCOVER MORE</a>
@@ -26,7 +26,7 @@
                 <img class="img-responsive sale_promotions_img" t-att-src="background_image" t-att-data-cke-saved-src="background_image"/>
                  <div class="container">
                     <div class="row content">
-                        <div class="col-md-12 col-sm-12">
+                        <div class="sale_promotions_text">
                             <h4 class="mb16 dn_uppercase"><t t-esc="sp_name"/></h4>
                             <h5 class="mb16"><t t-esc="sp_description"/></h5>
                         </div>
