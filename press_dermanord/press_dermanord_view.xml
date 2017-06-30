@@ -208,7 +208,7 @@
                     </div>
                     <div class="container img_press_text">
                         <span class="pull-right css_editable_mode_hidden" style="margin-right: 20px;">
-                            <a class="img_press_original" href="/" title="Download for press"><i class="fa fa-file-o"/></a>
+                            <a class="img_press_original" href="/" title="Download for print"><i class="fa fa-file-o"/></a>
                         </span>
                         <span class="pull-right css_editable_mode_hidden" style="margin-right: 30px;">
                             <a class="img_press_website" href="/" title="Download for website"><i class="fa fa-globe"/></a>

@@ -27,6 +27,7 @@
                 <script type="text/javascript" src="/website_experiences_dermanord/static/src/js/experiences.js" />
             </xpath>
         </template>
+        <!--
         <template id="website.experiences" name="Experiences" page="True">
             <t t-call="website.layout">
                 <div id="wrap">
@@ -54,9 +55,6 @@
                     <div class="oe_structure">
                         <div class="container" style="width: 100%; padding: 32px 0px;">
                             <t t-set="blog_pure_cell_treatment_stories" t-value="request.env.ref('website_experiences_dermanord.pure_cell_treatment_stories')"/>
-<!--
-                            <t t-set="posts_pure_cell_treatment_stories" t-value="request.env['blog.post'].search([('blog_id', '=', blog_pure_cell_treatment_stories.id),  ('website_published', '=', True)], order='website_published desc')"/>
--->
                             <div class="row">
                                 <div class="col-md-12 col-sm-12 col-xs-12 mt32 mb32">
                                     <h2 class="text-center dn_uppercase" t-field="blog_pure_cell_treatment_stories.name"/>
@@ -67,9 +65,6 @@
                                 <div class="row">
                                     <div class="carousel slide mb32" id="pure_cell_treatment_stories_slide">
                                         <div class="carousel-inner">
-<!--
-                                            <t t-foreach="posts_pure_cell_treatment_stories" t-as="blog_post">
--->
                                             <t t-foreach="posts_list" t-as="post_list">
                                                 <div t-att-class="'col-md-12 col-sm-12 col-xs-12 mt32 item %s' %('active' if post_list_index == 0 else '')">
                                                     <div class="container">
@@ -86,8 +81,6 @@
                                                                             </div>
                                                                             <div class="col-md-12 col-sm-12 col-xs-12 mb32">
                                                                                 <p class="text-center text-muted" t-field="blog_post.subtitle"/>
-<!--                                                                           <p class="text-center text-muted"><span t-raw="(blog_post.content[:300] + '...') if len(blog_post.content) &gt;= 300 else blog_post.content"/></p>
--->
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -97,9 +90,6 @@
                                                     </div>
                                                 </div>
                                             </t>
-<!--
-                                            </t>
--->
                                         </div>
                                         <div class="carousel-control left" data-slide="prev" data-target="#pure_cell_treatment_stories_slide" href="#pure_cell_treatment_stories_slide" style="width: 10%">
                                             <i class="fa fa-chevron-left"/>
@@ -115,10 +105,10 @@
                 </div>
             </t>
         </template>
+        -->
+        <!--
         <template id="custom_snippets" inherit_id="website.snippets" name="Custom Snippets">
-            <!-- Customize Structure -->
             <xpath expr="//div[@id='snippet_structure']" position="inside">
-                <!-- EXPERIENCES SNIPPET -->
                 <div id="dermanord_experiences">
                     <div class="oe_snippet_thumbnail">
                         <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_banner.png" />
@@ -144,13 +134,10 @@
                     </section>
                 </div>
             </xpath>
-            <!-- Customize Content -->
             <xpath expr="//div[@id='snippet_content']" position="inside" />
-            <!-- Customize Features -->
             <xpath expr="//div[@id='snippet_feature']" position="inside" />
         </template>
         <template id="snippet_options" inherit_id="website.snippet_options" name="Dermanord Experiences Snippet Options">
-            <!--
                  <xpath expr="." position="inside">
                  <div data-snippet-option-id='dermanord_experiences'
                  data-selector="oe_dermexp_body">
@@ -162,7 +149,7 @@
                  </li>
                  </div>
                  </xpath>
-            -->
         </template>
+        -->
     </data>
 </openerp>
