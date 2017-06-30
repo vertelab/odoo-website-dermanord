@@ -81,10 +81,32 @@
             </t>
         </template>
         <template id="news_detail" name="News Detail">
-            <xpath expr="//div[@class='blog_title']" position="attributes">
-                <attribute name="class">blog_title hidden</attribute>
-            </xpath>
-            <xpath expr="//div[@id='blog_content']" position="replace">
+            <t t-call="website_blog.index">
+                <div class="cover js_fullheight" id="title" t-attf-style="background-image: url(#{blog_post.background_image})" t-ignore="True">
+                    <div class="container">
+                      <div class="container text-right mt16">
+                        <div class="btn-group css_non_editable_mode_hidden">
+                            <a id="change_cover" class="btn btn-primary">
+                                Change Cover
+                            </a>
+                            <a id="clear_cover" class="btn btn-danger">
+                                <span class="fa fa-times"/>
+                            </a>
+                        </div>
+                        <div class="cover-storage oe_hidden"></div>
+                        <t t-call="website.publish_management">
+                            <t t-set="object" t-value="blog_post"/>
+                            <t t-set="publish_edit" t-value="True"/>
+                            <li>
+                                <form class="duplicate hidden" action="/blogpost/duplicate">
+                                    <input name="blog_post_id" t-att-value="blog_post.id"/>
+                                </form>
+                                <a href="#" class="duplicate" onclick="$(this).prev('form').submit()">Duplicate</a>
+                            </li>
+                        </t>
+                      </div>
+                    </div>
+                </div>
                 <div id="blog_block" class="container mt32 mb32">
                     <h6 t-field="blog_post.name"/>
                     <h4 class="text-muted"><t t-esc="str(blog_post.write_date)[:10]"/></h4>
@@ -94,13 +116,7 @@
                         <a t-att-href="'/blog/%s/tag/%s' %(blog_post.blog_id.id, tag.id)"><span t-field="tag.name" class="post_tag dn_uppercase"/></a>
                     </t>
                 </div>
-            </xpath>
-            <xpath expr="//section[@id='comments']" position="attributes">
-                <attribute name="class">read_width hidden</attribute>
-            </xpath>
-            <xpath expr="//div[@class='cover cover_footer mb0 text-center']" position="attributes">
-                <attribute name="class">cover cover_footer mb0 text-center hidden</attribute>
-            </xpath>
+            </t>
         </template>
         <!-- News Dermanord -->
         <template id="page" name="News Dermanord">

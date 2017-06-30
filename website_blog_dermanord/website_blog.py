@@ -36,7 +36,17 @@ class Blog(models.Model):
 
     post_short = fields.Many2one(comodel_name='ir.ui.view', string='Post Short')
     post_complete = fields.Many2one(comodel_name='ir.ui.view', string='Post Complete')
+    post_content = fields.Html(string='Post Content')
 
+class BlogPost(models.Model):
+    _inherit = 'blog.post'
+
+    @api.model
+    def create(self, vals):
+        blog = self.env['blog.blog'].browse(int(vals.get('blog_id', 0)))
+        if blog and blog.post_content:
+            vals['content'] = blog.post_content
+        return super(BlogPost, self).create(vals)
 
 class QueryURL(object):
     def __init__(self, path='', path_args=None, **args):

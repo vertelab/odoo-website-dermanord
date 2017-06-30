@@ -44,73 +44,12 @@
                 <section />
             </t>
         </template>
-        <template id="press_detail" name="Press Detail" inherit_id="website_blog.blog_post_complete">
-            <!--
-            <xpath expr="//div[@class='cover js_fullheight']" position="attributes">
-                <attribute name="class">cover js_fullheight hidden</attribute>
-            </xpath>
-            <xpath expr="//section[@id='comments']" position="attributes">
-                <attribute name="class">read_width hidden</attribute>
-            </xpath>
-            <xpath expr="//t[@t-if='next_post']/div[@class='cover cover_footer mb0 text-center']" position="attributes">
-                <attribute name="class">cover cover_footer mb0 text-center hidden</attribute>
-            </xpath>
-            <xpath expr="//div[@id='blog_content']" position="before">
+        <template id="press_detail" name="Press Detail">
+            <t t-call="website_blog.index">
                 <h2 t-field="blog_post.name" class="text-center"/>
-                <h3 t-field="blog_post.subtitle" class="text-muted"/>
-            </xpath>
-            <xpath expr="//div[@id='blog_content']" position="after">
-                <section>
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h3 class="text-center">Kontaktpersoner</h3>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section>
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-6 mt16">
-                                <img alt="Odoo image and text block" class="img img-responsive shadow mb16" src="/website/static/src/img/library/helpdesk.jpg"/>
-                            </div>
-                            <div class="col-md-6 mt16">
-                                <h3>Namn</h3>
-                                Presskontakt<br/>VD<br/>
-                                <span class="fa fa-envelope"/>
-                                <a href="mailto:exempel@exempel.com">exempel@exempel.com</a>
-                                <br/>
-                                <span class="fa fa-phone"/>
-                                <a href="tel:+46131234567">0131234567</a>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section class="mt16 mb16">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12 text-center mt16 mb32">
-                                <h3>Bilder &amp; Videor</h3>
-                            </div>
-                            <div class="col-md-12 mb16 mt16">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <img alt="Odoo - Sample 1 for three columns" class="img img-rounded img-responsive" src="/website/static/src/img/desert_thumb.jpg"/>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <img alt="Odoo - Sample 2 for three columns" class="img img-rounded img-responsive" src="/website/static/src/img/deers_thumb.jpg"/>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <img alt="Odoo - Sample 3 for three columns" class="img img-rounded img-responsive" src="/website/static/src/img/china_thumb.jpg"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </xpath>
-            -->
+                <h3 t-field="blog_post.subtitle" class="text-center text-muted"/>
+                <div id="blog_content" t-field="blog_post.content" class="mt32"/>
+            </t>
         </template>
         <template id="press_dermanord_css_js" inherit_id="website.layout" name="Customize CSS and JS for Dermanord press page">
             <!-- Customize css -->

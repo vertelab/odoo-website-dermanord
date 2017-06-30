@@ -9,6 +9,7 @@
                 <field name="name" position="after">
                     <field name="post_short"/>
                     <field name="post_complete"/>
+                    <field name="post_content"/>
                 </field>
             </field>
         </record>
