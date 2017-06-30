@@ -193,6 +193,7 @@ footer input, footer .input-group-addon {
     position: absolute;
     top: 5%;
     left: 5%;
+    padding-right: 5%;
 }
 
 .dn_header_nav_tab {
