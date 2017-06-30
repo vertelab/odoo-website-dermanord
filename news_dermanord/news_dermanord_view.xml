@@ -108,7 +108,7 @@
                     </div>
                 </div>
                 <div id="blog_block" class="container mt32 mb32">
-                    <h6 t-field="blog_post.name"/>
+                    <h6 t-field="blog_post.name" id="blog_post_name" t-att-data-blog-id="blog_post.id"/>
                     <h4 class="text-muted"><t t-esc="str(blog_post.write_date)[:10]"/></h4>
                     <div id="blog_content" t-field="blog_post.content" class="mt32"/>
                     <h4 class="dn_uppercase mt32">tags:</h4>
