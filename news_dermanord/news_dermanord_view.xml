@@ -80,7 +80,7 @@
                 </div>
             </t>
         </template>
-        <template id="news_detail" name="News Detail" inherit_id="website_blog.blog_post_complete">
+        <template id="news_detail" name="News Detail">
             <xpath expr="//div[@class='blog_title']" position="attributes">
                 <attribute name="class">blog_title hidden</attribute>
             </xpath>

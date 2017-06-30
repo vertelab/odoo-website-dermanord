@@ -24,14 +24,6 @@ from openerp.http import request
 import logging
 _logger = logging.getLogger(__name__)
 
-#~ class website(models.Model):
-    #~ _inherit = 'website'
-
-    #~ @api.model
-    #~ def get_id_from_url(self, url):
-        #~ _logger.warn('Haojun')
-        #~ pass
-
 
 class newsDermanord(http.Controller):
 
