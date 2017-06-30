@@ -53,7 +53,7 @@
                             <t t-set="news_blog" t-value="request.env['blog.post'].search([('blog_id', '=', blog.id), ('website_published', '=', True)])"/>
                             <t t-if="'/tag/' in request.httprequest.path">
                                 <t t-set="current_tag_id" t-value="request.httprequest.path.split('/tag/')[-1].split('-')[-1]"/>
-                                <t t-set="news_blog" t-value="request.env['blog.post'].search([('blog_id', '=', request.env.ref('website_blog.blog_blog_1').id), ('tag_ids', 'in', int(current_tag_id)), ('website_published', '=', True)])"/>
+                                <t t-set="news_blog" t-value="request.env['blog.post'].search([('blog_id', '=', blog.id), ('tag_ids', 'in', int(current_tag_id)), ('website_published', '=', True)])"/>
                             </t>
                             <t t-foreach="news_blog" t-as="news_post">
                                 <div class="col-md-12 col-sm-12 col-xs-12">
