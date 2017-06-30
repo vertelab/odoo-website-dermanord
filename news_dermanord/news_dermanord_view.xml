@@ -9,7 +9,7 @@
                     <t t-set="news_blog_url" t-value="'/blog/%s' %blog.id"/>
                     <div id="dn_header" class="container" style="width: 100%; padding: 0px;">
                         <div t-if="news_blog_url and website.current_submenu(news_blog_url).child_id" class="col-md-12 dn_header_banner">
-                            <div class="col-md-4 col-sm-4 col-xs-12 dn_header_banner">
+                            <div class="col-md-2 col-sm-2 col-xs-12 dn_header_banner">
                                 <div class="dn_header_nav">
                                     <ul class="nav nav-pills nav-stacked">
                                         <t t-set="current_path" t-value="request.httprequest.path"/>
@@ -37,7 +37,7 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col-md-8 col-sm-8 dn_header_banner hidden-xs">
+                            <div class="col-md-10 col-sm-10 dn_header_banner hidden-xs">
                                 <div class="container dn_header_container">
                                     <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path)"/>
                                     <span itemprop="image" t-field="current_menu.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;&quot;, &quot;alt-field&quot;: &quot;name&quot;}"/>
@@ -50,7 +50,7 @@
                     </div>
                     <div class="container mb32">
                         <div class="row">
-                            <t t-set="news_blog" t-value="request.env['blog.post'].search([('blog_id', '=', request.env.ref('website_blog.blog_blog_1').id), ('website_published', '=', True)])"/>
+                            <t t-set="news_blog" t-value="request.env['blog.post'].search([('blog_id', '=', blog.id), ('website_published', '=', True)])"/>
                             <t t-if="'/tag/' in request.httprequest.path">
                                 <t t-set="current_tag_id" t-value="request.httprequest.path.split('/tag/')[-1].split('-')[-1]"/>
                                 <t t-set="news_blog" t-value="request.env['blog.post'].search([('blog_id', '=', request.env.ref('website_blog.blog_blog_1').id), ('tag_ids', 'in', int(current_tag_id)), ('website_published', '=', True)])"/>
