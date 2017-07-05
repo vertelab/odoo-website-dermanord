@@ -30,7 +30,7 @@ News page for Dermanord
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_imagemagick','website_blog_dermanord','theme_dermanord'],
+    'depends': ['website_blog_dermanord','theme_dermanord'],
     'data': [
         'news_dermanord_view.xml',
         'news_dermanord_data.xml',

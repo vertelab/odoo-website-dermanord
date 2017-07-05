@@ -119,6 +119,7 @@ a {
 
 .ph_block {
     padding: 20px 0px !important;
+    border: 1px solid transparent;
 }
 
 .ph_block:hover {

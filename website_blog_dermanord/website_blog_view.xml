@@ -96,5 +96,47 @@
             <field name="view_mode">tree,form</field>
             <field name="context">{"search_default_current": 1}</field>
         </record>
+
+        <template id="blog_post_products" name="Blog Post Products">
+            <div class="container mt32 mb32">
+                <t t-if="len(blog_post.object_ids) &gt; 0" t-foreach="blog_post.object_ids" t-as="object">
+                    <t t-if="object.object_id._name == 'product.template'">
+                        <a t-att-href="'/dn_shop/product/%s' %object.object_id.id">
+                            <div class="col-md-3 col-xs-12 bpp_block">
+                                <img class="img img-responsive bpp_img" t-att-src="'/imagefield/product.template/image/%s/ref/website_blog_dermanord.img_product' %object.object_id.id"/>
+                                <div class="container bpp_desc_div">
+                                    <h4 class="dn_uppercase" t-field="object.object_id.name"/>
+                                    <h5 class="bpp_desc text-muted" t-field="object.object_id.description_sale"/>
+                                </div>
+                            </div>
+                        </a>
+                    </t>
+                    <t t-if="object.object_id._name == 'product.product'">
+                        <a t-att-href="'/dn_shop/variant/%s' %object.object_id.id">
+                            <div class="col-md-3 col-xs-12 bpp_block">
+                                <img class="img img-responsive bpp_img" t-att-src="'/imagefield/product.product/image/%s/ref/website_blog_dermanord.img_product' %object.object_id.id"/>
+                                <div class="container bpp_desc_div">
+                                    <h4 class="dn_uppercase" t-field="object.object_id.name"/>
+                                    <h5 class="bpp_desc text-muted" t-field="object.object_id.description_sale"/>
+                                </div>
+                            </div>
+                        </a>
+                    </t>
+                </t>
+            </div>
+        </template>
+
+        <template id="website_blog_dermanord_css" inherit_id="website.layout" name="Website Blog Dermanord CSS">
+            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
+                <link href="/website_blog_dermanord/static/src/css/main.css" rel="stylesheet" />
+            </xpath>
+        </template>
+
+        <template id="website_blog_dermanord_js" inherit_id="website.layout" name="Website Blog Dermanord JS">
+            <xpath expr="//body" position="inside">
+                <script type="text/javascript" src="/website_blog_dermanord/static/src/js/main.js" />
+            </xpath>
+        </template>
+
     </data>
 </openerp>

@@ -116,6 +116,10 @@
                         <a t-att-href="'/blog/%s/tag/%s' %(blog_post.blog_id.id, tag.id)"><span t-field="tag.name" class="post_tag dn_uppercase"/></a>
                     </t>
                 </div>
+                <div class="container mt32 mb32">
+                    <h3 class="text-center">Related Products</h3>
+                    <t t-call="website_blog_dermanord.blog_post_products"/>
+                </div>
             </t>
         </template>
         <!-- News Dermanord -->
