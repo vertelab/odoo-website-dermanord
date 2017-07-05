@@ -101,7 +101,7 @@
             <div class="container mt32 mb32">
                 <t t-if="len(blog_post.object_ids) &gt; 0">
                     <h3 class="text-center mb16">Related Products</h3>
-                    <t t-foreach="blog_post.object_ids" t-as="object">
+                    <t t-foreach="blog_post.object_ids.sorted(key=lambda r: r.sequence)" t-as="object">
                         <t t-if="object.object_id._name == 'product.template'">
                             <a t-att-href="'/dn_shop/product/%s' %object.object_id.id">
                                 <div class="col-md-3 col-xs-12 bpp_block">
