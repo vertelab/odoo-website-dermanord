@@ -20,14 +20,14 @@
                                         </t>
                                         <t t-foreach="website.current_submenu(news_blog_url).child_id" t-as="submenu">
                                             <li t-att-class="'hidden-xs %s' %('active' if submenu.url == current_path else '')">
-                                                <a t-att-href="submenu.url" class="dn_header_nav_tab">
+                                                <a t-att-href="submenu.url" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
                                                     <span class="text-center dn_uppercase">
                                                         <t t-esc="submenu.name"/>
                                                     </span>
                                                 </a>
                                             </li>
                                             <li class="hidden-lg hidden-md hidden-sm">
-                                                <a t-att-href="submenu.url" class="dn_header_nav_tab">
+                                                <a t-att-href="submenu.url" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
                                                     <span class="text-center dn_uppercase">
                                                         <t t-esc="submenu.name"/>
                                                     </span>

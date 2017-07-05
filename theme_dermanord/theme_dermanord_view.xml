@@ -277,7 +277,7 @@
                                             </a>
                                         </li>
                                         <li class="hidden-lg hidden-md hidden-sm">
-                                            <a t-att-href="submenu.url" class="dn_header_nav_tab">
+                                            <a t-att-href="submenu.url" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
                                                 <span class="text-center dn_uppercase">
                                                     <t t-esc="submenu.name"/>
                                                 </span>
