@@ -74,7 +74,7 @@
                     </div>
                     <div id="my_page_div" class="col-xs-2">
                         <div class="hidden-lg hidden-md hidden-sm">
-                            <a t-att-href="'/home/%s' %user_id.id" role="menuitem" style="color: #000;"><i class="fa fa-home fa-2x"/></a>
+                            <a t-att-href="'/home/%s' %user_id.id" role="menuitem" style="color: #000;"><i class="fa fa-user fa-2x"/></a>
                         </div>
                     </div>
                     <div id="shop_cart_div" class="col-xs-2">
@@ -191,6 +191,12 @@
                         </div>
                     </div>
                 </t>
+            </xpath>
+        </template>
+
+        <template id="user_navbar" inherit_id="website.user_navbar">
+            <xpath expr="//nav[@id='oe_main_menu_navbar']" position="attributes">
+                <attribute name="groups">base.group_erp_manager</attribute>
             </xpath>
         </template>
 
