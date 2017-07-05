@@ -31,6 +31,22 @@ import werkzeug
 import logging
 _logger = logging.getLogger(__name__)
 
+
+class blog_post_product(models.Model):
+    _name = 'blog.post.product'
+    _order = 'sequence'
+
+    sequence = fields.Integer()
+    blog_post_id = fields.Many2one(comodel_name="blog.post")
+    product_id = fields.Many2one(comodel_name="product.template")
+    name = fields.Char(related='product_id.name')
+    default_code = fields.Char(related='product_id.default_code')
+    type = fields.Selection(related='product_id.type')
+    list_price = fields.Float(related='product_id.list_price')
+    qty_available = fields.Float(related='product_id.qty_available')
+    virtual_available = fields.Float(related='product_id.virtual_available')
+
+
 class Blog(models.Model):
     _inherit = 'blog.blog'
 
@@ -38,8 +54,21 @@ class Blog(models.Model):
     post_complete = fields.Many2one(comodel_name='ir.ui.view', string='Post Complete')
     post_content = fields.Html(string='Post Content')
 
+
 class BlogPost(models.Model):
     _inherit = 'blog.post'
+
+    product_ids = fields.Many2many(comodel_name='product.template', relation="blog_post_product", column1='blog_post_id',column2='product_id', string='Products')
+    blog_post_product_ids = fields.One2many(comodel_name='blog.post.product', inverse_name='blog_post_id', string='Products')
+    object_ids = fields.One2many(comodel_name='blog.post.object', inverse_name='blog_post_id', string='Objects')
+
+    @api.one
+    def update_blog_post_product_ids(self):
+        self.env['blog.post.product'].search([('blog_post_id', '=', self.id)]).unlink()
+        for o in self.object_ids.sorted(lambda o: o.sequence):
+            _logger.error(getattr(o, 'create_blog_post_product', False))
+            if getattr(o, 'create_blog_post_product', False):
+                o.create_blog_post_product(self)
 
     @api.model
     def create(self, vals):
@@ -47,6 +76,60 @@ class BlogPost(models.Model):
         if blog and blog.post_content:
             vals['content'] = blog.post_content
         return super(BlogPost, self).create(vals)
+
+
+class product_template(models.Model):
+    _inherit = 'product.template'
+
+    blog_post_ids = fields.Many2many(comodel_name='blog.post', relation="blog_post_product", column1='product_id', column2='blog_post_id',string='Blog Posts')
+
+
+class blog_post_object(models.Model):
+    _name = 'blog.post.object'
+    _order = 'blog_post_id, sequence, name'
+
+    name = fields.Char(string='Name')
+    description = fields.Text(string='Description')
+    image = fields.Binary(string='Image')
+    sequence = fields.Integer()
+    color = fields.Integer('Color Index')
+    blog_post_id = fields.Many2one(comodel_name='blog.post', string='Blog Posts')
+    object_id = fields.Reference([('product.template', 'Product Template'), ('product.product', 'Product Variant')])
+    @api.one
+    @api.onchange('object_id')
+    def get_object_value(self):
+        if self.object_id:
+            if self.object_id._name == 'product.template' or self.object_id._name == 'product.product':
+                self.res_id = self.object_id.id
+                self.name = self.object_id.name
+                self.description = self.object_id.description_sale
+                self.image = self.object_id.image
+        pass
+
+    @api.one
+    def create_blog_post_product(self, post):
+        if self.object_id._name == 'product.template':
+            self.env['blog.post.product'].create({
+                'blog_post_id': post.id,
+                'product_id': self.object_id.id,
+                'sequence': len(post.product_ids) + 1,
+            })
+        elif self.object_id._name == 'product.product':
+            self.env['blog.post.product'].create({
+                'blog_post_id': post.id,
+                'product_id': self.object_id.product_tmpl_id.id,
+                'sequence': len(post.product_ids) + 1,
+            })
+        #~ elif self.object_id._name == 'product.public.category':
+            #~ for product in self.env['product.template'].search([('public_categ_ids', 'in', self.object_id.id)]):
+                #~ self.env['blog.post.product'].create({
+                    #~ 'blog_post_id': post.id,
+                    #~ 'product_id': product.id,
+                    #~ 'sequence': len(post.product_ids) + 1,
+                #~ })
+        else:
+            pass
+
 
 class QueryURL(object):
     def __init__(self, path='', path_args=None, **args):

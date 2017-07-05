@@ -1,0 +1,6 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_blog_post_object,blog.post.object,model_blog_post_object,,1,1,1,0
+access_blog_post_object_manager,blog.post.object.manager,model_blog_post_object,base.group_website_publisher,1,1,1,1
+access_blog_post_public,blog.post.public,model_blog_post,,1,0,0,0
+access_blog_post_product,blog.post.product,model_blog_post_product,,1,1,1,0
+access_blog_post_product_manager,blog.post.product.manager,model_blog_post_product,base.group_website_publisher,1,1,1,1
