@@ -99,28 +99,31 @@
 
         <template id="blog_post_products" name="Blog Post Products">
             <div class="container mt32 mb32">
-                <t t-if="len(blog_post.object_ids) &gt; 0" t-foreach="blog_post.object_ids" t-as="object">
-                    <t t-if="object.object_id._name == 'product.template'">
-                        <a t-att-href="'/dn_shop/product/%s' %object.object_id.id">
-                            <div class="col-md-3 col-xs-12 bpp_block">
-                                <img class="img img-responsive bpp_img" t-att-src="'/imagefield/product.template/image/%s/ref/website_blog_dermanord.img_product' %object.object_id.id"/>
-                                <div class="container bpp_desc_div">
-                                    <h4 class="dn_uppercase" t-field="object.object_id.name"/>
-                                    <h5 class="bpp_desc text-muted" t-field="object.object_id.description_sale"/>
+                <t t-if="len(blog_post.object_ids) &gt; 0">
+                    <h3 class="text-center mb16">Related Products</h3>
+                    <t t-foreach="blog_post.object_ids" t-as="object">
+                        <t t-if="object.object_id._name == 'product.template'">
+                            <a t-att-href="'/dn_shop/product/%s' %object.object_id.id">
+                                <div class="col-md-3 col-xs-12 bpp_block">
+                                    <img class="img img-responsive bpp_img" t-att-src="'/imagefield/product.template/image/%s/ref/website_blog_dermanord.img_product' %object.object_id.id"/>
+                                    <div class="container bpp_desc_div">
+                                        <h4 class="dn_uppercase" t-field="object.object_id.name"/>
+                                        <h5 class="bpp_desc text-muted" t-field="object.object_id.description_sale"/>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    </t>
-                    <t t-if="object.object_id._name == 'product.product'">
-                        <a t-att-href="'/dn_shop/variant/%s' %object.object_id.id">
-                            <div class="col-md-3 col-xs-12 bpp_block">
-                                <img class="img img-responsive bpp_img" t-att-src="'/imagefield/product.product/image/%s/ref/website_blog_dermanord.img_product' %object.object_id.id"/>
-                                <div class="container bpp_desc_div">
-                                    <h4 class="dn_uppercase" t-field="object.object_id.name"/>
-                                    <h5 class="bpp_desc text-muted" t-field="object.object_id.description_sale"/>
+                            </a>
+                        </t>
+                        <t t-if="object.object_id._name == 'product.product'">
+                            <a t-att-href="'/dn_shop/variant/%s' %object.object_id.id">
+                                <div class="col-md-3 col-xs-12 bpp_block">
+                                    <img class="img img-responsive bpp_img" t-att-src="'/imagefield/product.product/image/%s/ref/website_blog_dermanord.img_product' %object.object_id.id"/>
+                                    <div class="container bpp_desc_div">
+                                        <h4 class="dn_uppercase" t-field="object.object_id.name"/>
+                                        <h5 class="bpp_desc text-muted" t-field="object.object_id.description_sale"/>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        </t>
                     </t>
                 </t>
             </div>
