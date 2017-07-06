@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data noupdate="0">
-        
+
         <record id="recipe_product_shadow" model="image.recipe">
             <field name="name">Product Shadow</field>
             <field name="description">Add a shadow to a product.
 
 ===Parameters===
-* shadow_color 	The color of the shadow (string). rgba([red, 0 - 255], [green, 0 - 255], [blue, 0 - 255], [opacity, 0.0 - 1.0])
-* shadow_x 	    Shadow x-position, pixels (integer).
-* shadow_y 	    Shadow y-position, pixels (integer).
-* gauss_radius 	Shadow bluriness radius, pixels (integer).
-* gauss_sigma 	Shadow bluriness standard deviation, pixels (integer).
+* shadow_color  The color of the shadow (string). rgba([red, 0 - 255], [green, 0 - 255], [blue, 0 - 255], [opacity, 0.0 - 1.0])
+* shadow_x      Shadow x-position, pixels (integer).
+* shadow_y      Shadow y-position, pixels (integer).
+* gauss_radius  Shadow bluriness radius, pixels (integer).
+* gauss_sigma   Shadow bluriness standard deviation, pixels (integer).
 * background    Path to background image.
 
 See http://www.imagemagick.org/script/color.php for a detailed description of valid color strings.
@@ -48,6 +48,38 @@ else:
     res = shadow</field>
             <field name="param_ids" eval="[(0, 0, {'name': 'shadow_color', 'value': 'rgba(0, 0, 0, 0.2)'}), (0, 0, {'name': 'shadow_x', 'value': '-50'}), (0, 0, {'name': 'shadow_y', 'value': '50'}), (0, 0, {'name': 'gauss_radius', 'value': '6'}), (0, 0, {'name': 'gauss_sigma', 'value': '3'}), (0, 0, {'name': 'background', 'value': '/usr/share/odoo-website-dermanord/theme_dermanord/static/src/img/product_bg/birch.jpg'})]"/>
         </record>
-        
+
+    </data>
+
+    <data>
+        <record id="dn_header_img" model="image.recipe">
+            <field name="name">DN Header Image</field>
+            <field name="description"></field>
+            <field name="recipe">if float(image.width)/image.height &gt;= float(horizontal)/float(vertical):
+    image.transform(resize='%sx&gt;' %int(float(image.width)/image.height*int(height)))
+    image.crop(width=int(float(height)/float(vertical)*float(horizontal)), height=int(height), gravity='center')
+else:
+    image.transform(resize='%sx&gt;' %int(float(horizontal)/float(vertical)*image.height/image.width*int(height)))
+    image.crop(width=image.width, height=int(float(image.width)/float(horizontal)*float(vertical)), gravity='center')</field>
+        </record>
+
+        <record id="dn_header_img_param_height" model="image.recipe.param">
+            <field name="name">height</field>
+            <field name="value">500</field>
+            <field name="recipe_id" ref="theme_dermanord.dn_header_img"/>
+        </record>
+
+        <record id="dn_header_img_param_horizontal" model="image.recipe.param">
+            <field name="name">horizontal</field>
+            <field name="value">21</field>
+            <field name="recipe_id" ref="theme_dermanord.dn_header_img"/>
+        </record>
+
+        <record id="dn_header_img_param_vertical" model="image.recipe.param">
+            <field name="name">vertical</field>
+            <field name="value">9</field>
+            <field name="recipe_id" ref="theme_dermanord.dn_header_img"/>
+        </record>
+
     </data>
 </openerp>
