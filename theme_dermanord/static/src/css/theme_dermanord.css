@@ -176,14 +176,22 @@ footer input, footer .input-group-addon {
 }
 
 /* submenus */
+.dn_header {
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 0px;
+}
+
 .dn_header_banner {
     padding: 0px;
-    height: 540px;
+    margin: auto;
+    display: block;
+    max-width: 1920px;
 }
 
 .dn_header_nav {
-    height: 100%;
-    width: 100%;
     position: relative;
     background-color: #000;
 }
@@ -219,7 +227,6 @@ footer input, footer .input-group-addon {
     margin: auto;
     width: 100%;
     position: relative;
-    height: 540px;
 }
 
 .dn_header_container img {
