@@ -56,7 +56,12 @@
                             </t>
                             <t t-foreach="news_blog" t-as="news_post">
                                 <div class="col-md-12 col-sm-12 col-xs-12">
-                                    <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list" t-att-style="'background-image: url(&quot;%s&quot;);' %news_post.background_image"/>
+                                    <t t-if="news_post.background_image and '/ir.attachment/' in news_post.background_image">
+                                        <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list" t-att-style="'background-image: url(&quot;/imagefield/ir.attachment/datas/%s/ref/theme_dermanord.dn_header_img&quot;);' %news_post.background_image[(news_post.background_image.index('ir.attachment/')+len('ir.attachment/')):news_post.background_image.index('/datas')].split('_')[0]"/>
+                                    </t>
+                                    <t t-if="not news_post.background_image or '/ir.attachment/' not in news_post.background_image">
+                                        <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list"/>
+                                    </t>
 <!--
                                     <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list" t-att-style="'background-image: url(&quot;/%s&quot;);' %'/'.join(news_post.background_image.split('//')[1].split('/')[1:])"/>
 -->
