@@ -56,11 +56,11 @@ else:
             <field name="name">DN Header Image</field>
             <field name="description"></field>
             <field name="recipe">if float(image.width)/image.height &gt;= float(horizontal)/float(vertical):
-    image.transform(resize='%sx&gt;' %int(float(image.width)/image.height*int(height)))
-    image.crop(width=int(float(height)/float(vertical)*float(horizontal)), height=int(height), gravity='center')
+    image.crop(width=int(float(image.height)/float(vertical)*float(horizontal)), height=image.height, gravity='center')
+    image.transform(resize='%sx>' %int(float(image.width)/image.height*int(height)))
 else:
-    image.transform(resize='%sx&gt;' %int(float(horizontal)/float(vertical)*image.height/image.width*int(height)))
-    image.crop(width=image.width, height=int(float(image.width)/float(horizontal)*float(vertical)), gravity='center')</field>
+    image.crop(width=image.width, height=int(float(image.width)/float(horizontal)*float(vertical)), gravity='center')
+    image.transform(resize='%sx>' %int(float(horizontal)/float(vertical)*image.height/image.width*int(height)))</field>
         </record>
 
         <record id="dn_header_img_param_height" model="image.recipe.param">
