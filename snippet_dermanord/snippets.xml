@@ -223,17 +223,8 @@
                         </t>
                     </li>
                 </div>
-                <div data-snippet-option-id="sale_promotions_option" data-selector=".sale_promotions">
-                    <li class="dropdown-submenu">
-                        <li class="">
-                            <a tabindex="-1" href="#" class="oe_sale_promotions">Sale / Promotions</a>
-                        </li>
-                    </li>
-                </div>
-                <div data-snippet-option-id="categ_p_option" data-selector=".categ_p_section">
-                    <li class="">
-                        <a tabindex="-1" href="#" class="oe_p_categories">Categories</a>
-                    </li>
+                <div data-snippet-option-id="sale_promotions_option" data-selector=".sale_promotions"/>
+                <div data-snippet-option-id="categ_p_option" data-selector=".categ_p_section"/>
 <!--
                     <li class="dropdown-submenu">
                         <a tabindex="-1" href="#">Columns</a>
@@ -245,11 +236,7 @@
                         </ul>
                     </li>
 -->
-                </div>
-                <div data-snippet-option-id="product_highlights_option" data-selector=".product_highlights">
-                    <li class="">
-                        <a tabindex="-1" href="#" class="oe_product_highlights">Product Highlights</a>
-                    </li>
+                <div data-snippet-option-id="product_highlights_option" data-selector=".product_highlights"/>
 <!--
                     <li class="dropdown-submenu">
                         <a tabindex="-1" href="#">Columns</a>
@@ -261,7 +248,6 @@
                         </ul>
                     </li>
 -->
-                </div>
             </xpath>
 
             <xpath expr="//div[@data-snippet-option-id='transform']" position="after">
