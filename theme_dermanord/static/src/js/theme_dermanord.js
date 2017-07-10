@@ -33,6 +33,9 @@ jQuery.expr[':'].contains = function(a, i, m) {
 };
 
 $(document).ready(function() {
+    if ($("#wrap").closest.className == "container dn_header") {
+        static_margin = $(".container.dn_header").height();
+    }
     $("#search-btn").click(function(){ $("#search_input").toggle(); });
     if($(window).width() > 758) {
         var max_li_width = $("#top_menu").width() - li_width_init;
@@ -46,10 +49,16 @@ $(document).ready(function() {
                 more_menu_items[index].css({"display": "none"});
             }
         });
-        $("#wrap").css({"margin-top": $(".collapse.navbar-collapse.navbar-top-collapse").height()});
+        $(".container.dn_header").css({"margin-top": $(".collapse.navbar-collapse.navbar-top-collapse").height()});
+        $(".oe_website_login_container").css({"margin-top": $(".collapse.navbar-collapse.navbar-top-collapse").height()});
+        if ($("#wrap").prev()[0].className == "breadcrumb") {
+            $("ol.breadcrumb").css({"margin-top": $(".collapse.navbar-collapse.navbar-top-collapse").height()});
+        }
     }
     else {
-        $("#wrap").css({"margin-top": ""});
+        $(".container.dn_header").css({"margin-top": ""});
+        $(".oe_website_login_container").css({"margin-top": ""});
+        $("ol.breadcrumb").css({"margin-top": ""});
     }
     var brand = $('*:contains("MARIA ÅKERBERG")');
     brand.each(function(index) {
@@ -81,13 +90,19 @@ $(window).resize(function() {
                 more_menu_items[index].css({"display": "none"});
             }
         });
-        $("#wrap").css({"margin-top": $(".collapse.navbar-collapse.navbar-top-collapse").height()});
+        $(".container.dn_header").css({"margin-top": $(".collapse.navbar-collapse.navbar-top-collapse").height()});
+        $(".oe_website_login_container").css({"margin-top": $(".collapse.navbar-collapse.navbar-top-collapse").height()});
+        if ($("#wrap").prev()[0].className == "breadcrumb") {
+            $("ol.breadcrumb").css({"margin-top": $(".collapse.navbar-collapse.navbar-top-collapse").height()});
+        }
     }
     else {
         $.each(menu_items, function(index) {
             $(this).css({"display": "inline"});
         });
-        $("#wrap").css({"margin-top": ""});
+        $(".container.dn_header").css({"margin-top": ""});
+        $(".oe_website_login_container").css({"margin-top": ""});
+        $("ol.breadcrumb").css({"margin-top": ""});
     }
     if ($(".dn_header_container").height() != 0) {
         $(".dn_header_nav").css({"height": $(".dn_header_container").height()});
