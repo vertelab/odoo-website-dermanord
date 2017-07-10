@@ -595,7 +595,7 @@ class website_sale(website_sale):
             'order': order,
             'compute_currency': compute_currency,
             'suggested_products': [],
-            'dn_list': post.get('dn_list') or None,
+            'url': request.session.get('url'),
         }
         if order:
             _order = order

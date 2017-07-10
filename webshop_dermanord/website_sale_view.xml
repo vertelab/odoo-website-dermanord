@@ -247,10 +247,10 @@
 
         <template id="continue_shopping" inherit_id="website_sale.continue_shopping">
             <xpath expr="//a[@href='/shop']" position="replace">
-                <t t-if="dn_list">
+                <t t-if="url == '/dn_list'">
                     <a href="/dn_list" class="btn btn-default mb32"><span class="fa fa-long-arrow-left"/> <span class="hidden-xs">Continue Shopping</span><span class="visible-xs-inline">Continue</span></a>
                 </t>
-                <t t-if="not dn_list">
+                <t t-if="url == '/dn_shop'">
                     <a href="/dn_shop" class="btn btn-default mb32"><span class="fa fa-long-arrow-left"/> <span class="hidden-xs">Continue Shopping</span><span class="visible-xs-inline">Continue</span></a>
                 </t>
             </xpath>
