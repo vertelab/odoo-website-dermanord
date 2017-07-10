@@ -251,7 +251,7 @@
                     <a href="/dn_list" class="btn btn-default mb32"><span class="fa fa-long-arrow-left"/> <span class="hidden-xs">Continue Shopping</span><span class="visible-xs-inline">Continue</span></a>
                 </t>
                 <t t-if="not dn_list">
-                    <a href="/shop" class="btn btn-default mb32"><span class="fa fa-long-arrow-left"/> <span class="hidden-xs">Continue Shopping</span><span class="visible-xs-inline">Continue</span></a>
+                    <a href="/dn_shop" class="btn btn-default mb32"><span class="fa fa-long-arrow-left"/> <span class="hidden-xs">Continue Shopping</span><span class="visible-xs-inline">Continue</span></a>
                 </t>
             </xpath>
         </template>
@@ -335,7 +335,7 @@
                         <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') in user_id.groups_id">
                             <p t-field="product_product.reseller_desc" class="text-muted reseller_desc"/>
                         </t>
-                        
+
                     </div>
                     <t t-if="product.facet_line_ids">
                         <div class="col-md-6 facet_div" t-foreach="product.facet_line_ids.mapped('facet_id')" t-as="facet">
@@ -353,7 +353,7 @@
                 <t t-set="variant" t-value="product.product_variant_ids[0]" />
 -->
             </xpath>
-            
+
             <xpath expr="//div[@itemprop='description']" position="after">
                 <div class="oe_structure oe_empty mt32 mb32">
                     <div class="container">
