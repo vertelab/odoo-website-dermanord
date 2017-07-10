@@ -309,5 +309,6 @@ footer input, footer .input-group-addon {
         top: 0px;
         left: 0px;
         z-index: 200;
+        border-bottom: 1px solid #e7e7e7;
     }
 }

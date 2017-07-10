@@ -93,6 +93,9 @@
                     </div>
                 </div>
             </xpath>
+            <xpath expr="//div[@class='navbar navbar-default navbar-static-top']" position="attributes">
+                <attribute name="style">position: fixed; top: 0px; width: 100%;</attribute>
+            </xpath>
             <xpath expr="//ul[@id='top_menu']" position="attributes">
                 <attribute name="class">nav navbar-nav</attribute>
             </xpath>
