@@ -33,7 +33,6 @@ jQuery.expr[':'].contains = function(a, i, m) {
 };
 
 $(document).ready(function() {
-    window.alert("hej");
     $("#search-btn").click(function(){ $("#search_input").toggle(); });
     if($(window).width() > 758) {
         var max_li_width = $("#top_menu").width() - li_width_init;
