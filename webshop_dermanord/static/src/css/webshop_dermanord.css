@@ -43,6 +43,15 @@
     border-color: #ddd;
 }
 
+input[type="checkbox"] {
+    margin-left: -25px !important;
+    transform: scale(1.5, 1.5);
+}
+
+#dn_filter_modal .checkbox {
+    margin-bottom: 15px;
+}
+
 .no_padding_div {
     padding: 0px !important;
 }
@@ -297,6 +306,21 @@ span[data-oe-expression="ingredient.image"] > img {
     margin: auto;
 }
 
+#ingredient > h5 {
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    margin: 10px 0px 0px -10px;
+}
+
+#ingredient > .checkbox {
+    margin-top: -10px;
+}
+
+#ingredient > .checkbox > h4 {
+    margin-top: 0px;
+}
+
 .filter_match, .sort_match, .dn_cart_qty {
     background-color: #CB683F !important;
     color: #fff;
@@ -305,12 +329,12 @@ span[data-oe-expression="ingredient.image"] > img {
 }
 
 .like_icon {
-    margin-top: 5px;
+    margin-top: 4px;
     color: #2f2;
 }
 
 .unlike_icon {
-    margin-top: 5px;
+    margin-top: 4px;
     color: #f22;
 }
 

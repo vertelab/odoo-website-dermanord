@@ -199,9 +199,10 @@
                 <div id="ingredient" class="tab-pane fade">
                     <t t-if="len(filter_ingredients) &gt; 0">
                         <t t-foreach="filter_ingredients" t-as="ingredient">
+                            <h5 t-field="ingredient.name"/>
                             <div class="checkbox">
-                                <h5>
-                                    <label class="col-md-4 col-sm-4 col-xs-4" style="float: left;">
+                                <h4>
+                                    <label class="col-md-6 col-sm-6 col-xs-6" style="float: left;">
                                         <t t-if="request.session.get('form_values')">
                                             <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('ingredient_%s' %ingredient.id) == str(ingredient.id) else {}" class="like"/><i class="fa fa-smile-o like_icon"/>
                                             </t>
@@ -209,15 +210,15 @@
                                             <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" class="like"/><i class="fa fa-smile-o like_icon"/>
                                         </t>
                                     </label>
-                                    <label class="col-md-8 col-sm-8 col-xs-8" style="float: right;">
+                                    <label class="col-md-6 col-sm-6 col-xs-6" style="float: right;">
                                         <t t-if="request.session.get('form_values')">
-                                            <input type="checkbox" t-att-name="'notingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('notingredient_%s' %ingredient.id) == str(ingredient.id) else {}" class="unlike"/><i class="fa fa-frown-o unlike_icon"/> <t t-esc="ingredient.name"/>
+                                            <input type="checkbox" t-att-name="'notingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('notingredient_%s' %ingredient.id) == str(ingredient.id) else {}" class="unlike"/><i class="fa fa-frown-o unlike_icon"/>
                                             </t>
                                         <t t-if="not request.session.get('form_values')">
-                                            <input type="checkbox" t-att-name="'notingredient_%s' %ingredient.id" t-att-value="ingredient.id" class="unlike"/><i class="fa fa-frown-o unlike_icon"/> <t t-esc="ingredient.name"/>
+                                            <input type="checkbox" t-att-name="'notingredient_%s' %ingredient.id" t-att-value="ingredient.id" class="unlike"/><i class="fa fa-frown-o unlike_icon"/>
                                         </t>
                                     </label>
-                                </h5>
+                                </h4>
                             </div>
                         </t>
                     </t>
