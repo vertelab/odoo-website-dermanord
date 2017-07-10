@@ -18,6 +18,12 @@
             <field name="model">blog.post</field>
             <field name="inherit_id" ref="website_blog.view_blog_post_form"/>
             <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="website_published" class="pull-right" widget="website_button"/>
+                </field>
+                <field name="blog_id" position="after">
+                    <field name="content"/>
+                </field>
                 <sheet position="inside">
                     <notebook>
                         <page string="Products">
