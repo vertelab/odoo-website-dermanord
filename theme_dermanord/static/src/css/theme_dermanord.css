@@ -11,6 +11,15 @@
     white-space: nowrap;
 }
 
+.dn_cart_qty_sm {
+    background-color: #CB683F !important;
+    color: #fff;
+    padding: 0px 6px !important;
+    border-radius: 12px !important;
+    position: absolute;
+    right: 0%;
+    top: 0%;
+}
 
 @font-face {
   font-family: 'Futura-Medium';

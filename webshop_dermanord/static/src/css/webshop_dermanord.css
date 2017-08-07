@@ -322,6 +322,9 @@ span[data-oe-expression="ingredient.image"] > img {
 }
 
 .filter_match, .sort_match, .dn_cart_qty {
+/*
+See also .dn_cart_qty_sm in theme_dermanord.
+*/
     background-color: #CB683F !important;
     color: #fff;
     padding: 0px 6px !important;
