@@ -17,7 +17,8 @@
     padding: 0px 6px !important;
     border-radius: 12px !important;
     position: absolute;
-    margin-left: 15px;
+    margin-left: -30px;
+    margin-left: -3px;
 }
 
 @font-face {
