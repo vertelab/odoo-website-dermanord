@@ -351,8 +351,10 @@ $(document).ready(function(){
     });
 
     $(window).scroll(function() {
-        if($(window).scrollTop() + $(window).height() == $(document).height()) {
-            load_products_grid(current_page);
+        if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+            if ($("#wrap").hasClass("autoload")) {
+                load_products_grid(current_page);
+            }
         }
     });
 });

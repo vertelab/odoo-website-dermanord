@@ -5,7 +5,7 @@
         <template id="products" name="Products">
             <t t-call="website.layout">
                 <t t-set="additional_title">Shop</t>
-                <div id="wrap" class="js_sale">
+                <div id="wrap" class="js_sale autoload">
                     <div class="oe_structure" />
                         <t t-call="webshop_dermanord.dn_shop"/>
                     <div class="oe_structure mb32" />
