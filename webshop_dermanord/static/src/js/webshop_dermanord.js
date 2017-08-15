@@ -352,15 +352,18 @@ $(document).ready(function(){
 
     $(window).scroll(function() {
         if ($(window).scrollTop() + $(window).height() == $(document).height()) {
-            if ($("#wrap").hasClass("autoload")) {
+            if ($("#wrap").hasClass("autoload_grid")) {
                 load_products_grid(current_page);
+            }
+            if ($("#wrap").hasClass("autoload_list")) {
+                load_products_list(current_page);
             }
         }
     });
 });
 
 function load_products_grid(page){
-    openerp.jsonRpc("/dn_shop_json", "call", {
+    openerp.jsonRpc("/dn_shop_json_grid", "call", {
         'page': current_page.toString(),
     }).done(function(data){
         page_count = data['page_count'];
@@ -386,6 +389,35 @@ function load_products_grid(page){
                 products_content += content;
             });
             $(".oe_website_sale").find('.row').append(products_content);
+            current_page ++;
+        }
+    });
+}
+
+function load_products_list(page){
+    openerp.jsonRpc("/dn_shop_json_list", "call", {
+        'page': current_page.toString(),
+    }).done(function(data){
+        console.log(data);
+        page_count = data['page_count'];
+        if (page_count >= current_page) {
+            var products_content = '';
+            $.each(data['products'], function(key, info) {
+                var content = openerp.qweb.render('products_item_list', {
+                    'url': data['url'],
+                    'product_id': key,
+                    'product_href': data['products'][key]['product_href'],
+                    'product_name': data['products'][key]['product_name'],
+                    'attribute_value_ids': data['products'][key]['attribute_value_ids'],
+                    'price': data['products'][key]['price'],
+                    'currency': data['products'][key]['currency'],
+                    'rounding': data['products'][key]['rounding'],
+                    'is_reseller': data['products'][key]['is_reseller'],
+                    'default_code': data['products'][key]['default_code']
+                });
+                products_content += content;
+            });
+            $(".oe_website_sale").find('tbody').append(products_content);
             current_page ++;
         }
     });

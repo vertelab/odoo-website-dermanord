@@ -5,7 +5,7 @@
         <template id="products" name="Products">
             <t t-call="website.layout">
                 <t t-set="additional_title">Shop</t>
-                <div id="wrap" class="js_sale autoload">
+                <div id="wrap" class="js_sale autoload_grid">
                     <div class="oe_structure" />
                         <t t-call="webshop_dermanord.dn_shop"/>
                     <div class="oe_structure mb32" />
@@ -158,7 +158,7 @@
         <template id="products_list_reseller_view" name="Product List For Reseller">
             <t t-call="website.layout">
                 <t t-set="additional_title">Shop</t>
-                <div id="wrap" class="js_sale">
+                <div id="wrap" class="js_sale autoload_list">
                     <div class="oe_structure"/>
                     <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                         <div class="container oe_website_sale">
