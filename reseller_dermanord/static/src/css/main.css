@@ -1,0 +1,13 @@
+﻿/*=============================================================
+                    Reseller Dermanord
+ ============================================================ */
+
+.reseller_cell {
+    padding: 5px;
+    margin-bottom: 5px;
+    background-color: #ddd;
+}
+
+.reseller_cell p {
+    padding-bottom: 20px;
+}
