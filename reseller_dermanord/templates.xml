@@ -51,11 +51,26 @@
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <!-- Google maps -->
+                                <div id="map" class="mt64" style="width: 100%; height: 800px;"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="oe_structure"/>
+                <script>
+                  function initMap() {
+                    var uluru = {lat: 59.6144081, lng: 17.7168579};
+                    var map = new google.maps.Map(document.getElementById('map'), {
+                      zoom: 8,
+                      center: uluru
+                    });
+                    var marker = new google.maps.Marker({
+                      position: uluru,
+                      map: map
+                    });
+                  }
+                </script>
+                <script t-att-src="'https://maps.googleapis.com/maps/api/js?key=%s&amp;callback=initMap' %request.env['ir.config_parameter'].get_param('google_maps_api')"></script>
             </t>
         </template>
 
@@ -76,7 +91,7 @@
                                         <p><strong>Telephone</strong> <span class="text-muted" t-esc="reseller.phone"/></p>
                                         <p><strong>Website</strong> <span class="text-muted" t-esc="reseller.website"/></p>
                                         <p><strong>E-Mail</strong> <span class="text-muted" t-esc="reseller.email"/></p>
-                                        <p><strong>Address</strong> <span class="text-muted" t-esc="reseller.street"/><t t-if="reseller.zip"><t t-esc="', %s' %reseller.zip"/></t> <t t-if="reseller.city"><t t-esc="reseller.city"/></t></p>
+                                        <p><strong>Address</strong> <span class="text-muted" t-esc="reseller.street"/><t t-if="reseller.zip"><span class="text-muted" t-esc="', %s' %reseller.zip"/></t> <t t-if="reseller.city"><span class="text-muted" t-esc="reseller.city"/></t></p>
                                     </div>
                                 </div>
                             </div>
