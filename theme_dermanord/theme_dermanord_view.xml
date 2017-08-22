@@ -35,6 +35,11 @@
         <template id="theme_dermanord" inherit_id="website.layout" customize_show="True" active="False" name="Theme Dermanord" priority="99">
             <xpath expr="//div[@id='wrapwrap']/header/div[@class='navbar navbar-default navbar-static-top']/div[@class='container']/div[@class='navbar-header']" position="replace">
                 <button class="btn dropdown-toggle" type="button" data-toggle="dropdown"><t t-esc="lang"/>
+                    <t t-foreach="languages" t-as="lg">
+                        <t t-if="lg[0] == lang">
+                            <t t-esc="lg[1]"/>
+                        </t>
+                    </t>
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu js_language_selector hidden-xs col-md-12 col-sm-12 col-xs-12" t-if="(request.website_multilang and len(languages) &gt; 1) or editable">
