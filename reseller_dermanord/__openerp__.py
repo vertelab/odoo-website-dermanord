@@ -20,39 +20,21 @@
 ##############################################################################
 
 {
-    'name': 'Webshop Dermanord',
+    'name': 'Reseller Dermanord',
     'version': '1.0',
     'category': '',
     'summary': '',
     'description': """
-Special layout for Dermanord AB webshop
-====================
+Resellers Page
+==============
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': [
-        'product_multi_image',
-        'website_sale_product_gallery',
-        'website_blog',
-        'product_dermanord',
-        'website_sale_previous_products',
-        'website_product_pcategory',
-        'website_imagemagick',
-        'product_ingredients',
-        'product_facets',
-        'website_bootstrap_select2',
-        'website_fts_product',
-        'website_fts_popular',
-        'product_attribute_value_image',
-        'website_sale_instock',
-        ],
+    'depends': ['website',],
     'data': [
-        'webshop_dermanord_view.xml',
-        'website_sale_view.xml',
-        'filter_sort_modal.xml',
-        'webshop_dermanord_data.xml',
+        'templates.xml',
+        'data.xml',
     ],
-    'qweb': ['static/src/xml/product.xml'],
     'application': False,
 }
 

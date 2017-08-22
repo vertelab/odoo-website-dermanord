@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+<!--
+        <template id="breadcrumb_dermanord" inherit_id="website.layout">
+            <xpath expr="//t[@t-raw='0']" position="before">
+                <t t-if="not no_breadcrumb and website">
+                    <t t-raw="website.get_breadcrumb(request.httprequest.path)"/>
+                </t>
+            </xpath>
+        </template>
+-->
+
+        <template id="resellers" name="Resellers">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12 mb16">
+                                <form action="/resellers" method="post" class="pagination form-inline col-md-12 col-sm-12 col-xs-12 mb16">
+                                    <div class="container">
+                                        <div class="input-group">
+                                            <input name="search" class="form-control" placeholder="Search..." type="text"/>
+                                            <span class="input-group-btn">
+                                                <button type="submit" class="btn btn-default">
+                                                    <i class="fa fa-search" />
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <t t-if="resellers">
+                                        <t t-foreach="resellers" t-as="reseller">
+                                            <div class="reseller_cell">
+                                                <h4><strong><t t-esc="reseller.name"/></strong></h4>
+                                                <p class="text-muted"><t t-esc="','.join(reseller.category_id.mapped('name'))"/></p>
+                                                <p class="text-muted">
+                                                    <t t-esc="reseller.street"/><t t-if="reseller.zip"><t t-esc="', %s' %reseller.zip"/></t><t t-if="reseller.city"><t t-esc="' %s' %reseller.city"/></t>
+                                                    <a type="button" t-att-href="'/reseller/%s' %reseller.id" class="btn btn-info pull-right">Go to reseller</a>
+                                                </p>
+                                            </div>
+                                        </t>
+                                    </t>
+                                    <t t-if="not resellers">
+                                        <h3 class="text-center">No reseller found</h3>
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <!-- Google maps -->
+                                <div id="map" class="mt64" style="width: 100%; height: 800px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="oe_structure"/>
+                <script>
+                  function initMap() {
+                    var uluru = {lat: 59.6144081, lng: 17.7168579};
+                    var map = new google.maps.Map(document.getElementById('map'), {
+                      zoom: 8,
+                      center: uluru
+                    });
+                    var marker = new google.maps.Marker({
+                      position: uluru,
+                      map: map
+                    });
+                  }
+                </script>
+                <script t-att-src="'https://maps.googleapis.com/maps/api/js?key=%s&amp;callback=initMap' %request.env['ir.config_parameter'].get_param('google_maps_api')"></script>
+            </t>
+        </template>
+
+        <template id="reseller" name="Reseller">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 mb16">
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div>
+                                        <h3><t t-esc="reseller.name"/></h3>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div>
+                                        <p><strong>Telephone</strong> <span class="text-muted" t-esc="reseller.phone"/></p>
+                                        <p><strong>Website</strong> <span class="text-muted" t-esc="reseller.website"/></p>
+                                        <p><strong>E-Mail</strong> <span class="text-muted" t-esc="reseller.email"/></p>
+                                        <p><strong>Address</strong> <span class="text-muted" t-esc="reseller.street"/><t t-if="reseller.zip"><span class="text-muted" t-esc="', %s' %reseller.zip"/></t> <t t-if="reseller.city"><span class="text-muted" t-esc="reseller.city"/></t></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="oe_structure"/>
+            </t>
+        </template>
+
+        <template id="customize_css_js" inherit_id="website.layout" name="Customize CSS JS">
+            <!-- Customize css -->
+            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
+                <link href="/reseller_dermanord/static/src/css/main.css" rel="stylesheet" />
+            </xpath>
+            <!-- Customize javascript -->
+            <xpath expr="//body" position="inside">
+                <script type="text/javascript" src="/reseller_dermanord/static/src/js/main.js" />
+            </xpath>
+        </template>
+
+    </data>
+</openerp>

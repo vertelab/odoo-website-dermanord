@@ -5,7 +5,7 @@
         <template id="products" name="Products">
             <t t-call="website.layout">
                 <t t-set="additional_title">Shop</t>
-                <div id="wrap" class="js_sale">
+                <div id="wrap" class="js_sale autoload_grid">
                     <div class="oe_structure" />
                         <t t-call="webshop_dermanord.dn_shop"/>
                     <div class="oe_structure mb32" />
@@ -158,7 +158,7 @@
         <template id="products_list_reseller_view" name="Product List For Reseller">
             <t t-call="website.layout">
                 <t t-set="additional_title">Shop</t>
-                <div id="wrap" class="js_sale">
+                <div id="wrap" class="js_sale autoload_list">
                     <div class="oe_structure"/>
                     <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                         <div class="container oe_website_sale">
@@ -390,6 +390,9 @@
         </template>
 
         <template id="dermanord_product_detail" inherit_id="website_sale.product">
+            <xpath expr="//t[@t-call='website_sale.search']/.." position="attributes">
+                <attribute name="class">col-sm-3 hidden</attribute>
+            </xpath>
             <xpath expr="//h1[@itemprop='name']" position="after">
                 <h5 class="text-muted default_code" style="height: 15px;" t-field="product_product.default_code"/>
             </xpath>
@@ -445,34 +448,40 @@
 
             <xpath expr="//div[@itemprop='description']" position="after">
                 <div class="oe_structure oe_empty mt32 mb32">
+<!-- inactive product’s experiences
                     <div class="container">
                         <h2 class="text-center dn_uppercase">This product’s experiences</h2>
                         <t t-call="webshop_dermanord.product_experiences" />
                         <t t-call="webshop_dermanord.product_experiences_wide" />
                     </div>
+-->
+<!-- inactive product range
                     <div class="container mt32">
                         <h2 class="text-center dn_uppercase">Product range</h2>
                         <div t-foreach="request.env['product.template'].search([('public_categ_ids','in',product.public_categ_ids.mapped('id')),('website_published','=',True),('id','!=',product.id)])[:4]" t-as="p">
-<!--
+
                             <t t-call="website_product_templates.product_view" />
--->
+
                             <t t-call="webshop_dermanord.products_item">
                                 <t t-set="pager" t-value="{'page': {'num': 1}}"/>
                             </t>
                         </div>
                     </div>
+-->
                     <t t-set="useless_var_6446547657" t-value="website.sale_add_previous_product(product.id)" />
+<!-- inactive recently viewed
                     <div class="container mt32">
                         <h2 class="text-center dn_uppercase">Recently viewed</h2>
                         <div t-foreach="website.sale_get_previous_products().with_context(pid=product.id).filtered(lambda p: p.id != p.env.context['pid'])[:4]" t-as="p">
-<!--
+
                             <t t-call="website_product_templates.product_view" />
--->
+
                             <t t-call="webshop_dermanord.products_item">
                                 <t t-set="pager" t-value="{'page': {'num': 1}}"/>
                             </t>
                         </div>
                     </div>
+-->
                 </div>
             </xpath>
             <xpath expr="//p[@class='text-muted' and not(@t-field='product.description_sale')]" position="replace"/>
@@ -510,6 +519,25 @@
                         t-att-title="value_id.name"/>
                     </label>
                 </t>
+            </xpath>
+            <xpath expr="//strong[@t-field='variant_id.attribute_id.name']" position="after">
+                <t t-set="accessable_value_ids" t-value="request.env['product.attribute.value'].browse()"/>
+                <t t-foreach="product.product_variant_ids.with_context({'user_id': user_id}).filtered(lambda v: v._context.get('user_id') in v.access_group_ids.mapped('users'))" t-as="variant">
+                    <t t-foreach="variant.attribute_value_ids" t-as="v">
+                        <t t-if="v in variant_id.value_ids">
+                            <t t-set="accessable_value_ids" t-value="accessable_value_ids | v"/>
+                        </t>
+                    </t>
+                </t>
+            </xpath>
+            <xpath expr="//select[@class='form-control js_variant_change']/t[@t-foreach='variant_id.value_ids']" position="attributes">
+                <attribute name="t-foreach">accessable_value_ids</attribute>
+            </xpath>
+            <xpath expr="//ul[@class='list-unstyled']/t[@t-foreach='variant_id.value_ids']" position="attributes">
+                <attribute name="t-foreach">accessable_value_ids</attribute>
+            </xpath>
+            <xpath expr="//ul[@class='list-inline']/li[@t-foreach='variant_id.value_ids']" position="attributes">
+                <attribute name="t-foreach">accessable_value_ids</attribute>
             </xpath>
         </template>
 

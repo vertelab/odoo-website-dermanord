@@ -1,0 +1,57 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* reseller_dermanord
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0-20170601\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-22 13:09+0000\n"
+"PO-Revision-Date: 2017-08-22 13:09+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Address"
+msgstr ""
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "E-Mail"
+msgstr ""
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Go to reseller"
+msgstr ""
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "No reseller found"
+msgstr ""
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Search..."
+msgstr ""
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Telephone"
+msgstr ""
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Website"
+msgstr ""
+
+#. module: reseller_dermanord
+#: model:res.partner.category,name:reseller_dermanord.reseller_tag
+msgid "Återförsäljare"
+msgstr ""
+

@@ -346,8 +346,8 @@ class website_sale(website_sale):
         #~ _logger.warn(re)
         return request.website.render("webshop_dermanord.products", values)
 
-    @http.route(['/dn_shop_json'], type='json', auth='public', website=True)
-    def dn_shop_json(self, page=0, **kw):
+    @http.route(['/dn_shop_json_grid'], type='json', auth='public', website=True)
+    def dn_shop_json_grid(self, page=0, **kw):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
         if not context.get('pricelist'):
@@ -399,6 +399,61 @@ class website_sale(website_sale):
                 'default_code': product.default_code or '',
                 'description_sale': product.description_sale or '',
                 'product_variant_ids': True if product.product_variant_ids else False,
+            })
+
+        values = {
+            'products': products_list,
+            'url': url,
+            'page_count': page_count,
+        }
+
+        return values
+
+    @http.route(['/dn_shop_json_list'], type='json', auth='public', website=True)
+    def dn_shop_json_list(self, page=0, **kw):
+        cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
+
+        if not context.get('pricelist'):
+            pricelist = self.get_pricelist()
+            context['pricelist'] = int(pricelist)
+        else:
+            pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
+
+        product_obj = pool.get('product.product')
+        url = "/dn_list"
+
+        domain = request.session.get('current_domain')
+        order = request.session.get('current_order')
+
+        product_count = product_obj.search_count(cr, uid, domain, context=context)
+        page_count = int(math.ceil(float(product_count) / float(PPG)))
+        pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=None)
+        product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=order, context=context)
+        products = product_obj.browse(cr, uid, product_ids, context=context)
+
+        from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
+        to_currency = pricelist.currency_id
+        compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
+
+        products_list = []
+        for product in products:
+            is_reseller = False
+            currency = ''
+            partner_pricelist = request.env.user.partner_id.property_product_pricelist
+            if partner_pricelist:
+                currency = partner_pricelist.currency_id.name
+                if partner_pricelist.for_reseller:
+                    is_reseller = True
+            attributes = product.attribute_value_ids.mapped('name')
+            products_list.append({
+                'product_href': '/dn_shop/variant/%s' %product.id,
+                'product_name': product.name,
+                'price': "%.2f" % product.price,
+                'currency': currency,
+                'rounding': request.website.pricelist_id.currency_id.rounding,
+                'is_reseller': 'yes' if is_reseller else 'no',
+                'default_code': product.default_code or '',
+                'attribute_value_ids': (' , ' + ' , '.join(attributes)) if len(attributes) > 0 else '',
             })
 
         values = {

@@ -9,6 +9,8 @@
 
 #top_menu a {
     white-space: nowrap;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .dn_cart_qty_sm {
@@ -71,7 +73,7 @@ h7 {
     -ms-user-select: none;
     user-select: none;
     background-image: none;
-    border-radius: opx;
+    border-radius: 0px;
 }
 
 .dn_btn:hover, .dn_btn:active, .dn_btn:focus {
@@ -172,8 +174,17 @@ footer input, footer .input-group-addon {
     display: inline;
 }
 
+#top_menu > li:active, #top_menu > li:hover, #top_menu > li:focus{
+    display: inline;
+}
+
 #top_menu > li > a {
-    color: #000 !important;
+    color: #000;
+}
+
+#top_menu > li > a:active, #top_menu > li > a:hover {
+    background-color: #000;
+    color: #fff;
 }
 
 #more_dropdown li.dropdown ul.dropdown-menu {
@@ -216,6 +227,7 @@ footer input, footer .input-group-addon {
 .dn_header_nav_tab {
     background-color: #000;
     color: #fff;
+    border-radius: 0px !important;
 }
 
 .dn_header_nav_tab span {
@@ -230,6 +242,7 @@ footer input, footer .input-group-addon {
 .dn_header_nav_tab:active, .dn_header_nav_tab:focus, .dn_header_nav_tab:hover {
     background-color: #fff;
     color: #000;
+    border-radius: 0px !important;
 }
 
 .dn_header_container {
@@ -278,19 +291,16 @@ footer input, footer .input-group-addon {
 }
 
 @media (max-width: 767px) {
-    #top_menu > li > a {
-        color: #fff !important;
-    }
-
-    #top_menu > li > a:hover {
-        color: #000 !important;
-    }
-
     #top_menu {
         background-color: #000;
     }
 
-    #top_menu a:hover {
+    #top_menu > li > a {
+        color: #fff !important;
+    }
+
+    #top_menu > li > a:active, #top_menu > li > a:hover, #top_menu > li > a:focus  {
+        color: #000 !important;
         background-color: #fff;
     }
 
