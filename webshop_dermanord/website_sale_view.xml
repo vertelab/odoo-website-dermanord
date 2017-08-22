@@ -520,6 +520,21 @@
                     </label>
                 </t>
             </xpath>
+            <xpath expr="//strong[@t-field='variant_id.attribute_id.name']" position="after">
+                <t t-set="accessable_value_ids" t-value="variant_id.value_ids"/>
+                <t t-foreach="product.product_variant_ids.with_context({'user_id': user_id}).filtered(lambda v: v._context.get('user_id') not in v.access_group_ids.users)" t-as="variant">
+                    <t t-set="accessable_value_ids" t-value="accessable_value_ids - variant.attribute_value_ids"/>
+                </t>
+            </xpath>
+            <xpath expr="//select[@class='form-control js_variant_change']/t[@t-foreach='variant_id.value_ids']" position="attributes">
+                <attribute name="t-foreach">accessable_value_ids</attribute>
+            </xpath>
+            <xpath expr="//ul[@class='list-unstyled']/t[@t-foreach='variant_id.value_ids']" position="attributes">
+                <attribute name="t-foreach">accessable_value_ids</attribute>
+            </xpath>
+            <xpath expr="//ul[@class='list-inline']/li[@t-foreach='variant_id.value_ids']" position="attributes">
+                <attribute name="t-foreach">accessable_value_ids</attribute>
+            </xpath>
         </template>
 
         <template id="product_price" inherit_id="website_sale.product_price">
