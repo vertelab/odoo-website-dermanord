@@ -290,6 +290,21 @@ footer input, footer .input-group-addon {
     width: 100%;
 }
 
+#left_column {
+    background-color: #000;
+    padding: 15px;
+}
+
+#left_column a {
+    color: #fff;
+}
+
+#left_column li:active a, #left_column li:hover a, #left_column li:focus a, #left_column li.active > a {
+    border-radius: 0px !important;
+    background-color: #fff;
+    color: #000;
+}
+
 @media (max-width: 767px) {
     #top_menu {
         background-color: #000;
