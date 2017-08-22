@@ -9,6 +9,8 @@
 
 #top_menu a {
     white-space: nowrap;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .dn_cart_qty_sm {
@@ -172,7 +174,7 @@ footer input, footer .input-group-addon {
     display: inline;
 }
 
-#top_menu > li:active, #top_menu > li:hover{
+#top_menu > li:active, #top_menu > li:hover, #top_menu > li:focus{
     display: inline;
 }
 
@@ -289,19 +291,16 @@ footer input, footer .input-group-addon {
 }
 
 @media (max-width: 767px) {
-    #top_menu > li > a {
-        color: #fff !important;
-    }
-
-    #top_menu > li > a:hover {
-        color: #000 !important;
-    }
-
     #top_menu {
         background-color: #000;
     }
 
-    #top_menu a:hover {
+    #top_menu > li > a {
+        color: #fff !important;
+    }
+
+    #top_menu > li > a:active, #top_menu > li > a:hover, #top_menu > li > a:focus  {
+        color: #000 !important;
         background-color: #fff;
     }
 
