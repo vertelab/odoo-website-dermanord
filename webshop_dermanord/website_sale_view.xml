@@ -521,9 +521,13 @@
                 </t>
             </xpath>
             <xpath expr="//strong[@t-field='variant_id.attribute_id.name']" position="after">
-                <t t-set="accessable_value_ids" t-value="variant_id.value_ids"/>
+                <t t-set="accessable_value_ids" t-value="request.env['product.attribute.value'].browse()"/>
                 <t t-foreach="product.product_variant_ids.with_context({'user_id': user_id}).filtered(lambda v: v._context.get('user_id') in v.access_group_ids.mapped('users'))" t-as="variant">
-                    <t t-set="accessable_value_ids" t-value="accessable_value_ids - variant.attribute_value_ids"/>
+                    <t t-foreach="variant.attribute_value_ids" t-as="v">
+                        <t t-if="v in variant_id.value_ids">
+                            <t t-set="accessable_value_ids" t-value="accessable_value_ids | v"/>
+                        </t>
+                    </t>
                 </t>
             </xpath>
             <xpath expr="//select[@class='form-control js_variant_change']/t[@t-foreach='variant_id.value_ids']" position="attributes">
