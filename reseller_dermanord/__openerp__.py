@@ -33,6 +33,7 @@ Resellers Page
     'depends': ['website',],
     'data': [
         'templates.xml',
+        'data.xml',
     ],
     'application': False,
 }

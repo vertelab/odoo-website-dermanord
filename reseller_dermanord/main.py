@@ -33,9 +33,9 @@ class Main(http.Controller):
         word = post.get('search', False)
         partners = None
         if not word:
-            partners = request.env['res.partner'].sudo().search([], limit=20)
+            partners = request.env['res.partner'].sudo().search([('category_id', 'in', request.env.ref('reseller_dermanord.reseller_tag').id)])
         if word and word != '':
-            partners = request.env['res.partner'].sudo().search([('name', 'ilike', word)], limit=20)
+            partners = request.env['res.partner'].sudo().search([('name', 'ilike', word), ('category_id', 'in', self.env.ref('reseller_dermanord.reseller_tag').id)])
         return request.website.render('reseller_dermanord.resellers', {'resellers': partners})
 
     @http.route(['/reseller/<model("res.partner"):partner>'], type='http', auth="public", website=True)
