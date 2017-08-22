@@ -293,7 +293,9 @@
                                 <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path)"/>
                                 <span itemprop="image" t-field="current_menu.image" t-field-options='{"widget": "image", "class": "css_non_editable_mode_hidden", "alt-field": "name"}'/>
                                 <img class="img img-responsive css_editable_mode_hidden" t-att-src="'/imagefield/website.menu/image/%s/ref/theme_dermanord.dn_header_img' %current_menu.id"/>
+<!--
                                 <h6 class="page_title"><span t-field="current_menu.page_title"/></h6>
+-->
                             </div>
                         </div>
                     </div>
@@ -309,11 +311,15 @@
                         <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path) or None"/>
                         <t t-if="current_menu">
                             <h3 class="css_non_editable_mode_hidden">Page Title for <b>"<t t-esc="current_menu.name"/>"</b></h3>
+<!--
                             <h3 class="css_non_editable_mode_hidden" t-field="current_menu.page_title"/>
+-->
                             <div class="container oe_dermexp_div">
                                 <span itemprop="image" t-field="current_menu.image" t-field-options='{"widget": "image", "class": "dn_page_header_img css_non_editable_mode_hidden", "alt-field": "name"}'/>
                                 <img class="img img-responsive css_editable_mode_hidden" t-att-src="'/imagefield/website.menu/image/%s/ref/theme_dermanord.dn_header_img' %current_menu.id"/>
+<!--
                                 <h6 class="oe_dermexp_content"><span t-field="current_menu.page_title"/></h6>
+-->
                             </div>
                         </t>
                     </div>
