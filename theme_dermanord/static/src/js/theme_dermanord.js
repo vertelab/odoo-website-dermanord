@@ -32,11 +32,7 @@ jQuery.expr[':'].contains = function(a, i, m) {
     return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
 };
 
-$(document).ready(function() {
-    if ($("#wrap").closest.className == "container dn_header") {
-        static_margin = $(".container.dn_header").height();
-    }
-    $("#search-btn").click(function(){ $("#search_input").toggle(); });
+dermanord_resize_for_menu = function() {
     if($(window).width() > 758) {
         var max_li_width = $("#top_menu").width() - li_width_init;
         var li_width = 0;
@@ -49,10 +45,15 @@ $(document).ready(function() {
                 more_menu_items[index].css({"display": "none"});
             }
         });
-        $(".container.dn_header").css({"margin-top": $(".collapse.navbar-collapse.navbar-top-collapse").height()});
-        $(".oe_website_login_container").css({"margin-top": $(".collapse.navbar-collapse.navbar-top-collapse").height()});
+        //~ menu = $(".collapse.navbar-collapse.navbar-top-collapse");
+        menu = $(".navbar.navbar-default.navbar-static-top");
+        bt = menu.css('border-top-width');
+        bb = menu.css('border-bottom-width');
+        height = menu.height() + parseFloat(bt.substring(0, bt.length-2)) + parseFloat(bb.substring(0, bb.length-2));
+        $(".container.dn_header").css({"margin-top": height});
+        $(".oe_website_login_container").css({"margin-top": height});
         if ($("#wrap").prev()[0].className == "breadcrumb") {
-            $("ol.breadcrumb").css({"margin-top": $(".collapse.navbar-collapse.navbar-top-collapse").height()});
+            $("ol.breadcrumb").css({"margin-top": height});
         }
     }
     else {
@@ -60,6 +61,31 @@ $(document).ready(function() {
         $(".oe_website_login_container").css({"margin-top": ""});
         $("ol.breadcrumb").css({"margin-top": ""});
     }
+}
+
+dermanord_set_menu_margin = function() {
+    nav = $('#oe_main_menu_navbar');
+    if (nav.length == 1) {
+        bt = nav.css('border-top-width');
+        bb = nav.css('border-bottom-width');
+        height = (nav.height() + parseFloat(bt.substring(0, bt.length-2)) + parseFloat(bb.substring(0, bb.length-2))) - $(document).scrollTop();
+        if (height < 0) {
+            height = 0;
+        }
+        mt = $(".navbar.navbar-default.navbar-static-top").css('margin-top');
+        if (height != parseFloat(mt.substring(0, mt.length-2))) {
+            $(".navbar.navbar-default.navbar-static-top").css({'margin-top': height});
+        }
+    }
+}
+
+$(document).ready(function() {
+    if ($("#wrap").closest.className == "container dn_header") {
+        static_margin = $(".container.dn_header").height();
+    }
+    $("#search-btn").click(function(){ $("#search_input").toggle(); });
+    dermanord_resize_for_menu();
+    dermanord_set_menu_margin();
     var brand = $('*:contains("MARIA ÅKERBERG")');
     brand.each(function(index) {
         if ($(brand[index]).is("h1, h2, h3, h4, h5, h6, p, a, strong, b, u, mark, small")) {
@@ -76,39 +102,16 @@ $(document).ready(function() {
 });
 
 $(window).resize(function() {
-    if($(window).width() > 758) {
-        var max_li_width = $("#top_menu").width() - li_width_init;
-        var li_width = 0;
-        $.each(menu_items, function(index) {
-            li_width += $(this).width();
-            if (li_width > max_li_width) {
-                $(this).css({"display": "none"});
-                more_menu_items[index].css({"display": "inline"});
-            }
-            else {
-                $(this).css({"display": "inline"});
-                more_menu_items[index].css({"display": "none"});
-            }
-        });
-        $(".container.dn_header").css({"margin-top": $(".collapse.navbar-collapse.navbar-top-collapse").height()});
-        $(".oe_website_login_container").css({"margin-top": $(".collapse.navbar-collapse.navbar-top-collapse").height()});
-        if ($("#wrap").prev()[0].className == "breadcrumb") {
-            $("ol.breadcrumb").css({"margin-top": $(".collapse.navbar-collapse.navbar-top-collapse").height()});
-        }
-    }
-    else {
-        $.each(menu_items, function(index) {
-            $(this).css({"display": "inline"});
-        });
-        $(".container.dn_header").css({"margin-top": ""});
-        $(".oe_website_login_container").css({"margin-top": ""});
-        $("ol.breadcrumb").css({"margin-top": ""});
-    }
+    dermanord_resize_for_menu();
     if ($(".dn_header_container").height() != 0) {
         $(".dn_header_nav").css({"height": $(".dn_header_container").height()});
     }
     else if ($(".dn_header_container").height() == 0) {
         $(".dn_header_nav").css({"height": $(".dn_header_nav").find(".nav-stacked").height() + 15});
     }
+});
+
+$(window).scroll(function() {
+    dermanord_set_menu_margin();
 });
 
