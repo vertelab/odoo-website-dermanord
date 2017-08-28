@@ -225,6 +225,7 @@ input[type="checkbox"] {
 
 #image_nav > li > a > img {
     border: 1px solid #ddd;
+    margin: auto;
 }
 
 #image_nav > li.active > a, #image_nav > li.active > a:hover, #image_nav > li.active > a:focus {
@@ -340,6 +341,25 @@ See also .dn_cart_qty_sm in theme_dermanord.
     margin-top: 4px;
     color: #f22;
 }
+
+@media screen and (min-width: 992px) {
+	#image_nav > li {
+		width: 24.5% !important;
+    }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+	#image_nav > li {
+		width: 24.5% !important;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+	#image_nav > li {
+		width: 24.5% !important;
+    }
+}
+
 
 @media (max-width: 768px) {
     .list_product_name {

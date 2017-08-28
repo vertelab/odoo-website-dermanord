@@ -17,9 +17,9 @@
                     <div class="col-md-12">
                         <t t-foreach="ingredients" t-as="ingredient">
                             <a t-att-href="'/dn_shop/?current_ingredient=%s' %ingredient.id">
-                                <div class="col-md-2 col-sm-2">
+                                <div class="col-md-3 col-sm-3 ingredient_desc">
                                     <img class="img img-responsive" style="margin: auto;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
-                                    <h6 style="color: #D27153;" class="text-center" t-field="ingredient.name"/>
+                                    <h6 class="text-center" t-field="ingredient.name"/>
                                     <h5 class="text-muted text-center" t-field="ingredient.description"/>
                                 </div>
                             </a>
@@ -44,10 +44,10 @@
                         <div class="carousel slide" id="ingredient_carousel" data-ride="carousel">
                             <div class="carousel-inner" style="padding-bottom: 40px;">
                                 <t t-foreach="ingredients" t-as="ingredient">
-                                    <div t-att-class="'item %s' %('active' if ingredient_index == 0 else '')">
+                                    <div t-att-class="'item ingredient_desc %s' %('active' if ingredient_index == 0 else '')">
                                         <a t-att-href="'/dn_shop/?current_ingredient=%s' %ingredient.id">
                                             <img class="img img-responsive" style="margin: auto; height: 230px !important;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
-                                            <h6 style="color: #D27153;" class="text-center" t-field="ingredient.name"/>
+                                            <h6 class="text-center" t-field="ingredient.name"/>
                                             <t t-if="ingredient.description">
                                                 <h5 class="text-muted text-center" t-field="ingredient.description"/>
                                             </t>
@@ -77,6 +77,13 @@
             </t>
         </xpath>
     </template>
+    
+    <template id="webshop_dermanord" inherit_id="website.layout" name="Webshop Dermanord">
+		<!-- Customize css -->
+		<xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
+			<link href="/product_ingredients/static/src/css/main.css" rel="stylesheet" />
+		</xpath>
+	</template>
 
     <template id="assets_frontend" inherit_id="website.assets_frontend" name="Website assets - Ingredients">
       <xpath expr="." position="inside">

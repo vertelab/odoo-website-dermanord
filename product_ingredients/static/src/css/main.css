@@ -1,0 +1,25 @@
+﻿/*=============================================================
+                    Ingredient Dermanord
+ ============================================================ */
+
+.ingredient_desc h6 {
+	color: #D27153;
+	font-size: 1.2em;
+}
+
+.ingredient_desc h5 {
+	line-height: 1em;
+    max-height: 10em;
+    overflow: hidden;
+    position: relative;
+}
+
+.ingredient_desc h5::after {
+	content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 25%;
+    height: 1em;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
