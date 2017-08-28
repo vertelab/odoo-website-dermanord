@@ -446,6 +446,7 @@ class website_sale(website_sale):
                     is_reseller = True
             attributes = product.attribute_value_ids.mapped('name')
             products_list.append({
+                'variant_id': product.id,
                 'product_href': '/dn_shop/variant/%s' %product.id,
                 'product_name': product.name,
                 'price': "%.2f" % product.price,

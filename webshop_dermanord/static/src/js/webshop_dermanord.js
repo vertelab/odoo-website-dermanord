@@ -177,8 +177,8 @@ $(document).ready(function(){
             var max = parseFloat($input.data("max") || Infinity);
             var quantity = ($link.has(".fa-minus").length ? -1 : 1) + parseFloat($input.val(),10);
             $input.val(quantity > min ? (quantity < max ? quantity : max) : min);
-            $('input[name="'+$input.attr("name")+'"]').val(quantity > min ? (quantity < max ? quantity : max) : min);
-            $input.change();
+            //~ $('input[name="'+$input.attr("name")+'"]').val(quantity > min ? (quantity < max ? quantity : max) : min);
+            //~ $input.change();
             return false;
         });
 
@@ -398,14 +398,13 @@ function load_products_list(page){
     openerp.jsonRpc("/dn_shop_json_list", "call", {
         'page': current_page.toString(),
     }).done(function(data){
-        console.log(data);
         page_count = data['page_count'];
         if (page_count >= current_page) {
             var products_content = '';
             $.each(data['products'], function(key, info) {
                 var content = openerp.qweb.render('products_item_list', {
                     'url': data['url'],
-                    'product_id': key,
+                    'product_id': data['products'][key]['variant_id'],
                     'product_href': data['products'][key]['product_href'],
                     'product_name': data['products'][key]['product_name'],
                     'attribute_value_ids': data['products'][key]['attribute_value_ids'],
