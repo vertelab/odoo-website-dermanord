@@ -182,7 +182,7 @@ footer input, footer .input-group-addon {
     color: #000;
 }
 
-#top_menu > li > a:active, #top_menu > li > a:hover {
+#top_menu > li > a:active, #top_menu > li > a:hover, #top_menu > li.active > a {
     background-color: #000;
     color: #fff;
 }
