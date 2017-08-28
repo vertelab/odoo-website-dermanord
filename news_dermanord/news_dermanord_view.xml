@@ -40,9 +40,11 @@
                                     <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path)"/>
                                     <span itemprop="image" t-field="current_menu.image" t-field-options='{"widget": "image", "class": "css_non_editable_mode_hidden", "alt-field": "name"}'/>
                                     <img class="img img-responsive css_editable_mode_hidden" t-att-src="'/imagefield/website.menu/image/%s/ref/theme_dermanord.dn_header_img' %current_menu.id"/>
+<!--
                                     <h6 class="page_title">
                                         <span class="" t-field="current_menu.page_title"/>
                                     </h6>
+-->
                                 </div>
                             </div>
                         </div>
