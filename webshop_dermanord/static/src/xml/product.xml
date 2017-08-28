@@ -100,7 +100,7 @@
                                     </a>
                                 </span>
                             </div>
-                            <a id="add_to_cart" class="btn btn-default js_check_product a-submit" href="#"><i class="fa fa-shopping-cart a-submit" style="color: #CB683F;"/> <span class="hidden-xs">Add to Cart</span></a>
+                            <a id="add_to_cart" class="btn btn-default js_check_product a-submit" href="#" onclick="$(this).closest('form').submit();"><i class="fa fa-shopping-cart a-submit" style="color: #CB683F;"/></a>
                         </div>
                     </form>
                 </div>

@@ -226,7 +226,7 @@
                                                                     </a>
                                                                 </span>
                                                             </div>
-                                                            <a id="add_to_cart" class="btn btn-default js_check_product a-submit" href="#"><i class="fa fa-shopping-cart a-submit" style="color: #CB683F;"/> <span class="hidden-xs">Add to Cart</span></a>
+                                                            <a id="add_to_cart" class="btn btn-default js_check_product a-submit" href="#"><i class="fa fa-shopping-cart a-submit" style="color: #CB683F;"/></a>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -235,9 +235,6 @@
                                     </t>
                                 </tbody>
                             </table>
-                            <div class="products_pager">
-                                <t t-call="website.pager"/>
-                            </div>
                         </div>
                     </t>
                     <div class="oe_structure mb32"/>
