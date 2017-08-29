@@ -62,49 +62,6 @@ a {
     left: 0%;
 }
 
-/* Sale / Promotions */
-.sale_promotions .carousel {
-    padding-bottom: 40px;
-}
-
-.sale_promotions_indicators {
-    margin-bottom: -15px;
-}
-
-.sale_promotions_img {
-    position: relative;
-    width:100% !important;
-    height: auto !important;
-}
-
-.sale_promotions_content {
-    padding: 0px 20px;
-}
-
-.sale_promotions_content .container {
-    position: absolute;
-    top: 10%;
-    left: 0%;
-}
-
-.sale_promotions_content a {
-    color: #000;
-}
-
-.sale_promotions_content .col-md-12 {
-    padding-left: 5%;
-}
-
-.sale_promotions_content .dn_uppercase {
-    max-width: 100%;
-}
-
-.sale_promotions_text {
-    background-color: rgba(0,0,0,0.4);
-    color: #fff;
-    margin-left: 3%;
-}
-
 /*! Blog Slide */
 .blog_slide a {
     color: #000 !important;
