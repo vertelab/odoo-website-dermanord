@@ -46,15 +46,29 @@ class WebsiteIngredients(http.Controller):
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
+    ingredient_ids = fields.Many2many(comodel_name='product.ingredient', string="Ingredients", compute='_get_ingredient_ids', store=True)
+    
+    @api.one
+    @api.depends('product_variant_ids.ingredient_ids')
+    def _get_ingredient_ids(self):
+        ingredients = self.env['product.ingredient'].browse()
+        for product in self.product_variant_ids:
+            ingredients |= product.ingredient_ids
+        self.ingredient_ids = ingredients
+        
+
+class Product(models.Model):
+    _inherit = 'product.product'
+
     ingredient_ids = fields.Many2many(comodel_name='product.ingredient', relation='product_ingredient_rel',column1='product_id',column2='ingredient_id', string="Ingredients")
 
 class ProductIngredients(models.Model):
     _name = 'product.ingredient'
     _order = 'sequence, name, id'
 
-    name = fields.Char(string="Name")
-    description = fields.Text(string="Description")
+    name = fields.Char(string="Name", translate=True)
+    description = fields.Text(string="Description", translate=True)
     image = fields.Binary(string='Image')
-    product_ids = fields.Many2many(comodel_name='product.template', relation='product_ingredient_rel',column1='ingredient_id',column2='product_id')
+    product_ids = fields.Many2many(comodel_name='product.product', relation='product_ingredient_rel',column1='ingredient_id',column2='product_id')
     sequence = fields.Integer()
 
