@@ -23,6 +23,10 @@
     margin-top: -3px;
 }
 
+.breadcrumb {
+	margin-bottom: 0px;
+}
+
 @font-face {
   font-family: 'Futura-Medium';
 /*  src: url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.eot?#iefix') format('embedded-opentype'),  url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.woff') format('woff'), url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.ttf')  format('truetype'), url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.svg#Futura-Medium') format('svg'); */
