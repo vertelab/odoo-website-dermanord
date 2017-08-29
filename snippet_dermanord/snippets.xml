@@ -25,21 +25,6 @@
                     </section>
                 </div>
 
-                <div id="sale_promotions">
-                    <div class="oe_snippet_thumbnail">
-                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_banner.png"/>
-                        <span class="oe_snippet_thumbnail_title">Sale / Promotions</span>
-                    </div>
-                    <section class="oe_snippet_body sale_promotions mb16">
-                        <h3 class="text-center mt32 mb32 oe_bs_title dn_uppercase">Sale / Promotions</h3>
-                        <div class="carousel slide" data-ride="carousel" id="sale_promotions">
-                            <ol class="carousel-indicators sale_promotions_indicators"/>
-                            <div class="carousel-inner sale_promotions_content"/>
-                        </div>
-                        <img src="/snippet_dermanord/static/src/img/finger.png" class="touch_finger" style="margin: auto; display: block;"/>
-                    </section>
-                </div>
-
                 <!--FADE SLIDER-->
                 <div id="fade_slide">
                     <div class="oe_snippet_thumbnail">
@@ -223,7 +208,9 @@
                         </t>
                     </li>
                 </div>
+<!--
                 <div data-snippet-option-id="sale_promotions_option" data-selector=".sale_promotions"/>
+-->
                 <div data-snippet-option-id="categ_p_option" data-selector=".categ_p_section"/>
 <!--
                     <li class="dropdown-submenu">

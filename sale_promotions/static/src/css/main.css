@@ -1,0 +1,61 @@
+﻿/*=============================================================
+                    Sale Promotions
+ ============================================================ */
+/*
+.sale_promotions .carousel {
+    padding-bottom: 40px;
+}
+
+.sale_promotions_indicators {
+    margin-bottom: -15px;
+}
+*/
+
+.sp_div .col-md-4, .sp_div .col-md-6, .sp_div .col-md-8, .sp_div .col-md-12 {
+	padding: 0px;
+}
+
+.sale_promotions_img {
+    position: relative;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.sp_one_one {
+	padding-left: 25px;
+	padding-bottom: 37px;
+}
+.sp_two_one {
+	padding-left: 25px;
+}
+
+.sp_one_two .sale_promotions_img {
+    padding-top: 200%; /* 1:2 Aspect Ratio */
+}
+
+.sp_one_one .sale_promotions_img {
+    padding-top: 100%; /* 1:1 Aspect Ratio */
+}
+
+.sp_two_one .sale_promotions_img {
+    padding-top: 50%; /* 2:1 Aspect Ratio */
+}
+
+.sale_promotions_text {
+    padding: 0px 20px;
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    background-color: rgba(0,0,0,0.4);
+    margin: 10px;
+}
+
+.sale_promotions_text a {
+	color: #fff !important;
+}
+
+
+@media screen and (max-width: 992px) {
+	.sp_one_two, .sp_one_one, .sp_two_one { padding: 10px; }
+}

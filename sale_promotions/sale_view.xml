@@ -81,5 +81,73 @@
             groups="base.group_user" parent="base.marketing_menu"/>
 
     <menuitem id="menu_sale_promotion_form" parent="menu_sale_promotion" action="action_sale_promotion_form" sequence="10"/>
+    
+		<template id="custom_snippets" inherit_id="website.snippets" name="Custom Snippets">
+            <xpath expr="//div[@id='snippet_structure']" position="inside">
+                <div id="sale_promotions">
+                    <div class="oe_snippet_thumbnail">
+                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_banner.png"/>
+                        <span class="oe_snippet_thumbnail_title">Sale / Promotions</span>
+                    </div>
+                    <section class="oe_snippet_body mb16">
+                        <h3 class="text-center mt32 mb32 oe_bs_title dn_uppercase">Sale / Promotions</h3>
+                        <div class="container sp_div">
+							<div class="col-md-4">
+								<div class="col-md-12">
+									<div class="sp_one_two">
+										<img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-8">
+								<div class="col-md-6">
+									<div class="sp_one_one">
+										<img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="sp_one_one">
+										<img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="sp_two_one">
+										<img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+									</div>
+								</div>
+							</div>
+                        </div>
+                    </section>
+                </div>
+             </xpath>
+		</template>
+         
+		<template id="custom_snippet_options" inherit_id="website.snippet_options" name="Custom Snippet Options">
+			<xpath expr="." position="inside">
+				<div data-snippet-option-id="sale_promotions_option" data-selector=".sp_one_two, .sp_one_one, .sp_two_one">
+                    <li class="dropdown-submenu">
+                        <t t-set="sps" t-value="request.env['sale.promotion'].search([('website_published', '=', True)])"/>
+                        <t t-if="len(sps) &gt; 0">
+                            <a tabindex="-1" href="#">Sale / Promotions</a>
+                            <ul class="dropdown-menu">
+                                <t t-foreach="sps" t-as="sp">
+                                    <li><a href="#" class="oe_sp_change" t-att-data-id="sp.id"><t t-esc="sp.name"/></a></li>
+                                </t>
+                            </ul>
+                        </t>
+                    </li>
+                </div>
+            </xpath>
+		</template>
+		
+		<template id="custom_css_js" inherit_id="website.layout" name="Custom CSS JS for Sale Promotions">
+			<xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
+                <link href="/sale_promotions/static/src/css/main.css" rel="stylesheet" />
+            </xpath>
+            <xpath expr="//body" position="inside">
+                <script type="text/javascript" src="/sale_promotions/static/src/js/main.js" />
+            </xpath>
+		</template>
+    
   </data>
 </openerp>

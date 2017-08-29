@@ -28,12 +28,14 @@
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['sale','marketing'],
+    'depends': ['sale','website','marketing'],
     'data': [
         'security/ir.model.access.csv',
         'security/ir_rule_data.xml',
         'sale_view.xml',
-],
+        'recipe.xml',
+	],
+	'qweb': ['static/src/xml/templates.xml'],
     'application': False,
 }
 

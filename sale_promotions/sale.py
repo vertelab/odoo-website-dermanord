@@ -20,6 +20,7 @@
 ##############################################################################
 
 from openerp import models, fields, api, http, _
+from openerp import http
 from openerp.http import request
 import logging
 _logger = logging.getLogger(__name__)
@@ -41,3 +42,15 @@ class SalePromotions(models.Model):
     url = fields.Char(string='URL', required=True)
     sequence = fields.Integer(string='Sequence', required=True, default=_default_sequence)
     website_published = fields.Boolean(string='Published')
+
+
+class SalePromotions(http.Controller):
+    @http.route(['/get_sale_promotion'], type='json', auth='public', website=True)
+    def get_sale_promotion(self, sp_id=None, **kw):
+        sp = request.env['sale.promotion'].browse(int(sp_id))
+        sale_promotion = {}
+        sale_promotion['name'] = sp.name
+        sale_promotion['description'] = sp.description
+        sale_promotion['image'] = '/imagefield/sale.promotion/image/%s/ref/' %sp.id
+        sale_promotion['url'] = sp.url
+        return sale_promotion
