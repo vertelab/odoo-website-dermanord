@@ -172,56 +172,15 @@ class website_sale(website_sale):
             post[current_ingredient_key] = current_ingredient
 
         domain_append = []
-        if len(facet_ids) != 0:
-            facets = request.env['product.facet.value'].search([('id', 'in', facet_ids)])
-            facet = {}
-            for f in facets:
-                if facet.get(f.name):
-                    facet[f.name].append(f.id)
-                else:
-                    facet[f.name] = [f.id]
-                request.session['form_values']['facet_%s_%s' %(f.facet_id.id, f.id)] = str(f.id)
-            value_ids = []
-            for f, r in facet.iteritems():
-                value_ids += r
-            domain_append.append(('facet_line_ids.value_ids', 'in', value_ids))
-        if len(category_ids) != 0:
-            categories = request.env['product.public.category'].search([('id', 'in', category_ids)])
-            category = {}
-            for c in categories:
-                if category.get(c.name):
-                    category[c.name].append(c.id)
-                else:
-                    category[c.name] = [c.id]
-            value_ids = []
-            for c, r in category.iteritems():
-                value_ids += r
-            domain_append.append(('public_categ_ids', 'in', value_ids))
-        if len(ingredient_ids) != 0:
-            ingredients = request.env['product.ingredient'].search([('id', 'in', ingredient_ids)])
-            ingredient = {}
-            for i in ingredients:
-                if ingredient.get(i.name):
-                    ingredient[i.name].append(i.id)
-                else:
-                    ingredient[i.name] = [i.id]
-                request.session['form_values']['ingredient_%s' %i.id] = str(i.id)
-            value_ids = []
-            for i, r in ingredient.iteritems():
-                value_ids += r
-            domain_append.append(('ingredient_ids', 'in', value_ids))
-        if len(not_ingredient_ids) != 0:
-            ingredients = request.env['product.ingredient'].search([('id', 'in', not_ingredient_ids)])
-            ingredient = {}
-            for i in ingredients:
-                if ingredient.get(i.name):
-                    ingredient[i.name].append(i.id)
-                else:
-                    ingredient[i.name] = [i.id]
-            value_ids = []
-            for i, r in ingredient.iteritems():
-                value_ids += r
-            domain_append.append(('ingredient_ids', 'not in', value_ids))
+        domain_append += [('public_categ_ids', '=', id) for id in category_ids]
+        if facet_ids:
+            product_ids = request.env['product.product'].search_read(
+                [('facet_line_ids.value_ids', '=', id) for id in facet_ids], ['id'])
+            domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
+        if ingredient_ids or not_ingredient_ids:
+            product_ids = request.env['product.product'].search_read(
+                [('ingredient_ids', '=', id) for id in ingredient_ids] + [('ingredient_ids', '!=', id) for id in not_ingredient_ids], ['id'])
+            domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
 
         return domain_append
 
