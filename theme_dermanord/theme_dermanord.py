@@ -51,9 +51,18 @@ class website(models.Model):
         else:
             return menu
 
-    def get_breadcrumb(self, path):
+    def get_breadcrumb(self, path, **params):
         breadcrumb = []
-        if path.startswith('/blog/'): # url is a blog
+        if path.startswith('/dn_shop/product/'): # url is a product
+            product = params.get('product')
+            if product:
+                breadcrumb.append('<li>%s</li>' % product.name)
+            menu = self.env.ref('webshop_dermanord.menu_dn_shop')
+            home_menu = self.env.ref('website.menu_homepage')
+            breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
+            breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
+            return '<ol class="breadcrumb">%s</ol>' %''.join(reversed(breadcrumb))
+        elif path.startswith('/blog/'): # url is a blog
             if '/post/' in path:
                 home_menu = self.env.ref('website.menu_homepage')
                 blog_id = path[(path.index('/blog/')+len('/blog/')):path.index('/post/')].split('-')[-1]

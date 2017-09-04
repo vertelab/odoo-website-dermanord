@@ -387,6 +387,8 @@
         </template>
 
         <template id="dermanord_product_detail" inherit_id="website_sale.product">
+            <xpath expr="//ol[@class='breadcrumb']/.." position="replace">
+            </xpath>
             <xpath expr="//t[@t-call='website_sale.search']/.." position="attributes">
                 <attribute name="class">col-sm-3 hidden</attribute>
             </xpath>

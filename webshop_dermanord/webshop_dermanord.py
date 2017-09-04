@@ -172,7 +172,8 @@ class website_sale(website_sale):
             post[current_ingredient_key] = current_ingredient
 
         domain_append = []
-        domain_append += [('public_categ_ids', '=', id) for id in category_ids]
+        if category_ids:
+            domain_append += [('public_categ_ids', 'in', [id for id in category_ids])]
         if facet_ids:
             product_ids = request.env['product.product'].search_read(
                 [('facet_line_ids.value_ids', '=', id) for id in facet_ids], ['id'])
