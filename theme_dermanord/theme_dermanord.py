@@ -37,6 +37,9 @@ _logger = logging.getLogger(__name__)
 class website(models.Model):
     _inherit = 'website'
 
+    social_instagram = fields.Char(string='Instagram')
+    social_snapchat = fields.Char(string='Snapchat')
+
     def current_menu(self, path):
         menu = self.env['website.menu'].search([('url', '=', path)])
         if not menu:
@@ -61,7 +64,7 @@ class website(models.Model):
             home_menu = self.env.ref('website.menu_homepage')
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
-            return '<ol class="breadcrumb">%s</ol>' %''.join(reversed(breadcrumb))
+            return '<ol class="breadcrumb dn_breadcrumb">%s</ol>' %''.join(reversed(breadcrumb))
         elif path.startswith('/blog/'): # url is a blog
             if '/post/' in path:
                 home_menu = self.env.ref('website.menu_homepage')
@@ -71,7 +74,7 @@ class website(models.Model):
                     blog = request.env['blog.blog'].browse(int(blog_id))
                     post = request.env['blog.post'].browse(int(post_id))
                     breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="/blog/%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name, post.id, post.name))
-                    return '<ol class="breadcrumb">%s</ol>' %breadcrumb[0]
+                    return '<ol class="breadcrumb dn_breadcrumb">%s</ol>' %breadcrumb[0]
                 except:
                     _logger.error('Blog post does not exist')
             else:
@@ -80,7 +83,7 @@ class website(models.Model):
                 try:
                     blog = request.env['blog.blog'].browse(int(blog_id))
                     breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name))
-                    return '<ol class="breadcrumb">%s</ol>' %breadcrumb[0]
+                    return '<ol class="breadcrumb dn_breadcrumb">%s</ol>' %breadcrumb[0]
                 except:
                     _logger.error('Blog does not exist')
         else: # url is a normal menu or submenu
@@ -90,8 +93,13 @@ class website(models.Model):
                 menu = menu.parent_id
             home_menu = self.env.ref('website.menu_homepage')
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
-            return '<ol class="breadcrumb">%s</ol>' %''.join(reversed(breadcrumb))
+            return '<ol class="breadcrumb dn_breadcrumb">%s</ol>' %''.join(reversed(breadcrumb))
 
+class website_config_settings(models.TransientModel):
+    _inherit = 'website.config.settings'
+
+    social_instagram = fields.Char(related='website_id.social_instagram', string='Instagram Account')
+    social_snapchat = fields.Char(related='website_id.social_snapchat', string='Snapchat Account')
 
 class website_menu(models.Model):
     _inherit = 'website.menu'

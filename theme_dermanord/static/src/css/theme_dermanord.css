@@ -2,6 +2,32 @@
                     Theme Dermanord
  ============================================================ */
 
+@media (max-width: 991px) {
+    .dn_footer_menu {
+        -webkit-columns: 100px 2; /* Chrome, Safari, Opera */
+        -moz-columns: 100px 2; /* Firefox */
+        columns: 100px 2;
+    }
+}
+
+.dn-social-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    background-color: white;
+    color: black;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    float:left;
+}
+
+.dn-social-button > a {
+    color: black;
+}
+
 #top_menu {
     width: 100%;
     margin: auto;

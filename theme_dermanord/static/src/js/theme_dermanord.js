@@ -50,16 +50,20 @@ dermanord_resize_for_menu = function() {
         bt = menu.css('border-top-width');
         bb = menu.css('border-bottom-width');
         height = menu.height() + parseFloat(bt.substring(0, bt.length-2)) + parseFloat(bb.substring(0, bb.length-2));
-        $(".container.dn_header").css({"margin-top": height});
-        $(".oe_website_login_container").css({"margin-top": height});
-        if ($("#wrap").prev()[0].className == "breadcrumb") {
-            $("ol.breadcrumb").css({"margin-top": height});
+        breadcrumb = $("ol.dn_breadcrumb");
+        if(breadcrumb.length == 1) {
+            breadcrumb.css({"margin-top": height});
         }
+        else {
+            $(".container.dn_header").css({"margin-top": height});
+        }
+        $(".oe_website_login_container").css({"margin-top": height});
+        
     }
     else {
         $(".container.dn_header").css({"margin-top": ""});
         $(".oe_website_login_container").css({"margin-top": ""});
-        $("ol.breadcrumb").css({"margin-top": ""});
+        $("ol.dn_breadcrumb").css({"margin-top": ""});
     }
 }
 
