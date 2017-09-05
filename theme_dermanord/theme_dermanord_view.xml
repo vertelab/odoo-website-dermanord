@@ -270,16 +270,23 @@
                 </t>
             </xpath>
         </template>
-
+        
         <template id="submenu_dermanord" name="Submenu dermanord">
             <t t-call="website.layout">
                 <t t-set="no_breadcrumb" t-value="True"/>
+                <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path)"/>
+                <t t-set="current_submenu" t-value="website.current_submenu(request.httprequest.path)"/>
                 <div class="container dn_header">
-                    <div t-if="website.current_submenu(request.httprequest.path).child_id" class="col-md-12 col-sm-12 col-xs-12 dn_header_banner">
+                    <div t-if="current_submenu.child_id" class="col-md-12 col-sm-12 col-xs-12 dn_header_banner">
+                        <t t-if="current_menu == current_submenu">
+                            <script type="text/javascript">
+                                window.location.replace("<t t-esc="current_menu.child_id[0].url"/>");
+                            </script>
+                        </t>
                         <div class="col-md-2 col-sm-2 col-xs-12 dn_header_nav">
                             <ul class="nav nav-pills nav-stacked">
-                                <t t-foreach="website.current_submenu(request.httprequest.path).child_id" t-as="submenu">
-                                    <li t-att-class="'hidden-xs %s' %('active' if submenu == website.current_menu(request.httprequest.path) else '')">
+                                <t t-foreach="current_submenu.child_id" t-as="submenu">
+                                    <li t-att-class="'hidden-xs %s' %('active' if submenu == current_menu else '')">
                                         <a t-att-href="submenu.url" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
                                             <span class="text-center dn_uppercase">
                                                 <t t-esc="submenu.name"/>
@@ -298,12 +305,8 @@
                         </div>
                         <div class="col-md-10 col-sm-10 hidden-xs" style="padding: 0px;">
                             <div class="dn_header_container">
-                                <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path)"/>
                                 <span itemprop="image" t-field="current_menu.image" t-field-options='{"widget": "image", "class": "css_non_editable_mode_hidden", "alt-field": "name"}'/>
                                 <img class="img img-responsive css_editable_mode_hidden" t-att-src="'/imagefield/website.menu/image/%s/ref/theme_dermanord.dn_header_img' %current_menu.id"/>
-<!--
-                                <h6 class="page_title"><span t-field="current_menu.page_title"/></h6>
--->
                             </div>
                         </div>
                     </div>
