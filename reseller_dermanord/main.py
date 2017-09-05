@@ -28,16 +28,68 @@ _logger = logging.getLogger(__name__)
 
 class Main(http.Controller):
 
+    def get_domain_append(self, post):
+        country_ids = []
+        cities = []
+        competence_ids = []
+        assortment_ids = []
+
+        for k, v in post.iteritems():
+            if k.split('_')[0] == 'country':
+                if v:
+                    country_ids.append(int(v))
+            if k.split('_')[0] == 'city':
+                if v:
+                     cities.append(v)
+            if k.split('_')[0] == 'competence':
+                if v:
+                    competence_ids.append(int(v))
+            if k.split('_')[0] == 'assortment':
+                if v:
+                    assortment_ids.append(int(v))
+
+        domain_append = []
+        domain_append += [('category_id', 'in', request.env.ref('reseller_dermanord.reseller_tag').id)]
+        if country_ids:
+            domain_append.append(('country_id', 'in', country_ids))
+        if cities:
+            domain_append.append(('city', '=', cities))
+        if competence_ids:
+            domain_append.append(('child_category_ids', 'in', competence_ids))
+        if assortment_ids:
+            domain_append.append(('category_id', 'in', assortment_ids))
+        if post.get('webshop') == '1':
+            domain_append.append(('website', '!=', ''))
+
+        #~ if len(domain_append) > 1:
+            #~ for index in domain_append:
+                #~ domain_append.insert(index*2+1, '|')
+
+        _logger.warn(domain_append)
+        return domain_append
+
+    def get_form_values(self):
+        if not request.session.get('form_values'):
+            request.session['form_values'] = {}
+        return request.session.get('form_values')
+
     @http.route(['/resellers'], type='http', auth="public", website=True)
     def reseller(self, **post):
         word = post.get('search', False)
-        partners = None
-        if not word:
-            partners = request.env['res.partner'].sudo().search([('category_id', 'in', request.env.ref('reseller_dermanord.reseller_tag').id)])
+        domain = []
+        domain += self.get_domain_append(post)
+        partners = request.env['res.partner'].sudo().search(domain)
         if word and word != '':
-            partners = request.env['res.partner'].sudo().search([('name', 'ilike', word), ('category_id', 'in', self.env.ref('reseller_dermanord.reseller_tag').id)])
-        return request.website.render('reseller_dermanord.resellers', {'resellers': partners})
+            partners.filtered(lambda p: p.name in word)
+        request.session['form_values'] = post
+        return request.website.render('reseller_dermanord.resellers', {
+            'resellers': partners,
+            'reseller_footer': True,
+        })
 
     @http.route(['/reseller/<model("res.partner"):partner>'], type='http', auth="public", website=True)
     def reseller_partner(self, partner):
-        return request.website.render('reseller_dermanord.reseller', {'reseller': partner})
+        return request.website.render('reseller_dermanord.reseller', {
+            'reseller': partner,
+            'reseller_footer': True,
+        })
