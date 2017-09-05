@@ -11,3 +11,106 @@
 .reseller_cell p {
     padding-bottom: 20px;
 }
+
+.dn_btn {
+    display: inline-block;
+    padding: 12px 32px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border-radius: opx;
+    text-transform: uppercase;
+}
+
+.dn_btn:hover, .dn_btn:active, .dn_btn:focus {
+    color: inherit !important;
+    text-decoration: none;
+}
+
+.dn_primary {
+    color: #fff;
+    background-color: #CB683F;
+    border-color: #CB683F;
+}
+
+.dn_primary:hover {
+    color: #eee !important;
+}
+
+.dn_default {
+    color: #000;
+    background-color: #fff;
+    border-color: #ddd;
+}
+
+input[type="checkbox"] {
+    margin-left: -25px !important;
+    transform: scale(1.5, 1.5);
+}
+
+#dn_reseller_filter_modal .checkbox {
+    margin-bottom: 15px;
+}
+
+.no_padding_div {
+    padding: 0px !important;
+}
+
+.no_padding_div .tab-pane {
+    padding-left: 15px;
+}
+
+.nav-stacked a {
+    padding: 10px 16px !important;
+    font-size: 18px !important;
+    line-height: 1.33 !important;
+    border-radius: 6px !important;
+}
+
+#dn_reseller_filter_modal .modal-body .container {
+    padding: 0px;
+}
+
+#dn_reseller_filter_modal .modal-body .container .col-xs-5, #filter_modal .modal-body .container .col-xs-7 {
+    padding-left: 0px;
+}
+
+#dn_reseller_filter_modal .modal-content {
+    padding: 15px;
+}
+
+#reseller_filter_btn_group {
+    padding: 0px 20px 20px 20px;
+}
+
+#dn_reseller_sort_modal ul{
+    list-style-type: none;
+}
+
+#reseller_bottom_div {
+    width: 100%;
+    position: fixed;
+    z-index: 99;
+    bottom: 0px;
+    left: 0px;
+    background-color: rgba(0, 0, 0, 1);
+    color: #fff;
+    padding: 5px 20px;
+}
+
+.filter_match, .sort_match {
+    background-color: #CB683F !important;
+    color: #fff;
+    padding: 0px 6px !important;
+    border-radius: 12px !important;
+}

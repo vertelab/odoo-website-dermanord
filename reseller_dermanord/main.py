@@ -71,7 +71,7 @@ class Main(http.Controller):
     def get_reseller_chosen_filter_qty(self, post):
         chosen_filter_qty = 0
         for k, v in post.iteritems():
-            if k not in ['post_form', 'order']:
+            if k not in ['post_form', 'order', 'webshop']:
                 chosen_filter_qty += 1
         return chosen_filter_qty
 
@@ -90,12 +90,13 @@ class Main(http.Controller):
         word = post.get('search', False)
         domain = []
         domain += self.get_reseller_domain_append(post)
-        partners = request.env['res.partner'].sudo().search(domain)
+        order = ''
         if word and word != '':
             partners.filtered(lambda p: p.name in word)
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
-
+            order = post.get('order', '')
+        partners = request.env['res.partner'].sudo().search(domain, order=order)
         request.session['chosen_filter_qty'] = self.get_reseller_chosen_filter_qty(self.get_reseller_form_values())
         request.session['sort_name'] = self.get_reseller_chosen_order(self.get_reseller_form_values())[0]
         request.session['sort_order'] = self.get_reseller_chosen_order(self.get_reseller_form_values())[1]

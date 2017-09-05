@@ -48,7 +48,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="bottom_div" class="container">
+                    <div id="reseller_bottom_div" class="container">
                         <a href="#" id="reseller-filter-btn-modal" data-toggle="modal" data-target="#dn_reseller_filter_modal" class="pull-left" style="color: #fff; font-size: 1.3em; padding: 5px;">
                             <i class="fa fa-filter"/> Filter
                             <span class="filter_match" t-if="request.session.get('chosen_filter_qty') &gt; 0">
@@ -301,7 +301,7 @@
                         </t>
                     </t>
                 </t>
-                <input type="hidden" name="webshop" t-att-value="request.session.get('form_values').get('webshop')"/>
+                <input type="hidden" name="webshop" t-att-value="'1' if request.session.get('form_values').get('webshop') == '1' else '0'"/>
                 <div class="btn-group">
                     <button class="mt32 dn_btn dn_primary" name="post_form" value="ok" type="submit">OK</button>
                 </div>
