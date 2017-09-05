@@ -28,7 +28,7 @@ _logger = logging.getLogger(__name__)
 
 class Main(http.Controller):
 
-    def get_domain_append(self, post):
+    def get_reseller_domain_append(self, post):
         country_ids = []
         cities = []
         competence_ids = []
@@ -61,27 +61,44 @@ class Main(http.Controller):
         if post.get('webshop') == '1':
             domain_append.append(('website', '!=', ''))
 
-        #~ if len(domain_append) > 1:
-            #~ for index in domain_append:
-                #~ domain_append.insert(index*2+1, '|')
-
-        _logger.warn(domain_append)
         return domain_append
 
-    def get_form_values(self):
+    def get_reseller_form_values(self):
         if not request.session.get('form_values'):
             request.session['form_values'] = {}
         return request.session.get('form_values')
+
+    def get_reseller_chosen_filter_qty(self, post):
+        chosen_filter_qty = 0
+        for k, v in post.iteritems():
+            if k not in ['post_form', 'order']:
+                chosen_filter_qty += 1
+        return chosen_filter_qty
+
+    def get_reseller_chosen_order(self, post):
+        sort_name = 'name'
+        sort_order = 'asc'
+        for k, v in post.iteritems():
+            if k == 'order':
+                sort_name = post.get('order').split(' ')[0]
+                sort_order = post.get('order').split(' ')[1]
+                break
+        return [sort_name, sort_order]
 
     @http.route(['/resellers'], type='http', auth="public", website=True)
     def reseller(self, **post):
         word = post.get('search', False)
         domain = []
-        domain += self.get_domain_append(post)
+        domain += self.get_reseller_domain_append(post)
         partners = request.env['res.partner'].sudo().search(domain)
         if word and word != '':
             partners.filtered(lambda p: p.name in word)
-        request.session['form_values'] = post
+        if post.get('post_form') and post.get('post_form') == 'ok':
+            request.session['form_values'] = post
+
+        request.session['chosen_filter_qty'] = self.get_reseller_chosen_filter_qty(self.get_reseller_form_values())
+        request.session['sort_name'] = self.get_reseller_chosen_order(self.get_reseller_form_values())[0]
+        request.session['sort_order'] = self.get_reseller_chosen_order(self.get_reseller_form_values())[1]
         return request.website.render('reseller_dermanord.resellers', {
             'resellers': partners,
             'reseller_footer': True,
