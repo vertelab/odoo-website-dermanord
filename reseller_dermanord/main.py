@@ -22,7 +22,7 @@
 from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
-import urllib2
+import urllib
 import json
 
 import logging
@@ -33,20 +33,21 @@ class res_partner(models.Model):
 
     @api.multi
     def get_position(self):
-        if not self.partner_latitude and self.street:
-            url = u'https://maps.googleapis.com/maps/api/geocode/json?address=%s,%s,%s,%s' %(self.street, self.zip, self.city, self.country_id.name)
-            #~ url = urllib2.quote_plus(url.encode('ascii', 'xmlcharrefreplace'))
-            _logger.warn(url)
-            geo_info = urllib2.urlopen(url.encode('ascii', 'xmlcharrefreplace')).read()
-            _logger.warn(geo_info)
-            geo = json.loads(geo_info)
-            result = geo.get('results')
-            _logger.warn(result)
-            if len(result) > 0:
-                geometry = result[0].get("geometry")
-                if geometry:
-                    self.partner_latitude = geometry["location"]["lat"]
-                    self.partner_longitude = geometry["location"]["lng"]
+        url = ''
+        if not self.partner_latitude and (self.street or self.street2):
+            url = u'https://maps.googleapis.com/maps/api/geocode/json?address=%s,%s,%s,%s' %(self.street if (self.street and not self.street2) else self.street2, self.zip, self.city, self.country_id.name)
+            try:
+                #~ geo_info = urllib2.urlopen(url.encode('ascii', 'xmlcharrefreplace')).read()
+                geo_info = urllib.urlopen(url.encode('ascii', 'xmlcharrefreplace')).read()
+                geo = json.loads(geo_info)
+                result = geo.get('results')
+                if len(result) > 0:
+                    geometry = result[0].get("geometry")
+                    if geometry:
+                        self.partner_latitude = geometry["location"]["lat"]
+                        self.partner_longitude = geometry["location"]["lng"]
+            except ValueError as e:
+                _logger.error(e)
         return {'lat': self.partner_latitude, "lng": self.partner_longitude}
 
 
@@ -132,7 +133,6 @@ class Main(http.Controller):
                         icon: 'http://wiggum.vertel.se/dn_maps_marker.png'
                     });
                     """
-
         res = []
         for partner in request.env['res.partner'].sudo().search(domain, order=order):
             pos = partner.get_position()
