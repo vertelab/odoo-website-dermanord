@@ -264,15 +264,15 @@ input[type="checkbox"] {
     margin-top: 8px;
 }
 
-#filter_modal .modal-body .container {
+#dn_filter_modal .modal-body .container {
     padding: 0px;
 }
 
-#filter_modal .modal-body .container .col-xs-5, #filter_modal .modal-body .container .col-xs-7 {
+#dn_filter_modal .modal-body .container .col-xs-5, #dn_filter_modal .modal-body .container .col-xs-7 {
     padding-left: 0px;
 }
 
-#filter_modal .modal-content {
+#dn_filter_modal .modal-content {
     padding: 15px;
 }
 
@@ -280,7 +280,7 @@ input[type="checkbox"] {
     padding: 0px 20px 20px 20px;
 }
 
-#sort_modal ul{
+#dn_sort_modal ul{
     list-style-type: none;
 }
 
@@ -343,20 +343,20 @@ See also .dn_cart_qty_sm in theme_dermanord.
 }
 
 @media screen and (min-width: 992px) {
-	#image_nav > li {
-		width: 24.5% !important;
+    #image_nav > li {
+        width: 24.5% !important;
     }
 }
 
 @media screen and (min-width: 992px) and (max-width: 1199px) {
-	#image_nav > li {
-		width: 24.5% !important;
+    #image_nav > li {
+        width: 24.5% !important;
     }
 }
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
-	#image_nav > li {
-		width: 24.5% !important;
+    #image_nav > li {
+        width: 24.5% !important;
     }
 }
 

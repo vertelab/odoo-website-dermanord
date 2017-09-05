@@ -26,7 +26,7 @@ res = bg
 
         <record id="img_product_param_bg_color" model="image.recipe.param">
             <field name="name">bg_color</field>
-            <field name="value">#ffffff</field>
+            <field name="value">#f4f4f4</field>
             <field name="recipe_id" ref="snippet_dermanord.img_product"/>
         </record>
 
