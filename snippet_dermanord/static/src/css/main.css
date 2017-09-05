@@ -75,8 +75,8 @@ a {
 /*! Product Highlights */
 
 .ph_block {
-    border: 1px solid transparent;
-    background-color: rgba(0,0,0,0.4);
+    border: 1px solid #fff;
+    background-color: #f4f4f4;
 }
 
 .ph_block:hover {
@@ -103,7 +103,6 @@ a {
     padding: 10px !important;
     bottom: 0px;
     left: 0px;
-    background: rgba(255, 255, 255, 0.7);
     text-overflow: ellipsis;
 }
 
@@ -131,7 +130,7 @@ a {
 }
 
 .ph_block h5 {
-	margin-top: 0px;
+    margin-top: 0px;
 }
 
 .ph_block .ph_desc {
