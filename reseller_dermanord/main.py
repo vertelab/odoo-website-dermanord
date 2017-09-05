@@ -22,9 +22,33 @@
 from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
+import urllib2
+import json
 
 import logging
 _logger = logging.getLogger(__name__)
+
+class res_partner(models.Model):
+    _inherit = 'res.partner'
+
+    @api.multi
+    def get_position(self):
+        if not self.partner_latitude and self.street:
+            url = u'https://maps.googleapis.com/maps/api/geocode/json?address=%s,%s,%s,%s' %(self.street, self.zip, self.city, self.country_id.name)
+            #~ url = urllib2.quote_plus(url.encode('ascii', 'xmlcharrefreplace'))
+            _logger.warn(url)
+            geo_info = urllib2.urlopen(url.encode('ascii', 'xmlcharrefreplace')).read()
+            _logger.warn(geo_info)
+            geo = json.loads(geo_info)
+            result = geo.get('results')
+            _logger.warn(result)
+            if len(result) > 0:
+                geometry = result[0].get("geometry")
+                if geometry:
+                    self.partner_latitude = geometry["location"]["lat"]
+                    self.partner_longitude = geometry["location"]["lng"]
+        return {'lat': self.partner_latitude, "lng": self.partner_longitude}
+
 
 class Main(http.Controller):
 
@@ -100,9 +124,24 @@ class Main(http.Controller):
         request.session['chosen_filter_qty'] = self.get_reseller_chosen_filter_qty(self.get_reseller_form_values())
         request.session['sort_name'] = self.get_reseller_chosen_order(self.get_reseller_form_values())[0]
         request.session['sort_order'] = self.get_reseller_chosen_order(self.get_reseller_form_values())[1]
+
+        marker_tmp = """var marker%s = new google.maps.Marker({
+                        title: '%s',
+                        position: {lat: %s, lng: %s},
+                        map: map,
+                        icon: 'http://wiggum.vertel.se/dn_maps_marker.png'
+                    });
+                    """
+
+        res = []
+        for partner in request.env['res.partner'].sudo().search(domain, order=order):
+            pos = partner.get_position()
+            res.append(marker_tmp %(partner.id, partner.name, pos['lat'], pos['lng']))
+
         return request.website.render('reseller_dermanord.resellers', {
             'resellers': partners,
             'reseller_footer': True,
+            'resellers_geo': res,
         })
 
     @http.route(['/reseller/<model("res.partner"):partner>'], type='http', auth="public", website=True)

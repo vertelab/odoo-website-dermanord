@@ -64,11 +64,7 @@
                       zoom: 8,
                       center: uluru
                     });
-                    var marker = new google.maps.Marker({
-                      position: uluru,
-                      map: map,
-                      icon: iconBase + 'http://localhost:8069/reseller_dermanord/static/src/img/dn_maps_marker.png'
-                    });
+                    <t t-foreach="resellers_geo" t-as="geo"><t t-raw="geo"/></t>
                   }
                 </script>
                 <script t-att-src="'https://maps.googleapis.com/maps/api/js?key=%s&amp;callback=initMap' %request.env['ir.config_parameter'].get_param('google_maps_api')"></script>

@@ -30,7 +30,7 @@ Resellers Page
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website', 'child_catagory_tags'],
+    'depends': ['website', 'child_catagory_tags', 'base_geolocalize'],
     'data': [
         'templates.xml',
         'data.xml',
