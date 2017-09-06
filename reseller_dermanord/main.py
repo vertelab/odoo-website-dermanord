@@ -119,7 +119,7 @@ class Main(http.Controller):
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
             order = post.get('order', '')
-        partners = request.env['res.partner'].sudo().search(domain, order=order)
+        partners = request.env['res.partner'].sudo().search(domain, limit=20, order=order)
         if word and word != '':
             partners.filtered(lambda p: p.name in word)
         request.session['chosen_filter_qty'] = self.get_reseller_chosen_filter_qty(self.get_reseller_form_values())
@@ -134,7 +134,7 @@ class Main(http.Controller):
                     });
                     """
         res = []
-        for partner in request.env['res.partner'].sudo().search(domain, limit=20, order=order):
+        for partner in partners:
             pos = partner.get_position()
             res.append(marker_tmp %(partner.id, partner.name, pos['lat'], pos['lng']))
 
