@@ -134,7 +134,7 @@ class Main(http.Controller):
                     });
                     """
         res = []
-        for partner in request.env['res.partner'].sudo().search(domain, order=order):
+        for partner in request.env['res.partner'].sudo().search(domain, limit=20, order=order):
             pos = partner.get_position()
             res.append(marker_tmp %(partner.id, partner.name, pos['lat'], pos['lng']))
 
