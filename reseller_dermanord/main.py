@@ -116,12 +116,12 @@ class Main(http.Controller):
         domain = []
         domain += self.get_reseller_domain_append(post)
         order = ''
-        partners = request.env['res.partner'].sudo().search(domain, order=order)
-        if word and word != '':
-            partners.filtered(lambda p: p.name in word)
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
             order = post.get('order', '')
+        partners = request.env['res.partner'].sudo().search(domain, order=order)
+        if word and word != '':
+            partners.filtered(lambda p: p.name in word)
         request.session['chosen_filter_qty'] = self.get_reseller_chosen_filter_qty(self.get_reseller_form_values())
         request.session['sort_name'] = self.get_reseller_chosen_order(self.get_reseller_form_values())[0]
         request.session['sort_order'] = self.get_reseller_chosen_order(self.get_reseller_form_values())[1]
