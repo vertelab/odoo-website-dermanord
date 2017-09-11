@@ -137,7 +137,7 @@ class Main(http.Controller):
         res = []
         for partner in partners:
             pos = partner.get_position()
-            res.append(marker_tmp %(partner.id, partner.name, pos['lat'], pos['lng']))
+            res.append(marker_tmp %(partner.id, partner.name.replace("'", ''), pos['lat'], pos['lng']))
 
         return request.website.render('reseller_dermanord.resellers', {
             'resellers': partners,
