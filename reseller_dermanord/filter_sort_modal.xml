@@ -5,11 +5,6 @@
         <template id="main_filter_sort_layout" inherit_id="website.layout">
             <xpath expr="//div[@id='wrapwrap']/main" position="inside">
                 <t t-if="reseller_footer">
-                    <t t-set="resellers" t-value="request.env['res.partner'].search([('category_id', 'in', request.env.ref('reseller_dermanord.reseller_tag').id)])"/>
-                    <t t-set="country_ids" t-value="resellers.mapped('country_id')"/>
-                    <t t-set="cities" t-value="set(resellers.mapped('city'))"/>
-                    <t t-set="competence_ids" t-value="resellers.mapped('child_category_ids')"/>
-                    <t t-set="assortment_ids" t-value="resellers.mapped('category_id')"/>
                     <div id="dn_reseller_filter_modal" class="modal fade" role="dialog">
                         <div class="modal-dialog" style="margin: 0px; width: 100%;">
                             <div class="modal-content">
