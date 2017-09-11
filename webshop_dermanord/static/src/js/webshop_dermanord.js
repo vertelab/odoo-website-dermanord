@@ -56,8 +56,8 @@ $(document).ready(function(){
             'product_id': product_id,
         }).done(function(data){
             if (data['image_id'] != null) {
-                $img.attr("src", "/imagefield/base_multi_image.image/file_db_store/" + data['image_id'] + "/ref/website_sale_product_gallery.img_product_detail");
-                $img_thumb.attr("src", "/imagefield/base_multi_image.image/file_db_store/" + data['image_id'] + "/ref/website_sale_product_gallery.img_product_thumbnail");
+                $img.attr("src", "/imagefield/base_multi_image.image/image_main/" + data['image_id'] + "/ref/website_sale_product_gallery.img_product_detail");
+                $img_thumb.attr("src", "/imagefield/base_multi_image.image/image_main/" + data['image_id'] + "/ref/website_sale_product_gallery.img_product_thumbnail");
             }
             $(".ingredients_description").find(".text-muted").html(data['ingredients']);
             $(".default_code").html(data['default_code']);
