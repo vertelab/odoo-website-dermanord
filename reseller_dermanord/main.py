@@ -111,8 +111,13 @@ class Main(http.Controller):
                 break
         return [sort_name, sort_order]
 
-    @http.route(['/resellers'], type='http', auth="public", website=True)
-    def reseller(self, **post):
+    @http.route([
+        '/resellers',
+        '/resellers/country/<model("res.country"):country>',
+        '/resellers/city/<string:city>',
+        '/resellers/competence/<model("res.partner.category"):competence>',
+    ], type='http', auth="public", website=True)
+    def reseller(self, country=None, city='', competence=None, **post):
         word = post.get('search', False)
         domain = []
         domain += self.get_reseller_domain_append(post)
@@ -120,6 +125,19 @@ class Main(http.Controller):
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
             order = post.get('order', '')
+        if country:
+            domain.append(('country_id', '=', country.id))
+            post['country_%s' %country.id] = str(country.id)
+            request.session['form_values']['country_%s' %country.id] = str(country.id)
+        #~ if city:
+            #~ _logger.warn(u'%s' %city.lower())
+            #~ domain.append(('city', 'ilike', u'%s' %city.lower()))
+            #~ post[u'city_%s' %city.lower()] = u'%s' %city.lower()
+            #~ request.session['form_values'][u'city_%s' %city.lower()] = u'%s' %city.lower()
+        if competence:
+            domain.append(('child_category_ids', 'in', competence.id))
+            post['competence_%s' %competence.id] = str(competence.id)
+            request.session['form_values']['competence_%s' %competence.id] = str(competence.id)
         partners = request.env['res.partner'].sudo().search(domain, limit=20, order=order)
         if word and word != '':
             partners.filtered(lambda p: p.name in word)
