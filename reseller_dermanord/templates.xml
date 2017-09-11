@@ -93,7 +93,6 @@
                     </div>
                 </div>
                 <div class="oe_structure"/>
-                <!--
                 <script>
                   function initMap() {
                     var sweden = {lat: 59.6144081, lng: 17.7168579};
@@ -105,7 +104,6 @@
                   }
                 </script>
                 <script t-att-src="'https://maps.googleapis.com/maps/api/js?key=%s&amp;callback=initMap' %request.env['ir.config_parameter'].get_param('google_maps_api')"></script>
-                -->
             </t>
         </template>
 
