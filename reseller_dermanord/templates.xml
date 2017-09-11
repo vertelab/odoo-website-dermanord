@@ -173,8 +173,8 @@
                         <div class="row">
                             <t t-call="reseller_dermanord.view_type"/>
                             <div class="col-md-12 col-sm-12 col-xs-12 mb16">
-                                <t t-if="len(country_ids) &gt; 0">
-                                    <t t-foreach="country_ids" t-as="country_id">
+                                <t t-if="len(countries) &gt; 0">
+                                    <t t-foreach="countries" t-as="country_id">
                                         <div class="col-md-4 col-sm-4 col-xs-12">
                                             <h4><strong><t t-esc="country_id.name"/></strong></h4>
                                             <t t-foreach="resellers.with_context({'country_id': country_id}).filtered(lambda p: p.country_id == p._context.get('country_id'))" t-as="reseller">

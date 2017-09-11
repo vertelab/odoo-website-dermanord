@@ -97,7 +97,7 @@ class Main(http.Controller):
     def get_reseller_chosen_filter_qty(self, post):
         chosen_filter_qty = 0
         for k, v in post.iteritems():
-            if k not in ['post_form', 'order', 'webshop']:
+            if k not in ['post_form', 'order', 'webshop', 'view']:
                 chosen_filter_qty += 1
         return chosen_filter_qty
 
@@ -119,12 +119,13 @@ class Main(http.Controller):
         '/reseller/<model("res.partner"):partner>',
     ], type='http', auth="public", website=True)
     def reseller(self, partner=None, country=None, city='', competence=None, **post):
+        _logger.warn(request.session.get('form_values'))
         reseller_all = request.env['res.partner'].search([('category_id', 'in', request.env.ref('reseller_dermanord.reseller_tag').id)])
         if partner:
             return request.website.render('reseller_dermanord.reseller', {
                 'reseller': partner,
                 'country_ids': sorted(list(set(reseller_all.mapped('country_id')))),
-                'cities': sorted([c.strip() for c in list(set(reseller_all.mapped('city')))]),
+                'city_ids': sorted([c.strip() for c in list(set(reseller_all.mapped('city')))]),
                 'competence_ids': reseller_all.mapped('child_category_ids'),
                 'assortment_ids': reseller_all.mapped('category_id'),
                 'reseller_footer': True,
@@ -182,19 +183,20 @@ class Main(http.Controller):
                         cities.append(v)
             return request.website.render('reseller_dermanord.resellers_city', {
                 'resellers': partners,
-                'country_ids': sorted(list(set(reseller_all.mapped('country_id')))),
                 'cities': sorted([c.strip() for c in list(set(cities))]),
+                'country_ids': sorted(list(set(reseller_all.mapped('country_id')))),
+                'city_ids': sorted([c.strip() for c in list(set(reseller_all.mapped('city')))]),
                 'competence_ids': reseller_all.mapped('child_category_ids'),
                 'assortment_ids': reseller_all.mapped('category_id'),
                 'reseller_footer': True,
             })
         if view == 'country':
             country_ids = partners.mapped('country_id')
-            _logger.warn(sorted(list(set(country_ids))))
             return request.website.render('reseller_dermanord.resellers_country', {
                 'resellers': partners,
-                'country_ids': sorted(list(set(country_ids))),
-                'cities': sorted([c.strip() for c in list(set(reseller_all.mapped('city')))]),
+                'countries': sorted(list(set(country_ids))),
+                'country_ids': sorted(list(set(reseller_all.mapped('country_id')))),
+                'city_ids': sorted([c.strip() for c in list(set(reseller_all.mapped('city')))]),
                 'competence_ids': reseller_all.mapped('child_category_ids'),
                 'assortment_ids': reseller_all.mapped('category_id'),
                 'reseller_footer': True,
@@ -203,7 +205,7 @@ class Main(http.Controller):
             'resellers': partners,
             'resellers_geo': res,
             'country_ids': sorted(list(set(reseller_all.mapped('country_id')))),
-            'cities': sorted([c.strip() for c in list(set(reseller_all.mapped('city')))]),
+            'city_ids': sorted([c.strip() for c in list(set(reseller_all.mapped('city')))]),
             'competence_ids': reseller_all.mapped('child_category_ids'),
             'assortment_ids': reseller_all.mapped('category_id'),
             'reseller_footer': True,

@@ -64,7 +64,7 @@
         </template>
 
         <template id="dn_reseller_filter_form" name="DN Reseller Filter Form">
-            <form action="/resellers" method="post">
+            <form t-att-action="'/resellers?view=%s' %(request.session.get('form_values').get('view') if request.session.get('form_values') else 'map')" method="post">
                 <div class="container" style="padding: 0px;">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <t t-call="reseller_dermanord.dn_reseller_filter_navigator"/>
@@ -102,10 +102,10 @@
                 </li>
                 <li>
                     <a data-toggle="tab" href="#city">
-                        <h5>Cities
-                            <t t-if="len(cities) &gt; 0 and request.session.get('form_values')">
+                        <h5>cities
+                            <t t-if="len(city_ids) &gt; 0 and request.session.get('form_values')">
                                 <t t-set="city_count" t-value="0"/>
-                                <t t-foreach="cities" t-as="city">
+                                <t t-foreach="city_ids" t-as="city">
                                     <t t-if="'city_%s' %city in request.session.get('form_values').keys()">
                                         <t t-set="city_count" t-value="city_count + 1"/>
                                     </t>
@@ -181,8 +181,8 @@
                     </t>
                 </div>
                 <div id="city" class="tab-pane fade">
-                    <t t-if="len(cities) &gt; 0">
-                        <t t-foreach="cities" t-as="city">
+                    <t t-if="len(city_ids) &gt; 0">
+                        <t t-foreach="city_ids" t-as="city">
                             <div class="checkbox">
                                 <h5>
                                     <label>
@@ -239,7 +239,7 @@
         </template>
 
         <template id="dn_reseller_sort_form" name="DN Reseller Sort Form">
-            <form action="/resellers" method="post">
+            <form t-att-action="'/resellers?view=%s' %(request.session.get('form_values').get('view') if request.session.get('form_values') else 'map')" method="post">
                 <div class="container" style="padding: 0px;">
                     <ul style="list-style-type: none;">
                         <li><div class="radio"><label>
@@ -269,8 +269,8 @@
                         </t>
                     </t>
                 </t>
-                <t t-if="len(cities) &gt; 0">
-                    <t t-foreach="cities" t-as="city">
+                <t t-if="len(city_ids) &gt; 0">
+                    <t t-foreach="city_ids" t-as="city">
                         <t t-if="request.session.get('form_values')">
                             <t t-if="request.session.get('form_values').get('city_%s' %city) == city">
                                 <input type="hidden" t-att-name="'city_%s' %city" t-att-value="city"/>
