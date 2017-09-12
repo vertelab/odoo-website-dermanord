@@ -5,7 +5,9 @@
         <template id="news_list" name="News List">
             <t t-call="website.layout">
                 <div id="wrap">
+<!--
                     <t t-set="no_breadcrumb" t-value="True"/>
+-->
                     <t t-set="news_blog_url" t-value="'/blog/%s' %blog.id"/>
                     <div class="container dn_header" style="width: 100%; padding: 0px;">
                         <div t-if="news_blog_url and website.current_submenu(news_blog_url).child_id" class="col-md-12 col-sm-12 col-xs-12 dn_header_banner">
