@@ -81,8 +81,8 @@
             groups="base.group_user" parent="base.marketing_menu"/>
 
     <menuitem id="menu_sale_promotion_form" parent="menu_sale_promotion" action="action_sale_promotion_form" sequence="10"/>
-    
-		<template id="custom_snippets" inherit_id="website.snippets" name="Custom Snippets">
+
+        <template id="custom_snippets" inherit_id="website.snippets" name="Custom Snippets">
             <xpath expr="//div[@id='snippet_structure']" position="inside">
                 <div id="sale_promotions">
                     <div class="oe_snippet_thumbnail">
@@ -91,40 +91,63 @@
                     </div>
                     <section class="oe_snippet_body mb16">
                         <h3 class="text-center mt32 mb32 oe_bs_title dn_uppercase">Sale / Promotions</h3>
-                        <div class="container sp_div">
-							<div class="col-md-4">
-								<div class="col-md-12">
-									<div class="sp_one_two">
-										<img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-8">
-								<div class="col-md-6">
-									<div class="sp_one_one">
-										<img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="sp_one_one">
-										<img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="sp_two_one">
-										<img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
-									</div>
-								</div>
-							</div>
+                        <div class="container sp_div hidden-xs">
+                            <div class="col-md-4">
+                                <div class="col-md-12">
+                                    <div class="sp_one_two">
+                                        <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="col-md-6">
+                                    <div class="sp_one_one">
+                                        <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="sp_one_one">
+                                        <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="sp_two_one">
+                                        <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        <div class="carousel slide hidden-lg hidden-md hidden-sm" data-ride="carousel" id="sp_div_mobile">
+                            <ol class="carousel-indicators">
+                                <li class="active" data-slide-to="0" data-target="#sp_div_mobile"/>
+                                <li data-slide-to="1" data-target="#sp_div_mobile"/>
+                                <li data-slide-to="2" data-target="#sp_div_mobile"/>
+                                <li data-slide-to="3" data-target="#sp_div_mobile"/>
+                            </ol>
+                            <div class="carousel-inner">
+                                <div class="item active">
+                                    <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                </div>
+                                <div class="item">
+                                    <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                </div>
+                                <div class="item">
+                                    <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                </div>
+                                <div class="item">
+                                    <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                </div>
+                            </div>
+                        </div>
+                        <img class="touch_finger hidden-lg hidden-md hidden-sm" src="/snippet_dermanord/static/src/img/finger.png" style="margin: auto; display: block;"/>
                     </section>
                 </div>
              </xpath>
-		</template>
-         
-		<template id="custom_snippet_options" inherit_id="website.snippet_options" name="Custom Snippet Options">
-			<xpath expr="." position="inside">
-				<div data-snippet-option-id="sale_promotions_option" data-selector=".sp_one_two, .sp_one_one, .sp_two_one">
+        </template>
+
+        <template id="custom_snippet_options" inherit_id="website.snippet_options" name="Custom Snippet Options">
+            <xpath expr="." position="inside">
+                <div data-snippet-option-id="sale_promotions_option" data-selector=".sp_one_two, .sp_one_one, .sp_two_one">
                     <li class="dropdown-submenu">
                         <t t-set="sps" t-value="request.env['sale.promotion'].search([('website_published', '=', True)])"/>
                         <t t-if="len(sps) &gt; 0">
@@ -138,16 +161,16 @@
                     </li>
                 </div>
             </xpath>
-		</template>
-		
-		<template id="custom_css_js" inherit_id="website.layout" name="Custom CSS JS for Sale Promotions">
-			<xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
+        </template>
+
+        <template id="custom_css_js" inherit_id="website.layout" name="Custom CSS JS for Sale Promotions">
+            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
                 <link href="/sale_promotions/static/src/css/main.css" rel="stylesheet" />
             </xpath>
             <xpath expr="//body" position="inside">
                 <script type="text/javascript" src="/sale_promotions/static/src/js/main.js" />
             </xpath>
-		</template>
-    
+        </template>
+
   </data>
 </openerp>

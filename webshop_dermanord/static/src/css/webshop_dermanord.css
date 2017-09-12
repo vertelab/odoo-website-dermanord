@@ -221,6 +221,12 @@ input[type="checkbox"] {
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
+.facet_container p {
+    font-family: futura-pt, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+}
+
 #image_nav > li.active > a > img {
     border: 1px solid #CB683F;
 }

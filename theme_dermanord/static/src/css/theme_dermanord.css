@@ -2,6 +2,24 @@
                     Theme Dermanord
  ============================================================ */
 
+.futura_pt_m {
+    font-family: futura-pt, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.kepler_std_i {
+    font-family: kepler-std-display, serif;
+    font-style: italic;
+    font-weight: 400;
+}
+
+.futura_pt_h {
+    font-family: futura-pt, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+}
+
 @media (max-width: 991px) {
     .dn_footer_menu {
         -webkit-columns: auto 2; /* Chrome, Safari, Opera */
@@ -37,6 +55,9 @@
     white-space: nowrap;
     padding-top: 5px;
     padding-bottom: 5px;
+    font-family: futura-pt, sans-serif;
+    font-style: normal;
+    font-weight: 500;
 }
 
 .dn_cart_qty_sm {
@@ -92,14 +113,22 @@ body {
     font-weight: 500;
 }
 
+h1, h2, h3 {
+    font-family: futura-pt, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+}
+
 h6 {
-    font-family: 'Neuton', serif;
-    font-size: 24px;
+    font-family: kepler-std-display, serif;
+    font-style: italic;
+    font-weight: 400;
 }
 
 h7 {
-    font-family: 'Oxygen', sans-serif;
-    font-size: 30px;
+    font-family: kepler-std-display, serif;
+    font-style: italic;
+    font-weight: 400;
 }
 
 .dn_btn {
@@ -130,6 +159,9 @@ h7 {
     color: #fff;
     background-color: #CB683F;
     border-color: #CB683F;
+    font-family: futura-pt, sans-serif;
+    font-style: normal;
+    font-weight: 500;
 }
 
 h1, .dn_uppercase {
@@ -204,6 +236,9 @@ footer li {
 
 footer a {
     color: #fff;
+    font-family: futura-pt, sans-serif;
+    font-style: normal;
+    font-weight: 500;
 }
 
 footer input, footer .input-group-addon {

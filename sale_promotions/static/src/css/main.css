@@ -12,7 +12,7 @@
 */
 
 .sp_div .col-md-4, .sp_div .col-md-6, .sp_div .col-md-8, .sp_div .col-md-12 {
-	padding: 0px;
+        padding: 0px;
 }
 
 .sale_promotions_img {
@@ -23,11 +23,11 @@
 }
 
 .sp_one_one {
-	padding-left: 25px;
-	padding-bottom: 37px;
+        padding-left: 25px;
+        padding-bottom: 37px;
 }
 .sp_two_one {
-	padding-left: 25px;
+        padding-left: 25px;
 }
 
 .sp_one_two .sale_promotions_img {
@@ -52,10 +52,15 @@
 }
 
 .sale_promotions_text a {
-	color: #fff !important;
+    color: #fff !important;
 }
 
+#sp_div_mobile .item {
+    height: 400px;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
 
 @media screen and (max-width: 992px) {
-	.sp_one_two, .sp_one_one, .sp_two_one { padding: 10px; }
+        .sp_one_two, .sp_one_one, .sp_two_one { padding: 10px; }
 }
