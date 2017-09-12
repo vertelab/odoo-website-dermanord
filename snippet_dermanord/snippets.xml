@@ -64,27 +64,6 @@
                 </div>
                 <!--END OF FADE SLIDER-->
 
-                <!-- image left -->
-                <div id="dn_image_left">
-                    <div class="oe_snippet_thumbnail">
-                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_image_text.png"/>
-                        <span class="oe_snippet_thumbnail_title">DN Image left</span>
-                    </div>
-                    <section class="oe_snippet_body dn_image_left">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-6 mt16">
-                                    <img alt="Odoo image and text block" class="img img-responsive mb16" src="/website/static/src/img/fields.jpg" style=""/>
-                                </div>
-                                <div class="col-md-6 mt16">
-                                    <p>Lorem Ipsum är en utfyllnadstext från tryck- och förlagsindustrin. Lorem ipsum har varit standard ända sedan 1500-talet, när en okänd boksättare tog att antal bokstäver och blandade dem för att göra ett provexemplar av en bok. Lorem ipsum har inte bara överlevt fem århundraden, utan även övergången till elektronisk typografi utan större förändringar. Det blev allmänt känt på 1960-talet i samband med lanseringen av Letraset-ark med avsnitt av Lorem Ipsum, och senare med mjukvaror som Aldus PageMaker.</p>
-                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-
                 <!-- Notes Cubes -->
                 <div id="notes_cubes">
                     <div class="oe_snippet_thumbnail">
