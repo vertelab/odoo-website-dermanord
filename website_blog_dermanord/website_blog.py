@@ -61,6 +61,16 @@ class BlogPost(models.Model):
     product_ids = fields.Many2many(comodel_name='product.template', relation="blog_post_product", column1='blog_post_id',column2='product_id', string='Products')
     blog_post_product_ids = fields.One2many(comodel_name='blog.post.product', inverse_name='blog_post_id', string='Products')
     object_ids = fields.One2many(comodel_name='blog.post.object', inverse_name='blog_post_id', string='Objects')
+    related_posts = fields.Many2many(comodel_name='blog.post', compute='_related_posts')
+
+    @api.one
+    def _related_posts(self):
+        blog_posts = self.browse()
+        for post in self.search([('blog_id', '=', self.blog_id.id), ('id', '!=', self.id), ('website_published', '=', True)]):
+            if post.tag_ids == self.tag_ids:
+                blog_posts |= post
+                _logger.warn(post.background_image)
+        self.related_posts = blog_posts[:4] if len(blog_posts) > 4 else blog_posts
 
     @api.one
     def update_blog_post_product_ids(self):

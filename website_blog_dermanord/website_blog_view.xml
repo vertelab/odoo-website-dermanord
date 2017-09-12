@@ -135,6 +135,36 @@
             </div>
         </template>
 
+        <template id="related_blog_post" name="Related Blog Post">
+            <div class="container mt32 mb32">
+                <t t-if="len(blog_post.related_posts) &gt; 0">
+                    <h3 class="text-center mb16">Related Posts</h3>
+                    <t t-foreach="blog_post.related_posts" t-as="post">
+                        <a t-att-href="'/blog/%s/post/%s' %(blog_post.blog_id.id, post.id)">
+                            <div class="col-md-3 col-xs-12 bpr_block">
+                                <t t-if="post.background_image and '/ir.attachment/' in post.background_image">
+                                    <div class="col-md-12 col-sm-12 col-xs-12 mt16 mb16 blog_background_image_list dn_blog_post_image_div" t-att-style="'background-image: url(&quot;/imagefield/ir.attachment/datas/%s/ref/website_blog_dermanord.img_post&quot;);' %post.background_image[(post.background_image.index('ir.attachment/')+len('ir.attachment/')):post.background_image.index('/datas')].split('_')[0]">
+                                        <div class="dn_blog_post_image_hover_btn text-center hidden-xs">
+                                            <p>
+                                                <button class="dn_btn dn_primary">Read More</button>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </t>
+                                <t t-if="not post.background_image or '/ir.attachment/' not in post.background_image">
+                                    <div class="col-md-12 col-sm-12 col-xs-12 mt16 mb16 blog_background_image_list"/>
+                                </t>
+                                <div class="container bpr_desc_div text-center">
+                                    <h4 class="dn_uppercase" t-field="post.name"/>
+                                    <h5 class="bpr_desc" t-field="post.subtitle"/>
+                                </div>
+                            </div>
+                        </a>
+                    </t>
+                </t>
+            </div>
+        </template>
+
         <template id="website_blog_dermanord_css" inherit_id="website.layout" name="Website Blog Dermanord CSS">
             <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
                 <link href="/website_blog_dermanord/static/src/css/main.css" rel="stylesheet" />

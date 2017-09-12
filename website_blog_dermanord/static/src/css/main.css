@@ -55,6 +55,46 @@
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
+.bpr_desc_div h4, .bpr_desc_div h5 {
+    color: #000 !important;
+}
+
+.bpr_desc_div {
+    padding: 10px !important;
+    bottom: 0px;
+    left: 0px;
+    background: rgba(255, 255, 255, 0.7);
+    text-overflow: ellipsis;
+}
+
+.blog_background_image_list {
+    width: 100%;
+    height: 300px;
+    background-repeat: no-repeat;
+    -o-background-size: cover;
+    -moz-background-size: cover;
+    -webkit-background-size: cover;
+}
+
+.dn_blog_post_image_hover_btn {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dn_blog_post_image_hover_btn p {
+    display: none;
+}
+
+.dn_blog_post_image_hover_btn:hover > p {
+    display: unset;
+}
+
 /*
 .bpp_block .bpp_desc {
     height: 4.3em;
