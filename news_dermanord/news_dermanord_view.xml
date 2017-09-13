@@ -5,7 +5,9 @@
         <template id="news_list" name="News List">
             <t t-call="website.layout">
                 <div id="wrap">
+<!--
                     <t t-set="no_breadcrumb" t-value="True"/>
+-->
                     <t t-set="news_blog_url" t-value="'/blog/%s' %blog.id"/>
                     <div class="container dn_header" style="width: 100%; padding: 0px;">
                         <div t-if="news_blog_url and website.current_submenu(news_blog_url).child_id" class="col-md-12 col-sm-12 col-xs-12 dn_header_banner">
@@ -67,7 +69,7 @@
 <!--
                                     <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list" t-att-style="'background-image: url(&quot;/%s&quot;);' %'/'.join(news_post.background_image.split('//')[1].split('/')[1:])"/>
 -->
-                                    <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_content_div">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16">
                                         <h6 t-field="news_post.name"/>
                                         <h4 class="text-muted"><t t-esc="str(news_post.write_date)[:10]"/></h4>
                                         <p t-field="news_post.subtitle" class="text-muted mt16"/>
@@ -124,6 +126,9 @@
                 </div>
                 <div class="container mt32 mb32">
                     <t t-call="website_blog_dermanord.blog_post_products"/>
+                </div>
+                <div class="container mt32 mb32">
+                    <t t-call="website_blog_dermanord.related_blog_post"/>
                 </div>
             </t>
         </template>

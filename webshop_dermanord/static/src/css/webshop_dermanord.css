@@ -18,7 +18,7 @@
     -ms-user-select: none;
     user-select: none;
     background-image: none;
-    border-radius: opx;
+    border-radius: 0px;
     text-transform: uppercase;
 }
 
@@ -64,7 +64,7 @@ input[type="checkbox"] {
     padding: 10px 16px !important;
     font-size: 18px !important;
     line-height: 1.33 !important;
-    border-radius: 6px !important;
+    border-radius: 0px !important;
 }
 
 .blog_block {
@@ -206,7 +206,9 @@ input[type="checkbox"] {
     padding: 0px 10px 0px 0 !important;
     overflow: hidden;
     position: relative;
+/*
     height: 124px;
+*/
 }
 
 .facet_div ::after {
@@ -217,6 +219,12 @@ input[type="checkbox"] {
     width: 10%;
     height: 2em;
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
+
+.facet_container p {
+    font-family: futura-pt, sans-serif;
+    font-style: normal;
+    font-weight: 500;
 }
 
 #image_nav > li.active > a > img {

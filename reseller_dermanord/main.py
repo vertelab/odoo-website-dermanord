@@ -97,7 +97,7 @@ class Main(http.Controller):
     def get_reseller_chosen_filter_qty(self, post):
         chosen_filter_qty = 0
         for k, v in post.iteritems():
-            if k not in ['post_form', 'order', 'webshop']:
+            if k not in ['post_form', 'order', 'webshop', 'view']:
                 chosen_filter_qty += 1
         return chosen_filter_qty
 
@@ -111,8 +111,25 @@ class Main(http.Controller):
                 break
         return [sort_name, sort_order]
 
-    @http.route(['/resellers'], type='http', auth="public", website=True)
-    def reseller(self, **post):
+    @http.route([
+        '/resellers',
+        '/resellers/country/<model("res.country"):country>',
+        '/resellers/city/<string:city>',
+        '/resellers/competence/<model("res.partner.category"):competence>',
+        '/reseller/<model("res.partner"):partner>',
+    ], type='http', auth="public", website=True)
+    def reseller(self, partner=None, country=None, city='', competence=None, **post):
+        _logger.warn(request.session.get('form_values'))
+        reseller_all = request.env['res.partner'].search([('category_id', 'in', request.env.ref('reseller_dermanord.reseller_tag').id)])
+        if partner:
+            return request.website.render('reseller_dermanord.reseller', {
+                'reseller': partner,
+                'country_ids': sorted(list(set(reseller_all.mapped('country_id')))),
+                'city_ids': sorted([c.strip() for c in list(set(reseller_all.mapped('city')))]),
+                'competence_ids': reseller_all.mapped('child_category_ids'),
+                'assortment_ids': reseller_all.mapped('category_id'),
+                'reseller_footer': True,
+            })
         word = post.get('search', False)
         domain = []
         domain += self.get_reseller_domain_append(post)
@@ -120,7 +137,22 @@ class Main(http.Controller):
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
             order = post.get('order', '')
-        partners = request.env['res.partner'].sudo().search(domain, limit=20, order=order)
+        view = post.get('view')
+        request.session['form_values']['view'] = view
+        if country:
+            domain.append(('country_id', '=', country.id))
+            post['country_%s' %country.id] = str(country.id)
+            request.session['form_values']['country_%s' %country.id] = str(country.id)
+        #~ if city:
+            #~ _logger.warn(u'%s' %city.lower())
+            #~ domain.append(('city', 'ilike', u'%s' %city.lower()))
+            #~ post[u'city_%s' %city.lower()] = u'%s' %city.lower()
+            #~ request.session['form_values'][u'city_%s' %city.lower()] = u'%s' %city.lower()
+        if competence:
+            domain.append(('child_category_ids', 'in', competence.id))
+            post['competence_%s' %competence.id] = str(competence.id)
+            request.session['form_values']['competence_%s' %competence.id] = str(competence.id)
+
         if word and word != '':
             partners.filtered(lambda p: p.name in word)
         request.session['chosen_filter_qty'] = self.get_reseller_chosen_filter_qty(self.get_reseller_form_values())
@@ -134,20 +166,47 @@ class Main(http.Controller):
                         icon: 'http://wiggum.vertel.se/dn_maps_marker.png'
                     });
                     """
+
+        partners = request.env['res.partner'].sudo().search(domain, limit=20, order=order)
         res = []
         for partner in partners:
             pos = partner.get_position()
             res.append(marker_tmp %(partner.id, partner.name.replace("'", ''), pos['lat'], pos['lng']))
 
+        if view == 'city':
+            cities = []
+            if city == '':
+                cities = partners.mapped('city')
+            else:
+                for k,v in request.session['form_values']:
+                    if 'city_' in k:
+                        cities.append(v)
+            return request.website.render('reseller_dermanord.resellers_city', {
+                'resellers': partners,
+                'cities': sorted([c.strip() for c in list(set(cities))]),
+                'country_ids': sorted(list(set(reseller_all.mapped('country_id')))),
+                'city_ids': sorted([c.strip() for c in list(set(reseller_all.mapped('city')))]),
+                'competence_ids': reseller_all.mapped('child_category_ids'),
+                'assortment_ids': reseller_all.mapped('category_id'),
+                'reseller_footer': True,
+            })
+        if view == 'country':
+            country_ids = partners.mapped('country_id')
+            return request.website.render('reseller_dermanord.resellers_country', {
+                'resellers': partners,
+                'countries': sorted(list(set(country_ids))),
+                'country_ids': sorted(list(set(reseller_all.mapped('country_id')))),
+                'city_ids': sorted([c.strip() for c in list(set(reseller_all.mapped('city')))]),
+                'competence_ids': reseller_all.mapped('child_category_ids'),
+                'assortment_ids': reseller_all.mapped('category_id'),
+                'reseller_footer': True,
+            })
         return request.website.render('reseller_dermanord.resellers', {
             'resellers': partners,
-            'reseller_footer': True,
             'resellers_geo': res,
-        })
-
-    @http.route(['/reseller/<model("res.partner"):partner>'], type='http', auth="public", website=True)
-    def reseller_partner(self, partner):
-        return request.website.render('reseller_dermanord.reseller', {
-            'reseller': partner,
+            'country_ids': sorted(list(set(reseller_all.mapped('country_id')))),
+            'city_ids': sorted([c.strip() for c in list(set(reseller_all.mapped('city')))]),
+            'competence_ids': reseller_all.mapped('child_category_ids'),
+            'assortment_ids': reseller_all.mapped('category_id'),
             'reseller_footer': True,
         })

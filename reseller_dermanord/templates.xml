@@ -12,11 +12,47 @@
         </template>
 -->
 
+        <template id="view_type" name="View Type">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-8 col-sm-8"/>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <form action="/resellers?view=map" method="post" class="col-md-4 col-sm-4 col-xs-12">
+                        <t t-foreach="request.session.get('form_values').iteritems()" t-as="item">
+                            <t t-if="item[0] not in ['post_form', 'view']">
+                                <input t-att-name="item[0]" t-att-value="item[1]" type="hidden"/>
+                            </t>
+                        </t>
+                        <input name="view" value="map" type="hidden"/>
+                        <button class="mt16 dn_btn dn_primary" type="submit"><i class="fa fa-map-marker"/></button>
+                    </form>
+                    <form action="/resellers?view=city" method="post" class="col-md-4 col-sm-4 col-xs-12">
+                        <t t-foreach="request.session.get('form_values').iteritems()" t-as="item">
+                            <t t-if="item[0] not in ['post_form', 'view']">
+                                <input t-att-name="item[0]" t-att-value="item[1]" type="hidden"/>
+                            </t>
+                        </t>
+                        <input name="view" value="city" type="hidden"/>
+                        <button class="mt16 dn_btn dn_primary" type="submit"><i class="fa fa-building"/></button>
+                    </form>
+                    <form action="/resellers?view=country" method="post" class="col-md-4 col-sm-4 col-xs-12">
+                        <t t-foreach="request.session.get('form_values').iteritems()" t-as="item">
+                            <t t-if="item[0] not in ['post_form', 'view']">
+                                <input t-att-name="item[0]" t-att-value="item[1]" type="hidden"/>
+                            </t>
+                        </t>
+                        <input name="view" value="country" type="hidden"/>
+                        <button class="mt16 dn_btn dn_primary" type="submit"><i class="fa fa-flag"/></button>
+                    </form>
+                </div>
+            </div>
+        </template>
+
         <template id="resellers" name="Resellers">
             <t t-call="website.layout">
                 <div id="wrap">
                     <div class="oe_structure"/>
                     <div class="container">
+                        <t t-call="reseller_dermanord.view_type"/>
                         <div class="row">
                             <div class="col-md-6 col-sm-6 col-xs-12 mb16">
                                 <form action="/resellers" method="post" class="pagination form-inline col-md-12 col-sm-12 col-xs-12 mb16">
@@ -91,6 +127,62 @@
                                         <p><strong>Address</strong> <span class="text-muted" t-esc="reseller.street"/><t t-if="reseller.zip"><span class="text-muted" t-esc="', %s' %reseller.zip"/></t> <t t-if="reseller.city"><span class="text-muted" t-esc="reseller.city"/></t></p>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="oe_structure"/>
+            </t>
+        </template>
+
+        <template id="resellers_city" name="Resellers City">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                    <div class="container">
+                        <div class="row">
+                            <t t-call="reseller_dermanord.view_type"/>
+                            <div class="col-md-12 col-sm-12 col-xs-12 mb16">
+                                <t t-if="len(cities) &gt; 0">
+                                    <t t-foreach="cities" t-as="city">
+                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                            <h4><strong><t t-esc="city"/></strong></h4>
+                                            <t t-foreach="resellers.with_context({'city': city}).filtered(lambda p: p.city == p._context.get('city'))" t-as="reseller">
+                                                <a t-att-href="'/reseller/%s' %reseller.id">
+                                                    <p t-esc="reseller.name"/>
+                                                </a>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="oe_structure"/>
+            </t>
+        </template>
+
+        <template id="resellers_country" name="Resellers Country">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                    <div class="container">
+                        <div class="row">
+                            <t t-call="reseller_dermanord.view_type"/>
+                            <div class="col-md-12 col-sm-12 col-xs-12 mb16">
+                                <t t-if="len(countries) &gt; 0">
+                                    <t t-foreach="countries" t-as="country_id">
+                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                            <h4><strong><t t-esc="country_id.name"/></strong></h4>
+                                            <t t-foreach="resellers.with_context({'country_id': country_id}).filtered(lambda p: p.country_id == p._context.get('country_id'))" t-as="reseller">
+                                                <a t-att-href="'/reseller/%s' %reseller.id">
+                                                    <p t-esc="reseller.name"/>
+                                                </a>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </t>
                             </div>
                         </div>
                     </div>

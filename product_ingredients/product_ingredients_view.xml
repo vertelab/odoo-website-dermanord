@@ -20,7 +20,9 @@
                                 <div class="col-md-3 col-sm-3 ingredient_desc">
                                     <img class="img img-responsive" style="margin: auto;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
                                     <h6 class="text-center" t-field="ingredient.name"/>
+<!--
                                     <h5 class="text-muted text-center" t-field="ingredient.description"/>
+-->
                                 </div>
                             </a>
                         </t>
@@ -48,12 +50,14 @@
                                         <a t-att-href="'/dn_shop/?current_ingredient=%s' %ingredient.id">
                                             <img class="img img-responsive" style="margin: auto; height: 230px !important;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
                                             <h6 class="text-center" t-field="ingredient.name"/>
+<!--
                                             <t t-if="ingredient.description">
                                                 <h5 class="text-muted text-center" t-field="ingredient.description"/>
                                             </t>
                                             <t t-if="not ingredient.description">
                                                 <h5><br/></h5>
                                             </t>
+-->
                                         </a>
                                     </div>
                                 </t>
@@ -77,13 +81,13 @@
             </t>
         </xpath>
     </template>
-    
+
     <template id="webshop_dermanord" inherit_id="website.layout" name="Webshop Dermanord">
-		<!-- Customize css -->
-		<xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
-			<link href="/product_ingredients/static/src/css/main.css" rel="stylesheet" />
-		</xpath>
-	</template>
+        <!-- Customize css -->
+        <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
+            <link href="/product_ingredients/static/src/css/main.css" rel="stylesheet" />
+        </xpath>
+    </template>
 
     <template id="assets_frontend" inherit_id="website.assets_frontend" name="Website assets - Ingredients">
       <xpath expr="." position="inside">

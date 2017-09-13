@@ -110,6 +110,10 @@ class website_menu(models.Model):
 
 class ThemeDermanord(http.Controller):
 
+    @http.route(['/get_parent_menu'], type='json', auth="public", website=True)
+    def get_parent_menu(self, url):
+        return request.website.current_menu(url).parent_id.url
+
     @http.route(['/page/dermanord_demo'], type='http', auth="public", website=True)
     def dermanord_demo(self):
         return request.website.render('theme_dermanord.dermanord_demo_page', {})

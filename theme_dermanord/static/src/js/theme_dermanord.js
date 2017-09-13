@@ -58,7 +58,7 @@ dermanord_resize_for_menu = function() {
             $(".container.dn_header").css({"margin-top": height});
         }
         $(".oe_website_login_container").css({"margin-top": height});
-        
+
     }
     else {
         $(".container.dn_header").css({"margin-top": ""});
@@ -103,6 +103,7 @@ $(document).ready(function() {
     else if ($(".dn_header_container").height() == 0) {
         $(".dn_header_nav").css({"height": $(".dn_header_nav").find(".nav-stacked").height() + 15});
     }
+    setActive();
 });
 
 $(window).resize(function() {
@@ -118,4 +119,18 @@ $(window).resize(function() {
 $(window).scroll(function() {
     dermanord_set_menu_margin();
 });
+
+// this method set the parent menu as active when current menu is active.
+function setActive() {
+    var path = window.location.pathname;
+    openerp.jsonRpc("/get_parent_menu", "call", {
+        'url': path,
+    }).done(function(data){
+        $("#top_menu a").each(function(){
+            if ($(this).attr("href") == data) {
+                $(this).closest("li").addClass("active");
+            }
+        });
+    });
+}
 

@@ -128,7 +128,7 @@ website.snippet.options.product_highlights_option = website.snippet.Option.exten
         var self = this;
         openerp.jsonRpc("/product_hightlights_snippet/get_highlighted_products", "call", {
         }).done(function(data){
-			console.log(data);
+            console.log(data);
             if (data.length == 0) {
                 var message = '<h2 class="text-center text-muted css_non_editable_mode_hidden">No product highlight yet</h2>';
                 self.$target.find("h3").after(message);
@@ -239,7 +239,7 @@ $(document).ready(function() {
             else {
                 var ph_content = '';
                 $.each(data, function(key, info) {
-                    var content = '<a href="' + data[key]['url'] + '"><div class="col-md-3 col-xs-12"><div class="ph_block"><img class="img img-responsive ph_img" src="' + data[key]['image'] + '"/><div class="container desc_div"><h4 class="dn_uppercase"><span>' + data[key]['name'] + '</span></h4><h5 class="ph_desc text-muted"><span>' + data[key]['description'] + '</span></h5></div></div></div></a>';
+                    var content = '<a href="' + data[key]['url'] + '"><div class="col-md-3 col-xs-12"><div class="ph_block"><img class="img img-responsive ph_img" src="' + data[key]['image'] + '"/><div class="container desc_div"><h4 class="dn_uppercase futura_pt_h"><span>' + data[key]['name'] + '</span></h4><h5 class="ph_desc text-muted futura_pt_m"><span>' + data[key]['description'] + '</span></h5></div></div></div></a>';
                     ph_content += content;
                 });
                 $(".product_div").html(ph_content).text();
