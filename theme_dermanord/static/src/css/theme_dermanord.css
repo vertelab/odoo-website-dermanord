@@ -2,24 +2,6 @@
                     Theme Dermanord
  ============================================================ */
 
-.futura_pt_m {
-    font-family: futura-pt, sans-serif;
-    font-style: normal;
-    font-weight: 500;
-}
-
-.kepler_std_i {
-    font-family: kepler-std-display, serif;
-    font-style: italic;
-    font-weight: 400;
-}
-
-.futura_pt_h {
-    font-family: futura-pt, sans-serif;
-    font-style: normal;
-    font-weight: 700;
-}
-
 @media (max-width: 991px) {
     .dn_footer_menu {
         -webkit-columns: auto 2; /* Chrome, Safari, Opera */
@@ -89,9 +71,10 @@ ol.breadcrumb > li + li::before {
     content: ">";
 }
 
+/*
 @font-face {
   font-family: 'Futura-Medium';
-/*  src: url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.eot?#iefix') format('embedded-opentype'),  url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.woff') format('woff'), url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.ttf')  format('truetype'), url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.svg#Futura-Medium') format('svg'); */
+  src: url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.eot?#iefix') format('embedded-opentype'),  url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.woff') format('woff'), url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.ttf')  format('truetype'), url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.svg#Futura-Medium') format('svg');
   src: url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.eot?#iefix') format('embedded-opentype'), url('/theme_dermanord/static/src/fonts/Futura-Medium/Futura-Medium.svg#Futura-Medium') format('svg');
   font-weight: normal;
   font-style: normal;
@@ -104,13 +87,32 @@ ol.breadcrumb > li + li::before {
   font-weight: normal;
   font-style: normal;
 }
+*/
 
 body {
 /*
     font-family: 'Futura-Medium' !important;
-*/
     font-family: 'Quicksand', sans-serif;
     font-weight: 500;
+*/
+}
+
+.futura_pt_m, h5 {
+    font-family: futura-pt, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.kepler_std_i {
+    font-family: kepler-std-display, serif;
+    font-style: italic;
+    font-weight: 400;
+}
+
+.futura_pt_h, h4 {
+    font-family: futura-pt, sans-serif;
+    font-style: normal;
+    font-weight: 700;
 }
 
 h1, h2, h3 {
