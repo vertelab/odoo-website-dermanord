@@ -7,6 +7,18 @@
         -webkit-columns: auto 2; /* Chrome, Safari, Opera */
         -moz-columns: auto 2; /* Firefox */
         columns: auto 2;
+        padding: 0px;
+    }
+}
+
+@media (min-width: 992px) {
+    .dn_footer_row {
+        display: flex;
+    }
+    
+    .dn_footer_col > :last-child {
+        position: absolute;
+        bottom: 0px;
     }
 }
 
