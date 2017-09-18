@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        
+
         <template id="checkout_dermanord" name="Checkout Dermanord" inherit_id="website_sale.checkout">
             <xpath expr="//input[@name='name']/.." position="attributes">
                 <attribute name="t-attf-class">form-group #{error.get('name') and 'has-error' or ''} col-lg-6 hidden</attribute>
@@ -36,16 +36,16 @@
 
 <!--
                   <div t-if="has_check_vat" class="clearfix"/>
-                  
+
                   <div class="clearfix"/>
 
                   <div class="clearfix"/>
 -->
-            
-            
-            
+
+
+
         </template>
-        
+
         <template id="search_result" inherit_id="website_fts.search_result">
             <xpath expr="//t[@t-foreach='terms']" position="replace">
                 <script>var dermanord_kw = "<t t-esc='kw'/>";</script>

@@ -2,6 +2,80 @@
                     Theme Dermanord
  ============================================================ */
 
+/* override Bootstrap btn-primary */
+.btn {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border-radius: 0px;
+}
+
+.btn:hover, .btn:active, .btn:focus {
+    text-decoration: none;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #CB683F;
+    border-color: #CB683F;
+    font-family: futura-pt, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+    background-color: #BB602F;
+    border-color: #BB602F;
+}
+
+/* Dermanord Style */
+.dn_btn {
+    display: inline-block;
+    padding: 12px 32px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border-radius: 0px;
+}
+
+.dn_btn:hover, .dn_btn:active, .dn_btn:focus {
+    color: #fff;
+    text-decoration: none;
+}
+
+.dn_primary {
+    color: #fff;
+    background-color: #CB683F;
+    border-color: #CB683F;
+    font-family: futura-pt, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.dn_primary:hover, .dn_primary:active, .dn_primary:focus {
+    background-color: #BB602F;
+    border-color: #BB602F;
+}
+
 @media (max-width: 991px) {
     .dn_footer_menu {
         -webkit-columns: auto 2; /* Chrome, Safari, Opera */
@@ -15,7 +89,7 @@
     .dn_footer_row {
         display: flex;
     }
-    
+
     .dn_footer_col > :last-child {
         position: absolute;
         bottom: 0px;
@@ -143,39 +217,6 @@ h7 {
     font-family: kepler-std-display, serif;
     font-style: italic;
     font-weight: 400;
-}
-
-.dn_btn {
-    display: inline-block;
-    padding: 12px 32px;
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: normal;
-    line-height: 1.42857143;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    background-image: none;
-    border-radius: 0px;
-}
-
-.dn_btn:hover, .dn_btn:active, .dn_btn:focus {
-    color: #fff;
-    text-decoration: none;
-}
-
-.dn_primary {
-    color: #fff;
-    background-color: #CB683F;
-    border-color: #CB683F;
-    font-family: futura-pt, sans-serif;
-    font-style: normal;
-    font-weight: 500;
 }
 
 h1, .dn_uppercase {

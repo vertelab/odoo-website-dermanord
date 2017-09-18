@@ -1,7 +1,7 @@
 var search_icron = $("#top_menu").find("#search-btn-modal").closest("li");
 var shop_cart = $("#top_menu").find("a[href='/shop/cart']").closest("li");
 var divider = $("#top_menu").find(".divider").closest("li");
-var my_account = $("#top_menu").find(".dropdown-menu.js_usermenu").closest("li");
+var my_account = $("#top_menu li:last").closest(".dropdown");
 var more_menu = $("#top_menu").find("li#more_dropdown");
 var menu_items = [];
 var more_menu_items = [];
@@ -19,7 +19,7 @@ $("#top_menu").find("#more_dropdown").find("ul").children().each(function() {
     more_menu_items.push($(this));
 });
 
-var li_width_init = search_icron.width() + shop_cart.width() + divider.width() + my_account.width() + 40; // extra pixels to avoid change row
+var li_width_init = my_account.width();
 if(menu_items.length == 0) {
     more_menu.addClass("hidden");
 }
@@ -84,6 +84,10 @@ dermanord_set_menu_margin = function() {
 }
 
 $(document).ready(function() {
+    // hide shopping cart
+    shop_cart.addClass("hidden");
+    // hide divider
+    divider.addClass("hidden");
     if ($("#wrap").closest.className == "container dn_header") {
         static_margin = $(".container.dn_header").height();
     }
