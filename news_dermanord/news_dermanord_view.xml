@@ -69,7 +69,7 @@
 <!--
                                     <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list" t-att-style="'background-image: url(&quot;/%s&quot;);' %'/'.join(news_post.background_image.split('//')[1].split('/')[1:])"/>
 -->
-                                    <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_content_div">
                                         <h6 t-field="news_post.name"/>
                                         <h4 class="text-muted"><t t-esc="str(news_post.write_date)[:10]"/></h4>
                                         <p t-field="news_post.subtitle" class="text-muted mt16"/>
