@@ -169,20 +169,6 @@
                     </ul>
                 </li>
             </xpath>
-            <!-- Customize css -->
-            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
-<!--
-                <link href="https://fonts.googleapis.com/css?family=Neuton:400i" rel="stylesheet" />
-                <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,700" rel="stylesheet"/>
-                <link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet"/>
--->
-                <link href="/theme_dermanord/static/src/css/theme_dermanord.css" rel="stylesheet" />
-                <link href="/theme_dermanord/static/src/fonts/stylesheet.css" rel="stylesheet" />
-            </xpath>
-            <!-- Customize javascript -->
-            <xpath expr="//body" position="inside">
-                <script type="text/javascript" src="/theme_dermanord/static/src/js/theme_dermanord.js" />
-            </xpath>
             <!-- Hide footer -->
             <xpath expr="//footer/div" position="attributes">
                 <attribute name="class">hidden</attribute>
@@ -255,6 +241,21 @@
                 </t>
             </xpath>
         </template>
+
+        <!-- Customize javascript -->
+        <template id="assets_frontend" inherit_id="website.assets_frontend">
+            <xpath expr="/t" position="inside">
+                <link href="/theme_dermanord/static/src/css/theme_dermanord.css" rel="stylesheet" />
+                <link href="/theme_dermanord/static/src/fonts/stylesheet.css" rel="stylesheet" />
+                <script type="text/javascript" src="/theme_dermanord/static/src/js/theme_dermanord.js" />
+            </xpath>
+        </template>
+
+<!--
+        <record id="website_sale.header" model="ir.ui.view">
+            <field name="active" eval="False"/>
+        </record>
+-->
 
         <template id="user_navbar" inherit_id="website.user_navbar">
             <xpath expr="//nav[@id='oe_main_menu_navbar']" position="attributes">

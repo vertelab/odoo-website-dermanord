@@ -342,17 +342,6 @@
             </xpath>
         </template>
 
-        <template id="header" inherit_id="website.layout" name="Header Shop My Cart Link DN Shop">
-            <xpath expr="//a[@href='/shop/cart']/.." position="replace">
-                <li class="hidden-xs">
-                    <a href="/shop/cart">
-                        <i class="fa fa-shopping-cart"></i>
-                        My cart <sup t-attf-class="my_cart_quantity label label-primary dn_cart_qty" t-esc="website_sale_order and website_sale_order.cart_quantity or ''"/>
-                    </a>
-                </li>
-            </xpath>
-        </template>
-
         <template id="main_search_layout" inherit_id="website_sale_previous_products.main_search_layout">
             <xpath expr="//t[@t-foreach='website.sale_get_previous_products()']/li/a" position="attributes">
                 <attribute name="t-att-href">'/dn_shop/product/%s' %p.id</attribute>
