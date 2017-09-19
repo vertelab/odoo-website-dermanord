@@ -2,19 +2,20 @@ var website = openerp.website;
 website.add_template_file('/sale_promotions/static/src/xml/templates.xml');
 
 $(document).ready(function(){
-    var content_html = '';
-    $(".sp_div").find("div[class^='sp_']").each(function(e){
-        var content = $(this).html();
-        if (e == 0) {
-            content = content.replace("sale_promotions_img", "item active");
-        }
-        else {
-            content = content.replace("sale_promotions_img", "item");
-        }
-        //~ $("#sp_div_mobile").find(".carousel-inner:nth-child(" + (e+1) + ")").html(content);
-        content_html += content;
-    });
-    $("#sp_div_mobile").find(".carousel-inner").html(content_html);
+    // diactived slide function
+    //~ var content_html = '';
+    //~ $(".sp_div").find("div[class^='sp_']").each(function(e){
+        //~ var content = $(this).html();
+        //~ if (e == 0) {
+            //~ content = content.replace("sale_promotions_img", "item active");
+        //~ }
+        //~ else {
+            //~ content = content.replace("sale_promotions_img", "item");
+        //~ }
+        //~ content_html += content;
+    //~ });
+    //~ $("#sp_div_mobile").find(".carousel-inner").html(content_html);
+    $(".sp_div").find(".hidden-lg.hidden-md.hidden-sm").html($(".sp_div").find(".hidden-xs").find(".sp_two_one")[0].outerHTML);
 });
 
 website.snippet.options.sale_promotions_option = website.snippet.Option.extend({

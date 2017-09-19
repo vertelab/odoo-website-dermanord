@@ -11,8 +11,13 @@
 }
 */
 
-.sp_div .col-md-4, .sp_div .col-md-6, .sp_div .col-md-8, .sp_div .col-md-12 {
-        padding: 0px;
+.sp_div .col-md-4,
+.sp_div .col-md-6,
+.sp_div .col-md-8,
+.sp_div .col-md-12,
+.sp_div .col-xs-6,
+.sp_div .col-xs-12 {
+    padding: 0px;
 }
 
 .sale_promotions_img {
@@ -62,5 +67,7 @@
 }
 
 @media screen and (max-width: 992px) {
-        .sp_one_two, .sp_one_one, .sp_two_one { padding: 10px; }
+    .sp_one_two { padding: 0px 10px 10px 10px; }
+    .sp_one_one { padding: 0px 10px 0px 10px; }
+    .sp_two_one { padding: 10px 10px 0px 10px; }
 }

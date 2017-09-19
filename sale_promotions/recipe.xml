@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data>
-		
-		<!-- 1:1 -->
-		<record id="sp_one_one" model="image.recipe">
+    <data>
+
+        <!-- 1:1 -->
+        <record id="sp_one_one" model="image.recipe">
             <field name="name">Sale Promotions 1:1</field>
             <field name="description"></field>
             <field name="recipe">if float(image.width)/float(image.height) &gt;= float(horizontal)/float(vertical):
@@ -24,7 +24,7 @@ else:
 
         <record id="sp_one_one_param_height" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">300</field>
+            <field name="value">355</field>
             <field name="recipe_id" ref="sale_promotions.sp_one_one"/>
         </record>
 
@@ -39,7 +39,7 @@ else:
             <field name="value">1</field>
             <field name="recipe_id" ref="sale_promotions.sp_one_one"/>
         </record>
-        
+
         <!-- 1:2 -->
         <record id="sp_one_two" model="image.recipe">
             <field name="name">Sale Promotions 1:2</field>
@@ -62,7 +62,7 @@ else:
 
         <record id="sp_one_two_param_height" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">300</field>
+            <field name="value">760</field>
             <field name="recipe_id" ref="sale_promotions.sp_one_two"/>
         </record>
 
@@ -74,10 +74,10 @@ else:
 
         <record id="sp_one_two_param_vertical" model="image.recipe.param">
             <field name="name">vertical</field>
-            <field name="value">2</field>
+            <field name="value">2.07</field>
             <field name="recipe_id" ref="sale_promotions.sp_one_two"/>
         </record>
-        
+
         <!-- 2:1 -->
         <record id="sp_two_one" model="image.recipe">
             <field name="name">Sale Promotions 2:1</field>
@@ -100,13 +100,13 @@ else:
 
         <record id="sp_two_one_param_height" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">300</field>
+            <field name="value">380</field>
             <field name="recipe_id" ref="sale_promotions.sp_two_one"/>
         </record>
 
         <record id="sp_two_one_param_horizontal" model="image.recipe.param">
             <field name="name">horizontal</field>
-            <field name="value">2</field>
+            <field name="value">2.07</field>
             <field name="recipe_id" ref="sale_promotions.sp_two_one"/>
         </record>
 
@@ -115,6 +115,6 @@ else:
             <field name="value">1</field>
             <field name="recipe_id" ref="sale_promotions.sp_two_one"/>
         </record>
-  
-	</data>
+
+    </data>
 </openerp>
