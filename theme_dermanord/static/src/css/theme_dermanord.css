@@ -115,6 +115,10 @@ h1, .dn_uppercase {
         columns: auto 2;
         padding: 0px;
     }
+
+    #header_middel_menu {
+        padding: 0px;
+    }
 }
 
 @media (min-width: 992px) {
@@ -153,9 +157,9 @@ h1, .dn_uppercase {
 
 #top_menu a {
     white-space: nowrap;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    font-family: 'Futura PT Medium';
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-family: 'Futura PT Demi';
     text-transform: uppercase;
 }
 
@@ -259,8 +263,23 @@ ol.breadcrumb > li + li::before {
 }
 
 #header_left_menu {
-    display: flex;
-    align-items: center;
+    padding-top: 10px;
+}
+
+#header_middel_menu {
+    padding: 20px 0px 10px 0px;
+}
+
+#header_right_menu {
+    padding-top: 10px;
+}
+
+#header_line {
+    position: absolute;
+    bottom: 40px;
+    left: 0px;
+    width: 100%;
+    border-bottom: 1px solid;
 }
 
 footer {

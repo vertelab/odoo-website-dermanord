@@ -56,9 +56,9 @@
         <!-- Theme Dermanord -->
         <template id="theme_dermanord" inherit_id="website.layout" customize_show="True" active="False" name="Theme Dermanord" priority="99">
             <xpath expr="//div[@id='wrapwrap']/header/div[@class='navbar navbar-default navbar-static-top']/div[@class='container']/div[@class='navbar-header']" position="replace">
-                <div class="container" style="padding: 0px;">
-                    <div class="col-md-2 col-sm-2 hidden-xs" style="padding: 0px;">
-                        <button class="btn dropdown-toggle futura_pt_m" type="button" data-toggle="dropdown"><t t-esc="lang"/>
+                <div class="container">
+                    <div id="header_left_menu" class="col-md-2 col-sm-2 hidden-xs">
+                        <button class="btn dropdown-toggle futura_pt_m" type="button" data-toggle="dropdown" style="background: none;"><t t-esc="lang"/>
                             <t t-foreach="languages" t-as="lg">
                                 <t t-if="lg[0] == lang">
                                     <t t-esc="lg[1]"/>
@@ -81,8 +81,8 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="col-md-8 col-sm-8 col-xs-12" style="padding: 0px;">
-                        <div class="navbar-header" style="padding: 0px; width: 100%;">
+                    <div id="header_middel_menu" class="col-md-8 col-sm-8 col-xs-12">
+                        <div class="navbar-header" style="width: 100%;">
                             <div class="col-md-12 col-sm-12">
                                 <a id="desktop_logo" class="navbar-brand logo text-center hidden-xs" href="/" style="width: 100%;">
                                     <img src="/logo.png" />
@@ -127,7 +127,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2 col-sm-2 hidden-xs pull-right" style="padding: 0px;">
+                    <div id="header_right_menu" class="col-md-2 col-sm-2 hidden-xs pull-right">
                         <div class="col-md-12 col-sm-12 hidden-xs">
                             <a href="#" id="search-btn-modal" data-toggle="modal" data-target="#search_modal" style="color: #000;" class="pull-right"><p class="dn_uppercase">Search <i class="fa fa-search fa-2x"/></p></a>
                         </div>
@@ -146,6 +146,9 @@
             </xpath>
             <xpath expr="//div[@class='navbar navbar-default navbar-static-top']" position="attributes">
                 <attribute name="style">position: fixed; top: 0px; width: 100%;</attribute>
+            </xpath>
+            <xpath expr="//ul[@id='top_menu']" position="before">
+                <div id="header_line"/>
             </xpath>
             <xpath expr="//ul[@id='top_menu']" position="attributes">
                 <attribute name="class">nav navbar-nav</attribute>
