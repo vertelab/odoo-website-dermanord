@@ -138,6 +138,8 @@ class Main(http.Controller):
             request.session['form_values'] = post
             order = post.get('order', '')
         view = post.get('view')
+        if not request.session.get('form_values'):
+            request.session['form_values'] = {}
         request.session['form_values']['view'] = view
         if country:
             domain.append(('country_id', '=', country.id))
