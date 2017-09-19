@@ -2,6 +2,47 @@
                     Theme Dermanord
  ============================================================ */
 
+/* Fonts */
+body {
+/*
+    font-family: 'Futura-Medium' !important;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 500;
+*/
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Futura PT Heavy';
+}
+
+h5, p[data-oe-field=description_sale] {
+    font-family: 'Futura PT Medium';
+}
+
+h6, i {
+    font-family: 'Kepler Std Italic Display';
+}
+
+h6 {
+    font-size: 30px;
+}
+
+h1, .dn_uppercase {
+    text-transform: uppercase;
+}
+
+.futura_pt_h {
+    font-family: 'Futura PT Heavy';
+}
+
+.futura_pt_m, #search-btn-modal {
+    font-family: 'Futura PT Medium';
+}
+
+.kepler_std_i {
+    font-family: 'Kepler Std Italic Display';
+}
+
 /* override Bootstrap btn-primary */
 .btn {
     display: inline-block;
@@ -23,13 +64,13 @@
     text-decoration: none;
 }
 
-.btn-primary {
+.btn-primary, .dn_primary {
     color: #fff;
     background-color: #CB683F;
     border-color: #CB683F;
-    font-family: futura-pt, sans-serif;
     font-style: normal;
     font-weight: 500;
+    font-family: 'Futura PT Medium';
 }
 
 .btn-primary:hover, .btn-primary:active, .btn-primary:focus {
@@ -60,15 +101,6 @@
 .dn_btn:hover, .dn_btn:active, .dn_btn:focus {
     color: #fff;
     text-decoration: none;
-}
-
-.dn_primary {
-    color: #fff;
-    background-color: #CB683F;
-    border-color: #CB683F;
-    font-family: futura-pt, sans-serif;
-    font-style: normal;
-    font-weight: 500;
 }
 
 .dn_primary:hover, .dn_primary:active, .dn_primary:focus {
@@ -123,9 +155,8 @@
     white-space: nowrap;
     padding-top: 5px;
     padding-bottom: 5px;
-    font-family: futura-pt, sans-serif;
-    font-style: normal;
-    font-weight: 500;
+    font-family: 'Futura PT Medium';
+    text-transform: uppercase;
 }
 
 .dn_cart_qty_sm {
@@ -174,54 +205,6 @@ ol.breadcrumb > li + li::before {
   font-style: normal;
 }
 */
-
-body {
-/*
-    font-family: 'Futura-Medium' !important;
-    font-family: 'Quicksand', sans-serif;
-    font-weight: 500;
-*/
-}
-
-.futura_pt_m, h5 {
-    font-family: futura-pt, sans-serif;
-    font-style: normal;
-    font-weight: 500;
-}
-
-.kepler_std_i {
-    font-family: kepler-std-display, serif;
-    font-style: italic;
-    font-weight: 400;
-}
-
-.futura_pt_h, h4 {
-    font-family: futura-pt, sans-serif;
-    font-style: normal;
-    font-weight: 700;
-}
-
-h1, h2, h3 {
-    font-family: futura-pt, sans-serif;
-    font-style: normal;
-    font-weight: 700;
-}
-
-h6 {
-    font-family: kepler-std-display, serif;
-    font-style: italic;
-    font-weight: 400;
-}
-
-h7 {
-    font-family: kepler-std-display, serif;
-    font-style: italic;
-    font-weight: 400;
-}
-
-h1, .dn_uppercase {
-    text-transform: uppercase;
-}
 
 #menu-btn {
     float: left !important;
@@ -289,9 +272,9 @@ footer li {
     list-style-type: none;
 }
 
-footer a {
+footer a, footer span {
     color: #fff;
-    font-family: futura-pt, sans-serif;
+    font-family: 'Futura PT Medium';
     font-style: normal;
     font-weight: 500;
 }

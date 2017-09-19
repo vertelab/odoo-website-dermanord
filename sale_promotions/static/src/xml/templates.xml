@@ -6,8 +6,10 @@
         <a t-att-href="sp_url">
             <div class="sale_promotions_img" t-att-style="sp_image">
                 <div class="sale_promotions_text">
+<!--
                     <h4 class="mb16 dn_uppercase futura_pt_h"><t t-esc="sp_name"/></h4>
                     <h5 class="mb16 futura_pt_m"><t t-esc="sp_description"/></h5>
+-->
                 </div>
             </div>
         </a>

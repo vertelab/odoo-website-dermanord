@@ -58,7 +58,7 @@
             <xpath expr="//div[@id='wrapwrap']/header/div[@class='navbar navbar-default navbar-static-top']/div[@class='container']/div[@class='navbar-header']" position="replace">
                 <div class="container" style="padding: 0px;">
                     <div class="col-md-2 col-sm-2 hidden-xs" style="padding: 0px;">
-                        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown"><t t-esc="lang"/>
+                        <button class="btn dropdown-toggle futura_pt_m" type="button" data-toggle="dropdown"><t t-esc="lang"/>
                             <t t-foreach="languages" t-as="lg">
                                 <t t-if="lg[0] == lang">
                                     <t t-esc="lg[1]"/>
@@ -66,7 +66,7 @@
                             </t>
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu js_language_selector hidden-xs col-md-12 col-sm-12 col-xs-12" t-if="(request.website_multilang and len(languages) &gt; 1) or editable">
+                        <ul class="dropdown-menu js_language_selector hidden-xs col-md-12 col-sm-12 col-xs-12 futura_pt_m" t-if="(request.website_multilang and len(languages) &gt; 1) or editable">
                             <li t-foreach="languages" t-as="lg">
                                 <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
                                     <t t-esc="lg[1].split('/').pop()"/>
@@ -133,7 +133,7 @@
                         </div>
                         <div class="col-md-12 col-sm-12 hidden-xs">
                             <t t-set="website_sale_order" t-value="website.sale_get_order()"/>
-                            <a href="/shop/cart" class="pull-right" style="color: #000;">
+                            <a href="/shop/cart" class="pull-right kepler_std_i" style="color: #000;">
                                 <i class="fa fa-shopping-cart"/>
                               Bag: <span t-esc="user_id.partner_id.property_product_pricelist.currency_id.symbol"/> <span t-esc="website_sale_order.amount_total if website_sale_order else 0"/> (<span t-attf-class="my_cart_quantity" t-esc="website_sale_order and website_sale_order.cart_quantity or 0"/>)
                             </a>
