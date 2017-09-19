@@ -81,7 +81,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div id="header_middel_menu" class="col-md-8 col-sm-8 col-xs-12">
+                    <div id="header_middle_menu" class="col-md-8 col-sm-8 col-xs-12">
                         <div class="navbar-header" style="width: 100%;">
                             <div class="col-md-12 col-sm-12">
                                 <a id="desktop_logo" class="navbar-brand logo text-center hidden-xs" href="/" style="width: 100%;">

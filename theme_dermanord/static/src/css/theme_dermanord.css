@@ -116,8 +116,8 @@ h1, .dn_uppercase {
         padding: 0px;
     }
 
-    #header_middel_menu {
-        padding: 0px;
+    #header_middle_menu {
+        padding: 0px !important;
     }
 }
 
@@ -266,7 +266,7 @@ ol.breadcrumb > li + li::before {
     padding-top: 10px;
 }
 
-#header_middel_menu {
+#header_middle_menu {
     padding: 20px 0px 10px 0px;
 }
 
