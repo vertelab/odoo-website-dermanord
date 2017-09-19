@@ -5,7 +5,7 @@ var my_account = $("#top_menu li:last").closest(".dropdown");
 var more_menu = $("#top_menu").find("li#more_dropdown");
 var menu_items = [];
 var more_menu_items = [];
-$("#top_menu").children().each(function() {
+$("#top_menu").children().each(function() { // those menu items should not included in more menu
     if($(this).attr("id") == "fts_search_btn")
         return false;
     else if($(this).attr("class") == "hidden-xs")
@@ -16,11 +16,11 @@ $("#top_menu").children().each(function() {
         menu_items.push($(this));
 });
 $("#top_menu").find("#more_dropdown").find("ul").children().each(function() {
-    more_menu_items.push($(this));
+    more_menu_items.push($(this)); // load a copy of all menu item into more menu
 });
 
-var li_width_init = my_account.width();
-if(menu_items.length == 0) {
+var li_width_init = my_account.width(); // initial with of menu bar
+if(menu_items.length == 0) { // determine if more menu should show up or not
     more_menu.addClass("hidden");
 }
 else if(menu_items.length != 0) {
@@ -38,10 +38,12 @@ dermanord_resize_for_menu = function() {
         var li_width = 0;
         $.each(menu_items, function(index) {
             li_width += $(this).width();
-            if (li_width > max_li_width) {
+            if (li_width > max_li_width) { // hide this menu item from menu bar and show it in more menu
                 $(this).css({"display": "none"});
+                more_menu_items[index].css({"display": "unset"});
             }
-            else {
+            else {  // show this menu item in menu bar again and hide it from more menu
+                $(this).css({"display": "unset"});
                 more_menu_items[index].css({"display": "none"});
             }
         });

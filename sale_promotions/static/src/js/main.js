@@ -5,7 +5,6 @@ $(document).ready(function(){
     var content_html = '';
     $(".sp_div").find("div[class^='sp_']").each(function(e){
         var content = $(this).html();
-        console.log(content);
         if (e == 0) {
             content = content.replace("sale_promotions_img", "item active");
         }
