@@ -129,7 +129,7 @@
                     </div>
                     <div id="header_right_menu" class="col-md-2 col-sm-2 hidden-xs pull-right">
                         <div class="col-md-12 col-sm-12 hidden-xs">
-                            <a href="#" id="search-btn-modal" data-toggle="modal" data-target="#search_modal" style="color: #000;" class="pull-right"><p class="dn_uppercase">Search <i class="fa fa-search fa-2x"/></p></a>
+                            <a href="#" id="search-btn-modal" data-toggle="modal" data-target="#search_modal" style="color: #000;" class="pull-right"><p class="dn_uppercase">Search <i class="fa fa-search"/></p></a>
                         </div>
                         <div class="col-md-12 col-sm-12 hidden-xs">
                             <t t-set="website_sale_order" t-value="website.sale_get_order()"/>
