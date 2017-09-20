@@ -1,7 +1,7 @@
 var search_icron = $("#top_menu").find("#search-btn-modal").closest("li");
 var shop_cart = $("#top_menu").find("a[href='/shop/cart']").closest("li");
 var divider = $("#top_menu").find(".divider").closest("li");
-var my_account = $("#top_menu li:last").closest(".dropdown");
+var my_account = $("#top_menu > li").last();
 var more_menu = $("#top_menu").find("li#more_dropdown");
 var menu_items = [];
 $("#top_menu").children().each(function() { // those menu items should not included in more menu
