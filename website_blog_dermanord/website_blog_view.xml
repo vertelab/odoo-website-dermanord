@@ -23,6 +23,8 @@
                 </field>
                 <field name="blog_id" position="after">
                     <field name="content"/>
+                    <field name="security_type"/>
+                    <field name="group_ids" widget="many2many_tags" attrs="{'invisible': [('security_type','=','public')]}"/>
                 </field>
                 <sheet position="inside">
                     <notebook>
@@ -163,6 +165,26 @@
                     </t>
                 </t>
             </div>
+        </template>
+
+        <template id="blog_authorization" name="Blog Authorization">
+            <div class="css_non_editable_mode_hidden">
+                <t t-if="blog_post.security_type == 'public'">
+                    <h3 class="text-success">Public</h3>
+                </t>
+                <t t-if="blog_post.security_type == 'private'">
+                    <h3 class="text-danger">Private</h3>
+                    <ul t-foreach="blog_post.group_ids" t-as="group">
+                        <li class="text-danger"><t t-esc="group.name"/></li>
+                    </ul>
+                </t>
+            </div>
+        </template>
+
+        <template id="blog_post_complete" inherit_id="website_blog.blog_post_complete">
+            <xpath expr="//div[@class='btn-group css_non_editable_mode_hidden']" position="after">
+                <t t-call="website_blog_dermanord.blog_authorization"/>
+            </xpath>
         </template>
 
         <template id="website_blog_dermanord_css" inherit_id="website.layout" name="Website Blog Dermanord CSS">

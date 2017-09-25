@@ -59,29 +59,31 @@
                                 <t t-set="news_blog" t-value="request.env['blog.post'].search([('blog_id', '=', blog.id), ('tag_ids', 'in', int(current_tag_id)), ('website_published', '=', True)])"/>
                             </t>
                             <t t-foreach="news_blog" t-as="news_post">
-                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                    <t t-if="news_post.background_image and '/ir.attachment/' in news_post.background_image">
-                                        <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list" t-att-style="'background-image: url(&quot;/imagefield/ir.attachment/datas/%s/ref/theme_dermanord.dn_header_img&quot;);' %news_post.background_image[(news_post.background_image.index('ir.attachment/')+len('ir.attachment/')):news_post.background_image.index('/datas')].split('_')[0]"/>
-                                    </t>
-                                    <t t-if="not news_post.background_image or '/ir.attachment/' not in news_post.background_image">
-                                        <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list"/>
-                                    </t>
+                                <t t-if="(news_post.security_type == 'private' and request.env['res.users'].browse(int(user_id)) in news_post.group_ids.mapped('users')) or (news_post.security_type == 'public')">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <t t-if="news_post.background_image and '/ir.attachment/' in news_post.background_image">
+                                            <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list" t-att-style="'background-image: url(&quot;/imagefield/ir.attachment/datas/%s/ref/theme_dermanord.dn_header_img&quot;);' %news_post.background_image[(news_post.background_image.index('ir.attachment/')+len('ir.attachment/')):news_post.background_image.index('/datas')].split('_')[0]"/>
+                                        </t>
+                                        <t t-if="not news_post.background_image or '/ir.attachment/' not in news_post.background_image">
+                                            <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list"/>
+                                        </t>
 <!--
-                                    <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list" t-att-style="'background-image: url(&quot;/%s&quot;);' %'/'.join(news_post.background_image.split('//')[1].split('/')[1:])"/>
+                                        <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list" t-att-style="'background-image: url(&quot;/%s&quot;);' %'/'.join(news_post.background_image.split('//')[1].split('/')[1:])"/>
 -->
-                                    <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_content_div">
-                                        <h6 t-field="news_post.name"/>
-                                        <h4 class="text-muted"><t t-esc="str(news_post.write_date)[:10]"/></h4>
-                                        <p t-field="news_post.subtitle" class="text-muted mt16"/>
-                                        <a t-att-href="'/blog/%s/post/%s' %(news_post.blog_id.id, news_post.id)"><p style="text-decoration: underline; color: #000;">Read more</p></a>
-                                        <div class="blog_tag_div">
-                                            <h4 class="dn_uppercase blog_content_tag">tags:</h4>
-                                            <t t-foreach="news_post.tag_ids" t-as="tag">
-                                                <a t-att-href="'/blog/%s/tag/%s' %(news_post.blog_id.id, tag.id)"><span t-field="tag.name" class="post_tag dn_uppercase"/></a>
-                                            </t>
+                                        <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_content_div">
+                                            <h6 t-field="news_post.name"/>
+                                            <h4 class="text-muted"><t t-esc="str(news_post.write_date)[:10]"/></h4>
+                                            <p t-field="news_post.subtitle" class="text-muted mt16"/>
+                                            <a t-att-href="'/blog/%s/post/%s' %(news_post.blog_id.id, news_post.id)"><p style="text-decoration: underline; color: #000;">Read more</p></a>
+                                            <div class="blog_tag_div">
+                                                <h4 class="dn_uppercase blog_content_tag">tags:</h4>
+                                                <t t-foreach="news_post.tag_ids" t-as="tag">
+                                                    <a t-att-href="'/blog/%s/tag/%s' %(news_post.blog_id.id, tag.id)"><span t-field="tag.name" class="post_tag dn_uppercase"/></a>
+                                                </t>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </t>
                             </t>
                         </div>
                     </div>
@@ -101,6 +103,7 @@
                                 <span class="fa fa-times"/>
                             </a>
                         </div>
+                        <t t-call="website_blog_dermanord.blog_authorization"/>
                         <div class="cover-storage oe_hidden"></div>
                         <t t-call="website.publish_management">
                             <t t-set="object" t-value="blog_post"/>

@@ -62,6 +62,8 @@ class BlogPost(models.Model):
     blog_post_product_ids = fields.One2many(comodel_name='blog.post.product', inverse_name='blog_post_id', string='Products')
     object_ids = fields.One2many(comodel_name='blog.post.object', inverse_name='blog_post_id', string='Objects')
     related_posts = fields.Many2many(comodel_name='blog.post', compute='_related_posts')
+    security_type = fields.Selection([('public','Public'),('private','Private')], string='Security type', default='public', required=True)
+    group_ids = fields.Many2many('res.groups', string="Authorized Groups")
 
     @api.one
     def _related_posts(self):
@@ -213,6 +215,11 @@ class WebsiteBlog(WebsiteBlog):
         pager_begin = (page - 1) * self._blog_post_per_page
         pager_end = page * self._blog_post_per_page
         blog_posts = blog_posts[pager_begin:pager_end]
+        # check if current user is allowed to access this blog post
+        for post in blog_posts:
+            if post.security_type == 'private':
+                if request.env['res.users'].browse(uid) not in post.group_ids.mapped('users'):
+                    blog_posts -= post
 
         tags = blog.all_tags()[blog.id]
 
@@ -272,6 +279,11 @@ class WebsiteBlog(WebsiteBlog):
         tags = tag_obj.browse(cr, uid, tag_obj.search(cr, uid, [], context=context), context=context)
 
         all_post_ids = blog_post_obj.search(cr, uid, [('blog_id', '=', blog.id)], context=context)
+        # check if current user is allowed to access this blog post
+        for post in request.env['blog.post'].browse(all_post_ids):
+            if post.security_type == 'private':
+                if (request.env['res.users'].browse(uid) not in post.group_ids.mapped('users')) and (post != blog_post):
+                    all_post_ids.remove(int(post))
         current_blog_post_index = all_post_ids.index(blog_post.id)
         next_post_id = all_post_ids[0 if current_blog_post_index == len(all_post_ids) - 1 \
                             else current_blog_post_index + 1]
@@ -302,8 +314,14 @@ class WebsiteBlog(WebsiteBlog):
             },context=context)
         if blog.post_complete:
             try:
-                return request.website.render(blog.post_complete.id, values)
+                if (blog_post.security_type == 'private' and request.env['res.users'].browse(uid) in blog_post.group_ids.mapped('users')) or blog_post.security_type == 'public':
+                    return request.website.render(blog.post_complete.id, values)
+                else:
+                    return request.website.render('website.403')
             except:
                 _logger.error('Cannot reder template %s' %blog.post_complete.name)
         else:
-            return request.website.render("website_blog.blog_post_complete", values)
+            if (blog_post.security_type == 'private' and request.env['res.users'].browse(uid) in blog_post.group_ids.mapped('users')) or blog_post.security_type == 'public':
+                return request.website.render("website_blog.blog_post_complete", values)
+            else:
+                return request.website.render('website.403')
