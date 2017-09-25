@@ -34,7 +34,7 @@ Resellers Page
     'data': [
         'templates.xml',
         'data.xml',
-        'filter_sort_modal.xml',
+        #~ 'filter_sort_modal.xml',
     ],
     'application': False,
 }

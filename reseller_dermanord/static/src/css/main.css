@@ -5,11 +5,10 @@
 .reseller_cell {
     padding: 5px;
     margin-bottom: 5px;
-    background-color: #ddd;
 }
 
-.reseller_cell p {
-    padding-bottom: 20px;
+.reseller_cell p, .reseller_cell a {
+    color: #000;
 }
 
 .dn_btn {

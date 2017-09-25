@@ -52,11 +52,10 @@
                 <div id="wrap">
                     <div class="oe_structure"/>
                     <div class="container">
-                        <t t-call="reseller_dermanord.view_type"/>
                         <div class="row">
-                            <div class="col-md-6 col-sm-6 col-xs-12 mb16">
+                            <div class="col-md-12 col-sm-12 col-xs-12 mb16">
                                 <form action="/resellers" method="post" class="pagination form-inline col-md-12 col-sm-12 col-xs-12 mb16">
-                                    <div class="container">
+                                    <div class="container text-center">
                                         <div class="input-group">
                                             <input name="search" class="form-control" placeholder="Search..." type="text"/>
                                             <span class="input-group-btn">
@@ -70,40 +69,32 @@
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <t t-if="resellers">
                                         <t t-foreach="resellers" t-as="reseller">
-                                            <div class="reseller_cell">
-                                                <h4><strong><t t-esc="reseller.name"/></strong></h4>
-                                                <p class="text-muted"><t t-esc="','.join(reseller.category_id.mapped('name'))"/></p>
-                                                <p class="text-muted">
-                                                    <t t-esc="reseller.street"/><t t-if="reseller.zip"><t t-esc="', %s' %reseller.zip"/></t><t t-if="reseller.city"><t t-esc="' %s' %reseller.city"/></t>
-                                                    <a type="button" t-att-href="'/reseller/%s' %reseller.id" class="btn btn-info pull-right">Go to reseller</a>
+                                            <div class="reseller_cell col-md-4 col-sm-4 col-xs-12">
+                                                <a t-att-href="'/reseller/%s' %reseller.id"><h4><strong><t t-esc="reseller.name"/></strong></h4></a>
+                                                <!--<p class="text-muted"><t t-esc="','.join(reseller.category_id.mapped('name'))"/></p>-->
+                                                <p>
+                                                    <t t-if="reseller.street"><span t-esc="reseller.street"/><br/></t>
+                                                    <t t-if="reseller.street2"><span t-esc="reseller.street2"/><br/></t>
+                                                    <t t-if="reseller.zip"><span t-esc="reseller.zip"/></t> <t t-if="reseller.city"><span t-esc="reseller.city"/><br/></t>
+                                                    <t t-if="reseller.country_id"><span t-esc="reseller.country_id.name"/></t>
                                                 </p>
+                                                <t t-if="reseller.email"><a t-att-href="'mailto:%s' %reseller.email"><p style="text-decoration: underline;"><span t-esc="reseller.email"/></p></a></t>
+                                                <t t-if="reseller.phone"><a t-att-href="'tel:%s' %reseller.phone"><p><span t-esc="reseller.phone"/></p></a></t>
+                                                <t t-if="reseller.website"><a t-att-href="reseller.website"><p style="text-decoration: underline;"><span t-esc="reseller.website"/></p></a></t>
                                             </div>
                                         </t>
                                     </t>
+<!--
                                     <t t-if="not resellers">
                                         <h3 class="text-center">No reseller found</h3>
                                     </t>
+-->
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <!-- Google maps -->
-                                <div id="map" class="mt64" style="width: 100%; height: 800px;"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="oe_structure"/>
-                <script>
-                  function initMap() {
-                    var sweden = {lat: 59.6144081, lng: 17.7168579};
-                    var map = new google.maps.Map(document.getElementById('map'), {
-                      zoom: 4,
-                      center: sweden
-                    });
-                    <t t-foreach="resellers_geo" t-as="geo"><t t-raw="geo"/></t>
-                  }
-                </script>
-                <script t-att-src="'https://maps.googleapis.com/maps/api/js?key=%s&amp;callback=initMap' %request.env['ir.config_parameter'].get_param('google_maps_api')"></script>
             </t>
         </template>
 
@@ -132,6 +123,21 @@
                     </div>
                 </div>
                 <div class="oe_structure"/>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <!-- Google maps -->
+                    <div id="map" class="mt64" style="width: 100%; height: 800px;"></div>
+                </div>
+                <script>
+                  function initMap() {
+                    var sweden = {lat: 59.6144081, lng: 17.7168579};
+                    var map = new google.maps.Map(document.getElementById('map'), {
+                      zoom: 4,
+                      center: sweden
+                    });
+                    <t t-foreach="resellers_geo" t-as="geo"><t t-raw="geo"/></t>
+                  }
+                </script>
+                <script t-att-src="'https://maps.googleapis.com/maps/api/js?key=%s&amp;callback=initMap' %request.env['ir.config_parameter'].get_param('google_maps_api')"></script>
             </t>
         </template>
 
