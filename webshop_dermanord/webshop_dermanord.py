@@ -252,6 +252,11 @@ class website_sale(website_sale):
             default_order = post.get('order')
         product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
         products = product_obj.browse(cr, uid, product_ids, context=context)
+        # relist which product templates the current user is allowed to see
+        for p in products:
+            if len(p.access_group_ids) > 0 :
+                if request.env['res.users'].browse(uid) not in p.access_group_ids.mapped('users'):
+                    products -= p
 
         style_obj = pool['product.style']
         style_ids = style_obj.search(cr, uid, [], context=context)
@@ -327,6 +332,11 @@ class website_sale(website_sale):
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=None)
         product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=order, context=context)
         products = product_obj.browse(cr, uid, product_ids, context=context)
+        # relist which product templates the current user is allowed to see
+        for p in products:
+            if len(p.access_group_ids) > 0 :
+                if request.env['res.users'].browse(uid) not in p.access_group_ids.mapped('users'):
+                    products -= p
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id
@@ -381,7 +391,7 @@ class website_sale(website_sale):
 
         product_obj = pool.get('product.product')
         url = "/dn_list"
-        
+
         domain = request.session.get('current_domain')
         order = request.session.get('current_order')
 
@@ -390,6 +400,11 @@ class website_sale(website_sale):
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=None)
         product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=order, context=context)
         products = product_obj.browse(cr, uid, product_ids, context=context)
+        # relist which product templates the current user is allowed to see
+        for p in products:
+            if len(p.access_group_ids) > 0 :
+                if request.env['res.users'].browse(uid) not in p.access_group_ids.mapped('users'):
+                    products -= p
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id
@@ -513,6 +528,11 @@ class website_sale(website_sale):
             default_order = post.get('order')
         product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
         products = product_obj.browse(cr, uid, product_ids, context=context)
+        # relist which product templates the current user is allowed to see
+        for p in products:
+            if len(p.access_group_ids) > 0 :
+                if request.env['res.users'].browse(uid) not in p.access_group_ids.mapped('users'):
+                    products -= p
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id
