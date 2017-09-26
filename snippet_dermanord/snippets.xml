@@ -4,6 +4,16 @@
 
         <!-- Customize Snippets -->
         <template id="custom_snippets" inherit_id="website.snippets" name="Custom Snippets">
+
+            <xpath expr="//img[@src='/website/static/src/img/image_text.jpg']/.." position="attributes">
+                <attribute name="class">col-md-7 mt16</attribute>
+            </xpath>
+
+            <xpath expr="//img[@src='/website/static/src/img/image_text.jpg']/../following-sibling::div[2]" position="attributes">
+                <attribute name="class">col-md-5 mt16</attribute>
+            </xpath>
+
+
             <!-- Customize Structure -->
             <xpath expr="//div[@id='snippet_structure']" position="inside">
                 <div id="blog_banner_slide">
