@@ -32,6 +32,7 @@ Resellers Page
     'website': 'http://www.vertel.se',
     'depends': ['website_masonry', 'child_catagory_tags', 'base_geolocalize'],
     'data': [
+        'security/ir.model.access.csv',
         'templates.xml',
         'data.xml',
         #~ 'filter_sort_modal.xml',

@@ -116,13 +116,13 @@ class Main(http.Controller):
         '/resellers/country/<model("res.country"):country>',
         '/resellers/city/<string:city>',
         '/resellers/competence/<model("res.partner.category"):competence>',
-        '/reseller/<model("res.partner"):partner>',
+        '/reseller/<int:partner>',
     ], type='http', auth="public", website=True)
     def reseller(self, partner=None, country=None, city='', competence=None, **post):
         if not partner:
             word = post.get('search', False)
             if word and word != '':
-                resellers = request.env['res.partner'].search(['&', ('category_id', 'in', request.env.ref('reseller_dermanord.reseller_tag').id), '|', ('name', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), '|', ('country_id.name', 'ilike', word), ('child_category_ids.name', 'ilike', word)])
+                resellers = request.env['res.partner'].sudo().search(['&', ('category_id', 'in', request.env.ref('reseller_dermanord.reseller_tag').id), '|', ('name', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), '|', ('country_id.name', 'ilike', word), ('child_category_ids.name', 'ilike', word)])
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
             else:
                 return request.website.render('reseller_dermanord.resellers', {})
@@ -140,6 +140,7 @@ class Main(http.Controller):
                         icon: 'http://wiggum.vertel.se/dn_maps_marker.png'
                     });
                   }"""
+            partner = request.env['res.partner'].sudo().browse(int(partner))
             pos = partner.get_position()
             return request.website.render('reseller_dermanord.reseller', {
                 'reseller': partner,
