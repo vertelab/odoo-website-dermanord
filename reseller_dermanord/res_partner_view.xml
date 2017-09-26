@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_partner_form" model="ir.ui.view">
+            <field name="name">res.partner.form.inherited.reseller_dermanord</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <h1 position="after">
+                    <field name="is_reseller" invisible="1"/>
+                    <h2><field name="brand_name" placeholder="Brand Name" attrs="{'invisible': [('is_reseller', '=', False)]}"/></h2>
+                </h1>
+            </field>
+        </record>
+
+    </data>
+</openerp>

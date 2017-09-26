@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 8.0-20170601\n"
+"Project-Id-Version: Odoo Server 8.0-20170906\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-22 13:09+0000\n"
-"PO-Revision-Date: 2017-08-22 15:11+0200\n"
+"POT-Creation-Date: 2017-09-26 10:00+0000\n"
+"PO-Revision-Date: 2017-09-26 12:03+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -23,19 +23,41 @@ msgid "Address"
 msgstr "Adress"
 
 #. module: reseller_dermanord
+#: view:res.partner:reseller_dermanord.view_partner_form
+#: field:res.partner,brand_name:0
+msgid "Brand Name"
+msgstr "Varumärke"
+
+#. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
-msgid "E-Mail"
-msgstr "Epost"
+msgid "Contact"
+msgstr "Kontakt"
 
 #. module: reseller_dermanord
-#: view:website:reseller_dermanord.resellers
-msgid "Go to reseller"
-msgstr "Gå till återförsäljare"
+#: view:website:reseller_dermanord.reseller
+msgid "Email:"
+msgstr "Epost:"
 
 #. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
 #: view:website:reseller_dermanord.resellers
-msgid "No reseller found"
-msgstr "Ingen återförsäljare hittad"
+msgid "Odoo CMS - a big picture"
+msgstr "Odoo CMS - a big picture"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Opening hours"
+msgstr "Öppettider"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Our treatments"
+msgstr "Våra behandlingar"
+
+#. module: reseller_dermanord
+#: model:ir.model,name:reseller_dermanord.model_res_partner
+msgid "Partner"
+msgstr "Återförsäljare"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.resellers
@@ -44,13 +66,13 @@ msgstr "Sök..."
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
-msgid "Telephone"
-msgstr "Telefon"
+msgid "Telephone:"
+msgstr "Telefon:"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
-msgid "Website"
-msgstr "Webbplats"
+msgid "Website:"
+msgstr "Webbplats:"
 
 #. module: reseller_dermanord
 #: model:res.partner.category,name:reseller_dermanord.reseller_tag

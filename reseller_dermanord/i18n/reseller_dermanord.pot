@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 8.0-20170601\n"
+"Project-Id-Version: Odoo Server 8.0-20170906\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-22 13:09+0000\n"
-"PO-Revision-Date: 2017-08-22 13:09+0000\n"
+"POT-Creation-Date: 2017-09-26 10:00+0000\n"
+"PO-Revision-Date: 2017-09-26 10:00+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,18 +21,40 @@ msgid "Address"
 msgstr ""
 
 #. module: reseller_dermanord
+#: view:res.partner:reseller_dermanord.view_partner_form
+#: field:res.partner,brand_name:0
+msgid "Brand Name"
+msgstr ""
+
+#. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
-msgid "E-Mail"
+msgid "Contact"
 msgstr ""
 
 #. module: reseller_dermanord
-#: view:website:reseller_dermanord.resellers
-msgid "Go to reseller"
+#: view:website:reseller_dermanord.reseller
+msgid "Email:"
 msgstr ""
 
 #. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
 #: view:website:reseller_dermanord.resellers
-msgid "No reseller found"
+msgid "Odoo CMS - a big picture"
+msgstr ""
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Opening hours"
+msgstr ""
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Our treatments"
+msgstr ""
+
+#. module: reseller_dermanord
+#: model:ir.model,name:reseller_dermanord.model_res_partner
+msgid "Partner"
 msgstr ""
 
 #. module: reseller_dermanord
@@ -42,12 +64,12 @@ msgstr ""
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
-msgid "Telephone"
+msgid "Telephone:"
 msgstr ""
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
-msgid "Website"
+msgid "Website:"
 msgstr ""
 
 #. module: reseller_dermanord

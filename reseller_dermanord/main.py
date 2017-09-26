@@ -31,6 +31,18 @@ _logger = logging.getLogger(__name__)
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
+    brand_name = fields.Char(string='Brand Name')
+    is_reseller = fields.Boolean(compute='_is_reseller', search='_search_is_reseller')
+
+    @api.one
+    def _is_reseller(self):
+        self.is_reseller = self.env['ir.model.data'].xmlid_to_object('reseller_dermanord.reseller_tag') in self.category_id
+
+    @api.model
+    def _search_is_reseller(self, operator, value):
+        resellers = self.env.search([('category_id', '=', self.env['ir.model.data'].xmlid_to_object('reseller_dermanord.reseller_tag').id)])
+        return [('id', 'in', [r.id for r in resellers])]
+
     @api.multi
     def get_position(self):
         #~ url = ''
@@ -113,16 +125,16 @@ class Main(http.Controller):
 
     @http.route([
         '/resellers',
-        '/resellers/country/<model("res.country"):country>',
-        '/resellers/city/<string:city>',
-        '/resellers/competence/<model("res.partner.category"):competence>',
+        #~ '/resellers/country/<model("res.country"):country>',
+        #~ '/resellers/city/<string:city>',
+        #~ '/resellers/competence/<model("res.partner.category"):competence>',
         '/reseller/<int:partner>',
     ], type='http', auth="public", website=True)
     def reseller(self, partner=None, country=None, city='', competence=None, **post):
         if not partner:
             word = post.get('search', False)
             if word and word != '':
-                resellers = request.env['res.partner'].sudo().search(['&', ('category_id', 'in', request.env.ref('reseller_dermanord.reseller_tag').id), '|', ('name', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), '|', ('country_id.name', 'ilike', word), ('child_category_ids.name', 'ilike', word)])
+                resellers = request.env['res.partner'].sudo().search(['&', ('category_id', 'in', request.env.ref('reseller_dermanord.reseller_tag').id), '|', ('name', 'ilike', word), '|', ('brand_name', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), '|', ('country_id.name', 'ilike', word), ('child_category_ids.name', 'ilike', word)])
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
             else:
                 return request.website.render('reseller_dermanord.resellers', {})

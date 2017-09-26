@@ -74,7 +74,7 @@
                                         <t t-if="resellers">
                                             <t t-foreach="resellers" t-as="reseller">
                                                 <div class="reseller_cell grid-item" style="width: 33.333%;">
-                                                    <a t-att-href="'/reseller/%s' %reseller.id"><h4><strong><t t-esc="reseller.name"/></strong></h4></a>
+                                                    <a t-att-href="'/reseller/%s' %reseller.id"><h4><strong><t t-esc="reseller.brand_name if reseller.brand_name else reseller.name"/></strong></h4></a>
                                                     <!--<p class="text-muted"><t t-esc="','.join(reseller.category_id.mapped('name'))"/></p>-->
                                                     <p>
                                                         <t t-if="reseller.street"><span t-esc="reseller.street"/><br/></t>
@@ -119,7 +119,7 @@
                                 </ul>
                             </div>
                             <div class="reseller_cell col-md-4 col-sm-4 col-xs-12 mb16">
-                                <h3><t t-esc="reseller.name"/></h3>
+                                <h3><t t-esc="reseller.brand_name if reseller.brand_name else reseller.name"/></h3>
                                 <!-- Google maps -->
                                 <div id="map" class="mt16" style="width: 100%; height: 400px;"></div>
                                 <hr/>

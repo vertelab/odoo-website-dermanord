@@ -33,6 +33,7 @@ Resellers Page
     'depends': ['website_masonry', 'child_catagory_tags', 'base_geolocalize'],
     'data': [
         'security/ir.model.access.csv',
+        'res_partner_view.xml',
         'templates.xml',
         'data.xml',
         #~ 'filter_sort_modal.xml',
