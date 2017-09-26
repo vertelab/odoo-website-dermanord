@@ -113,6 +113,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-8 col-sm-8 col-xs-12 mb16">
+                                <p class="mt32" t-field="reseller.website_short_description"/>
                                 <h3>Our treatments</h3>
                                 <ul t-foreach="reseller.child_category_ids" t-as="categ">
                                     <li><span t-esc="categ.name"/></li>
