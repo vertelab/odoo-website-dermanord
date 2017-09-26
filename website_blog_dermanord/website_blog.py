@@ -32,6 +32,40 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
+class website(models.Model):
+    _inherit = 'website'
+
+    def formatted_date(self, date):
+        year = date[:4]
+        month = date[5:7]
+        day = date[8:]
+        if month == '01':
+            month = _('January')
+        if month == '02':
+            month = _('February')
+        if month == '03':
+            month = _('Mars')
+        if month == '04':
+            month = _('April')
+        if month == '05':
+            month = _('May')
+        if month == '06':
+            month = _('June')
+        if month == '07':
+            month = _('July')
+        if month == '08':
+            month = _('August')
+        if month == '09':
+            month = _('Sepetember')
+        if month == '10':
+            month = _('Octorber')
+        if month == '11':
+            month = _('November')
+        if month == '12':
+            month = _('December')
+        return '%s %s %s' %(day, month, year)
+
+
 class blog_post_product(models.Model):
     _name = 'blog.post.product'
     _order = 'sequence'
