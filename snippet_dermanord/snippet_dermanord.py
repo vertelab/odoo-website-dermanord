@@ -72,7 +72,7 @@ class snippet(http.Controller):
             for c in categories:
                 image_url = ''
                 if c.image_medium:
-                    image_url = '/imagefield/product.public.category/image_medium/%s/ref/%s' %(c.id, 'snippet_dermanord.img_categories')
+                    image_url = '/imagefield/product.public.category/image/%s/ref/%s' %(c.id, 'snippet_dermanord.img_categories')
                 category_list.append(
                     {
                         'id': c.id,
