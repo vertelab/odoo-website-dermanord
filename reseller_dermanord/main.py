@@ -119,12 +119,32 @@ class Main(http.Controller):
         '/reseller/<model("res.partner"):partner>',
     ], type='http', auth="public", website=True)
     def reseller(self, partner=None, country=None, city='', competence=None, **post):
-        word = post.get('search', False)
-        if word and word != '':
-            resellers = request.env['res.partner'].search([('category_id', 'in', request.env.ref('reseller_dermanord.reseller_tag').id), ('name', 'ilike', word)])
-            return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
+        if not partner:
+            word = post.get('search', False)
+            if word and word != '':
+                resellers = request.env['res.partner'].search(['&', ('category_id', 'in', request.env.ref('reseller_dermanord.reseller_tag').id), '|', ('name', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), '|', ('country_id.name', 'ilike', word), ('child_category_ids.name', 'ilike', word)])
+                return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
+            else:
+                return request.website.render('reseller_dermanord.resellers', {})
         else:
-            return request.website.render('reseller_dermanord.resellers', {})
+            marker_tmp = """function initMap() {
+                    var center = {lat: %s, lng: %s};
+                    var map = new google.maps.Map(document.getElementById('map'), {
+                      zoom: 12,
+                      center: center
+                    });
+                    var marker%s = new google.maps.Marker({
+                        title: '%s',
+                        position: {lat: %s, lng: %s},
+                        map: map,
+                        icon: 'http://wiggum.vertel.se/dn_maps_marker.png'
+                    });
+                  }"""
+            pos = partner.get_position()
+            return request.website.render('reseller_dermanord.reseller', {
+                'reseller': partner,
+                'reseller_geo': marker_tmp %(pos['lat'], pos['lng'], partner.id, partner.name.replace("'", ''), pos['lat'], pos['lng']),
+            })
 
         #~ if partner:
             #~ return request.website.render('reseller_dermanord.reseller', {
