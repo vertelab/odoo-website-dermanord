@@ -55,7 +55,6 @@ h1, .dn_uppercase {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none;
     background-image: none;
     border-radius: 0px;
 }
@@ -93,7 +92,6 @@ h1, .dn_uppercase {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none;
     background-image: none;
     border-radius: 0px;
 }
