@@ -9,7 +9,7 @@
                 <attribute name="class">col-md-7 mt16</attribute>
             </xpath>
 
-            <xpath expr="//img[@src='/website/static/src/img/image_text.jpg']/../following-sibling::div[2]" position="attributes">
+            <xpath expr="//img[@src='/website/static/src/img/image_text.jpg']/../following-sibling::div[1]" position="attributes">
                 <attribute name="class">col-md-5 mt16</attribute>
             </xpath>
 
