@@ -9,15 +9,15 @@
                 <field name="name" position="after">
                     <field name="experience" />
                 </field>
-                
+
                 <xpath expr="//tree" position="attributes">
-                <attribute name="create">True</attribute>
+                <attribute name="create">true</attribute>
             </xpath>
-                
+
             </field>
         </record>
-        
-        
+
+
         <record model="ir.ui.view" id="blog_tag_form">
             <field name="name">blog_tag_form.experience</field>
             <field name="model">blog.tag</field>
