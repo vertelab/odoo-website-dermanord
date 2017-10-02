@@ -341,13 +341,14 @@ footer input, footer .input-group-addon {
     justify-content: center;
     width: 100%;
     padding: 0px;
+    max-height: 450px;
 }
 
 .dn_header_banner {
     padding: 0px;
     margin: auto;
     display: block;
-    max-width: 1920px;
+    max-width: 1366px;
 }
 
 .dn_header_nav {

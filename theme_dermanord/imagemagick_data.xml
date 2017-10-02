@@ -73,13 +73,13 @@ else:
 
         <record id="dn_header_img_param_height" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">400</field>
+            <field name="value">450</field>
             <field name="recipe_id" ref="theme_dermanord.dn_header_img"/>
         </record>
 
         <record id="dn_header_img_param_horizontal" model="image.recipe.param">
             <field name="name">horizontal</field>
-            <field name="value">40</field>
+            <field name="value">27.32</field>
             <field name="recipe_id" ref="theme_dermanord.dn_header_img"/>
         </record>
 
