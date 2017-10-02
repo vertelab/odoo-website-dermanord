@@ -1,0 +1,319 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * website_blog_dermanord
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0-20170906\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-10-02 12:02+0000\n"
+"PO-Revision-Date: 2017-10-02 12:02+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: website_blog_dermanord
+#: code:addons/website_blog_dermanord/website_blog.py:49
+#, python-format
+msgid "April"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: code:addons/website_blog_dermanord/website_blog.py:57
+#, python-format
+msgid "August"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post,group_ids:0
+msgid "Authorized Groups"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: help:blog.post.product,list_price:0
+msgid "Base price to compute the customer price. Sometimes called the catalog price."
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.object,blog_post_id:0
+msgid "Blog Posts"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.product,blog_post_id:0
+msgid "Blog post id"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: model:ir.model,name:website_blog_dermanord.model_blog_blog
+msgid "Blogs"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.object,color:0
+msgid "Color Index"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: help:blog.post.product,type:0
+msgid "Consumable: Will not imply stock management for this product. \n"
+"Stockable product: Will imply stock management for this product."
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.object,create_uid:0
+#: field:blog.post.product,create_uid:0
+msgid "Created by"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.object,create_date:0
+#: field:blog.post.product,create_date:0
+msgid "Created on"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: code:addons/website_blog_dermanord/website_blog.py:65
+#, python-format
+msgid "December"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.object,description:0
+msgid "Description"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.object,display_name:0
+#: field:blog.post.product,display_name:0
+msgid "Display Name"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: model:ir.model,name:website_blog_dermanord.model_blog_post
+msgid "Document Page"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: code:addons/website_blog_dermanord/website_blog.py:45
+#, python-format
+msgid "February"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.product,virtual_available:0
+msgid "Forecast Quantity"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.object,id:0
+#: field:blog.post.product,id:0
+msgid "ID"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.object,image:0
+msgid "Image"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: view:blog.post.object:website_blog_dermanord.blog_post_object_view
+msgid "Information"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.product,default_code:0
+msgid "Internal Reference"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: code:addons/website_blog_dermanord/website_blog.py:43
+#, python-format
+msgid "January"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: code:addons/website_blog_dermanord/website_blog.py:55
+#, python-format
+msgid "July"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: code:addons/website_blog_dermanord/website_blog.py:53
+#, python-format
+msgid "June"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.object,__last_update:0
+#: field:blog.post.product,__last_update:0
+msgid "Last Modified on"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.object,write_uid:0
+#: field:blog.post.product,write_uid:0
+msgid "Last Updated by"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.object,write_date:0
+#: field:blog.post.product,write_date:0
+msgid "Last Updated on"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: code:addons/website_blog_dermanord/website_blog.py:47
+#, python-format
+msgid "Mars"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: code:addons/website_blog_dermanord/website_blog.py:51
+#, python-format
+msgid "May"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.object,name:0
+#: field:blog.post.product,name:0
+msgid "Name"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: code:addons/website_blog_dermanord/website_blog.py:63
+#, python-format
+msgid "November"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: view:blog.post.object:website_blog_dermanord.blog_post_object_view
+msgid "Object Blog Post"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.object,object_id:0
+msgid "Object id"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post,object_ids:0
+msgid "Objects"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: code:addons/website_blog_dermanord/website_blog.py:61
+#, python-format
+msgid "October"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.blog,post_complete:0
+msgid "Post Complete"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.blog,post_content:0
+msgid "Post Content"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.blog,post_short:0
+msgid "Post Short"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: selection:blog.post,security_type:0
+#: view:website:website_blog_dermanord.blog_authorization
+msgid "Private"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: selection:blog.post.object,object_id:0
+#: model:ir.model,name:website_blog_dermanord.model_product_template
+msgid "Product Template"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.product,type:0
+msgid "Product Type"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: selection:blog.post.object,object_id:0
+msgid "Product Variant"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.product,product_id:0
+msgid "Product id"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: view:blog.post:website_blog_dermanord.view_blog_post_form
+#: field:blog.post,blog_post_product_ids:0
+#: field:blog.post,product_ids:0
+msgid "Products"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: selection:blog.post,security_type:0
+#: view:website:website_blog_dermanord.blog_authorization
+msgid "Public"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.product,qty_available:0
+msgid "Quantity On Hand"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: view:website:website_blog_dermanord.related_blog_post
+msgid "Read More"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: view:website:website_blog_dermanord.related_blog_post
+msgid "Related Posts"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: view:website:website_blog_dermanord.blog_post_products
+msgid "Related Products"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.product,list_price:0
+msgid "Sale Price"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post,security_type:0
+msgid "Security type"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: code:addons/website_blog_dermanord/website_blog.py:59
+#, python-format
+msgid "September"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: field:blog.post.object,sequence:0
+#: field:blog.post.product,sequence:0
+msgid "Sequence"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: model:ir.model,name:website_blog_dermanord.model_website
+msgid "Website"
+msgstr ""
+
+#. module: website_blog_dermanord
+#: model:ir.actions.act_window,name:website_blog_dermanord.action_blog_post_object_view
+msgid "blog.post.object.act"
+msgstr ""
+

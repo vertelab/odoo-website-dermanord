@@ -56,9 +56,9 @@ class website(models.Model):
         if month == '08':
             month = _('August')
         if month == '09':
-            month = _('Sepetember')
+            month = _('September')
         if month == '10':
-            month = _('Octorber')
+            month = _('October')
         if month == '11':
             month = _('November')
         if month == '12':

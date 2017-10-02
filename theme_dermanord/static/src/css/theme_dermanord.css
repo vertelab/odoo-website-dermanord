@@ -19,7 +19,7 @@ h1, h2, h3, h4 {
     font-family: 'Futura PT Heavy';
 }
 
-h5, p[data-oe-field=description_sale], p[data-oe-field=public_desc], p[data-oe-field=use_desc] {
+#wrapwrap span, ol.breadcrumb > li > a, h5, p[data-oe-field=description_sale], p[data-oe-field=public_desc], p[data-oe-field=use_desc] {
     font-family: 'Futura PT Medium';
 }
 
