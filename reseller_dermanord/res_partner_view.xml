@@ -8,9 +8,11 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <h1 position="after">
-                    <field name="is_reseller" invisible="1"/>
                     <h2><field name="brand_name" placeholder="Brand Name" attrs="{'invisible': [('is_reseller', '=', False)]}"/></h2>
                 </h1>
+                <field name="customer" position="after">
+                    <field name="is_reseller"/>
+                </field>
             </field>
         </record>
 

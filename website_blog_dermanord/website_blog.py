@@ -35,6 +35,7 @@ _logger = logging.getLogger(__name__)
 class website(models.Model):
     _inherit = 'website'
 
+    @api.model
     def formatted_date(self, date):
         year = date[:4]
         month = date[5:7]
