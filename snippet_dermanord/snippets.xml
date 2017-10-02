@@ -9,10 +9,42 @@
                 <attribute name="class">col-md-7 mt16</attribute>
             </xpath>
 
+            <xpath expr="//img[@src='/website/static/src/img/image_text.jpg']/../img" position="attributes">
+                <attribute name="class">img img-responsive shadow mb16 pull-right</attribute>
+            </xpath>
+
             <xpath expr="//img[@src='/website/static/src/img/image_text.jpg']/../following-sibling::div[1]" position="attributes">
                 <attribute name="class">col-md-5 mt16</attribute>
             </xpath>
 
+            <xpath expr="//div[@id='snippet_structure']/div[3]" position="after">
+                <div>
+                    <div class="oe_snippet_thumbnail">
+                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_image_text.png"/>
+                        <span class="oe_snippet_thumbnail_title">Image-Text Narrow</span>
+                    </div>
+                    <section class="oe_snippet_body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-5 col-md-offset-2 mt16">
+                                    <img class="img img-responsive shadow mb16 pull-right" src="/website/static/src/img/image_text.jpg"  alt="Odoo image and text block"/>
+                                </div>
+                                <div class="col-md-3 mt16">
+                                    <h3>A Section Subtitle</h3>
+                                    <p>
+                                        Write one or two paragraphs describing your product,
+                                        services or a specific feature. To be successful
+                                        your content needs to be useful to your readers.
+                                    </p><p>
+                                        Start with the customer – find out what they want
+                                        and give it to them.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </xpath>
 
             <!-- Customize Structure -->
             <xpath expr="//div[@id='snippet_structure']" position="inside">
