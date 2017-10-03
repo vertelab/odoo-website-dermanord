@@ -75,7 +75,7 @@
                 </div>
                 <div id="reseller_filter_btn_group" class="btn-group">
                     <button class="mt32 dn_btn dn_primary" name="post_form" value="ok" type="submit">OK</button>
-                    <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="restore_filter()"><i class="fa fa-trash-o"/> Clear All</button>
+                    <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="reseller_restore_filter()"><i class="fa fa-trash-o"/> Clear All</button>
                 </div>
             </form>
         </template>

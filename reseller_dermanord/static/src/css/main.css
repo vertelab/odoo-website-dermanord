@@ -52,11 +52,6 @@
     border-color: #ddd;
 }
 
-input[type="checkbox"] {
-    margin-left: -25px !important;
-    transform: scale(1.5, 1.5);
-}
-
 #dn_reseller_filter_modal .checkbox {
     margin-bottom: 15px;
 }
@@ -112,4 +107,11 @@ input[type="checkbox"] {
     color: #fff;
     padding: 0px 6px !important;
     border-radius: 12px !important;
+}
+
+@media (max-width: 768px) {
+    input[type="checkbox"] {
+        margin-left: -25px !important;
+        transform: scale(1.5, 1.5);
+    }
 }

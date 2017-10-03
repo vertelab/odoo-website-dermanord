@@ -43,11 +43,6 @@
     border-color: #ddd;
 }
 
-input[type="checkbox"] {
-    margin-left: -25px !important;
-    transform: scale(1.5, 1.5);
-}
-
 #dn_filter_modal .checkbox {
     margin-bottom: 15px;
 }
@@ -340,6 +335,16 @@ See also .dn_cart_qty_sm in theme_dermanord.
     border-radius: 12px !important;
 }
 
+.panel-default {
+    border: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+.panel-body {
+    border-top-color: transparent !important;
+}
+
 .like_icon {
     margin-top: 4px;
     color: #2f2;
@@ -348,6 +353,30 @@ See also .dn_cart_qty_sm in theme_dermanord.
 .unlike_icon {
     margin-top: 4px;
     color: #f22;
+}
+
+.dn_selection_dropdown {
+    color: #fff !important;
+    background-color: #000 !important;
+    height: 40px;
+    font-size: 1.3em;
+    border: 0px solid #F6BB43;
+    border-radius: 0px !important;
+    font-family: 'Futura PT Medium';
+    font-weight: 400;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -o-appearance: none;
+    position: static;
+}
+
+select.dn_selection_dropdown + i.fa {
+  float: right;
+  margin-top: -28px;
+  margin-right: 10px;
+  /* this is so when you click on the chevron, your click actually goes on the dropdown menu */
+  pointer-events: none;
+  color: white;
 }
 
 @media screen and (min-width: 992px) {
@@ -372,5 +401,10 @@ See also .dn_cart_qty_sm in theme_dermanord.
 @media (max-width: 768px) {
     .list_product_name {
         text-align: center;
+    }
+
+    input[type="checkbox"] {
+        margin-left: -25px !important;
+        transform: scale(1.5, 1.5);
     }
 }

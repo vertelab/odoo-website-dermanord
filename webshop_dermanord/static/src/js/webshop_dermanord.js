@@ -422,8 +422,15 @@ function load_products_list(page){
     });
 }
 
-function restore_filter() {
+function webshop_restore_filter() {
     $("#dn_filter_modal").find(".modal-body").find("input[type=checkbox]").each(
+        function() {
+            if($(this).is(":checked")) {
+                $(this).removeAttr('checked');
+            }
+        }
+    );
+    $("#desktop_product_navigator_filter").find(".panel-group").find("input[type=checkbox]").each(
         function() {
             if($(this).is(":checked")) {
                 $(this).removeAttr('checked');
