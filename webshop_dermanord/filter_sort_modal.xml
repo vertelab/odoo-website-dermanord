@@ -163,16 +163,14 @@
                         <t t-if="len(facet_values) &gt; 0">
                             <t t-foreach="facet_values" t-as="facet_value">
                                 <div class="checkbox">
-                                    <h5>
-                                        <label>
-                                            <t t-if="request.session.get('form_values')">
-                                                <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id" t-att="{'checked': '1'} if (request.session.get('form_values').get('facet_%s_%s' %(facet.id, facet_value.id)) and request.session.get('form_values').get('facet_%s_%s' %(facet.id, facet_value.id)) == str(facet_value.id)) else {}"/><t t-esc="facet_value.name"/>
-                                            </t>
-                                            <t t-if="not request.session.get('form_values')">
-                                                <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id"/><t t-esc="facet_value.name"/>
-                                            </t>
-                                        </label>
-                                    </h5>
+                                    <label>
+                                        <t t-if="request.session.get('form_values')">
+                                            <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id" t-att="{'checked': '1'} if (request.session.get('form_values').get('facet_%s_%s' %(facet.id, facet_value.id)) and request.session.get('form_values').get('facet_%s_%s' %(facet.id, facet_value.id)) == str(facet_value.id)) else {}"/><t t-esc="facet_value.name"/>
+                                        </t>
+                                        <t t-if="not request.session.get('form_values')">
+                                            <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id"/><t t-esc="facet_value.name"/>
+                                        </t>
+                                    </label>
                                 </div>
                             </t>
                         </t>
@@ -182,16 +180,14 @@
                     <t t-if="len(filter_categories) &gt; 0">
                         <t t-foreach="filter_categories" t-as="category">
                             <div class="checkbox">
-                                <h5>
-                                    <label>
-                                        <t t-if="request.session.get('form_values')">
-                                            <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id" t-att="{'checked': '1'} if request.session.get('form_values').get('category_%s' %category.id) == str(category.id) else {}"/><t t-esc="category.name"/>
-                                        </t>
-                                        <t t-if="not request.session.get('form_values')">
-                                            <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id"/><t t-esc="category.name"/>
-                                        </t>
-                                    </label>
-                                </h5>
+                                <label>
+                                    <t t-if="request.session.get('form_values')">
+                                        <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id" t-att="{'checked': '1'} if request.session.get('form_values').get('category_%s' %category.id) == str(category.id) else {}"/><t t-esc="category.name"/>
+                                    </t>
+                                    <t t-if="not request.session.get('form_values')">
+                                        <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id"/><t t-esc="category.name"/>
+                                    </t>
+                                </label>
                             </div>
                         </t>
                     </t>
@@ -201,24 +197,22 @@
                         <t t-foreach="filter_ingredients" t-as="ingredient">
                             <h5 t-field="ingredient.name"/>
                             <div class="checkbox">
-                                <h4>
-                                    <label class="col-md-6 col-sm-6 col-xs-6" style="float: left;">
-                                        <t t-if="request.session.get('form_values')">
-                                            <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('ingredient_%s' %ingredient.id) == str(ingredient.id) else {}" class="like"/><i class="fa fa-smile-o like_icon"/>
-                                            </t>
-                                        <t t-if="not request.session.get('form_values')">
-                                            <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" class="like"/><i class="fa fa-smile-o like_icon"/>
+                                <label class="col-md-6 col-sm-6 col-xs-6" style="float: left;">
+                                    <t t-if="request.session.get('form_values')">
+                                        <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('ingredient_%s' %ingredient.id) == str(ingredient.id) else {}" class="like"/><i class="fa fa-smile-o like_icon"/>
                                         </t>
-                                    </label>
-                                    <label class="col-md-6 col-sm-6 col-xs-6" style="float: right;">
-                                        <t t-if="request.session.get('form_values')">
-                                            <input type="checkbox" t-att-name="'notingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('notingredient_%s' %ingredient.id) == str(ingredient.id) else {}" class="unlike"/><i class="fa fa-frown-o unlike_icon"/>
-                                            </t>
-                                        <t t-if="not request.session.get('form_values')">
-                                            <input type="checkbox" t-att-name="'notingredient_%s' %ingredient.id" t-att-value="ingredient.id" class="unlike"/><i class="fa fa-frown-o unlike_icon"/>
+                                    <t t-if="not request.session.get('form_values')">
+                                        <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" class="like"/><i class="fa fa-smile-o like_icon"/>
+                                    </t>
+                                </label>
+                                <label class="col-md-6 col-sm-6 col-xs-6" style="float: right;">
+                                    <t t-if="request.session.get('form_values')">
+                                        <input type="checkbox" t-att-name="'notingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('notingredient_%s' %ingredient.id) == str(ingredient.id) else {}" class="unlike"/><i class="fa fa-frown-o unlike_icon"/>
                                         </t>
-                                    </label>
-                                </h4>
+                                    <t t-if="not request.session.get('form_values')">
+                                        <input type="checkbox" t-att-name="'notingredient_%s' %ingredient.id" t-att-value="ingredient.id" class="unlike"/><i class="fa fa-frown-o unlike_icon"/>
+                                    </t>
+                                </label>
                             </div>
                         </t>
                     </t>
@@ -508,8 +502,8 @@
                         <option value="list_price asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'list_price asc' else {}">Price Ascending</option>
                         <option value="list_price desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'list_price desc' else {}">Price Descending</option>
                         <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
-                            <option value="default_code asc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'default_code asc' else {}">Article No. Ascending</option>
-                            <option value="default_code desc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'default_code desc' else {}">Article No. Descending</option>
+                            <option value="default_code asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'default_code asc' else {}">Article No. Ascending</option>
+                            <option value="default_code desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'default_code desc' else {}">Article No. Descending</option>
                         </t>
                     </t>
                     <t t-if="not request.session.get('form_values')">

@@ -39,13 +39,13 @@ $(document).ready(function(){
 
     $(".like").click(function(){
         if($(this).is(":checked")) {
-            $(this).closest("h5").find(".unlike").removeAttr('checked');
+            $(this).closest(".checkbox").find(".unlike").removeAttr('checked');
         }
     });
 
     $(".unlike").click(function(){
         if($(this).is(":checked")) {
-            $(this).closest("h5").find(".like").removeAttr('checked');
+            $(this).closest(".checkbox").find(".like").removeAttr('checked');
         }
     });
 
