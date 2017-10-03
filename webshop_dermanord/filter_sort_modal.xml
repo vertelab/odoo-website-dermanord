@@ -512,6 +512,15 @@
                             <option value="default_code desc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'default_code desc' else {}">Article No. Descending</option>
                         </t>
                     </t>
+                    <t t-if="not request.session.get('form_values')">
+                        <option value="sold_qty desc" select="1">Most Sold</option>
+                        <option value="name asc">Name Ascending</option>
+                        <option value="name desc">Name Descending</option>
+                        <option value="list_price asc">Price Ascending</option>
+                        <option value="list_price desc">Price Descending</option>
+                        <option value="default_code asc">Article No. Ascending</option>
+                        <option value="default_code desc">Article No. Descending</option>
+                    </t>
                 </select>
                 <i class="fa fa-angle-down"/>
                 <t t-foreach="filter_facets" t-as="facet">

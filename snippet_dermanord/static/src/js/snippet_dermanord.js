@@ -245,6 +245,14 @@ $(document).ready(function() {
         });
     });
 
+    //~ $(".di_mobile_img_edit").each(function(){
+        //~ console.log($(this).attr("src"));
+        //~ var mobile_img = $(this).closest(".item").find(".di_mobile_img");
+        //~ console.log(mobile_img);
+        //~ mobile_img.attr("src", $(this).attr("src"));
+        //~ $(this).addClass("css_non_editable_mode_hidden");
+    //~ });
+
     //~ $(".carousel-inner").swiperight(function() {
           //~ $(this).parent().carousel('prev');
             //~ });

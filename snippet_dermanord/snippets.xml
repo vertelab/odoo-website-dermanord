@@ -17,6 +17,40 @@
                 <attribute name="class">col-md-5 mt16</attribute>
             </xpath>
 
+            <xpath expr="//div[@id='snippet_structure']/div[1]" position="replace">
+                <div>
+                    <div class="oe_snippet_thumbnail">
+                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_banner.png"/>
+                        <span class="oe_snippet_thumbnail_title">Banner</span>
+                    </div>
+                    <div id="myCarousel" class="oe_snippet_body carousel slide mb32 double_image">
+                        <div class="carousel-inner">
+                            <div class="item active">
+                                <img class="img img-responsive di_desktop_img hidden-xs" src="/website/static/src/img/aqua.jpg"/>
+                                <img class="img img-responsive di_mobile_img hidden-lg hidden-md hidden-sm" src="/website/static/src/img/china_thumb.jpg"/>
+                                <div class="container di_desktop_content">
+                                    <div class="row content">
+                                        <div class="col-md-12 col-sm-12 text-center">
+                                            <h6 class="mb32">
+                                                <i>Your Banner Title</i>
+                                            </h6>
+                                            <p>
+                                                <a class="dn_btn dn_primary" href="#">DISCOVER MORE</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+<!--
+                                <img class="img img-responsive di_mobile_img_edit css_non_editable_mode_hidden" src="/website/static/src/img/china_thumb.jpg"/>
+-->
+                            </div>
+                        </div>
+                        <div class="carousel-control left hidden" data-target="#myCarousel" data-slide="prev" style="width: 10%"><i class="fa fa-chevron-left"></i></div>
+                        <div class="carousel-control right hidden" data-target="#myCarousel" data-slide="next" style="width: 10%"><i class="fa fa-chevron-right"></i></div>
+                    </div>
+                </div>
+            </xpath>
+
             <xpath expr="//div[@id='snippet_structure']/div[3]" position="after">
                 <div>
                     <div class="oe_snippet_thumbnail">
