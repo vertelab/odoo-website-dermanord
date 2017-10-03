@@ -312,9 +312,9 @@ span[data-oe-expression="ingredient.image"] > img {
 
 #ingredient > h5 {
     white-space: nowrap;
-    overflow-x: hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
-    margin: 10px 0px 0px -10px;
+    margin-left: -10px;
 }
 
 #ingredient > .checkbox {
@@ -371,12 +371,13 @@ See also .dn_cart_qty_sm in theme_dermanord.
 }
 
 select.dn_selection_dropdown + i.fa {
-  float: right;
-  margin-top: -28px;
-  margin-right: 10px;
-  /* this is so when you click on the chevron, your click actually goes on the dropdown menu */
-  pointer-events: none;
-  color: white;
+    float: right;
+    margin-top: -25px;
+    margin-right: 25px;
+    pointer-events: none;
+    color: #fff;
+    position: absolute;
+    right: 0px;
 }
 
 @media screen and (min-width: 992px) {

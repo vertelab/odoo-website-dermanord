@@ -366,7 +366,7 @@
                         <t t-foreach="filter_facets" t-as="facet">
                             <div class="panel-heading">
                                 <h4 class="panel-title">
-                                    <t t-esc="facet.name"/> <a data-toggle="collapse" t-att-href="'#desktop_facet_%s' %facet.id" class="pull-right"><i class="fa fa-angle-down"/></a>
+                                    <t t-esc="facet.name"/> <a data-toggle="collapse" t-att-href="'#desktop_facet_%s' %facet.id" class="pull-right"><i class="desktop_angle fa fa-angle-down"/></a>
                                     <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])"/>
                                     <t t-if="len(facet_values) &gt; 0 and request.session.get('form_values')">
                                         <t t-set="facet_values_count" t-value="0"/>
@@ -405,7 +405,7 @@
                         </t>
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                Categories <a data-toggle="collapse" href="#desktop_category" class="pull-right"><i class="fa fa-angle-down"/></a>
+                                Categories <a data-toggle="collapse" href="#desktop_category" class="pull-right"><i class="desktop_angle fa fa-angle-down"/></a>
                                 <t t-if="len(filter_categories) &gt; 0 and request.session.get('form_values')">
                                     <t t-set="category_count" t-value="0"/>
                                     <t t-foreach="filter_categories" t-as="category">
@@ -441,7 +441,7 @@
                         </div>
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                Ingredients <a data-toggle="collapse" href="#desktop_ingredient" class="pull-right"><i class="fa fa-angle-down"/></a>
+                                Ingredients <a data-toggle="collapse" href="#desktop_ingredient" class="pull-right"><i class="desktop_angle fa fa-angle-down"/></a>
                                 <t t-if="len(filter_ingredients) &gt; 0 and request.session.get('form_values')">
                                     <t t-set="ingredient_count" t-value="0"/>
                                     <t t-foreach="filter_ingredients" t-as="ingredient">
@@ -516,7 +516,7 @@
                         <option value="default_code desc">Article No. Descending</option>
                     </t>
                 </select>
-                <i class="fa fa-angle-down"/>
+                <i class="desktop_angle fa fa-angle-down"/>
                 <t t-foreach="filter_facets" t-as="facet">
                     <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])"/>
                     <t t-if="len(facet_values) &gt; 0">

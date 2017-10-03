@@ -439,3 +439,13 @@ function webshop_restore_filter() {
     );
 }
 
+$(".desktop_angle").click(function(){
+    if($(this).hasClass("fa-angle-down")) {
+        $(this).removeClass("fa-angle-down");
+        $(this).addClass("fa-angle-up");
+    }
+    else {
+        $(this).removeClass("fa-angle-up");
+        $(this).addClass("fa-angle-down");
+    }
+});
