@@ -23,7 +23,7 @@
                         <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_banner.png"/>
                         <span class="oe_snippet_thumbnail_title">Banner</span>
                     </div>
-                    <div id="myCarousel" class="oe_snippet_body carousel slide mb32 double_image">
+                    <div id="myCarousel" class="oe_snippet_body carousel slide carousel-fade double_image">
                         <div class="carousel-inner">
                             <div class="item active">
                                 <img class="img img-responsive di_desktop_img hidden-xs" src="/website/static/src/img/aqua.jpg"/>
