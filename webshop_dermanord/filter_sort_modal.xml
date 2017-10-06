@@ -393,7 +393,7 @@
                                                             <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id" t-att="{'checked': '1'} if (request.session.get('form_values').get('facet_%s_%s' %(facet.id, facet_value.id)) and request.session.get('form_values').get('facet_%s_%s' %(facet.id, facet_value.id)) == str(facet_value.id)) else {}"/><t t-esc="facet_value.name"/>
                                                         </t>
                                                         <t t-if="not request.session.get('form_values')">
-                                                            <t t-esc="facet_value.name"/><input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id"/>
+                                                            <input type="checkbox" t-att-name="'facet_%s_%s' %(facet.id, facet_value.id)" t-att-value="facet_value.id"/><t t-esc="facet_value.name"/>
                                                         </t>
                                                     </label>
                                                 </h5>
