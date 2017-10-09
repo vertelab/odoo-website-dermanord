@@ -2,6 +2,12 @@
                     Website Blog Dermanord
  ============================================================ */
 
+/* override background-image */
+.cover.js_fullheight {
+    min-height: 450px !important;
+    background-size: contain;
+}
+
 .bpp_block {
     padding: 20px 0px !important;
     border: 1px solid transparent;

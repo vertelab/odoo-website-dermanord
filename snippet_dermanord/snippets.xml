@@ -60,10 +60,10 @@
                     <section class="oe_snippet_body">
                         <div class="container">
                             <div class="row">
-                                <div class="col-md-5 col-md-offset-2 mt16">
+                                <div class="col-md-5 col-md-offset-2 mt16" style="padding-left: 40px;">
                                     <img class="img img-responsive shadow mb16 pull-right" src="/website/static/src/img/image_text.jpg"  alt="Odoo image and text block"/>
                                 </div>
-                                <div class="col-md-3 mt16">
+                                <div class="col-md-3 mt16" style="padding-right: 40px;">
                                     <h3>A Section Subtitle</h3>
                                     <p>
                                         Write one or two paragraphs describing your product,
