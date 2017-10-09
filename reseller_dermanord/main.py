@@ -32,7 +32,7 @@ class res_partner(models.Model):
     _inherit = 'res.partner'
 
     brand_name = fields.Char(string='Brand Name')
-    is_reseller = fields.Boolean(string='Reseller')
+    is_reseller = fields.Boolean(string='Show Reseller in websearch')
 
     #~ @api.one
     #~ def _is_reseller(self):

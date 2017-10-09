@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0-20170906\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-26 10:00+0000\n"
-"PO-Revision-Date: 2017-09-26 12:03+0200\n"
+"POT-Creation-Date: 2017-10-09 06:20+0000\n"
+"PO-Revision-Date: 2017-10-09 08:22+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -63,6 +63,11 @@ msgstr "Återförsäljare"
 #: view:website:reseller_dermanord.resellers
 msgid "Search..."
 msgstr "Sök..."
+
+#. module: reseller_dermanord
+#: field:res.partner,is_reseller:0
+msgid "Show Reseller in websearch"
+msgstr "Visa ÅF i webbsökningen"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
