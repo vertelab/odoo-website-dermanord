@@ -20,6 +20,11 @@
     left: 30px;
 }
 
+#blog_block p {
+    font-size: 18px !important;
+    line-height: 1.2em !important;
+}
+
 @media (max-width: 768px) {
     .blog_content_div {
         padding-left: 0px !important;

@@ -66,8 +66,14 @@
     background-repeat: no-repeat;
 }
 
-@media screen and (max-width: 992px) {
-    .sp_one_two { padding: 0px 10px 10px 10px; }
-    .sp_one_one { padding: 0px 10px 0px 10px; }
-    .sp_two_one { padding: 10px 10px 0px 10px; }
+@media screen and (max-width: 992px) and (min-width: 768px) {
+    .sp_one_two { padding: 0px; }
+    .sp_one_one { padding: 0px 0px 15px 15px; }
+    .sp_two_one { padding: 7px 0px 0px 15px; }
+}
+
+@media screen and (max-width: 767px) {
+    .sp_one_two { padding: 0px 3px 10px 10px; }
+    .sp_one_one { padding: 0px 10px 14px 10px; }
+    .sp_two_one { padding: 2px 10px 0px 10px; }
 }
