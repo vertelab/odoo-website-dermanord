@@ -28,14 +28,14 @@ _logger = logging.getLogger(__name__)
 class SalePromotions(models.Model):
     _name = 'sale.promotion'
     _order = 'sequence, name, id'
-    
+
     @api.model
     def _default_sequence(self):
         last = self.search([], order='sequence desc', limit=1)
         if not last:
             return 1
         return last.sequence + 1
-    
+
     name = fields.Char(string="Name", required=True)
     description = fields.Text(string="Description")
     image = fields.Binary(string='Image', required=True)
@@ -49,8 +49,17 @@ class SalePromotions(http.Controller):
     def get_sale_promotion(self, sp_id=None, **kw):
         sp = request.env['sale.promotion'].browse(int(sp_id))
         sale_promotion = {}
+        sale_promotion['_id'] = sp.id
         sale_promotion['name'] = sp.name
         sale_promotion['description'] = sp.description
         sale_promotion['image'] = '/imagefield/sale.promotion/image/%s/ref/' %sp.id
         sale_promotion['url'] = sp.url
         return sale_promotion
+
+class View(models.Model):
+    _inherit = 'ir.ui.view'
+
+    @api.multi
+    def write(self, vals):
+        _logger.warn(vals)
+        return super(View, self).write(vals)

@@ -95,30 +95,40 @@
                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <div class="sp_one_two">
-                                        <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                        <a href="/">
+                                            <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-6">
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <div class="sp_one_one">
-                                        <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                        <a href="/">
+                                            <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <div class="sp_one_one">
-                                        <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                        <a href="/">
+                                            <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12 hidden-xs">
                                     <div class="sp_two_one">
-                                        <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                        <a href="/">
+                                            <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xs-12 hidden-lg hidden-md hidden-sm">
                                 <div class="sp_two_one">
-                                    <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                    <a href="/">
+                                        <img alt="Odoo CMS - a big picture" class="img img-responsive " src="/website/static/src/img/big_picture.png"/>
+                                    </a>
                                 </div>
                             </div>
                         </div>
