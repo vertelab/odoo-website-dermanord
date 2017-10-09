@@ -71,7 +71,7 @@
                                         <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list" t-att-style="'background-image: url(&quot;/%s&quot;);' %'/'.join(news_post.background_image.split('//')[1].split('/')[1:])"/>
 -->
                                         <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_content_div">
-                                            <h6 t-field="news_post.name" style="font-size: 28px; font-weight: 500;"/>
+                                            <h6><i t-esc="news_post.name" style="font-size: 28px; font-weight: 500;"/></h6>
                                             <h4 class="text-muted" style="color: #bbb;"><t t-esc="website.formatted_date(str(news_post.write_date)[:10])"/></h4>
                                             <p t-field="news_post.subtitle" class="text-muted mt16" style="font-family: 'Futura PT Medium';"/>
                                             <a t-att-href="'/blog/%s/post/%s' %(news_post.blog_id.id, news_post.id)"><p style="font-family: 'Kepler Std Italic Display'; font-size: 20px; text-decoration: underline; color: #000;">Read more</p></a>
@@ -119,7 +119,7 @@
                     </div>
                 </div>
                 <div id="blog_block" class="container mt32 mb32">
-                    <h6 t-field="blog_post.name" id="blog_post_name" class="readable" t-att-data-blog-id="blog_post.id" style="font-size: 60px; font-weight: 700;"/>
+                    <h6><i t-esc="blog_post.name" id="blog_post_name" class="readable" t-att-data-blog-id="blog_post.id" style="font-size: 60px; font-weight: 700;"/></h6>
                     <h4 class="text-muted readable" style="color: #bbb;"><t t-esc="website.formatted_date(str(blog_post.write_date)[:10])"/></h4>
                     <div id="blog_content" t-field="blog_post.content" class="mt32"/>
                     <h4 class="dn_uppercase mt32">tags:</h4>

@@ -493,6 +493,7 @@
         </template>
 
         <template id="desktop_product_sort_form" name="Desktop Product Sort Form">
+            <h4 class="text-center dn_uppercase">Sortering</h4>
             <form t-att-action="'/dn_list' if url == '/dn_list' else '/dn_shop'" method="post">
                 <select id="descktop_sort_selector" name="order" class="form-control selectpicker dropdown dn_selection_dropdown" onchange="this.form.submit();">
                     <t t-if="request.session.get('form_values')">
