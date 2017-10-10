@@ -253,7 +253,7 @@ class WebsiteBlog(WebsiteBlog):
         # check if current user is allowed to access this blog post
         for post in blog_posts:
             if post.security_type == 'private':
-                if request.env['res.users'].browse(uid) not in post.group_ids.mapped('users'):
+                if request.env['res.users'].browse(uid) not in post.sudo().group_ids.mapped('users'):
                     blog_posts -= post
 
         tags = blog.all_tags()[blog.id]
@@ -317,7 +317,7 @@ class WebsiteBlog(WebsiteBlog):
         # check if current user is allowed to access this blog post
         for post in request.env['blog.post'].browse(all_post_ids):
             if post.security_type == 'private':
-                if (request.env['res.users'].browse(uid) not in post.group_ids.mapped('users')) and (post != blog_post):
+                if (request.env['res.users'].browse(uid) not in post.sudo().group_ids.mapped('users')) and (post != blog_post):
                     all_post_ids.remove(int(post))
         current_blog_post_index = all_post_ids.index(blog_post.id)
         next_post_id = all_post_ids[0 if current_blog_post_index == len(all_post_ids) - 1 \
