@@ -55,11 +55,3 @@ class SalePromotions(http.Controller):
         sale_promotion['image'] = '/imagefield/sale.promotion/image/%s/ref/' %sp.id
         sale_promotion['url'] = sp.url
         return sale_promotion
-
-class View(models.Model):
-    _inherit = 'ir.ui.view'
-
-    @api.multi
-    def write(self, vals):
-        _logger.warn(vals)
-        return super(View, self).write(vals)
