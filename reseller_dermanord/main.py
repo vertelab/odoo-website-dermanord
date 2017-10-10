@@ -137,7 +137,9 @@ class Main(http.Controller):
                 resellers = request.env['res.partner'].sudo().search(['&', ('is_reseller', '=', True), '|', ('name', 'ilike', word), '|', ('brand_name', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), '|', ('country_id.name', 'ilike', word), ('child_category_ids.name', 'ilike', word)])
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
             else:
-                return request.website.render('reseller_dermanord.resellers', {})
+                closest_ids = request.env['res.partner'].geoip_search('position', request.httprequest.remote_addr, 10)
+                resellers = request.env['res.partner'].sudo().search(['&', ('is_reseller', '=', True), ('id', 'in', closest_ids)])
+                return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
         else:
             marker_tmp = """function initMap() {
                     var center = {lat: %s, lng: %s};
