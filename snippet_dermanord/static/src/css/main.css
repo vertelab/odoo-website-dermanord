@@ -92,17 +92,17 @@ a {
 }
 
 .ph_img {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: relative;
     margin: auto;
     height: auto;
 }
 
 .desc_div {
-    padding: 10px !important;
+    position: absolute;
+    padding: 10px 25px !important;
     bottom: 0px;
     left: 0px;
+    width: 100%;
     text-overflow: ellipsis;
 }
 
