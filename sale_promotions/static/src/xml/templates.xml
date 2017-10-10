@@ -4,7 +4,7 @@
 <templates id="template" xml:space="preserve">
     <t t-name="sale_promotions_content">
         <a t-att-href="sp_url">
-            <div t-att-id="_id" class="sale_promotions_img" t-att-style="sp_image">
+            <div class="img img-responsive sale_promotions_img" t-att-style="sp_image">
 <!--
                 <div class="sale_promotions_text">
                     <h4 class="mb16 dn_uppercase futura_pt_h"><t t-esc="sp_name"/></h4>

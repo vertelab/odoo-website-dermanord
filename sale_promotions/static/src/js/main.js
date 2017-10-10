@@ -16,28 +16,26 @@ $(document).ready(function(){
     //~ });
     //~ $("#sp_div_mobile").find(".carousel-inner").html(content_html);
 
-    $(".sp_div").find(".sp_one_two").each(function() {
-        update_sale_promotions($(this), $(this).find(".sale_promotions_img").attr("id"));
-    });
+    update_sale_promotions($(".sp_div").find(".sp_one_two"), $(".sp_div").find(".sp_one_two").find(".sale_promotions_img").attr("style"));
 
     $(".sp_div").find(".sp_one_one").each(function() {
-        update_sale_promotions($(this), $(this).find(".sale_promotions_img").attr("id"));
+        update_sale_promotions($(this), $(this).find(".sale_promotions_img").attr("style"));
     });
 
-    $(".sp_div").find(".sp_two_one").each(function() {
-        update_sale_promotions($(this), $(this).find(".sale_promotions_img").attr("id"));
-    });
+    update_sale_promotions($(".sp_div").find(".hidden-xs").find(".sp_two_one"), $(".sp_div").find(".hidden-xs").find(".sp_two_one").find(".sale_promotions_img").attr("style"));
 
-    function update_sale_promotions(div, sp_id){
+    update_sale_promotions($(".sp_div").find(".hidden-lg.hidden-md.hidden-sm").find(".sp_two_one"), $(".sp_div").find(".hidden-xs").find(".sp_two_one").find(".sale_promotions_img").attr("style"));
+
+    function update_sale_promotions(div, style){
+        var sp_id = style.split("/")[4];
         openerp.jsonRpc("/get_sale_promotion", "call", {
             'sp_id': sp_id
         }).done(function(data){
             var img_src = "background-image: url('" + data['image'] + "sale_promotions." + div.attr("class") + "');";
-            console.log(img_src);
-            div.html('<a href="' + data['url'] + '"><div class="sale_promotions_img" id="' + data['url'] + '" style="' + img_src +'"></div></a>');
+            div.html('<a href="' + data['url'] + '"><div class="img img-responsive sale_promotions_img" style="' + img_src +'"></div></a>');
         });
     }
-    $(".sp_div").find(".hidden-lg.hidden-md.hidden-sm").html($(".sp_div").find(".hidden-xs").find(".sp_two_one")[0].outerHTML);
+
 });
 
 website.snippet.options.sale_promotions_option = website.snippet.Option.extend({
@@ -55,7 +53,6 @@ website.snippet.options.sale_promotions_option = website.snippet.Option.extend({
                 'sp_id': sp_id
             }).done(function(data){
                 var content = openerp.qweb.render('sale_promotions_content', {
-                    '_id': data['_id'],
                     'sp_url': data['url'],
                     'sp_image': "background-image: url('" + data['image'] + "sale_promotions." + self.$target.attr("class") + "');",
                     //~ 'sp_name': data['name'],

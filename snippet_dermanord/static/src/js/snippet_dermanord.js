@@ -161,7 +161,7 @@ $(document).ready(function() {
         }).done(function(data){
             if (data.length == 0) {
                 var message = '<h2 class="text-center text-muted css_non_editable_mode_hidden">No category yet</h2>';
-                self.$target.find("h3").after(message);
+                //~ self.$target.find("h3").after(message);
             }
             else {
                 var category_content = '';
@@ -201,7 +201,7 @@ $(document).ready(function() {
         }).done(function(data){
             if (data.length == 0) {
                 var message = '<h2 class="text-center text-muted css_non_editable_mode_hidden">No sale and promotions yet</h2>';
-                self.$target.find("h3").after(message);
+                //~ self.$target.find("h3").after(message);
             }
             else {
                 var indicator_content = '';
@@ -232,7 +232,7 @@ $(document).ready(function() {
         }).done(function(data){
             if (data.length == 0) {
                 var message = '<h2 class="text-center text-muted css_non_editable_mode_hidden">No product highlight yet</h2>';
-                self.$target.find("h3").after(message);
+                //~ self.$target.find("h3").after(message);
             }
             else {
                 var ph_content = '';
