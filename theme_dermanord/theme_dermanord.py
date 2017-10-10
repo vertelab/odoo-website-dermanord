@@ -64,7 +64,7 @@ class website(models.Model):
             home_menu = self.env.ref('website.menu_homepage')
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
-            return '<ol class="breadcrumb dn_breadcrumb">%s</ol>' %''.join(reversed(breadcrumb))
+            return ''.join(reversed(breadcrumb))
         elif path.startswith('/blog/'): # url is a blog
             if '/post/' in path:
                 home_menu = self.env.ref('website.menu_homepage')
@@ -74,7 +74,7 @@ class website(models.Model):
                     blog = request.env['blog.blog'].browse(int(blog_id))
                     post = request.env['blog.post'].browse(int(post_id))
                     breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="/blog/%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name, post.id, post.name))
-                    return '<ol class="breadcrumb dn_breadcrumb">%s</ol>' %breadcrumb[0]
+                    return breadcrumb[0]
                 except:
                     _logger.error('Blog post does not exist')
             else:
@@ -83,7 +83,7 @@ class website(models.Model):
                 try:
                     blog = request.env['blog.blog'].browse(int(blog_id))
                     breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name))
-                    return '<ol class="breadcrumb dn_breadcrumb">%s</ol>' %breadcrumb[0]
+                    return breadcrumb[0]
                 except:
                     _logger.error('Blog does not exist')
         else: # url is a normal menu or submenu
@@ -93,7 +93,7 @@ class website(models.Model):
                 menu = menu.parent_id
             home_menu = self.env.ref('website.menu_homepage')
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
-            return '<ol class="breadcrumb dn_breadcrumb">%s</ol>' %''.join(reversed(breadcrumb))
+            return ''.join(reversed(breadcrumb))
 
 class website_config_settings(models.TransientModel):
     _inherit = 'website.config.settings'
