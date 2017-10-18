@@ -174,5 +174,12 @@ a {
     left: 0%;
 }
 
+.image_text_narrow {
+    padding-left: 40px !important;
+}
+
 @media screen and (max-width: 768px) {
+    .image_text_narrow {
+        padding-left: 15px !important;
+    }
 }

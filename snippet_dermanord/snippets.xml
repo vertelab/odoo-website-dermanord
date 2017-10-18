@@ -51,6 +51,35 @@
                 </div>
             </xpath>
 
+            <xpath expr="//div[@id='snippet_structure']/div[3]" position="replace">
+                <div>
+                    <div class="oe_snippet_thumbnail">
+                        <img class="oe_snippet_thumbnail_img" src="/website/static/src/img/blocks/block_image_text.png"/>
+                        <span class="oe_snippet_thumbnail_title">MÅ img(L)-txt</span>
+                    </div>
+                    <section class="oe_snippet_body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6 mt16">
+                                    <img class="img img-responsive mb16" src="/website/static/src/img/image_text.jpg"  alt="Odoo image and text block"/>
+                                </div>
+                                <div class="col-md-6 mt16">
+                                    <h3>A Section Subtitle</h3>
+                                    <p>
+                                        Write one or two paragraphs describing your product,
+                                        services or a specific feature. To be successful
+                                        your content needs to be useful to your readers.
+                                    </p><p>
+                                        Start with the customer – find out what they want
+                                        and give it to them.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </xpath>
+
             <xpath expr="//div[@id='snippet_structure']/div[3]" position="after">
                 <div>
                     <div class="oe_snippet_thumbnail">
@@ -60,8 +89,8 @@
                     <section class="oe_snippet_body">
                         <div class="container">
                             <div class="row">
-                                <div class="col-md-5 col-md-offset-2 mt16" style="padding-left: 40px;">
-                                    <img class="img img-responsive shadow mb16 pull-right" src="/website/static/src/img/image_text.jpg"  alt="Odoo image and text block"/>
+                                <div class="col-md-5 col-md-offset-2 mt16 image_text_narrow">
+                                    <img class="img img-responsive mb16 pull-right" src="/website/static/src/img/image_text.jpg"  alt="Odoo image and text block"/>
                                 </div>
                                 <div class="col-md-3 mt16" style="padding-right: 40px;">
                                     <h3>A Section Subtitle</h3>
