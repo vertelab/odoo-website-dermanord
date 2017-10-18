@@ -106,7 +106,7 @@ a {
     text-overflow: ellipsis;
 }
 
-.desc_div > .dn_uppercase > a {
+.desc_div > .dn_uppercase > a, .desc_div > .dn_uppercase > span {
     font-family: futura-pt-heavy, sans-serif !important;
     font-size: 18px;
 }
