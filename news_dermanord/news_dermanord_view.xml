@@ -118,7 +118,7 @@
                     </div>
                 </div>
                 <div id="blog_block" class="container mt32 mb32">
-                    <h6 class="readable"><i t-esc="blog_post.name" id="blog_post_name" class="readable" t-att-data-blog-id="blog_post.id"/></h6>
+                    <h6 class="readable" style="font-size: 60px;"><i t-esc="blog_post.name" id="blog_post_name" class="readable" t-att-data-blog-id="blog_post.id"/></h6>
                     <h2 class="text-muted readable" style="color: #bbb;"><t t-esc="website.formatted_date(str(blog_post.write_date)[:10])"/></h2>
                     <div id="blog_content" t-field="blog_post.content" class="mt32"/>
                     <p class="dn_uppercase mt32">tags:</p>
