@@ -10,7 +10,7 @@
             <field name="name">Set Reseller</field>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="state">code</field>
-            <field name="code">for o in object.browse(context.get('active_ids', [])):
+            <field name="code">for o in model.search(['|', ('is_company', '=', True), ('customer', '=', True)]):
     o.searchable_reseller()
             </field>
         </record>
