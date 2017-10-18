@@ -106,6 +106,16 @@ a {
     text-overflow: ellipsis;
 }
 
+.desc_div > .dn_uppercase > a {
+    font-family: futura-pt-heavy, sans-serif !important;
+    font-size: 18px;
+}
+
+.ph_desc {
+    font-family: futura-pt-light, sans-serif !important;
+    font-size: 12px !important;
+}
+
 .ph_block h4 {
     height: 2em;
 /*
@@ -136,7 +146,7 @@ a {
 .ph_block .ph_desc {
     height: 4.3em;
     margin-bottom: 30px;
-    line-height: 1.5em;
+    line-height: 1.25em;
     overflow: hidden;
     position: relative;
 }

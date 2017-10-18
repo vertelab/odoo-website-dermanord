@@ -90,7 +90,7 @@
                         <span class="oe_snippet_thumbnail_title">Campaign</span>
                     </div>
                     <section class="oe_snippet_body mb16">
-                        <h3 class="text-center mt32 mb32 oe_bs_title dn_uppercase">Campaign</h3>
+                        <h2 class="text-center mt32 mb32 oe_bs_title dn_uppercase">Campaign</h2>
                         <div class="container sp_div">
                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">

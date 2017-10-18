@@ -4,47 +4,101 @@
 
 /* Fonts */
 body {
-/*
-    font-family: 'Futura-Medium' !important;
-    font-family: 'Quicksand', sans-serif;
-    font-weight: 500;
-*/
 }
 
 body p {
-    font-family: 'Futura PT Light';
+    font-family: futura-pt-light, sans-serif;
 }
 
-h1, h2, h3, h4 {
-    font-family: 'Futura PT Heavy';
+h1, .futura_pt_h {
+    font-family: futura-pt-heavy, sans-serif;
+    font-size: 39px;
 }
 
-#wrapwrap span, ol.breadcrumb > li > a, h5, p[data-oe-field=description_sale], p[data-oe-field=public_desc], p[data-oe-field=use_desc] {
-    font-family: 'Futura PT Medium';
+h2 {
+    font-family: futura-pt-heavy, sans-serif;
+    font-size: 23px;
 }
 
-h6, i {
-    font-family: 'Kepler Std Italic Display';
+h3 {
+    font-family: kepler-std-display, serif;
+    font-size: 30px;
+}
+
+h4 {
+    font-family: futura-pt-medium, sans-serif;
+    font-size: 39px;
+}
+
+h5 {
+    font-family: futura-pt-medium, sans-serif;
+    font-size: 26px;
 }
 
 h6 {
-    font-size: 30px;
+    font-family: kepler-std-display, serif;
+    font-size: 60px;
+}
+
+i, .kepler_std_i {
+    font-family: kepler-std-display, serif;
+}
+
+p {
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+#top_menu span, body td{
+    font-family: futura-pt-medium, sans-serif !important;
+}
+
+#top_menu span {
+    font-size: 14px;
+}
+
+body li, body ul, body a {
+    font-family: futura-pt-light, sans-serif;
+    font-size: 18px;
+}
+
+body a {
+    color: #BB602F;
+}
+
+em {
+    color: #000;
+}
+
+.media-heading {
+    font-family: futura-pt-heavy, sans-serif;
+    font-size: 18px;
+}
+
+.media-heading span {
+    font-family: futura-pt-heavy, sans-serif !important;
+    font-size: 18px;
+}
+
+ol.breadcrumb > li > a,
+p[data-oe-field=description_sale],
+p[data-oe-field=public_desc],
+p[data-oe-field=use_desc],
+.futura_pt_m {
+    font-family: futura-pt-medium, sans-serif;
 }
 
 h1, .dn_uppercase {
     text-transform: uppercase;
 }
 
-.futura_pt_h {
-    font-family: 'Futura PT Heavy';
+#search-btn-modal h5 {
+    font-size: 14px;
 }
 
-.futura_pt_m, #search-btn-modal {
-    font-family: 'Futura PT Medium';
-}
-
-.kepler_std_i {
-    font-family: 'Kepler Std Italic Display';
+.categ_block_text a {
+    font-family: futura-pt-heavy, sans-serif !important;
+    font-size: 23px;
 }
 
 /* override Bootstrap btn-primary */
@@ -73,7 +127,7 @@ h1, .dn_uppercase {
     border-color: #CB683F;
     font-style: normal;
     font-weight: 500;
-    font-family: 'Futura PT Medium';
+    font-family: futura-pt-medium, sans-serif;
 }
 
 .btn-primary:hover, .btn-primary:active, .btn-primary:focus {
@@ -161,7 +215,7 @@ h1, .dn_uppercase {
     white-space: nowrap;
     padding-top: 10px;
     padding-bottom: 10px;
-    font-family: 'Futura PT Demi';
+    font-family: futura-pt-demi, sans-serif;
     text-transform: uppercase;
 }
 
@@ -295,7 +349,7 @@ footer li {
 
 footer a, footer span {
     color: #fff;
-    font-family: 'Futura PT Medium';
+    font-family: futura-pt-medium, sans-serif;
     font-style: normal;
     font-weight: 500;
 }

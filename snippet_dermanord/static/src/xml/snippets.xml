@@ -22,7 +22,7 @@
             <div class="categ_block col-md-4 col-xs-12">
                 <img class="img img-responsive categ_block_img" t-att-src="category_image" t-att-data-cke-saved-src="category_image"/>
                  <div class="container">
-                    <h3 class="categ_block_text dn_uppercase"><t t-esc="category_name"/></h3>
+                    <h2 class="categ_block_text dn_uppercase"><t t-esc="category_name"/></h2>
                 </div>
             </div>
         </a>
@@ -33,8 +33,8 @@
                 <div class="ph_block">
                     <img class="img img-responsive ph_img" t-att-src="ph_image" t-att-data-cke-saved-src="ph_image"/>
                     <div class="container desc_div">
-                        <h4 class="dn_uppercase futura_pt_h"><t t-esc="ph_name"/></h4>
-                        <h5 class="ph_desc text-muted futura_pt_m"><t t-esc="ph_description"/></h5>
+                        <p class="dn_uppercase"><t t-esc="ph_name"/></p>
+                        <p class="ph_desc text-muted"><t t-esc="ph_description"/></p>
                     </div>
                 </div>
             </div>
