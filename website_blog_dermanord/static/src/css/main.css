@@ -101,6 +101,14 @@
     display: unset;
 }
 
+@media (max-width: 768px) {
+    .cover.js_fullheight {
+        min-height: 100% !important;
+        background-size: cover;
+        padding-top: 32.14%;
+    }
+}
+
 /*
 .bpp_block .bpp_desc {
     height: 4.3em;
