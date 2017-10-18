@@ -237,7 +237,7 @@ $(document).ready(function() {
             else {
                 var ph_content = '';
                 $.each(data, function(key, info) {
-                    var content = '<a href="' + data[key]['url'] + '"><div class="col-md-3 col-xs-12"><div class="ph_block"><img class="img img-responsive ph_img" src="' + data[key]['image'] + '"/><div class="container desc_div"><h4 class="dn_uppercase futura_pt_h"><span>' + data[key]['name'] + '</span></h4><h5 class="ph_desc text-muted futura_pt_m"><span>' + data[key]['description'] + '</span></h5></div></div></div></a>';
+                    var content = '<a href="' + data[key]['url'] + '"><div class="col-md-3 col-xs-12"><div class="ph_block"><img class="img img-responsive ph_img" src="' + data[key]['image'] + '"/><div class="container desc_div"><p class="dn_uppercase"><span>' + data[key]['name'] + '</span></p><p class="ph_desc text-muted"><span>' + data[key]['description'] + '</span></p></div></div></div></a>';
                     ph_content += content;
                 });
                 $(".product_div").html(ph_content).text();
