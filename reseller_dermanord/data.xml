@@ -6,5 +6,21 @@
             <field name="name">Reseller</field>
         </record>
 
+        <record id="searchable_reseller" model="ir.actions.server">
+            <field name="name">Set Reseller</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">for o in object.browse(context.get('active_ids', [])):
+    o.searchable_reseller()
+            </field>
+        </record>
+
+        <record id="ir_values_searchable_reseller" model="ir.values">
+            <field name="name">Set Reseller</field>
+            <field name="model">res.partner</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,%s' %ref('reseller_dermanord.searchable_reseller')"/>
+        </record>
+
     </data>
 </openerp>

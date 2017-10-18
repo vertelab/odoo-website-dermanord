@@ -24,6 +24,8 @@ from openerp import http
 from openerp.http import request
 import urllib
 import json
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -63,6 +65,21 @@ class res_partner(models.Model):
             self.geo_localize()
         return {'lat': self.partner_latitude, "lng": self.partner_longitude}
 
+    @api.multi
+    def searchable_reseller(self):
+        # is company and customer
+        # has tag Hudterapeut eller SPA-terapeut, and has purchased more than 10000SEK(ex.moms) in last 12 months.
+        # has other tags and purchase more than 2000SEK(ex.moms) once in last 12 months.
+        if self.is_company and self.customer:
+            self.is_reseller = False
+            if (self.env['res.partner.category'].search([('name', '=', 'Hudterapeut')])[0] in self.category_id) or (self.env['res.partner.category'].search([('name', '=', 'SPA-Terapeut')])[0] in self.category_id):
+                if sum(self.env['sale.order'].search(['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_confirm', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]).mapped('amount_untaxed')) >= 10000.0:
+                    self.is_reseller = True
+            else:
+                for order in self.env['sale.order'].search(['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_confirm', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]):
+                    if order.amount_untaxed >= 2000.0:
+                        self.is_reseller = True
+                        break
 
 class Main(http.Controller):
 
