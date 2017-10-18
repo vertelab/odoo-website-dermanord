@@ -151,9 +151,18 @@ a {
     background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 50%);
 }
 
+.double_image {
+    max-height: 450px !important;
+}
+
+.double_image .item {
+    background-color: #000
+}
+
 .di_desktop_img, .di_mobile_img {
+    max-height: 450px !important;
     position: absolut;
-    width: 100% !important;
+    margin: auto;
 /*
     padding-top: 32.94%;
 */

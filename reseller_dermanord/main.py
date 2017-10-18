@@ -75,10 +75,8 @@ class res_partner(models.Model):
             if sum(self.env['sale.order'].search(['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_confirm', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]).mapped('amount_untaxed')) >= 10000.0:
                 self.is_reseller = True
         else:
-            for order in self.env['sale.order'].search(['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_confirm', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]):
-                if order.amount_untaxed >= 2000.0:
-                    self.is_reseller = True
-                    break
+            if len(self.env['sale.order'].search(['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_confirm', '>=', fields.Date.to_string((date.today()-relativedelta(years=1)))), ('amount_untaxed', '>=', 2000.0)])) > 0:
+                self.is_reseller = True
 
 class Main(http.Controller):
 
