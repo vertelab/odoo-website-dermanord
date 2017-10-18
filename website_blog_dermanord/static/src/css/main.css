@@ -101,7 +101,7 @@
     display: unset;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1050px) {
     .cover.js_fullheight {
         min-height: 100% !important;
         background-size: cover;
