@@ -109,11 +109,11 @@
                                 <a itemprop="name" t-att-href="keep('/dn_shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))" t-field="product.name" />
                             </strong>
                         </h4>
-                        <h5 class="text-muted" style="height: 15px;" t-field="product.default_code"/>
-                        <h5 class="p_desc"><t t-esc="product.description_sale"/></h5>
+                        <p class="text-muted" style="height: 15px;" t-field="product.default_code"/>
+                        <p class="p_desc"><t t-esc="product.description_sale"/></p>
                         <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price" t-if="product.product_variant_ids">
                             <b class="text-muted">
-                                <h4>
+                                <p>
                                     <t t-if="user_id.partner_id.property_product_pricelist and not user_id.partner_id.property_product_pricelist.for_reseller">
                                         <t t-if="(compute_currency(product.list_price_tax) - product.price_tax) &gt; 0.1">
                                             <del class="text-danger" style="white-space: nowrap;" t-field="product.list_price_tax" t-field-options='{
@@ -151,7 +151,7 @@
 
                                     <span itemprop="price" style="display:none;" t-esc="product.price" />
                                     <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding" />
-                                </h4>
+                                </p>
                             </b>
                         </div>
                     </div>
@@ -429,7 +429,7 @@
                     </div>
                     <t t-if="product.facet_line_ids">
                         <div class="col-md-6 facet_div" t-foreach="product.facet_line_ids.mapped('facet_id')" t-as="facet">
-                            <h4 class="dn_uppercase" t-field="facet.name"/>
+                            <h5 class="dn_uppercase" t-field="facet.name"/>
                             <t t-set="facet_value_ids" t-value="product.facet_line_ids.mapped('value_ids') &amp; facet.value_ids"/>
                             <t t-foreach="facet_value_ids" t-as="value">
                                 <a t-att-href="'/dn_shop/?facet_%s_%s=%s' %(facet.id, value.id, value.id)" class="text-muted"><span t-field="value.name"/></a><span t-if="value_index != len(facet_value_ids)-1">, </span>
@@ -541,7 +541,7 @@
 
         <template id="product_price" inherit_id="website_sale.product_price">
             <xpath expr="//h4" position="replace">
-                <h4 class="oe_price_h4 css_editable_mode_hidden decimal_precision"
+                <p class="oe_price_h4 css_editable_mode_hidden decimal_precision"
                     t-att-data-precision="user_id.partner_id.property_product_pricelist.currency_id.rounding">
                     <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                         <div>
@@ -581,7 +581,7 @@
                       <span itemprop="price" style="display:none;" t-esc="product.price"/>
                       <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding"/>
                     </t>
-                </h4>
+                </p>
             </xpath>
 <!--
             <xpath expr="//span[@class='text-danger oe_default_price']" position="attributes">

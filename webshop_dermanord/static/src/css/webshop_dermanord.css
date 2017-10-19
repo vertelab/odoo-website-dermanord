@@ -66,6 +66,11 @@
     padding: 15px;
 }
 
+#image_big {
+    border: 1px solid #eee;
+    margin: 0px 23px 0px 15px;
+}
+
 .image_block {
     overflow: hidden;
     position: relative;
@@ -184,7 +189,7 @@
     overflow: hidden;
     position: relative;
     margin: 20px 0px 0px 0px;
-    line-height: 2em;
+    line-height: 1em;
 }
 
 .dn_product_info .p_desc::after {
@@ -193,7 +198,7 @@
     bottom: 0;
     right: 0;
     width: 10%;
-    height: 2em;
+    height: 1em;
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
@@ -204,6 +209,12 @@
 /*
     height: 124px;
 */
+}
+
+.facet_div a, .facet_div span {
+    font-family: futura-pt-light, sans-serif;
+    font-size: 18px;
+    color: #bbb;
 }
 
 .facet_div ::after {
@@ -217,7 +228,6 @@
 }
 
 .facet_container p {
-    font-family: futura-pt, sans-serif;
     font-style: normal;
     font-weight: 500;
 }
@@ -362,7 +372,7 @@ See also .dn_cart_qty_sm in theme_dermanord.
     font-size: 1.3em;
     border: 0px solid #F6BB43;
     border-radius: 0px !important;
-    font-family: 'Futura PT Medium';
+    font-family: futura-pt-medium, sans-serif;
     font-weight: 400;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -380,6 +390,28 @@ select.dn_selection_dropdown + i.fa {
     right: 0px;
 }
 
+.stock_status h3 {
+    font-family: futura-pt-medium, sans-serif !important;
+    font-size: 26px !important;
+}
+
+.stock_status span {
+    font-family: futura-pt-light, sans-serif;
+    font-size: 18px !important;
+}
+
+#desktop_product_navigator h4 {
+    font-size: 23px;
+}
+
+#desktop_product_navigator .panel-title {
+    font-size: 18px;
+}
+
+#desktop_product_navigator h5 {
+    font-size: 14px;
+}
+
 @media screen and (min-width: 992px) {
     #image_nav > li {
         width: 24.5% !important;
@@ -390,11 +422,21 @@ select.dn_selection_dropdown + i.fa {
     #image_nav > li {
         width: 24.5% !important;
     }
+
+    #image_big {
+        border: 1px solid #eee;
+        margin: 0px 20px 0px 15px;
+    }
 }
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
     #image_nav > li {
         width: 24.5% !important;
+    }
+
+    #image_big {
+        border: 1px solid #eee;
+        margin: 0px 18px 0px 15px;
     }
 }
 

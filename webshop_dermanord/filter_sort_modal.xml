@@ -464,7 +464,7 @@
                                     <t t-foreach="filter_ingredients" t-as="ingredient">
                                         <h5 t-field="ingredient.name"/>
                                         <div class="checkbox">
-                                            <h4>
+                                            <h5>
                                                 <label class="col-md-6 col-sm-6 col-xs-6" style="float: left;">
                                                     <t t-if="request.session.get('form_values')">
                                                         <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('ingredient_%s' %ingredient.id) == str(ingredient.id) else {}" class="like"/><i class="fa fa-smile-o like_icon"/>
@@ -481,7 +481,7 @@
                                                         <input type="checkbox" t-att-name="'notingredient_%s' %ingredient.id" t-att-value="ingredient.id" class="unlike"/><i class="fa fa-frown-o unlike_icon"/>
                                                     </t>
                                                 </label>
-                                            </h4>
+                                            </h5>
                                         </div>
                                     </t>
                                 </t>

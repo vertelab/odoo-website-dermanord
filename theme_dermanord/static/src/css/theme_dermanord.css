@@ -49,6 +49,11 @@ p {
     line-height: 1.2;
 }
 
+tbody h5 {
+    font-family: futura-pt-light, sans-serif;
+    font-size: 14px;
+}
+
 #top_menu span, body td{
     font-family: futura-pt-medium, sans-serif !important;
 }
@@ -70,6 +75,10 @@ em {
     color: #000;
 }
 
+button {
+    font-family: futura-pt-medium, sans-serif;
+}
+
 .media-heading {
     font-family: futura-pt-heavy, sans-serif;
     font-size: 18px;
@@ -81,9 +90,6 @@ em {
 }
 
 ol.breadcrumb > li > a,
-p[data-oe-field=description_sale],
-p[data-oe-field=public_desc],
-p[data-oe-field=use_desc],
 .futura_pt_m {
     font-family: futura-pt-medium, sans-serif;
 }
@@ -332,7 +338,7 @@ ol.breadcrumb > li + li::before {
 
 #header_line {
     position: absolute;
-    bottom: 40px;
+    bottom: 41px;
     left: 0px;
     width: 100%;
     border-bottom: 1px solid;
