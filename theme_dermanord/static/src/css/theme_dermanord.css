@@ -6,7 +6,7 @@
 body {
 }
 
-body p {
+body p, .dn_tags {
     font-family: futura-pt-light, sans-serif;
 }
 
@@ -87,6 +87,10 @@ button {
 .media-heading span {
     font-family: futura-pt-heavy, sans-serif !important;
     font-size: 18px;
+}
+
+#searchbox h4 {
+    font-size: 23px;
 }
 
 ol.breadcrumb > li > a,

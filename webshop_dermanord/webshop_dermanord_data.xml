@@ -49,7 +49,7 @@ res = bg
 
         <record id="img_search_result_param_canvas" model="image.recipe.param">
             <field name="name">canvas_size</field>
-            <field name="value">50</field>
+            <field name="value">265</field>
             <field name="recipe_id" ref="webshop_dermanord.img_search_result"/>
         </record>
 
@@ -106,14 +106,14 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
     </data>
 
     <data noupdate="1">
-        
+
         <record id="menu_dn_shop" model="website.menu">
             <field name="name">Products</field>
             <field name="url">/dn_shop</field>
             <field name="sequence">2</field>
             <field name="parent_id" ref="website.main_menu"/>
         </record>
-        
+
         <record id="access_base_multi_image_image_all" model="ir.model.access">
             <field name="name">access_base_multi_image_image_all</field>
             <field name="model_id" ref="base_multi_image.model_base_multi_image_image"/>
