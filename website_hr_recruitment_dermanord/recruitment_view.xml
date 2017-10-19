@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <record id="jobs_start_menu" model="website.menu">
+            <field name="name">CAREER</field>
+            <field name="sequence">10</field>
+            <field name="url">/jobs/start</field>
+            <field name="parent_id" ref="theme_dermanord.footer_menu" />
+        </record>
+        
+        <record id="career_menu" model="website.menu">
+            <field name="name">Career@Dermanord</field>
+            <field name="sequence">10</field>
+            <field name="url">/jobs/career</field>
+            <field name="parent_id" ref="jobs_start_menu" />
+        </record>
+        
+        <record id="people_menu" model="website.menu">
+            <field name="name">People</field>
+            <field name="sequence">30</field>
+            <field name="url">/jobs/people</field>
+            <field name="parent_id" ref="jobs_start_menu" />
+        </record>
+        
+        <record id="departments_menu" model="website.menu">
+            <field name="name">Departments</field>
+            <field name="sequence">20</field>
+            <field name="url">/jobs/departments</field>
+            <field name="parent_id" ref="jobs_start_menu" />
+        </record>
+        
+        <record id="view_department_tree" model="ir.ui.view">
+            <field name="name">hr.department.tree.recruitment.dermanord</field>
+            <field name="model">hr.department</field>
+            <field name="inherit_id" ref="hr.view_department_tree"/>
+            <field name="arch" type="xml">
+                <field name="complete_name" position="before">
+                    <field name="sequence"/>
+                </field>
+            </field>
+        </record>
+        
+        <record id="view_department_form" model="ir.ui.view">
+            <field name="name">hr.department.form.recruitment.dermanord</field>
+            <field name="model">hr.department</field>
+            <field name="inherit_id" ref="hr.view_department_form"/>
+            <field name="arch" type="xml">
+                <group position="before">
+                    <field name="website_published" class="pull-right" widget="website_button"/>
+                </group>
+                <group position="after">
+                    <label for="website_description"/>
+                    <field name="website_description"/>
+                </group>
+            </field>
+        </record>
+        
+        <template id="start" name="Career@Dermanord">
+            <t t-call="theme_dermanord.submenu_dermanord">
+            </t>
+        </template>
+        
+        <template id="career" name="Career@Dermanord">
+            <t t-call="theme_dermanord.submenu_dermanord">
+                <div class="oe_structure"/>
+            </t>
+        </template>
+        
+        <template id="departments" name="Departments">
+            <t t-call="theme_dermanord.submenu_dermanord">
+                <div class="oe_structure"/>
+                <t t-foreach="departments" t-as="department">
+                    <section>
+                        <div t-field="department.website_description"/>
+                        <center>
+                            <a t-attf-href="/jobs#{ '/country/%s' % slug(country_id) if country_id else '' }/department/#{ slug(department) }" class="dn_btn dn_primary">
+                                Job openings in <span t-field="department.name"/>
+                            </a>
+                        </center>
+                    </section>
+                </t>
+                <div class="oe_structure"/>
+            </t>
+        </template>
+        
+        <template id="people" name="People">
+            <t t-call="theme_dermanord.submenu_dermanord">
+                <div class="oe_structure"/>
+            </t>
+        </template>
+        
+    </data>
+</openerp>

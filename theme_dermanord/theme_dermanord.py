@@ -42,14 +42,16 @@ class website(models.Model):
 
     def current_menu(self, path):
         menu = self.env['website.menu'].search([('url', '=', path)])
-        if not menu:
-            menu = self.env['website.menu'].search(
-                [('url', '=', '/'.join([x.split('-')[-1] if x.split('-')[-1].isdigit() else x for x in path.split('/')]))])
+        url = [x.split('-')[-1] if x.split('-')[-1].isdigit() else x for x in path.split('/')]
+        while not menu and url:
+            _logger.warn('/'.join(url))
+            menu = self.env['website.menu'].search([('url', '=', '/'.join(url))])
+            url = url[:-1]
         return menu
 
     def current_submenu(self, path):
-        menu = self.env['website.menu'].search([('url', '=', path)])
-        if menu.parent_id != self.env.ref('website.main_menu'):
+        menu = self.current_menu(path)
+        if menu.parent_id != self.env.ref('website.main_menu') and menu.parent_id != self.env.ref('theme_dermanord.footer_menu'):
             return menu.parent_id
         else:
             return menu
@@ -87,9 +89,11 @@ class website(models.Model):
                 except:
                     _logger.error('Blog does not exist')
         else: # url is a normal menu or submenu
+            skipped = self.env.ref('theme_dermanord.footer_menu')
             menu = self.env['website.menu'].search([('url', '=', path)])
             while menu and menu != self.env.ref('website.main_menu') and menu != self.env.ref('website.menu_homepage'):
-                breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
+                if menu not in skipped:
+                    breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
                 menu = menu.parent_id
             home_menu = self.env.ref('website.menu_homepage')
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
