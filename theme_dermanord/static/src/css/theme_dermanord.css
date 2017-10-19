@@ -293,6 +293,10 @@ ol.breadcrumb > li + li::before {
     margin-top: 10px;
 }
 
+#header_middle_menu a {
+    font-size: 14px;
+}
+
 #search-btn {
     float: right !important;
     padding: 9px 10px;
@@ -339,7 +343,7 @@ ol.breadcrumb > li + li::before {
 
 #header_line {
     position: absolute;
-    bottom: 41px;
+    bottom: 40px;
     left: 0px;
     width: 100%;
     border-bottom: 1px solid;
