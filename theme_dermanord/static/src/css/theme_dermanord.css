@@ -223,6 +223,7 @@ h1, .dn_uppercase {
     padding-bottom: 10px;
     font-family: futura-pt-demi, sans-serif;
     text-transform: uppercase;
+    font-size: 14px;
 }
 
 .dn_cart_qty_sm {
@@ -384,6 +385,10 @@ footer input, footer .input-group-addon {
 #top_menu > li > a:active, #top_menu > li > a:hover, #top_menu > li.active > a {
     background-color: #000;
     color: #fff;
+}
+
+#more_dropdown li.dropdown ul.dropdown-menu {
+    top: 0px;
 }
 
 #more_dropdown li.dropdown ul.dropdown-menu {

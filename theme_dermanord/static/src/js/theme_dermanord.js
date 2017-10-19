@@ -38,10 +38,10 @@ dermanord_resize_for_menu = function() {
                 li_width += $(this).width();
                 if (li_width > max_li_width) { // hide this menu item from menu bar and show it in more menu
                     $(this).css({"display": "none"});
-                    more_menu_item.css({"display": "unset"});
+                    more_menu_item.css({"display": "block"});
                 }
                 else {  // show this menu item in menu bar again and hide it from more menu
-                    $(this).css({"display": "unset"});
+                    $(this).css({"display": "block"});
                     more_menu_item.css({"display": "none"});
                 }
             }
