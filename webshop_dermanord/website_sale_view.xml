@@ -84,6 +84,9 @@
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" class="dn_product_div col-md-4 col-sm-6 col-xs-12">
                     <div class="dn_product_image">
+<!--
+                        <t t-if=""><img t-att-src="'/web/binary/image?model=crm.tracking.campaign&field=image&id=%s' %product.id" class="dn_product_image_ribbon"/></t>
+-->
                         <div class="dn_product_image_div">
                             <a itemprop="url" t-att-href="keep('/dn_shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
 

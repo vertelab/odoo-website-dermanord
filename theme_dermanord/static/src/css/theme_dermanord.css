@@ -79,6 +79,10 @@ button {
     font-family: futura-pt-medium, sans-serif;
 }
 
+.modal-body label {
+    font-family: futura-pt-light;
+}
+
 .media-heading {
     font-family: futura-pt-heavy, sans-serif;
     font-size: 18px;

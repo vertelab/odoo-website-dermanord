@@ -27,6 +27,7 @@ from datetime import datetime, date, timedelta
 from lxml import html
 from openerp.addons.website_sale.controllers.main import website_sale, QueryURL, table_compute
 from openerp.addons.website.models.website import slug
+from openerp.addons.website_fts.website_fts import WebsiteFullTextSearch
 import werkzeug
 from heapq import nlargest
 import math
@@ -224,6 +225,15 @@ class website_sale(website_sale):
         domain += self.get_domain_append(post)
         #~ if category:
         domain += self.get_domain_append(self.get_form_values())
+        product_obj = pool.get('product.template')
+
+        #~ if 'current_offer' in post:
+            #~ if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
+                #~ domain += ('id', 'in', product_obj.get_campaign_products(cr, uid, for_reseller=False).mapped('id'))
+        #~ if 'current_offer_reseller' in post:
+            #~ if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
+                #~ domain += ('id', 'in', product_obj.get_campaign_products(cr, uid, for_reseller=True).mapped('id'))
+
         request.session['current_domain'] = domain
 
         keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
@@ -233,8 +243,6 @@ class website_sale(website_sale):
             context['pricelist'] = int(pricelist)
         else:
             pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
-
-        product_obj = pool.get('product.template')
 
         url = "/dn_shop"
         product_count = product_obj.search_count(cr, uid, domain, context=context)
@@ -506,6 +514,15 @@ class website_sale(website_sale):
         domain += self.get_domain_append(post)
         #~ if category:
         domain += self.get_domain_append(self.get_form_values())
+        product_obj = pool.get('product.product')
+
+        #~ if 'current_offer' in post:
+            #~ if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
+                #~ domain += ('id', 'in', product_obj.get_campaign_products(cr, uid, for_reseller=False).mapped('id'))
+        #~ if 'current_offer_reseller' in post:
+            #~ if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
+                #~ domain += ('id', 'in', product_obj.get_campaign_products(cr, uid, for_reseller=True).mapped('id'))
+
         request.session['current_domain'] = domain
 
         keep = QueryURL('/dn_list', category=category and int(category), search=search, attrib=None)
@@ -515,8 +532,6 @@ class website_sale(website_sale):
             context['pricelist'] = int(pricelist)
         else:
             pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
-
-        product_obj = pool.get('product.product')
 
         url = "/dn_list"
         product_count = product_obj.search_count(cr, uid, domain, context=context)

@@ -128,6 +128,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+}
+
+.dn_product_image_ribbon {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    max-height: 30px;
 }
 
 .dn_product_image img {
@@ -449,5 +457,9 @@ select.dn_selection_dropdown + i.fa {
     input[type="checkbox"] {
         margin-left: -25px !important;
         transform: scale(1.5, 1.5);
+    }
+
+    .modal-body h5 {
+        font-size: 14px;
     }
 }
