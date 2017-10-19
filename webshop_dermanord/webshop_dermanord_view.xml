@@ -174,6 +174,17 @@
             </xpath>
         </template>
 
+        <record id="product_pricelist_item_tree_view" model="ir.ui.view">
+            <field name="name">product.pricelist.item.tree.surcharge</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="inherit_id" ref="product.product_pricelist_item_tree_view" />
+            <field name="arch" type="xml">
+                <field name="min_quantity" position="after">
+                    <field name="price_surcharge"/>
+                </field>
+            </field>
+        </record>
+        
         <record id="view_blog_post_form" model="ir.ui.view">
             <field name="name">blog.post.form.webshop</field>
             <field name="model">blog.post</field>
@@ -187,6 +198,7 @@
                 </sheet>
             </field>
         </record>
+        
         <record id="product_public_category_form_view" model="ir.ui.view">
             <field name="name">product.public.category.form.inherited.webshop_dermanord</field>
             <field name="model">product.public.category</field>
