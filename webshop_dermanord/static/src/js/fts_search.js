@@ -1,7 +1,10 @@
 $(document).ready(function(){
     $("input[name=search]").keyup(function(){
         openerp.jsonRpc("/search_suggestion", "call", {
-            'search': $(this).val(),
+            search: $(this).val(),
+            res_model: ['product.template', 'product.product', 'product.public.category', 'blog.post', 'product.facet.line'],
+            limit: 5,
+            offset: 0
         }).done(function(data){
             content_front = '<div class="result_suggestion">';
             content_behind = '</div>';
