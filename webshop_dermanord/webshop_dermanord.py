@@ -208,6 +208,24 @@ class website_sale(website_sale):
                 break
         return [sort_name, sort_order]
 
+    def domain_current(self, model, domain, post):
+        domain_current = []
+        if 'current_offer' in post:
+            campaign_product_ids = request.env[model].get_campaign_products(for_reseller=False).mapped('id')
+            domain_current.append(('id', 'in', campaign_product_ids))
+        if 'current_offer_reseller' in post:
+            if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
+                campaign_product_reseller_ids = request.env[model].get_campaign_products(for_reseller=True).mapped('id')
+                domain_current.append(('id', 'in', campaign_product_reseller_ids))
+        if len(domain_current) > 1:
+            for d in domain_current:
+                if domain_current.index(d) != (len(domain_current)-1):
+                    domain.append('|')
+                domain.append(domain_current[domain_current.index(d)])
+        if len(domain_current) == 1:
+            domain.append(domain_current[0])
+        return domain
+
 
     @http.route([
         '/dn_shop',
@@ -227,12 +245,7 @@ class website_sale(website_sale):
         domain += self.get_domain_append(self.get_form_values())
         product_obj = pool.get('product.template')
 
-        #~ if 'current_offer' in post:
-            #~ if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
-                #~ domain += ('id', 'in', product_obj.get_campaign_products(cr, uid, for_reseller=False).mapped('id'))
-        #~ if 'current_offer_reseller' in post:
-            #~ if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
-                #~ domain += ('id', 'in', product_obj.get_campaign_products(cr, uid, for_reseller=True).mapped('id'))
+        domain = self.domain_current('product.template', domain, post)
 
         request.session['current_domain'] = domain
 
@@ -516,12 +529,7 @@ class website_sale(website_sale):
         domain += self.get_domain_append(self.get_form_values())
         product_obj = pool.get('product.product')
 
-        #~ if 'current_offer' in post:
-            #~ if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
-                #~ domain += ('id', 'in', product_obj.get_campaign_products(cr, uid, for_reseller=False).mapped('id'))
-        #~ if 'current_offer_reseller' in post:
-            #~ if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
-                #~ domain += ('id', 'in', product_obj.get_campaign_products(cr, uid, for_reseller=True).mapped('id'))
+        domain = self.domain_current('product.product', domain, post)
 
         request.session['current_domain'] = domain
 
