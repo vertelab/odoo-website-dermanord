@@ -22,6 +22,7 @@ h2 {
 
 h3 {
     font-family: kepler-std-display, serif;
+    font-style: italic;
     font-size: 30px;
 }
 
@@ -37,11 +38,13 @@ h5 {
 
 h6 {
     font-family: kepler-std-display, serif;
+    font-style: italic;
     font-size: 60px;
 }
 
 i, .kepler_std_i {
     font-family: kepler-std-display, serif;
+    font-style: italic;
 }
 
 p {
