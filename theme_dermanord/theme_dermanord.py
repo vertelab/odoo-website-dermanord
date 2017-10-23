@@ -67,28 +67,34 @@ class website(models.Model):
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
             return ''.join(reversed(breadcrumb))
-        elif path.startswith('/blog/'): # url is a blog
-            if '/post/' in path:
-                home_menu = self.env.ref('website.menu_homepage')
-                blog_id = path[(path.index('/blog/')+len('/blog/')):path.index('/post/')].split('-')[-1]
-                post_id = path.split('/post/')[-1].split('-')[-1]
-                try:
-                    blog = request.env['blog.blog'].browse(int(blog_id))
-                    post = request.env['blog.post'].browse(int(post_id))
-                    breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="/blog/%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name, post.id, post.name))
-                    return breadcrumb[0]
-                except:
-                    _logger.error('Blog post does not exist')
-            else:
-                home_menu = self.env.ref('website.menu_homepage')
-                blog_id = path.split('/blog/')[-1].split('-')[-1]
-                try:
-                    blog = request.env['blog.blog'].browse(int(blog_id))
-                    breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name))
-                    return breadcrumb[0]
-                except:
-                    _logger.error('Blog does not exist')
+        #~ elif path.startswith('/blog/'): # url is a blog
+            #~ if '/post/' in path:
+                #~ home_menu = self.env.ref('website.menu_homepage')
+                #~ blog_id = path[(path.index('/blog/')+len('/blog/')):path.index('/post/')].split('-')[-1]
+                #~ post_id = path.split('/post/')[-1].split('-')[-1]
+                #~ try:
+                    #~ blog = request.env['blog.blog'].browse(int(blog_id))
+                    #~ post = request.env['blog.post'].browse(int(post_id))
+                    #~ breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="/blog/%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name, post.id, post.name))
+                    #~ return breadcrumb[0]
+                #~ except:
+                    #~ _logger.error('Blog post does not exist')
+            #~ else:
+                #~ home_menu = self.env.ref('website.menu_homepage')
+                #~ blog_id = path.split('/blog/')[-1].split('-')[-1]
+                #~ try:
+                    #~ blog = request.env['blog.blog'].browse(int(blog_id))
+                    #~ breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name))
+                    #~ return breadcrumb[0]
+                #~ except:
+                    #~ _logger.error('Blog does not exist')
         else: # url is a normal menu or submenu
+            path = path.split('/')
+            for i in range(len(path)):
+                nr = path[i].split('-')[-1]
+                if nr.isdigit():
+                    path[i] = nr
+            path = '/'.join(path)
             skipped = self.env.ref('theme_dermanord.footer_menu')
             menu = self.env['website.menu'].search([('url', '=', path)])
             while menu and menu != self.env.ref('website.main_menu') and menu != self.env.ref('website.menu_homepage'):

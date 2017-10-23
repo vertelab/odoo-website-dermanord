@@ -3,60 +3,18 @@
     <data>
         <!-- News Template -->
         <template id="news_list" name="News List">
-            <t t-call="website.layout">
+            <t t-call="theme_dermanord.submenu_dermanord">
                 <div id="wrap">
 <!--
                     <t t-set="no_breadcrumb" t-value="True"/>
 -->
-                    <t t-set="news_blog_url" t-value="'/blog/%s' %blog.id"/>
-                    <div class="container dn_header" style="width: 100%; padding: 0px;">
-                        <div t-if="news_blog_url and website.current_submenu(news_blog_url).child_id" class="col-md-12 col-sm-12 col-xs-12 dn_header_banner">
-                            <div class="col-md-2 col-sm-2 col-xs-12 dn_header_nav">
-                                <ul class="nav nav-pills nav-stacked">
-                                    <t t-set="current_path" t-value="request.httprequest.path"/>
-                                    <t t-if="'/tag/' in current_path">
-                                        <t t-set="current_blog_id" t-value="current_path[(current_path.index('/blog/')+len('/blog/')):current_path.index('/tag/')].split('-')[-1]"/>
-                                        <t t-set="current_tag_id" t-value="current_path.split('/tag/')[-1].split('-')[-1]"/>
-                                        <t t-set="current_path" t-value="'/blog/%s/tag/%s' %(current_blog_id, current_tag_id)"/>
-                                    </t>
-                                    <t t-foreach="website.current_submenu(news_blog_url).child_id" t-as="submenu">
-                                        <li t-att-class="'hidden-xs %s' %('active' if submenu.url == current_path else '')">
-                                            <a t-att-href="submenu.url" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
-                                                <span class="text-center dn_uppercase">
-                                                    <t t-esc="submenu.name"/>
-                                                </span>
-                                            </a>
-                                        </li>
-                                        <li class="hidden-lg hidden-md hidden-sm">
-                                            <a t-att-href="submenu.url" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
-                                                <span class="text-center dn_uppercase">
-                                                    <t t-esc="submenu.name"/>
-                                                </span>
-                                            </a>
-                                        </li>
-                                    </t>
-                                </ul>
-                            </div>
-                            <div class="col-md-10 col-sm-10 hidden-xs" style="padding: 0px;">
-                                <div class="dn_header_container">
-                                    <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path)"/>
-                                    <span itemprop="image" t-field="current_menu.image" t-field-options='{"widget": "image", "class": "css_non_editable_mode_hidden", "alt-field": "name"}'/>
-                                    <img class="img img-responsive css_editable_mode_hidden" t-att-src="'/imagefield/website.menu/image/%s/ref/theme_dermanord.dn_header_img' %current_menu.id"/>
-<!--
-                                    <h6 class="page_title">
-                                        <span class="" t-field="current_menu.page_title"/>
-                                    </h6>
--->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="container mb32">
                         <div class="row">
-                            <t t-set="news_blog" t-value="request.env['blog.post'].search([('blog_id', '=', blog.id), ('website_published', '=', True)])"/>
-                            <t t-if="'/tag/' in request.httprequest.path">
-                                <t t-set="current_tag_id" t-value="request.httprequest.path.split('/tag/')[-1].split('-')[-1]"/>
-                                <t t-set="news_blog" t-value="request.env['blog.post'].search([('blog_id', '=', blog.id), ('tag_ids', 'in', int(current_tag_id)), ('website_published', '=', True)])"/>
+                            <t t-if="not tag">
+                                <t t-set="news_blog" t-value="request.env['blog.post'].search([('blog_id', '=', blog.id), ('website_published', '=', True)])"/>
+                            </t>
+                            <t t-if="tag">
+                                <t t-set="news_blog" t-value="request.env['blog.post'].search([('blog_id', '=', blog.id), ('tag_ids', 'in', int(tag.id)), ('website_published', '=', True)])"/>
                             </t>
                             <t t-set="news_blog" t-value="news_blog.sudo().with_context({'user': request.env.user}).filtered(lambda b: (b.security_type == 'private' and b._context.get('user') in b.group_ids.mapped('users')) or (b.security_type == 'public'))"/>
                             <t t-foreach="news_blog" t-as="news_post">
