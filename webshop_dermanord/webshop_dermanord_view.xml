@@ -51,44 +51,48 @@
                 <script>var dermanord_kw = "<t t-esc='kw'/>";</script>
                 <t t-foreach="terms" t-as="term">
                     <t t-if="term.res_model == 'product.template'">
-                        <div class="col-md-12 col-sm-12 col-xs-12 mt16">
-                            <div class="col-md-3 col-sm-3 col-xs-3">
-                                <t t-if="term.model_record.image">
-                                    <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/%s' %(term.res_id, 'webshop_dermanord.img_search_result')"/>
-                                </t>
-                                <t t-if="not term.model_record.image">
-                                    <img class="img img-responsive" src="/website_logo.png"/>
-                                </t>
+                        <t t-if="len(term.model_record.sudo().access_group_ids) == 0 or (len(term.model_record.sudo().access_group_ids) &gt; 0 and user_id in term.model_record.sudo().access_group_ids.mapped('users'))">
+                            <div class="col-md-12 col-sm-12 col-xs-12 mt16">
+                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                    <t t-if="term.model_record.image">
+                                        <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/%s' %(term.res_id, 'webshop_dermanord.img_search_result')"/>
+                                    </t>
+                                    <t t-if="not term.model_record.image">
+                                        <img class="img img-responsive" src="/website_logo.png"/>
+                                    </t>
+                                </div>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <a t-att-href="'/dn_shop/product/%s' %term.res_id">
+                                        <h4><t t-esc="term.model_record.name"/> [Product]</h4>
+                                    </a>
+                                    <p class="text-muted result_desc"><t t-esc="term.model_record.description_sale"/></p>
+                                </div>
                             </div>
-                            <div class="col-md-9 col-sm-9 col-xs-9">
-                                <a t-att-href="'/dn_shop/product/%s' %term.res_id">
-                                    <h4><t t-esc="term.model_record.name"/> [Product]</h4>
-                                </a>
-                                <p class="text-muted result_desc"><t t-esc="term.model_record.description_sale"/></p>
-                            </div>
-                        </div>
+                        </t>
                     </t>
                     <t t-if="term.res_model == 'product.product'">
-                        <div class="col-md-12 col-sm-12 col-xs-12 mt16">
-                            <div class="col-md-3 col-sm-3 col-xs-3">
-                                <t t-if="term.model_record.image">
-                                    <img class="img img-responsive" t-att-src="'/imagefield/product.product/image/%s/ref/%s' %(term.res_id, 'webshop_dermanord.img_search_result')"/>
-                                </t>
-                                <t t-if="not term.model_record.image">
-                                    <img class="img img-responsive" src="/website_logo.png"/>
-                                </t>
+                        <t t-if="len(term.model_record.sudo().access_group_ids) == 0 or (len(term.model_record.sudo().access_group_ids) &gt; 0 and user_id in term.model_record.sudo().access_group_ids.mapped('users'))">
+                            <div class="col-md-12 col-sm-12 col-xs-12 mt16">
+                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                    <t t-if="term.model_record.image">
+                                        <img class="img img-responsive" t-att-src="'/imagefield/product.product/image/%s/ref/%s' %(term.res_id, 'webshop_dermanord.img_search_result')"/>
+                                    </t>
+                                    <t t-if="not term.model_record.image">
+                                        <img class="img img-responsive" src="/website_logo.png"/>
+                                    </t>
+                                </div>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <a t-att-href="'/dn_shop/variant/%s' %term.res_id">
+                                        <h4><t t-esc="term.model_record.name"/> [Product]</h4>
+                                    </a>
+                                    <p class="text-muted"><t t-esc="term.model_record.default_code"/></p>
+                                    <t t-foreach="term.model_record.attribute_value_ids" t-as="value">
+                                        <span class="dn_tags" t-esc="'%s ' %value.name"/>
+                                    </t>
+                                    <p class="text-muted result_desc"><t t-esc="term.model_record.product_tmpl_id.description_sale"/></p>
+                                </div>
                             </div>
-                            <div class="col-md-9 col-sm-9 col-xs-9">
-                                <a t-att-href="'/dn_shop/variant/%s' %term.res_id">
-                                    <h4><t t-esc="term.model_record.name"/> [Product]</h4>
-                                </a>
-                                <p class="text-muted"><t t-esc="term.model_record.default_code"/></p>
-                                <t t-foreach="term.model_record.attribute_value_ids" t-as="value">
-                                    <span class="dn_tags" t-esc="'%s ' %value.name"/>
-                                </t>
-                                <p class="text-muted result_desc"><t t-esc="term.model_record.product_tmpl_id.description_sale"/></p>
-                            </div>
-                        </div>
+                        </t>
                     </t>
                     <t t-if="term.res_model == 'product.public.category'">
                         <div class="col-md-12 col-sm-12 col-xs-12 mt16">
@@ -184,7 +188,7 @@
                 </field>
             </field>
         </record>
-        
+
         <record id="view_blog_post_form" model="ir.ui.view">
             <field name="name">blog.post.form.webshop</field>
             <field name="model">blog.post</field>
@@ -198,7 +202,7 @@
                 </sheet>
             </field>
         </record>
-        
+
         <record id="product_public_category_form_view" model="ir.ui.view">
             <field name="name">product.public.category.form.inherited.webshop_dermanord</field>
             <field name="model">product.public.category</field>

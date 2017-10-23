@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    'use strict';
     $("input[name=search]").keyup(function(){
         openerp.jsonRpc("/search_suggestion", "call", {
             search: $(this).val(),
@@ -6,6 +7,7 @@ $(document).ready(function(){
             limit: 5,
             offset: 0
         }).done(function(data){
+            console.log(data);
             content_front = '<div class="result_suggestion">';
             content_behind = '</div>';
             content = '';
