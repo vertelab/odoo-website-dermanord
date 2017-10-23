@@ -7,29 +7,28 @@ $(document).ready(function(){
             limit: 5,
             offset: 0
         }).done(function(data){
-            console.log(data);
-            content_front = '<div class="result_suggestion">';
-            content_behind = '</div>';
-            content = '';
+            var content_front = '<div class="result_suggestion">';
+            var content_behind = '</div>';
+            var content = '';
             $.each(data, function(key, info) {
                 if (data[key]['model_record'] == 'product.template'){
-                    c = '<li><a href="/dn_shop/product/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
+                    var c = '<li><a href="/dn_shop/product/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
                     content += c;
                 }
                 else if (data[key]['model_record'] == 'product.product'){
-                    c = '<li><a href="/dn_shop/product/' + data[key]['product_tmpl_id'] + '">' + data[key]['name'] + '</a></li>';
+                    var c = '<li><a href="/dn_shop/product/' + data[key]['product_tmpl_id'] + '">' + data[key]['name'] + '</a></li>';
                     content += c;
                 }
                 else if (data[key]['model_record'] == 'product.public.category'){
-                    c = '<li><a href="/dn_shop/category/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
+                    var c = '<li><a href="/dn_shop/category/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
                     content += c;
                 }
                 else if (data[key]['model_record'] == 'blog.post'){
-                    c = '<li><a href="/blog/' + data[key]['blog_id'] + '/post/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
+                    var c = '<li><a href="/blog/' + data[key]['blog_id'] + '/post/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
                     content += c;
                 }
                 else if (data[key]['model_record'] == 'product.facet.line'){
-                    c = '<li><a href="/dn_shop/product/' + data[key]['product_tmpl_id'] + '">' + data[key]['product_name'] + '</a></li>';
+                    var c = '<li><a href="/dn_shop/product/' + data[key]['product_tmpl_id'] + '">' + data[key]['product_name'] + '</a></li>';
                     content += c;
                 }
             });
