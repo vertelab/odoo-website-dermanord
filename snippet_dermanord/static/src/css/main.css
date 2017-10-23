@@ -11,10 +11,6 @@ a {
     background-color: #000;
 }
 
-.categ_p_section h1 {
-    color: #fff;
-}
-
 .categ_p_section .categ_block{
     padding: 15px;
 }
@@ -47,6 +43,10 @@ a {
 
 .categ_block_text a {
     color: #000 !important;
+}
+
+.categ_block_text a:hover {
+    color: #BB602F !important;
 }
 
 /* Blog Banner */
