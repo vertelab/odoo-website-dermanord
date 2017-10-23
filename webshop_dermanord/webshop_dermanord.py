@@ -714,14 +714,14 @@ class WebsiteFullTextSearch(WebsiteFullTextSearch):
                         'name': r.model_record.name,
                     })
                 elif r.model_record._name == 'product.template':
-                    if len(r.model_record.access_group_ids) == 0 or (len(r.model_record.sudo().access_group_ids) > 0 and request.env.user in r.model_record.sudo().access_group_ids.mapped('users')):
+                    if len(r.model_record.sudo().access_group_ids) == 0 or (len(r.model_record.sudo().access_group_ids) > 0 and request.env.user in r.model_record.sudo().access_group_ids.mapped('users')):
                         rl.append({
                             'res_id': r.res_id,
                             'model_record': r.model_record._name,
                             'name': r.model_record.name,
                         })
                 elif r.model_record._name == 'product.product':
-                    if len(r.model_record.access_group_ids) == 0 or (len(r.model_record.sudo().access_group_ids) > 0 and request.env.user in r.model_record.sudo().access_group_ids.mapped('users')):
+                    if len(r.model_record.sudo().access_group_ids) == 0 or (len(r.model_record.sudo().access_group_ids) > 0 and request.env.user in r.model_record.sudo().access_group_ids.mapped('users')):
                         rl.append({
                             'res_id': r.res_id,
                             'model_record': r.model_record._name,
