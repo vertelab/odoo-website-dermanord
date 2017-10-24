@@ -176,9 +176,29 @@ h1, .dn_uppercase {
     font-family: futura-pt-medium, sans-serif;
 }
 
-.btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary[disabled] {
     background-color: #BB602F;
     border-color: #BB602F;
+}
+
+.text-primary {
+    color: #BB602F;
+}
+
+.text-success {
+    color: #000;
+}
+
+.text-success:hover {
+    color: #000 !important;
+}
+
+ul.wizard li.text-primary {
+    background: #fff !important;
+}
+
+ul.wizard li.text-primary .chevron::before {
+    border-left: 10px solid #fff !important;
 }
 
 /* Dermanord Style */
