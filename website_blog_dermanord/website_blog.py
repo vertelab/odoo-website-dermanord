@@ -97,8 +97,6 @@ class BlogPost(models.Model):
     blog_post_product_ids = fields.One2many(comodel_name='blog.post.product', inverse_name='blog_post_id', string='Products')
     object_ids = fields.One2many(comodel_name='blog.post.object', inverse_name='blog_post_id', string='Objects')
     related_posts = fields.Many2many(comodel_name='blog.post', compute='_related_posts')
-    security_type = fields.Selection([('public','Public'),('private','Private')], string='Security type', default='public', required=True)
-    group_ids = fields.Many2many('res.groups', string="Authorized Groups")
 
     @api.one
     def _related_posts(self):

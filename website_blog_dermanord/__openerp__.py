@@ -30,7 +30,7 @@ Blog configuration for Dermanord AB
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_blog', 'website_sale', 'website_imagemagick'],
+    'depends': ['website_blog_private', 'website_sale', 'website_imagemagick'],
     'data': [
         'website_blog_data.xml',
         'website_blog_view.xml',
