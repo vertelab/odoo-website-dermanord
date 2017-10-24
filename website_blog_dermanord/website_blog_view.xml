@@ -32,6 +32,7 @@
                                     <field name="sequence" widget="handle"/>
                                     <field name="name"/>
                                     <field name="object_id"/>
+                                    <field name="access_group_ids" widget="many2many_tags"/>
                                 </tree>
                             </field>
                         </page>
@@ -82,6 +83,7 @@
                                 <field name="sequence" invisible="0" />
                                 <field name="object_id"/>
                                 <field name="name"/>
+                                <field name="access_group_ids" widget="many2many_tags"/>
                                 <field name="blog_post_id" invisible="1"/>
                                 <field name="color" invisible="1"/>
                             </group>
@@ -168,7 +170,7 @@
 
         <template id="blog_post_complete" inherit_id="website_blog.blog_post_complete">
             <xpath expr="//div[@class='btn-group css_non_editable_mode_hidden']" position="after">
-                <t t-call="website_blog_dermanord.blog_authorization"/>
+                <t t-call="website_blog_private.blog_authorization"/>
             </xpath>
         </template>
 

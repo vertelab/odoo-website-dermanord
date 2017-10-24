@@ -60,7 +60,7 @@
                                 <span class="fa fa-times"/>
                             </a>
                         </div>
-                        <t t-call="website_blog_dermanord.blog_authorization"/>
+                        <t t-call="website_blog_private.blog_authorization"/>
                         <div class="cover-storage oe_hidden"></div>
                         <t t-call="website.publish_management">
                             <t t-set="object" t-value="blog_post"/>

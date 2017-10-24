@@ -127,6 +127,27 @@ class product_template(models.Model):
     _inherit = 'product.template'
 
     blog_post_ids = fields.Many2many(comodel_name='blog.post', relation="blog_post_product", column1='product_id', column2='blog_post_id',string='Blog Posts')
+    
+    @api.multi
+    def write(self, vals):
+        res = super(product_template, self).write(vals)
+        if 'access_group_ids' in vals:
+            objects = self.env['blog.post.object'].search(['|' for i in range(len(self) - 1)] + [('object_id', '=', 'product.template,%s'% p.id) for p in self])
+            if objects:
+                objects.write({'access_group_ids': vals['access_group_ids']})
+        return res
+
+class product_product(models.Model):
+    _inherit = 'product.product'
+
+    @api.multi
+    def write(self, vals):
+        res = super(product_template, self).write(vals)
+        if 'access_group_ids' in vals:
+            objects = self.env['blog.post.object'].search(['|' for i in range(len(self) - 1)] + [('object_id', '=', 'product.product,%s'% p.id) for p in self])
+            if objects:
+                objects.write({'access_group_ids': vals['access_group_ids']})
+        return res
 
 
 class blog_post_object(models.Model):
@@ -140,16 +161,17 @@ class blog_post_object(models.Model):
     color = fields.Integer('Color Index')
     blog_post_id = fields.Many2one(comodel_name='blog.post', string='Blog Posts')
     object_id = fields.Reference([('product.template', 'Product Template'), ('product.product', 'Product Variant')])
+    access_group_ids = fields.Many2many(comodel_name='res.groups', string='Access Groups', help='Allowed groups to access this object')
+
     @api.one
     @api.onchange('object_id')
     def get_object_value(self):
         if self.object_id:
             if self.object_id._name == 'product.template' or self.object_id._name == 'product.product':
-                self.res_id = self.object_id.id
                 self.name = self.object_id.name
                 self.description = self.object_id.description_sale
                 self.image = self.object_id.image
-        pass
+                self.access_group_ids = self.object_id.access_group_ids
 
     @api.one
     def create_blog_post_product(self, post):
