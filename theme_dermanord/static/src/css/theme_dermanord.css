@@ -117,6 +117,14 @@ button {
     font-size: 18px;
 }
 
+#searchbox li:hover, #searchbox li[selected=selected] {
+    background-color: #BB602F;
+}
+
+#searchbox li:hover > a, #searchbox li[selected=selected] > a {
+    color: #fff;
+}
+
 #searchbox h4 {
     font-size: 23px;
 }
