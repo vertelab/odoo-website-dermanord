@@ -181,7 +181,7 @@ h1, .dn_uppercase {
     border-color: #BB602F;
 }
 
-.text-primary {
+.text-primary, td a {
     color: #BB602F;
 }
 
