@@ -275,8 +275,8 @@ class website_sale(website_sale):
         products = product_obj.browse(cr, uid, product_ids, context=context)
         # relist which product templates the current user is allowed to see
         for p in products:
-            if len(p.access_group_ids) > 0 :
-                if request.env['res.users'].browse(uid) not in p.access_group_ids.mapped('users'):
+            if len(p.sudo().access_group_ids) > 0 :
+                if request.env['res.users'].browse(uid) not in p.sudo().access_group_ids.mapped('users'):
                     products -= p
 
         style_obj = pool['product.style']
@@ -355,8 +355,8 @@ class website_sale(website_sale):
         products = product_obj.browse(cr, uid, product_ids, context=context)
         # relist which product templates the current user is allowed to see
         for p in products:
-            if len(p.access_group_ids) > 0 :
-                if request.env['res.users'].browse(uid) not in p.access_group_ids.mapped('users'):
+            if len(p.sudo().access_group_ids) > 0 :
+                if request.env['res.users'].browse(uid) not in p.sudo().access_group_ids.mapped('users'):
                     products -= p
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
@@ -423,8 +423,8 @@ class website_sale(website_sale):
         products = product_obj.browse(cr, uid, product_ids, context=context)
         # relist which product templates the current user is allowed to see
         for p in products:
-            if len(p.access_group_ids) > 0 :
-                if request.env['res.users'].browse(uid) not in p.access_group_ids.mapped('users'):
+            if len(p.sudo().access_group_ids) > 0 :
+                if request.env['res.users'].browse(uid) not in p.sudo().access_group_ids.mapped('users'):
                     products -= p
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
@@ -553,8 +553,8 @@ class website_sale(website_sale):
         products = product_obj.browse(cr, uid, product_ids, context=context)
         # relist which product templates the current user is allowed to see
         for p in products:
-            if len(p.access_group_ids) > 0 :
-                if request.env['res.users'].browse(uid) not in p.access_group_ids.mapped('users'):
+            if len(p.sudo().access_group_ids) > 0 :
+                if request.env['res.users'].browse(uid) not in p.sudo().access_group_ids.mapped('users'):
                     products -= p
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
