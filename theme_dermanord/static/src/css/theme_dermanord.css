@@ -40,6 +40,7 @@ h6 {
     font-family: kepler-std-display, serif;
     font-style: italic;
     font-size: 60px;
+    padding-top: 40px;
 }
 
 i, .kepler_std_i {
