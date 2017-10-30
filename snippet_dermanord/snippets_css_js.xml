@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <!-- Custom Snippet CSS and javascript -->
-        <template id="dermanord_snippet_css_and_js" inherit_id="website.layout" name="Dermanord Snippet Custom CSS and JS">
-            <!-- Customize javascript -->
-            <xpath expr="//body" position="inside">
-                <script type="text/javascript" src="/snippet_dermanord/static/src/js/jquery.mobile.custom.min.js" />
-                <script type="text/javascript" src="/snippet_dermanord/static/src/js/snippet_dermanord.js" />
-            </xpath>
-            <!-- Customize CSS -->
-            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
+
+        <template id="dermanord_snippet_css" inherit_id="website.assets_frontend" name="Dermanord Snippet Custom CSS">
+            <xpath expr="." position="inside">
                 <link href="/snippet_dermanord/static/src/css/main.css" rel="stylesheet"/>
                 <link href="/snippet_dermanord/static/src/css/round_hover_button.css" rel="stylesheet"/>
                 <link href="/snippet_dermanord/static/src/css/cubes.css" rel="stylesheet"/>
                 <link href="/snippet_dermanord/static/src/css/fade_slider.css" rel="stylesheet"/>
                 <link href="/snippet_dermanord/static/src/css/blurbg_slider.css" rel="stylesheet"/>
                 <link href="/snippet_dermanord/static/src/css/buttons.css" rel="stylesheet"/>
+            </xpath>
+        </template>
+        <template id="dermanord_snippet_js" inherit_id="website_sale.assets_editor" name="Dermanord Snippet Custom JS">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/snippet_dermanord/static/src/js/jquery.mobile.custom.min.js" />
+                <script type="text/javascript" src="/snippet_dermanord/static/src/js/snippet_dermanord.js" />
             </xpath>
         </template>
 
