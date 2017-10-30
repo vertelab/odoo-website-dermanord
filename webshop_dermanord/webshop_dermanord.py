@@ -249,6 +249,14 @@ class website_sale(website_sale):
 
         request.session['current_domain'] = domain
 
+        if category:
+            if not request.session.get('form_values'):
+                request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
+            for k,v in request.session.get('form_values').items():
+                if 'category_' in k:
+                    del request.session['form_values'][k]
+                    request.session['form_values']['category_%s' %int(category)] = '%s' %int(category)
+
         keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
         if not context.get('pricelist'):
@@ -532,6 +540,14 @@ class website_sale(website_sale):
         domain = self.domain_current('product.product', domain, post)
 
         request.session['current_domain'] = domain
+
+        if category:
+            if not request.session.get('form_values'):
+                request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
+            for k,v in request.session.get('form_values').items():
+                if 'category_' in k:
+                    del request.session['form_values'][k]
+                    request.session['form_values']['category_%s' %int(category)] = '%s' %int(category)
 
         keep = QueryURL('/dn_list', category=category and int(category), search=search, attrib=None)
 

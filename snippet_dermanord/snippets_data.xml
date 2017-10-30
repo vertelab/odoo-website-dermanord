@@ -119,7 +119,7 @@ else:
 
         <record id="img_categories_param_canvas" model="image.recipe.param">
             <field name="name">canvas_size</field>
-            <field name="value">500</field>
+            <field name="value">310</field>
             <field name="recipe_id" ref="snippet_dermanord.img_categories"/>
         </record>
 
