@@ -142,7 +142,7 @@ class product_product(models.Model):
 
     @api.multi
     def write(self, vals):
-        res = super(product_template, self).write(vals)
+        res = super(product_product, self).write(vals)
         if 'access_group_ids' in vals:
             objects = self.env['blog.post.object'].search(['|' for i in range(len(self) - 1)] + [('object_id', '=', 'product.product,%s'% p.id) for p in self])
             if objects:
