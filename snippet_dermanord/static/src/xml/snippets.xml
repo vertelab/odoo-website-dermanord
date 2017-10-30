@@ -29,7 +29,7 @@
     </t>
     <t t-name="product_highlights_snippet">
         <a t-att-href="ph_url">
-            <div class="col-md-3 col-xs-12">
+            <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="ph_block">
                     <img class="img img-responsive ph_img" t-att-src="ph_image" t-att-data-cke-saved-src="ph_image"/>
                     <div class="container desc_div">

@@ -79,9 +79,10 @@ a {
 }
 
 .ph_block {
-    min-height: 400px;
+    width: 260px;
+    height: 400px;
     border: 1px solid #fff;
-    background-color: #f4f4f4;
+    margin: auto;
 }
 
 .ph_block:hover {
@@ -106,8 +107,8 @@ a {
     position: absolute;
     padding: 10px 25px !important;
     bottom: 0px;
-    left: 0px;
-    width: 100%;
+    width: 100% !important;
+    max-width: 258px;
     text-overflow: ellipsis;
 }
 
@@ -118,7 +119,7 @@ a {
 
 .ph_desc {
     font-family: futura-pt-light, sans-serif !important;
-    font-size: 14px !important;
+    font-size: 18px !important;
 }
 
 .ph_block h4 {
