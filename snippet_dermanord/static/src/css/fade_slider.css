@@ -21,10 +21,6 @@
 .carousel-fade .carousel-control {
     z-index: 2;
 }
-.carousel-inner img {
-    height: 100% !important;
-    width: auto;
-}
 .carousel-inner .container {
     width: 100%;
     margin: auto;
