@@ -224,7 +224,7 @@
                                                         <form t-att-action="keep('/shop/cart/update')" class="oe_dn_list" t-att-data-attribute_value_ids="product.id" method="POST">
                                                             <div class="product_shop col-md-6 col-sm-6 col-xs-12" style="margin: 0px;">
                                                                 <input type="hidden" class="product_id" name="product_id" t-att-value="int(product)" />
-                                                                <input type="hidden" name="dn_list" t-att-value="True" />
+                                                                <input type="hidden" name="return_url" t-att-value="request.httprequest.url" />
                                                                 <div class="css_quantity input-group oe_website_spinner">
                                                                     <span class="input-group-addon">
                                                                         <a t-attf-href="#" class="mb8 js_add_cart_json">
@@ -389,6 +389,9 @@
         </template>
 
         <template id="dermanord_product_detail" inherit_id="website_sale.product">
+            <xpath expr="//form[@class='js_add_cart_variants']" position="inside">
+                <input name="return_url" type="hidden" t-att-value="request.httprequest.url"/>
+            </xpath>
             <xpath expr="//ol[@class='breadcrumb']/.." position="replace">
             </xpath>
             <xpath expr="//t[@t-call='website_sale.search']/.." position="attributes">
