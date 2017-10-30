@@ -346,7 +346,7 @@
                                 <t t-foreach="current_submenu.child_id" t-as="submenu">
                                     <li t-att-class="'hidden-xs %s' %('active' if submenu == current_menu else '')">
                                         <a t-att-href="submenu.url" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
-                                            <h5 class="text-center dn_uppercase">
+                                            <h5 class="dn_uppercase">
                                                 <t t-esc="submenu.name"/>
                                             </h5>
                                         </a>
