@@ -127,7 +127,7 @@ class product_template(models.Model):
     _inherit = 'product.template'
 
     blog_post_ids = fields.Many2many(comodel_name='blog.post', relation="blog_post_product", column1='product_id', column2='blog_post_id',string='Blog Posts')
-    
+
     @api.multi
     def write(self, vals):
         res = super(product_template, self).write(vals)
