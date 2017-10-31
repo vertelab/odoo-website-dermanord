@@ -58,11 +58,8 @@
                     <p t-att-id="request.env.ref('press_dermanord.image_website').id" class="website_recipe hidden"/>
                     <p t-att-id="request.env.ref('press_dermanord.image_original').id" class="original_recipe hidden"/>
                     <section>
-                        <div class="container mt16 mb16 a_bord">
+                        <div class="container mt16 mb16">
                             <h3 class="text-center">Press Material</h3>
-                            <div class="col-md-12 col-sm-12 col-xs-12 b_bord">
-                                <t t-call="press_dermanord.press_vd_block" />
-                            </div>
                             <div class="col-md-12 col-sm-12 col-xs-12 b_bord">
                                 <t t-call="press_dermanord.press_material_block" />
                             </div>
@@ -210,6 +207,7 @@
                                 <img class="img img-responsive img_2_change" src="/website/static/src/img/fields.jpg"/>
                             </div>
                             <div class="container img_press_text">
+                                <a class="img_press_cc" href="https://creativecommons.org/licenses/by/3.0/" title="Attribution 3.0 Unported (CC BY 3.0)" target="_blank"><img src="/press_dermanord/static/src/img/cc.png"/></a>
                                 <span class="pull-right css_editable_mode_hidden" style="margin: 0px 20px;">
                                     <a class="img_press_original" href="/" title="Download for print"><i class="fa fa-file-o"/></a>
                                 </span>
@@ -223,6 +221,7 @@
                                 <img class="img img-responsive img_2_change" src="/website/static/src/img/fields.jpg"/>
                             </div>
                             <div class="container img_press_text">
+                                <a class="img_press_cc" href="https://creativecommons.org/licenses/by/3.0/" title="Attribution 3.0 Unported (CC BY 3.0)" target="_blank"><img src="/press_dermanord/static/src/img/cc.png"/></a>
                                 <span class="pull-right css_editable_mode_hidden" style="margin: 0px 20px;">
                                     <a class="img_press_original" href="/" title="Download for press"><i class="fa fa-file-o"/></a>
                                 </span>
@@ -236,6 +235,7 @@
                                 <img class="img img-responsive img_2_change" src="/website/static/src/img/fields.jpg"/>
                             </div>
                             <div class="container img_press_text">
+                                <a class="img_press_cc" href="https://creativecommons.org/licenses/by/3.0/" title="Attribution 3.0 Unported (CC BY 3.0)" target="_blank"><img src="/press_dermanord/static/src/img/cc.png"/></a>
                                 <span class="pull-right css_editable_mode_hidden" style="margin: 0px 20px;">
                                     <a class="img_press_original" href="/" title="Download for press"><i class="fa fa-file-o"/></a>
                                 </span>
@@ -249,6 +249,7 @@
                                 <img class="img img-responsive img_2_change" src="/website/static/src/img/fields.jpg"/>
                             </div>
                             <div class="container img_press_text">
+                                <a class="img_press_cc" href="https://creativecommons.org/licenses/by/3.0/" title="Attribution 3.0 Unported (CC BY 3.0)" target="_blank"><img src="/press_dermanord/static/src/img/cc.png"/></a>
                                 <span class="pull-right css_editable_mode_hidden" style="margin: 0px 20px;">
                                     <a class="img_press_original" href="/" title="Download for press"><i class="fa fa-file-o"/></a>
                                 </span>
@@ -262,6 +263,7 @@
                                 <img class="img img-responsive img_2_change" src="/website/static/src/img/fields.jpg"/>
                             </div>
                             <div class="container img_press_text">
+                                <a class="img_press_cc" href="https://creativecommons.org/licenses/by/3.0/" title="Attribution 3.0 Unported (CC BY 3.0)" target="_blank"><img src="/press_dermanord/static/src/img/cc.png"/></a>
                                 <span class="pull-right css_editable_mode_hidden" style="margin: 0px 20px;">
                                     <a class="img_press_original" href="/" title="Download for press"><i class="fa fa-file-o"/></a>
                                 </span>
@@ -275,10 +277,11 @@
                                 <img class="img img-responsive img_2_change" src="/website/static/src/img/fields.jpg"/>
                             </div>
                             <div class="container img_press_text">
-                                <span class="pull-right css_editable_mode_hidden" style="margin-right: 20px;">
+                                <a class="img_press_cc" href="https://creativecommons.org/licenses/by/3.0/" title="Attribution 3.0 Unported (CC BY 3.0)" target="_blank"><img src="/press_dermanord/static/src/img/cc.png"/></a>
+                                <span class="pull-right css_editable_mode_hidden" style="margin: 0px 20px;">
                                     <a class="img_press_original" href="/" title="Download for press"><i class="fa fa-file-o"/></a>
                                 </span>
-                                <span class="pull-right css_editable_mode_hidden" style="margin-right: 30px;">
+                                <span class="pull-right css_editable_mode_hidden" style="margin: 0px 20px;">
                                     <a class="img_press_website" href="/" title="Download for website"><i class="fa fa-globe"/></a>
                                 </span>
                             </div>

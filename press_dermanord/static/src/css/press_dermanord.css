@@ -46,6 +46,11 @@
     color: #fff;
 }
 
+.img_press_cc img {
+    max-width: 22px;
+    margin: 0px 20px 2px 20px;
+}
+
 #twitter_block ul {
     padding: 0px;
 }
