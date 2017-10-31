@@ -399,6 +399,9 @@
         </template>
 
         <template id="dermanord_product_detail" inherit_id="website_sale.product">
+            <a id="add_to_cart" position="before">
+                <input name='sale_ok' type='hidden' t-att-value='product.sale_ok'/>
+            </a>            
             <xpath expr="//form[@class='js_add_cart_variants']" position="inside">
                 <input name="return_url" type="hidden" t-att-value="request.httprequest.url"/>
             </xpath>

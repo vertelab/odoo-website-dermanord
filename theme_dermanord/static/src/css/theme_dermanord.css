@@ -177,7 +177,7 @@ h1, .dn_uppercase {
     font-family: futura-pt-medium, sans-serif;
 }
 
-.btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary[disabled] {
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary[disabled], .dn_primary[disabled] {
     background-color: #BB602F;
     border-color: #BB602F;
 }
