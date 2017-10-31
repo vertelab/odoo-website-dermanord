@@ -51,7 +51,7 @@
             <t t-call="website_blog.index">
                 <div class="cover js_fullheight" id="title" t-attf-style="background-image: url(#{blog_post.background_image})" t-ignore="True">
                     <div class="container">
-                      <div class="container text-right mt16">
+                      <div class="text-right mt16">
                         <div class="btn-group css_non_editable_mode_hidden">
                             <a id="change_cover" class="btn btn-primary">
                                 Change Cover
