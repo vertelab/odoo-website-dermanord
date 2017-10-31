@@ -62,7 +62,7 @@ else:
         </record>
         <record id="image_thumbnail_param_canvas" model="image.recipe.param">
             <field name="name">canvas_size</field>
-            <field name="value">540</field>
+            <field name="value">350</field>
             <field name="recipe_id" ref="press_dermanord.image_thumbnail"/>
         </record>
 
