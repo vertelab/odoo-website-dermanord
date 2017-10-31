@@ -59,7 +59,7 @@
                     <p t-att-id="request.env.ref('press_dermanord.image_original').id" class="original_recipe hidden"/>
                     <section>
                         <div class="container mt16 mb16">
-                            <h3 class="text-center">Press Material</h3>
+                            <h1 class="text-center">Press Material</h1>
                             <div class="col-md-12 col-sm-12 col-xs-12 b_bord">
                                 <t t-call="press_dermanord.press_material_block" />
                             </div>

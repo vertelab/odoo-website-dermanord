@@ -36,7 +36,7 @@
 .img_press_text {
     text-align: center;
     position: absolute;
-    right: 20px;
+    right: 15px;
     bottom: 15px;
     padding: 0px 15px;
     background-color: rgba(100,100,100,0.5);
@@ -60,7 +60,7 @@
 }
 
 #twitter_block, #press_ansvarig_block, #press_release_block {
-    padding: 16px;
+    padding: 15px;
 }
 
 .a_bord {

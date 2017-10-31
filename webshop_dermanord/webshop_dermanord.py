@@ -461,6 +461,8 @@ class website_sale(website_sale):
                 'is_reseller': 'yes' if is_reseller else 'no',
                 'default_code': product.default_code or '',
                 'attribute_value_ids': (' , ' + ' , '.join(attributes)) if len(attributes) > 0 else '',
+                'sale_ok': product.sale_ok,
+                'sale_start': product.sale_start,
             })
 
         values = {

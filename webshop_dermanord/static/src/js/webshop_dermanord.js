@@ -48,7 +48,7 @@ $(document).ready(function(){
             $(this).closest(".checkbox").find(".like").removeAttr('checked');
         }
     });
-       
+
 
 
     function update_product_image(event_source, product_id) {
@@ -276,6 +276,7 @@ $(document).ready(function(){
 
             var product_id = false;
             for (var k in variant_ids) {
+                console.log(k);
                 if (_.isEmpty(_.difference(variant_ids[k][1], values))) {
                     openerp.website.ready().then(function() {
                         $price.html(price_to_str(variant_ids[k][2]));
@@ -294,13 +295,13 @@ $(document).ready(function(){
                     break;
                 }
                  // sale_ok / sale_start hide add-button and maybe view information about sale start
-                if (xyz[k][1] == 'False') {
-                    $('#add_to_cart').addClass('hidden'); 
-                    if (! xyz[k][2] == '') {
-                        $('#sale_start_info').removeClass('hidden')    
-                        $('#sale_start').html(xyz[k])            
-                    }
-                }
+                //~ if (sale_ok[k][2] == 'False') {
+                    //~ $('#add_to_cart').addClass('hidden');
+                    //~ if (sale_ok[k][3] != '') {
+                        //~ $('#sale_start_info').removeClass('hidden');
+                        //~ $('#sale_start').html(sale_ok[k][3]);
+                    //~ }
+                //~ }
             }
 
             if (product_id) {
