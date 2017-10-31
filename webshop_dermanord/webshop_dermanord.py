@@ -123,6 +123,8 @@ class product_pricelist(models.Model):
 
 class website_sale(website_sale):
 
+    mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
+
     def get_attribute_value_ids(self, product):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
         currency_obj = pool['res.currency']
