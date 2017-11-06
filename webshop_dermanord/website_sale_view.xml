@@ -399,6 +399,17 @@
         </template>
 
         <template id="dermanord_product_detail" inherit_id="website_sale.product">
+            <a id="add_to_cart" position="after">
+<!--
+                <div id="sale_start_info" class="alert alert-info hidden">Säljstart från <span id='sale_start'/></div>
+                <t t-set="start_dates" t-value="[]"/>
+                <t t-foreach="product.product_variant_ids" t-as="variant">
+                    <t t-set="start_dates" t-value="start_dates + [[variant.id, variant.sale_ok, variant.sale_start]]"/>
+                </t>
+                <t t-set="start_dates" t-value="{(v.id : [v.sale_ok, v.sale_start]) for v in product.product_variant_ids}"/>
+                <div id="sale_ok" class="hidden" t-att-data-sale_ok="start_dates"/>
+-->
+            </a>
             <xpath expr="//form[@class='js_add_cart_variants']" position="inside">
                 <input name="return_url" type="hidden" t-att-value="request.httprequest.url"/>
             </xpath>
@@ -567,7 +578,6 @@
                               "from_currency": "product.company_id.currency_id",
                               "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                            }'/> <span style="display: inline;">(rek ink moms)</span>
-
                         </div>
                         <b class="oe_price" style="white-space: nowrap;"
                             t-field="product.price"

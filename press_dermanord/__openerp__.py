@@ -30,7 +30,7 @@ Press page for Dermanord
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_imagemagick', 'website_document', 'website_blog'],
+    'depends': ['theme_dermanord', 'website_imagemagick', 'website_document', 'website_blog_dermanord'],
     'data': [
         'press_dermanord_view.xml',
         'press_dermanord_data.xml',
