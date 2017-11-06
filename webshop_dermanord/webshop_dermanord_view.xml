@@ -41,9 +41,28 @@
 
                   <div class="clearfix"/>
 -->
+            <xpath expr="//div[@class='col-lg-offset-1 col-lg-3 col-md-3 text-muted']" position="after">
+                <div t-if="user_id != website.env.ref('base.public_user')" class="col-lg-offset-1 col-lg-3 col-md-3 text-muted">
+              <h3 class="page-header mt16">Your Address <small><a href="/home"><span class="fa fa-arrow-right"/> change</a></small></h3>
+              <div class="row">
+                  <div t-field="user_id.partner_id" t-field-options='{
+                      "widget": "contact",
+                      "fields": ["name", "address", "phone", "mobile", "email"]}'/>
+              </div>
+          </div>
+                
+            </xpath>
 
-
-
+        </template>
+        
+        <template id="remove_header" inherit_id="website_sale_invoice.sale_invoice_address" name="Checkout Address Remove Header">
+            <xpath expr="//h3" position="replace">
+                <h3 class="page-header mt16">
+                    <small groups="base.group_public">
+                        <a class="btn btn-primary" t-if="not partner" t-attf-href="/web?redirect=#{ request.httprequest.url }">Sign in</a>
+                    </small>
+                </h3>
+            </xpath>
         </template>
 
         <template id="search_result" inherit_id="website_fts.search_result">
