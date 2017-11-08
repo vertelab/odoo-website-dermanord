@@ -414,7 +414,7 @@
                 <h4 class="text-muted default_code" t-field="product_product.default_code"/>
             </xpath>
             <xpath expr="//a[@id='add_to_cart']" position="attributes">
-                <attribute name="class">hidden</attribute>
+                <attribute name="groups">base.group_user,base.group_portal</attribute>
             </xpath>            
 <!--
             <xpath expr="//form[@class='js_add_cart_variants']" position="after">

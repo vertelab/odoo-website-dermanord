@@ -140,7 +140,7 @@ class Main(http.Controller):
     @http.route(['/resellers/competence/<model("res.partner.category"):competence>',], type='http', auth="public", website=True)
     def reseller_competence(self, competence, **post): 
         return request.website.render('reseller_dermanord.resellers', {
-            'resellers': request.env['res.partner'].sudo().search(['&', ('is_reseller', '=', True), ('child_category_ids', 'in', competence)])
+            'resellers': request.env['res.partner'].sudo().search(['&', ('is_reseller', '=', True), ('child_category_ids', 'in', competence.id)])
         })
 
     @http.route([
