@@ -14,23 +14,70 @@
             <field name="name">Press</field>
             <field name="subtitle">Press Release</field>
             <field name="description">Press Release</field>
+            <field name="post_short" ref="press_dermanord.press_messages"/>
+            <field name="post_complete" ref="press_dermanord.press_detail"/>
+        </record>
+
+        <record id="menu_press_parent" model="website.menu">
+            <field name="name">PRESS</field>
+            <field name="sequence">100</field>
+            <field name="url">/page/press</field>
+            <field name="parent_id" ref="theme_dermanord.footer_menu" />
+        </record>
+
+        <record id="menu_press" model="website.menu">
+            <field name="name">Press</field>
+            <field name="sequence">101</field>
+            <field name="url">/page/press-home</field>
+            <field name="parent_id" ref="press_dermanord.menu_press_parent" />
+        </record>
+
+        <record id="menu_press_messages" model="website.menu">
+            <field name="name">Press Messages</field>
+            <field name="sequence">102</field>
+            <field name="url">/page/press-messages</field>
+            <field name="parent_id" ref="press_dermanord.menu_press_parent" />
+        </record>
+
+        <record id="menu_press_images" model="website.menu">
+            <field name="name">Press Images</field>
+            <field name="sequence">103</field>
+            <field name="url">/page/press-images</field>
+            <field name="parent_id" ref="press_dermanord.menu_press_parent" />
         </record>
 
         <!-- image thumbnail -->
         <record id="image_thumbnail" model="image.recipe">
             <field name="name">Image Thumbnail (4:3)</field>
             <field name="description">Thumbnail size</field>
-            <field name="recipe">if image.width &gt;= image.height: #landscape
-    if float(image.width)/image.height &gt;= float(4)/3:
-        image.transform(resize='%sx&gt;' %int(float(image.width)/image.height*200))
-    else:
-        image.transform(resize='%sx&gt;' %int(float(4)/3*image.height/image.width*200))
-    image.crop(width=int(float(4)/3*200), height=200, gravity='center')
-else: #portrait
-    image.transform(resize='200x&gt;')
-    image.crop(width=int(float(3)/4*200), height=200, gravity='center')
+            <field name="recipe">if float(image.width)/image.height &gt;= float(horizontal)/float(vertical):
+    image.transform(resize='%sx&gt;' %int(float(image.width)/image.height*image.width))
+    image.crop(width=int(float(horizontal)/float(vertical)*image.height), height=image.height, gravity='center')
+    image.resize(int(canvas_size), int(float(canvas_size)*float(vertical)/float(horizontal)))
+else:
+    image.transform(resize='%sx&gt;' %int(float(horizontal)/float(vertical)*image.width))
+    image.crop(width=image.width, height=int(float(vertical)/float(horizontal)*image.width), gravity='center')
+    image.resize(int(float(canvas_size)*float(horizontal)/float(vertical)), int(canvas_size))
             </field>
         </record>
+        <record id="image_thumbnail_param_canvas" model="image.recipe.param">
+            <field name="name">canvas_size</field>
+            <field name="value">350</field>
+            <field name="recipe_id" ref="press_dermanord.image_thumbnail"/>
+        </record>
+
+        <record id="image_thumbnail_horizontal" model="image.recipe.param">
+            <field name="name">horizontal</field>
+            <field name="value">4</field>
+            <field name="recipe_id" ref="press_dermanord.image_thumbnail"/>
+        </record>
+
+        <record id="image_thumbnail_vertical" model="image.recipe.param">
+            <field name="name">vertical</field>
+            <field name="value">3</field>
+            <field name="recipe_id" ref="press_dermanord.image_thumbnail"/>
+        </record>
+
         <!-- image website -->
         <record id="image_website" model="image.recipe">
             <field name="name">Image Website (max 800px)</field>

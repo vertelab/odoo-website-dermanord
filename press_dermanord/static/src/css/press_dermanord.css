@@ -12,17 +12,21 @@
 */
 
 .img_press_block {
-    padding: 16px;
+    padding: 15px !important;
 }
 
 .img_press_img {
-    overflow: hidden;
     width: 100%;
+    max-width: 540px;
+    max-height: 400px;
+    position: relative;
 }
 
 .image_press_img .img_2_change {
     width: 100%;
     height: auto;
+    max-width: 540px;
+    max-height: 400px;
 }
 
 .img_press_img img {
@@ -31,6 +35,20 @@
 
 .img_press_text {
     text-align: center;
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    padding: 0px 15px;
+    background-color: rgba(100,100,100,0.5);
+}
+
+.img_press_text a {
+    color: #fff;
+}
+
+.img_press_cc img {
+    max-width: 22px;
+    margin: 0px 20px 2px 20px;
 }
 
 #twitter_block ul {
@@ -42,7 +60,7 @@
 }
 
 #twitter_block, #press_ansvarig_block, #press_release_block {
-    padding: 16px;
+    padding: 15px;
 }
 
 .a_bord {

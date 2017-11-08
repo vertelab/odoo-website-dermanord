@@ -48,23 +48,7 @@ $(document).ready(function(){
             $(this).closest(".checkbox").find(".like").removeAttr('checked');
         }
     });
-    var $add_to_cart = $("#add_to_cart");
-    $add_to_cart.find('a').attr('disabled','disabled');
-    
-    //~ $("#terms_and_conditions").find("[name='terms_and_conditions']").on('change', function () {
-        //~ openerp.jsonRpc("/shop/order/terms_and_conditions", 'call', {
-            //~ 'accepted': $(this).val(),
-        //~ });
-    //~ });
-    //~ $("#terms_and_conditions").on('click', function(ev){
-        //~ if ($('#terms_and_conditions:checked').length != 0) {
-            //~ $payment.find('button').removeAttr('disabled');
-        //~ }
-        //~ else {
-            //~ $payment.find('button').attr('disabled','disabled');
-        //~ }
-    //~ });
-    
+
 
 
     function update_product_image(event_source, product_id) {
@@ -292,11 +276,13 @@ $(document).ready(function(){
 
             var product_id = false;
             for (var k in variant_ids) {
+                console.log(k);
                 if (_.isEmpty(_.difference(variant_ids[k][1], values))) {
                     openerp.website.ready().then(function() {
                         $price.html(price_to_str(variant_ids[k][2]));
                         $default_price.html(price_to_str(variant_ids[k][3]));
                         $recommended_price.html(price_to_str(variant_ids[k][4]));
+                        $('#sale_start_info').removeClass('hidden')
                     });
                     if (variant_ids[k][3]-variant_ids[k][2]>0.2) {
                         $default_price.closest('.oe_website_sale').addClass("discount");
@@ -308,6 +294,14 @@ $(document).ready(function(){
                     product_id = variant_ids[k][0];
                     break;
                 }
+                 // sale_ok / sale_start hide add-button and maybe view information about sale start
+                //~ if (sale_ok[k][2] == 'False') {
+                    //~ $('#add_to_cart').addClass('hidden');
+                    //~ if (sale_ok[k][3] != '') {
+                        //~ $('#sale_start_info').removeClass('hidden');
+                        //~ $('#sale_start').html(sale_ok[k][3]);
+                    //~ }
+                //~ }
             }
 
             if (product_id) {

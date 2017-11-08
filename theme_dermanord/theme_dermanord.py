@@ -67,27 +67,31 @@ class website(models.Model):
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
             return ''.join(reversed(breadcrumb))
-        #~ elif path.startswith('/blog/'): # url is a blog
-            #~ if '/post/' in path:
-                #~ home_menu = self.env.ref('website.menu_homepage')
-                #~ blog_id = path[(path.index('/blog/')+len('/blog/')):path.index('/post/')].split('-')[-1]
-                #~ post_id = path.split('/post/')[-1].split('-')[-1]
-                #~ try:
-                    #~ blog = request.env['blog.blog'].browse(int(blog_id))
-                    #~ post = request.env['blog.post'].browse(int(post_id))
-                    #~ breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="/blog/%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name, post.id, post.name))
-                    #~ return breadcrumb[0]
-                #~ except:
-                    #~ _logger.error('Blog post does not exist')
-            #~ else:
-                #~ home_menu = self.env.ref('website.menu_homepage')
-                #~ blog_id = path.split('/blog/')[-1].split('-')[-1]
-                #~ try:
-                    #~ blog = request.env['blog.blog'].browse(int(blog_id))
-                    #~ breadcrumb.append('<li><a href="%s">%s</a></li><li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name, blog.id, blog.name))
-                    #~ return breadcrumb[0]
-                #~ except:
-                    #~ _logger.error('Blog does not exist')
+        elif path.startswith('/home'): # url is on the user home page
+            path = path.split('/')[1:]
+            _logger.warn(path)
+            home_menu = self.env.ref('website.menu_homepage')
+            breadcrumb = ['<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name)]
+            if len(path) > 1:
+                user = self.env['res.users'].browse(int(path[1].split('-')[-1]))
+            else:
+                user = self.env.user
+            breadcrumb.append('<li><a href="/home/%s">%s</a></li>' % (path[1], user.name))
+            if len(path) > 3:
+                if path[2] == 'order':
+                    order = self.env['sale.order'].browse(int(path[3].split('-')[-1]))
+                    breadcrumb.append('<li><a href="/home/%s?tab=orders">%s</a></li>' % (path[1], _('Orders')))
+                    breadcrumb.append('<li><a href="/home/%s/order/%s">%s</a></li>' % (path[1], path[3], order.name))
+                if path[2] == 'claim':
+                    claim = self.env['crm.claim'].browse(int(path[3].split('-')[-1]))
+                    breadcrumb.append('<li><a href="/home/%s?tab=claims">%s</a></li>' % (path[1], _('Claims')))
+                    breadcrumb.append('<li><a href="/home/%s/claim/%s">%s</a></li>' % (path[1], path[3], claim.name))
+                if path[2] == 'line':
+                    order = self.env['sale.order'].search([('order_line', '=', int(path[3].split('-')[-1]))])
+                    breadcrumb.append('<li><a href="/home/%s?tab=orders">%s</a></li>' % (path[1], _('Orders')))
+                    breadcrumb.append('<li><a href="/home/%s/order/%s">%s</a></li>' % (path[1], order.id, order.name))
+                    breadcrumb.append('<li><a href="/%s">%s</a></li>' % ('/'.join(path), _('File Claim')))
+            return ''.join(breadcrumb)
         else: # url is a normal menu or submenu
             path = path.split('/')
             for i in range(len(path)):

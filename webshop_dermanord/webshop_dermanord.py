@@ -141,6 +141,7 @@ class website_sale(website_sale):
         else:
             attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price] for p in product.sudo().product_variant_ids.filtered(lambda v: v.sale_ok == True)]
 
+        _logger.warn(attribute_value_ids)
         return attribute_value_ids
 
     def get_domain_append(self, post):
@@ -461,6 +462,8 @@ class website_sale(website_sale):
                 'is_reseller': 'yes' if is_reseller else 'no',
                 'default_code': product.default_code or '',
                 'attribute_value_ids': (' , ' + ' , '.join(attributes)) if len(attributes) > 0 else '',
+                'sale_ok': product.sale_ok,
+                'sale_start': product.sale_start,
             })
 
         values = {
@@ -507,6 +510,7 @@ class website_sale(website_sale):
         request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
         request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
 
+        _logger.warn('attrib values: %s' % self.get_attribute_value_ids)
         values = {
             'search': search,
             'category': category,

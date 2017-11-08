@@ -2,7 +2,7 @@
 ##############################################################################
 #
 # OpenERP, Open Source Management Solution, third party addon
-# Copyright (C) 2004-2015 Vertel AB (<http://vertel.se>).
+# Copyright (C) 2017- Vertel AB (<http://vertel.se>).
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -28,8 +28,20 @@ _logger = logging.getLogger(__name__)
 class pressDermanord(http.Controller):
 
     @http.route(['/page/press'], type='http', auth="public", website=True)
-    def repord(self, **post):
-        return request.website.render("press_dermanord.press_dermanord_template", {})
+    def press(self, **post):
+        return request.website.render("press_dermanord.press", {})
+
+    @http.route(['/page/press-home'], type='http', auth="public", website=True)
+    def press_home(self, **post):
+        return request.website.render("press_dermanord.press_home", {})
+
+    @http.route(['/page/press-messages'], type='http', auth="public", website=True)
+    def press_messages(self, **post):
+        return request.website.render("press_dermanord.press_messages", {})
+
+    @http.route(['/page/press-images'], type='http', auth="public", website=True)
+    def press_images(self, **post):
+        return request.website.render("press_dermanord.press_images", {})
 
     #~ @http.route(['/dermanord/<model("ir.attachment"):image>/id/<string:recipe_id>'], type='http', auth="public", website=True)
     #~ def url_to_img(self, image=None, recipe_id=None, **post):

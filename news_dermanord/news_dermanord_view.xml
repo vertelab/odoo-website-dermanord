@@ -51,7 +51,7 @@
             <t t-call="website_blog.index">
                 <div class="cover js_fullheight" id="title" t-attf-style="background-image: url(#{blog_post.background_image})" t-ignore="True">
                     <div class="container">
-                      <div class="container text-right mt16">
+                      <div class="text-right mt16">
                         <div class="btn-group css_non_editable_mode_hidden">
                             <a id="change_cover" class="btn btn-primary">
                                 Change Cover
@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div id="blog_block" class="container mt32 mb32">
-                    <h6 class="readable" style="font-size: 60px; padding-top: 40px;"><i t-esc="blog_post.name" id="blog_post_name" class="readable" t-att-data-blog-id="blog_post.id"/></h6>
+                    <h6 class="readable" style="font-size: 60px; padding-top: 40px;"><i t-field="blog_post.name" id="blog_post_name" class="readable" t-att-data-blog-id="blog_post.id"/></h6>
                     <h5 class="text-muted readable" style="color: #bbb;"><t t-esc="website.formatted_date(str(blog_post.write_date)[:10])"/></h5>
                     <div id="blog_content" t-field="blog_post.content" class="mt32"/>
                     <p class="dn_uppercase mt32">tags:</p>
