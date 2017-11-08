@@ -547,7 +547,10 @@
             </xpath>
             <xpath expr="//strong[@t-field='variant_id.attribute_id.name']" position="after">
                 <t t-set="accessable_value_ids" t-value="request.env['product.attribute.value'].browse()"/>
-                <t t-foreach="product.product_variant_ids.with_context({'user_id': user_id}).filtered(lambda v: (not v.access_group_ids) or v._context.get('user_id') in v.access_group_ids.mapped('users'))" t-as="variant">
+<!--
+                <t t-foreach="product.product_variant_ids.with_context({'user_id': user_id}).filtered(lambda v: (not v.access_group_ids) or v._context.get('user_id') in v.sudo().access_group_ids.mapped('users'))" t-as="variant">
+-->
+                <t t-foreach="product.product_variant_ids" t-as="variant">
                     <t t-foreach="variant.attribute_value_ids" t-as="v">
                         <t t-if="v in variant_id.value_ids">
                             <t t-set="accessable_value_ids" t-value="accessable_value_ids | v"/>
