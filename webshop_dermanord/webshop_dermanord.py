@@ -23,11 +23,13 @@ from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
 from openerp.tools.translate import _
+from openerp.tools import html_escape as escape
 from datetime import datetime, date, timedelta
 from lxml import html
 from openerp.addons.website_sale.controllers.main import website_sale, QueryURL, table_compute
 from openerp.addons.website.models.website import slug
 from openerp.addons.website_fts.website_fts import WebsiteFullTextSearch
+from openerp.addons.base.ir.ir_qweb import HTMLSafe
 import werkzeug
 from heapq import nlargest
 import math
@@ -120,10 +122,86 @@ class product_pricelist(models.Model):
 
     for_reseller = fields.Boolean(string='For Reseller')
 
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
 
-class website_sale(website_sale):
+    @api.model
+    def address_to_html(self, options=None):
+        """Corresponds to the contact t-field widget."""
+        if options is None:
+            options = {}
+        opf = options.get('fields') or ["name", "address", "phone", "mobile", "fax", "email"]
+
+        value_rec = self.sudo().with_context(show_address=True)
+        value = value_rec.name_get()[0][1]
+
+        val = {
+            'name': value.split("\n")[0],
+            'address': escape("\n".join(value.split("\n")[1:])),
+            'phone': value_rec.phone,
+            'mobile': value_rec.mobile,
+            'fax': value_rec.fax,
+            'city': value_rec.city,
+            'country_id': value_rec.country_id.display_name,
+            'website': value_rec.website,
+            'email': value_rec.email,
+            'fields': opf,
+            'object': value_rec,
+            'options': options
+        }
+
+        html = self.env.ref("base.contact").render(val, engine='ir.qweb').decode('utf8')
+
+        return HTMLSafe(html)
+
+class WebsiteSale(website_sale):
 
     mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
+
+    def checkout_form_validate(self, data):
+        # Remove possibility to enter new shipping address.
+        if data.get('shipping_id') == -1:
+            data['shipping_id'] = 0
+        error = super(WebsiteSale, self).checkout_form_validate(data)
+        return error
+
+    def checkout_values(self, data=None):
+        #TODO: Completely replace this function to cut down on load times.
+        if not data:
+            data = {}
+        _logger.warn(data)
+        _logger.warn(request.env.context)
+        res = super(WebsiteSale, self).checkout_values(data)
+        #~ _logger.warn(res)
+        if request.env.user != request.website.user_id:
+            partner = request.env.user.partner_id
+            _logger.warn(partner)
+            invoicing_id = int(data.get("invoicing_id", '-2'))
+            if invoicing_id == -2:
+                order = request.website.sale_get_order(force_create=1)
+                invoicing_id = order.partner_invoice_id.id
+                if invoicing_id == partner.id:
+                    invoicing_id = 0
+            invoicings = request.env['res.partner'].sudo().with_context(show_address=1).search([("parent_id", "=", partner.commercial_partner_id.id), ('type', "=", 'invoice')])
+            _logger.warn(invoicings)
+            if partner != partner.commercial_partner_id:
+                shippings = res.get('shippings', request.env['res.partner'].sudo().browse())
+                shippings |= request.env['res.partner'].search([("parent_id", "=", partner.commercial_partner_id.id), ('type', "=", 'delivery')])
+                shippings |= partner.commercial_partner_id
+                invoicings |= partner.sudo().commercial_partner_id
+                res['shippings'] = shippings
+            _logger.warn(invoicings)
+            res['invoicings'] = invoicings.sudo()
+            res['invoicing_id'] = invoicing_id
+            res['checkout']['invoicing_id'] = invoicing_id
+        return res
+
+    def checkout_form_save(self, checkout):
+        super(WebsiteSale, self).checkout_form_save(checkout)
+        order = request.website.sale_get_order(force_create=1)
+        partner_invoice_id = checkout.get('invoicing_id') or request.env.user.partner_id.id
+        if order.partner_invoice_id.id != partner_invoice_id:
+            order.write({'partner_invoice_id': partner_invoice_id})
 
     def get_attribute_value_ids(self, product):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry

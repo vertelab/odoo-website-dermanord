@@ -33,7 +33,6 @@ Special layout for Dermanord AB webshop
     'depends': [
         'product_multi_image',
         'website_sale_product_gallery',
-        'website_sale_invoice',
         'website_blog',
         'product_dermanord',
         'website_sale_previous_products',

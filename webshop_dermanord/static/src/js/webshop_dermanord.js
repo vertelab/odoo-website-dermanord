@@ -77,17 +77,16 @@ $(document).ready(function(){
         $shippingDifferent.change(function (event) {
             var value = +$shippingDifferent.val();
             var data = $shippingDifferent.find("option:selected").data();
-            var $snipping = $(".js_shipping", oe_website_sale);
-            var $inputs = $snipping.find("input");
-            var $selects = $snipping.find("select");
-
-            $snipping.toggle(!!value);
-            $inputs.attr("readonly", value <= 0 ? null : "readonly" ).prop("readonly", value <= 0 ? null : "readonly" );
-            $selects.attr("disabled", value <= 0 ? null : "disabled" ).prop("disabled", value <= 0 ? null : "disabled" );
-
-            $inputs.each(function () {
-                $(this).val( data[$(this).attr("name")] || "" );
-            });
+            $('.row.shipping-address').addClass('hidden');
+            $('#shipping_addr_' + value).removeClass('hidden');
+        });
+        
+        var $invoicingDifferent = $("select[name='invoicing_id']", oe_website_sale);
+        $invoicingDifferent.change(function (event) {
+            var value = +$invoicingDifferent.val();
+            var data = $invoicingDifferent.find("option:selected").data();
+            $('.row.invoicing-address').addClass('hidden');
+            $('#invoicing_addr_' + value).removeClass('hidden');
         });
 
         $(oe_website_sale).on("change", 'input[name="add_qty"]', function (event) {
@@ -353,13 +352,13 @@ $(document).ready(function(){
         });
         $(oe_website_sale).find("select[name='country_id']").change();
 
-        $(oe_website_sale).on('change', "select[name='shipping_country_id']", function () {
-            var $select = $("select[name='shipping_state_id']");
-            $select.find("option:not(:first)").hide();
-            var nb = $select.find("option[data-country_id="+($(this).val() || 0)+"]").show().size();
-            $select.parent().toggle(nb>1);
-        });
-        $(oe_website_sale).find("select[name='shipping_country_id']").change();
+        //~ $(oe_website_sale).on('change', "select[name='shipping_country_id']", function () {
+            //~ var $select = $("select[name='shipping_state_id']");
+            //~ $select.find("option:not(:first)").hide();
+            //~ var nb = $select.find("option[data-country_id="+($(this).val() || 0)+"]").show().size();
+            //~ $select.parent().toggle(nb>1);
+        //~ });
+        //~ $(oe_website_sale).find("select[name='shipping_country_id']").change();
     });
 
     $(window).scroll(function() {

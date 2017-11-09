@@ -33,7 +33,33 @@
             <xpath expr="//select[@name='state_id']/.." position="attributes">
                 <attribute name="t-attf-class">form-group #{error.get('state_id') and 'has-error' or ''} col-lg-6 hidden</attribute>
             </xpath>
-
+            
+            <xpath expr="//h3[@class='page-header mt16']" position="replace">
+                
+            </xpath>
+            
+            <xpath expr="//select[@name='shipping_id']/option[@value='-1']" position="replace">
+                
+            </xpath>
+            
+            <xpath expr="//div[@class='js_shipping row mb16']" position="attributes">
+                <attribute name="t-att-style">'display:none'</attribute>
+            </xpath>
+            
+            <xpath expr="//select[@name='shipping_id']/.." position="after">
+                <div class="form-group col-lg-12">
+                    <label>Invoicing</label>
+                    <select name="invoicing_id" class="form-control">
+                        <option value="0">Invoice to the same address</option>
+                        <t t-foreach="invoicings" t-as="invoicing">
+                            <option t-att-value="invoicing.id" t-att-selected="invoicing.id == invoicing_id"><t t-esc="', '.join('\n'.join(invoicing.name_get()[0][1].split(',')).split('\n')[1:])"/></option>
+                        </t>
+                    </select>
+                </div>
+            </xpath>
+            
+            
+            
 <!--
                   <div t-if="has_check_vat" class="clearfix"/>
 
@@ -41,20 +67,50 @@
 
                   <div class="clearfix"/>
 -->
-            <xpath expr="//div[@class='col-lg-offset-1 col-lg-3 col-md-3 text-muted']" position="after">
-                <div t-if="user_id != website.env.ref('base.public_user')" class="col-lg-offset-1 col-lg-3 col-md-3 text-muted">
-              <h3 class="page-header mt16">Your Address <small><a href="/home"><span class="fa fa-arrow-right"/> change</a></small></h3>
-              <div class="row">
-                  <div t-field="user_id.partner_id" t-field-options='{
-                      "widget": "contact",
-                      "fields": ["name", "address", "phone", "mobile", "email"]}'/>
-              </div>
-          </div>
+            <xpath expr="//div[@class='col-lg-offset-1 col-lg-3 col-md-3 text-muted']" position="inside">
+                <t t-if="user_id != website.env.ref('base.public_user')">
+                    <h3 class="page-header mt16">Contact Information</h3>
+                    <div class="row">
+                        <div t-field="user_id.partner_id" t-field-options='{
+                            "widget": "contact",
+                            "fields": ["name", "address", "phone", "mobile", "email"]}'/>
+                    </div>
+                    
+                    <h3 class="page-header mt16">Shipping Address</h3>
+                    <div id="shipping_addr_0" t-att-class="'row shipping-address hidden' if shipping_id != 0 else 'row shipping-address'">
+                        <div t-field="user_id.partner_id" t-field-options='{
+                            "widget": "contact",
+                            "fields": ["name", "address", "phone", "mobile", "email"]}'/>
+                    </div>
+                    <t t-foreach="shippings" t-as="shipping">
+                        <div t-att-id="'shipping_addr_%s' % shipping.id" t-att-class="'row shipping-address hidden' if shipping.id != shipping_id else 'row shipping-address'">
+                            <t t-raw='shipping.address_to_html({
+                                "widget": "contact",
+                                "fields": ["name", "address", "phone", "mobile", "email"]})'/>
+                        </div>
+                    </t>
+                    
+                    <h3 class="page-header mt16">Invoice Address</h3>
+                    <div id="invoicing_addr_0" t-att-class="'row invoicing-address hidden' if invoicing_id != 0 else 'row invoicing-address'">
+                        <div t-field="user_id.partner_id" t-field-options='{
+                            "widget": "contact",
+                            "fields": ["name", "address", "phone", "mobile", "email"]}'/>
+                    </div>
+                    <t t-foreach="invoicings" t-as="invoicing">
+                        <div t-att-id="'invoicing_addr_%s' % invoicing.id" t-att-class="'row invoicing-address hidden' if invoicing.id != invoicing_id else 'row invoicing-address'">
+                            <t t-raw='invoicing.address_to_html({
+                                "widget": "contact",
+                                "fields": ["name", "address", "phone", "mobile", "email"]})'/>
+                        </div>
+                    </t>
+                </t>
+                
                 
             </xpath>
 
         </template>
         
+<!--
         <template id="remove_header" inherit_id="website_sale_invoice.sale_invoice_address" name="Checkout Address Remove Header">
             <xpath expr="//h3" position="replace">
                 <h3 class="page-header mt16">
@@ -64,6 +120,7 @@
                 </h3>
             </xpath>
         </template>
+-->
 
         <template id="search_result" inherit_id="website_fts.search_result">
             <xpath expr="//t[@t-foreach='terms']" position="replace">
