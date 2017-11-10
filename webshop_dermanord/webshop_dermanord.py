@@ -159,10 +159,13 @@ class WebsiteSale(website_sale):
     mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
 
     def checkout_form_validate(self, data):
-        # Remove possibility to enter new shipping address.
-        if data.get('shipping_id') == -1:
-            data['shipping_id'] = 0
-        error = super(WebsiteSale, self).checkout_form_validate(data)
+        error = dict()
+        if not data.get("shipping_id") and data.get('shipping_id') != 0:
+            error['shipping_id'] = 'missing'
+
+        if not data.get("invoicing_id") and data.get('invoicing_id') != 0:
+            error['invoicing_id'] = 'missing'
+
         return error
 
     def checkout_values(self, data=None):
