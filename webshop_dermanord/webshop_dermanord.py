@@ -336,10 +336,11 @@ class WebsiteSale(website_sale):
         if category:
             if not request.session.get('form_values'):
                 request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
-            for k,v in request.session.get('form_values').items():
-                if 'category_' in k:
-                    del request.session['form_values'][k]
-                    request.session['form_values']['category_%s' %int(category)] = '%s' %int(category)
+            request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
+            #~ for k,v in request.session.get('form_values').items():
+                #~ if 'category_' in k:
+                    #~ del request.session['form_values'][k]
+                    #~ request.session['form_values']['category_%s' %int(category)] = '%s' %int(category)
 
         keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
@@ -631,10 +632,11 @@ class WebsiteSale(website_sale):
         if category:
             if not request.session.get('form_values'):
                 request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
-            for k,v in request.session.get('form_values').items():
-                if 'category_' in k:
-                    del request.session['form_values'][k]
-                    request.session['form_values']['category_%s' %int(category)] = '%s' %int(category)
+            request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
+            #~ for k,v in request.session.get('form_values').items():
+                #~ if 'category_' in k:
+                    #~ del request.session['form_values'][k]
+                    #~ request.session['form_values']['category_%s' %int(category)] = '%s' %int(category)
 
         keep = QueryURL('/dn_list', category=category and int(category), search=search, attrib=None)
 
