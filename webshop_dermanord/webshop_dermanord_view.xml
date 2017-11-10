@@ -33,19 +33,19 @@
             <xpath expr="//select[@name='state_id']/.." position="attributes">
                 <attribute name="t-attf-class">form-group #{error.get('state_id') and 'has-error' or ''} col-lg-6 hidden</attribute>
             </xpath>
-            
+
             <xpath expr="//h3[@class='page-header mt16']" position="replace">
-                
+
             </xpath>
-            
+
             <xpath expr="//select[@name='shipping_id']/option[@value='-1']" position="replace">
-                
+
             </xpath>
-            
+
             <xpath expr="//div[@class='js_shipping row mb16']" position="attributes">
                 <attribute name="t-att-style">'display:none'</attribute>
             </xpath>
-            
+
             <xpath expr="//select[@name='shipping_id']/.." position="after">
                 <div class="form-group col-lg-12">
                     <label>Invoicing</label>
@@ -57,9 +57,9 @@
                     </select>
                 </div>
             </xpath>
-            
-            
-            
+
+
+
 <!--
                   <div t-if="has_check_vat" class="clearfix"/>
 
@@ -75,7 +75,7 @@
                             "widget": "contact",
                             "fields": ["name", "address", "phone", "mobile", "email"]}'/>
                     </div>
-                    
+
                     <h3 class="page-header mt16">Shipping Address</h3>
                     <div id="shipping_addr_0" t-att-class="'row shipping-address hidden' if shipping_id != 0 else 'row shipping-address'">
                         <div t-field="user_id.partner_id" t-field-options='{
@@ -89,7 +89,7 @@
                                 "fields": ["name", "address", "phone", "mobile", "email"]})'/>
                         </div>
                     </t>
-                    
+
                     <h3 class="page-header mt16">Invoice Address</h3>
                     <div id="invoicing_addr_0" t-att-class="'row invoicing-address hidden' if invoicing_id != 0 else 'row invoicing-address'">
                         <div t-field="user_id.partner_id" t-field-options='{
@@ -104,12 +104,12 @@
                         </div>
                     </t>
                 </t>
-                
-                
+
+
             </xpath>
 
         </template>
-        
+
 <!--
         <template id="remove_header" inherit_id="website_sale_invoice.sale_invoice_address" name="Checkout Address Remove Header">
             <xpath expr="//h3" position="replace">
@@ -324,6 +324,21 @@
             </field>
         </record>
 -->
+        <record id="view_sales_order_filter" model="ir.ui.view">
+            <field name="name">sale.order.list.select.inherited.webshop_dermanord</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <field name="section_id" position="after">
+                    <field name="state"/>
+                </field>
+                <filter string="Done" position="after">
+                    <filter string="Web Order" domain="[('section_id', '=', %(website.salesteam_website_sales)d)]" help="Ordered from webshop"/>
+                    <filter string="Not Web Order" domain="[('section_id', '&lt;&gt;', %(website.salesteam_website_sales)d)]" help="Not ordered from webshop"/>
+                    <filter string="Order Confimed from Web" domain="[('section_id', '=', %(website.salesteam_website_sales)d), ('state','=','sent')]" help="Order confimed from Web"/>
+                </filter>
+            </field>
+        </record>
 
     </data>
 </openerp>
