@@ -121,6 +121,11 @@ class product_pricelist(models.Model):
     _inherit = 'product.pricelist'
 
     for_reseller = fields.Boolean(string='For Reseller')
+    
+    @api.multi
+    def price_get(self, prod_id, qty, partner=None):
+        _logger.warn('price_get partner: %s' % partner)
+        return super(product_pricelist, self).price_get(prod_id, qty, partner)
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -153,6 +158,27 @@ class ResPartner(models.Model):
         html = self.env.ref("base.contact").render(val, engine='ir.qweb').decode('utf8')
 
         return HTMLSafe(html)
+
+class Website(models.Model):
+    _inherit = 'website'
+
+    # API handling broken for unknown reasons. Decorators not working properly with this method.
+    def sale_get_order(self, cr, uid, ids, force_create=False, code=None, update_pricelist=None, context=None):
+        env = api.Environment(cr, uid, context)
+        sale_order_obj = env['sale.order']
+        sale_order_id = request.session.get('sale_order_id')
+        sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
+
+        # Find old sale order that is a webshop cart.
+        if env.user != env.ref('base.public_user') and not sale_order:
+            sale_order = sale_order_obj.sudo().search([
+                ('partner_id', '=', env.user.partner_id.id),
+                ('section_id', '=', env.ref('website.salesteam_website_sales').id),
+                ('state', '=', 'draft'),
+            ], limit=1)
+            if sale_order:
+                request.session['sale_order_id'] = sale_order.id
+        return sale_order
 
 class WebsiteSale(website_sale):
 
