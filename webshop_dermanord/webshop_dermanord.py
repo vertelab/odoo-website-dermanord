@@ -138,6 +138,8 @@ class product_facet(models.Model):
                         if category.id in categories:
                             _logger.warn(facet.name)
                             facets |= facet
+        else:
+            facets = self.search([])
         return facets
 
 
@@ -514,7 +516,6 @@ class WebsiteSale(website_sale):
             'url': url,
             'page_count': page_count,
         }
-
         return values
 
     @http.route(['/dn_shop_json_list'], type='json', auth='public', website=True)
