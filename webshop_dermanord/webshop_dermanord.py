@@ -286,11 +286,11 @@ class WebsiteSale(website_sale):
         if category_ids:
             domain_append += [('public_categ_ids', 'in', [id for id in category_ids])]
         if facet_ids:
-            product_ids = request.env['product.product'].search_read(
+            product_ids = request.env['product.product'].sudo().search_read(
                 [('facet_line_ids.value_ids', '=', id) for id in facet_ids], ['id'])
             domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
         if ingredient_ids or not_ingredient_ids:
-            product_ids = request.env['product.product'].search_read(
+            product_ids = request.env['product.product'].sudo().search_read(
                 [('ingredient_ids', '=', id) for id in ingredient_ids] + [('ingredient_ids', '!=', id) for id in not_ingredient_ids], ['id'])
             domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
 
