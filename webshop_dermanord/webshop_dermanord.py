@@ -117,6 +117,30 @@ class product_product(models.Model):
         return None
 
 
+class product_facet(models.Model):
+    _inherit = 'product.facet'
+
+    @api.multi
+    def get_filtered_facets(self, form_values):
+        categories = []
+        if len(form_values) > 0:
+            for k, v in form_values.iteritems():
+                if k.split('_')[0] == 'category':
+                    if v:
+                        categories.append(int(v))
+        facets = self.browse([])
+        if len(categories) > 0:
+            for facet in facets.search([], order='sequence'):
+                if len(facet.category_ids) == 0:
+                    facets |= facet
+                else:
+                    for category in facet.category_ids:
+                        if category.id in categories:
+                            _logger.warn(facet.name)
+                            facets |= facet
+        return facets
+
+
 class product_pricelist(models.Model):
     _inherit = 'product.pricelist'
 
