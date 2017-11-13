@@ -80,7 +80,7 @@ $(document).ready(function(){
             $('.row.shipping-address').addClass('hidden');
             $('#shipping_addr_' + value).removeClass('hidden');
         });
-        
+
         var $invoicingDifferent = $("select[name='invoicing_id']", oe_website_sale);
         $invoicingDifferent.change(function (event) {
             var value = +$invoicingDifferent.val();
@@ -399,7 +399,7 @@ function load_products_grid(page){
                 });
                 products_content += content;
             });
-            $(".oe_website_sale").find('.row').append(products_content);
+            $("#desktop_product_grid").append(products_content);
             current_page ++;
         }
     });
