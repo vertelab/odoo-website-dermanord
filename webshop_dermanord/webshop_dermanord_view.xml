@@ -58,7 +58,9 @@
                 </div>
             </xpath>
 
-
+            <xpath expr="//div[@class='col-md-8 oe_cart']" position="after">
+                <div class="oe_structure"/>
+            </xpath>            
 
 <!--
                   <div t-if="has_check_vat" class="clearfix"/>

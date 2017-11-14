@@ -117,10 +117,41 @@ class product_product(models.Model):
         return None
 
 
+class product_facet(models.Model):
+    _inherit = 'product.facet'
+
+    @api.multi
+    def get_filtered_facets(self, form_values):
+        categories = []
+        if len(form_values) > 0:
+            for k, v in form_values.iteritems():
+                if k.split('_')[0] == 'category':
+                    if v:
+                        categories.append(int(v))
+        facets = self.browse([])
+        if len(categories) > 0:
+            for facet in facets.search([], order='sequence'):
+                if len(facet.category_ids) == 0:
+                    facets |= facet
+                else:
+                    for category in facet.category_ids:
+                        if category.id in categories:
+                            _logger.warn(facet.name)
+                            facets |= facet
+        else:
+            facets = self.search([])
+        return facets
+
+
 class product_pricelist(models.Model):
     _inherit = 'product.pricelist'
 
     for_reseller = fields.Boolean(string='For Reseller')
+    
+    @api.multi
+    def price_get(self, prod_id, qty, partner=None):
+        _logger.warn('price_get partner: %s' % partner)
+        return super(product_pricelist, self).price_get(prod_id, qty, partner)
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -153,6 +184,28 @@ class ResPartner(models.Model):
         html = self.env.ref("base.contact").render(val, engine='ir.qweb').decode('utf8')
 
         return HTMLSafe(html)
+
+class Website(models.Model):
+    _inherit = 'website'
+
+    # API handling broken for unknown reasons. Decorators not working properly with this method.
+    def sale_get_order(self, cr, uid, ids, force_create=False, code=None, update_pricelist=None, context=None):
+        env = api.Environment(cr, uid, context)
+        sale_order_obj = env['sale.order']
+        sale_order_id = request.session.get('sale_order_id')
+        sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
+
+        # Find old sale order that is a webshop cart.
+        if env.user != env.ref('base.public_user') and not sale_order:
+            sale_order = sale_order_obj.sudo().search([
+                ('partner_id', '=', env.user.partner_id.id),
+                ('section_id', '=', env.ref('website.salesteam_website_sales').id),
+                ('state', '=', 'draft'),
+            ], limit=1)
+            if sale_order:
+                request.session['sale_order_id'] = sale_order.id
+        _logger.warn(sale_order)
+        return sale_order
 
 class WebsiteSale(website_sale):
 
@@ -260,11 +313,11 @@ class WebsiteSale(website_sale):
         if category_ids:
             domain_append += [('public_categ_ids', 'in', [id for id in category_ids])]
         if facet_ids:
-            product_ids = request.env['product.product'].search_read(
+            product_ids = request.env['product.product'].sudo().search_read(
                 [('facet_line_ids.value_ids', '=', id) for id in facet_ids], ['id'])
             domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
         if ingredient_ids or not_ingredient_ids:
-            product_ids = request.env['product.product'].search_read(
+            product_ids = request.env['product.product'].sudo().search_read(
                 [('ingredient_ids', '=', id) for id in ingredient_ids] + [('ingredient_ids', '!=', id) for id in not_ingredient_ids], ['id'])
             domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
 
@@ -490,7 +543,6 @@ class WebsiteSale(website_sale):
             'url': url,
             'page_count': page_count,
         }
-
         return values
 
     @http.route(['/dn_shop_json_list'], type='json', auth='public', website=True)
