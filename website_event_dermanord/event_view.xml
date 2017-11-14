@@ -8,5 +8,15 @@
             
         </template>
         
+        <template id="layout" inherit_id="website_event.layout" >
+            <xpath expr="//div[@id='event_menu']" position="replace"/>
+        </template>
+        
+        
+    <template id="index" inherit_id="website_event.index">
+         <xpath expr="//ol[@class='breadcrumb mb0']" position="replace"/>
+    </template>
+        
+        
     </data>
 </openerp>
