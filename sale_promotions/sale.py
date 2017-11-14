@@ -47,7 +47,7 @@ class SalePromotions(models.Model):
 class SalePromotions(http.Controller):
     @http.route(['/get_sale_promotion'], type='json', auth='public', website=True)
     def get_sale_promotion(self, sp_id=None, **kw):
-        sp = request.env['sale.promotion'].browse(int(sp_id))
+        sp = request.env['sale.promotion'].sudo().browse(int(sp_id))
         sale_promotion = {}
         sale_promotion['_id'] = sp.id
         sale_promotion['name'] = sp.name

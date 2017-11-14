@@ -117,6 +117,32 @@ class product_product(models.Model):
         return None
 
 
+class product_facet(models.Model):
+    _inherit = 'product.facet'
+
+    @api.multi
+    def get_filtered_facets(self, form_values):
+        categories = []
+        if len(form_values) > 0:
+            for k, v in form_values.iteritems():
+                if k.split('_')[0] == 'category':
+                    if v:
+                        categories.append(int(v))
+        facets = self.browse([])
+        if len(categories) > 0:
+            for facet in facets.search([], order='sequence'):
+                if len(facet.category_ids) == 0:
+                    facets |= facet
+                else:
+                    for category in facet.category_ids:
+                        if category.id in categories:
+                            _logger.warn(facet.name)
+                            facets |= facet
+        else:
+            facets = self.search([])
+        return facets
+
+
 class product_pricelist(models.Model):
     _inherit = 'product.pricelist'
 
@@ -186,10 +212,13 @@ class WebsiteSale(website_sale):
     mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
 
     def checkout_form_validate(self, data):
-        # Remove possibility to enter new shipping address.
-        if data.get('shipping_id') == -1:
-            data['shipping_id'] = 0
-        error = super(WebsiteSale, self).checkout_form_validate(data)
+        error = dict()
+        if not data.get("shipping_id") and data.get('shipping_id') != 0:
+            error['shipping_id'] = 'missing'
+
+        if not data.get("invoicing_id") and data.get('invoicing_id') != 0:
+            error['invoicing_id'] = 'missing'
+
         return error
 
     def checkout_values(self, data=None):
@@ -284,11 +313,11 @@ class WebsiteSale(website_sale):
         if category_ids:
             domain_append += [('public_categ_ids', 'in', [id for id in category_ids])]
         if facet_ids:
-            product_ids = request.env['product.product'].search_read(
+            product_ids = request.env['product.product'].sudo().search_read(
                 [('facet_line_ids.value_ids', '=', id) for id in facet_ids], ['id'])
             domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
         if ingredient_ids or not_ingredient_ids:
-            product_ids = request.env['product.product'].search_read(
+            product_ids = request.env['product.product'].sudo().search_read(
                 [('ingredient_ids', '=', id) for id in ingredient_ids] + [('ingredient_ids', '!=', id) for id in not_ingredient_ids], ['id'])
             domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
 
@@ -360,10 +389,11 @@ class WebsiteSale(website_sale):
         if category:
             if not request.session.get('form_values'):
                 request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
-            for k,v in request.session.get('form_values').items():
-                if 'category_' in k:
-                    del request.session['form_values'][k]
-                    request.session['form_values']['category_%s' %int(category)] = '%s' %int(category)
+            request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
+            #~ for k,v in request.session.get('form_values').items():
+                #~ if 'category_' in k:
+                    #~ del request.session['form_values'][k]
+                    #~ request.session['form_values']['category_%s' %int(category)] = '%s' %int(category)
 
         keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
@@ -513,7 +543,6 @@ class WebsiteSale(website_sale):
             'url': url,
             'page_count': page_count,
         }
-
         return values
 
     @http.route(['/dn_shop_json_list'], type='json', auth='public', website=True)
@@ -655,10 +684,11 @@ class WebsiteSale(website_sale):
         if category:
             if not request.session.get('form_values'):
                 request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
-            for k,v in request.session.get('form_values').items():
-                if 'category_' in k:
-                    del request.session['form_values'][k]
-                    request.session['form_values']['category_%s' %int(category)] = '%s' %int(category)
+            request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
+            #~ for k,v in request.session.get('form_values').items():
+                #~ if 'category_' in k:
+                    #~ del request.session['form_values'][k]
+                    #~ request.session['form_values']['category_%s' %int(category)] = '%s' %int(category)
 
         keep = QueryURL('/dn_list', category=category and int(category), search=search, attrib=None)
 
