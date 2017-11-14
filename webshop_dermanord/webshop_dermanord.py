@@ -178,6 +178,7 @@ class Website(models.Model):
             ], limit=1)
             if sale_order:
                 request.session['sale_order_id'] = sale_order.id
+        _logger.warn(sale_order)
         return sale_order
 
 class WebsiteSale(website_sale):
