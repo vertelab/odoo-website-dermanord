@@ -111,18 +111,104 @@
             </xpath>
 
         </template>
-
-<!--
-        <template id="remove_header" inherit_id="website_sale_invoice.sale_invoice_address" name="Checkout Address Remove Header">
-            <xpath expr="//h3" position="replace">
-                <h3 class="page-header mt16">
-                    <small groups="base.group_public">
-                        <a class="btn btn-primary" t-if="not partner" t-attf-href="/web?redirect=#{ request.httprequest.url }">Sign in</a>
-                    </small>
-                </h3>
+        
+        <template id="payment_dermanord" name="Payment Dermanord" inherit_id="website_sale.payment">
+            <xpath expr="//div[@class='col-lg-8 col-sm-9 oe_cart']" position="replace">
+                <div class="col-lg-8 col-sm-9">
+                  <t t-set="website_sale_order" t-value="website.sale_get_order()"/>
+                  <div class="oe_cart">
+                  <table class="table table-striped table-condensed" id="cart_products" t-if="website_sale_order and website_sale_order.website_order_line">
+                      <thead>
+                          <tr>
+                              <th colspan="2" width="80">Product</th>
+                              <th width="100">Price</th>
+                              <th width="120">Quantity</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr t-foreach="website_sale_order.website_order_line" t-as="line">
+                              <td colspan="2" t-if="not line.product_id.product_tmpl_id"/>
+                              <td t-if="line.product_id.product_tmpl_id">
+                                  <a t-attf-href="/shop/product/#{ slug(line.product_id.product_tmpl_id) }">
+                                      <span t-field="line.product_id.image_small" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}"/>
+                                  </a>
+                              </td>
+                              <td t-if="line.product_id.product_tmpl_id">
+                                 <strong t-field="line.product_id.with_context(display_default_code=False).display_name"/>
+                              </td>
+                              <td class="text-center">
+                                 <span t-field="line.price_unit" style="white-space: nowrap;" t-field-options="{                                  &quot;widget&quot;: &quot;monetary&quot;,                                  &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                                  &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                              }"/>
+                              </td>
+                              <td>
+                                 <div t-esc="line.product_uom_qty"/>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+                  </div>
+                  <div class="col-lg-5 col-sm-6 col-lg-offset-7 col-sm-offset-6" style="padding-left: 3px; padding-right: 3px;">
+                      <t t-call="website_sale.total"/>
+                  </div>
+                  <div class="clearfix"/>
+                  <div class="oe_structure"/>
+                  <div class="row form-group" id="order_comment">
+                        <label for="note">Comment:</label>
+                        <textarea class="form-control" rows="5" name="note" />
+                    </div>
+                    <div class="row" id="terms_and_conditions">
+                        <div class="col-lg-5 col-sm-6">
+                            <h4>Terms and Conditions</h4>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id='terms_and_conditions' />
+                                    I Agree with the
+                                    <a href="#" onclick="window.open('/page/terms-and-conditions', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+            
+            <xpath expr="//div[@t-if='acquirers and website_sale_order.amount_total']" position="attributes">
+                <attribute name="class">js_payment mb64 row col-lg-8 col-sm-9</attribute>
+            </xpath>
+            
+            <xpath expr="//div[@t-if='acquirers and website_sale_order.amount_total']/div[@class='col-lg-5 col-sm-6']" position="attributes">
+                <attribute name="class">col-lg-7 col-sm-6</attribute>
+            </xpath>
+            
+            <xpath expr="//div[@t-if='acquirers and website_sale_order.amount_total']/div[@class='col-lg-3 col-sm-3']" position="attributes">
+                <attribute name="class">col-lg-5 col-sm-6</attribute>
+            </xpath>
+            
+            <xpath expr="//div[@t-if='not website_sale_order.amount_total']" position="attributes">
+                <attribute name="class">js_payment mb64 row col-lg-8 col-sm-9</attribute>
+            </xpath>
+            
+            <xpath expr="//div[@t-if='not website_sale_order.amount_total']/div[@class='col-lg-8 col-sm-8']" position="attributes">
+                <attribute name="class">col-lg-5 col-sm-6 col-lg-offset-7 col-sm-offset-6</attribute>
+            </xpath>
+            
+            <xpath expr="//div[@class='oe_sale_acquirer_button hidden pull-right']" position="attributes">
+                <attribute name="class">oe_sale_acquirer_button hidden</attribute>
+            </xpath>
+            
+        </template>
+        
+        <template id="total_dermanord" inherit_id="website_sale.total">
+            <xpath expr="//table" position="attributes">
+                <attribute name="class">pull-left mb16 oe_total_table_fix</attribute>
             </xpath>
         </template>
--->
+        
+        <record id="website_sale_comment.payment" model="ir.ui.view">
+            <field name="active" eval="False"/>
+        </record>
+        
+        <record id="website_sale_terms.payment_terms_and_conditions" model="ir.ui.view">
+            <field name="active" eval="False"/>
+        </record>
 
         <template id="search_result" inherit_id="website_fts.search_result">
             <xpath expr="//t[@t-foreach='terms']" position="replace">
@@ -232,9 +318,9 @@
             </xpath>
         </template>
 
-        <template id="webshop_dermanord" inherit_id="website.layout" name="Webshop Dermanord">
+        <template id="webshop_dermanord" inherit_id="website.assets_frontend" name="Webshop Dermanord">
             <!-- Customize css -->
-            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
+            <xpath expr="." position="inside">
                 <link href="/webshop_dermanord/static/src/css/webshop_dermanord.css" rel="stylesheet" />
             </xpath>
         </template>

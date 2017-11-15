@@ -371,6 +371,16 @@ $(document).ready(function(){
             }
         }
     });
+    
+    //~ $(window).resize(function() {
+        //~ var pm = $('div#payment_method');
+        //~ if (pm !== undefined) {
+            //~ var total = $('table#cart_total');
+            //~ if (total !== undefined) {
+                //~ pm.width(total.width());
+            //~ }
+        //~ }
+    //~ });
 });
 
 function load_products_grid(page){
