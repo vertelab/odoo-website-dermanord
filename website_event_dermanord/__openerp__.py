@@ -30,7 +30,7 @@ Event page for Dermanord
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_event', 'theme_dermanord'],
+    'depends': ['website_event', 'theme_dermanord', 'website_google_maps_fix'],
     'data': [
         'event_view.xml',
 ],
