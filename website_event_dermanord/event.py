@@ -34,7 +34,10 @@ class Event(models.Model):
     def google_map_img(self, zoom=8, width=298, height=298):
         _logger.warn('google_map_img')
         if self.sudo().address_id:
-            return self.sudo().address_id.google_map_img(zoom=zoom, width=width, height=height, marker={
-                'icon': 'http://wiggum.vertel.se/dn_maps_marker.png',
+            return self.sudo().address_id.google_map_img(
+                zoom=zoom, width=width, height=height, marker={
+                'icon': self.env['ir.config_parameter'].get_param(
+                    'dermanord_map_marker',
+                    'http://wiggum.vertel.se/dn_maps_marker.png'),
             })
         return None
