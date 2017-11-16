@@ -200,28 +200,28 @@
                   "fields": ["name", "address", "phone", "mobile", "fax", "email"]}'/>
                                 <div class="container hidden-print mt16 mb16">
                                     <div class="row">
-                                        <div class="dn-social-button">
-                                            <a t-att-href="website.social_facebook" t-if="website.social_facebook">
+                                        <div class="dn-social-button" t-if="website.social_facebook">
+                                            <a t-att-href="website.social_facebook">
                                                 <i class="fa fa-facebook fa-2x" />
                                             </a>
                                         </div>
-                                        <div class="dn-social-button">
-                                            <a t-att-href="website.social_instagram" t-if="website.social_instagram">
+                                        <div class="dn-social-button" t-if="website.social_instagram">
+                                            <a t-att-href="website.social_instagram">
                                                 <i class="fa fa-instagram fa-2x" />
                                             </a>
                                         </div>
-                                        <div class="dn-social-button">
-                                            <a t-att-href="website.social_twitter" t-if="website.social_twitter">
+                                        <div class="dn-social-button" t-if="website.social_twitter">
+                                            <a t-att-href="website.social_twitter">
                                                 <i class="fa fa-twitter fa-2x" />
                                             </a>
                                         </div>
-                                        <div class="dn-social-button">
-                                            <a t-att-href="website.social_youtube" t-if="website.social_youtube" rel="publisher">
+                                        <div class="dn-social-button" t-if="website.social_youtube">
+                                            <a t-att-href="website.social_youtube" rel="publisher">
                                                 <i class="fa fa-youtube fa-2x" />
                                             </a>
                                         </div>
-                                        <div class="dn-social-button">
-                                            <a t-att-href="website.social_snapchat" t-if="website.social_snapchat">
+                                        <div class="dn-social-button" t-if="website.social_snapchat">
+                                            <a t-att-href="website.social_snapchat">
                                                 <i class="fa fa-snapchat fa-2x" />
                                             </a>
                                         </div>
