@@ -67,6 +67,19 @@ class website(models.Model):
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
             return ''.join(reversed(breadcrumb))
+        elif path.startswith('/event'): # url is an event
+            breadcrumb.append('<li><a href="%s">%s</a></li>' %('/', 'Home'))
+            breadcrumb.append('<li><a href="%s">%s</a></li>' %('/event/', 'Event'))
+            if len(path.split('/'))>2:
+                event_id = path.split('/')[2].split('-')[-1]
+                event = self.env['event.event'].browse(int(event_id))
+                if event:
+                    breadcrumb.append('<li><a href="/event/%s">%s</a></li>' %(event.id, event.name))
+            #~ menu = self.env.ref('webshop_dermanord.menu_dn_shop')
+            #~ home_menu = self.env.ref('website.menu_homepage')
+            #~ breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
+            #~ breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
+            return ''.join(breadcrumb)
         elif path.startswith('/home'): # url is on the user home page
             path = path.split('/')[1:]
             _logger.warn(path)

@@ -27,10 +27,11 @@
     'description': """
 Event page for Dermanord
 ====================
+Specify URL to Dermanord map marker in parameter dermanord_map_marker.
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_event', 'theme_dermanord'],
+    'depends': ['website_event', 'theme_dermanord', 'website_google_maps_fix'],
     'data': [
         'event_view.xml',
 ],

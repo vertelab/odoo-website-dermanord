@@ -27,16 +27,17 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class ResPartner(models.Model):
-    _inherit = 'res.partner'
-    
-    # /addons/website/models/website.py
-    #~ def google_map_img(self, cr, uid, ids, zoom=8, width=298, height=298, context=None):
-        #~ partner = self.browse(cr, uid, ids[0], context=context)
-        #~ params = {
-            #~ 'center': '%s, %s %s, %s' % (partner.street or '', partner.city or '', partner.zip or '', partner.country_id and partner.country_id.name_get()[0][1] or ''),
-            #~ 'size': "%sx%s" % (height, width),
-            #~ 'zoom': zoom,
-            #~ 'sensor': 'false',
-        #~ }
-        #~ return urlplus('//maps.googleapis.com/maps/api/staticmap' , params)
+class Event(models.Model):
+    _inherit = 'event.event'
+
+    @api.multi
+    def google_map_img(self, zoom=8, width=298, height=298):
+        _logger.warn('google_map_img')
+        if self.sudo().address_id:
+            return self.sudo().address_id.google_map_img(
+                zoom=zoom, width=width, height=height, marker={
+                'icon': self.env['ir.config_parameter'].get_param(
+                    'dermanord_map_marker',
+                    'http://wiggum.vertel.se/dn_maps_marker.png'),
+            })
+        return None

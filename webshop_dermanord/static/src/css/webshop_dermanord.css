@@ -27,6 +27,12 @@
     text-decoration: none;
 }
 
+div.shipping-address, div.invoicing-address {
+    padding-top: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 .dn_primary {
     color: #fff;
     background-color: #CB683F;

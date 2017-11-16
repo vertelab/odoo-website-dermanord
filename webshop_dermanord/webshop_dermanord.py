@@ -147,6 +147,11 @@ class product_pricelist(models.Model):
     _inherit = 'product.pricelist'
 
     for_reseller = fields.Boolean(string='For Reseller')
+    
+    @api.multi
+    def price_get(self, prod_id, qty, partner=None):
+        _logger.warn('price_get partner: %s' % partner)
+        return super(product_pricelist, self).price_get(prod_id, qty, partner)
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -180,6 +185,28 @@ class ResPartner(models.Model):
 
         return HTMLSafe(html)
 
+class Website(models.Model):
+    _inherit = 'website'
+
+    # API handling broken for unknown reasons. Decorators not working properly with this method.
+    def sale_get_order(self, cr, uid, ids, force_create=False, code=None, update_pricelist=None, context=None):
+        env = api.Environment(cr, uid, context)
+        sale_order_obj = env['sale.order']
+        sale_order_id = request.session.get('sale_order_id')
+        sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
+
+        # Find old sale order that is a webshop cart.
+        if env.user != env.ref('base.public_user') and not sale_order:
+            sale_order = sale_order_obj.sudo().search([
+                ('partner_id', '=', env.user.partner_id.id),
+                ('section_id', '=', env.ref('website.salesteam_website_sales').id),
+                ('state', '=', 'draft'),
+            ], limit=1)
+            if sale_order:
+                request.session['sale_order_id'] = sale_order.id
+        _logger.warn(sale_order)
+        return sale_order
+
 class WebsiteSale(website_sale):
 
     mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
@@ -198,28 +225,23 @@ class WebsiteSale(website_sale):
         #TODO: Completely replace this function to cut down on load times.
         if not data:
             data = {}
-        _logger.warn(data)
-        _logger.warn(request.env.context)
         res = super(WebsiteSale, self).checkout_values(data)
         #~ _logger.warn(res)
         if request.env.user != request.website.user_id:
             partner = request.env.user.partner_id
-            _logger.warn(partner)
             invoicing_id = int(data.get("invoicing_id", '-2'))
             if invoicing_id == -2:
                 order = request.website.sale_get_order(force_create=1)
                 invoicing_id = order.partner_invoice_id.id
                 if invoicing_id == partner.id:
                     invoicing_id = 0
-            invoicings = request.env['res.partner'].sudo().with_context(show_address=1).search([("parent_id", "=", partner.commercial_partner_id.id), ('type', "=", 'invoice')])
-            _logger.warn(invoicings)
+            invoicings = request.env['res.partner'].sudo().with_context(show_address=1).search([("parent_id", "=", partner.commercial_partner_id.id), '|', ('type', "=", 'invoice'), ('type', "=", 'default')])
             if partner != partner.commercial_partner_id:
-                shippings = res.get('shippings', request.env['res.partner'].sudo().browse())
-                shippings |= request.env['res.partner'].search([("parent_id", "=", partner.commercial_partner_id.id), ('type', "=", 'delivery')])
-                shippings |= partner.commercial_partner_id
+                shippings = set(res.get('shippings', []))
+                shippings |= set([r for r in request.env['res.partner'].with_context(show_address=True).search([("parent_id", "=", partner.commercial_partner_id.id), '|', ('type', "=", 'delivery'), ('type', "=", 'standard')])])
+                shippings |= set([partner.with_context(show_address=True).commercial_partner_id])
                 invoicings |= partner.sudo().commercial_partner_id
                 res['shippings'] = shippings
-            _logger.warn(invoicings)
             res['invoicings'] = invoicings.sudo()
             res['invoicing_id'] = invoicing_id
             res['checkout']['invoicing_id'] = invoicing_id
