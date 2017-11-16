@@ -241,9 +241,9 @@ class WebsiteSale(website_sale):
             invoicings = request.env['res.partner'].sudo().with_context(show_address=1).search([("parent_id", "=", partner.commercial_partner_id.id), ('type', "=", 'invoice')])
             _logger.warn(invoicings)
             if partner != partner.commercial_partner_id:
-                shippings = res.get('shippings', request.env['res.partner'].sudo().browse())
-                shippings |= request.env['res.partner'].search([("parent_id", "=", partner.commercial_partner_id.id), ('type', "=", 'delivery')])
-                shippings |= partner.commercial_partner_id
+                shippings = set(res.get('shippings', []))
+                shippings |= set([r for r in request.env['res.partner'].with_context(show_address=True).search([("parent_id", "=", partner.commercial_partner_id.id), ('type', "=", 'delivery')])])
+                shippings |= set([partner.with_context(show_address=True).commercial_partner_id])
                 invoicings |= partner.sudo().commercial_partner_id
                 res['shippings'] = shippings
             _logger.warn(invoicings)
