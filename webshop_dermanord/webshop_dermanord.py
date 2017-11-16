@@ -136,7 +136,6 @@ class product_facet(models.Model):
                 else:
                     for category in facet.category_ids:
                         if category.id in categories:
-                            _logger.warn(facet.name)
                             facets |= facet
         elif len(categories) == 0:
             facets = self.search([]).filtered(lambda f: len(f.category_ids) == 0)

@@ -48,10 +48,10 @@
                     <section class="oe_snippet_body">
                         <div class="container">
                             <div class="row">
-                                <div class="col-md-7 mt16">
+                                <div class="col-md-7 col-sm-12 col-xs-12 mt16 image_text_large">
                                     <img class="img img-responsive mb16 pull-right" src="/website/static/src/img/image_text.jpg"  alt="Odoo image and text block"/>
                                 </div>
-                                <div class="col-md-5 mt16">
+                                <div class="col-md-5 col-sm-12 col-xs-12 mt16">
                                     <h3 style="font-family: kepler-std-display, serif; font-size: 30px;">A Section Subtitle</h3>
                                     <p>
                                         Write one or two paragraphs describing your product,
@@ -77,10 +77,10 @@
                     <section class="oe_snippet_body">
                         <div class="container">
                             <div class="row">
-                                <div class="col-md-5 col-md-offset-2 mt16 image_text_narrow">
+                                <div class="col-md-5 col-md-offset-2 col-sm-12 col-xs-12 mt16 image_text_narrow">
                                     <img class="img img-responsive mb16 pull-right" src="/website/static/src/img/image_text.jpg"  alt="Odoo image and text block"/>
                                 </div>
-                                <div class="col-md-3 mt16" style="padding-right: 40px;">
+                                <div class="col-md-3 col-sm-12 col-xs-12 mt16" style="padding-right: 40px;">
                                     <h3>A Section Subtitle</h3>
                                     <p>
                                         Write one or two paragraphs describing your product,
