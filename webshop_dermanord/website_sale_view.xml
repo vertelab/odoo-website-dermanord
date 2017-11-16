@@ -99,8 +99,8 @@
                                     <img itemprop="image" class="img img-responsive" t-att-src="website.image_url(product, 'image', None if product_image_big else '300x300')" t-att-alt="product.name" />
                                 </t>
                                 <div class="dn_product_image_hover_btn text-center hidden-xs">
-                                    <p>
-                                        <a class="dn_btn dn_primary" t-att-href="keep('/dn_shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">DETAILS</a>
+                                    <p class="dn_btn dn_primary">
+                                        DETAILS
                                     </p>
                                 </div>
                             </a>
@@ -401,7 +401,7 @@
         <template id="dermanord_product_detail" inherit_id="website_sale.product">
             <a id="add_to_cart" position="before">
                 <input id='sale_ok' name='sale_ok' type='hidden' t-att-value='product.sale_ok'/>
-            </a>            
+            </a>
             <xpath expr="//form[@class='js_add_cart_variants']" position="inside">
                 <input name="return_url" type="hidden" t-att-value="request.httprequest.url"/>
             </xpath>
@@ -415,7 +415,7 @@
             </xpath>
             <xpath expr="//a[@id='add_to_cart']" position="attributes">
                 <attribute name="groups">base.group_user,base.group_portal</attribute>
-            </xpath>            
+            </xpath>
 <!--
             <xpath expr="//form[@class='js_add_cart_variants']" position="after">
                 <div>
