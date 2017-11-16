@@ -190,9 +190,6 @@
                                         </t>
                                     </t>
                                 </ul>
-                                <div class="col-xs-12 col-md-12 col-lg-12">
-                                    &amp;copy; 2017 MARIA ÅKERBERG
-                                </div>
                             </div>
                             <div class="col-xs-12 col-md-4 col-lg-4 mt32" style="text-align: left;">
                                 <div t-field="res_company.partner_id" t-field-options='{
@@ -237,6 +234,9 @@
                                     </center>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: left;">
+                            &amp;copy; 2017 MARIA ÅKERBERG
                         </div>
                     </div>
                 </t>
