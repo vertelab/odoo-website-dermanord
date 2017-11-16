@@ -77,7 +77,7 @@ $(document).ready(function(){
         $shippingDifferent.change(function (event) {
             var value = +$shippingDifferent.val();
             var data = $shippingDifferent.find("option:selected").data();
-            $('.row.shipping-address').addClass('hidden');
+            $('.shipping-address').addClass('hidden');
             $('#shipping_addr_' + value).removeClass('hidden');
         });
 
@@ -85,7 +85,7 @@ $(document).ready(function(){
         $invoicingDifferent.change(function (event) {
             var value = +$invoicingDifferent.val();
             var data = $invoicingDifferent.find("option:selected").data();
-            $('.row.invoicing-address').addClass('hidden');
+            $('.invoicing-address').addClass('hidden');
             $('#invoicing_addr_' + value).removeClass('hidden');
         });
 
