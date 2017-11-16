@@ -225,28 +225,23 @@ class WebsiteSale(website_sale):
         #TODO: Completely replace this function to cut down on load times.
         if not data:
             data = {}
-        _logger.warn(data)
-        _logger.warn(request.env.context)
         res = super(WebsiteSale, self).checkout_values(data)
         #~ _logger.warn(res)
         if request.env.user != request.website.user_id:
             partner = request.env.user.partner_id
-            _logger.warn(partner)
             invoicing_id = int(data.get("invoicing_id", '-2'))
             if invoicing_id == -2:
                 order = request.website.sale_get_order(force_create=1)
                 invoicing_id = order.partner_invoice_id.id
                 if invoicing_id == partner.id:
                     invoicing_id = 0
-            invoicings = request.env['res.partner'].sudo().with_context(show_address=1).search([("parent_id", "=", partner.commercial_partner_id.id), ('type', "=", 'invoice')])
-            _logger.warn(invoicings)
+            invoicings = request.env['res.partner'].sudo().with_context(show_address=1).search([("parent_id", "=", partner.commercial_partner_id.id), '|', ('type', "=", 'invoice'), ('type', "=", 'default')])
             if partner != partner.commercial_partner_id:
                 shippings = set(res.get('shippings', []))
-                shippings |= set([r for r in request.env['res.partner'].with_context(show_address=True).search([("parent_id", "=", partner.commercial_partner_id.id), ('type', "=", 'delivery')])])
+                shippings |= set([r for r in request.env['res.partner'].with_context(show_address=True).search([("parent_id", "=", partner.commercial_partner_id.id), '|', ('type', "=", 'delivery'), ('type', "=", 'standard')])])
                 shippings |= set([partner.with_context(show_address=True).commercial_partner_id])
                 invoicings |= partner.sudo().commercial_partner_id
                 res['shippings'] = shippings
-            _logger.warn(invoicings)
             res['invoicings'] = invoicings.sudo()
             res['invoicing_id'] = invoicing_id
             res['checkout']['invoicing_id'] = invoicing_id
