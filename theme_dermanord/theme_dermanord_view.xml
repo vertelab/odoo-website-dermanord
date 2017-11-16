@@ -196,8 +196,9 @@
                             </div>
                             <div class="col-xs-12 col-md-4 col-lg-4 mt32" style="text-align: left;">
                                 <div t-field="res_company.partner_id" t-field-options='{
-                  "widget": "contact",
-                  "fields": ["name", "address", "phone", "mobile", "fax", "email"]}'/>
+                                    "no_marker": 1,
+                                    "widget": "contact",
+                                    "fields": ["name", "address", "phone", "mobile", "fax", "email"]}'/>
                                 <div class="container hidden-print mt16 mb16">
                                     <div class="row">
                                         <div class="dn-social-button" t-if="website.social_facebook">
