@@ -131,7 +131,7 @@ else:
 
         <record id="img_categories_param_vertical" model="image.recipe.param">
             <field name="name">vertical</field>
-            <field name="value">9</field>
+            <field name="value">8</field>
             <field name="recipe_id" ref="snippet_dermanord.img_categories"/>
         </record>
 
