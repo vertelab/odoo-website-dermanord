@@ -138,8 +138,8 @@ class product_facet(models.Model):
                         if category.id in categories:
                             _logger.warn(facet.name)
                             facets |= facet
-        else:
-            facets = self.search([])
+        elif len(categories) == 0:
+            facets = self.search([]).filtered(lambda f: len(f.category_ids) == 0)
         return facets
 
 
@@ -147,7 +147,7 @@ class product_pricelist(models.Model):
     _inherit = 'product.pricelist'
 
     for_reseller = fields.Boolean(string='For Reseller')
-    
+
     @api.multi
     def price_get(self, prod_id, qty, partner=None):
         _logger.warn('price_get partner: %s' % partner)
