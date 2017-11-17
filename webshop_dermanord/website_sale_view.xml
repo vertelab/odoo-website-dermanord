@@ -190,7 +190,12 @@
                                 <table class="product_list_table table table-striped" style="width: 100%;">
                                     <tbody>
                                         <t t-foreach="products" t-as="product">
-                                            <tr>
+                                            <tr t-att-class="'tr_lst %s' % ' '.join(['lst_%s' %s.html_class for s in product.product_tmpl_id.website_style_ids])">
+                                                <td class="td_lst">
+                                                    <div class="lst-ribbon-wrapper">
+                                                        <div class="lst_ribbon btn btn-primary">Sale</div>
+                                                    </div>
+                                                </td>
                                                 <td>
                                                     <h5 class="col-md-6 col-sm-6 col-xs-12 list_product_name">
                                                         <div class="col-md-6 col-sm-6 col-xs-12">

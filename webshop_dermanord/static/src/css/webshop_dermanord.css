@@ -448,7 +448,7 @@ select.dn_selection_dropdown + i.fa {
     display: block;
 }
 
-/* Ribbon for promotionso on products */
+/* Ribbon for promotionso on products (dn shop) */
 .dn_product_div.oe_ribbon_promo .ribbon-wrapper {
    display: block;
 }
@@ -476,6 +476,36 @@ select.dn_selection_dropdown + i.fa {
     left: -5px;
     top: 13px;
     width: 120px;
+    cursor: default;
+}
+
+/* Ribbon for promotionso on products (dn list) */
+.tr_lst.lst_oe_ribbon_promo .lst-ribbon-wrapper {
+   display: block;
+}
+
+.td_lst {
+    width: 100px
+}
+
+.td_lst .lst-ribbon-wrapper {
+    display: none;
+    width: 100px;
+    height: 20px;
+    z-index: 5;
+    overflow: hidden;
+    position: relative;
+}
+
+.td_lst .lst_ribbon {
+    font: bold 15px Sans-Serif;
+    color: white;
+    text-align: center;
+    position: absolute;
+    padding: 0px;
+    left: 0px;
+    top: 0px;
+    width: 100px;
     cursor: default;
 }
 

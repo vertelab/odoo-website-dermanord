@@ -394,6 +394,7 @@ function load_products_grid(page){
                 var content = openerp.qweb.render('products_item_grid', {
                     'url': data['url'],
                     'product_id': key,
+                    'grid_ribbon_style': data['products'][key]['grid_ribbon_style'],
                     'product_href': data['products'][key]['product_href'],
                     'product_name': data['products'][key]['product_name'],
                     'product_img_src': data['products'][key]['product_img_src'],
@@ -425,6 +426,7 @@ function load_products_list(page){
             $.each(data['products'], function(key, info) {
                 var content = openerp.qweb.render('products_item_list', {
                     'url': data['url'],
+                    'tr_lst': data['products'][key]['tr_lst'],
                     'product_id': data['products'][key]['variant_id'],
                     'product_href': data['products'][key]['product_href'],
                     'product_name': data['products'][key]['product_name'],

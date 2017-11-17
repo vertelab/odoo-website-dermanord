@@ -520,6 +520,7 @@ class WebsiteSale(website_sale):
             products_list.append({
                 'product_href': '/dn_shop/product/%s' %product.id,
                 'product_name': product.name,
+                'grid_ribbon_style': 'dn_product_div %s' % ' '.join([s.html_class for s in product.website_style_ids]),
                 'product_img_src': image_src,
                 'price': "%.2f" % product.price,
                 'price_tax': "%.2f" % product.price_tax,
@@ -581,6 +582,7 @@ class WebsiteSale(website_sale):
                     is_reseller = True
             attributes = product.attribute_value_ids.mapped('name')
             products_list.append({
+                'lst_ribbon_style': 'tr_lst %s' % ' '.join(['lst_%s' %s.html_class for s in product.product_tmpl_id.website_style_ids]),
                 'variant_id': product.id,
                 'product_href': '/dn_shop/variant/%s' %product.id,
                 'product_name': product.name,
