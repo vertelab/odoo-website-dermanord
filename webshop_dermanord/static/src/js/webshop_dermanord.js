@@ -371,7 +371,7 @@ $(document).ready(function(){
             }
         }
     });
-    
+
     //~ $(window).resize(function() {
         //~ var pm = $('div#payment_method');
         //~ if (pm !== undefined) {
@@ -469,4 +469,18 @@ $(".desktop_angle").click(function(){
         $(this).removeClass("fa-angle-up");
         $(this).addClass("fa-angle-down");
     }
+});
+
+$(document).on('click', '.dn_js_options ul[name="style"] a', function (event) {
+    var $a = $(event.currentTarget);
+    var $li = $a.parent();
+    var $data = $a.parents(".dn_js_options:first");
+    var $product = $a.closest(".dn_oe_product").find(".dn_product_div");
+
+    $li.parent().removeClass("active");
+    openerp.jsonRpc('/shop/change_styles', 'call', {'id': $data.data('id'), 'style_id': $a.data("id")})
+        .then(function (result) {
+            $product.toggleClass($a.data("class"));
+            $li.toggleClass("active", result);
+        });
 });
