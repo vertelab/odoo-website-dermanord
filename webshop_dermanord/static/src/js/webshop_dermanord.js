@@ -393,7 +393,9 @@ function load_products_grid(page){
             $.each(data['products'], function(key, info) {
                 var content = openerp.qweb.render('products_item_grid', {
                     'url': data['url'],
-                    'product_id': key,
+                    'data_id': data['products'][key]['product_id'],
+                    'dopprod_id': 'dopprod-' + data['products'][key]['product_id'],
+                    'style_options': data['products'][key]['style_options'],
                     'grid_ribbon_style': data['products'][key]['grid_ribbon_style'],
                     'product_href': data['products'][key]['product_href'],
                     'product_name': data['products'][key]['product_name'],
@@ -426,7 +428,7 @@ function load_products_list(page){
             $.each(data['products'], function(key, info) {
                 var content = openerp.qweb.render('products_item_list', {
                     'url': data['url'],
-                    'tr_lst': data['products'][key]['tr_lst'],
+                    'lst_ribbon_style': data['products'][key]['lst_ribbon_style'],
                     'product_id': data['products'][key]['variant_id'],
                     'product_href': data['products'][key]['product_href'],
                     'product_name': data['products'][key]['product_name'],

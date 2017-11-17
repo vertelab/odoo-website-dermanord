@@ -4,23 +4,19 @@
 <templates id="template" xml:space="preserve">
     <t t-name="products_item_grid">
         <div class="dn_oe_product col-md-4 col-sm-6 col-xs-12">
-<!--
             <div class="dn_css_options" t-ignore="true" groups="base.group_website_publisher">
-                <div t-attf-class="dropdown dn_js_options" t-att-data-id="product.id">
-                    <button class="btn btn-default" t-att-id="'dopprod-%s' % product.id" role="button" data-toggle="dropdown">Options <span class="caret"></span></button>
-                        <ul class="dropdown-menu" role="menu" t-att-aria-labelledby="'dopprod-%s' % product.id">
+                <div class="dropdown dn_js_options" t-att-data-id="data_id">
+                    <button class="btn btn-default" t-att-id="dopprod_id" role="button" data-toggle="dropdown">Options <span class="caret"></span></button>
+                        <ul class="dropdown-menu" role="menu" t-att-aria-labelledby="dopprod_id">
                             <li class="dropdown-submenu">
                                 <a tabindex="-1" href="#">Styles</a>
                                 <ul class="dropdown-menu" name="style">
-                                    <t t-foreach="styles" t-as="style">
-                                        <li t-att-class="style_in_product(style, product) and 'active' or ''"><a href="#" t-att-data-id="style.id" t-att-data-class="style.html_class"><t t-esc="style.name"/></a></li>
-                                    </t>
+                                    <t t-raw="style_options"/>
                                 </ul>
                             </li>
                         </ul>
                   </div>
             </div>
--->
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="grid_ribbon_style">
                     <div class="ribbon-wrapper">

@@ -517,9 +517,18 @@ class WebsiteSale(website_sale):
                 currency = partner_pricelist.currency_id.name
                 if partner_pricelist.for_reseller:
                     is_reseller = True
+
+            style_options = ''
+            for style in request.env['product.style'].search([]):
+                style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style in product.website_style_ids else '', style.id, style.html_class, style.name)
+
+            _logger.warn(style_options)
+
             products_list.append({
                 'product_href': '/dn_shop/product/%s' %product.id,
+                'product_id': product.id,
                 'product_name': product.name,
+                'style_options': style_options,
                 'grid_ribbon_style': 'dn_product_div %s' % ' '.join([s.html_class for s in product.website_style_ids]),
                 'product_img_src': image_src,
                 'price': "%.2f" % product.price,
