@@ -27,8 +27,8 @@
                             <a itemprop="url" t-att-href="product_href">
                                 <img itemprop="image" class="img img-responsive" t-att-src="product_img_src" t-att-alt="product_name" />
                                 <div class="dn_product_image_hover_btn text-center hidden-xs">
-                                    <p>
-                                        <a class="dn_btn dn_primary" t-att-href="product_href">DETAILS</a>
+                                    <p class="dn_btn dn_primary">
+                                        DETAILS
                                     </p>
                                 </div>
                             </a>
