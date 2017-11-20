@@ -49,9 +49,9 @@
         <template id="dn_shop" name="DN Shop">
             <t t-if="current_ingredient">
                 <div id="ingredient_div" class="container">
-                    <h1 class="text-center"><span t-field="current_ingredient.name"/></h1>
+                    <h6 class="text-center"><span t-field="current_ingredient.name"/></h6>
                     <span itemprop="image" t-field="current_ingredient.image" t-field-options='{"widget": "image", "alt-field": "name"}'/>
-                    <h5 class="text-center mt16"><span t-field="current_ingredient.description"/></h5>
+                    <p class="mt16"><span t-field="current_ingredient.description"/></p>
                 </div>
             </t>
             <div class="container oe_website_sale">
@@ -115,7 +115,7 @@
                             </strong>
                         </h4>
                         <p class="text-muted" style="height: 15px;" t-field="product.default_code"/>
-                        <p class="p_desc"><t t-esc="product.description_sale"/></p>
+                        <!--<p class="p_desc"><t t-esc="product.description_sale"/></p>-->
                         <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price" t-if="product.product_variant_ids">
                             <b class="text-muted">
                                 <p>

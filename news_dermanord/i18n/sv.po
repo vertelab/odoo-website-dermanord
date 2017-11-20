@@ -1,0 +1,73 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* news_dermanord
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0-20161025\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-11-20 12:03+0000\n"
+"PO-Revision-Date: 2017-11-20 12:03+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: news_dermanord
+#: field:blog.tag,background_image:0
+msgid "Background Image"
+msgstr "Bakgrundsbild"
+
+#. module: news_dermanord
+#: model:ir.model,name:news_dermanord.model_blog_tag
+msgid "Blog Tag"
+msgstr "Bloggetikett"
+
+#. module: news_dermanord
+#: view:website:news_dermanord.news_detail
+msgid "Change Cover"
+msgstr "Byt omslagsbild"
+
+#. module: news_dermanord
+#: view:website:news_dermanord.news_detail
+msgid "Duplicate"
+msgstr "Duplicera"
+
+#. module: news_dermanord
+#: view:website:news_dermanord.page
+msgid "No News Responsible"
+msgstr "Nyhetsansvarig saknas"
+
+#. module: news_dermanord
+#: view:website:news_dermanord.page
+msgid "Pressansvarig"
+msgstr "Pressansvarig"
+
+#. module: news_dermanord
+#: view:website:news_dermanord.news_list
+msgid "Read more"
+msgstr "Läs mer"
+
+#. module: news_dermanord
+#: view:website:news_dermanord.post
+msgid "comment"
+msgstr "kommentar"
+
+#. module: news_dermanord
+#: view:website:news_dermanord.post
+msgid "comments"
+msgstr "kommentarer"
+
+#. module: news_dermanord
+#: view:website:news_dermanord.post
+msgid "not published"
+msgstr "ej publucerad"
+
+#. module: news_dermanord
+#: view:website:news_dermanord.news_detail
+#: view:website:news_dermanord.news_list
+msgid "tags:"
+msgstr "etiketter:"
+
