@@ -1,9 +1,10 @@
 var search_icron = $("#top_menu").find("#search-btn-modal").closest("li");
-var shop_cart = $("#top_menu").find("a[href='/shop/cart']").closest("li");
+var shop_cart = $("#top_menu").find("a[href$='/shop/cart']").closest("li");
 var divider = $("#top_menu").find(".divider").closest("li");
 var my_account = $("#top_menu > li").last();
 var more_menu = $("#top_menu").find("li#more_dropdown");
 var menu_items = [];
+
 $("#top_menu").children().each(function() { // those menu items should not included in more menu
     if($(this).attr("id") == "fts_search_btn")
         return false;
@@ -16,11 +17,7 @@ $("#top_menu").children().each(function() { // those menu items should not inclu
 });
 
 var li_width_init = my_account.width(); // initial with of menu bar
-if(menu_items.length == 0) { // determine if more menu should show up or not
-    more_menu.addClass("hidden");
-}
-else if(menu_items.length != 0) {
-    more_menu.removeClass("hidden");
+if(menu_items.length != 0) {
     li_width_init += more_menu.width();
 }
 
@@ -37,15 +34,20 @@ dermanord_resize_for_menu = function() {
             if (more_menu_item.length == 1){
                 li_width += $(this).width();
                 if (li_width > max_li_width) { // hide this menu item from menu bar and show it in more menu
-                    $(this).css({"display": "none"});
+                    $(this).closest("li").css({"display": "none"});
                     more_menu_item.css({"display": "block"});
                 }
                 else {  // show this menu item in menu bar again and hide it from more menu
-                    $(this).css({"display": "block"});
+                    $(this).closest("li").css({"display": "block"});
                     more_menu_item.css({"display": "none"});
                 }
             }
         });
+
+        // determine if more menu should show up or not
+        if (more_menu.prev().is(':visible')) { more_menu.addClass("hidden"); }
+        else { more_menu.removeClass("hidden") };
+
         //~ menu = $(".collapse.navbar-collapse.navbar-top-collapse");
         menu = $(".navbar.navbar-default.navbar-static-top");
         bt = menu.css('border-top-width');
@@ -59,7 +61,6 @@ dermanord_resize_for_menu = function() {
             $(".container.dn_header").css({"margin-top": height});
         }
         $(".oe_website_login_container").css({"margin-top": height});
-
     }
     else {
         $(".container.dn_header").css({"margin-top": ""});

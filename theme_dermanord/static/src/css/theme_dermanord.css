@@ -80,6 +80,13 @@ button {
     font-family: futura-pt-medium, sans-serif;
 }
 
+:target:before {
+    content: "";
+    display: block;
+    height: 132px; /* fixed header height*/
+    margin: -132px 0 0; /* negative fixed header height */
+}
+
 /* menu */
 #top_menu span, body td{
     font-family: futura-pt-medium, sans-serif !important;
@@ -400,6 +407,10 @@ ol.breadcrumb > li + li::before {
 
 #header_right_menu {
     padding-top: 10px;
+}
+
+#header_right_menu div {
+    white-space: nowrap;
 }
 
 #header_line {
