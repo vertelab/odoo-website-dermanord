@@ -51,7 +51,7 @@
                 <div id="ingredient_div" class="container">
                     <h6 class="text-center"><span t-field="current_ingredient.name"/></h6>
                     <span itemprop="image" t-field="current_ingredient.image" t-field-options='{"widget": "image", "alt-field": "name"}'/>
-                    <p class="text-center mt16"><span t-field="current_ingredient.description"/></p>
+                    <p class="mt16"><span t-field="current_ingredient.description"/></p>
                 </div>
             </t>
             <div class="container oe_website_sale">
