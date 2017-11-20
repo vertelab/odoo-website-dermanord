@@ -115,7 +115,7 @@
                             </strong>
                         </h4>
                         <p class="text-muted" style="height: 15px;" t-field="product.default_code"/>
-                        <p class="p_desc"><t t-esc="product.description_sale"/></p>
+                        <!--<p class="p_desc"><t t-esc="product.description_sale"/></p>-->
                         <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price" t-if="product.product_variant_ids">
                             <b class="text-muted">
                                 <p>
