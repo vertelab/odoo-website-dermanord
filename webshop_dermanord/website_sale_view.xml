@@ -49,9 +49,9 @@
         <template id="dn_shop" name="DN Shop">
             <t t-if="current_ingredient">
                 <div id="ingredient_div" class="container">
-                    <h1 class="text-center"><span t-field="current_ingredient.name"/></h1>
+                    <h6 class="text-center"><span t-field="current_ingredient.name"/></h6>
                     <span itemprop="image" t-field="current_ingredient.image" t-field-options='{"widget": "image", "alt-field": "name"}'/>
-                    <h5 class="text-center mt16"><span t-field="current_ingredient.description"/></h5>
+                    <p class="text-center mt16"><span t-field="current_ingredient.description"/></p>
                 </div>
             </t>
             <div class="container oe_website_sale">
