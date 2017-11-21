@@ -298,6 +298,12 @@
                     </t>
                 </td>
             </xpath>
+            <xpath expr="//table[@id='cart_products']/thead/tr" position="inside">
+                <th/>
+            </xpath>
+            <xpath expr="//table[@id='cart_products']/tbody/t/tr" position="inside">
+                <td><a class="js_remove_cart_json" href="#"><i class="fa fa-trash-o mt8"/></a></td>
+            </xpath>
         </template>
 
         <template id="checkout" inherit_id="website_sale.checkout">

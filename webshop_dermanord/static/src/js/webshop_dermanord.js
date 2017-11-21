@@ -148,21 +148,27 @@ $(document).ready(function(){
                 'set_qty': value})
                 .then(function (data) {
                     $input.data('update_change', false);
+                    var $q = $(".my_cart_quantity");
                     if (value !== parseInt($input.val(), 10)) {
                         $input.trigger('change');
                         return;
                     }
-                    if (!data.quantity) {
-                        location.reload(true);
+                    if (!data.quantity) { // update table and all prices on page
+                        //~ location.reload(true);
+                        $("#cart_products").load(location.href + " #cart_products");
+                        $("#cart_total").load(location.href + " #cart_total");
+                        $(".my_cart_total").load(location.href + " .my_cart_total");
+                        $q.parent().parent().removeClass("hidden", !data.quantity);
+                        $q.html("(" + data.cart_quantity + ")").hide().fadeIn(600);
                         return;
                     }
-                    var $q = $(".my_cart_quantity");
                     $q.parent().parent().removeClass("hidden", !data.quantity);
                     $q.html("(" + data.cart_quantity + ")").hide().fadeIn(600);
-
                     $input.val(data.quantity);
                     $('.js_quantity[data-line-id='+line_id+']').val(data.quantity).html(data.quantity);
                     $("#cart_total").replaceWith(data['website_sale.total']);
+                    //~ $(".my_cart_total").replaceWith(data['website_sale.total'].match(/<span class=\"oe_currency_value\">(.*?)</i)[1].replace(".", "").replace(",", "."));
+                    $(".my_cart_total").load(location.href + " .my_cart_total");
                 });
             });
         });
@@ -179,6 +185,16 @@ $(document).ready(function(){
             $('input[name="'+$input.attr("name")+'"]').val(quantity > min ? (quantity < max ? quantity : max) : min);
             $input.change();
             return false;
+        });
+
+        $(oe_website_sale).on('click', 'a.js_remove_cart_json', function (ev) {
+            ev.preventDefault();
+            var $link = $(ev.currentTarget);
+            var $input = $link.parent().parent().find("input");
+            $input.val(0);
+            $('input[name="'+$input.attr("name")+'"]').val(0);
+            $input.change();
+            return false
         });
 
         $('.oe_website_sale .a-submit, #comment .a-submit').off('click').on('click', function () {

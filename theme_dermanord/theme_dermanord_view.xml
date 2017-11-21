@@ -158,7 +158,7 @@
                             <t t-set="website_sale_order" t-value="website.sale_get_order()"/>
                             <a href="/shop/cart" class="pull-right kepler_std_i" style="color: #000;">
                                 <i class="fa fa-shopping-cart"/>
-                              <i>Bag:</i> <i t-esc="user_id.partner_id.property_product_pricelist.currency_id.symbol"/> <i t-esc="website_sale_order.amount_total if website_sale_order else 0"/>  <i class="my_cart_quantity">(<t t-esc="website_sale_order and website_sale_order.cart_quantity or 0"/>)</i>
+                              <i>Bag:</i> <i t-esc="user_id.partner_id.property_product_pricelist.currency_id.symbol"/> <i class="my_cart_total" t-esc="website_sale_order.amount_total if website_sale_order else 0"/>  <i class="my_cart_quantity">(<t t-esc="website_sale_order and website_sale_order.cart_quantity or 0"/>)</i>
                             </a>
 <!--
                                   My cart <sup t-attf-class="my_cart_quantity label label-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or ''"/>
