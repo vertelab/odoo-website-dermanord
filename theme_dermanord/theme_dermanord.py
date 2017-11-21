@@ -158,3 +158,15 @@ class ThemeDermanord(http.Controller):
         response = werkzeug.wrappers.Response()
         return request.registry['website']._image(request.cr, request.uid, 'res.company', user.company_id.id, 'logo',
                                                   response, max_width=1024, max_height=None, )
+
+class ResCompany(models.Model):
+    _inherit = 'res.company'
+    
+    def google_map_img(self, cr, uid, ids, zoom=8, width=298, height=298, marker=None, context=None):
+        env = api.Environment(cr, uid, context)
+        return super(ResCompany, self).google_map_img(cr, uid, ids,
+            zoom=zoom, width=width, height=height, marker=marker or {
+                'icon': env['ir.config_parameter'].get_param(
+                    'dermanord_map_marker',
+                    'http://wiggum.vertel.se/dn_maps_marker.png')
+            }, context=context)
