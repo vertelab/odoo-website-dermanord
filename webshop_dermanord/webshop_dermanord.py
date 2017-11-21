@@ -249,6 +249,7 @@ class WebsiteSale(website_sale):
     def checkout_form_save(self, checkout):
         super(WebsiteSale, self).checkout_form_save(checkout)
         order = request.website.sale_get_order(force_create=1)
+        order.date_order = fields.Datetime.now()
         partner_invoice_id = checkout.get('invoicing_id') or request.env.user.partner_id.id
         if order.partner_invoice_id.id != partner_invoice_id:
             order.write({'partner_invoice_id': partner_invoice_id})
