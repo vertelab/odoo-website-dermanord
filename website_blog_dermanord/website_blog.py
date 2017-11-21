@@ -160,12 +160,13 @@ class blog_post_object(models.Model):
     sequence = fields.Integer()
     color = fields.Integer('Color Index')
     blog_post_id = fields.Many2one(comodel_name='blog.post', string='Blog Posts')
-    object_id = fields.Reference([('product.template', 'Product Template'), ('product.product', 'Product Variant')])
+    object_id = fields.Reference(selection=[('product.template', 'Product Template'), ('product.product', 'Product Variant')],no_open=True,no_create=1, no_create_edit=1)
     access_group_ids = fields.Many2many(comodel_name='res.groups', string='Access Groups', help='Allowed groups to access this object')
 
     @api.one
     @api.onchange('object_id')
     def get_object_value(self):
+        _logger.warn('fuelds: %s | %s' % (self.object_id.__dict__.keys(),self.object_id._search))
         if self.object_id:
             if self.object_id._name == 'product.template' or self.object_id._name == 'product.product':
                 self.name = self.object_id.name

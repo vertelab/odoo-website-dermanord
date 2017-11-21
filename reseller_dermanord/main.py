@@ -72,10 +72,12 @@ class res_partner(models.Model):
         # has other tags and purchase more than 2000SEK(ex.moms) once in last 12 months.
         self.is_reseller = False
         if (self.env['res.partner.category'].search([('name', '=', 'Hudterapeut')])[0] in self.category_id) or (self.env['res.partner.category'].search([('name', '=', 'SPA-Terapeut')])[0] in self.category_id):
-            if sum(self.env['sale.order'].search(['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_confirm', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]).mapped('amount_untaxed')) >= 10000.0:
+            if sum(self.env['account.invoice'].search(['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_invoice', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]).mapped('amount_untaxed')) >= 10000.0:
                 self.is_reseller = True
         else:
-            if len(self.env['sale.order'].search(['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_confirm', '>=', fields.Date.to_string((date.today()-relativedelta(years=1)))), ('amount_untaxed', '>=', 2000.0)])) > 0:
+            if sum(self.env['account.invoice'].search(
+                    ['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_invoice', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]
+                    ).mapped('amount_untaxed')) > 2000.0:
                 self.is_reseller = True
 
 class Main(http.Controller):
