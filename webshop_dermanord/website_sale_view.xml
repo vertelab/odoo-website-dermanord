@@ -2,6 +2,18 @@
 <openerp>
     <data>
 
+        <template id="ingredients" inherit_id="product_ingredients.ingredients" name="Inherit ingredients">
+            <!-- if there's a variant in page, show ingredients for this variant. Otherwise, show ingredients for template -->
+            <xpath expr="//t[@t-set='ingredients']" position="replace">
+                <t t-if="product_product">
+                    <t t-set="ingredients" t-value="request.env['product.ingredient'].search([('product_ids', 'in', product_product.id)], order='sequence')"/>
+                </t>
+                <t t-if="not product_product">
+                    <t t-set="ingredients" t-value="request.env['product.ingredient'].search([('product_ids', 'in', product.id)], order='sequence')"/>
+                </t>
+            </xpath>
+        </template>
+
         <template id="form_values" name="Form Values">
             <t t-set="filter_facets" t-value="request.env['product.facet'].search([])"/>
             <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])"/>
