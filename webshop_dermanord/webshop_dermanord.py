@@ -412,13 +412,14 @@ class WebsiteSale(website_sale):
         if post.get('order'):
             default_order = post.get('order')
         product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
-        products = product_obj.browse(cr, uid, product_ids, context=context)
+        #~ products = product_obj.browse(cr, uid, product_ids, context=context)
         # relist which product templates the current user is allowed to see
-        for p in products:
-            if len(p.sudo().access_group_ids) > 0 :
-                if request.env['res.users'].browse(uid) not in p.sudo().access_group_ids.mapped('users'):
-                    products -= p
-
+        #~ for p in products:
+            #~ if len(p.sudo().access_group_ids) > 0 :
+                #~ _logger.error('Access_group %s' % (request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids&p.sudo().access_group_ids))
+                #~ if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
+                    #~ products -= p
+        products = request.env['product.template'].search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)
         style_obj = pool['product.style']
         style_ids = style_obj.search(cr, uid, [], context=context)
         styles = style_obj.browse(cr, uid, style_ids, context=context)
@@ -496,7 +497,7 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         for p in products:
             if len(p.sudo().access_group_ids) > 0 :
-                if request.env['res.users'].browse(uid) not in p.sudo().access_group_ids.mapped('users'):
+                if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
                     products -= p
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
@@ -573,7 +574,7 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         for p in products:
             if len(p.sudo().access_group_ids) > 0 :
-                if request.env['res.users'].browse(uid) not in p.sudo().access_group_ids.mapped('users'):
+                if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
                     products -= p
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
@@ -716,7 +717,7 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         for p in products:
             if len(p.sudo().access_group_ids) > 0 :
-                if request.env['res.users'].browse(uid) not in p.sudo().access_group_ids.mapped('users'):
+                if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
                     products -= p
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
