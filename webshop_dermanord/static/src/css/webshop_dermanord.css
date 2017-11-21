@@ -151,6 +151,8 @@ div.shipping-address, div.invoicing-address {
 
 .dn_product_image_div {
     position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 .dn_product_image_hover_btn {
@@ -174,7 +176,6 @@ div.shipping-address, div.invoicing-address {
 
 .dn_product_info {
     text-overflow: ellipsis;
-    margin: 0px 20px;
 }
 
 .dn_product_info a {
@@ -424,6 +425,88 @@ select.dn_selection_dropdown + i.fa {
 
 #desktop_product_navigator h5 {
     font-size: 14px;
+}
+
+.dn_oe_product {
+    padding: 0px;
+}
+
+#desktop_product_grid .dn_css_options {
+    display: none;
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    z-index: 10;
+}
+
+#desktop_product_grid .dn_css_options .dropdown {
+    position: relative;
+    left: -50%;
+}
+
+.cke_editable #desktop_product_grid .dn_oe_product:hover > .dn_css_options {
+    display: block;
+}
+
+/* Ribbon for promotionso on products (dn shop) */
+.dn_product_div.oe_ribbon_promo .ribbon-wrapper {
+   display: block;
+}
+.dn_product_div .ribbon-wrapper {
+    display: none;
+    width: 85px;
+    height: 88px;
+    z-index: 5;
+    overflow: hidden;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.dn_product_div .ribbon {
+    font: bold 15px Sans-Serif;
+    color: white;
+    text-align: center;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    position: relative;
+    padding: 7px 0;
+    left: -5px;
+    top: 13px;
+    width: 120px;
+    cursor: default;
+}
+
+/* Ribbon for promotionso on products (dn list) */
+.tr_lst.lst_oe_ribbon_promo .lst-ribbon-wrapper {
+   display: block;
+}
+
+.td_lst {
+    width: 100px
+}
+
+.td_lst .lst-ribbon-wrapper {
+    display: none;
+    width: 100px;
+    height: 20px;
+    z-index: 5;
+    overflow: hidden;
+    position: relative;
+}
+
+.td_lst .lst_ribbon {
+    font: bold 15px Sans-Serif;
+    color: white;
+    text-align: center;
+    position: absolute;
+    padding: 0px;
+    left: 0px;
+    top: 0px;
+    width: 100px;
+    cursor: default;
 }
 
 @media screen and (min-width: 992px) {

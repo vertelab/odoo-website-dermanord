@@ -136,7 +136,6 @@ class product_facet(models.Model):
                 else:
                     for category in facet.category_ids:
                         if category.id in categories:
-                            _logger.warn(facet.name)
                             facets |= facet
         elif len(categories) == 0:
             facets = self.search([]).filtered(lambda f: len(f.category_ids) == 0)
@@ -519,9 +518,19 @@ class WebsiteSale(website_sale):
                 currency = partner_pricelist.currency_id.name
                 if partner_pricelist.for_reseller:
                     is_reseller = True
+
+            style_options = ''
+            for style in request.env['product.style'].search([]):
+                style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style in product.website_style_ids else '', style.id, style.html_class, style.name)
+
+            _logger.warn(style_options)
+
             products_list.append({
                 'product_href': '/dn_shop/product/%s' %product.id,
+                'product_id': product.id,
                 'product_name': product.name,
+                'style_options': style_options,
+                'grid_ribbon_style': 'dn_product_div %s' % ' '.join([s.html_class for s in product.website_style_ids]),
                 'product_img_src': image_src,
                 'price': "%.2f" % product.price,
                 'price_tax': "%.2f" % product.price_tax,
@@ -583,6 +592,7 @@ class WebsiteSale(website_sale):
                     is_reseller = True
             attributes = product.attribute_value_ids.mapped('name')
             products_list.append({
+                'lst_ribbon_style': 'tr_lst %s' % ' '.join(['lst_%s' %s.html_class for s in product.product_tmpl_id.website_style_ids]),
                 'variant_id': product.id,
                 'product_href': '/dn_shop/variant/%s' %product.id,
                 'product_name': product.name,

@@ -3,64 +3,77 @@
 -->
 <templates id="template" xml:space="preserve">
     <t t-name="products_item_grid">
-        <form action="/shop/cart/update" method="post">
-            <div itemscope="itemscope" itemtype="http://schema.org/Product" class="dn_product_div col-md-4 col-sm-6 col-xs-12">
-                <div class="dn_product_image">
-                    <div class="dn_product_image_div">
-                        <a itemprop="url" t-att-href="product_href">
-                            <img itemprop="image" class="img img-responsive" t-att-src="product_img_src" t-att-alt="product_name" />
-                            <div class="dn_product_image_hover_btn text-center hidden-xs">
-                                <p>
-                                    <a class="dn_btn dn_primary" t-att-href="product_href">DETAILS</a>
-                                </p>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="dn_product_info text-center">
-                    <h4 class="p_name">
-                        <strong>
-                            <a itemprop="name" t-att-href="product_href"><t t-esc="product_name"/></a>
-                        </strong>
-                    </h4>
-                    <h5 class="text-muted" style="height: 15px;"><t t-esc="default_code"/></h5>
-                    <h5 class="p_desc"><t t-esc="description_sale"/></h5>
-                    <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price" t-if="product_variant_ids">
-                        <b class="text-muted">
-                            <h4>
-                                <t t-if="is_reseller == 'no'">
-<!--
-                                    <t t-if="(compute_currency(product.list_price_tax) - product.price_tax) &gt; 0.1">
-                                        <del class="text-danger" style="white-space: nowrap;" t-field="product.list_price_tax" t-field-options='{
-                                      "widget": "monetary",
-                                      "from_currency": "product.company_id.currency_id",
-                                      "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-                                    }' />
-                                    &amp;nbsp;
-                                    </t>
--->
-                                    <span class="oe_price" t-esc="price_tax" style="white-space: nowrap;" /> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" />
-                                </t>
-
-                                <t t-if="is_reseller == 'yes'">
-                                    <div>
-                                        <span class="oe_recommended_price" t-esc="list_price_tax"/> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" /> <span style="display: inline;">(rek ink moms)</span>
-                                    </div>
-                                    <div>
-                                        <b class="oe_price"
-                                        t-esc="price"/> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" /> <span style="display: inline;">(ditt ex moms)</span>
-                                    </div>
-                                </t>
-                            </h4>
-                        </b>
-                    </div>
-                </div>
+        <div class="dn_oe_product col-md-4 col-sm-6 col-xs-12">
+            <div class="dn_css_options" t-ignore="true" groups="base.group_website_publisher">
+                <div class="dropdown dn_js_options" t-att-data-id="data_id">
+                    <button class="btn btn-default" t-att-id="dopprod_id" role="button" data-toggle="dropdown">Options <span class="caret"></span></button>
+                        <ul class="dropdown-menu" role="menu" t-att-aria-labelledby="dopprod_id">
+                            <li class="dropdown-submenu">
+                                <a tabindex="-1" href="#">Styles</a>
+                                <ul class="dropdown-menu" name="style">
+                                    <t t-raw="style_options"/>
+                                </ul>
+                            </li>
+                        </ul>
+                  </div>
             </div>
-        </form>
+            <form action="/shop/cart/update" method="post">
+                <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="grid_ribbon_style">
+                    <div class="ribbon-wrapper">
+                        <div class="ribbon btn btn-primary">Sale</div>
+                    </div>
+                    <div class="dn_product_image">
+                        <div class="dn_product_image_div">
+                            <a itemprop="url" t-att-href="product_href">
+                                <img itemprop="image" class="img img-responsive" t-att-src="product_img_src" t-att-alt="product_name" />
+                                <div class="dn_product_image_hover_btn text-center hidden-xs">
+                                    <p class="dn_btn dn_primary">
+                                        DETAILS
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="dn_product_info text-center">
+                        <h4 class="p_name">
+                            <strong>
+                                <a itemprop="name" t-att-href="product_href"><t t-esc="product_name"/></a>
+                            </strong>
+                        </h4>
+                        <h5 class="text-muted" style="height: 15px;"><t t-esc="default_code"/></h5>
+                        <h5 class="p_desc"><t t-esc="description_sale"/></h5>
+                        <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price" t-if="product_variant_ids">
+                            <b class="text-muted">
+                                <h4>
+                                    <t t-if="is_reseller == 'no'">
+                                        <span class="oe_price" t-esc="price_tax" style="white-space: nowrap;" /> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" />
+                                    </t>
+
+                                    <t t-if="is_reseller == 'yes'">
+                                        <div>
+                                            <span class="oe_recommended_price" t-esc="list_price_tax"/> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" /> <span style="display: inline;">(rek ink moms)</span>
+                                        </div>
+                                        <div>
+                                            <b class="oe_price"
+                                            t-esc="price"/> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" /> <span style="display: inline;">(ditt ex moms)</span>
+                                        </div>
+                                    </t>
+                                </h4>
+                            </b>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </t>
 
     <t t-name="products_item_list">
-        <tr>
+        <tr t-att-class="lst_ribbon_style">
+            <td class="td_lst">
+                <div class="lst-ribbon-wrapper">
+                    <div class="lst_ribbon btn btn-primary">Sale</div>
+                </div>
+            </td>
             <td>
                 <h5 class="col-md-6 col-sm-6 col-xs-12 list_product_name">
                     <div class="col-md-6 col-sm-6 col-xs-12">

@@ -181,11 +181,15 @@
         </template>
 
         <template id="custom_css_js" inherit_id="website.layout" name="Custom CSS JS for Sale Promotions">
-            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
+            <xpath expr="." position="inside">
                 <link href="/sale_promotions/static/src/css/main.css" rel="stylesheet" />
-            </xpath>
-            <xpath expr="//body" position="inside">
                 <script type="text/javascript" src="/sale_promotions/static/src/js/main.js" />
+            </xpath>
+        </template>
+
+        <template id="assets_editor" inherit_id="website.assets_editor" name="Custom CSS JS for Sale Promotions for snippet">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/sale_promotions/static/src/js/snippet.js" />
             </xpath>
         </template>
 
