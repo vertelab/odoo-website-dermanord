@@ -72,7 +72,7 @@ div.shipping-address, div.invoicing-address {
     padding: 15px;
 }
 
-#image_big {
+#image_big img {
     border: 1px solid #eee;
     margin: 0px 23px 0px 15px;
 }
@@ -245,6 +245,15 @@ div.shipping-address, div.invoicing-address {
 .facet_container p {
     font-style: normal;
     font-weight: 500;
+}
+
+#image_nav, #ingredients_div {
+    max-width: 530px;
+    margin: auto;
+}
+
+.ingredients_description {
+    max-width: 500px;
 }
 
 #image_nav > li.active > a > img {
@@ -511,16 +520,16 @@ select.dn_selection_dropdown + i.fa {
 
 @media screen and (min-width: 992px) {
     #image_nav > li {
-        width: 24.5% !important;
+        width: 24.7% !important;
     }
 }
 
 @media screen and (min-width: 992px) and (max-width: 1199px) {
     #image_nav > li {
-        width: 24.5% !important;
+        width: 24.7% !important;
     }
 
-    #image_big {
+    #image_big img {
         border: 1px solid #eee;
         margin: 0px 20px 0px 15px;
     }
@@ -528,10 +537,14 @@ select.dn_selection_dropdown + i.fa {
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
     #image_nav > li {
-        width: 24.5% !important;
+        width: 24.6% !important;
     }
 
-    #image_big {
+    #image_nav a {
+        padding: 10px 0px;
+    }
+
+    #image_big img {
         border: 1px solid #eee;
         margin: 0px 18px 0px 15px;
     }
@@ -550,5 +563,13 @@ select.dn_selection_dropdown + i.fa {
 
     .modal-body h5 {
         font-size: 14px;
+    }
+
+    #image_nav > li {
+        width: 49.5% !important;
+    }
+
+    #image_nav a {
+        padding: 10px 0px;
     }
 }

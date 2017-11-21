@@ -12,7 +12,7 @@
         </xpath>
         <xpath expr="//div[@class='col-sm-7 col-md-7 col-lg-7']" position="inside">
             <t t-if="len(ingredients) &gt; 0">
-                <div class="container mb16 hidden-xs">
+                <div id="ingredients_div" class="container mb16 hidden-xs">
                     <h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>
                     <div class="col-md-12">
                         <t t-foreach="ingredients" t-as="ingredient">
@@ -31,7 +31,7 @@
             </t>
             <p id="current_product_id" t-att-data-value="product.id" class="hidden"/>
             <div class="container ingredients_description hidden-xs">
-                <div class="col-md-12 mt16">
+                <div class="mt16">
                     <t t-if="product_product and product_product.ingredients">
                         <p><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" t-field="product_product.ingredients"/></p>
                     </t>
