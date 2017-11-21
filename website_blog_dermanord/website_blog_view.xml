@@ -78,16 +78,16 @@
                 <form string="Object Blog Post">
                     <sheet string="Object Blog Post">
                         <field name="image" widget="image" class="oe_avatar oe_right"/>
-                        <div class="oe_left">
-                            <group>
-                                <field name="sequence" invisible="0" />
+                        
+                            <group >
+                                <field name="sequence" invisible="1" />
                                 <field name="object_id"/>
                                 <field name="name"/>
                                 <field name="access_group_ids" widget="many2many_tags"/>
                                 <field name="blog_post_id" invisible="1"/>
                                 <field name="color" invisible="1"/>
                             </group>
-                        </div>
+                      
                         <notebook>
                             <page string="Information">
                                 <field name="description"/>

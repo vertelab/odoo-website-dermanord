@@ -458,6 +458,7 @@
                 <attribute name="class">text-muted hidden</attribute>
             </xpath>
             <xpath expr="//p[@t-field='product.description_sale']" position="replace">
+                <h2 t-if='product.description_sale'>Description</h2>
                 <p t-field="product.description_sale" class="text-muted"/>
                 <h4 class="show_more_facet text-center hidden-lg hidden-md hidden-sm" style="text-decoration: underline;">More info <i class="fa fa-angle-down"/></h4>
                 <div class="container facet_container hidden-xs">
@@ -466,10 +467,12 @@
                             <p t-field="product_product.public_desc" class="text-muted public_desc"/>
                         </t>
                         <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') not in user_id.groups_id">
+                            <h2 t-if="product_product.use_desc">Usage Description</h2>
                             <p t-field="product_product.use_desc" class="text-muted use_desc"/>
                             <hr/>
                         </t>
                         <t t-if="product_product and request.env.ref('portal_sale.group_payment_options') in user_id.groups_id">
+                            <h2 t-if="product_product.reseller_desc">Reseller Description</h2>
                             <p t-field="product_product.reseller_desc" class="text-muted reseller_desc"/>
                         </t>
 
