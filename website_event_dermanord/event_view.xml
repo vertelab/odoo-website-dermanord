@@ -5,18 +5,48 @@
         <template id="event_description_full" name="Events Dermanord" inherit_id="website_event.event_description_full">
             <xpath expr="//div[@class='col-md-4 css_noprint']/div[@class='panel panel-default'][4]" position="replace">
             </xpath>
-            
+            <xpath expr="//div[@itemprop='location']" position="replace">
+                <div itemprop="location" class="mt16 mb8" t-field="event.address_id" t-field-options='{
+                    "widget": "contact",
+                    "no_marker": 1,
+                    "fields": ["address", "phone", "mobile", "fax", "email"]
+                    }'/>
+            </xpath>
         </template>
         
         <template id="layout" inherit_id="website_event.layout" >
             <xpath expr="//div[@id='event_menu']" position="replace"/>
         </template>
         
+        <template id="website_event.event_left_column" inherit_id="website_event.index" name="Dermanord Filters">
+            <xpath expr="//div[@id='middle_column']" position="attributes">
+            <attribute name="class">col-md-6</attribute>
+            </xpath>
+            <xpath expr="//div[@id='middle_column']" position="before">
+                <div class="col-md-3 css_noprint" id="left_column">
+                    <ul class="nav nav-pills nav-stacked">
+                        <t t-foreach="dates" t-as="date">
+                            <li t-att-class="searches.get('date') == date[0] and 'active' or ''" t-if="date[0] != 'old' and (date[3] or (date[0] in ('old','all')))">
+                                <a t-attf-href="/event?{{ keep_query('country', 'type', date=date[0]) }}"><t t-esc="date[1]"/>
+                                    <span t-if="date[3]" class="badge pull-right"><t t-esc="date[3]"/></span>
+                                </a>
+                            </li>
+                        </t>
+                    </ul>
+                </div>
+            </xpath>
+        </template>
         
-    <template id="index" inherit_id="website_event.index">
-         <xpath expr="//ol[@class='breadcrumb mb0']" position="replace"/>
-    </template>
-        
+        <template id="index" inherit_id="website_event.index">
+             <xpath expr="//ol[@class='breadcrumb mb0']" position="replace"/>
+             <xpath expr="//div[@itemprop='location']" position="replace">
+                <div itemprop="location" t-field="event.address_id" t-field-options='{
+                    "widget": "contact",
+                    "no_marker": 1,
+                    "fields": ["city"]
+                    }'/>
+            </xpath>
+        </template>
         
     </data>
 </openerp>
