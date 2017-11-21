@@ -669,14 +669,6 @@
             </div>
         </template>
 
-        <template id="product_quantity" inherit_id="website_sale.product_quantity">
-<!--
-            <xpath expr="//div[@class='css_quantity input-group oe_website_spinner']" position="attributes">
-                <attribute name="class">css_quantity input-group oe_website_spinner text-center</attribute>
-            </xpath>
--->
-        </template>
-
         <template id="product_experiences" name="Product Experiences">
             <t t-set="blog_posts" t-value="product.blog_post_ids.filtered(lambda p: p.blog_id == p.env.ref('webshop_dermanord.blog_experiences'))" />
             <t t-set="offset_value" t-value="0" />

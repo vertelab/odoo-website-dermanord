@@ -49,8 +49,6 @@ $(document).ready(function(){
         }
     });
 
-
-
     function update_product_image(event_source, product_id) {
         var $img = $(event_source).closest('tr.js_product, .oe_website_sale').find('span[data-oe-model^="product."][data-oe-type="image"] img:first, img.product_detail_img');
         var $img_thumb = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_nav").find("li:first").find("img");
@@ -160,7 +158,7 @@ $(document).ready(function(){
                     }
                     var $q = $(".my_cart_quantity");
                     $q.parent().parent().removeClass("hidden", !data.quantity);
-                    $q.html(data.cart_quantity).hide().fadeIn(600);
+                    $q.html("(" + data.cart_quantity + ")").hide().fadeIn(600);
 
                     $input.val(data.quantity);
                     $('.js_quantity[data-line-id='+line_id+']').val(data.quantity).html(data.quantity);
@@ -178,8 +176,8 @@ $(document).ready(function(){
             var max = parseFloat($input.data("max") || Infinity);
             var quantity = ($link.has(".fa-minus").length ? -1 : 1) + parseFloat($input.val(),10);
             $input.val(quantity > min ? (quantity < max ? quantity : max) : min);
-            //~ $('input[name="'+$input.attr("name")+'"]').val(quantity > min ? (quantity < max ? quantity : max) : min);
-            //~ $input.change();
+            $('input[name="'+$input.attr("name")+'"]').val(quantity > min ? (quantity < max ? quantity : max) : min);
+            $input.change();
             return false;
         });
 
@@ -275,7 +273,6 @@ $(document).ready(function(){
 
             var product_id = false;
             for (var k in variant_ids) {
-                console.log(k);
                 if (_.isEmpty(_.difference(variant_ids[k][1], values))) {
                     openerp.website.ready().then(function() {
                         $price.html(price_to_str(variant_ids[k][2]));
