@@ -30,7 +30,7 @@ dermanord_resize_for_menu = function() {
         var max_li_width = $("#top_menu").width() - li_width_init;
         var li_width = 0;
         $.each(menu_items, function(index) {
-            more_menu_item = $('#more_dropdown').find('a[href="' + $(this).find('a').attr('href') + '"]');
+            more_menu_item = more_menu.find('a[href="' + $(this).find('a').attr('href') + '"]');
             if (more_menu_item.length == 1){
                 li_width += $(this).width();
                 if (li_width > max_li_width) { // hide this menu item from menu bar and show it in more menu

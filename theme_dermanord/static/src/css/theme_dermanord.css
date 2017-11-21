@@ -87,6 +87,12 @@ button {
     margin: -132px 0 0; /* negative fixed header height */
 }
 
+.lg-flag span {
+    font-family: futura-pt-medium, sans-serif;
+    font-size: 18px;
+    color: #555;
+}
+
 /* menu */
 #top_menu span, body td{
     font-family: futura-pt-medium, sans-serif !important;
