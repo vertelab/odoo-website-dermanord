@@ -93,6 +93,43 @@ class Blog(models.Model):
 class BlogPost(models.Model):
     _inherit = 'blog.post'
 
+    def check_access_rule(self, cr, uid, ids, operation, context=None):
+        """Verifies that the operation given by ``operation`` is allowed for the user
+           according to ir.rules.
+
+           :param operation: one of ``write``, ``unlink``
+           :raise except_orm: * if current ir.rules do not permit this operation.
+           :return: None if the operation is allowed
+        """
+        if uid == SUPERUSER_ID:
+            return
+
+        if self.is_transient():
+            # Only one single implicit access rule for transient models: owner only!
+            # This is ok to hardcode because we assert that TransientModels always
+            # have log_access enabled so that the create_uid column is always there.
+            # And even with _inherits, these fields are always present in the local
+            # table too, so no need for JOINs.
+            cr.execute("""SELECT distinct create_uid
+                          FROM %s
+                          WHERE id IN %%s""" % self._table, (tuple(ids),))
+            uids = [x[0] for x in cr.fetchall()]
+            if len(uids) != 1 or uids[0] != uid:
+                raise except_orm(_('Access Denied'),
+                                 _('For this kind of document, you may only access records you created yourself.\n\n(Document type: %s)') % (self._description,))
+        else:
+            where_clause, where_params, tables = self.pool.get('ir.rule').domain_get(cr, uid, self._name, operation, context=context)
+            if where_clause:
+                where_clause = ' and ' + ' and '.join(where_clause)
+                for sub_ids in cr.split_for_in_conditions(ids):
+                    cr.execute('SELECT ' + self._table + '.id FROM ' + ','.join(tables) +
+                               ' WHERE ' + self._table + '.id IN %s' + where_clause,
+                               [sub_ids] + where_params)
+                    res = cr.dictfetchall()
+                    _logger.warn(res)
+                    returned_ids = [x['id'] for x in res]
+                    self._check_record_rules_result_count(cr, uid, sub_ids, returned_ids, operation, context=context)
+
     product_ids = fields.Many2many(comodel_name='product.template', relation="blog_post_product", column1='blog_post_id',column2='product_id', string='Products')
     blog_post_product_ids = fields.One2many(comodel_name='blog.post.product', inverse_name='blog_post_id', string='Products')
     object_ids = fields.One2many(comodel_name='blog.post.object', inverse_name='blog_post_id', string='Objects')
