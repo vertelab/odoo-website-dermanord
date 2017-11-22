@@ -858,14 +858,24 @@ class webshop_dermanord(http.Controller):
             if product:
                 image_ids = product.image_ids.filtered(lambda i: product in i.product_variant_ids)
                 default_image_ids = product.image_ids.filtered(lambda i: len(i.product_variant_ids) == 0)
-                imgages = []
+                images = []
                 if len(image_ids) > 0:
-                    imgages = default_image_ids.mapped('id') + image_ids.mapped('id')
+                    images = image_ids.mapped('id') + default_image_ids.mapped('id')
                 else:
-                    imgages = default_image_ids.mapped('id') or None
-                value['imgages'] = imgages,
+                    images = default_image_ids.mapped('id') or None
+
+                facets = {}
+                if len(product.facet_line_ids) > 0:
+                    for line in product.facet_line_ids:
+                        facets[line.facet_id.name] = []
+                        for v in line.value_ids:
+                            facets.get(line.facet_id.name).append([line.facet_id.id, v.name, v.id])
+
+                value['images'] = images
+                value['facets'] = facets
                 value['ingredients'] = product.ingredients or ''
                 value['default_code'] = product.default_code or ''
+                value['public_desc'] = product.public_desc or ''
                 value['use_desc'] = product.use_desc or ''
                 value['reseller_desc'] = product.reseller_desc or ''
         return value

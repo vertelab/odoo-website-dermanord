@@ -54,26 +54,45 @@ $(document).ready(function(){
         var $img = $(event_source).closest('tr.js_product, .oe_website_sale').find('span[data-oe-model^="product."][data-oe-type="image"] img:first, img.product_detail_img');
         var $img_big = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_big");
         var $img_thumb = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_nav");
+        var $facet_div = $(event_source).closest('tr.js_product, .oe_website_sale').find("div.col-md-12.facet_div");
         openerp.jsonRpc("/get/product_variant_data", "call", {
             'product_id': product_id,
         }).done(function(data){
             // update images
-            if (data['imgages'] != null) {
+            if (data['images'] != null) {
                 var big_html = '<div id="image_big" class="tab-content">';
-                $.each(data['imgages'][0], function(index, value) {
+                $.each(data['images'], function(index, value) {
                     big_html += '<div id="' + value + '" class="tab-pane fade ' + ((index == 0) ? 'active in' : '') + '"><img class="img img-responsive product_detail_img" style="margin: auto;" src="/imagefield/base_multi_image.image/image_main/' + value + '/ref/website_sale_product_gallery.img_product_detail"></div>';
                 });
                 big_html += '</div>';
                 var tumb_html = '<ul id="image_nav" class="nav nav-pills">';
-                $.each(data['imgages'][0], function(index, value) {
+                $.each(data['images'], function(index, value) {
                     tumb_html += '<li class="' + ((index == 0) ? 'active' : '') + ' ' + ((index > 1) ? 'hidden-xs' : '') + '"><a data-toggle="tab" href="#' + value + '"><img class="img img-responsive" src="/imagefield/base_multi_image.image/image_main/' + value + '/ref/website_sale_product_gallery.img_product_thumbnail">';
                 });
                 tumb_html += '</ul>';
                 $img_big.replaceWith(big_html);
                 $img_thumb.replaceWith(tumb_html);
             }
+            // update facets
+            if (data['facets'] != null) {
+                var facet_html = '<div class="col-md-12 facet_div">'
+                $.each(data['facets'], function(index, value) {
+                    facet_html += '<div class="col-md-6"><h2 class="dn_uppercase">' + index + '</h2>';
+                    $.each(value, function(index) {
+                        facet_html += '<a href="/dn_shop/?facet_' + value[index][0] + '_' + value[index][2] + '=' + value[index][2] + '" class="text-muted"><span>' + value[index][1] + '</span></a>';
+                        if (index != value.length-1) {
+                            facet_html += '<span>, </span>';
+                        }
+                    });
+                    facet_html += '</div>';
+                });
+                facet_html += '</div>';
+                $facet_div.replaceWith(facet_html);
+            }
+
             $(".ingredients_description").find(".text-muted").html(data['ingredients']);
             $(".default_code").html(data['default_code']);
+            $(".public_desc").html(data['public_desc']);
             $(".use_desc").html(data['use_desc']);
             $(".reseller_desc").html(data['reseller_desc']);
         });
@@ -284,7 +303,7 @@ $(document).ready(function(){
             update_product_info(this, +$(this).val());
         });
 
-        $(oe_website_sale).on('change', 'input.js_variant_change, select.js_variant_change, ul[data-attribute_value_ids]', function (ev) {
+        $(oe_website_sale).on('change', 'input.js_variant_change, select.js_variant_change', function (ev) {
             var $ul = $(ev.target).closest('.js_add_cart_variants');
             var $parent = $ul.closest('.js_product');
             var $product_id = $parent.find('input.product_id').first();
