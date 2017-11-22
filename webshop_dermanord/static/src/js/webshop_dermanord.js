@@ -55,6 +55,8 @@ $(document).ready(function(){
         var $img_big = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_big");
         var $img_thumb = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_nav");
         var $facet_div = $(event_source).closest('tr.js_product, .oe_website_sale').find("div.col-md-12.facet_div");
+        var $ingredient_div = $(event_source).closest('tr.js_product, .oe_website_sale').find("div#ingredients_div");
+        //~ var $ingredient_div_mobile = $(event_source).closest('tr.js_product, .oe_website_sale').find("div#ingredients_div_mobile");
         openerp.jsonRpc("/get/product_variant_data", "call", {
             'product_id': product_id,
         }).done(function(data){
@@ -78,9 +80,9 @@ $(document).ready(function(){
                 var facet_html = '<div class="col-md-12 facet_div">'
                 $.each(data['facets'], function(index, value) {
                     facet_html += '<div class="col-md-6"><h2 class="dn_uppercase">' + index + '</h2>';
-                    $.each(value, function(index) {
-                        facet_html += '<a href="/dn_shop/?facet_' + value[index][0] + '_' + value[index][2] + '=' + value[index][2] + '" class="text-muted"><span>' + value[index][1] + '</span></a>';
-                        if (index != value.length-1) {
+                    $.each(value, function(i) {
+                        facet_html += '<a href="/dn_shop/?facet_' + value[i][0] + '_' + value[i][2] + '=' + value[i][2] + '" class="text-muted"><span>' + value[i][1] + '</span></a>';
+                        if (i != value.length-1) {
                             facet_html += '<span>, </span>';
                         }
                     });
@@ -89,6 +91,15 @@ $(document).ready(function(){
                 facet_html += '</div>';
                 $facet_div.replaceWith(facet_html);
             }
+            //update ingredients
+            if (data['ingredients'].length > 0) {
+                var ingredient_html = '<div id="ingredients_div"><div class="container mb16 hidden-xs"><h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>';
+                $.each(data['ingredients'], function(index, value) {
+                    ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/webshop_dermanord.img_ingredients"/><h6 class="text-center"><i>' + value[1] + '</h6></div></a>';
+                });
+                ingredient_html += '</div></div>';
+                $ingredient_div.replaceWith(ingredient_html);
+            }else{ $ingredient_div.replaceWith('<div id="ingredients_div"></div>'); }
 
             $(".ingredients_description").find(".text-muted").html(data['ingredients']);
             $(".default_code").html(data['default_code']);

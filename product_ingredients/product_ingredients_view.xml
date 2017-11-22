@@ -72,11 +72,11 @@
                             <img src="/snippet_dermanord/static/src/img/finger.png" class="touch_finger hidden-lg hidden-md hidden-sm" style="margin: auto; display: block;"/>
                         </div>
                     </div>
-                    <div class="container ingredients_description hidden-lg hidden-md hidden-sm">
-                        <t t-if="product_product and product_product.ingredients">
-                            <p><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" t-field="product_product.ingredients"/></p>
-                        </t>
-                    </div>
+                </t>
+            </div>
+            <div class="container ingredients_description hidden-lg hidden-md hidden-sm">
+                <t t-if="product_product and product_product.ingredients">
+                    <p><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" t-field="product_product.ingredients"/></p>
                 </t>
             </div>
         </xpath>
