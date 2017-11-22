@@ -11,10 +11,10 @@
             <t t-set="ingredients" t-value="request.env['product.ingredient'].search([('product_ids', 'in', product.id)], order='sequence')"/>
         </xpath>
         <xpath expr="//div[@class='col-sm-7 col-md-7 col-lg-7']" position="inside">
-            <t t-if="len(ingredients) &gt; 0">
-                <div class="container mb16 hidden-xs">
-                    <h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>
-                    <div class="col-md-12">
+            <div id="ingredients_div">
+                <t t-if="len(ingredients) &gt; 0">
+                    <div class="container mb16 hidden-xs">
+                        <h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>
                         <t t-foreach="ingredients" t-as="ingredient">
                             <a t-att-href="'/dn_shop/?current_ingredient=%s' %ingredient.id">
                                 <div class="col-md-3 col-sm-3 ingredient_desc">
@@ -27,11 +27,11 @@
                             </a>
                         </t>
                     </div>
-                </div>
-            </t>
+                </t>
+            </div>
             <p id="current_product_id" t-att-data-value="product.id" class="hidden"/>
             <div class="container ingredients_description hidden-xs">
-                <div class="col-md-12 mt16">
+                <div class="mt16">
                     <t t-if="product_product and product_product.ingredients">
                         <p><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" t-field="product_product.ingredients"/></p>
                     </t>
@@ -39,46 +39,46 @@
             </div>
         </xpath>
         <xpath expr="//div[@itemprop='description']" position="before">
-            <t t-if="len(ingredients) &gt; 0">
-                <div class="container mb16 hidden-lg hidden-md hidden-sm">
-                    <h4 class="text-center dn_uppercase">made from all-natural ingredients</h4>
-                    <div class="col-md-12">
-                        <div class="carousel slide" id="ingredient_carousel" data-ride="carousel">
-                            <div class="carousel-inner" style="padding-bottom: 40px;">
-                                <t t-foreach="ingredients" t-as="ingredient">
-                                    <div t-att-class="'item ingredient_desc %s' %('active' if ingredient_index == 0 else '')">
-                                        <a t-att-href="'/dn_shop/?current_ingredient=%s' %ingredient.id">
-                                            <img class="img img-responsive" style="margin: auto; height: 230px !important;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
-                                            <h6 class="text-center"><i t-field="ingredient.name"/></h6>
+            <div id="ingredients_div_mobile">
+                <t t-if="len(ingredients) &gt; 0">
+                    <div class="container mb16 hidden-lg hidden-md hidden-sm">
+                        <h4 class="text-center dn_uppercase">made from all-natural ingredients</h4>
+                        <div class="col-md-12">
+                            <div class="carousel slide" id="ingredient_carousel" data-ride="carousel">
+                                <div class="carousel-inner" style="padding-bottom: 40px;">
+                                    <t t-foreach="ingredients" t-as="ingredient">
+                                        <div t-att-class="'item ingredient_desc %s' %('active' if ingredient_index == 0 else '')">
+                                            <a t-att-href="'/dn_shop/?current_ingredient=%s' %ingredient.id">
+                                                <img class="img img-responsive" style="margin: auto; height: 230px !important;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
+                                                <h6 class="text-center"><i t-field="ingredient.name"/></h6>
 <!--
-                                            <t t-if="ingredient.description">
-                                                <h5 class="text-muted text-center" t-field="ingredient.description"/>
-                                            </t>
-                                            <t t-if="not ingredient.description">
-                                                <h5><br/></h5>
-                                            </t>
+                                                <t t-if="ingredient.description">
+                                                    <h5 class="text-muted text-center" t-field="ingredient.description"/>
+                                                </t>
+                                                <t t-if="not ingredient.description">
+                                                    <h5><br/></h5>
+                                                </t>
 -->
-                                        </a>
-                                    </div>
-                                </t>
+                                            </a>
+                                        </div>
+                                    </t>
+                                </div>
+                                <ol class="carousel-indicators">
+                                    <t t-foreach="ingredients" t-as="ingredient">
+                                        <li t-att-class="'active' if ingredient_index == 0 else ''" t-att-data-slide-to="'0' if ingredient_index == 0 else ingredient_index" data-target="#ingredient_carousel"/>
+                                    </t>
+                                </ol>
                             </div>
-                            <ol class="carousel-indicators">
-                                <t t-foreach="ingredients" t-as="ingredient">
-                                    <li t-att-class="'active' if ingredient_index == 0 else ''" t-att-data-slide-to="'0' if ingredient_index == 0 else ingredient_index" data-target="#ingredient_carousel"/>
-                                </t>
-                            </ol>
+                            <img src="/snippet_dermanord/static/src/img/finger.png" class="touch_finger hidden-lg hidden-md hidden-sm" style="margin: auto; display: block;"/>
                         </div>
-                        <img src="/snippet_dermanord/static/src/img/finger.png" class="touch_finger hidden-lg hidden-md hidden-sm" style="margin: auto; display: block;"/>
                     </div>
-                </div>
-                <div class="container ingredients_description hidden-lg hidden-md hidden-sm">
-                    <div class="col-md-12">
+                    <div class="container ingredients_description hidden-lg hidden-md hidden-sm">
                         <t t-if="product_product and product_product.ingredients">
                             <p><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" t-field="product_product.ingredients"/></p>
                         </t>
                     </div>
-                </div>
-            </t>
+                </t>
+            </div>
         </xpath>
     </template>
 
