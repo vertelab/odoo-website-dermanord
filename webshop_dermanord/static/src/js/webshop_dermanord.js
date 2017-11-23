@@ -124,6 +124,7 @@ $(document).ready(function(){
                 $stock_status.html(data['instock']);
                 if (data['instock'] == 'Shortage') {
                     $('#add_to_cart').addClass('hidden');
+                    $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
                 }
             }
 
@@ -376,6 +377,7 @@ $(document).ready(function(){
                     // sale_ok / sale_start hide add-button and maybe view information about sale start
                     if (variant_ids[k][5] == 0) {
                         $('#add_to_cart').addClass('hidden');
+                        $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
                         if (variant_ids[k][6] != 0) {
                             $('p#sale_start_info').removeClass('hidden');
                             $('#sale_start').html(variant_ids[k][6]);
@@ -385,6 +387,7 @@ $(document).ready(function(){
                         }
                     } else if (variant_ids[k][5] == 1) {
                         $('#add_to_cart').removeClass('hidden');
+                        $('div.css_quantity.input-group.oe_website_spinner').removeClass('hidden');
                         if (variant_ids[k][6] != 0) {
                             $('#sale_start_info').removeClass('hidden');
                         } else if (variant_ids[k][6] == 0){
