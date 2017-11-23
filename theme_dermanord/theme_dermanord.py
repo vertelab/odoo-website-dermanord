@@ -122,6 +122,7 @@ class website(models.Model):
             breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
             return ''.join(reversed(breadcrumb))
 
+
 class website_config_settings(models.TransientModel):
     _inherit = 'website.config.settings'
 
@@ -161,7 +162,7 @@ class ThemeDermanord(http.Controller):
 
 class ResCompany(models.Model):
     _inherit = 'res.company'
-    
+
     def google_map_img(self, cr, uid, ids, zoom=8, width=298, height=298, marker=None, context=None):
         env = api.Environment(cr, uid, context)
         return super(ResCompany, self).google_map_img(cr, uid, ids,
