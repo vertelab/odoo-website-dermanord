@@ -30,12 +30,12 @@
 -->
 
     <data>
-    
+
     <template id="contactus" name="Dermanord Contact" inherit_id="website.contactus">
         <xpath expr="//div[@groups='base.group_website_publisher']" position="replace">
         </xpath>
     </template>
-    
+
     <template id="company_description" name="Dermanord Company Description" inherit_id="website.company_description">
         <xpath expr="//address" position="replace"></xpath>
         <xpath expr="//a" position="after">
@@ -53,7 +53,7 @@
         </xpath>
 -->
     </template>
-    
+
     <record id="view_website_config_settings_sc_i" model="ir.ui.view">
       <field name="name">Website settings snapchat and instagram</field>
       <field name="model">website.config.settings</field>
@@ -350,7 +350,7 @@
 <!--
                                 <img t-att-src="'/web/binary/image?model=res.country&amp;id=%s&amp;field=image' %request.env['res.country'].search([('code', '=', lg[0].split('_')[1].lower())]).id" style="height: 20px;"/>
 -->
-                                <span t-esc="lg[0]"/>
+                                <span t-esc="lg[0].split('_').[1]"/>
                             </a>
                         </div>
                     </ol>
