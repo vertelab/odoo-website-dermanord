@@ -192,6 +192,12 @@ class Website(models.Model):
         env = api.Environment(cr, uid, context)
         sale_order_obj = env['sale.order']
         sale_order_id = request.session.get('sale_order_id')
+        
+        if sale_order_id: # Check if order has been tampered on backoffice
+            sale_order = self.env['sale.order'].browse(sale_order_id)
+            if sale_order and sale_order.order_line.filtered(lambda l: l.state not in ['draft']):
+                sale_order_id = None
+        
         sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
 
         # Find old sale order that is a webshop cart.
