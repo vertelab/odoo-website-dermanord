@@ -72,6 +72,10 @@ div.shipping-address, div.invoicing-address {
     padding: 15px;
 }
 
+#image_big {
+    max-height: 500px;
+}
+
 #image_big img {
     border: 1px solid #eee;
     margin: 0px 23px 0px 15px;
@@ -218,7 +222,7 @@ div.shipping-address, div.invoicing-address {
 }
 
 .facet_div {
-    padding: 0px 10px 0px 0 !important;
+    padding: 0px !important;
     overflow: hidden;
     position: relative;
 /*

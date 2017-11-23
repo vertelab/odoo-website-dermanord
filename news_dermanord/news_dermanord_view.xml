@@ -10,14 +10,7 @@
 -->
                     <div class="container mb32">
                         <div class="row">
-                            <t t-if="not tag">
-                                <t t-set="news_blog" t-value="request.env['blog.post'].search([('blog_id', '=', blog.id), ('website_published', '=', True)])"/>
-                            </t>
-                            <t t-if="tag">
-                                <t t-set="news_blog" t-value="request.env['blog.post'].search([('blog_id', '=', blog.id), ('tag_ids', 'in', int(tag.id)), ('website_published', '=', True)])"/>
-                            </t>
-                            <t t-set="news_blog" t-value="news_blog.sudo().with_context({'user': request.env.user}).filtered(lambda b: (b.security_type == 'private' and b._context.get('user') in b.group_ids.mapped('users')) or (b.security_type == 'public'))"/>
-                            <t t-foreach="news_blog" t-as="news_post">
+                            <t t-foreach="blog_posts" t-as="news_post">
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <t t-if="news_post.background_image and '/ir.attachment/' in news_post.background_image">
                                         <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list" t-att-style="'background-image: url(&quot;/imagefield/ir.attachment/datas/%s/ref/theme_dermanord.dn_header_img&quot;);' %news_post.background_image[(news_post.background_image.index('ir.attachment/')+len('ir.attachment/')):news_post.background_image.index('/datas')].split('_')[0]"/>
@@ -25,9 +18,6 @@
                                     <t t-if="not news_post.background_image or '/ir.attachment/' not in news_post.background_image">
                                         <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list"/>
                                     </t>
-<!--
-                                    <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list" t-att-style="'background-image: url(&quot;/%s&quot;);' %'/'.join(news_post.background_image.split('//')[1].split('/')[1:])"/>
--->
                                     <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_content_div">
                                         <h6><i t-field="news_post.name" style="font-size: 28px; font-weight: 500;"/></h6>
                                         <h5 class="text-muted" style="color: #bbb;"><t t-esc="website.formatted_date(str(news_post.write_date)[:10])"/></h5>
@@ -60,7 +50,6 @@
                                 <span class="fa fa-times"/>
                             </a>
                         </div>
-                        <t t-call="website_blog_private.blog_authorization"/>
                         <div class="cover-storage oe_hidden"></div>
                         <t t-call="website.publish_management">
                             <t t-set="object" t-value="blog_post"/>

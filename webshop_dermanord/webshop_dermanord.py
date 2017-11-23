@@ -501,7 +501,7 @@ class WebsiteSale(website_sale):
             #~ if len(p.sudo().access_group_ids) > 0 :
                 #~ if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
                     #~ products -= p
-        
+
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id
@@ -716,7 +716,7 @@ class WebsiteSale(website_sale):
         default_order = self._get_search_order(post)
         if post.get('order'):
             default_order = post.get('order')
-            
+
         products = request.env['product.product'].search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)
         #~ product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
         #~ products = product_obj.browse(cr, uid, product_ids, context=context)
@@ -856,9 +856,32 @@ class webshop_dermanord(http.Controller):
         if product_id:
             product = request.env['product.product'].browse(int(product_id))
             if product:
-                value['image_id'] = product.image_ids[0].id if len(product.image_ids) > 0 else None
-                value['ingredients'] = product.ingredients or ''
+                image_ids = product.image_ids.filtered(lambda i: product in i.product_variant_ids)
+                default_image_ids = product.image_ids.filtered(lambda i: len(i.product_variant_ids) == 0)
+                images = []
+                if len(image_ids) > 0:
+                    images = image_ids.mapped('id') + default_image_ids.mapped('id')
+                else:
+                    images = default_image_ids.mapped('id') or None
+
+                facets = {}
+                if len(product.facet_line_ids) > 0:
+                    for line in product.facet_line_ids:
+                        facets[line.facet_id.name] = []
+                        for v in line.value_ids:
+                            facets.get(line.facet_id.name).append([line.facet_id.id, v.name, v.id])
+
+                ingredients = []
+                product_ingredients = request.env['product.ingredient'].search([('product_ids', 'in', product_id)], order='sequence')
+                if len(product_ingredients) > 0:
+                    for i in product_ingredients:
+                        ingredients.append([i.id, i.name])
+
+                value['images'] = images
+                value['facets'] = facets
+                value['ingredients'] = ingredients
                 value['default_code'] = product.default_code or ''
+                value['public_desc'] = product.public_desc or ''
                 value['use_desc'] = product.use_desc or ''
                 value['reseller_desc'] = product.reseller_desc or ''
         return value

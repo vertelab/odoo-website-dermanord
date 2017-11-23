@@ -93,6 +93,43 @@ class Blog(models.Model):
 class BlogPost(models.Model):
     _inherit = 'blog.post'
 
+    def check_access_rule(self, cr, uid, ids, operation, context=None):
+        """Verifies that the operation given by ``operation`` is allowed for the user
+           according to ir.rules.
+
+           :param operation: one of ``write``, ``unlink``
+           :raise except_orm: * if current ir.rules do not permit this operation.
+           :return: None if the operation is allowed
+        """
+        if uid == SUPERUSER_ID:
+            return
+
+        if self.is_transient():
+            # Only one single implicit access rule for transient models: owner only!
+            # This is ok to hardcode because we assert that TransientModels always
+            # have log_access enabled so that the create_uid column is always there.
+            # And even with _inherits, these fields are always present in the local
+            # table too, so no need for JOINs.
+            cr.execute("""SELECT distinct create_uid
+                          FROM %s
+                          WHERE id IN %%s""" % self._table, (tuple(ids),))
+            uids = [x[0] for x in cr.fetchall()]
+            if len(uids) != 1 or uids[0] != uid:
+                raise except_orm(_('Access Denied'),
+                                 _('For this kind of document, you may only access records you created yourself.\n\n(Document type: %s)') % (self._description,))
+        else:
+            where_clause, where_params, tables = self.pool.get('ir.rule').domain_get(cr, uid, self._name, operation, context=context)
+            if where_clause:
+                where_clause = ' and ' + ' and '.join(where_clause)
+                for sub_ids in cr.split_for_in_conditions(ids):
+                    cr.execute('SELECT ' + self._table + '.id FROM ' + ','.join(tables) +
+                               ' WHERE ' + self._table + '.id IN %s' + where_clause,
+                               [sub_ids] + where_params)
+                    res = cr.dictfetchall()
+                    _logger.warn(res)
+                    returned_ids = [x['id'] for x in res]
+                    self._check_record_rules_result_count(cr, uid, sub_ids, returned_ids, operation, context=context)
+
     product_ids = fields.Many2many(comodel_name='product.template', relation="blog_post_product", column1='blog_post_id',column2='product_id', string='Products')
     blog_post_product_ids = fields.One2many(comodel_name='blog.post.product', inverse_name='blog_post_id', string='Products')
     object_ids = fields.One2many(comodel_name='blog.post.object', inverse_name='blog_post_id', string='Objects')
@@ -251,14 +288,15 @@ class WebsiteBlog(WebsiteBlog):
         if blog:
             domain += [('blog_id', '=', blog.id)]
         if tag:
-            domain += [('tag_ids', 'in', tag.id)]
+            domain += [('tag_ids', '=', tag.id)]
         if date_begin and date_end:
             domain += [("create_date", ">=", date_begin), ("create_date", "<=", date_end)]
 
         blog_url = QueryURL('', ['blog', 'tag'], blog=blog, tag=tag, date_begin=date_begin, date_end=date_end)
         post_url = QueryURL('', ['blogpost'], tag_id=tag and tag.id or None, date_begin=date_begin, date_end=date_end)
-
+        _logger.warn(domain)
         blog_post_ids = blog_post_obj.search(cr, uid, domain, order="create_date desc", context=context)
+        _logger.warn(blog_post_ids)
         blog_posts = blog_post_obj.browse(cr, uid, blog_post_ids, context=context)
 
         pager = request.website.pager(
@@ -271,14 +309,9 @@ class WebsiteBlog(WebsiteBlog):
         pager_begin = (page - 1) * self._blog_post_per_page
         pager_end = page * self._blog_post_per_page
         blog_posts = blog_posts[pager_begin:pager_end]
-        # check if current user is allowed to access this blog post
-        for post in blog_posts:
-            if post.security_type == 'private':
-                if request.env['res.users'].browse(uid) not in post.sudo().group_ids.mapped('users'):
-                    blog_posts -= post
 
         tags = blog.all_tags()[blog.id]
-
+        _logger.warn(blog_posts)
         values = {
             'blog': blog,
             'blogs': blogs,
@@ -335,11 +368,6 @@ class WebsiteBlog(WebsiteBlog):
         tags = tag_obj.browse(cr, uid, tag_obj.search(cr, uid, [], context=context), context=context)
 
         all_post_ids = blog_post_obj.search(cr, uid, [('blog_id', '=', blog.id)], context=context)
-        # check if current user is allowed to access this blog post
-        for post in request.env['blog.post'].browse(all_post_ids):
-            if post.security_type == 'private':
-                if (request.env['res.users'].browse(uid) not in post.sudo().group_ids.mapped('users')) and (post != blog_post):
-                    all_post_ids.remove(int(post))
         current_blog_post_index = all_post_ids.index(blog_post.id)
         next_post_id = all_post_ids[0 if current_blog_post_index == len(all_post_ids) - 1 \
                             else current_blog_post_index + 1]
@@ -369,15 +397,13 @@ class WebsiteBlog(WebsiteBlog):
                 'visits': blog_post.visits+1,
             },context=context)
         if blog.post_complete:
-            try:
-                if (blog_post.security_type == 'private' and request.env['res.users'].browse(uid) in blog_post.group_ids.mapped('users')) or blog_post.security_type == 'public':
-                    return request.website.render(blog.post_complete.id, values)
-                else:
-                    return request.website.render('website.403')
-            except:
-                _logger.error('Cannot reder template %s' %blog.post_complete.name)
+            #~ try:
+            return request.website.render(blog.post_complete.id, values)
+            #~ except:
+                #~ _logger.error('Cannot reder template %s' %blog.post_complete.name)
+                
         else:
-            if (blog_post.security_type == 'private' and request.env['res.users'].browse(uid) in blog_post.group_ids.mapped('users')) or blog_post.security_type == 'public':
-                return request.website.render("website_blog.blog_post_complete", values)
-            else:
-                return request.website.render('website.403')
+            #~ if (blog_post.security_type == 'private' and request.env['res.users'].browse(uid) in blog_post.group_ids.mapped('users')) or blog_post.security_type == 'public':
+            return request.website.render("website_blog.blog_post_complete", values)
+            #~ else:
+                #~ return request.website.render('website.403')
