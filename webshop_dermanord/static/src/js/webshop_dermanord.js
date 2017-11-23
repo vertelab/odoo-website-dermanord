@@ -49,14 +49,17 @@ $(document).ready(function(){
         }
     });
 
-    // This method update product images, prices, ingredients, descriptions and facets when a variant has been choosen.
+    // This method updates product images, prices, ingredients, descriptions and facets when a variant has been choosen.
     function update_product_info(event_source, product_id) {
         var $img = $(event_source).closest('tr.js_product, .oe_website_sale').find('span[data-oe-model^="product."][data-oe-type="image"] img:first, img.product_detail_img');
         var $img_big = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_big");
         var $img_thumb = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_nav");
         var $facet_div = $(event_source).closest('tr.js_product, .oe_website_sale').find("div.col-md-12.facet_div");
+        var $ingredients_desc = $(event_source).closest('tr.js_product, .oe_website_sale').find("div#ingredients_description").find("span.text-muted");
+        var $ingredients_desc_mobile = $("div#ingredients_description_mobile").find("span.text-muted");
         var $ingredient_div = $(event_source).closest('tr.js_product, .oe_website_sale').find("div#ingredients_div");
-        //~ var $ingredient_div_mobile = $(event_source).closest('tr.js_product, .oe_website_sale').find("div#ingredients_div_mobile");
+        var $ingredients_div_mobile = $("div#ingredients_div_mobile");
+
         openerp.jsonRpc("/get/product_variant_data", "call", {
             'product_id': product_id,
         }).done(function(data){
@@ -92,16 +95,32 @@ $(document).ready(function(){
                 $facet_div.replaceWith(facet_html);
             }
             //update ingredients
-            if (data['ingredients'].length > 0) {
+            if (data['facets'] != null) {
                 var ingredient_html = '<div id="ingredients_div"><div class="container mb16 hidden-xs"><h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>';
                 $.each(data['ingredients'], function(index, value) {
                     ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/webshop_dermanord.img_ingredients"/><h6 class="text-center"><i>' + value[1] + '</h6></div></a>';
                 });
                 ingredient_html += '</div></div>';
                 $ingredient_div.replaceWith(ingredient_html);
-            }else{ $ingredient_div.replaceWith('<div id="ingredients_div"></div>'); }
 
-            $(".ingredients_description").find(".text-muted").html(data['ingredients']);
+                var ingredient_mobile_html = '<div id="ingredients_div_mobile"><div class="container mb16 hidden-lg hidden-md hidden-sm"><h4 class="text-center dn_uppercase">made from all-natural ingredients</h4><div class="col-md-12"><div class="carousel slide" id="ingredient_carousel" data-ride="carousel"><div class="carousel-inner" style="padding-bottom: 40px;">';
+                $.each(data['ingredients'], function(index, value) {
+                    ingredient_mobile_html += '<div class="item ingredient_desc' + ((index == 0) ? ' active' : '') + '"><a href="/dn_shop/?current_ingredient=' + value[0] + '"><img class="img img-responsive" style="margin: auto; height: 230px !important;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/webshop_dermanord.img_ingredients"/><h6 class="text-center"><i>' + value[1] + '</i></h6></a></div>';
+                });
+                ingredient_mobile_html += '</div><ol class="carousel-indicators">';
+                $.each(data['ingredients'], function(index, value) {
+                    ingredient_mobile_html += '<li class="' + ((index == 0) ? ' active' : '') + '" data-slide-to="' + index + '" data-target="#ingredient_carousel"/>';
+                });
+                ingredient_mobile_html += '</ol></div><img src="/snippet_dermanord/static/src/img/finger.png" class="touch_finger hidden-lg hidden-md hidden-sm" style="margin: auto; display: block;"/></div></div>';
+                $ingredients_div_mobile.replaceWith(ingredient_mobile_html);
+            }
+            else{
+                $ingredient_div.replaceWith('<div id="ingredients_div"></div></div>');
+                $ingredients_div_mobile.replaceWith('<div id="ingredients_div_mobile"></div></div>');
+            }
+
+            $ingredients_desc.html(data['ingredients_description']);
+            $ingredients_desc_mobile.html(data['ingredients_description']);
             $(".default_code").html(data['default_code']);
             $(".public_desc").html(data['public_desc']);
             $(".use_desc").html(data['use_desc']);

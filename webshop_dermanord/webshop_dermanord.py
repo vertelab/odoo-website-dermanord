@@ -871,6 +871,7 @@ class webshop_dermanord(http.Controller):
                         for v in line.value_ids:
                             facets.get(line.facet_id.name).append([line.facet_id.id, v.name, v.id])
 
+                ingredients_description = product.ingredients or ''
                 ingredients = []
                 product_ingredients = request.env['product.ingredient'].search([('product_ids', 'in', product_id)], order='sequence')
                 if len(product_ingredients) > 0:
@@ -879,6 +880,7 @@ class webshop_dermanord(http.Controller):
 
                 value['images'] = images
                 value['facets'] = facets
+                value['ingredients_description'] = ingredients_description
                 value['ingredients'] = ingredients
                 value['default_code'] = product.default_code or ''
                 value['public_desc'] = product.public_desc or ''
