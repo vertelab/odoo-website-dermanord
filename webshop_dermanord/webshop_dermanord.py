@@ -149,7 +149,6 @@ class product_pricelist(models.Model):
 
     @api.multi
     def price_get(self, prod_id, qty, partner=None):
-        _logger.warn('price_get partner: %s' % partner)
         return super(product_pricelist, self).price_get(prod_id, qty, partner)
 
 class ResPartner(models.Model):
@@ -192,12 +191,12 @@ class Website(models.Model):
         env = api.Environment(cr, uid, context)
         sale_order_obj = env['sale.order']
         sale_order_id = request.session.get('sale_order_id')
-        
+
         #~ if sale_order_id: # Check if order has been tampered on backoffice
             #~ sale_order = sale_order_obj.sudo().browse(sale_order_id)
             #~ if sale_order and sale_order.order_line.filtered(lambda l: l.state not in ['draft']):
                 #~ sale_order_id = None
-        
+
         sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
 
         # Find old sale order that is a webshop cart.
@@ -209,7 +208,6 @@ class Website(models.Model):
             ], limit=1)
             if sale_order:
                 request.session['sale_order_id'] = sale_order.id
-        _logger.warn(sale_order)
         return sale_order
 
 class WebsiteSale(website_sale):
@@ -231,7 +229,6 @@ class WebsiteSale(website_sale):
         if not data:
             data = {}
         res = super(WebsiteSale, self).checkout_values(data)
-        #~ _logger.warn(res)
         if request.env.user != request.website.user_id:
             partner = request.env.user.partner_id
             invoicing_id = int(data.get("invoicing_id", '-2'))
@@ -261,6 +258,14 @@ class WebsiteSale(website_sale):
             order.write({'partner_invoice_id': partner_invoice_id})
 
     def get_attribute_value_ids(self, product):
+        def get_sale_start(product):
+            if product.sale_ok:
+                if product.sale_start and not product.sale_end and product.sale_start > fields.Date.today():
+                    return int(product.sale_start.replace('-', ''))
+            else:
+                if product.sale_start and product.sale_start > fields.Date.today():
+                    return int(product.sale_start.replace('-', ''))
+            return 0
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
         currency_obj = pool['res.currency']
         attribute_value_ids = []
@@ -270,13 +275,12 @@ class WebsiteSale(website_sale):
         if request.website.pricelist_id.id != context['pricelist']:
             website_currency_id = request.website.currency_id.id
             currency_id = self.get_pricelist().currency_id.id
-            for p in product.product_variant_ids.filtered(lambda v: v.sale_ok == True):
+            for p in product.product_variant_ids:
                 price = currency_obj.compute(cr, uid, website_currency_id, currency_id, p.lst_price)
-                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price])
+                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price, 1 if p.sale_ok else 0, get_sale_start(p)])
         else:
-            attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price] for p in product.sudo().product_variant_ids.filtered(lambda v: v.sale_ok == True)]
+            attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price, 1 if p.sale_ok else 0, get_sale_start(p)] for p in product.sudo().product_variant_ids]
 
-        _logger.warn(attribute_value_ids)
         return attribute_value_ids
 
     def get_domain_append(self, post):
@@ -532,8 +536,6 @@ class WebsiteSale(website_sale):
             for style in request.env['product.style'].search([]):
                 style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style in product.website_style_ids else '', style.id, style.html_class, style.name)
 
-            _logger.warn(style_options)
-
             products_list.append({
                 'product_href': '/dn_shop/product/%s' %product.id,
                 'product_id': product.id,
@@ -660,7 +662,6 @@ class WebsiteSale(website_sale):
         request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
         request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
 
-        _logger.warn('attrib values: %s' % self.get_attribute_value_ids)
         values = {
             'search': search,
             'category': category,
@@ -884,6 +885,16 @@ class webshop_dermanord(http.Controller):
                     for i in product_ingredients:
                         ingredients.append([i.id, i.name])
 
+                instock = ''
+                if not product.is_mto_route:
+                    if product.instock_percent > 100.0:
+                        instock = _('In stock')
+                    elif product.instock_percent >= 50.0 and product.instock_percent <= 100.0:
+                        instock = _('Few in stock')
+                    elif product.instock_percent < 50.0:
+                        instock = _('Shortage')
+
+                value['instock'] = instock
                 value['images'] = images
                 value['facets'] = facets
                 value['ingredients_description'] = ingredients_description

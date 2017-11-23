@@ -59,6 +59,7 @@ $(document).ready(function(){
         var $ingredients_desc_mobile = $("div#ingredients_description_mobile").find("span.text-muted");
         var $ingredient_div = $(event_source).closest('tr.js_product, .oe_website_sale').find("div#ingredients_div");
         var $ingredients_div_mobile = $("div#ingredients_div_mobile");
+        var $stock_status = $(event_source).closest('tr.js_product, .oe_website_sale').find("div.stock_status").find("span");
 
         openerp.jsonRpc("/get/product_variant_data", "call", {
             'product_id': product_id,
@@ -117,6 +118,13 @@ $(document).ready(function(){
             else{
                 $ingredient_div.replaceWith('<div id="ingredients_div"></div></div>');
                 $ingredients_div_mobile.replaceWith('<div id="ingredients_div_mobile"></div></div>');
+            }
+            //update stock status
+            if (data['instock'] != null) {
+                $stock_status.html(data['instock']);
+                if (data['instock'] == 'Shortage') {
+                    $('#add_to_cart').addClass('hidden');
+                }
             }
 
             $ingredients_desc.html(data['ingredients_description']);
@@ -356,8 +364,8 @@ $(document).ready(function(){
                         $price.html(price_to_str(variant_ids[k][2]));
                         $default_price.html(price_to_str(variant_ids[k][3]));
                         $recommended_price.html(price_to_str(variant_ids[k][4]));
-                        $('#sale_start_info').removeClass('hidden')
                     });
+
                     if (variant_ids[k][3]-variant_ids[k][2]>0.2) {
                         $default_price.closest('.oe_website_sale').addClass("discount");
                         $optional_price.closest('.oe_optional').show().css('text-decoration', 'line-through');
@@ -365,17 +373,28 @@ $(document).ready(function(){
                         $default_price.closest('.oe_website_sale').removeClass("discount");
                         $optional_price.closest('.oe_optional').hide();
                     }
+                    // sale_ok / sale_start hide add-button and maybe view information about sale start
+                    if (variant_ids[k][5] == 0) {
+                        $('#add_to_cart').addClass('hidden');
+                        if (variant_ids[k][6] != 0) {
+                            $('p#sale_start_info').removeClass('hidden');
+                            $('#sale_start').html(variant_ids[k][6]);
+                        } else if (variant_ids[k][6] == 0){
+                            $('p#sale_start_info').addClass('hidden');
+                            $('#sale_start').html('');
+                        }
+                    } else if (variant_ids[k][5] == 1) {
+                        $('#add_to_cart').removeClass('hidden');
+                        if (variant_ids[k][6] != 0) {
+                            $('#sale_start_info').removeClass('hidden');
+                        } else if (variant_ids[k][6] == 0){
+                            $('p#sale_start_info').addClass('hidden');
+                            $('#sale_start').html('');
+                        }
+                    }
                     product_id = variant_ids[k][0];
                     break;
                 }
-                 // sale_ok / sale_start hide add-button and maybe view information about sale start
-                //~ if (sale_ok[k][2] == 'False') {
-                    //~ $('#add_to_cart').addClass('hidden');
-                    //~ if (sale_ok[k][3] != '') {
-                        //~ $('#sale_start_info').removeClass('hidden');
-                        //~ $('#sale_start').html(sale_ok[k][3]);
-                    //~ }
-                //~ }
             }
 
             if (product_id) {
