@@ -350,7 +350,7 @@
 <!--
                                 <img t-att-src="'/web/binary/image?model=res.country&amp;id=%s&amp;field=image' %request.env['res.country'].search([('code', '=', lg[0].split('_')[1].lower())]).id" style="height: 20px;"/>
 -->
-                                <span t-esc="lg[0].split('_').[1]"/>
+                                <span t-esc="lg[0].split('_')[1]"/>
                             </a>
                         </div>
                     </ol>
