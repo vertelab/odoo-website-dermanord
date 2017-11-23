@@ -155,14 +155,14 @@
                             <a href="#" id="search-btn-modal" data-toggle="modal" data-target="#search_modal" style="color: #000;" class="pull-right"><h5 class="dn_uppercase">Search <i class="fa fa-search"/></h5></a>
                         </div>
                         <div class="col-md-12 col-sm-12 hidden-xs">
-                            <t t-set="website_sale_order" t-value="website.sale_get_order()"/>
+                            <t t-set="website_sale_order" t-value="website_sale_order or website.sale_get_order()"/>
                             <a href="/shop/cart" class="pull-right kepler_std_i" style="color: #000;">
                                 <i class="fa fa-shopping-cart"/>
-                              <i>Bag:</i> <i class="my_cart_total"><span t-field="website_sale_order.amount_total" style="white-space: nowrap;" t-field-options='{
+                              <i>Bag:</i> <i class="my_cart_total"><t t-if="website_sale_order"><span t-field="website_sale_order.amount_total" style="white-space: nowrap;" t-field-options='{
                                   "widget": "monetary",
                                   "from_currency": "website_sale_order.pricelist_id.currency_id",
                                   "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-                                }'/></i> <i class="my_cart_quantity">(<t t-esc="website_sale_order and website_sale_order.cart_quantity or 0"/>)</i>
+                                }'/></t></i> <i class="my_cart_quantity">(<t t-esc="website_sale_order and website_sale_order.cart_quantity or 0"/>)</i>
                             </a>
 <!--
                                   My cart <sup t-attf-class="my_cart_quantity label label-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or ''"/>
