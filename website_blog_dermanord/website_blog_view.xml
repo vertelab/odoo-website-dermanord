@@ -78,7 +78,7 @@
                 <form string="Object Blog Post">
                     <sheet string="Object Blog Post">
                         <field name="image" widget="image" class="oe_avatar oe_right"/>
-                        
+
                             <group >
                                 <field name="sequence" invisible="1" />
                                 <field name="object_id"  options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
@@ -87,7 +87,7 @@
                                 <field name="blog_post_id" invisible="1"/>
                                 <field name="color" invisible="1"/>
                             </group>
-                      
+
                         <notebook>
                             <page string="Information">
                                 <field name="description"/>
@@ -124,10 +124,10 @@
                         <t t-if="object.object_id._name == 'product.product'">
                             <a t-att-href="'/dn_shop/variant/%s' %object.object_id.id">
                                 <div class="col-md-3 col-xs-12 bpp_block">
-                                    <img class="img img-responsive bpp_img" t-att-src="'/imagefield/product.product/image/%s/ref/website_blog_dermanord.img_product' %object.object_id.id"/>
+                                    <img class="img img-responsive bpp_img" t-att-src="'/imagefield/blog.post.object/image/%s/ref/website_blog_dermanord.img_product' %object.id"/>
                                     <div class="container bpp_desc_div">
-                                        <h4 class="dn_uppercase" t-field="object.object_id.name"/>
-                                        <h5 class="bpp_desc text-muted" t-field="object.object_id.description_sale"/>
+                                        <h4 class="dn_uppercase" t-field="object.name"/>
+                                        <h5 class="bpp_desc text-muted" t-field="object.description"/>
                                     </div>
                                 </div>
                             </a>
