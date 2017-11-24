@@ -60,6 +60,13 @@ $(document).ready(function(){
         var $ingredient_div = $(event_source).closest('tr.js_product, .oe_website_sale').find("div#ingredients_div");
         var $ingredients_div_mobile = $("div#ingredients_div_mobile");
         var $stock_status = $(event_source).closest('tr.js_product, .oe_website_sale').find("div.stock_status").find("span");
+        var $default_code = $(".default_code");
+        var $public_desc_title = $(".public_desc_title");
+        var $use_desc_title = $(".use_desc_title");
+        var $reseller_desc_title = $(".reseller_desc_title");
+        var $public_desc = $(".public_desc");
+        var $use_desc = $(".use_desc");
+        var $reseller_desc = $(".reseller_desc");
 
         openerp.jsonRpc("/get/product_variant_data", "call", {
             'product_id': product_id,
@@ -96,7 +103,7 @@ $(document).ready(function(){
                 $facet_div.replaceWith(facet_html);
             }
             //update ingredients
-            if (data['facets'] != null) {
+            if (data['ingredients'] != null) {
                 var ingredient_html = '<div id="ingredients_div"><div class="container mb16 hidden-xs"><h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>';
                 $.each(data['ingredients'], function(index, value) {
                     ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/webshop_dermanord.img_ingredients"/><h6 class="text-center"><i>' + value[1] + '</h6></div></a>';
@@ -127,13 +134,44 @@ $(document).ready(function(){
                     $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
                 }
             }
+            // descpitions
+            if (data['public_desc'] != null) {
+                if (data['public_desc'] != '') {
+                    $public_desc_title.removeClass("hidden");
+                    $public_desc.html(data['public_desc']);
+                    $public_desc.removeClass("hidden");
+                } else {
+                    $public_desc_title.addClass("hidden");
+                    $public_desc.html('');
+                    $public_desc.addClass("hidden");
+                }
+            }
+            if (data['use_desc'] != null) {
+                if (data['use_desc'] != '') {
+                    $use_desc_title.removeClass("hidden");
+                    $use_desc.html(data['use_desc']);
+                    $use_desc.removeClass("hidden");
+                } else {
+                    $use_desc_title.addClass("hidden");
+                    $use_desc.addClass("hidden");
+                    $use_desc.html('');
+                }
+            }
+            if (data['reseller_desc'] != null) {
+                if (data['reseller_desc'] != '') {
+                    $reseller_desc_title.removeClass("hidden");
+                    $reseller_desc.html(data['reseller_desc']);
+                    $reseller_desc.removeClass("hidden");
+                } else {
+                    $reseller_desc_title.addClass("hidden");
+                    $reseller_desc.addClass("hidden");
+                    $reseller_desc.html('');
+                }
+            }
 
             $ingredients_desc.html(data['ingredients_description']);
             $ingredients_desc_mobile.html(data['ingredients_description']);
-            $(".default_code").html(data['default_code']);
-            $(".public_desc").html(data['public_desc']);
-            $(".use_desc").html(data['use_desc']);
-            $(".reseller_desc").html(data['reseller_desc']);
+            $default_code.html(data['default_code']);
         });
         $img.parent().attr('data-oe-model', 'product.product').attr('data-oe-id', product_id)
             .data('oe-model', 'product.product').data('oe-id', product_id);

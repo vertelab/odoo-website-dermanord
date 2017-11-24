@@ -859,6 +859,9 @@ class webshop_dermanord(http.Controller):
 
     @http.route(['/get/product_variant_data'], type='json', auth="public", website=True)
     def product_variant_data(self, product_id=None, **kw):
+        is_reseller = False
+        if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
+            is_reseller = True
         value = {}
         if product_id:
             product = request.env['product.product'].browse(int(product_id))
@@ -902,7 +905,7 @@ class webshop_dermanord(http.Controller):
                 value['default_code'] = product.default_code or ''
                 value['public_desc'] = product.public_desc or ''
                 value['use_desc'] = product.use_desc or ''
-                value['reseller_desc'] = product.reseller_desc or ''
+                value['reseller_desc'] = (product.reseller_desc or '') if is_reseller else ''
         return value
 
     @http.route(['/get/product_variant_value'], type='json', auth="public", website=True)

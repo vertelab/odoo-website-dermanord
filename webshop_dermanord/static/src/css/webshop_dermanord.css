@@ -225,6 +225,7 @@ div.shipping-address, div.invoicing-address {
     padding: 0px !important;
     overflow: hidden;
     position: relative;
+    margin: 0px -15px;
 /*
     height: 124px;
 */
