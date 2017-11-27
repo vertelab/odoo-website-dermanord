@@ -418,8 +418,9 @@ $(document).ready(function(){
                         $('#stock_status').addClass('hidden');
                         $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
                         if (variant_ids[k][6] != 0) {
+                            var start_date = variant_ids[k][6].toString();
                             $('p#sale_start_info').removeClass('hidden');
-                            $('#sale_start').html(variant_ids[k][6]);
+                            $('#sale_start').html(start_date.substr(0, 4) + '-' + start_date.substr(4, 2) + '-' + start_date.substr(6, 2));
                         } else if (variant_ids[k][6] == 0){
                             $('p#sale_start_info').addClass('hidden');
                             $('#sale_start').html('');
