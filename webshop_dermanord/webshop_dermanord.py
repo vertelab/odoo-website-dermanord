@@ -295,15 +295,19 @@ class WebsiteSale(website_sale):
             if k.split('_')[0] == 'facet':
                 if v:
                     facet_ids.append(int(v))
+                    request.session.get('form_values')['facet_%s_%s' %(k.split('_')[1], k.split('_')[2])] = k.split('_')[2]
             if k.split('_')[0] == 'category':
                 if v:
                      category_ids.append(int(v))
+                     request.session.get('form_values')['category_%s' %k.split('_')[1]] = k.split('_')[1]
             if k.split('_')[0] == 'ingredient':
                 if v:
                     ingredient_ids.append(int(v))
+                    request.session.get('form_values')['ingredient_%s' %k.split('_')[1]] = k.split('_')[1]
             if k.split('_')[0] == 'notingredient':
                 if v:
                     not_ingredient_ids.append(int(v))
+                    request.session.get('form_values')['notingredient_%s' %k.split('_')[1]] = k.split('_')[1]
             if k == 'current_ingredient':
                 if v:
                     current_ingredient = v
@@ -383,8 +387,7 @@ class WebsiteSale(website_sale):
         attrib_set = set([v[1] for v in attrib_values])
         domain = self._get_search_domain(search, category, attrib_values)
         domain += self.get_domain_append(post)
-        #~ if category:
-        domain += self.get_domain_append(self.get_form_values())
+        #~ domain += self.get_domain_append(self.get_form_values())
         product_obj = pool.get('product.template')
 
         domain = self.domain_current('product.template', domain, post)
@@ -395,6 +398,7 @@ class WebsiteSale(website_sale):
             if not request.session.get('form_values'):
                 request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
             request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
+            self.get_form_values()['category_' + str(int(category))] = str(int(category))
             #~ for k,v in request.session.get('form_values').items():
                 #~ if 'category_' in k:
                     #~ del request.session['form_values'][k]
@@ -412,16 +416,17 @@ class WebsiteSale(website_sale):
         product_count = product_obj.search_count(cr, uid, domain, context=context)
         if search:
             post["search"] = search
-        if category:
-            category = pool['product.public.category'].browse(cr, uid, int(category), context=context)
-            url = "/shop/category/%s" % slug(category)
+        #~ if category:
+            #~ category = pool['product.public.category'].browse(cr, uid, int(category), context=context)
+            #~ url = "/shop/category/%s" % slug(category)
         if attrib_list:
             post['attrib'] = attrib_list
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
-        default_order = self._get_search_order(post)
-        request.session['current_order'] = self._get_search_order(post)
+        default_order = request.session.get('current_order') or 'sold_qty desc'
         if post.get('order'):
             default_order = post.get('order')
+        request.session.get('form_values')['order'] = default_order
+        request.session['current_order'] = default_order
         #~ product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
         #~ products = product_obj.browse(cr, uid, product_ids, context=context)
         # relist which product templates the current user is allowed to see
@@ -449,8 +454,7 @@ class WebsiteSale(website_sale):
 
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
-        if category:
-            self.get_form_values()['category_' + str(int(category))] = str(int(category))
+
         request.session['url'] = url
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
         request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
@@ -690,8 +694,7 @@ class WebsiteSale(website_sale):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
         domain = self._get_search_domain(search, category, None)
         domain += self.get_domain_append(post)
-        #~ if category:
-        domain += self.get_domain_append(self.get_form_values())
+        #~ domain += self.get_domain_append(self.get_form_values())
         product_obj = pool.get('product.product')
 
         domain = self.domain_current('product.product', domain, post)
@@ -702,6 +705,7 @@ class WebsiteSale(website_sale):
             if not request.session.get('form_values'):
                 request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
             request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
+            self.get_form_values()['category_' + str(int(category))] = str(int(category))
             #~ for k,v in request.session.get('form_values').items():
                 #~ if 'category_' in k:
                     #~ del request.session['form_values'][k]
@@ -720,10 +724,11 @@ class WebsiteSale(website_sale):
         if search:
             post["search"] = search
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
-        default_order = self._get_search_order(post)
+        default_order = request.session.get('current_order') or 'sold_qty desc'
         if post.get('order'):
             default_order = post.get('order')
-
+        request.session.get('form_values')['order'] = default_order
+        request.session['current_order'] = default_order
         products = request.env['product.product'].search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)
         #~ product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
         #~ products = product_obj.browse(cr, uid, product_ids, context=context)
@@ -739,8 +744,7 @@ class WebsiteSale(website_sale):
 
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
-        if category:
-            self.get_form_values()['category_' + str(int(category))] = str(int(category))
+
         request.session['url'] = url
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
         request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
