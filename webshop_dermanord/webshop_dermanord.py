@@ -890,12 +890,13 @@ class webshop_dermanord(http.Controller):
 
                 instock = ''
                 if not product.is_mto_route:
-                    if product.instock_percent > 100.0:
-                        instock = _('In stock')
-                    elif product.instock_percent >= 50.0 and product.instock_percent <= 100.0:
-                        instock = _('Few in stock')
-                    elif product.instock_percent < 50.0:
-                        instock = _('Shortage')
+                    if product.sale_ok:
+                        if product.instock_percent > 100.0:
+                            instock = _('In stock')
+                        elif product.instock_percent >= 50.0 and product.instock_percent <= 100.0:
+                            instock = _('Few in stock')
+                        elif product.instock_percent < 50.0:
+                            instock = _('Shortage')
 
                 value['instock'] = instock
                 value['images'] = images
