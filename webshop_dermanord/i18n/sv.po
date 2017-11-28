@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* webshop_dermanord
+#   * webshop_dermanord
 #
 msgid ""
 msgstr ""
@@ -104,7 +104,7 @@ msgstr "Fortsätt att handla"
 #: view:website:webshop_dermanord.desktop_product_filter
 #: view:website:webshop_dermanord.dn_filter_navigator
 msgid "Current"
-msgstr "Nuvarande"
+msgstr "Aktuellt"
 
 #. module: webshop_dermanord
 #. openerp-web

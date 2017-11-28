@@ -290,6 +290,7 @@ class WebsiteSale(website_sale):
         not_ingredient_ids = []
         current_ingredient = None
         current_ingredient_key = None
+        current_news = None
         current_offer = None
         current_offer_reseller = None
 
@@ -306,6 +307,10 @@ class WebsiteSale(website_sale):
                 if v:
                     ingredient_ids.append(int(v))
                     request.session.get('form_values')['ingredient_%s' %k.split('_')[1]] = k.split('_')[1]
+            if k == 'current_news':
+                if v:
+                    current_news = 'current_news'
+                    request.session.get('form_values')['current_news'] = 'current_news'
             if k == 'current_offer':
                 if v:
                     current_offer = 'current_offer'
@@ -340,7 +345,7 @@ class WebsiteSale(website_sale):
                 [('ingredient_ids', '=', id) for id in ingredient_ids] + [('ingredient_ids', '!=', id) for id in not_ingredient_ids], ['id'])
             domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
         if request.session.get('form_values'):
-            if request.session.get('form_values').get('current_offer') or request.session.get('form_values').get('current_offer_reseller'):
+            if request.session.get('form_values').get('current_news') or request.session.get('form_values').get('current_offer') or request.session.get('form_values').get('current_offer_reseller'):
                 offer_domain = self.domain_current(model, dic)
                 if len(offer_domain) > 0:
                     for d in offer_domain:
@@ -373,9 +378,15 @@ class WebsiteSale(website_sale):
     def domain_current(self, model, dic):
         domain_current = []
         domain_append = []
+        if 'current_news' in dic:
+            product_ids = request.env[model].search([('website_style_ids', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('id')
+            if len(product_ids) == 0:
+                domain_current.append(('id', '=', 9999999999))
+            else:
+                domain_current.append(('id', 'in', product_ids))
         if 'current_offer' in dic:
             campaign_product_ids = request.env[model].get_campaign_products(for_reseller=False).mapped('id')
-            if len(campaign_product_ids) == 0:
+            if len(campaign_product_ids) == 0 and ('id', '=', 9999999999) not in domain_current:
                 domain_current.append(('id', '=', 9999999999))
             else:
                 domain_current.append(('id', 'in', campaign_product_ids))
