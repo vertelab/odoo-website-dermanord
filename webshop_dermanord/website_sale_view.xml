@@ -100,7 +100,7 @@
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="'dn_product_div %s' % ' '.join([s.html_class for s in product.website_style_ids])">
                     <div class="ribbon-wrapper">
-                        <div class="ribbon btn btn-primary">Sale</div>
+                        <div class="ribbon btn btn-primary">News</div>
                     </div>
                     <div class="dn_product_image">
                         <div class="dn_product_image_div">
