@@ -283,15 +283,17 @@ class WebsiteSale(website_sale):
 
         return attribute_value_ids
 
-    def get_domain_append(self, post):
+    def get_domain_append(self, model, dic):
         facet_ids = []
         category_ids = []
         ingredient_ids = []
         not_ingredient_ids = []
         current_ingredient = None
         current_ingredient_key = None
+        current_offer = None
+        current_offer_reseller = None
 
-        for k, v in post.iteritems():
+        for k, v in dic.iteritems():
             if k.split('_')[0] == 'facet':
                 if v:
                     facet_ids.append(int(v))
@@ -304,6 +306,14 @@ class WebsiteSale(website_sale):
                 if v:
                     ingredient_ids.append(int(v))
                     request.session.get('form_values')['ingredient_%s' %k.split('_')[1]] = k.split('_')[1]
+            if k == 'current_offer':
+                if v:
+                    current_offer = 'current_offer'
+                    request.session.get('form_values')['current_offer'] = 'current_offer'
+            if k == 'current_offer_reseller':
+                if v:
+                    current_offer_reseller = 'current_offer_reseller'
+                    request.session.get('form_values')['current_offer_reseller'] = 'current_offer_reseller'
             if k.split('_')[0] == 'notingredient':
                 if v:
                     not_ingredient_ids.append(int(v))
@@ -315,8 +325,8 @@ class WebsiteSale(website_sale):
                     ingredient_ids.append(int(v))
 
         if current_ingredient:
-            post['current_ingredient'] = int(current_ingredient)
-            post[current_ingredient_key] = current_ingredient
+            dic['current_ingredient'] = int(current_ingredient)
+            dic[current_ingredient_key] = current_ingredient
 
         domain_append = []
         if category_ids:
@@ -329,6 +339,12 @@ class WebsiteSale(website_sale):
             product_ids = request.env['product.product'].sudo().search_read(
                 [('ingredient_ids', '=', id) for id in ingredient_ids] + [('ingredient_ids', '!=', id) for id in not_ingredient_ids], ['id'])
             domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
+        if request.session.get('form_values'):
+            if request.session.get('form_values').get('current_offer') or request.session.get('form_values').get('current_offer_reseller'):
+                offer_domain = self.domain_current(model, dic)
+                if len(offer_domain) > 0:
+                    for d in offer_domain:
+                        domain_append.append(d)
 
         return domain_append
 
@@ -354,23 +370,30 @@ class WebsiteSale(website_sale):
                 break
         return [sort_name, sort_order]
 
-    def domain_current(self, model, domain, post):
+    def domain_current(self, model, dic):
         domain_current = []
-        if 'current_offer' in post:
+        domain_append = []
+        if 'current_offer' in dic:
             campaign_product_ids = request.env[model].get_campaign_products(for_reseller=False).mapped('id')
-            domain_current.append(('id', 'in', campaign_product_ids))
-        if 'current_offer_reseller' in post:
+            if len(campaign_product_ids) == 0:
+                domain_current.append(('id', '=', 9999999999))
+            else:
+                domain_current.append(('id', 'in', campaign_product_ids))
+        if 'current_offer_reseller' in dic:
             if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
                 campaign_product_reseller_ids = request.env[model].get_campaign_products(for_reseller=True).mapped('id')
-                domain_current.append(('id', 'in', campaign_product_reseller_ids))
+                if len(campaign_product_reseller_ids) == 0 and ('id', '=', 9999999999) not in domain_current:
+                    domain_current.append(('id', '=', 9999999999))
+                else:
+                    domain_current.append(('id', 'in', campaign_product_reseller_ids))
         if len(domain_current) > 1:
             for d in domain_current:
                 if domain_current.index(d) != (len(domain_current)-1):
-                    domain.append('|')
-                domain.append(domain_current[domain_current.index(d)])
+                    domain_append.append('|')
+                domain_append.append(domain_current[domain_current.index(d)])
         if len(domain_current) == 1:
-            domain.append(domain_current[0])
-        return domain
+            domain_append.append(domain_current[0])
+        return domain_append
 
 
     @http.route([
@@ -381,19 +404,15 @@ class WebsiteSale(website_sale):
     ], type='http', auth="public", website=True)
     def dn_shop(self, page=0, category=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
-
         attrib_list = request.httprequest.args.getlist('attrib')
         attrib_values = [map(int, v.split("-")) for v in attrib_list if v]
         attrib_set = set([v[1] for v in attrib_values])
         domain = self._get_search_domain(search, category, attrib_values)
-        domain += self.get_domain_append(post)
-        if request.session.get('form_values'):
-            domain += self.get_domain_append(self.get_form_values())
-        domain = self.domain_current('product.template', domain, post)
-        # remove dubble element
-        for k,v in enumerate(domain):
-            if domain.count(v) > 1:
-                domain.remove(v)
+        if len(post) > 0:
+            domain += self.get_domain_append('product.template', post)
+        else:
+            if request.session.get('form_values'):
+                domain += self.get_domain_append('product.template', request.session.get('form_values'))
         request.session['current_domain'] = domain
 
         if category:
@@ -696,14 +715,11 @@ class WebsiteSale(website_sale):
     def dn_list(self, page=0, category=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
         domain = self._get_search_domain(search, category, None)
-        domain += self.get_domain_append(post)
-        if request.session.get('form_values'):
-            domain += self.get_domain_append(self.get_form_values())
-        domain = self.domain_current('product.product', domain, post)
-        # remove dubble element
-        for k,v in enumerate(domain):
-            if domain.count(v) > 1:
-                domain.remove(v)
+        if len(post) > 0:
+            domain += self.get_domain_append('product.product', post)
+        else:
+            if request.session.get('form_values'):
+                domain += self.get_domain_append('product.product', request.session.get('form_values'))
         request.session['current_domain'] = domain
 
         if category:

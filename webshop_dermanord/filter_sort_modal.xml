@@ -200,15 +200,13 @@
                             </t>
                         </label>
                     </div>
-                    <div class="checkbox">
+                    <div class="checkbox" t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                         <label>
                             <t t-if="request.session.get('form_values')">
                                 <input type="checkbox" name="current_offer_reseller" value="current_offer_reseller" t-att="{'checked': '1'} if request.session.get('form_values').get('current_offer_reseller') == 'current_offer_reseller' else {}"/>Offer Reseller
                             </t>
                             <t t-if="not request.session.get('form_values')">
-                                <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
-                                    <input type="checkbox" name="current_offer_reseller" value="current_offer_reseller"/>Offer Reseller
-                                </t>
+                                <input type="checkbox" name="current_offer_reseller" value="current_offer_reseller"/>Offer Reseller
                             </t>
                         </label>
                     </div>
@@ -478,16 +476,14 @@
                                         </label>
                                     </h5>
                                 </div>
-                                <div class="checkbox">
+                                <div class="checkbox" t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                                     <h5>
                                         <label>
                                             <t t-if="request.session.get('form_values')">
                                                 <input type="checkbox" name="current_offer_reseller" value="current_offer_reseller" t-att="{'checked': '1'} if request.session.get('form_values').get('current_offer_reseller') == 'current_offer_reseller' else {}"/>Offer Reseller
                                             </t>
                                             <t t-if="not request.session.get('form_values')">
-                                                <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
-                                                    <input type="checkbox" name="current_offer_reseller" value="current_offer_reseller"/>Offer Reseller
-                                                </t>
+                                                <input type="checkbox" name="current_offer_reseller" value="current_offer_reseller"/>Offer Reseller
                                             </t>
                                         </label>
                                     </h5>
