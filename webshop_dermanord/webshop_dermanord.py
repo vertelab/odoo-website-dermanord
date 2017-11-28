@@ -387,11 +387,13 @@ class WebsiteSale(website_sale):
         attrib_set = set([v[1] for v in attrib_values])
         domain = self._get_search_domain(search, category, attrib_values)
         domain += self.get_domain_append(post)
-        #~ domain += self.get_domain_append(self.get_form_values())
-        product_obj = pool.get('product.template')
-
+        if request.session.get('form_values'):
+            domain += self.get_domain_append(self.get_form_values())
         domain = self.domain_current('product.template', domain, post)
-
+        # remove dubble element
+        for k,v in enumerate(domain):
+            if domain.count(v) > 1:
+                domain.remove(v)
         request.session['current_domain'] = domain
 
         if category:
@@ -413,6 +415,7 @@ class WebsiteSale(website_sale):
             pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
 
         url = "/dn_shop"
+        product_obj = pool.get('product.template')
         product_count = product_obj.search_count(cr, uid, domain, context=context)
         if search:
             post["search"] = search
@@ -422,11 +425,11 @@ class WebsiteSale(website_sale):
         if attrib_list:
             post['attrib'] = attrib_list
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
-        default_order = request.session.get('current_order') or 'sold_qty desc'
+        default_order = 'sold_qty desc'
         if post.get('order'):
             default_order = post.get('order')
-        request.session.get('form_values')['order'] = default_order
-        request.session['current_order'] = default_order
+            request.session.get('form_values')['order'] = default_order
+            request.session['current_order'] = default_order
         #~ product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
         #~ products = product_obj.browse(cr, uid, product_ids, context=context)
         # relist which product templates the current user is allowed to see
@@ -694,11 +697,13 @@ class WebsiteSale(website_sale):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
         domain = self._get_search_domain(search, category, None)
         domain += self.get_domain_append(post)
-        #~ domain += self.get_domain_append(self.get_form_values())
-        product_obj = pool.get('product.product')
-
+        if request.session.get('form_values'):
+            domain += self.get_domain_append(self.get_form_values())
         domain = self.domain_current('product.product', domain, post)
-
+        # remove dubble element
+        for k,v in enumerate(domain):
+            if domain.count(v) > 1:
+                domain.remove(v)
         request.session['current_domain'] = domain
 
         if category:
@@ -720,15 +725,17 @@ class WebsiteSale(website_sale):
             pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
 
         url = "/dn_list"
+
+        product_obj = pool.get('product.product')
         product_count = product_obj.search_count(cr, uid, domain, context=context)
         if search:
             post["search"] = search
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
-        default_order = request.session.get('current_order') or 'sold_qty desc'
+        default_order = 'sold_qty desc'
         if post.get('order'):
             default_order = post.get('order')
-        request.session.get('form_values')['order'] = default_order
-        request.session['current_order'] = default_order
+            request.session.get('form_values')['order'] = default_order
+            request.session['current_order'] = default_order
         products = request.env['product.product'].search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)
         #~ product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
         #~ products = product_obj.browse(cr, uid, product_ids, context=context)
