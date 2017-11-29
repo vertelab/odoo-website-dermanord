@@ -83,8 +83,9 @@ class snippet(http.Controller):
         return category_list
 
     @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="user", website=True)
-    def get_highlighted_products(self, **kw):
-        campaigns = request.env['crm.tracking.campaign'].sudo().search([('state', '=', 'open'), ('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today())])
+    def get_highlighted_products(self, campaign_date, **kw):
+        date = fields.Date.today() if campaign_date == '' else campaign_date
+        campaigns = request.env['crm.tracking.campaign'].sudo().search([('state', '=', 'open'), ('date_start', '<=', date), ('date_stop', '>=', date)])
         object_list = []
         if len(campaigns) > 0:
             occs = request.env['crm.campaign.object'].browse([])

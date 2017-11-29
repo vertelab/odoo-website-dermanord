@@ -126,6 +126,7 @@ website.snippet.options.product_highlights_option = website.snippet.Option.exten
     get_highlighted_products: function(){
         var self = this;
         openerp.jsonRpc("/product_hightlights_snippet/get_highlighted_products", "call", {
+            'campaign_date': '',
         }).done(function(data){
             if (data.length == 0) {
                 var message = '<h2 class="text-center text-muted css_non_editable_mode_hidden">No product highlight yet</h2>';
@@ -225,6 +226,7 @@ $(document).ready(function() {
     });
 
     openerp.jsonRpc("/product_hightlights_snippet/get_highlighted_products", "call", {
+        'campaign_date': campaign_date,
     }).done(function(data){
         if (data.length == 0) {
             //~ var message = '<h2 class="text-center text-muted css_non_editable_mode_hidden">No product highlight yet</h2>';
@@ -232,7 +234,6 @@ $(document).ready(function() {
             $(".product_div").html(message);
         }
         else {
-            console.log('mhm');
             var ph_content = '';
             $.each(data, function(key, info) {
                 var content = '<a href="' + data[key]['url'] + '"><div class="col-md-3 col-sm-6 col-xs-12"><div class="ph_block"><img class="img img-responsive ph_img" src="' + data[key]['image'] + '"/><div class="container desc_div"><h4 class="dn_uppercase">' + data[key]['name'] + '</h4><p class="ph_desc text-muted">' + data[key]['description'] + '</p></div></div></div></a>';
