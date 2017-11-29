@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* reseller_dermanord
+#   * reseller_dermanord
 #
 msgid ""
 msgstr ""
@@ -52,7 +52,7 @@ msgstr "Öppettider"
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
 msgid "Our treatments"
-msgstr "Våra behandlingar"
+msgstr "Våra kompetenser"
 
 #. module: reseller_dermanord
 #: model:ir.model,name:reseller_dermanord.model_res_partner
