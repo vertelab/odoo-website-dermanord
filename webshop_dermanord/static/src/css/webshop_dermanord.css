@@ -133,6 +133,10 @@ div.shipping-address, div.invoicing-address {
     padding: 20px;
 }
 
+.product_price {
+    white-space: nowrap;
+}
+
 .dn_product_image {
     height: 350px;
     display: flex;
