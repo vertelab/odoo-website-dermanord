@@ -30,7 +30,16 @@ Resellers Page
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_partner', 'website_masonry', 'child_catagory_tags', 'base_geolocalize', 'postgres_geo_fields', 'event_participant_dermanord', 'website_sale_home'],
+    'depends': [
+        'website_partner',
+        'website_masonry',
+        'child_catagory_tags',
+        'base_geolocalize',
+        'postgres_geo_fields',
+        'event_participant_dermanord',
+        'website_sale_home',
+        'website_partner_opening_hours',
+    ],
     'data': [
         'security/ir.model.access.csv',
         'res_partner_view.xml',
