@@ -24,8 +24,11 @@ from openerp import http
 from openerp.http import request
 import urllib
 import json
+import werkzeug
+import base64
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from openerp.addons.website_sale_home.website_sale import website_sale_home
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -35,6 +38,7 @@ class res_partner(models.Model):
 
     brand_name = fields.Char(string='Brand Name')
     is_reseller = fields.Boolean(string='Show Reseller in websearch')
+    top_image = fields.Binary(string='Top Image')
 
     #~ @api.one
     #~ def _is_reseller(self):
@@ -140,7 +144,7 @@ class Main(http.Controller):
         return [sort_name, sort_order]
 
     @http.route(['/resellers/competence/<model("res.partner.category"):competence>',], type='http', auth="public", website=True)
-    def reseller_competence(self, competence, **post): 
+    def reseller_competence(self, competence, **post):
         return request.website.render('reseller_dermanord.resellers', {
             'resellers': request.env['res.partner'].sudo().search(['&', ('is_reseller', '=', True), ('child_category_ids', 'in', competence.id)])
         })
@@ -269,3 +273,25 @@ class Main(http.Controller):
             #~ 'assortment_ids': reseller_all.mapped('category_id'),
             #~ 'reseller_footer': True,
         #~ })
+
+
+class website_sale_home(website_sale_home):
+
+    @http.route(['/home/<model("res.users"):home_user>/info_update',], type='http', auth="user", website=True)
+    def info_update(self, home_user=None, **post):
+        # update data for main partner
+        self.validate_user(home_user)
+        if home_user == request.env.user:
+            home_user = home_user.sudo()
+        home_user.email = post.get('email')
+        home_user.login = post.get('login')
+        if post.get('confirm_password'):
+            home_user.password = post.get('password')
+        if home_user.partner_id.commercial_partner_id.is_reseller:
+            commercial_partner = home_user.partner_id.commercial_partner_id
+            commercial_partner.brand_name = post.get('brand_name')
+            commercial_partner.website_short_description = post.get('website_short_description')
+            if post.get('top_image'):
+                commercial_partner.top_image = base64.encodestring(post.get('top_image').read())
+
+        return werkzeug.utils.redirect("/home/%s" % home_user.id)

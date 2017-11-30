@@ -51,7 +51,7 @@ msgstr "Öppettider"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
-msgid "Our treatments"
+msgid "Our competences"
 msgstr "Våra kompetenser"
 
 #. module: reseller_dermanord
