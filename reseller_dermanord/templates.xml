@@ -116,8 +116,8 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-8 col-sm-8 col-xs-12 mb16">
-                                <div id="reseller_description_div">
-                                    <p class="mt32" t-raw="reseller.website_short_description"/>
+                                <div id="reseller_description_div" class="mt32">
+                                    <p t-raw="reseller.website_short_description"/>
                                     <p class="read-more"><a href="#" class="button">Read More</a></p>
                                 </div>
                                 <t t-if="len(reseller.child_competence_ids) != 0">
