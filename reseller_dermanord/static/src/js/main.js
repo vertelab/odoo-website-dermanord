@@ -17,7 +17,7 @@ var $el, $ps, $up, totalHeight;
 
 $("#reseller_description_div .button").click(function() {
 
-  totalHeight = 0
+  totalHeight = 50
 
   $el = $(this);
   $p  = $el.parent();
