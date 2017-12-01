@@ -141,13 +141,13 @@
                                 </p>
                                 <hr/>
                                 <h4 class="dn_uppercase">Opening hours</h4>
-                                    <p>Mon: <span t-esc="reseller.opening_hours_ids[0].opening_hours"/></p>
-                                    <p>Tue: <span t-esc="reseller.opening_hours_ids[1].opening_hours"/></p>
-                                    <p>Wed: <span t-esc="reseller.opening_hours_ids[2].opening_hours"/></p>
-                                    <p>Thu: <span t-esc="reseller.opening_hours_ids[3].opening_hours"/></p>
-                                    <p>Fri: <span t-esc="reseller.opening_hours_ids[4].opening_hours"/></p>
-                                    <p>Sat: <span t-esc="reseller.opening_hours_ids[5].opening_hours"/></p>
-                                    <p>Sun: <span t-esc="reseller.opening_hours_ids[6].opening_hours"/></p>
+                                    <p>Mon: <span t-esc="reseller.opening_hours_ids[0].opening_hours if len(reseller.opening_hours_ids) &gt; 0 else None"/></p>
+                                    <p>Tue: <span t-esc="reseller.opening_hours_ids[1].opening_hours if len(reseller.opening_hours_ids) &gt; 1 else None"/></p>
+                                    <p>Wed: <span t-esc="reseller.opening_hours_ids[2].opening_hours if len(reseller.opening_hours_ids) &gt; 2 else None"/></p>
+                                    <p>Thu: <span t-esc="reseller.opening_hours_ids[3].opening_hours if len(reseller.opening_hours_ids) &gt; 3 else None"/></p>
+                                    <p>Fri: <span t-esc="reseller.opening_hours_ids[4].opening_hours if len(reseller.opening_hours_ids) &gt; 4 else None"/></p>
+                                    <p>Sat: <span t-esc="reseller.opening_hours_ids[5].opening_hours if len(reseller.opening_hours_ids) &gt; 5 else None"/></p>
+                                    <p>Sun: <span t-esc="reseller.opening_hours_ids[6].opening_hours if len(reseller.opening_hours_ids) &gt; 6 else None"/></p>
                                 <hr/>
                                 <h4 class="dn_uppercase">Contact</h4>
                                 <p>
