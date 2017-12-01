@@ -135,6 +135,8 @@ div.shipping-address, div.invoicing-address {
 
 .product_price {
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .dn_product_image {

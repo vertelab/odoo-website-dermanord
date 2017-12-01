@@ -47,6 +47,7 @@ Special layout for Dermanord AB webshop
         'website_fts_popular',
         'product_attribute_value_image',
         'website_sale_instock',
+        'crm_campaign_phase',
         ],
     'data': [
         'webshop_dermanord_view.xml',

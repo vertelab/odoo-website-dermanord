@@ -640,11 +640,22 @@ class WebsiteSale(website_sale):
                 if partner_pricelist.for_reseller:
                     is_reseller = True
             attributes = product.attribute_value_ids.mapped('name')
+            purchase_phase = None
+            if len(product.campaign_ids) > 0:
+                if len(product.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)) > 0:
+                    purchase_phase = product.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)[0]
+            else:
+                if len(product.product_tmpl_id.campaign_ids) > 0:
+                    if len(product.product_tmpl_id.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)) > 0:
+                        purchase_phase = product.product_tmpl_id.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)[0]
             products_list.append({
                 'lst_ribbon_style': 'tr_lst %s' % ' '.join(['lst_%s' %s.html_class for s in product.product_tmpl_id.website_style_ids]),
                 'variant_id': product.id,
                 'product_href': '/dn_shop/variant/%s' %product.id,
                 'product_name': product.name,
+                'purchase_phase': True if purchase_phase else False,
+                'product_name_col': 'product_price col-md-6 col-sm-6 col-xs-12' if purchase_phase else 'product_price col-md-8 col-sm-8 col-xs-12',
+                'purchase_phase_end_date': purchase_phase.end_date if purchase_phase else '',
                 'price': "%.2f" % product.price,
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
