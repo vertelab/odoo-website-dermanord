@@ -79,6 +79,13 @@ class product_template(models.Model):
         self.price_tax = self.price + res
         self.recommended_price = 0.0
 
+    @api.multi
+    def is_offer_product(self):
+        self.ensure_one()
+        if self in self.get_campaign_products(for_reseller=False) or (self in self.get_campaign_products(for_reseller=True)):
+            return True
+        return False
+
 
 class product_product(models.Model):
     _inherit = 'product.product'

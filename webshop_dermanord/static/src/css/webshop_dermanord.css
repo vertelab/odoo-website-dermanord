@@ -499,6 +499,50 @@ select.dn_selection_dropdown + i.fa {
     cursor: default;
 }
 
+.dn_product_div .offer-wrapper {
+    z-index: 5;
+    overflow: hidden;
+    position: absolute;
+    top: 20px;
+    left: 0px;
+}
+
+.dn_product_div .offer-wrapper i {
+    color: #CB683F;
+}
+
+/*
+.dn_product_div.oe_offer_ribbon_promo .offer-ribbon-wrapper {
+   display: block;
+}
+.dn_product_div .offer-ribbon-wrapper {
+    display: none;
+    width: 130px;
+    height: 132px;
+    z-index: 5;
+    overflow: hidden;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.dn_product_div .offer_ribbon {
+    font: bold 15px Sans-Serif;
+    color: white;
+    text-align: center;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    position: relative;
+    padding: 7px 0;
+    left: -15px;
+    top: 35px;
+    width: 185px;
+    cursor: default;
+}
+*/
+
 /* Ribbon for promotionso on products (dn list) */
 .tr_lst.lst_oe_ribbon_promo .lst-ribbon-wrapper {
    display: block;

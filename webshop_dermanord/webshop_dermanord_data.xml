@@ -136,6 +136,7 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
             <field name="model">product.product</field>
             <field name="function">update_sold_qty</field>
         </record>
+
     </data>
 
 </openerp>

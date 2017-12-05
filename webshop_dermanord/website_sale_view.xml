@@ -102,6 +102,11 @@
                     <div class="ribbon-wrapper">
                         <div class="ribbon btn btn-primary">News</div>
                     </div>
+                    <t t-if="product.is_offer_product()">
+                        <div class="offer-wrapper">
+                            <i class="fa fa-star-o fa-3x"/>
+                        </div>
+                    </t>
                     <div class="dn_product_image">
                         <div class="dn_product_image_div">
                             <a itemprop="url" t-att-href="keep('/dn_shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
