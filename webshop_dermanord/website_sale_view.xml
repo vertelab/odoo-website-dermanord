@@ -104,7 +104,7 @@
                     </div>
                     <t t-if="product.is_offer_product()">
                         <div class="offer-wrapper">
-                            <i class="fa fa-star-o fa-3x"/>
+                            <i class="fa fa-star-o fa-3x" title="Offer"/>
                         </div>
                     </t>
                     <div class="dn_product_image">
@@ -209,9 +209,17 @@
                                         <t t-foreach="products" t-as="product">
                                             <tr t-att-class="'tr_lst %s' % ' '.join(['lst_%s' %s.html_class for s in product.product_tmpl_id.website_style_ids])">
                                                 <td class="td_lst">
-                                                    <div class="lst-ribbon-wrapper">
+                                                    <div class="col-md-6 lst-ribbon-wrapper">
+                                                    <!--
                                                         <div class="lst_ribbon btn btn-primary">News</div>
+                                                    -->
+                                                        <i class="fa fa-tags fa-2x"/>
                                                     </div>
+                                                    <t t-if="product.is_offer_product()">
+                                                        <div class="col-md-6 lst-offer-wrapper">
+                                                            <i class="fa fa-star-o fa-2x" title="Offer"/>
+                                                        </div>
+                                                    </t>
                                                 </td>
                                                 <td>
                                                     <h5 class="col-md-6 col-sm-6 col-xs-12 list_product_name">
