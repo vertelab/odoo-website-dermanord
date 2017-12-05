@@ -503,7 +503,7 @@ select.dn_selection_dropdown + i.fa {
     z-index: 5;
     overflow: hidden;
     position: absolute;
-    top: 20px;
+    top: 40px;
     left: 0px;
 }
 
@@ -545,7 +545,8 @@ select.dn_selection_dropdown + i.fa {
 
 /* Ribbon for promotionso on products (dn list) */
 .tr_lst.lst_oe_ribbon_promo .lst-ribbon-wrapper {
-   display: block;
+    display: block;
+    padding: 0px;
 }
 
 .td_lst {
@@ -554,23 +555,26 @@ select.dn_selection_dropdown + i.fa {
 
 .td_lst .lst-ribbon-wrapper {
     display: none;
-    width: 100px;
-    height: 20px;
+    width: 40px;
     z-index: 5;
     overflow: hidden;
     position: relative;
 }
 
-.td_lst .lst_ribbon {
-    font: bold 15px Sans-Serif;
-    color: white;
-    text-align: center;
-    position: absolute;
+.td_lst .lst-ribbon-wrapper i {
+    color: #CB683F;
+}
+
+.td_lst .lst-offer-wrapper {
+    width: 40px;
+    z-index: 5;
+    overflow: hidden;
+    position: relative;
     padding: 0px;
-    left: 0px;
-    top: 0px;
-    width: 100px;
-    cursor: default;
+}
+
+.td_lst .lst-offer-wrapper i {
+    color: #CB683F;
 }
 
 @media screen and (min-width: 992px) {
