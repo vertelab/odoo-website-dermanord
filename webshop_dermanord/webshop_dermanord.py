@@ -121,6 +121,11 @@ class product_product(models.Model):
                 template.sold_qty = sum(template.product_variant_ids.mapped('sold_qty'))
         return None
 
+    @api.multi
+    def is_offer_product(self):
+        self.ensure_one()
+        return self in self.get_campaign_products(for_reseller=False) or (self in self.get_campaign_products(for_reseller=True))
+
 
 class product_facet(models.Model):
     _inherit = 'product.facet'
@@ -582,6 +587,7 @@ class WebsiteSale(website_sale):
                 'product_href': '/dn_shop/product/%s' %product.id,
                 'product_id': product.id,
                 'product_name': product.name,
+                'is_offer_product': product.is_offer_product(),
                 'style_options': style_options,
                 'grid_ribbon_style': 'dn_product_div %s' % ' '.join([s.html_class for s in product.website_style_ids]),
                 'product_img_src': image_src,
@@ -658,6 +664,7 @@ class WebsiteSale(website_sale):
                 'variant_id': product.id,
                 'product_href': '/dn_shop/variant/%s' %product.id,
                 'product_name': product.name,
+                'is_offer_product': product.is_offer_product(),
                 'purchase_phase': True if purchase_phase else False,
                 'product_name_col': 'product_price col-md-6 col-sm-6 col-xs-12' if purchase_phase else 'product_price col-md-8 col-sm-8 col-xs-12',
                 'purchase_phase_end_date': purchase_phase.end_date if purchase_phase else '',

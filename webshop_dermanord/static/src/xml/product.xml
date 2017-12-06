@@ -20,8 +20,13 @@
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="grid_ribbon_style">
                     <div class="ribbon-wrapper">
-                        <div class="ribbon btn btn-primary">Sale</div>
+                        <div class="ribbon btn btn-primary">News</div>
                     </div>
+                    <t t-if="is_offer_product">
+                        <div class="offer-wrapper">
+                            <i class="fa fa-star-o fa-3x" title="Offer"/>
+                        </div>
+                    </t>
                     <div class="dn_product_image">
                         <div class="dn_product_image_div">
                             <a itemprop="url" t-att-href="product_href">
@@ -70,9 +75,17 @@
     <t t-name="products_item_list">
         <tr t-att-class="lst_ribbon_style">
             <td class="td_lst">
-                <div class="lst-ribbon-wrapper">
+                <div class="col-md-6 lst-ribbon-wrapper">
+<!--
                     <div class="lst_ribbon btn btn-primary">News</div>
+-->
+                    <i class="fa fa-tags fa-2x"/>
                 </div>
+                <t t-if="is_offer_product">
+                    <div class="col-md-6 lst-offer-wrapper">
+                        <i class="fa fa-star-o fa-2x" title="Offer"/>
+                    </div>
+                </t>
             </td>
             <td>
                 <h5 class="col-md-6 col-sm-6 col-xs-12 list_product_name">
