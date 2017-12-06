@@ -913,6 +913,15 @@ class WebsiteSale(website_sale):
 
 class webshop_dermanord(http.Controller):
 
+    @http.route(['/dn_shop/detail/style'], type='json', auth="public", website=True)
+    def detail_style(self, product_id=0, **kw):
+        product = request.env['product.product'].browse(int(product_id))
+        _logger.warn(product.get_campaign_variants(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller).mapped('name'))
+        return {
+            'offer': product in product.get_campaign_variants(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller),
+            'ribbon': request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids #or promo on product.product
+        }
+
     @http.route(['/dn_shop/search'], type='json', auth="public", website=True)
     def search(self, **kw):
         raise Warning(kw)

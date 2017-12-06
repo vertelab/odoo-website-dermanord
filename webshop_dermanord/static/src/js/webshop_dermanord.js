@@ -5,6 +5,14 @@ var page_count = 0;
 
 $(document).ready(function(){
 
+    if ($("p#variant_id").length) {
+        openerp.jsonRpc("/dn_shop/detail/style", 'call', {
+            'product_id': $("p#variant_id").data("value")
+        }).done(function (data) {
+            console.log(data);
+        });
+    }
+
     $("input[data-toggle='tooltip']").click(function() {
         $("input[data-toggle='tooltip']").tooltip('hide');
         $(this).tooltip();
@@ -173,6 +181,13 @@ $(document).ready(function(){
             $ingredients_desc_mobile.html(data['ingredients_description']);
             $default_code.html(data['default_code']);
         });
+
+        openerp.jsonRpc("/dn_shop/detail/style", 'call', {
+            'product_id': product_id
+        }).then(function (data) {
+            console.log(data);
+        });
+
         $img.parent().attr('data-oe-model', 'product.product').attr('data-oe-id', product_id)
             .data('oe-model', 'product.product').data('oe-id', product_id);
     }

@@ -76,6 +76,17 @@ div.shipping-address, div.invoicing-address {
     max-height: 500px;
 }
 
+.product_detail_img {
+    position: relative;
+}
+
+#detail_style {
+    width: 100%;
+    max-width: 500px;
+    position: absolute;
+    background-color: #000;
+}
+
 #image_big img {
     border: 1px solid #eee;
     margin: 0px 23px 0px 15px;
@@ -503,11 +514,12 @@ select.dn_selection_dropdown + i.fa {
     z-index: 5;
     overflow: hidden;
     position: absolute;
-    top: 40px;
+    top: 30px;
     left: 0px;
 }
 
 .dn_product_div .offer-wrapper i {
+    padding-left: 30px;
     color: #CB683F;
 }
 
