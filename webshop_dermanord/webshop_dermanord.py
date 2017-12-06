@@ -82,9 +82,7 @@ class product_template(models.Model):
     @api.multi
     def is_offer_product(self):
         self.ensure_one()
-        if self in self.get_campaign_products(for_reseller=False) or (self in self.get_campaign_products(for_reseller=True)):
-            return True
-        return False
+        return self in self.get_campaign_products(for_reseller=False) or (self in self.get_campaign_products(for_reseller=True))
 
 
 class product_product(models.Model):
