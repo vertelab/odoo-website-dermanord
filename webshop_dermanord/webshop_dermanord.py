@@ -395,27 +395,46 @@ class WebsiteSale(website_sale):
             else:
                 domain_current.append(('id', 'in', product_ids))
         if 'current_offer' in dic:
-            campaign_product_ids = request.env[model].get_campaign_products(for_reseller=False).mapped('id')
+            if model == 'product.template':
+                campaign_product_ids = request.env[model].get_campaign_tmpl(for_reseller=False).mapped('id')
+                #get product.template that have variants are in current offer
+                tmpl = request.env['product.product'].get_campaign_variants(for_reseller=False).mapped('product_tmpl_id')
+                if len(tmpl) > 0:
+                    for t in tmpl:
+                        if t.id not in campaign_product_ids:
+                            campaign_product_ids.append(t.id)
+            if model == 'product.product':
+                campaign_product_ids = request.env[model].get_campaign_variants(for_reseller=False).mapped('id')
             if len(campaign_product_ids) == 0 and ('id', '=', 9999999999) not in domain_current:
                 domain_current.append(('id', '=', 9999999999))
             else:
                 domain_current.append(('id', 'in', campaign_product_ids))
         if 'current_offer_reseller' in dic:
             if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
-                campaign_product_reseller_ids = request.env[model].get_campaign_products(for_reseller=True).mapped('id')
+                if model == 'product.template':
+                    campaign_product_reseller_ids = request.env[model].get_campaign_tmpl(for_reseller=True).mapped('id')
+                    tmpl = request.env['product.product'].get_campaign_variants(for_reseller=False).mapped('product_tmpl_id')
+                    if len(tmpl) > 0:
+                        for t in tmpl:
+                            if t.id not in campaign_product_reseller_ids:
+                                campaign_product_reseller_ids.append(t.id)
+                if model == 'product.product':
+                    campaign_product_reseller_ids = request.env[model].get_campaign_variants(for_reseller=True).mapped('id')
                 if len(campaign_product_reseller_ids) == 0 and ('id', '=', 9999999999) not in domain_current:
                     domain_current.append(('id', '=', 9999999999))
                 else:
                     domain_current.append(('id', 'in', campaign_product_reseller_ids))
+        for i in domain_current:
+            if domain_current.count(i) > 1:
+                domain_current.remove(i)
         if len(domain_current) > 1:
             for d in domain_current:
-                if domain_current.index(d) != (len(domain_current)-1):
+                if domain_current.index(d) == 0 or (len(domain_current) == 3 and domain_current.index(d) == 1):
                     domain_append.append('|')
                 domain_append.append(domain_current[domain_current.index(d)])
         if len(domain_current) == 1:
             domain_append.append(domain_current[0])
         return domain_append
-
 
     @http.route([
         '/dn_shop',
@@ -478,7 +497,7 @@ class WebsiteSale(website_sale):
                 #~ _logger.error('Access_group %s' % (request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids&p.sudo().access_group_ids))
                 #~ if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
                     #~ products -= p
-        products = request.env['product.template'].search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)
         style_obj = pool['product.style']
         style_ids = style_obj.search(cr, uid, [], context=context)
         styles = style_obj.browse(cr, uid, style_ids, context=context)
@@ -553,7 +572,7 @@ class WebsiteSale(website_sale):
         #~ product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=order, context=context)
         #~ products = product_obj.browse(cr, uid, product_ids, context=context)
         # relist which product templates the current user is allowed to see
-        products = request.env['product.template'].search_access_group(domain, limit=PPG, offset=pager['offset'], order=order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=order)
         #~ for p in products:
             #~ if len(p.sudo().access_group_ids) > 0 :
                 #~ if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
@@ -631,7 +650,7 @@ class WebsiteSale(website_sale):
         #~ product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=order, context=context)
         #~ products = product_obj.browse(cr, uid, product_ids, context=context)
         # relist which product templates the current user is allowed to see
-        products = request.env['product.product'].search_access_group(domain, limit=PPG, offset=pager['offset'], order=order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=order)
         #~ for p in products:
             #~ if len(p.sudo().access_group_ids) > 0 :
                 #~ if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
@@ -786,7 +805,7 @@ class WebsiteSale(website_sale):
             default_order = post.get('order')
             request.session.get('form_values')['order'] = default_order
             request.session['current_order'] = default_order
-        products = request.env['product.product'].search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)
         #~ product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
         #~ products = product_obj.browse(cr, uid, product_ids, context=context)
         # relist which product templates the current user is allowed to see
@@ -913,15 +932,6 @@ class WebsiteSale(website_sale):
 
 class webshop_dermanord(http.Controller):
 
-    @http.route(['/dn_shop/detail/style'], type='json', auth="public", website=True)
-    def detail_style(self, product_id=0, **kw):
-        product = request.env['product.product'].browse(int(product_id))
-        _logger.warn(product.get_campaign_variants(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller).mapped('name'))
-        return {
-            'offer': product in product.get_campaign_variants(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller),
-            'ribbon': request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids #or promo on product.product
-        }
-
     @http.route(['/dn_shop/search'], type='json', auth="public", website=True)
     def search(self, **kw):
         raise Warning(kw)
@@ -968,6 +978,12 @@ class webshop_dermanord(http.Controller):
                         elif product.instock_percent < 50.0:
                             instock = _('Shortage')
 
+                offer = False
+                if product in product.get_campaign_variants(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
+                    offer = True
+                elif product.product_tmpl_id in product.product_tmpl_id.get_campaign_tmpl(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
+                    offer = True
+
                 value['instock'] = instock
                 value['images'] = images
                 value['facets'] = facets
@@ -977,6 +993,8 @@ class webshop_dermanord(http.Controller):
                 value['public_desc'] = product.public_desc or ''
                 value['use_desc'] = product.use_desc or ''
                 value['reseller_desc'] = (product.reseller_desc or '') if is_reseller else ''
+                value['offer'] = offer
+                value['ribbon'] = request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids #or promo on product.product
         return value
 
     @http.route(['/get/product_variant_value'], type='json', auth="public", website=True)

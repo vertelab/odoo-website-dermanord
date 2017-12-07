@@ -5,14 +5,6 @@ var page_count = 0;
 
 $(document).ready(function(){
 
-    if ($("p#variant_id").length) {
-        openerp.jsonRpc("/dn_shop/detail/style", 'call', {
-            'product_id': $("p#variant_id").data("value")
-        }).done(function (data) {
-            console.log(data);
-        });
-    }
-
     $("input[data-toggle='tooltip']").click(function() {
         $("input[data-toggle='tooltip']").tooltip('hide');
         $(this).tooltip();
@@ -79,16 +71,25 @@ $(document).ready(function(){
         openerp.jsonRpc("/get/product_variant_data", "call", {
             'product_id': product_id,
         }).done(function(data){
+            console.log(data);
             // update images
+            offer_html = '';
+            ribbon_html = '';
+            if (data['offer']) {
+                offer_html = '<div class="offer-wrapper"><i class="fa fa-star-o fa-3x" title="Offer"/></div>';
+            }
+            if (data['ribbon']) {
+                ribbon_html = '<div class="ribbon-wrapper"><div class="ribbon btn btn-primary">News</div></div>';
+            }
             if (data['images'] != null) {
                 var big_html = '<div id="image_big" class="tab-content">';
                 $.each(data['images'], function(index, value) {
-                    big_html += '<div id="' + value + '" class="tab-pane fade ' + ((index == 0) ? 'active in' : '') + '"><img class="img img-responsive product_detail_img" style="margin: auto;" src="/imagefield/base_multi_image.image/image_main/' + value + '/ref/website_sale_product_gallery.img_product_detail"></div>';
+                    big_html += '<div id="' + value + '" class="tab-pane fade ' + ((index == 0) ? 'active in' : '') + '">' + offer_html + ribbon_html + '<img class="img img-responsive product_detail_img" style="margin: auto;" src="/imagefield/base_multi_image.image/image_main/' + value + '/ref/website_sale_product_gallery.img_product_detail"/></div>';
                 });
                 big_html += '</div>';
                 var tumb_html = '<ul id="image_nav" class="nav nav-pills">';
                 $.each(data['images'], function(index, value) {
-                    tumb_html += '<li class="' + ((index == 0) ? 'active' : '') + ' ' + ((index > 1) ? 'hidden-xs' : '') + '"><a data-toggle="tab" href="#' + value + '"><img class="img img-responsive" src="/imagefield/base_multi_image.image/image_main/' + value + '/ref/website_sale_product_gallery.img_product_thumbnail">';
+                    tumb_html += '<li class="' + ((index == 0) ? 'active' : '') + ' ' + ((index > 1) ? 'hidden-xs' : '') + '"><a data-toggle="tab" href="#' + value + '"><img class="img img-responsive" src="/imagefield/base_multi_image.image/image_main/' + value + '/ref/website_sale_product_gallery.img_product_thumbnail"/>';
                 });
                 tumb_html += '</ul>';
                 $img_big.replaceWith(big_html);
@@ -180,12 +181,6 @@ $(document).ready(function(){
             $ingredients_desc.html(data['ingredients_description']);
             $ingredients_desc_mobile.html(data['ingredients_description']);
             $default_code.html(data['default_code']);
-        });
-
-        openerp.jsonRpc("/dn_shop/detail/style", 'call', {
-            'product_id': product_id
-        }).then(function (data) {
-            console.log(data);
         });
 
         $img.parent().attr('data-oe-model', 'product.product').attr('data-oe-id', product_id)

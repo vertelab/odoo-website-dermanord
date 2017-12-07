@@ -89,6 +89,7 @@
                                         </ul>
                                   </div>
                             </div>
+                            <t t-set="variant" t-value="product.get_default_variant()"/>
                             <div t-call="webshop_dermanord.products_item"/>
                         </div>
                     </t>
@@ -98,7 +99,7 @@
 
         <template id="products_item" name="Product item">
             <form action="/shop/cart/update" method="post">
-                <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="'dn_product_div %s' % ' '.join([s.html_class for s in product.website_style_ids])">
+                <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="'dn_product_div %s' % ' '.join([s.html_class for s in variant.website_style_ids])">
                     <div class="ribbon-wrapper">
                         <div class="ribbon btn btn-primary">News</div>
                     </div>
@@ -111,11 +112,11 @@
                         <div class="dn_product_image_div">
                             <a itemprop="url" t-att-href="keep('/dn_shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))">
                                 <t t-call="webshop_dermanord.form_values"/>
-                                <t t-if="len(product.image_ids) &gt; 0">
-                                    <img itemprop="image" class="img img-responsive" t-att-src="'/imagefield/base_multi_image.image/image_main/%s/ref/%s' %(product.image_ids[0].id, 'snippet_dermanord.img_product')" t-att-alt="product.name" />
+                                <t t-if="len(variant.image_ids) &gt; 0">
+                                    <img itemprop="image" class="img img-responsive" t-att-src="'/imagefield/base_multi_image.image/image_main/%s/ref/%s' %(variant.image_ids[0].id, 'snippet_dermanord.img_product')" t-att-alt="variant.name" />
                                 </t>
-                                <t t-if="len(product.image_ids) == 0">
-                                    <img itemprop="image" class="img img-responsive" t-att-src="website.image_url(product, 'image', None if product_image_big else '300x300')" t-att-alt="product.name" />
+                                <t t-if="len(product.get_default_variant().image_ids) == 0">
+                                    <img itemprop="image" class="img img-responsive" t-att-src="website.image_url(variant, 'image', None if product_image_big else '300x300')" t-att-alt="variant.name" />
                                 </t>
                                 <div class="dn_product_image_hover_btn text-center hidden-xs">
                                     <p class="dn_btn dn_primary">
@@ -128,24 +129,24 @@
                     <div class="dn_product_info text-center">
                         <h4 class="p_name">
                             <strong>
-                                <a itemprop="name" t-att-href="keep('/dn_shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))" t-field="product.name" />
+                                <a itemprop="name" t-att-href="keep('/dn_shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']>1 else None))" t-field="variant.name" />
                             </strong>
                         </h4>
-                        <p class="text-muted" style="height: 15px;" t-field="product.default_code"/>
-                        <!--<p class="p_desc"><t t-esc="product.description_sale"/></p>-->
+                        <p class="text-muted" style="height: 15px;" t-field="variant.default_code"/>
+                        <!--<p class="p_desc"><t t-esc="variant.description_sale"/></p>-->
                         <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price" t-if="product.product_variant_ids">
                             <b class="text-muted">
                                 <p>
                                     <t t-if="user_id.partner_id.property_product_pricelist and not user_id.partner_id.property_product_pricelist.for_reseller">
-                                        <t t-if="(compute_currency(product.list_price_tax) - product.price_tax) &gt; 0.1">
-                                            <del class="text-danger" style="white-space: nowrap;" t-field="product.list_price_tax" t-field-options='{
+                                        <t t-if="(compute_currency(variant.list_price_tax) - variant.price_tax) &gt; 0.1">
+                                            <del class="text-danger" style="white-space: nowrap;" t-field="variant.list_price_tax" t-field-options='{
                                           "widget": "monetary",
                                           "from_currency": "product.company_id.currency_id",
                                           "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                                         }' />
                                         &amp;nbsp;
                                         </t>
-                                        <span t-field="product.price_tax" style="white-space: nowrap;" t-field-options='{
+                                        <span t-field="variant.price_tax" style="white-space: nowrap;" t-field-options='{
                                            "widget": "monetary",
                                            "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                                        }' />
@@ -153,7 +154,7 @@
 
                                     <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                                         <div>
-                                            <span class="oe_recommended_price" t-field="product.list_price_tax"
+                                            <span class="oe_recommended_price" t-field="variant.list_price_tax"
                                             t-field-options='{
                                               "widget": "monetary",
                                               "from_currency": "product.company_id.currency_id",
@@ -162,7 +163,7 @@
                                         </div>
                                         <div>
                                            <b class="oe_price" style="white-space: nowrap;"
-                                            t-field="product.price"
+                                            t-field="variant.price"
                                             t-field-options='{
                                                "widget": "monetary",
                                                "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
@@ -171,7 +172,7 @@
                                         </div>
                                     </t>
 
-                                    <span itemprop="price" style="display:none;" t-esc="product.price" />
+                                    <span itemprop="price" style="display:none;" t-esc="variant.price" />
                                     <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding" />
                                 </p>
                             </b>
@@ -444,12 +445,6 @@
                         </select>
                     </form>
                 </div>
-            </xpath>
-        </template>
-
-        <template id="dermanord_product_detail_style" inherit_id="website_sale_product_gallery.product">
-            <xpath expr="//div[@t-att-id='i.id']/img" position="inside">
-                <div id="detail_style"/>
             </xpath>
         </template>
 
