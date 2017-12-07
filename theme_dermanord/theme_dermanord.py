@@ -57,71 +57,73 @@ class website(models.Model):
             return menu
 
     def get_breadcrumb(self, path, **params):
-        breadcrumb = []
-        if path.startswith('/dn_shop/product/'): # url is a product
-            product = params.get('product')
-            if product:
-                breadcrumb.append('<li>%s</li>' % product.name)
-            menu = self.env.ref('webshop_dermanord.menu_dn_shop')
-            home_menu = self.env.ref('website.menu_homepage')
-            breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
-            breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
-            return ''.join(reversed(breadcrumb))
-        elif path.startswith('/event'): # url is an event
-            breadcrumb.append('<li><a href="%s">%s</a></li>' %('/', 'Home'))
-            breadcrumb.append('<li><a href="%s">%s</a></li>' %('/event/', 'Event'))
-            if len(path.split('/'))>2:
-                event_id = path.split('/')[2].split('-')[-1]
-                event = self.env['event.event'].browse(int(event_id))
-                if event:
-                    breadcrumb.append('<li><a href="/event/%s">%s</a></li>' %(event.id, event.name))
-            #~ menu = self.env.ref('webshop_dermanord.menu_dn_shop')
-            #~ home_menu = self.env.ref('website.menu_homepage')
-            #~ breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
-            #~ breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
-            return ''.join(breadcrumb)
-        elif path.startswith('/home'): # url is on the user home page
-            path = path.split('/')[1:]
-            _logger.warn(path)
-            home_menu = self.env.ref('website.menu_homepage')
-            breadcrumb = ['<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name)]
-            if len(path) > 1:
-                user = self.env['res.users'].browse(int(path[1].split('-')[-1]))
-            else:
-                user = self.env.user
-            breadcrumb.append('<li><a href="/home/%s">%s</a></li>' % (path[1], user.name))
-            if len(path) > 3:
-                if path[2] == 'order':
-                    order = self.env['sale.order'].browse(int(path[3].split('-')[-1]))
-                    breadcrumb.append('<li><a href="/home/%s?tab=orders">%s</a></li>' % (path[1], _('Orders')))
-                    breadcrumb.append('<li><a href="/home/%s/order/%s">%s</a></li>' % (path[1], path[3], order.name))
-                if path[2] == 'claim':
-                    claim = self.env['crm.claim'].browse(int(path[3].split('-')[-1]))
-                    breadcrumb.append('<li><a href="/home/%s?tab=claims">%s</a></li>' % (path[1], _('Claims')))
-                    breadcrumb.append('<li><a href="/home/%s/claim/%s">%s</a></li>' % (path[1], path[3], claim.name))
-                if path[2] == 'line':
-                    order = self.env['sale.order'].search([('order_line', '=', int(path[3].split('-')[-1]))])
-                    breadcrumb.append('<li><a href="/home/%s?tab=orders">%s</a></li>' % (path[1], _('Orders')))
-                    breadcrumb.append('<li><a href="/home/%s/order/%s">%s</a></li>' % (path[1], order.id, order.name))
-                    breadcrumb.append('<li><a href="/%s">%s</a></li>' % ('/'.join(path), _('File Claim')))
-            return ''.join(breadcrumb)
-        else: # url is a normal menu or submenu
-            path = path.split('/')
-            for i in range(len(path)):
-                nr = path[i].split('-')[-1]
-                if nr.isdigit():
-                    path[i] = nr
-            path = '/'.join(path)
-            skipped = self.env.ref('theme_dermanord.footer_menu')
-            menu = self.env['website.menu'].search([('url', '=', path)])
-            while menu and menu != self.env.ref('website.main_menu') and menu != self.env.ref('website.menu_homepage'):
-                if menu not in skipped:
-                    breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
-                menu = menu.parent_id
-            home_menu = self.env.ref('website.menu_homepage')
-            breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
-            return ''.join(reversed(breadcrumb))
-
+        try:
+            breadcrumb = []
+            if path.startswith('/dn_shop/product/'): # url is a product
+                product = params.get('product')
+                if product:
+                    breadcrumb.append('<li>%s</li>' % product.name)
+                menu = self.env.ref('webshop_dermanord.menu_dn_shop')
+                home_menu = self.env.ref('website.menu_homepage')
+                breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
+                breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
+                return ''.join(reversed(breadcrumb))
+            elif path.startswith('/event'): # url is an event
+                breadcrumb.append('<li><a href="%s">%s</a></li>' %('/', 'Home'))
+                breadcrumb.append('<li><a href="%s">%s</a></li>' %('/event/', 'Event'))
+                if len(path.split('/'))>2:
+                    event_id = path.split('/')[2].split('?')[0].split('-')[-1]
+                    event = self.env['event.event'].browse(int(event_id))
+                    if event:
+                        breadcrumb.append('<li><a href="/event/%s">%s</a></li>' %(event.id, event.name))
+                #~ menu = self.env.ref('webshop_dermanord.menu_dn_shop')
+                #~ home_menu = self.env.ref('website.menu_homepage')
+                #~ breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
+                #~ breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
+                return ''.join(breadcrumb)
+            elif path.startswith('/home'): # url is on the user home page
+                path = path.split('/')[1:]
+                _logger.warn(path)
+                home_menu = self.env.ref('website.menu_homepage')
+                breadcrumb = ['<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name)]
+                if len(path) > 1:
+                    user = self.env['res.users'].browse(int(path[1].split('-')[-1]))
+                else:
+                    user = self.env.user
+                breadcrumb.append('<li><a href="/home/%s">%s</a></li>' % (path[1], user.name))
+                if len(path) > 3:
+                    if path[2] == 'order':
+                        order = self.env['sale.order'].browse(int(path[3].split('-')[-1]))
+                        breadcrumb.append('<li><a href="/home/%s?tab=orders">%s</a></li>' % (path[1], _('Orders')))
+                        breadcrumb.append('<li><a href="/home/%s/order/%s">%s</a></li>' % (path[1], path[3], order.name))
+                    if path[2] == 'claim':
+                        claim = self.env['crm.claim'].browse(int(path[3].split('-')[-1]))
+                        breadcrumb.append('<li><a href="/home/%s?tab=claims">%s</a></li>' % (path[1], _('Claims')))
+                        breadcrumb.append('<li><a href="/home/%s/claim/%s">%s</a></li>' % (path[1], path[3], claim.name))
+                    if path[2] == 'line':
+                        order = self.env['sale.order'].search([('order_line', '=', int(path[3].split('-')[-1]))])
+                        breadcrumb.append('<li><a href="/home/%s?tab=orders">%s</a></li>' % (path[1], _('Orders')))
+                        breadcrumb.append('<li><a href="/home/%s/order/%s">%s</a></li>' % (path[1], order.id, order.name))
+                        breadcrumb.append('<li><a href="/%s">%s</a></li>' % ('/'.join(path), _('File Claim')))
+                return ''.join(breadcrumb)
+            else: # url is a normal menu or submenu
+                path = path.split('/')
+                for i in range(len(path)):
+                    nr = path[i].split('-')[-1]
+                    if nr.isdigit():
+                        path[i] = nr
+                path = '/'.join(path)
+                skipped = self.env.ref('theme_dermanord.footer_menu')
+                menu = self.env['website.menu'].search([('url', '=', path)])
+                while menu and menu != self.env.ref('website.main_menu') and menu != self.env.ref('website.menu_homepage'):
+                    if menu not in skipped:
+                        breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
+                    menu = menu.parent_id
+                home_menu = self.env.ref('website.menu_homepage')
+                breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
+                return ''.join(reversed(breadcrumb))
+        except:
+            return ['<li><a href="/">Home</a></li>']
 
 class website_config_settings(models.TransientModel):
     _inherit = 'website.config.settings'
