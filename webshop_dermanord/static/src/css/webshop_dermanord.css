@@ -74,22 +74,58 @@ div.shipping-address, div.invoicing-address {
 
 #image_big {
     max-height: 500px;
-}
-
-.product_detail_img {
-    position: relative;
-}
-
-#detail_style {
-    width: 100%;
     max-width: 500px;
-    position: absolute;
-    background-color: #000;
+    margin: auto;
+}
+
+#image_big > div {
+    position: relative;
 }
 
 #image_big img {
     border: 1px solid #eee;
     margin: 0px 23px 0px 15px;
+}
+
+#image_big > div > .ribbon-wrapper {
+    position: relative;
+    display: block;
+    width: 85px;
+    height: 88px;
+    z-index: 5;
+    overflow: hidden;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+#image_big > div > .ribbon-wrapper > .ribbon {
+    font: bold 15px Sans-Serif;
+    color: white;
+    text-align: center;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    position: relative;
+    padding: 7px 0;
+    left: -5px;
+    top: 13px;
+    width: 120px;
+    cursor: default;
+}
+
+#image_big > div > .offer-wrapper {
+    z-index: 5;
+    overflow: hidden;
+    position: absolute;
+    top: 30px;
+    left: 0px;
+}
+
+#image_big > div > .offer-wrapper i {
+    padding-left: 30px;
+    color: #CB683F;
 }
 
 .image_block {
@@ -151,7 +187,7 @@ div.shipping-address, div.invoicing-address {
 }
 
 .dn_product_image {
-    height: 350px;
+    height: 260px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -481,7 +517,7 @@ select.dn_selection_dropdown + i.fa {
 
 /* Ribbon for promotionso on products (dn shop) */
 .dn_product_div.oe_ribbon_promo .ribbon-wrapper {
-   display: block;
+    display: block;
 }
 .dn_product_div .ribbon-wrapper {
     display: none;

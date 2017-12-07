@@ -7,9 +7,9 @@
             <field name="description">Define the canvas size to limit the image maximum size.
 PS: The canvas will always be the given size</field>
             <field name="recipe">bg = Image()
-bg.blank(width=260, height=400)
+bg.blank(width=260, height=260)
 bg.format = 'png'
-image.transform(resize='%sx%s' %(260, 400))
+image.transform(resize='%sx%s' %(260, 260))
 if image.width &gt;= image.height:
     bg.composite(image, 0, (260-image.height)/2)
 else:
