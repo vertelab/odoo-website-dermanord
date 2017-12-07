@@ -82,7 +82,7 @@ class product_template(models.Model):
     @api.multi
     def is_offer_product(self):
         self.ensure_one()
-        return self in self.get_campaign_products(for_reseller=False) or (self in self.get_campaign_products(for_reseller=True))
+        return self in self.get_campaign_tmpl(for_reseller=False) or (self in self.get_campaign_tmpl(for_reseller=True))
 
 
 class product_product(models.Model):
@@ -124,7 +124,7 @@ class product_product(models.Model):
     @api.multi
     def is_offer_product(self):
         self.ensure_one()
-        return self in self.get_campaign_products(for_reseller=False) or (self in self.get_campaign_products(for_reseller=True))
+        return self in self.get_campaign_variants(for_reseller=False) or (self in self.get_campaign_variants(for_reseller=True))
 
 
 class product_facet(models.Model):
