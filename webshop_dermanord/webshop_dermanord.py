@@ -705,8 +705,12 @@ class WebsiteSale(website_sale):
                 if len(product.product_tmpl_id.campaign_ids) > 0:
                     if len(product.product_tmpl_id.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)) > 0:
                         purchase_phase = product.product_tmpl_id.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)[0]
+            if len(product.product_tmpl_id.website_style_ids) > 0:
+                lst_ribbon_style = 'tr_lst %s' % ' '.join(['lst_%s' %s.html_class for s in product.product_tmpl_id.website_style_ids])
+            else:
+                lst_ribbon_style = 'tr_lst %s' % ' '.join(['lst_%s' %s.html_class for s in product.website_style_ids_variant])
             products_list.append({
-                'lst_ribbon_style': 'tr_lst %s' % ' '.join(['lst_%s' %s.html_class for s in product.product_tmpl_id.website_style_ids]),
+                'lst_ribbon_style': lst_ribbon_style,
                 'variant_id': product.id,
                 'product_href': '/dn_shop/variant/%s' %product.id,
                 'product_name': product.name,

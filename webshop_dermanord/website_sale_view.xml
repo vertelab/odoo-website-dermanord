@@ -99,7 +99,7 @@
 
         <template id="products_item" name="Product item">
             <form action="/shop/cart/update" method="post">
-                <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="'dn_product_div %s' % ' '.join([s.html_class for s in variant.website_style_ids])">
+                <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="'dn_product_div %s %s' % ('oe_ribbon_promo' if request.env.ref('website_sale.image_promo') in product.product_variant_ids.mapped('website_style_ids_variant') else '', ' '.join([s.html_class for s in variant.website_style_ids]))">
                     <div class="ribbon-wrapper">
                         <div class="ribbon btn btn-primary">News</div>
                     </div>
@@ -214,7 +214,7 @@
                                                     <!--
                                                         <div class="lst_ribbon btn btn-primary">News</div>
                                                     -->
-                                                        <i class="fa fa-tags fa-2x" title="News"/>
+                                                        <t t-if="(request.env.ref('website_sale.image_promo') in product.website_style_ids_variant) or (request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids)"><i class="fa fa-tags fa-2x" title="News"/></t>
                                                     </div>
                                                     <t t-if="product.is_offer_product()">
                                                         <div class="col-md-6 lst-offer-wrapper">

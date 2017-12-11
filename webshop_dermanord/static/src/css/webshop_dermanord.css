@@ -592,17 +592,13 @@ select.dn_selection_dropdown + i.fa {
 */
 
 /* Ribbon for promotionso on products (dn list) */
-.tr_lst.lst_oe_ribbon_promo .lst-ribbon-wrapper {
-    display: block;
-    padding: 0px;
-}
-
 .td_lst {
     width: 100px
 }
 
 .td_lst .lst-ribbon-wrapper {
-    display: none;
+    display: block;
+    padding: 0px;
     width: 40px;
     z-index: 5;
     overflow: hidden;
