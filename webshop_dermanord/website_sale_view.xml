@@ -204,7 +204,7 @@
                                 <!-- navigator -->
                                 <t t-call="webshop_dermanord.desktop_product_navigator"/>
                             </div>
-                            <div id="desktop_product_grid" class="col-md-9 col-xs-12">
+                            <div id="desktop_product_list" class="col-md-9 col-xs-12">
                                 <table class="product_list_table table table-striped" style="width: 100%;">
                                     <tbody>
                                         <t t-foreach="products" t-as="product">
@@ -214,7 +214,7 @@
                                                     <!--
                                                         <div class="lst_ribbon btn btn-primary">News</div>
                                                     -->
-                                                        <i class="fa fa-tags fa-2x"/>
+                                                        <i class="fa fa-tags fa-2x" title="News"/>
                                                     </div>
                                                     <t t-if="product.is_offer_product()">
                                                         <div class="col-md-6 lst-offer-wrapper">

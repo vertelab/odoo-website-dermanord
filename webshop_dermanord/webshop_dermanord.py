@@ -62,6 +62,15 @@ class product_template(models.Model):
     recommended_price = fields.Float(compute='get_product_tax')
     sold_qty = fields.Integer(string='Sold', default=0)
 
+    @api.multi
+    def get_default_variant(self):
+        self.ensure_one()
+        news = self.product_variant_ids.filtered(lambda v: request.env.ref('website_sale.image_promo') in v.website_style_ids_variant)
+        if len(news) > 0:
+            return news[0]
+        else:
+            return super(product_template, self).get_default_variant()
+
     @api.one
     def get_product_tax(self):
         res = 0
@@ -82,7 +91,7 @@ class product_template(models.Model):
     @api.multi
     def is_offer_product(self):
         self.ensure_one()
-        return self in self.get_campaign_tmpl(for_reseller=False) or (self in self.get_campaign_tmpl(for_reseller=True))
+        return ((self in self.get_campaign_tmpl(for_reseller=False)) or (self in self.get_campaign_tmpl(for_reseller=True))) or ((self.get_campaign_variants(for_reseller=False) & self.product_variant_ids) or (self.get_campaign_variants(for_reseller=True) & self.product_variant_ids))
 
 
 class product_product(models.Model):
@@ -125,7 +134,7 @@ class product_product(models.Model):
     @api.multi
     def is_offer_product(self):
         self.ensure_one()
-        return self in self.get_campaign_variants(for_reseller=False) or (self in self.get_campaign_variants(for_reseller=True))
+        return (self in self.get_campaign_variants(for_reseller=False)) or (self in self.get_campaign_variants(for_reseller=True)) or (self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False)) or (self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=True))
 
 
 class product_facet(models.Model):
@@ -390,7 +399,16 @@ class WebsiteSale(website_sale):
         domain_current = []
         domain_append = []
         if 'current_news' in dic:
-            product_ids = request.env[model].search([('website_style_ids', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('id')
+            if model == 'product.template':
+                product_ids = request.env[model].search([('website_style_ids', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('id')
+                product_variants = request.env['product.product'].search([('website_style_ids_variant', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('product_tmpl_id')
+                if len(product_variants) > 0:
+                    product_ids += product_variants.mapped('id')
+            if model == 'product.product':
+                product_ids = request.env[model].search([('website_style_ids_variant', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('id')
+                product_tmpls = request.env['product.template'].search([('website_style_ids', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('product_variant_ids')
+                if len(product_tmpls) > 0:
+                    product_ids += product_tmpls.mapped('id')
             if len(product_ids) == 0:
                 domain_current.append(('id', '=', 9999999999))
             else:
@@ -406,6 +424,10 @@ class WebsiteSale(website_sale):
                             campaign_product_ids.append(t.id)
             if model == 'product.product':
                 campaign_product_ids = request.env[model].get_campaign_variants(for_reseller=False).mapped('id')
+                tmpl = request.env['product.template'].get_campaign_tmpl(for_reseller=False)
+                if len(tmpl) > 0:
+                    for t in tmpl:
+                        campaign_product_ids += t.mapped('product_variant_ids').mapped('id')
             if len(campaign_product_ids) == 0 and ('id', '=', 9999999999) not in domain_current:
                 domain_current.append(('id', '=', 9999999999))
             else:
@@ -421,6 +443,10 @@ class WebsiteSale(website_sale):
                                 campaign_product_reseller_ids.append(t.id)
                 if model == 'product.product':
                     campaign_product_reseller_ids = request.env[model].get_campaign_variants(for_reseller=True).mapped('id')
+                    tmpl = request.env['product.template'].get_campaign_tmpl(for_reseller=True)
+                    if len(tmpl) > 0:
+                        for t in tmpl:
+                            campaign_product_reseller_ids += t.product_variant_ids.mapped('id')
                 if len(campaign_product_reseller_ids) == 0 and ('id', '=', 9999999999) not in domain_current:
                     domain_current.append(('id', '=', 9999999999))
                 else:
@@ -995,7 +1021,7 @@ class webshop_dermanord(http.Controller):
                 value['use_desc'] = product.use_desc or ''
                 value['reseller_desc'] = (product.reseller_desc or '') if is_reseller else ''
                 value['offer'] = offer
-                value['ribbon'] = request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids #or promo on product.product
+                value['ribbon'] = request.env.ref('website_sale.image_promo') in product.website_style_ids_variant if len(product.website_style_ids_variant) > 0 else (request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids)
         return value
 
     @http.route(['/get/product_variant_value'], type='json', auth="public", website=True)
