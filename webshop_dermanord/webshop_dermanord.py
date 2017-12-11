@@ -91,6 +91,7 @@ class product_product(models.Model):
     recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True)
     so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
     sold_qty = fields.Integer(string='Sold', default=0)
+    website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
 
     @api.one
     def get_product_tax(self):
