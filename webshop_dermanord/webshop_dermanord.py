@@ -74,7 +74,7 @@ class product_template(models.Model):
     # get defualt variant ribbon. if there's not one, get the template's ribbon
     @api.multi
     def get_default_variant_ribbon(self):
-        if len(self.get_default_variant()) > 0:
+        if len(self.get_default_variant().website_style_ids_variant) > 0:
             return ' '.join([s.html_class for s in self.get_default_variant().website_style_ids_variant])
         else:
             return ' '.join([s.html_class for s in self.website_style_ids])
