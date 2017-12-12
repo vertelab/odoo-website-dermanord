@@ -29,8 +29,15 @@
     line-height: 1.2em !important;
 }
 
+.blog_list_item {
+    max-width: 1366px;
+    margin: auto;
+}
+
 @media (max-width: 768px) {
+/*
     .blog_content_div {
-        padding-left: 0px !important;
+        padding-left: 15px !important;
     }
+*/
 }

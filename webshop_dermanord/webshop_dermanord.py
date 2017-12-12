@@ -62,6 +62,23 @@ class product_template(models.Model):
     recommended_price = fields.Float(compute='get_product_tax')
     sold_qty = fields.Integer(string='Sold', default=0)
 
+    @api.multi
+    def get_default_variant(self):
+        self.ensure_one()
+        news = self.product_variant_ids.filtered(lambda v: request.env.ref('website_sale.image_promo') in v.website_style_ids_variant)
+        if len(news) > 0:
+            return news[0]
+        else:
+            return super(product_template, self).get_default_variant()
+
+    # get defualt variant ribbon. if there's not one, get the template's ribbon
+    @api.multi
+    def get_default_variant_ribbon(self):
+        if len(self.get_default_variant().website_style_ids_variant) > 0:
+            return ' '.join([s.html_class for s in self.get_default_variant().website_style_ids_variant])
+        else:
+            return ' '.join([s.html_class for s in self.website_style_ids])
+
     @api.one
     def get_product_tax(self):
         res = 0
@@ -82,7 +99,11 @@ class product_template(models.Model):
     @api.multi
     def is_offer_product(self):
         self.ensure_one()
-        return self in self.get_campaign_products(for_reseller=False) or (self in self.get_campaign_products(for_reseller=True))
+        if (self in self.get_campaign_tmpl(for_reseller=False)) or (self in self.get_campaign_tmpl(for_reseller=True)):
+            return True
+        elif len(self.get_campaign_variants(for_reseller=False) & self.product_variant_ids) > 0 or len(self.get_campaign_variants(for_reseller=True) & self.product_variant_ids) > 0:
+            return True
+        return False
 
 
 class product_product(models.Model):
@@ -91,6 +112,7 @@ class product_product(models.Model):
     recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True)
     so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
     sold_qty = fields.Integer(string='Sold', default=0)
+    website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
 
     @api.one
     def get_product_tax(self):
@@ -121,10 +143,22 @@ class product_product(models.Model):
                 template.sold_qty = sum(template.product_variant_ids.mapped('sold_qty'))
         return None
 
+    # get this variant ribbon. if there's not one, get the template's ribbon
+    @api.multi
+    def get_this_variant_ribbon(self):
+        if len(self.website_style_ids_variant) > 0:
+            return ' '.join([s.html_class for s in self.website_style_ids_variant])
+        else:
+            return ' '.join([s.html_class for s in self.product_tmpl_id.website_style_ids])
+
     @api.multi
     def is_offer_product(self):
         self.ensure_one()
-        return self in self.get_campaign_products(for_reseller=False) or (self in self.get_campaign_products(for_reseller=True))
+        if (self in self.get_campaign_variants(for_reseller=False)) or (self in self.get_campaign_variants(for_reseller=True)):
+            return True
+        elif len(self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False)) > 0 or len(self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=True)) > 0:
+            return True
+        return False
 
 
 class product_facet(models.Model):
@@ -389,7 +423,16 @@ class WebsiteSale(website_sale):
         domain_current = []
         domain_append = []
         if 'current_news' in dic:
-            product_ids = request.env[model].search([('website_style_ids', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('id')
+            if model == 'product.template':
+                product_ids = request.env[model].search([('website_style_ids', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('id')
+                product_variants = request.env['product.product'].search([('website_style_ids_variant', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('product_tmpl_id')
+                if len(product_variants) > 0:
+                    product_ids += product_variants.mapped('id')
+            if model == 'product.product':
+                product_ids = request.env[model].search([('website_style_ids_variant', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('id')
+                product_tmpls = request.env['product.template'].search([('website_style_ids', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('product_variant_ids')
+                if len(product_tmpls) > 0:
+                    product_ids += product_tmpls.mapped('id')
             if len(product_ids) == 0:
                 domain_current.append(('id', '=', 9999999999))
             else:
@@ -405,6 +448,10 @@ class WebsiteSale(website_sale):
                             campaign_product_ids.append(t.id)
             if model == 'product.product':
                 campaign_product_ids = request.env[model].get_campaign_variants(for_reseller=False).mapped('id')
+                tmpl = request.env['product.template'].get_campaign_tmpl(for_reseller=False)
+                if len(tmpl) > 0:
+                    for t in tmpl:
+                        campaign_product_ids += t.mapped('product_variant_ids').mapped('id')
             if len(campaign_product_ids) == 0 and ('id', '=', 9999999999) not in domain_current:
                 domain_current.append(('id', '=', 9999999999))
             else:
@@ -420,6 +467,10 @@ class WebsiteSale(website_sale):
                                 campaign_product_reseller_ids.append(t.id)
                 if model == 'product.product':
                     campaign_product_reseller_ids = request.env[model].get_campaign_variants(for_reseller=True).mapped('id')
+                    tmpl = request.env['product.template'].get_campaign_tmpl(for_reseller=True)
+                    if len(tmpl) > 0:
+                        for t in tmpl:
+                            campaign_product_reseller_ids += t.product_variant_ids.mapped('id')
                 if len(campaign_product_reseller_ids) == 0 and ('id', '=', 9999999999) not in domain_current:
                     domain_current.append(('id', '=', 9999999999))
                 else:
@@ -578,7 +629,6 @@ class WebsiteSale(website_sale):
                 #~ if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
                     #~ products -= p
 
-
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
@@ -608,7 +658,7 @@ class WebsiteSale(website_sale):
                 'product_name': product.name,
                 'is_offer_product': product.is_offer_product(),
                 'style_options': style_options,
-                'grid_ribbon_style': 'dn_product_div %s' % ' '.join([s.html_class for s in product.website_style_ids]),
+                'grid_ribbon_style': 'dn_product_div %s' %product.get_default_variant_ribbon(),
                 'product_img_src': image_src,
                 'price': "%.2f" % product.price,
                 'price_tax': "%.2f" % product.price_tax,
@@ -679,7 +729,7 @@ class WebsiteSale(website_sale):
                     if len(product.product_tmpl_id.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)) > 0:
                         purchase_phase = product.product_tmpl_id.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)[0]
             products_list.append({
-                'lst_ribbon_style': 'tr_lst %s' % ' '.join(['lst_%s' %s.html_class for s in product.product_tmpl_id.website_style_ids]),
+                'lst_ribbon_style': product.get_this_variant_ribbon(),
                 'variant_id': product.id,
                 'product_href': '/dn_shop/variant/%s' %product.id,
                 'product_name': product.name,
@@ -994,7 +1044,7 @@ class webshop_dermanord(http.Controller):
                 value['use_desc'] = product.use_desc or ''
                 value['reseller_desc'] = (product.reseller_desc or '') if is_reseller else ''
                 value['offer'] = offer
-                value['ribbon'] = request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids #or promo on product.product
+                value['ribbon'] = request.env.ref('website_sale.image_promo') in product.website_style_ids_variant if len(product.website_style_ids_variant) > 0 else (request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids)
         return value
 
     @http.route(['/get/product_variant_value'], type='json', auth="public", website=True)

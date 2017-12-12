@@ -6,7 +6,7 @@
             <xpath expr="//div[@class='col-md-8 oe_cart']/div/div" position="before">
                 <div class="oe_structure"/>
             </xpath>
-            
+
             <xpath expr="//input[@name='name']/.." position="attributes">
                 <attribute name="t-attf-class">form-group #{error.get('name') and 'has-error' or ''} col-lg-6 hidden</attribute>
             </xpath>
@@ -53,7 +53,7 @@
             <xpath expr="//select[@name='shipping_id']/.." position="attributes">
                 <attribute name="t-if">user_id != website.env.ref('base.public_user')</attribute>
             </xpath>
-            
+
             <xpath expr="//select[@name='shipping_id']" position="after">
                 <div id="shipping_addr_0" t-att-class="'shipping-address hidden' if shipping_id != 0 else 'shipping-address'">
                     <div t-field="user_id.partner_id" t-field-options='{
@@ -81,7 +81,7 @@
                         <t t-foreach="invoicings" t-as="invoicing">
                             <option t-att-value="invoicing.id" t-att-selected="invoicing.id == invoicing_id"><t t-esc="', '.join('\n'.join(invoicing.name_get()[0][1].split(',')).split('\n')[1:])"/></option>
                         </t>
-                        
+
                     </select>
                     <div id="invoicing_addr_0" t-att-class="'invoicing-address hidden' if invoicing_id != 0 else 'invoicing-address'">
                         <div t-field="user_id.partner_id" t-field-options='{
@@ -120,7 +120,7 @@
             </xpath>
 
         </template>
-        
+
         <template id="payment_dermanord" name="Payment Dermanord" inherit_id="website_sale.payment">
             <xpath expr="//div[@class='col-lg-8 col-sm-9 oe_cart']" position="replace">
                 <div class="col-lg-8 col-sm-9">
@@ -178,43 +178,43 @@
                     </div>
                 </div>
             </xpath>
-            
+
             <xpath expr="//div[@t-if='acquirers and website_sale_order.amount_total']" position="attributes">
                 <attribute name="class">js_payment mb64 row col-lg-8 col-sm-9</attribute>
             </xpath>
-            
+
             <xpath expr="//div[@t-if='acquirers and website_sale_order.amount_total']/div[@class='col-lg-5 col-sm-6']" position="attributes">
                 <attribute name="class">col-lg-7 col-sm-6</attribute>
             </xpath>
-            
+
             <xpath expr="//div[@t-if='acquirers and website_sale_order.amount_total']/div[@class='col-lg-3 col-sm-3']" position="attributes">
                 <attribute name="class">col-lg-5 col-sm-6</attribute>
             </xpath>
-            
+
             <xpath expr="//div[@t-if='not website_sale_order.amount_total']" position="attributes">
                 <attribute name="class">js_payment mb64 row col-lg-8 col-sm-9</attribute>
             </xpath>
-            
+
             <xpath expr="//div[@t-if='not website_sale_order.amount_total']/div[@class='col-lg-8 col-sm-8']" position="attributes">
                 <attribute name="class">col-lg-5 col-sm-6 col-lg-offset-7 col-sm-offset-6</attribute>
             </xpath>
-            
+
             <xpath expr="//div[@class='oe_sale_acquirer_button hidden pull-right']" position="attributes">
                 <attribute name="class">oe_sale_acquirer_button hidden</attribute>
             </xpath>
-            
+
         </template>
-        
+
         <template id="total_dermanord" inherit_id="website_sale.total">
             <xpath expr="//table" position="attributes">
                 <attribute name="class">pull-left mb16 oe_total_table_fix</attribute>
             </xpath>
         </template>
-        
+
         <record id="website_sale_comment.payment" model="ir.ui.view">
             <field name="active" eval="False"/>
         </record>
-        
+
         <record id="website_sale_terms.payment_terms_and_conditions" model="ir.ui.view">
             <field name="active" eval="False"/>
         </record>
@@ -405,6 +405,17 @@
             <field name="arch" type="xml">
                 <field name="list_price" position="after">
                     <field name="sold_qty"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="website_sale_add_style_in_variant" model="ir.ui.view">
+            <field name="name">product.template.product.website.form.add.style.in.variant</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <field name="website_style_ids" position="after">
+                    <field name="website_style_ids_variant" widget="many2many_tags"/>
                 </field>
             </field>
         </record>
