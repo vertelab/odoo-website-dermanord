@@ -71,6 +71,14 @@ class product_template(models.Model):
         else:
             return super(product_template, self).get_default_variant()
 
+    # get defualt variant ribbon. if there's not one, get the template's ribbon
+    @api.multi
+    def get_default_variant_ribbon(self):
+        if len(self.get_default_variant()) > 0:
+            return ' '.join([s.html_class for s in self.get_default_variant().website_style_ids_variant])
+        else:
+            return ' '.join([s.html_class for s in self.product_tmpl_id.website_style_ids])
+
     @api.one
     def get_product_tax(self):
         res = 0
@@ -130,6 +138,14 @@ class product_product(models.Model):
             for template in templates:
                 template.sold_qty = sum(template.product_variant_ids.mapped('sold_qty'))
         return None
+
+    # get this variant ribbon. if there's not one, get the template's ribbon
+    @api.multi
+    def get_this_variant_ribbon(self):
+        if len(self.website_style_ids_variant) > 0:
+            return ' '.join([s.html_class for s in self.website_style_ids_variant])
+        else:
+            return ' '.join([s.html_class for s in self.product_tmpl_id.website_style_ids])
 
     @api.multi
     def is_offer_product(self):
@@ -635,7 +651,7 @@ class WebsiteSale(website_sale):
                 'product_name': product.name,
                 'is_offer_product': product.is_offer_product(),
                 'style_options': style_options,
-                'grid_ribbon_style': 'dn_product_div %s' % ' '.join([s.html_class for s in product.website_style_ids]),
+                'grid_ribbon_style': 'dn_product_div %s' %product.get_default_variant_ribbon(),
                 'product_img_src': image_src,
                 'price': "%.2f" % product.price,
                 'price_tax': "%.2f" % product.price_tax,
@@ -705,12 +721,8 @@ class WebsiteSale(website_sale):
                 if len(product.product_tmpl_id.campaign_ids) > 0:
                     if len(product.product_tmpl_id.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)) > 0:
                         purchase_phase = product.product_tmpl_id.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)[0]
-            if len(product.product_tmpl_id.website_style_ids) > 0:
-                lst_ribbon_style = 'tr_lst %s' % ' '.join(['lst_%s' %s.html_class for s in product.product_tmpl_id.website_style_ids])
-            else:
-                lst_ribbon_style = 'tr_lst %s' % ' '.join(['lst_%s' %s.html_class for s in product.website_style_ids_variant])
             products_list.append({
-                'lst_ribbon_style': lst_ribbon_style,
+                'lst_ribbon_style': product.get_this_variant_ribbon(),
                 'variant_id': product.id,
                 'product_href': '/dn_shop/variant/%s' %product.id,
                 'product_name': product.name,
