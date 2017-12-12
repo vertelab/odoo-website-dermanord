@@ -99,7 +99,11 @@ class product_template(models.Model):
     @api.multi
     def is_offer_product(self):
         self.ensure_one()
-        return ((self in self.get_campaign_tmpl(for_reseller=False)) or (self in self.get_campaign_tmpl(for_reseller=True))) or ((self.get_campaign_variants(for_reseller=False) & self.product_variant_ids) or (self.get_campaign_variants(for_reseller=True) & self.product_variant_ids))
+        if (self in self.get_campaign_tmpl(for_reseller=False)) or (self in self.get_campaign_tmpl(for_reseller=True)):
+            return True
+        elif len(self.get_campaign_variants(for_reseller=False) & self.product_variant_ids) > 0 or len(self.get_campaign_variants(for_reseller=True) & self.product_variant_ids) > 0:
+            return True
+        return False
 
 
 class product_product(models.Model):
@@ -150,7 +154,11 @@ class product_product(models.Model):
     @api.multi
     def is_offer_product(self):
         self.ensure_one()
-        return (self in self.get_campaign_variants(for_reseller=False)) or (self in self.get_campaign_variants(for_reseller=True)) or (self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False)) or (self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=True))
+        if (self in self.get_campaign_variants(for_reseller=False)) or (self in self.get_campaign_variants(for_reseller=True)):
+            return True
+        elif len(self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False)) > 0 or len(self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=True)) > 0:
+            return True
+        return False
 
 
 class product_facet(models.Model):
@@ -620,7 +628,6 @@ class WebsiteSale(website_sale):
             #~ if len(p.sudo().access_group_ids) > 0 :
                 #~ if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
                     #~ products -= p
-
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id
