@@ -77,7 +77,7 @@ class product_template(models.Model):
         if len(self.get_default_variant()) > 0:
             return ' '.join([s.html_class for s in self.get_default_variant().website_style_ids_variant])
         else:
-            return ' '.join([s.html_class for s in self.product_tmpl_id.website_style_ids])
+            return ' '.join([s.html_class for s in self.website_style_ids])
 
     @api.one
     def get_product_tax(self):
