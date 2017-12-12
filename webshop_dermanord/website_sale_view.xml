@@ -115,7 +115,7 @@
                                 <t t-if="len(variant.image_ids) &gt; 0">
                                     <img itemprop="image" class="img img-responsive" t-att-src="'/imagefield/base_multi_image.image/image_main/%s/ref/%s' %(variant.image_ids[0].id, 'snippet_dermanord.img_product')" t-att-alt="variant.name" />
                                 </t>
-                                <t t-if="len(product.get_default_variant().image_ids) == 0">
+                                <t t-if="len(variant.image_ids) == 0">
                                     <img itemprop="image" class="img img-responsive" t-att-src="website.image_url(variant, 'image', None if product_image_big else '300x300')" t-att-alt="variant.name" />
                                 </t>
                                 <div class="dn_product_image_hover_btn text-center hidden-xs">

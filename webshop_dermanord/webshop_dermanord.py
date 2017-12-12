@@ -96,6 +96,26 @@ class product_template(models.Model):
         self.price_tax = self.price + res
         self.recommended_price = 0.0
 
+    @api.model
+    def get_all_variant_data(self, products):
+        pricelist = self.env.ref('product.list0')
+        res = {}
+        placeholder = '/web/static/src/img/placeholder.png'
+        _logger.warn('%s :: %s' %(self, products))
+        for p in products:
+            variant = p.get_default_variant()
+            res[p.id]= {}
+            try:
+                res[p.id]['recommended_price'] = pricelist.price_get(variant.id, 1)[1] + sum([c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(pricelist.price_get(variant.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
+                res[p.id]['price'] = variant.price
+                res[p.id]['price_tax'] = res[p.id]['price'] + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(res[p.id]['price'], 1, None, self.env.user.partner_id)['taxes'])
+                res[p.id]['default_code'] = variant.default_code or ''
+                res[p.id]['description_sale'] = variant.description_sale or ''
+                res[p.id]['image_src'] = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(variant.image_ids[0].id, 'snippet_dermanord.img_product') if len(variant.image_ids) > 0 else placeholder
+            except Exception as e:
+                res[p.id] = {'recommended_price': 0.0, 'price': 0.0, 'price_tax': 0.0, 'default_code': 'error', 'description_sale': '%s' %e, 'image_src': placeholder}
+        return res
+
     @api.multi
     def is_offer_product(self):
         self.ensure_one()
@@ -634,23 +654,36 @@ class WebsiteSale(website_sale):
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
         products_list = []
-        for product in products:
-            image_src = ''
-            is_reseller = False
-            currency = ''
-            if len(product.image_ids) > 0:
-                image_src = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(product.image_ids[0].id, 'snippet_dermanord.img_product')
-            elif len(product.image_ids) == 0:
-                image_src = request.website.image_url(product, 'image', '300x300')
-            partner_pricelist = request.env.user.partner_id.property_product_pricelist
-            if partner_pricelist:
-                currency = partner_pricelist.currency_id.name
-                if partner_pricelist.for_reseller:
-                    is_reseller = True
+        is_reseller = False
+        currency = ''
 
+        partner_pricelist = request.env.user.partner_id.property_product_pricelist
+        if partner_pricelist:
+            currency = partner_pricelist.currency_id.name
+            if partner_pricelist.for_reseller:
+                is_reseller = True
+
+        all_data = request.env['product.template'].get_all_variant_data(products)
+
+        for product in products:
+            #~ image_src = ''
+
+            #those style options only can be set on product.template
             style_options = ''
             for style in request.env['product.style'].search([]):
                 style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style in product.website_style_ids else '', style.id, style.html_class, style.name)
+
+            #~ has_variant = len(product.get_default_variant()) > 0
+            #~ if has_variant:
+                #~ if len(variant.image_ids) > 0:
+                    #~ image_src = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(variant.image_ids[0].id, 'snippet_dermanord.img_product')
+                #~ elif len(variant.image_ids) == 0:
+                    #~ image_src = request.website.image_url(variant, 'image', '300x300')
+            #~ else:
+                #~ if len(product.image_ids) > 0:
+                    #~ image_src = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(product.image_ids[0].id, 'snippet_dermanord.img_product')
+                #~ elif len(product.image_ids) == 0:
+                    #~ image_src = request.website.image_url(product, 'image', '300x300')
 
             products_list.append({
                 'product_href': '/dn_shop/product/%s' %product.id,
@@ -659,15 +692,15 @@ class WebsiteSale(website_sale):
                 'is_offer_product': product.is_offer_product(),
                 'style_options': style_options,
                 'grid_ribbon_style': 'dn_product_div %s' %product.get_default_variant_ribbon(),
-                'product_img_src': image_src,
-                'price': "%.2f" % product.price,
-                'price_tax': "%.2f" % product.price_tax,
-                'list_price_tax': "%.2f" % product.list_price_tax,
+                'product_img_src': all_data[product.id]['image_src'],
+                'price': "%.2f" % all_data[product.id]['price'],
+                'price_tax': "%.2f" % all_data[product.id]['price_tax'],
+                'list_price_tax': "%.2f" % all_data[product.id]['recommended_price'],
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
                 'is_reseller': 'yes' if is_reseller else 'no',
-                'default_code': product.default_code or '',
-                'description_sale': product.description_sale or '',
+                'default_code': all_data[product.id]['default_code'],
+                'description_sale': all_data[product.id]['description_sale'],
                 'product_variant_ids': True if product.product_variant_ids else False,
             })
 
