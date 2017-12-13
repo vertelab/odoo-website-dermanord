@@ -34,6 +34,10 @@
     margin: auto;
 }
 
+.blog_list_item .col-md-10 {
+    padding-left: 10px;
+}
+
 @media (max-width: 768px) {
 /*
     .blog_content_div {
