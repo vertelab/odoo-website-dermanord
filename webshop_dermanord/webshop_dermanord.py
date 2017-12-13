@@ -1032,10 +1032,14 @@ class webshop_dermanord(http.Controller):
                 image_ids = product.image_ids.filtered(lambda i: product in i.product_variant_ids)
                 default_image_ids = product.image_ids.filtered(lambda i: len(i.product_variant_ids) == 0)
                 images = []
+
                 if len(image_ids) > 0:
                     images = image_ids.mapped('id') + default_image_ids.mapped('id')
                 else:
-                    images = default_image_ids.mapped('id') or None
+                    images.append(0)
+                    for d in default_image_ids.mapped('id'):
+                        images.append(d)
+                    #~ images = default_image_ids.mapped('id') or None
 
                 facets = {}
                 if len(product.facet_line_ids) > 0:
