@@ -1078,6 +1078,7 @@ class webshop_dermanord(http.Controller):
                 value['reseller_desc'] = (product.reseller_desc or '') if is_reseller else ''
                 value['offer'] = offer
                 value['ribbon'] = request.env.ref('website_sale.image_promo') in product.website_style_ids_variant if len(product.website_style_ids_variant) > 0 else (request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids)
+                value['sale_ok'] = True if (product.sale_ok and request.env.user != request.env.ref('base.public_user')) else False
         return value
 
     @http.route(['/get/product_variant_value'], type='json', auth="public", website=True)

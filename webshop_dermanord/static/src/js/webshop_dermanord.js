@@ -71,7 +71,6 @@ $(document).ready(function(){
         openerp.jsonRpc("/get/product_variant_data", "call", {
             'product_id': product_id,
         }).done(function(data){
-            console.log(data);
             // update images
             offer_html = '';
             ribbon_html = '';
@@ -176,6 +175,15 @@ $(document).ready(function(){
                     $reseller_desc.addClass("hidden");
                     $reseller_desc.html('');
                 }
+            }
+
+            if (!data['sale_ok']) {
+                $('#add_to_cart').addClass('hidden');
+                $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
+            }
+            if (data['sale_ok']) {
+                $('#add_to_cart').removeClass('hidden');
+                $('div.css_quantity.input-group.oe_website_spinner').removeClass('hidden');
             }
 
             $ingredients_desc.html(data['ingredients_description']);
