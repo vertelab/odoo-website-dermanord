@@ -209,7 +209,7 @@ class product_product(models.Model):
         self.ensure_one()
         if (self in self.get_campaign_variants(for_reseller=False)) or (self in self.get_campaign_variants(for_reseller=True)):
             return True
-        elif len(self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False)) > 0 or len(self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=True)) > 0:
+        elif self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False) or self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=True):
             return True
         return False
 
