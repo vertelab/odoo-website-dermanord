@@ -34,6 +34,8 @@ import werkzeug
 from heapq import nlargest
 import math
 
+from timeit import default_timer as timer
+
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -101,7 +103,6 @@ class product_template(models.Model):
         pricelist = self.env.ref('product.list0')
         res = {}
         placeholder = '/web/static/src/img/placeholder.png'
-        _logger.warn('%s :: %s' %(self, products))
         for p in products:
             variant = p.get_default_variant()
             res[p.id]= {}
@@ -115,6 +116,35 @@ class product_template(models.Model):
             except Exception as e:
                 res[p.id] = {'recommended_price': 0.0, 'price': 0.0, 'price_tax': 0.0, 'default_code': 'error', 'description_sale': '%s' %e, 'image_src': placeholder}
         return res
+
+    @api.multi
+    def _get_all_variant_data(self):
+        pricelist = self.env.ref('product.list0')
+        placeholder = '/web/static/src/img/placeholder.png'
+        for p in self:
+            try:
+                variant = p.get_default_variant()
+                p.dv_recommended_price = pricelist.price_get(variant.id, 1)[1] + sum([c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(pricelist.price_get(variant.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
+                p.dv_price = variant.price
+                p.dv_price_tax = p.dv_price + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(p.dv_price, 1, None, self.env.user.partner_id)['taxes'])
+                p.dv_default_code = variant.default_code or ''
+                p.dv_description_sale = variant.description_sale or ''
+                p.dv_name = variant.name or ''
+                p.dv_image_src = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(variant.image_ids[0].id, 'snippet_dermanord.img_product') if len(variant.image_ids) > 0 else placeholder
+            except Exception as e:
+                p.dv_recommended_price = 0.0
+                p.dv_price = 0.0
+                p.dv_price_tax = 0.0
+                p.dv_default_code = 'error'
+                p.dv_description_sale = '%s' %e
+                p.dv_image_src = placeholder
+    dv_recommended_price = fields.Float(compute='_get_all_variant_data')
+    dv_price = fields.Float(compute='_get_all_variant_data')
+    dv_price_tax = fields.Float(compute='_get_all_variant_data')
+    dv_default_code = fields.Char(compute='_get_all_variant_data')
+    dv_description_sale = fields.Text(compute='_get_all_variant_data')
+    dv_image_src = fields.Char(compute='_get_all_variant_data')
+    dv_name = fields.Char(compute='_get_all_variant_data')
 
     @api.multi
     def is_offer_product(self):
@@ -514,6 +544,7 @@ class WebsiteSale(website_sale):
         '/dn_shop/category/<model("product.public.category"):category>/page/<int:page>',
     ], type='http', auth="public", website=True)
     def dn_shop(self, page=0, category=None, search='', **post):
+        start_all = timer()
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
         attrib_list = request.httprequest.args.getlist('attrib')
         attrib_values = [map(int, v.split("-")) for v in attrib_list if v]
@@ -568,7 +599,15 @@ class WebsiteSale(website_sale):
                 #~ _logger.error('Access_group %s' % (request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids&p.sudo().access_group_ids))
                 #~ if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
                     #~ products -= p
+        #~ import profile
+        #~ _logger.error(timeit.timeit("request.env['product.template'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)"))
+        start = timer()
         products = request.env['product.template'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)
+        #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
+        start = timer()
+        #~ request.env['product.template'].get_all_variant_data(products)   2 sek
+        #~ _logger.error('timer get_all_datra %s' % (timer() - start))
+
         style_obj = pool['product.style']
         style_ids = style_obj.search(cr, uid, [], context=context)
         styles = style_obj.browse(cr, uid, style_ids, context=context)
@@ -583,6 +622,7 @@ class WebsiteSale(website_sale):
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id
+
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
         if post.get('post_form') and post.get('post_form') == 'ok':
@@ -607,6 +647,7 @@ class WebsiteSale(website_sale):
             'categories': categs,
             'attributes': attributes,
             'compute_currency': compute_currency,
+            'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
             'keep': keep,
             'url': url,
             'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
@@ -614,11 +655,15 @@ class WebsiteSale(website_sale):
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
             'shop_footer': True,
         }
+        _logger.error('to continue to qweb timer %s' % (timer() - start_all))
         #~ re = request.render("webshop_dermanord.products", values)
         #~ _logger.warn(re.render())
         #~ view_obj = request.env["ir.ui.view"]
         #~ res = request.env['ir.qweb'].render("webshop_dermanord.products", values, loader=view_obj.loader("webshop_dermanord.products"))
         #~ _logger.warn(re)
+        start = timer()
+        _logger.error('rendered finished %s' % (timer() - start))
+
         return request.website.render("webshop_dermanord.products", values)
 
     @http.route(['/dn_shop_json_grid'], type='json', auth='public', website=True)
@@ -663,8 +708,6 @@ class WebsiteSale(website_sale):
             if partner_pricelist.for_reseller:
                 is_reseller = True
 
-        all_data = request.env['product.template'].get_all_variant_data(products)
-
         for product in products:
             #~ image_src = ''
 
@@ -692,15 +735,15 @@ class WebsiteSale(website_sale):
                 'is_offer_product': product.is_offer_product(),
                 'style_options': style_options,
                 'grid_ribbon_style': 'dn_product_div %s' %product.get_default_variant_ribbon(),
-                'product_img_src': all_data[product.id]['image_src'],
-                'price': "%.2f" % all_data[product.id]['price'],
-                'price_tax': "%.2f" % all_data[product.id]['price_tax'],
-                'list_price_tax': "%.2f" % all_data[product.id]['recommended_price'],
+                'product_img_src': product.dv_image_src,
+                'price': "%.2f" %  product.dv_price,
+                'price_tax': "%.2f" % product.dv_price_tax,
+                'list_price_tax': "%.2f" % product.dv_recommended_price,
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
                 'is_reseller': 'yes' if is_reseller else 'no',
-                'default_code': all_data[product.id]['default_code'],
-                'description_sale': all_data[product.id]['description_sale'],
+                'default_code': product.dv_default_code,
+                'description_sale': product.dv_description_sale,
                 'product_variant_ids': True if product.product_variant_ids else False,
             })
 

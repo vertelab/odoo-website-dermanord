@@ -46,7 +46,9 @@
                             </strong>
                         </h4>
                         <h5 class="text-muted" style="height: 15px;"><t t-esc="default_code"/></h5>
+<!--
                         <h5 class="p_desc"><t t-esc="description_sale"/></h5>
+-->
                         <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price" t-if="product_variant_ids">
                             <b class="text-muted">
                                 <h4>

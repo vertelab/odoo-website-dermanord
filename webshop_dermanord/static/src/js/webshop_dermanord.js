@@ -564,7 +564,7 @@ function load_products_grid(page){
                     'rounding': data['products'][key]['rounding'],
                     'is_reseller': data['products'][key]['is_reseller'],
                     'default_code': data['products'][key]['default_code'],
-                    'description_sale': data['products'][key]['description_sale'],
+                    //~ 'description_sale': data['products'][key]['description_sale'],
                     'product_variant_ids': data['products'][key]['product_variant_ids']
                 });
                 products_content += content;
