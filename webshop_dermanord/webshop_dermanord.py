@@ -67,16 +67,17 @@ class product_template(models.Model):
     @api.multi
     def get_default_variant(self):
         self.ensure_one()
-        news = self.product_variant_ids.filtered(lambda v: request.env.ref('website_sale.image_promo') in v.website_style_ids_variant)
-        if len(news) > 0:
-            return news[0]
+        variants = self.product_variant_ids.filtered(lambda v: request.env.ref('website_sale.image_promo') in v.website_style_ids_variant)
+        if len(variants) > 0:
+            vs = variants.filtered(lambda v: v.check_access_group(self.env.user))
+            return vs[0] if len(vs) > 0 else None
         else:
             return super(product_template, self).get_default_variant()
 
     # get defualt variant ribbon. if there's not one, get the template's ribbon
     @api.multi
     def get_default_variant_ribbon(self):
-        if len(self.get_default_variant().website_style_ids_variant) > 0:
+        if len(self.get_default_variant()) > 0 and len(self.get_default_variant().website_style_ids_variant) > 0:
             return ' '.join([s.html_class for s in self.get_default_variant().website_style_ids_variant])
         else:
             return ' '.join([s.html_class for s in self.website_style_ids])
@@ -105,16 +106,17 @@ class product_template(models.Model):
         placeholder = '/web/static/src/img/placeholder.png'
         for p in products:
             variant = p.get_default_variant()
-            res[p.id]= {}
-            try:
-                res[p.id]['recommended_price'] = pricelist.price_get(variant.id, 1)[1] + sum([c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(pricelist.price_get(variant.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
-                res[p.id]['price'] = variant.price
-                res[p.id]['price_tax'] = res[p.id]['price'] + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(res[p.id]['price'], 1, None, self.env.user.partner_id)['taxes'])
-                res[p.id]['default_code'] = variant.default_code or ''
-                res[p.id]['description_sale'] = variant.description_sale or ''
-                res[p.id]['image_src'] = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(variant.image_ids[0].id, 'snippet_dermanord.img_product') if len(variant.image_ids) > 0 else placeholder
-            except Exception as e:
-                res[p.id] = {'recommended_price': 0.0, 'price': 0.0, 'price_tax': 0.0, 'default_code': 'error', 'description_sale': '%s' %e, 'image_src': placeholder}
+            if variant:
+                res[p.id]= {}
+                try:
+                    res[p.id]['recommended_price'] = pricelist.price_get(variant.id, 1)[1] + sum([c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(pricelist.price_get(variant.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
+                    res[p.id]['price'] = variant.price
+                    res[p.id]['price_tax'] = res[p.id]['price'] + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(res[p.id]['price'], 1, None, self.env.user.partner_id)['taxes'])
+                    res[p.id]['default_code'] = variant.default_code or ''
+                    res[p.id]['description_sale'] = variant.description_sale or ''
+                    res[p.id]['image_src'] = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(variant.image_ids[0].id, 'snippet_dermanord.img_product') if len(variant.image_ids) > 0 else placeholder
+                except Exception as e:
+                    res[p.id] = {'recommended_price': 0.0, 'price': 0.0, 'price_tax': 0.0, 'default_code': 'error', 'description_sale': '%s' %e, 'image_src': placeholder}
         return res
 
     @api.multi
@@ -124,13 +126,14 @@ class product_template(models.Model):
         for p in self:
             try:
                 variant = p.get_default_variant()
-                p.dv_recommended_price = pricelist.price_get(variant.id, 1)[1] + sum([c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(pricelist.price_get(variant.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
-                p.dv_price = variant.price
-                p.dv_price_tax = p.dv_price + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(p.dv_price, 1, None, self.env.user.partner_id)['taxes'])
-                p.dv_default_code = variant.default_code or ''
-                p.dv_description_sale = variant.description_sale or ''
-                p.dv_name = variant.name or ''
-                p.dv_image_src = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(variant.image_ids[0].id, 'snippet_dermanord.img_product') if len(variant.image_ids) > 0 else placeholder
+                if variant:
+                    p.dv_recommended_price = pricelist.price_get(variant.id, 1)[1] + sum([c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(pricelist.price_get(variant.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
+                    p.dv_price = variant.price
+                    p.dv_price_tax = p.dv_price + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(p.dv_price, 1, None, self.env.user.partner_id)['taxes'])
+                    p.dv_default_code = variant.default_code or ''
+                    p.dv_description_sale = variant.description_sale or ''
+                    p.dv_name = variant.name or ''
+                    p.dv_image_src = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(variant.image_ids[0].id, 'snippet_dermanord.img_product') if len(variant.image_ids) > 0 else placeholder
             except Exception as e:
                 p.dv_recommended_price = 0.0
                 p.dv_price = 0.0
@@ -371,9 +374,9 @@ class WebsiteSale(website_sale):
             currency_id = self.get_pricelist().currency_id.id
             for p in product.product_variant_ids:
                 price = currency_obj.compute(cr, uid, website_currency_id, currency_id, p.lst_price)
-                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price, 1 if p.sale_ok else 0, get_sale_start(p)])
+                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
         else:
-            attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price, 1 if p.sale_ok else 0, get_sale_start(p)] for p in product.sudo().product_variant_ids]
+            attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)] for p in product.sudo().product_variant_ids]
 
         return attribute_value_ids
 
@@ -728,24 +731,25 @@ class WebsiteSale(website_sale):
                 #~ elif len(product.image_ids) == 0:
                     #~ image_src = request.website.image_url(product, 'image', '300x300')
 
-            products_list.append({
-                'product_href': '/dn_shop/product/%s' %product.id,
-                'product_id': product.id,
-                'product_name': product.name,
-                'is_offer_product': product.is_offer_product(),
-                'style_options': style_options,
-                'grid_ribbon_style': 'dn_product_div %s' %product.get_default_variant_ribbon(),
-                'product_img_src': product.dv_image_src,
-                'price': "%.2f" %  product.dv_price,
-                'price_tax': "%.2f" % product.dv_price_tax,
-                'list_price_tax': "%.2f" % product.dv_recommended_price,
-                'currency': currency,
-                'rounding': request.website.pricelist_id.currency_id.rounding,
-                'is_reseller': 'yes' if is_reseller else 'no',
-                'default_code': product.dv_default_code,
-                'description_sale': product.dv_description_sale,
-                'product_variant_ids': True if product.product_variant_ids else False,
-            })
+            if len(product.get_default_variant()) > 0:
+                products_list.append({
+                    'product_href': '/dn_shop/product/%s' %product.id,
+                    'product_id': product.id,
+                    'product_name': product.name,
+                    'is_offer_product': product.is_offer_product(),
+                    'style_options': style_options,
+                    'grid_ribbon_style': 'dn_product_div %s' %product.get_default_variant_ribbon(),
+                    'product_img_src': product.dv_image_src,
+                    'price': "%.2f" %  product.dv_price,
+                    'price_tax': "%.2f" % product.dv_price_tax,
+                    'list_price_tax': "%.2f" % product.dv_recommended_price,
+                    'currency': currency,
+                    'rounding': request.website.pricelist_id.currency_id.rounding,
+                    'is_reseller': 'yes' if is_reseller else 'no',
+                    'default_code': product.dv_default_code,
+                    'description_sale': product.dv_description_sale,
+                    'product_variant_ids': True if product.product_variant_ids else False,
+                })
 
         values = {
             'products': products_list,
