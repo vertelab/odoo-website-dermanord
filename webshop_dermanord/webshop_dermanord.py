@@ -311,6 +311,12 @@ class WebsiteSale(website_sale):
 
     mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
 
+    def show_purchase_button(self, product):
+        sale_ok = False
+        if product.sale_ok and product.instock_percent >= 50.0 and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller:
+            sale_ok = True
+        return sale_ok
+
     def checkout_form_validate(self, data):
         error = dict()
         if not data.get("shipping_id") and data.get('shipping_id') != 0:
@@ -883,6 +889,7 @@ class WebsiteSale(website_sale):
             'category_list': category_list,
             'main_object': product,
             'product': product,
+            'show_purchase_button': self.show_purchase_button(product),
             'get_attribute_value_ids': self.get_attribute_value_ids,
             'shop_footer': True,
         }
@@ -1103,6 +1110,7 @@ class webshop_dermanord(http.Controller):
                         ingredients.append([i.id, i.name])
 
                 instock = ''
+                in_stock = True
                 if not product.is_mto_route:
                     if product.sale_ok:
                         if product.instock_percent > 100.0:
@@ -1111,6 +1119,7 @@ class webshop_dermanord(http.Controller):
                             instock = _('Few in stock')
                         elif product.instock_percent < 50.0:
                             instock = _('Shortage')
+                            in_stock = False
 
                 offer = False
                 if product in product.get_campaign_variants(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
@@ -1129,7 +1138,7 @@ class webshop_dermanord(http.Controller):
                 value['reseller_desc'] = (product.reseller_desc or '') if is_reseller else ''
                 value['offer'] = offer
                 value['ribbon'] = request.env.ref('website_sale.image_promo') in product.website_style_ids_variant if len(product.website_style_ids_variant) > 0 else (request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids)
-                value['sale_ok'] = True if (product.sale_ok and request.env.user != request.env.ref('base.public_user')) else False
+                value['sale_ok'] = True if (product.sale_ok and in_stock and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
         return value
 
     @http.route(['/get/product_variant_value'], type='json', auth="public", website=True)

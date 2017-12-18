@@ -134,6 +134,7 @@ $(document).ready(function(){
                 $ingredient_div.replaceWith('<div id="ingredients_div"></div></div>');
                 $ingredients_div_mobile.replaceWith('<div id="ingredients_div_mobile"></div></div>');
             }
+
             //update stock status
             if (data['instock'] != null) {
                 $stock_status.html(data['instock']);
@@ -517,6 +518,9 @@ $(document).ready(function(){
         //~ $(oe_website_sale).find("select[name='shipping_country_id']").change();
     });
 
+    if ($("#add_to_cart").is(":visible")) { $("div.css_quantity.input-group.oe_website_spinner").removeClass("hidden"); }
+    else { $("div.css_quantity.input-group.oe_website_spinner").addClass("hidden"); }
+
     $(window).scroll(function() {
         if ($(window).scrollTop() + $(window).height() == $(document).height()) {
             if ($("#wrap").hasClass("autoload_grid")) {
@@ -573,6 +577,7 @@ function load_products_grid(page){
             current_page ++;
         }
     });
+
 }
 
 function load_products_list(page){

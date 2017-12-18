@@ -570,7 +570,8 @@
         <h4 class="text-muted default_code" t-field="product_product.default_code" />
       </xpath>
       <xpath expr="//a[@id='add_to_cart']" position="attributes">
-        <attribute name="class">dn_btn dn_primary mt8 js_check_product a-submit text-center hidden</attribute>
+        <attribute name="class"></attribute>
+        <attribute name="t-att-class">'dn_btn dn_primary mt8 js_check_product a-submit text-center %s' %('hidden' if not show_purchase_button else '')</attribute>
         <attribute name="groups">base.group_user,base.group_portal</attribute>
       </xpath>
       <!--
