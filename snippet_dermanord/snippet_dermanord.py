@@ -29,7 +29,7 @@ _logger = logging.getLogger(__name__)
 
 class snippet(http.Controller):
 
-    @http.route(['/blog_banner_snippet/blog_banner_change'], type='json', auth="user", website=True)
+    @http.route(['/blog_banner_snippet/blog_banner_change'], type='json', auth="public", website=True)
     def blog_banner_change(self, blog_id=None, **kw):
         posts = request.env['blog.post'].search([('blog_id', '=', int(blog_id)), ('website_published', '=', True)], order='write_date')
         posts_list = {}
@@ -47,7 +47,7 @@ class snippet(http.Controller):
                 }
         return posts_list
 
-    @http.route(['/get_sale_promotions'], type='json', auth="user", website=True)
+    @http.route(['/get_sale_promotions'], type='json', auth="public", website=True)
     def get_sale_promotions(self, **kw):
         sps = request.env['sale.promotion'].sudo().search([('website_published', '=', True)], order='sequence')
         sp_list = []
@@ -64,7 +64,7 @@ class snippet(http.Controller):
                 )
         return sp_list
 
-    @http.route(['/category_snippet/get_p_categories'], type='json', auth="user", website=True)
+    @http.route(['/category_snippet/get_p_categories'], type='json', auth="public", website=True)
     def get_p_categories(self, **kw):
         categories = request.env['product.public.category'].search([('website_published', '=', True)], order='sequence')
         category_list = []
@@ -82,7 +82,7 @@ class snippet(http.Controller):
                 )
         return category_list
 
-    @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="user", website=True)
+    @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="public", website=True)
     def get_highlighted_products(self, campaign_date, **kw):
         date = fields.Date.today() if campaign_date == '' else campaign_date
         campaigns = request.env['crm.tracking.campaign'].sudo().search([('state', '=', 'open'), ('date_start', '<=', date), ('date_stop', '>=', date)])

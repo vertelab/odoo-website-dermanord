@@ -10,6 +10,7 @@
                 <link href="/snippet_dermanord/static/src/css/fade_slider.css" rel="stylesheet"/>
                 <link href="/snippet_dermanord/static/src/css/blurbg_slider.css" rel="stylesheet"/>
                 <link href="/snippet_dermanord/static/src/css/buttons.css" rel="stylesheet"/>
+                <script type="text/javascript" src="/snippet_dermanord/static/src/js/main.js" />
             </xpath>
         </template>
         <template id="dermanord_snippet_js" inherit_id="website_sale.assets_editor" name="Dermanord Snippet Custom JS">
