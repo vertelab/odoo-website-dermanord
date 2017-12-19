@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 8.0-20170901\n"
+"Project-Id-Version: Odoo Server 8.0-20170906\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-16 08:08+0000\n"
-"PO-Revision-Date: 2017-11-16 08:08+0000\n"
+"POT-Creation-Date: 2017-12-19 10:57+0000\n"
+"PO-Revision-Date: 2017-12-19 10:57+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -33,7 +33,7 @@ msgstr "&times;"
 #: view:website:website_sale.cart
 #: view:website:website_sale.product_price
 #, python-format
-msgid "(ditt ex moms)"
+msgid "(your ex tax)"
 msgstr "(ditt ex moms)"
 
 #. module: webshop_dermanord
@@ -43,7 +43,7 @@ msgstr "(ditt ex moms)"
 #: view:website:website_sale.cart
 #: view:website:website_sale.product_price
 #, python-format
-msgid "(rek ink moms)"
+msgid "(rec inc tax)"
 msgstr "(rek ink moms)"
 
 #. module: webshop_dermanord
@@ -427,3 +427,13 @@ msgstr "Webbplats"
 #: view:product.public.category:webshop_dermanord.product_public_category_form_view
 msgid "handle"
 msgstr "handle"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "Directions"
+msgstr "Användning"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
+msgid "For Resellers"
+msgstr "För återförsäljare"

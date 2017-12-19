@@ -173,7 +173,7 @@
                                               "widget": "monetary",
                                               "from_currency": "product.company_id.currency_id",
                                               "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-                                           }'/> <span style="display: inline;">(rek ink moms)</span>
+                                           }'/> <span style="display: inline;">(rec inc tax)</span>
                                         </div>
                                         <div>
                                            <b class="oe_price" style="white-space: nowrap;"
@@ -182,7 +182,7 @@
                                                "widget": "monetary",
                                                "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                                            }'/>
-                                           <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller"> <span style="display: inline;">(ditt ex moms)</span></t>
+                                           <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller"> <span style="display: inline;">(your ex tax)</span></t>
                                         </div>
                                     </t>
 
@@ -251,7 +251,7 @@
                                               "from_currency": "product.company_id.currency_id",
                                               "display_currency": "pricelist.currency_id"
                                            }' />
-                      <span style="display: inline;">(rek inc tax)</span>
+                      <span style="display: inline;">(rec inc tax)</span>
                     </div>
                     <div>
                       <b class="oe_price" style="white-space: nowrap;" t-field="product.dv_price" t-field-options='{
@@ -416,7 +416,7 @@
                               "from_currency": "line.product_id.company_id.currency_id",
                               "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                            }' />
-              <span style="display: inline;">(rek ink moms)</span>
+              <span style="display: inline;">(rec inc tax)</span>
             </div>
             <div>
               <span style="white-space: nowrap;" t-field="line.discounted_price" t-field-options='{
@@ -424,7 +424,7 @@
                                "from_currency": "website_sale_order.pricelist_id.currency_id",
                                "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                            }' />
-              <span style="display: inline;">(ditt ex moms)</span>
+              <span style="display: inline;">(your ex tax)</span>
             </div>
           </t>
         </td>
@@ -479,14 +479,14 @@
                                   "from_currency": "product.company_id.currency_id",
                                   "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                                }' />
-                <span style="display: inline;">(rek ink moms)</span>
+                <span style="display: inline;">(rec inc tax)</span>
               </div>
               <div>
                 <span t-field="product.price" style="white-space: nowrap;" t-field-options='{
                                    "widget": "monetary",
                                    "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                                 }' />
-                <span style="display: inline;">(ditt ex moms)</span>
+                <span style="display: inline;">(your ex tax)</span>
               </div>
             </t>
           </td>
@@ -590,7 +590,9 @@
       <xpath expr="//p[@t-field='product.description_sale']" position="replace">
         <h2 t-if='product.description_sale' class="hidden">Description</h2>
         <p t-field="product.description_sale" class="text-muted hidden" />
+<!--
         <h2 t-att-class="'public_desc_title%s' %(' hidden' if not product_product.public_desc else '')">Public Description</h2>
+-->
         <p t-att-class="'text-muted public_desc%s' %(' hidden' if not product_product.public_desc else '')">
           <span t-field="product_product.public_desc" />
         </p>
@@ -600,12 +602,12 @@
         </h4>
         <div class="container facet_container hidden-xs">
           <div class="col-md-12 no_padding_div">
-            <h2 t-att-class="'use_desc_title%s' %(' hidden' if not product_product.use_desc else '')">Usage Description</h2>
+            <h2 t-att-class="'use_desc_title dn_uppercase%s' %(' hidden' if not product_product.use_desc else '')">Directions</h2>
             <p t-att-class="'text-muted use_desc%s' %(' hidden' if not product_product.use_desc else '')">
               <span t-field="product_product.use_desc" />
             </p>
             <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
-              <h2 t-att-class="'reseller_desc_title%s' %(' hidden' if not product_product.reseller_desc else '')">Reseller Description</h2>
+              <h2 t-att-class="'reseller_desc_title dn_uppercase%s' %(' hidden' if not product_product.reseller_desc else '')">For Resellers</h2>
               <p t-att-class="'text-muted reseller_desc%s' %(' hidden' if not product_product.reseller_desc else '')">
                 <t t-if="product_product.reseller_desc">
                   <span t-field="product_product.reseller_desc" />
@@ -740,7 +742,7 @@
                               "from_currency": "product.company_id.currency_id",
                               "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                            }' />
-              <span style="display: inline;">(rek ink moms)</span>
+              <span style="display: inline;">(rec inc tax)</span>
             </div>
             <b class="oe_price" style="white-space: nowrap;" t-field="product.price" t-field-options='{
                                "widget": "monetary",
@@ -748,7 +750,7 @@
                            }' />
             <span itemprop="price" style="display:none;" t-esc="product.price" />
             <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding" />
-            <span style="display: inline;">(ditt ex moms)</span>
+            <span style="display: inline;">(your ex tax)</span>
           </t>
           <t t-if="is_reseller != 'yes'">
 <!--
