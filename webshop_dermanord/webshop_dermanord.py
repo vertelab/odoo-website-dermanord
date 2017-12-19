@@ -901,7 +901,7 @@ class WebsiteSale(website_sale):
             'category_list': category_list,
             'main_object': product,
             'product': product,
-            'show_purchase_button': self.show_purchase_button(product),
+            'show_purchase_button': self.show_purchase_button(product.get_default_variant()),
             'get_attribute_value_ids': self.get_attribute_value_ids,
             'shop_footer': True,
         }
@@ -1040,6 +1040,7 @@ class WebsiteSale(website_sale):
             'main_object': product,
             'product': product,
             'product_product': variant,
+            'show_purchase_button': self.show_purchase_button(variant),
             'get_attribute_value_ids': self.get_attribute_value_ids,
             'shop_footer': True,
         }
