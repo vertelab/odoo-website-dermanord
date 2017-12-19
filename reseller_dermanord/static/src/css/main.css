@@ -92,6 +92,7 @@
 }
 
 #reseller_description_div {
+    padding-right: 70px;
     position: relative;
     overflow: hidden;
 }
@@ -100,10 +101,10 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    text-align: center;
+    text-align: left;
     margin: 0;
     padding: 60px 0px 0px 0px;
-    background-image: linear-gradient(to bottom, transparent, white);
+    background-image: linear-gradient(rgba(255, 255, 255, 0), white 72.27%);
 }
 
 #reseller_bottom_div {
