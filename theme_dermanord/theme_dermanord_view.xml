@@ -42,7 +42,7 @@
     <template id="company_description" name="Dermanord Company Description" inherit_id="website.company_description">
         <xpath expr="//address" position="replace"></xpath>
         <xpath expr="//a" position="after">
-            <address itemscope="itemscope" itemtype="http://schema.org/Organization">
+            <address class="mt16" itemscope="itemscope" itemtype="http://schema.org/Organization">
                 <!-- TODO widget contact must add itemprop attributes -->
                 <div t-field="res_company.partner_id" t-field-options='{
                     "widget": "contact",
