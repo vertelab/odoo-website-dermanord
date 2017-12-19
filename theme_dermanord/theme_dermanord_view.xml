@@ -34,6 +34,9 @@
     <template id="contactus" name="Dermanord Contact" inherit_id="website.contactus">
         <xpath expr="//div[@groups='base.group_website_publisher']" position="replace">
         </xpath>
+        <xpath expr="//div[@class='col-md-4 mb32']" position="attributes">
+            <attribute name="class">col-md-4 mt8 mb32 dn_contactus</attribute>
+        </xpath>
     </template>
 
     <template id="company_description" name="Dermanord Company Description" inherit_id="website.company_description">
@@ -46,6 +49,9 @@
                     "no_marker": 1,
                     "fields": ["name", "address", "phone", "mobile", "fax", "email"]}'/>
             </address>
+        </xpath>
+        <xpath expr="//img" position="attributes">
+            <attribute name="class">img-responsive</attribute>
         </xpath>
 <!--
         <xpath expr="//img" position="replace">

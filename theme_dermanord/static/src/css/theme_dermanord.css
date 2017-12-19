@@ -592,6 +592,16 @@ footer input, footer .input-group-addon {
     color: #000;
 }
 
+.dn_contactus {
+    padding-top: 40px;
+}
+
+address span {
+    font-family: futura-pt-light, sans-serif;
+    font-size: 18px;
+    line-height: 1.2;
+}
+
 @media (max-width: 767px) {
     #top_menu {
         background-color: #000;
