@@ -1,5 +1,8 @@
 $(document).ready(function() {
-
+    if ($("#reseller_description_div").height() > 300) {
+        $("#reseller_description_div").height(300);
+        $("#reseller_description_div").find(".read-more").removeClass("hidden");
+    }
 });
 
 function reseller_restore_filter() {
@@ -17,7 +20,7 @@ var $el, $ps, $up, totalHeight;
 
 $("#reseller_description_div .button").click(function() {
 
-  totalHeight = 50
+  totalHeight = 0
 
   $el = $(this);
   $p  = $el.parent();
@@ -26,8 +29,10 @@ $("#reseller_description_div .button").click(function() {
 
   // measure how tall inside should be by adding together heights of all inside paragraphs (except read-more paragraph)
   $ps.each(function() {
-    totalHeight += $(this).outerHeight();
+    totalHeight += $(this).outerHeight() + 10; // 10px from each p-tag
   });
+
+  console.log(totalHeight);
 
   $up
     .css({

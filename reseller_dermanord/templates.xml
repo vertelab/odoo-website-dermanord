@@ -115,14 +115,14 @@
                     </div>
                     <div class="container">
                         <div class="row">
-                            <div class="col-md-8 col-sm-8 col-xs-12 mb16">
-                                <div id="reseller_description_div" class="mt32">
+                            <div class="col-md-8 col-sm-8 col-xs-12 mt32 mb16">
+                                <div id="reseller_description_div">
                                     <t t-if="reseller.website_short_description">
                                         <t t-foreach="reseller.website_short_description.split('\n')" t-as="r">
                                             <p><t t-esc="r"/></p>
                                         </t>
                                     </t>
-                                    <p class="read-more"><a href="#" class="button">Read More</a></p>
+                                    <p class="read-more hidden"><a href="#" class="button">Read More</a></p>
                                 </div>
                                 <t t-if="len(reseller.child_competence_ids) != 0">
                                     <h3>Our competences</h3>
