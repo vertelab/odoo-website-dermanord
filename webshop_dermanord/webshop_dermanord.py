@@ -49,6 +49,18 @@ class blog_post(models.Model):
     product_tmpl_ids = fields.Many2many(comodel_name='product.template', string='Product Templates')
 
 
+class crm_campaign_object(models.Model):
+    _inherit = 'crm.campaign.object'
+
+    @api.one
+    def _product_price(self):
+        if self.object_id._name == 'product.template':
+            self.product_price = self.env.ref('product.list0').price_get(self.object_id.get_default_variant().id, 1)[1]
+        if self.object_id._name == 'product.product':
+            self.product_price = self.env.ref('product.list0').price_get(self.object_id.id, 1)[1]
+    product_price = fields.Float(string='Price for public', compute='_product_price')
+
+
 class product_template(models.Model):
     _inherit = 'product.template'
 
