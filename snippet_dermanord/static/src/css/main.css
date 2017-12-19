@@ -128,12 +128,14 @@ a {
 }
 
 .ph_block h4 {
-    height: 2em;
+    height: 3em;
     padding: 0px;
     line-height: 1.5em;
     overflow: hidden;
     position: relative;
+/*
     white-space: nowrap;
+*/
     color: #000;
     margin: 0px;
 }
@@ -153,7 +155,7 @@ a {
 }
 
 .ph_block .ph_desc {
-    height: 4.4em;
+    height: 3.3em;
     margin-bottom: 30px;
     line-height: 1.1em;
     overflow: hidden;
