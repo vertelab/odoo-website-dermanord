@@ -83,3 +83,78 @@ msgstr "Webbplats:"
 #: model:res.partner.category,name:reseller_dermanord.reseller_tag
 msgid "Återförsäljare"
 msgstr "Återförsäljare"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Mon:"
+msgstr "Mån:"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Monday:"
+msgstr "Måndag:"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Tue:"
+msgstr "Tis:"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Tuesday:"
+msgstr "Tisdag:"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Wed:"
+msgstr "Ons:"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Wednesday:"
+msgstr "Onsdag:"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Thu:"
+msgstr "Tor:"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Thursday:"
+msgstr "Torsdag:"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Fri:"
+msgstr "Fre:"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Friday:"
+msgstr "Fredag:"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Sat:"
+msgstr "Lör:"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Saturday:"
+msgstr "Lördag:"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Sun:"
+msgstr "Sön:"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Sunday:"
+msgstr "Söndag:"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Weekday"
+msgstr "Veckodag"
