@@ -18,7 +18,7 @@
                                 <img class="img img-responsive di_mobile_img hidden-lg hidden-md hidden-sm" src="/website/static/src/img/china_thumb.jpg"/>
                                 <div class="container di_desktop_content">
                                     <div class="row content">
-                                        <div class="col-md-12 col-sm-12 text-center">
+                                        <div class="col-md-offset-4 col-sm-offset-4 col-md-8 col-sm-8 text-center">
                                             <h3 class="mb32">
                                                 <i>Your Banner Title</i>
                                             </h3>
