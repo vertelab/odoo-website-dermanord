@@ -281,17 +281,18 @@ $(document).ready(function(){
                         $input.trigger('change');
                         return;
                     }
+                    var cart_quantity = data.cart_quantity === undefined ? 0 : data.cart_quantity;
                     if (!data.quantity) { // update table and all prices on page
                         //~ location.reload(true);
                         $("#cart_products").load(location.href + " #cart_products");
                         $("#cart_total").load(location.href + " #cart_total");
                         $(".my_cart_total").load(location.href + " .my_cart_total");
                         $q.parent().parent().removeClass("hidden", !data.quantity);
-                        $q.html("(" + data.cart_quantity + ")").hide().fadeIn(600);
+                        $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
                         return;
                     }
                     $q.parent().parent().removeClass("hidden", !data.quantity);
-                    $q.html("(" + data.cart_quantity + ")").hide().fadeIn(600);
+                    $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
                     $input.val(data.quantity);
                     $('.js_quantity[data-line-id='+line_id+']').val(data.quantity).html(data.quantity);
                     $("#cart_total").replaceWith(data['website_sale.total']);
@@ -322,7 +323,65 @@ $(document).ready(function(){
             $input.val(0);
             $('input[name="'+$input.attr("name")+'"]').val(0);
             $input.change();
-            return false
+            //force to update change
+            if ($input.data('update_change')) {
+                return;
+            }
+            var value = parseInt($input.val(), 10);
+            var $dom = $input.closest('tr');
+            var default_price = parseFloat($dom.find('.text-danger > span.oe_currency_value').text());
+            var $dom_optional = $dom.nextUntil(':not(.optional_product.info)');
+            var line_id = parseInt($input.data('line-id'),10);
+            var product_id = parseInt($input.data('product-id'),10);
+            var product_ids = [product_id];
+            $dom_optional.each(function(){
+                product_ids.push($input.find('span[data-product-id]').data('product-id'));
+            });
+            if (isNaN(value)) value = 0;
+            $input.data('update_change', true);
+            openerp.jsonRpc("/shop/get_unit_price", 'call', {
+                'product_ids': product_ids,
+                'add_qty': value,
+                'use_order_pricelist': true,
+                'line_id': line_id})
+            .then(function (res) {
+                $dom.find('span.oe_currency_value').last().text(price_to_str(res[product_id]));
+                $dom.find('.text-danger').toggle(res[product_id]<default_price && (default_price-res[product_id] > default_price/100));
+                $dom_optional.each(function(){
+                    var id = $input.find('span[data-product-id]').data('product-id');
+                    var price = parseFloat($input.find(".text-danger > span.oe_currency_value").text());
+                    $input.find("span.oe_currency_value").last().text(price_to_str(res[id]));
+                    $input.find('.text-danger').toggle(res[id]<price && (price-res[id]>price/100));
+                });
+                openerp.jsonRpc("/shop/cart/update_json", 'call', {
+                'line_id': line_id,
+                'product_id': parseInt($input.data('product-id'),10),
+                'set_qty': value})
+                .then(function (data) {
+                    $input.data('update_change', false);
+                    var $q = $(".my_cart_quantity");
+                    if (value !== parseInt($input.val(), 10)) {
+                        $input.trigger('change');
+                        return;
+                    }
+                    var cart_quantity = data.cart_quantity === undefined ? 0 : data.cart_quantity;
+                    if (!data.quantity) {
+                        $("#cart_products").load(location.href + " #cart_products");
+                        $("#cart_total").load(location.href + " #cart_total");
+                        $(".my_cart_total").load(location.href + " .my_cart_total");
+                        $q.parent().parent().removeClass("hidden", !data.quantity);
+                        $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
+                        return;
+                    }
+                    $q.parent().parent().removeClass("hidden", !data.quantity);
+                    $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
+                    $input.val(data.quantity);
+                    $('.js_quantity[data-line-id='+line_id+']').val(data.quantity).html(data.quantity);
+                    $("#cart_total").replaceWith(data['website_sale.total']);
+                    $(".my_cart_total").load(location.href + " .my_cart_total");
+                });
+            });
+            return false;
         });
 
         $('.oe_website_sale .a-submit, #comment .a-submit').off('click').on('click', function () {
