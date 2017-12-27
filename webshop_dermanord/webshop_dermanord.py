@@ -55,9 +55,10 @@ class crm_campaign_object(models.Model):
     @api.one
     def _product_price(self):
         if self.object_id._name == 'product.template':
-            self.product_price = self.env.ref('product.list0').price_get(self.object_id.get_default_variant().id, 1)[1]
+            variant = self.object_id.get_default_variant()
+            self.product_price = self.env.ref('product.list0').price_get(variant.id, 1)[1] + sum([c.get('amount', 0.0) for c in variant.sudo().taxes_id.compute_all(self.env.ref('product.list0').price_get(variant.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
         if self.object_id._name == 'product.product':
-            self.product_price = self.env.ref('product.list0').price_get(self.object_id.id, 1)[1]
+            self.product_price = self.env.ref('product.list0').price_get(self.object_id.id, 1)[1] + sum([c.get('amount', 0.0) for c in self.object_id.sudo().taxes_id.compute_all(self.env.ref('product.list0').price_get(self.object_id.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
     product_price = fields.Float(string='Price for public', compute='_product_price')
 
 
