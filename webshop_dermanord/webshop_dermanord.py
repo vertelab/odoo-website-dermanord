@@ -325,7 +325,7 @@ class WebsiteSale(website_sale):
 
     def show_purchase_button(self, product):
         sale_ok = False
-        if product.sale_ok and product.instock_percent >= 50.0 and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller:
+        if product.sudo().sale_ok and product.sudo().instock_percent >= 50.0 and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller:
             sale_ok = True
         return sale_ok
 
@@ -904,6 +904,7 @@ class WebsiteSale(website_sale):
             'product': product,
             'show_purchase_button': self.show_purchase_button(product.get_default_variant()),
             'get_attribute_value_ids': self.get_attribute_value_ids,
+            'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
             'shop_footer': True,
         }
         return request.website.render("website_sale.product", values)
@@ -998,7 +999,7 @@ class WebsiteSale(website_sale):
         category_obj = pool['product.public.category']
         template_obj = pool['product.template']
 
-        context.update(active_id=variant.product_tmpl_id.id)
+        context.update(active_id=variant.sudo().product_tmpl_id.id)
 
         if category:
             category = category_obj.browse(cr, uid, int(category), context=context)
@@ -1022,7 +1023,7 @@ class WebsiteSale(website_sale):
 
         if not context.get('pricelist'):
             context['pricelist'] = int(self.get_pricelist())
-            product = template_obj.browse(cr, uid, variant.product_tmpl_id.id, context=context)
+            product = template_obj.browse(cr, uid, variant.sudo().product_tmpl_id.id, context=context)
 
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
         request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
@@ -1043,6 +1044,7 @@ class WebsiteSale(website_sale):
             'product_product': variant,
             'show_purchase_button': self.show_purchase_button(variant),
             'get_attribute_value_ids': self.get_attribute_value_ids,
+            'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
             'shop_footer': True,
         }
         return request.website.render("website_sale.product", values)

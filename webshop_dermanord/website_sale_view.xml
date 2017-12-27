@@ -239,7 +239,7 @@
                                         }' />
                     &amp;nbsp;
 -->
-                    <span t-field="product.dv_price" style="white-space: nowrap;" t-field-options='{
+                    <span t-field="product.dv_recommended_price" style="white-space: nowrap;" t-field-options='{
                                            "widget": "monetary",
                                            "display_currency": "pricelist.currency_id"
                                        }' />
@@ -735,7 +735,8 @@
     <template id="product_price" inherit_id="website_sale.product_price">
       <xpath expr="//h4" position="replace">
         <p class="oe_price_h4 css_editable_mode_hidden decimal_precision" t-att-data-precision="user_id.partner_id.property_product_pricelist.currency_id.rounding">
-          <t t-if="is_reseller == 'yes'">
+          <t t-if="is_reseller">
+<!--
             <div>
               <span class="oe_recommended_price" t-field="product.list_price_tax" t-field-options='{
                               "widget": "monetary",
@@ -744,7 +745,8 @@
                            }' />
               <span style="display: inline;">(rec inc tax)</span>
             </div>
-            <b class="oe_price" style="white-space: nowrap;" t-field="product.price" t-field-options='{
+-->
+            <b class="oe_price" style="white-space: nowrap;" t-field="product.dv_price" t-field-options='{
                                "widget": "monetary",
                                "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                            }' />
@@ -752,7 +754,7 @@
             <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding" />
             <span style="display: inline;">(your ex tax)</span>
           </t>
-          <t t-if="is_reseller != 'yes'">
+          <t t-if="not is_reseller">
 <!--
             <span class="text-danger oe_default_price" style="text-decoration: line-through; white-space: nowrap;" t-field="product.lst_price" t-field-options='{
                           "widget": "monetary",
@@ -760,7 +762,7 @@
                           "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                        }' />
 -->
-            <b class="oe_price" style="white-space: nowrap;" t-field="product.price_tax" t-field-options='{
+            <b class="oe_recommended_price" style="white-space: nowrap;" t-field="product.dv_recommended_price" t-field-options='{
                            "widget": "monetary",
                            "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                        }' />
