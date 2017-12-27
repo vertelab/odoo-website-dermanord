@@ -232,27 +232,27 @@
                                 <div class="container hidden-print mt16 mb16">
                                     <div class="row">
                                         <div class="dn-social-button" t-if="website.social_facebook">
-                                            <a t-att-href="website.social_facebook">
+                                            <a t-att-href="website.social_facebook" target="_blank">
                                                 <i class="fa fa-facebook fa-2x" />
                                             </a>
                                         </div>
                                         <div class="dn-social-button" t-if="website.social_instagram">
-                                            <a t-att-href="website.social_instagram">
+                                            <a t-att-href="website.social_instagram" target="_blank">
                                                 <i class="fa fa-instagram fa-2x" />
                                             </a>
                                         </div>
                                         <div class="dn-social-button" t-if="website.social_twitter">
-                                            <a t-att-href="website.social_twitter">
+                                            <a t-att-href="website.social_twitter" target="_blank">
                                                 <i class="fa fa-twitter fa-2x" />
                                             </a>
                                         </div>
                                         <div class="dn-social-button" t-if="website.social_youtube">
-                                            <a t-att-href="website.social_youtube" rel="publisher">
+                                            <a t-att-href="website.social_youtube" target="_blank" rel="publisher">
                                                 <i class="fa fa-youtube fa-2x" />
                                             </a>
                                         </div>
                                         <div class="dn-social-button" t-if="website.social_snapchat">
-                                            <a t-att-href="website.social_snapchat">
+                                            <a t-att-href="website.social_snapchat" target="_blank">
                                                 <i class="fa fa-snapchat-ghost fa-2x" />
                                             </a>
                                         </div>

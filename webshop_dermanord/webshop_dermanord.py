@@ -83,14 +83,14 @@ class product_template(models.Model):
         variants = self.product_variant_ids.filtered(lambda v: request.env.ref('website_sale.image_promo') in v.website_style_ids_variant)
         if len(variants) > 0:
             vs = variants.filtered(lambda v: v.check_access_group(self.env.user))
-            return vs[0] if len(vs) > 0 else None
+            return vs[0] if len(vs) > 0 else super(product_template, self).get_default_variant()
         else:
             return super(product_template, self).get_default_variant()
 
     # get defualt variant ribbon. if there's not one, get the template's ribbon
     @api.multi
     def get_default_variant_ribbon(self):
-        if len(self.get_default_variant()) > 0 and len(self.get_default_variant().website_style_ids_variant) > 0:
+        if self.get_default_variant() and len(self.get_default_variant().website_style_ids_variant) > 0:
             return ' '.join([s.html_class for s in self.get_default_variant().website_style_ids_variant])
         else:
             return ' '.join([s.html_class for s in self.website_style_ids])
@@ -751,7 +751,7 @@ class WebsiteSale(website_sale):
                 #~ elif len(product.image_ids) == 0:
                     #~ image_src = request.website.image_url(product, 'image', '300x300')
 
-            if len(product.get_default_variant()) > 0:
+            if product.get_default_variant():
                 products_list.append({
                     'product_href': '/dn_shop/product/%s' %product.id,
                     'product_id': product.id,
