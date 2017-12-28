@@ -93,7 +93,7 @@
             <ul class="nav nav-stacked">
                 <li class="active">
                     <a data-toggle="tab" href="#current">
-                        <h5>Current
+                        <h5>News &amp; Offers
                             <t t-set="current_count" t-value="0"/>
                             <t t-if="'current_news' in request.session.get('form_values').keys() or 'current_offer' in request.session.get('form_values').keys() or 'current_offer_reseller' in request.session.get('form_values').keys()">
                                 <t t-if="request.session.get('form_values').get('current_news') == 'current_news'">
@@ -319,6 +319,7 @@
                                 <input type="radio" name="order" value="list_price desc"/> Price Descending
                             </t>
                         </label></div></li>
+<!--
                         <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                             <li><div class="radio"><label>
                                 <t t-if="request.session.get('form_values')">
@@ -337,6 +338,7 @@
                                 </t>
                             </label></div></li>
                         </t>
+-->
                     </ul>
                 </div>
                 <t t-if="request.session.get('form_values')">
@@ -430,7 +432,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                Current <a data-toggle="collapse" href="#desktop_current" class="pull-right"><i class="desktop_angle fa fa-angle-down"/></a>
+                                News &amp; Offers <a data-toggle="collapse" href="#desktop_current" class="pull-right"><i class="desktop_angle fa fa-angle-down"/></a>
                                 <t t-if="request.session.get('form_values')">
                                     <t t-set="current_count" t-value="0"/>
                                     <t t-if="'current_news' in request.session.get('form_values').keys() or 'current_offer' in request.session.get('form_values').keys() or 'current_offer_reseller' in request.session.get('form_values').keys()">
@@ -629,10 +631,12 @@
                         <option value="name desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'name desc' else {}">Name Descending</option>
                         <option value="list_price asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'list_price asc' else {}">Price Ascending</option>
                         <option value="list_price desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'list_price desc' else {}">Price Descending</option>
+<!--
                         <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                             <option value="default_code asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'default_code asc' else {}">Article No. Ascending</option>
                             <option value="default_code desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'default_code desc' else {}">Article No. Descending</option>
                         </t>
+-->
                     </t>
                     <t t-if="not request.session.get('form_values')">
                         <option value="sold_qty desc" select="1">Most Sold</option>
@@ -640,8 +644,10 @@
                         <option value="name desc">Name Descending</option>
                         <option value="list_price asc">Price Ascending</option>
                         <option value="list_price desc">Price Descending</option>
+<!--
                         <option value="default_code asc">Article No. Ascending</option>
                         <option value="default_code desc">Article No. Descending</option>
+-->
                     </t>
                 </select>
                 <i class="desktop_angle fa fa-angle-down"/>

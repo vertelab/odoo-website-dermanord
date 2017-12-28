@@ -103,8 +103,8 @@ msgstr "Fortsätt att handla"
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.desktop_product_filter
 #: view:website:webshop_dermanord.dn_filter_navigator
-msgid "Current"
-msgstr "Aktuellt"
+msgid "News &amp; Offers"
+msgstr "Nyheter &amp; Erbjudanden"
 
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.products_item
