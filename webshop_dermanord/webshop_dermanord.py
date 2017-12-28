@@ -648,7 +648,6 @@ class WebsiteSale(website_sale):
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id
-
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
         if post.get('post_form') and post.get('post_form') == 'ok':
@@ -774,21 +773,9 @@ class WebsiteSale(website_sale):
         domain = request.session.get('current_domain')
         order = request.session.get('current_order')
 
-        product_count = product_obj.search_count(cr, uid, domain, context=context)
-        page_count = int(math.ceil(float(product_count) / float(PPG)))
-        pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=None)
-        #~ product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=order, context=context)
-        #~ products = product_obj.browse(cr, uid, product_ids, context=context)
+        pager = request.website.pager(url=url, total=request.session.get('product_count'), page=page, step=PPG, scope=7, url_args=None)
         # relist which product templates the current user is allowed to see
         products = request.env['product.product'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=order)
-        #~ for p in products:
-            #~ if len(p.sudo().access_group_ids) > 0 :
-                #~ if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
-                    #~ products -= p
-
-        from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
-        to_currency = pricelist.currency_id
-        compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
         products_list = []
         for product in products:
@@ -830,7 +817,7 @@ class WebsiteSale(website_sale):
         values = {
             'products': products_list,
             'url': url,
-            'page_count': page_count,
+            'page_count': int(math.ceil(float(request.session.get('product_count')) / float(PPG))),
         }
 
         return values
@@ -937,14 +924,10 @@ class WebsiteSale(website_sale):
             default_order = post.get('order')
             request.session.get('form_values')['order'] = default_order
             request.session['current_order'] = default_order
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)
-        #~ product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
-        #~ products = product_obj.browse(cr, uid, product_ids, context=context)
-        # relist which product templates the current user is allowed to see
-        #~ for p in products:
-            #~ if len(p.sudo().access_group_ids) > 0 :
-                #~ if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
-                    #~ products -= p
+        products_all = request.env['product.product'].with_context(pricelist=pricelist.id).search_access_group(domain, order=default_order)
+        pager = request.website.pager(url=url, total=len(products_all), page=page, step=PPG, scope=7, url_args=post)
+        request.session['product_count'] = len(products_all)
+        products = products_all[pager['offset']:pager['offset']+PPG]
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id
