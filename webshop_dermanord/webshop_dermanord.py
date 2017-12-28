@@ -127,7 +127,7 @@ class product_template(models.Model):
                     res[p.id]['price_tax'] = res[p.id]['price'] + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(res[p.id]['price'], 1, None, self.env.user.partner_id)['taxes'])
                     res[p.id]['default_code'] = variant.default_code or ''
                     res[p.id]['description_sale'] = variant.description_sale or ''
-                    res[p.id]['image_src'] = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(variant.image_ids[0].id, 'snippet_dermanord.img_product') if len(variant.image_ids) > 0 else placeholder
+                    res[p.id]['image_src'] = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant.image_ids[0].image_attachment_id.id, 'snippet_dermanord.img_product') if (variant.image_ids and variant.image_ids[0].image_attachment_id) else placeholder
                 except Exception as e:
                     res[p.id] = {'recommended_price': 0.0, 'price': 0.0, 'price_tax': 0.0, 'default_code': 'error', 'description_sale': '%s' %e, 'image_src': placeholder}
         return res
@@ -146,7 +146,7 @@ class product_template(models.Model):
                     p.dv_default_code = variant.default_code or ''
                     p.dv_description_sale = variant.description_sale or ''
                     p.dv_name = variant.name or ''
-                    p.dv_image_src = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(variant.image_ids[0].id, 'snippet_dermanord.img_product') if len(variant.image_ids) > 0 else placeholder
+                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant.image_ids[0].image_attachment_id.id, 'snippet_dermanord.img_product') if (variant.image_ids and variant.image_ids[0].image_attachment_id) else placeholder
             except Exception as e:
                 p.dv_recommended_price = 0.0
                 p.dv_price = 0.0
@@ -579,7 +579,7 @@ class WebsiteSale(website_sale):
             if request.session.get('form_values'):
                 domain += self.get_domain_append('product.template', request.session.get('form_values'))
         request.session['current_domain'] = domain
-
+        domain_finished = timer()
         if category:
             if not request.session.get('form_values'):
                 request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
@@ -599,8 +599,8 @@ class WebsiteSale(website_sale):
             pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
 
         url = "/dn_shop"
-        product_obj = pool.get('product.template')
-        product_count = product_obj.search_count(cr, uid, domain, context=context)
+        #~ product_obj = pool.get('product.template')
+        #~ product_count = product_obj.search_count(cr, uid, domain, context=context)
         if search:
             post["search"] = search
         #~ if category:
@@ -608,7 +608,7 @@ class WebsiteSale(website_sale):
             #~ url = "/shop/category/%s" % slug(category)
         if attrib_list:
             post['attrib'] = attrib_list
-        pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
+
         default_order = 'sold_qty desc'
         if post.get('order'):
             default_order = post.get('order')
@@ -624,10 +624,13 @@ class WebsiteSale(website_sale):
                     #~ products -= p
         #~ import profile
         #~ _logger.error(timeit.timeit("request.env['product.template'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)"))
-        start = timer()
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)
+        search_start = timer()
+        products_all = request.env['product.template'].with_context(pricelist=pricelist.id).search_access_group(domain, order=default_order)
+        pager = request.website.pager(url=url, total=len(products_all), page=page, step=PPG, scope=7, url_args=post)
+        request.session['product_count'] = len(products_all)
+        products = products_all[pager['offset']:pager['offset']+PPG]
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
-        start = timer()
+        search_end = timer()
         #~ request.env['product.template'].get_all_variant_data(products)   2 sek
         #~ _logger.error('timer get_all_datra %s' % (timer() - start))
 
@@ -664,7 +667,7 @@ class WebsiteSale(website_sale):
             'pager': pager,
             'pricelist': pricelist,
             'products': products,
-            'bins': table_compute().process(products),
+            #~ 'bins': table_compute().process(products),
             'rows': PPR,
             'styles': styles,
             'categories': categs,
@@ -678,14 +681,15 @@ class WebsiteSale(website_sale):
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
             'shop_footer': True,
         }
-        _logger.error('to continue to qweb timer %s' % (timer() - start_all))
-        #~ re = request.render("webshop_dermanord.products", values)
+        _logger.error('to continue to qweb timer %s\ndomain: %s\npricelist: %s\nsearch: %s\nvalues: %s' % (timer() - start_all, domain_finished - start_all, search_start - domain_finished, search_end - search_start, timer() - search_end))
+        render_start = timer()
+        re = request.website.render("webshop_dermanord.products", values)
         #~ _logger.warn(re.render())
         #~ view_obj = request.env["ir.ui.view"]
         #~ res = request.env['ir.qweb'].render("webshop_dermanord.products", values, loader=view_obj.loader("webshop_dermanord.products"))
         #~ _logger.warn(re)
-        start = timer()
-        _logger.error('rendered finished %s' % (timer() - start))
+        #~ start = timer()
+        _logger.error('rendered finished %s' % (timer() - render_start))
 
         return request.website.render("webshop_dermanord.products", values)
 
@@ -693,33 +697,21 @@ class WebsiteSale(website_sale):
     def dn_shop_json_grid(self, page=0, **kw):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
+        product_obj = pool.get('product.template')
+        url = "/dn_shop"
+
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
             context['pricelist'] = int(pricelist)
         else:
             pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
 
-        product_obj = pool.get('product.template')
-        url = "/dn_shop"
-
         domain = request.session.get('current_domain')
         order = request.session.get('current_order')
 
-        product_count = product_obj.search_count(cr, uid, domain, context=context)
-        page_count = int(math.ceil(float(product_count) / float(PPG)))
-        pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=None)
-        #~ product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=order, context=context)
-        #~ products = product_obj.browse(cr, uid, product_ids, context=context)
+        pager = request.website.pager(url=url, total=request.session.get('product_count'), page=page, step=PPG, scope=7, url_args=None)
         # relist which product templates the current user is allowed to see
         products = request.env['product.template'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=order)
-        #~ for p in products:
-            #~ if len(p.sudo().access_group_ids) > 0 :
-                #~ if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
-                    #~ products -= p
-
-        from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
-        to_currency = pricelist.currency_id
-        compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
         products_list = []
         is_reseller = False
@@ -738,18 +730,6 @@ class WebsiteSale(website_sale):
             style_options = ''
             for style in request.env['product.style'].search([]):
                 style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style in product.website_style_ids else '', style.id, style.html_class, style.name)
-
-            #~ has_variant = len(product.get_default_variant()) > 0
-            #~ if has_variant:
-                #~ if len(variant.image_ids) > 0:
-                    #~ image_src = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(variant.image_ids[0].id, 'snippet_dermanord.img_product')
-                #~ elif len(variant.image_ids) == 0:
-                    #~ image_src = request.website.image_url(variant, 'image', '300x300')
-            #~ else:
-                #~ if len(product.image_ids) > 0:
-                    #~ image_src = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(product.image_ids[0].id, 'snippet_dermanord.img_product')
-                #~ elif len(product.image_ids) == 0:
-                    #~ image_src = request.website.image_url(product, 'image', '300x300')
 
             if product.get_default_variant():
                 products_list.append({
@@ -774,7 +754,7 @@ class WebsiteSale(website_sale):
         values = {
             'products': products_list,
             'url': url,
-            'page_count': page_count,
+            'page_count': int(math.ceil(float(request.session.get('product_count')) / float(PPG))),
         }
         return values
 
