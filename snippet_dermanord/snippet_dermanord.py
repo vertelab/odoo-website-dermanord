@@ -97,27 +97,27 @@ class snippet(http.Controller):
                 occs = occs.sorted(key=lambda o: o.sequence)
                 for occ in occs:
                     url = ''
-                    access = False
+                    #~ access = False
                     if occ.object_id._name == 'product.template':
-                        if occ.object_id.check_access_group(request.env.user):
-                            access = True
-                            url = '/dn_shop/product/%s' %occ.object_id.id
+                        #~ if occ.object_id.check_access_group(request.env.user):
+                            #~ access = True
+                        url = '/dn_shop/product/%s' %occ.object_id.id
                     elif occ.object_id._name == 'product.product':
-                        if occ.object_id.check_access_group(request.env.user):
-                            access = True
-                            url = '/dn_shop/variant/%s' %(occ.object_id.id)
+                        #~ if occ.object_id.check_access_group(request.env.user):
+                            #~ access = True
+                        url = '/dn_shop/variant/%s' %(occ.object_id.id)
                     elif occ.object_id._name == 'product.public.category':
                         url = '/dn_shop/category/%s' %occ.object_id.id
                     elif occ.object_id._name == 'blog.post':
                         url = '/blog/%s/post/%s' %(occ.object_id.blog_id.id, occ.object_id.id)
-                    if access:
-                        object_list.append(
-                            {
-                                'id': occ.id,
-                                'name': occ.name if occ.name else '',
-                                'image': '/imagefield/crm.campaign.object/image/%s/ref/%s' %(occ.id, 'snippet_dermanord.img_product') if occ.image else '',
-                                'description': occ.description if occ.description else '',
-                                'url': url,
-                            }
-                        )
+                    #~ if access:
+                    object_list.append(
+                        {
+                            'id': occ.id,
+                            'name': occ.name if occ.name else '',
+                            'image': '/imagefield/crm.campaign.object/image/%s/ref/%s' %(occ.id, 'snippet_dermanord.img_product') if occ.image else '/web/static/src/img/placeholder.png',
+                            'description': occ.description if occ.description else '',
+                            'url': url,
+                        }
+                    )
         return object_list
