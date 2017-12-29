@@ -180,9 +180,11 @@
             </xpath>
         </template>
 
-        <template id="custom_css_js" inherit_id="website.layout" name="Custom CSS JS for Sale Promotions">
+        <template id="assets_frontend" inherit_id="website.assets_frontend" name="Custom CSS JS for Sale Promotions">
             <xpath expr="." position="inside">
                 <link href="/sale_promotions/static/src/css/main.css" rel="stylesheet" />
+            </xpath>
+            <xpath expr="//script[last()]" position="after">
                 <script type="text/javascript" src="/sale_promotions/static/src/js/main.js" />
             </xpath>
         </template>

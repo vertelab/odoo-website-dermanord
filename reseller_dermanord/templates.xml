@@ -343,13 +343,12 @@
             </t>
         </template>
 
-        <template id="customize_css_js" inherit_id="website.layout" name="Customize CSS JS">
+        <template id="assets_frontend" inherit_id="website.assets_frontend" name="Customize CSS JS">
             <!-- Customize css -->
-            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
+            <xpath expr="." position="inside">
                 <link href="/reseller_dermanord/static/src/css/main.css" rel="stylesheet" />
             </xpath>
-            <!-- Customize javascript -->
-            <xpath expr="//body" position="inside">
+            <xpath expr="//script[last()]" position="after">
                 <script type="text/javascript" src="/reseller_dermanord/static/src/js/main.js" />
             </xpath>
         </template>

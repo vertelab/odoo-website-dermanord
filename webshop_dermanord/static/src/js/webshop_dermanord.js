@@ -1,6 +1,6 @@
 var website = openerp.website;
 website.add_template_file('/webshop_dermanord/static/src/xml/product.xml');
-var current_page = 2;
+var current_page = 0;
 var page_count = 0;
 
 $(document).ready(function(){
@@ -606,10 +606,11 @@ function load_products_grid(page){
     openerp.jsonRpc("/dn_shop_json_grid", "call", {
         'page': current_page.toString(),
     }).done(function(data){
-        page_count = data['page_count'];
-        if (page_count >= current_page) {
+        //~ page_count = data['page_count'];
+        if (data['products'].length > 0) {
             var products_content = '';
             $.each(data['products'], function(key, info) {
+                var start_time = $.now();
                 var content = openerp.qweb.render('products_item_grid', {
                     'url': data['url'],
                     'data_id': data['products'][key]['product_id'],
@@ -631,6 +632,7 @@ function load_products_grid(page){
                     'product_variant_ids': data['products'][key]['product_variant_ids']
                 });
                 products_content += content;
+                console.log($.now() - start_time);
             });
             $("#desktop_product_grid").append(products_content);
             current_page ++;

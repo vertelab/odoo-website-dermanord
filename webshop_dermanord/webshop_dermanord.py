@@ -55,7 +55,7 @@ class crm_campaign_object(models.Model):
     @api.one
     def _product_price(self):
         if self.object_id._name == 'product.template':
-            variant = self.object_id.get_default_variant()
+            variant = self.object_id.dv_product
             self.product_price = self.env.ref('product.list0').price_get(variant.id, 1)[1] + sum([c.get('amount', 0.0) for c in variant.sudo().taxes_id.compute_all(self.env.ref('product.list0').price_get(variant.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
         if self.object_id._name == 'product.product':
             self.product_price = self.env.ref('product.list0').price_get(self.object_id.id, 1)[1] + sum([c.get('amount', 0.0) for c in self.object_id.sudo().taxes_id.compute_all(self.env.ref('product.list0').price_get(self.object_id.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
@@ -89,7 +89,7 @@ class product_template(models.Model):
 
     # get defualt variant ribbon. if there's not one, get the template's ribbon
     @api.multi
-    def get_default_variant_ribbon(self):
+    def Xget_default_variant_ribbon(self):
         if self.get_default_variant() and len(self.get_default_variant().website_style_ids_variant) > 0:
             return ' '.join([s.html_class for s in self.get_default_variant().website_style_ids_variant])
         else:
@@ -113,7 +113,7 @@ class product_template(models.Model):
         self.recommended_price = 0.0
 
     @api.model
-    def get_all_variant_data(self, products):
+    def Xget_all_variant_data(self, products):
         pricelist = self.env.ref('product.list0')
         res = {}
         placeholder = '/web/static/src/img/placeholder.png'
@@ -133,12 +133,14 @@ class product_template(models.Model):
         return res
 
     @api.multi
+    @api.depends('name', 'default_code')
     def _get_all_variant_data(self):
         pricelist = self.env.ref('product.list0')
         placeholder = '/web/static/src/img/placeholder.png'
         for p in self:
             try:
                 variant = p.get_default_variant()
+                p.dv_product = variant
                 if variant:
                     p.dv_recommended_price = pricelist.price_get(variant.id, 1)[1] + sum([c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(pricelist.price_get(variant.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
                     p.dv_price = variant.price
@@ -147,6 +149,10 @@ class product_template(models.Model):
                     p.dv_description_sale = variant.description_sale or ''
                     p.dv_name = variant.name or ''
                     p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant.image_ids[0].image_attachment_id.id, 'snippet_dermanord.img_product') if (variant.image_ids and variant.image_ids[0].image_attachment_id) else placeholder
+                    if len(variant.website_style_ids_variant) > 0:
+                        p.dv_ribbon = ' '.join([s.html_class for s in variant.website_style_ids_variant])
+                    else:
+                        p.dv_ribbon = ' '.join([s.html_class for s in p.website_style_ids])
             except Exception as e:
                 p.dv_recommended_price = 0.0
                 p.dv_price = 0.0
@@ -154,23 +160,28 @@ class product_template(models.Model):
                 p.dv_default_code = 'error'
                 p.dv_description_sale = '%s' %e
                 p.dv_image_src = placeholder
-    dv_recommended_price = fields.Float(compute='_get_all_variant_data')
+                p.dv_ribbon = ''
+                p.dv_product = None
+    dv_recommended_price = fields.Float(compute='_get_all_variant_data', store=True)
     dv_price = fields.Float(compute='_get_all_variant_data')
     dv_price_tax = fields.Float(compute='_get_all_variant_data')
-    dv_default_code = fields.Char(compute='_get_all_variant_data')
-    dv_description_sale = fields.Text(compute='_get_all_variant_data')
-    dv_image_src = fields.Char(compute='_get_all_variant_data')
-    dv_name = fields.Char(compute='_get_all_variant_data')
+    dv_default_code = fields.Char(compute='_get_all_variant_data', store=True)
+    dv_description_sale = fields.Text(compute='_get_all_variant_data', store=True)
+    dv_image_src = fields.Char(compute='_get_all_variant_data', store=True)
+    dv_name = fields.Char(compute='_get_all_variant_data', store=True)
+    dv_ribbon = fields.Char(compute='_get_all_variant_data', store=True)
+    dv_product = fields.Many2one(comodel_name='product.product', compute='_get_all_variant_data', store=True)
 
     @api.multi
-    def is_offer_product(self):
-        self.ensure_one()
-        if (self in self.get_campaign_tmpl(for_reseller=False)) or (self in self.get_campaign_tmpl(for_reseller=True)):
-            return True
-        elif len(self.get_campaign_variants(for_reseller=False) & self.product_variant_ids) > 0 or len(self.get_campaign_variants(for_reseller=True) & self.product_variant_ids) > 0:
-            return True
-        return False
-
+    def _is_offer_product(self):
+        for p in self:
+            if (p in p.get_campaign_tmpl(for_reseller=False)) or (p in p.get_campaign_tmpl(for_reseller=True)):
+                p.is_offer_product = True
+            elif len(p.get_campaign_variants(for_reseller=False) & p.product_variant_ids) > 0 or len(p.get_campaign_variants(for_reseller=True) & p.product_variant_ids) > 0:
+                p.is_offer_product = True
+            else:
+                p.is_offer_product = False
+    is_offer_product = fields.Boolean(compute='_is_offer_product', store=True)
 
 class product_product(models.Model):
     _inherit = 'product.product'
@@ -218,14 +229,15 @@ class product_product(models.Model):
             return ' '.join([s.html_class for s in self.product_tmpl_id.website_style_ids])
 
     @api.multi
-    def is_offer_product(self):
-        self.ensure_one()
-        if (self in self.get_campaign_variants(for_reseller=False)) or (self in self.get_campaign_variants(for_reseller=True)):
-            return True
-        elif self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False) or self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=True):
-            return True
-        return False
-
+    def _is_offer_product(self):
+        for p in self:
+            if (p in p.get_campaign_variants(for_reseller=False)) or (p in p.get_campaign_variants(for_reseller=True)):
+                p.is_offer_product = True
+            elif p.product_tmpl_id in p.product_tmpl_id.get_campaign_tmpl(for_reseller=False) or p.product_tmpl_id in p.product_tmpl_id.get_campaign_tmpl(for_reseller=True):
+                p.is_offer_product = True
+            else:
+                p.is_offer_product = False
+    is_offer_product = fields.Boolean(compute='_is_offer_product', store=True)
 
 class product_facet(models.Model):
     _inherit = 'product.facet'
@@ -590,7 +602,7 @@ class WebsiteSale(website_sale):
                     #~ del request.session['form_values'][k]
                     #~ request.session['form_values']['category_%s' %int(category)] = '%s' %int(category)
 
-        keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
+        #~ keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
@@ -625,10 +637,7 @@ class WebsiteSale(website_sale):
         #~ import profile
         #~ _logger.error(timeit.timeit("request.env['product.template'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)"))
         search_start = timer()
-        products_all = request.env['product.template'].with_context(pricelist=pricelist.id).search_access_group(domain, order=default_order)
-        pager = request.website.pager(url=url, total=len(products_all), page=page, step=PPG, scope=7, url_args=post)
-        request.session['product_count'] = len(products_all)
-        products = products_all[pager['offset']:pager['offset']+PPG]
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read_access_group(domain, fields=['id', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price'], limit=PPG, order=default_order)
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
         #~ request.env['product.template'].get_all_variant_data(products)   2 sek
@@ -646,9 +655,9 @@ class WebsiteSale(website_sale):
         attributes_ids = attributes_obj.search(cr, uid, [], context=context)
         attributes = attributes_obj.browse(cr, uid, attributes_ids, context=context)
 
-        from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
-        to_currency = pricelist.currency_id
-        compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
+        #~ from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
+        #~ to_currency = pricelist.currency_id
+        #~ compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
@@ -663,7 +672,6 @@ class WebsiteSale(website_sale):
             'category': category,
             'attrib_values': attrib_values,
             'attrib_set': attrib_set,
-            'pager': pager,
             'pricelist': pricelist,
             'products': products,
             #~ 'bins': table_compute().process(products),
@@ -671,18 +679,18 @@ class WebsiteSale(website_sale):
             'styles': styles,
             'categories': categs,
             'attributes': attributes,
-            'compute_currency': compute_currency,
+            #~ 'compute_currency': compute_currency,
             'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
-            'keep': keep,
+            #~ 'keep': keep,
             'url': url,
-            'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
-            'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
+            #~ 'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
+            #~ 'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
             'shop_footer': True,
         }
         _logger.error('to continue to qweb timer %s\ndomain: %s\npricelist: %s\nsearch: %s\nvalues: %s' % (timer() - start_all, domain_finished - start_all, search_start - domain_finished, search_end - search_start, timer() - search_end))
         render_start = timer()
-        re = request.website.render("webshop_dermanord.products", values)
+        #~ re = request.website.render("webshop_dermanord.products", values)
         #~ _logger.warn(re.render())
         #~ view_obj = request.env["ir.ui.view"]
         #~ res = request.env['ir.qweb'].render("webshop_dermanord.products", values, loader=view_obj.loader("webshop_dermanord.products"))
@@ -695,10 +703,7 @@ class WebsiteSale(website_sale):
     @http.route(['/dn_shop_json_grid'], type='json', auth='public', website=True)
     def dn_shop_json_grid(self, page=0, **kw):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
-
-        product_obj = pool.get('product.template')
-        url = "/dn_shop"
-
+        start_time = timer()
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
             context['pricelist'] = int(pricelist)
@@ -707,10 +712,13 @@ class WebsiteSale(website_sale):
 
         domain = request.session.get('current_domain')
         order = request.session.get('current_order')
-
-        pager = request.website.pager(url=url, total=request.session.get('product_count'), page=page, step=PPG, scope=7, url_args=None)
+        search_start = timer()
         # relist which product templates the current user is allowed to see
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=order)
+        # TODO: always get same product in the last?? why?
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read_access_group(domain, limit=6, offset=22+int(page)*6, fields=['id', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'dv_description_sale', 'product_variant_ids'], order=order)
+
+        search_end = timer()
+        _logger.warn('search end: %s' %(timer() - start_time))
 
         products_list = []
         is_reseller = False
@@ -728,33 +736,32 @@ class WebsiteSale(website_sale):
             #those style options only can be set on product.template
             style_options = ''
             for style in request.env['product.style'].search([]):
-                style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style in product.website_style_ids else '', style.id, style.html_class, style.name)
+                style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style in product['website_style_ids'] else '', style.id, style.html_class, style.name)
 
-            if product.get_default_variant():
-                products_list.append({
-                    'product_href': '/dn_shop/product/%s' %product.id,
-                    'product_id': product.id,
-                    'product_name': product.name,
-                    'is_offer_product': product.is_offer_product(),
-                    'style_options': style_options,
-                    'grid_ribbon_style': 'dn_product_div %s' %product.get_default_variant_ribbon(),
-                    'product_img_src': product.dv_image_src,
-                    'price': "%.2f" %  product.dv_price,
-                    'price_tax': "%.2f" % product.dv_price_tax,
-                    'list_price_tax': "%.2f" % product.dv_recommended_price,
-                    'currency': currency,
-                    'rounding': request.website.pricelist_id.currency_id.rounding,
-                    'is_reseller': 'yes' if is_reseller else 'no',
-                    'default_code': product.dv_default_code,
-                    'description_sale': product.dv_description_sale,
-                    'product_variant_ids': True if product.product_variant_ids else False,
-                })
+            products_list.append({
+                'product_href': '/dn_shop/product/%s' %product['id'],
+                'product_id': product['id'],
+                'product_name': product['dv_name'],
+                'is_offer_product': product['is_offer_product'],
+                'style_options': style_options,
+                'grid_ribbon_style': 'dn_product_div %s' %product['dv_ribbon'],
+                'product_img_src': product['dv_image_src'],
+                'price': "%.2f" %  product['dv_price'],
+                'price_tax': "%.2f" % product['dv_price_tax'],
+                'list_price_tax': "%.2f" % product['dv_recommended_price'],
+                'currency': currency,
+                'rounding': request.website.pricelist_id.currency_id.rounding,
+                'is_reseller': 'yes' if is_reseller else 'no',
+                'default_code': product['dv_default_code'],
+                'description_sale': product['dv_description_sale'],
+                'product_variant_ids': True if product['product_variant_ids'] else False,
+            })
 
         values = {
             'products': products_list,
-            'url': url,
-            'page_count': int(math.ceil(float(request.session.get('product_count')) / float(PPG))),
+            #~ 'page_count': int(math.ceil(float(request.session.get('product_count')) / float(PPG))),
         }
+        _logger.warn('end time: %s' %(timer() - search_end))
         return values
 
     @http.route(['/dn_shop_json_list'], type='json', auth='public', website=True)
@@ -800,7 +807,7 @@ class WebsiteSale(website_sale):
                 'variant_id': product.id,
                 'product_href': '/dn_shop/variant/%s' %product.id,
                 'product_name': product.name,
-                'is_offer_product': product.is_offer_product(),
+                'is_offer_product': product.is_offer_product,
                 'purchase_phase': True if purchase_phase else False,
                 'product_name_col': 'product_price col-md-6 col-sm-6 col-xs-12' if purchase_phase else 'product_price col-md-8 col-sm-8 col-xs-12',
                 'purchase_phase_end_date': purchase_phase.end_date if purchase_phase else '',
@@ -870,7 +877,7 @@ class WebsiteSale(website_sale):
             'category_list': category_list,
             'main_object': product,
             'product': product,
-            'show_purchase_button': self.show_purchase_button(product.get_default_variant()),
+            'show_purchase_button': self.show_purchase_button(product.dv_product),
             'get_attribute_value_ids': self.get_attribute_value_ids,
             'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
             'shop_footer': True,

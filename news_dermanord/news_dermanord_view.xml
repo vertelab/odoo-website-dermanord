@@ -113,15 +113,12 @@
             </t>
         </template>
 
-        <template id="news_dermanord_css" inherit_id="website.layout" name="News Dermanord CSS">
+        <template id="assets_frontend" inherit_id="website.assets_frontend" name="News Dermanord CSS JS">
             <!-- Customize css -->
-            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
+            <xpath expr="." position="inside">
                 <link href="/news_dermanord/static/src/css/main.css" rel="stylesheet" />
             </xpath>
-        </template>
-
-        <template id="customer_js" inherit_id="website.layout">
-            <xpath expr="//body" position="inside">
+            <xpath expr="//script[last()]" position="after">
                 <script type="text/javascript" src="/news_dermanord/static/src/js/main.js" />
             </xpath>
         </template>

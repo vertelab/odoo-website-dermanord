@@ -82,19 +82,12 @@
         </xpath>
     </template>
 
-    <template id="webshop_dermanord" inherit_id="website.layout" name="Webshop Dermanord">
-        <!-- Customize css -->
-        <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="before">
-            <link href="/product_ingredients/static/src/css/main.css" rel="stylesheet" />
-        </xpath>
-    </template>
-
     <template id="assets_frontend" inherit_id="website.assets_frontend" name="Website assets - Ingredients">
       <xpath expr="." position="inside">
-<!--
-        <link rel="stylesheet" href='/product_ingredients/static/src/css/experiences.css' t-ignore="true"/>
--->
-        <script type="text/javascript" src="/product_ingredients/static/src/js/product_ingredients.js" t-raw="init"></script>
+          <link href="/product_ingredients/static/src/css/main.css" rel="stylesheet" />
+        </xpath>
+        <xpath expr="//script[last()]" position="after">
+            <script type="text/javascript" src="/product_ingredients/static/src/js/product_ingredients.js" t-raw="init"></script>
       </xpath>
     </template>
 

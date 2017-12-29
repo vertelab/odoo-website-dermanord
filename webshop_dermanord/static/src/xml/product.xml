@@ -4,6 +4,7 @@
 <templates id="template" xml:space="preserve">
     <t t-name="products_item_grid">
         <div class="dn_oe_product col-md-4 col-sm-6 col-xs-12">
+<!--
             <div class="dn_css_options" t-ignore="true" groups="base.group_website_publisher">
                 <div class="dropdown dn_js_options" t-att-data-id="data_id">
                     <button class="btn btn-default" t-att-id="dopprod_id" role="button" data-toggle="dropdown">Options <span class="caret"></span></button>
@@ -17,6 +18,7 @@
                         </ul>
                   </div>
             </div>
+-->
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="grid_ribbon_style">
                     <div class="ribbon-wrapper">
