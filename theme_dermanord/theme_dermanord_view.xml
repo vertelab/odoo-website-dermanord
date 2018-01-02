@@ -356,7 +356,7 @@
             <xpath expr="//t[@t-raw='0']" position="before">
                 <t t-if="not no_breadcrumb and website">
                     <ol class="breadcrumb dn_breadcrumb">
-                        <t t-raw="website.get_breadcrumb(request.httprequest.path, product=product or None)"/>
+                        <t t-raw="website.get_breadcrumb(request.httprequest.path, product=product or None, blog=blog, blog_post=blog_post)"/>
                         <div class="btn-group pull-right lg-flag hidden-lg hidden-md hidden-sm" t-foreach="languages" t-as="lg" style="padding: 0px 2px;">
                             <span t-if="lg_index != (len(languages)-1)"> | </span>
                             <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
