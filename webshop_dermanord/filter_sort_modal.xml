@@ -83,7 +83,7 @@
                     </t>
                 </div>
                 <div id="filter_btn_group" class="btn-group">
-                    <button class="mt32 dn_btn dn_primary" name="post_form" value="ok" type="submit">OK</button>
+                    <button class="mt32 dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit">OK</button>
                     <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()"><i class="fa fa-trash-o"/> Clear All</button>
                 </div>
             </form>
@@ -386,7 +386,7 @@
                     </t>
                 </t>
                 <div class="btn-group">
-                    <button class="mt32 dn_btn dn_primary" name="post_form" value="ok" type="submit">OK</button>
+                    <button class="mt32 dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit">OK</button>
                     <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                         <t t-if="url == '/dn_list'">
                             <button class="mt32 dn_btn dn_primary" formaction="/dn_shop" type="submit" title="Swith to grid view"><i class="fa fa-th"/></button>
@@ -412,7 +412,7 @@
         <template id="desktop_product_filter_form" name="Desktop Product Filter Form">
             <form t-att-action="'/dn_list' if url == '/dn_list' else '/dn_shop'" method="post">
                 <div class="btn-group">
-                    <button class="mt32 dn_btn dn_primary" name="post_form" value="ok" type="submit">OK</button>
+                    <button class="mt32 dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit">OK</button>
                     <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()"><i class="fa fa-trash-o"/> Clear All</button>
                 </div>
                 <div class="container" style="padding: 0px;">

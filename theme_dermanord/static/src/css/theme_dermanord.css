@@ -510,6 +510,12 @@ footer input, footer .input-group-addon {
     top: 5%;
     left: 5%;
     padding-right: 5%;
+    max-width: 95%;
+}
+
+.dn_header_nav h5 {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .dn_header_nav_tab {
@@ -603,6 +609,16 @@ address span {
     line-height: 1.2;
 }
 
+.oe_website_jobs {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#jobs_grid {
+    padding: 0px;
+}
+
 @media (max-width: 767px) {
     #top_menu {
         background-color: #000;
@@ -642,5 +658,9 @@ address span {
         left: 0px;
         z-index: 200;
         border-bottom: 1px solid #e7e7e7;
+    }
+
+    #jobs_grid {
+        padding: 0px 15px;
     }
 }
