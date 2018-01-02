@@ -4,7 +4,7 @@ $(document).ready(function(){
         if ($(this).val().trim().length > 2) {
             openerp.jsonRpc("/search_suggestion", "call", {
                 search: $(this).val(),
-                res_model: ['product.template', 'product.product', 'product.public.category', 'blog.post', 'product.facet.line'],
+                res_model: ['product.template', 'product.product', 'product.public.category', 'product.facet.line'],
                 limit: 5,
                 offset: 0
             }).done(function(data){
