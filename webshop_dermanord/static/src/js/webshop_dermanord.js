@@ -147,7 +147,7 @@ $(document).ready(function(){
             if (data['public_desc'] != null) {
                 if (data['public_desc'] != '') {
                     $public_desc_title.removeClass("hidden");
-                    $public_desc.html(data['public_desc']);
+                    $public_desc.html(data['public_desc'].replace(/\n/g, "<br/>"));
                     $public_desc.removeClass("hidden");
                 } else {
                     $public_desc_title.addClass("hidden");
@@ -158,7 +158,7 @@ $(document).ready(function(){
             if (data['use_desc'] != null) {
                 if (data['use_desc'] != '') {
                     $use_desc_title.removeClass("hidden");
-                    $use_desc.html(data['use_desc']);
+                    $use_desc.html(data['use_desc'].replace(/\n/g, "<br/>"));
                     $use_desc.removeClass("hidden");
                 } else {
                     $use_desc_title.addClass("hidden");
@@ -169,7 +169,7 @@ $(document).ready(function(){
             if (data['reseller_desc'] != null) {
                 if (data['reseller_desc'] != '') {
                     $reseller_desc_title.removeClass("hidden");
-                    $reseller_desc.html(data['reseller_desc']);
+                    $reseller_desc.html(data['reseller_desc'].replace(/\n/g, "<br/>"));
                     $reseller_desc.removeClass("hidden");
                 } else {
                     $reseller_desc_title.addClass("hidden");
