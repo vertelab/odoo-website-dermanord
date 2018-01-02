@@ -580,6 +580,25 @@ $(document).ready(function(){
     if ($("#add_to_cart").is(":visible")) { $("div.css_quantity.input-group.oe_website_spinner").removeClass("hidden"); }
     else { $("div.css_quantity.input-group.oe_website_spinner").addClass("hidden"); }
 
+    //blink ok button when filter form input changed
+    $("#desktop_product_navigator_filter").find(".checkbox").each(function() {
+        $(this).on("change", function() {
+            $(this).closest("form").find(".dn_ok").addClass("dn_blink");
+        });
+    });
+
+    $("#dn_filter_modal").find(".checkbox").each(function() {
+        $(this).on("change", function() {
+            $(this).closest("form").find(".dn_ok").addClass("dn_blink");
+        });
+    });
+
+    $("#dn_sort_modal").find(".radio").each(function() {
+        $(this).on("change", function() {
+            $(this).closest("form").find(".dn_ok").addClass("dn_blink");
+        });
+    });
+
     $(window).scroll(function() {
         if ($(window).scrollTop() + $(window).height() == $(document).height()) {
             if ($("#wrap").hasClass("autoload_grid")) {
