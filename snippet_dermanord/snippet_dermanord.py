@@ -51,6 +51,7 @@ class snippet(http.Controller):
     def get_sale_promotions(self, **kw):
         sps = request.env['sale.promotion'].sudo().search([('website_published', '=', True)], order='sequence')
         sp_list = []
+        image = 'image_sv' if request.context.get('lang') == 'sv_SE' else 'image_en'
         if len(sps) > 0:
             for sp in sps.sorted(key=lambda s: s.sequence):
                 sp_list.append(
@@ -59,7 +60,7 @@ class snippet(http.Controller):
                         'name': sp.name,
                         'description': sp.description,
                         'url': sp.url,
-                        'image': '/imagefield/sale.promotion/image/%s/ref/%s' %(sp.id, 'snippet_dermanord.img_sale_promotions'),
+                        'image': '/imagefield/sale.promotion/%s/%s/ref/%s' %(image, sp.id, 'snippet_dermanord.img_sale_promotions'),
                     }
                 )
         return sp_list

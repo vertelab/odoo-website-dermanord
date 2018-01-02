@@ -38,7 +38,8 @@ class SalePromotions(models.Model):
 
     name = fields.Char(string="Name", required=True)
     description = fields.Text(string="Description")
-    image = fields.Binary(string='Image', required=True)
+    image_en = fields.Binary(string='Image (EN)', required=True)
+    image_sv = fields.Binary(string='Image (SV)')
     url = fields.Char(string='URL', required=True)
     sequence = fields.Integer(string='Sequence', required=True, default=_default_sequence)
     website_published = fields.Boolean(string='Published')
@@ -47,11 +48,12 @@ class SalePromotions(models.Model):
 class SalePromotions(http.Controller):
     @http.route(['/get_sale_promotion'], type='json', auth='public', website=True)
     def get_sale_promotion(self, sp_id=None, **kw):
+        image = 'image_sv' if request.context.get('lang') == 'sv_SE' else 'image_en'
         sp = request.env['sale.promotion'].sudo().browse(int(sp_id))
         sale_promotion = {}
         sale_promotion['_id'] = sp.id
         sale_promotion['name'] = sp.name
         sale_promotion['description'] = sp.description
-        sale_promotion['image'] = '/imagefield/sale.promotion/image/%s/ref/' %sp.id
+        sale_promotion['image'] = '/imagefield/sale.promotion/%s/%s/ref/' %(image, sp.id)
         sale_promotion['url'] = sp.url
         return sale_promotion

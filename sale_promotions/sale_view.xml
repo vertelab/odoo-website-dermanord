@@ -37,7 +37,8 @@
               <field name="sequence"/>
               <field name="description" />
               <field name="url"/>
-              <field name="image"/>
+              <field name="image_en" widget="image" class="oe_avatar oe_left"/>
+              <field name="image_sv" widget="image" class="oe_avatar oe_left"/>
             </group>
           </sheet>
         </form>
