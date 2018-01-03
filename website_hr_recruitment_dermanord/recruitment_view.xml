@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        
+
         <record id="jobs_start_menu" model="website.menu">
             <field name="name">CAREER</field>
             <field name="sequence">10</field>
             <field name="url">/jobs/start</field>
             <field name="parent_id" ref="theme_dermanord.footer_menu" />
         </record>
-        
+
         <record id="career_menu" model="website.menu">
             <field name="name">Career@Dermanord</field>
             <field name="sequence">10</field>
             <field name="url">/jobs/career</field>
             <field name="parent_id" ref="jobs_start_menu" />
         </record>
-        
+
         <record id="people_menu" model="website.menu">
             <field name="name">People</field>
             <field name="sequence">30</field>
             <field name="url">/jobs/people</field>
             <field name="parent_id" ref="jobs_start_menu" />
         </record>
-        
+
         <record id="departments_menu" model="website.menu">
             <field name="name">Departments</field>
             <field name="sequence">20</field>
             <field name="url">/jobs/departments</field>
             <field name="parent_id" ref="jobs_start_menu" />
         </record>
-        
+
         <record id="view_department_tree" model="ir.ui.view">
             <field name="name">hr.department.tree.recruitment.dermanord</field>
             <field name="model">hr.department</field>
@@ -40,7 +40,7 @@
                 </field>
             </field>
         </record>
-        
+
         <record id="view_department_form" model="ir.ui.view">
             <field name="name">hr.department.form.recruitment.dermanord</field>
             <field name="model">hr.department</field>
@@ -55,18 +55,39 @@
                 </group>
             </field>
         </record>
-        
+
+        <!-- hr.job -->
+        <record id="view_hr_job_form" model="ir.ui.view">
+            <field name="name">hr.job.form.inherited.website_hr_recruitment_dermanord</field>
+            <field name="model">hr.job</field>
+            <field name="inherit_id" ref="hr.view_hr_job_form"/>
+            <field name="arch" type="xml">
+                <div attrs="{'invisible': [('state', '!=', 'recruit')]}" position="replace">
+                    <div>
+                        <label for="description"/>
+                        <field name="description"/>
+                    </div>
+                </div>
+                <div attrs="{'invisible': [('state', '!=', 'recruit')]}" position="replace">
+                    <div>
+                        <label for="requirements"/>
+                        <field name="requirements"/>
+                    </div>
+                </div>
+            </field>
+        </record>
+
         <template id="start" name="Career@Dermanord">
             <t t-call="theme_dermanord.submenu_dermanord">
             </t>
         </template>
-        
+
         <template id="career" name="Career@Dermanord">
             <t t-call="theme_dermanord.submenu_dermanord">
                 <div class="oe_structure"/>
             </t>
         </template>
-        
+
         <template id="departments" name="Departments">
             <t t-call="theme_dermanord.submenu_dermanord">
                 <div class="oe_structure"/>
@@ -83,12 +104,12 @@
                 <div class="oe_structure"/>
             </t>
         </template>
-        
+
         <template id="people" name="People">
             <t t-call="theme_dermanord.submenu_dermanord">
                 <div class="oe_structure"/>
             </t>
         </template>
-        
+
     </data>
 </openerp>
