@@ -144,7 +144,7 @@ class product_template(models.Model):
                     p.dv_price_tax = p.dv_price + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(p.dv_price, 1, None, self.env.user.partner_id)['taxes'])
                     p.dv_default_code = variant.default_code or ''
                     p.dv_description_sale = variant.description_sale or ''
-                    p.dv_name = variant.name or ''
+                    p.dv_name = variant.name or ''  #TODO [561]  kryssruta på template använd template.name alt variant.display_name
                     p.dv_image_src = '/imagefield/base_multi_image.image/file_db_store/%s/ref/%s' %(variant.image_ids[0].id, 'snippet_dermanord.img_product') if len(variant.image_ids) > 0 else placeholder
             except Exception as e:
                 p.dv_recommended_price = 0.0
@@ -153,9 +153,9 @@ class product_template(models.Model):
                 p.dv_default_code = 'error'
                 p.dv_description_sale = '%s' %e
                 p.dv_image_src = placeholder
-    dv_recommended_price = fields.Float(compute='_get_all_variant_data')
-    dv_price = fields.Float(compute='_get_all_variant_data')
-    dv_price_tax = fields.Float(compute='_get_all_variant_data')
+    dv_recommended_price = fields.Float(compute='_get_all_variant_data')  # (rek pris, ink moms, campaing and comming campaign)
+    dv_price = fields.Float(compute='_get_all_variant_data')              # (your price, no tax and comming campaign if reseller)
+    dv_price_tax = fields.Float(compute='_get_all_variant_data')          # (your price, inc tax, usually consumer price)
     dv_default_code = fields.Char(compute='_get_all_variant_data')
     dv_description_sale = fields.Text(compute='_get_all_variant_data')
     dv_image_src = fields.Char(compute='_get_all_variant_data')
@@ -558,6 +558,7 @@ class WebsiteSale(website_sale):
         if len(domain_current) == 1:
             domain_append.append(domain_current[0])
         return domain_append
+
 
     @http.route([
         '/dn_shop',
