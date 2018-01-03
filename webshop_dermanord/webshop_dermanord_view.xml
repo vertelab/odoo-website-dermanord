@@ -406,6 +406,12 @@
                 <field name="list_price" position="after">
                     <field name="sold_qty"/>
                 </field>
+                <xpath expr="//field[@name='sale_ok']/.." position="after">
+                    <div>
+                        <field name="use_tmpl_name"/>
+                        <label for="use_tmpl_name"/>
+                    </div>
+                </xpath>
             </field>
         </record>
 

@@ -293,7 +293,9 @@
                 <a itemprop="name" t-att-href="'/dn_shop/product/%s' % product['id']" t-esc="product['dv_name']" />
               </strong>
             </h4>
+<!--
             <h5 class="text-muted" style="height: 15px;" t-esc="product['dv_default_code']" />
+-->
             <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price">
               <b class="text-muted">
                 <h4>

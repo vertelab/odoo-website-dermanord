@@ -76,6 +76,7 @@ class product_template(models.Model):
     price_tax = fields.Float(compute='get_product_tax')
     recommended_price = fields.Float(compute='get_product_tax')
     sold_qty = fields.Integer(string='Sold', default=0)
+    use_tmpl_name = fields.Boolean(string='Use Template Name', help='When checked. The template name will be used in webshop')
 
     @api.multi
     def get_default_variant(self):
@@ -147,7 +148,7 @@ class product_template(models.Model):
                     p.dv_price_tax = p.dv_price + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(p.dv_price, 1, None, self.env.user.partner_id)['taxes'])
                     p.dv_default_code = variant.default_code or ''
                     p.dv_description_sale = variant.description_sale or ''
-                    p.dv_name = variant.name or ''  #TODO [561]  kryssruta på template använd template.name alt variant.display_name
+                    p.dv_name = p.name if p.use_tmpl_name else ', '.join([variant.name] + variant.attribute_value_ids.mapped('name'))
                     p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant.image_ids[0].image_attachment_id.id, 'snippet_dermanord.img_product') if (variant.image_ids and variant.image_ids[0].image_attachment_id) else placeholder
                     if len(variant.website_style_ids_variant) > 0:
                         p.dv_ribbon = ' '.join([s.html_class for s in variant.website_style_ids_variant])
