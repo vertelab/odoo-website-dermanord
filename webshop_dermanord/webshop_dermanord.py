@@ -736,7 +736,7 @@ class WebsiteSale(website_sale):
             #those style options only can be set on product.template
             style_options = ''
             for style in request.env['product.style'].search([]):
-                style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style in product['website_style_ids'] else '', style.id, style.html_class, style.name)
+                style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style.id in product['website_style_ids'] else '', style.id, style.html_class, style.name)
 
             products_list.append({
                 'product_href': '/dn_shop/product/%s' %product['id'],
