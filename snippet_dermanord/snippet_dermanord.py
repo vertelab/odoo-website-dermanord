@@ -51,6 +51,7 @@ class snippet(http.Controller):
     def get_sale_promotions(self, **kw):
         sps = request.env['sale.promotion'].sudo().search([('website_published', '=', True)], order='sequence')
         sp_list = []
+        image = 'image_sv' if request.context.get('lang') == 'sv_SE' else 'image_en'
         if len(sps) > 0:
             for sp in sps.sorted(key=lambda s: s.sequence):
                 sp_list.append(
@@ -59,7 +60,7 @@ class snippet(http.Controller):
                         'name': sp.name,
                         'description': sp.description,
                         'url': sp.url,
-                        'image': '/imagefield/sale.promotion/image/%s/ref/%s' %(sp.id, 'snippet_dermanord.img_sale_promotions'),
+                        'image': '/imagefield/sale.promotion/%s/%s/ref/%s' %(image, sp.id, 'snippet_dermanord.img_sale_promotions'),
                     }
                 )
         return sp_list
@@ -85,7 +86,7 @@ class snippet(http.Controller):
     @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="public", website=True)
     def get_highlighted_products(self, campaign_date, **kw):
         date = fields.Date.today() if campaign_date == '' else campaign_date
-        campaigns = request.env['crm.tracking.campaign'].sudo().search([('state', '=', 'open'), ('date_start', '<=', date), ('date_stop', '>=', date)])
+        campaigns = request.env['crm.tracking.campaign'].sudo().search([('state', '=', 'open'), ('website_published', '=', True), ('date_start', '<=', date), ('date_stop', '>=', date)])
         object_list = []
         if len(campaigns) > 0:
             occs = request.env['crm.campaign.object'].browse([])
@@ -115,7 +116,7 @@ class snippet(http.Controller):
                             {
                                 'id': occ.id,
                                 'name': occ.name if occ.name else '',
-                                'image': '/imagefield/crm.campaign.object/image/%s/ref/%s' %(occ.id, 'snippet_dermanord.img_product') if occ.image else '',
+                                'image': '/imagefield/crm.campaign.object/image/%s/ref/%s' %(occ.id, 'snippet_dermanord.img_product') if occ.image else '/web/static/src/img/placeholder.png',
                                 'description': occ.description if occ.description else '',
                                 'url': url,
                             }

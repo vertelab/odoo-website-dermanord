@@ -1,6 +1,6 @@
 var website = openerp.website;
 website.add_template_file('/webshop_dermanord/static/src/xml/product.xml');
-var current_page = 2;
+var current_page = 0;
 var page_count = 0;
 
 $(document).ready(function(){
@@ -147,7 +147,7 @@ $(document).ready(function(){
             if (data['public_desc'] != null) {
                 if (data['public_desc'] != '') {
                     $public_desc_title.removeClass("hidden");
-                    $public_desc.html(data['public_desc']);
+                    $public_desc.html(data['public_desc'].replace(/\n/g, "<br/>"));
                     $public_desc.removeClass("hidden");
                 } else {
                     $public_desc_title.addClass("hidden");
@@ -158,7 +158,7 @@ $(document).ready(function(){
             if (data['use_desc'] != null) {
                 if (data['use_desc'] != '') {
                     $use_desc_title.removeClass("hidden");
-                    $use_desc.html(data['use_desc']);
+                    $use_desc.html(data['use_desc'].replace(/\n/g, "<br/>"));
                     $use_desc.removeClass("hidden");
                 } else {
                     $use_desc_title.addClass("hidden");
@@ -169,7 +169,7 @@ $(document).ready(function(){
             if (data['reseller_desc'] != null) {
                 if (data['reseller_desc'] != '') {
                     $reseller_desc_title.removeClass("hidden");
-                    $reseller_desc.html(data['reseller_desc']);
+                    $reseller_desc.html(data['reseller_desc'].replace(/\n/g, "<br/>"));
                     $reseller_desc.removeClass("hidden");
                 } else {
                     $reseller_desc_title.addClass("hidden");
@@ -281,17 +281,18 @@ $(document).ready(function(){
                         $input.trigger('change');
                         return;
                     }
+                    var cart_quantity = data.cart_quantity === undefined ? 0 : data.cart_quantity;
                     if (!data.quantity) { // update table and all prices on page
                         //~ location.reload(true);
                         $("#cart_products").load(location.href + " #cart_products");
                         $("#cart_total").load(location.href + " #cart_total");
                         $(".my_cart_total").load(location.href + " .my_cart_total");
                         $q.parent().parent().removeClass("hidden", !data.quantity);
-                        $q.html("(" + data.cart_quantity + ")").hide().fadeIn(600);
+                        $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
                         return;
                     }
                     $q.parent().parent().removeClass("hidden", !data.quantity);
-                    $q.html("(" + data.cart_quantity + ")").hide().fadeIn(600);
+                    $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
                     $input.val(data.quantity);
                     $('.js_quantity[data-line-id='+line_id+']').val(data.quantity).html(data.quantity);
                     $("#cart_total").replaceWith(data['website_sale.total']);
@@ -322,7 +323,65 @@ $(document).ready(function(){
             $input.val(0);
             $('input[name="'+$input.attr("name")+'"]').val(0);
             $input.change();
-            return false
+            //force to update change
+            if ($input.data('update_change')) {
+                return;
+            }
+            var value = parseInt($input.val(), 10);
+            var $dom = $input.closest('tr');
+            var default_price = parseFloat($dom.find('.text-danger > span.oe_currency_value').text());
+            var $dom_optional = $dom.nextUntil(':not(.optional_product.info)');
+            var line_id = parseInt($input.data('line-id'),10);
+            var product_id = parseInt($input.data('product-id'),10);
+            var product_ids = [product_id];
+            $dom_optional.each(function(){
+                product_ids.push($input.find('span[data-product-id]').data('product-id'));
+            });
+            if (isNaN(value)) value = 0;
+            $input.data('update_change', true);
+            openerp.jsonRpc("/shop/get_unit_price", 'call', {
+                'product_ids': product_ids,
+                'add_qty': value,
+                'use_order_pricelist': true,
+                'line_id': line_id})
+            .then(function (res) {
+                $dom.find('span.oe_currency_value').last().text(price_to_str(res[product_id]));
+                $dom.find('.text-danger').toggle(res[product_id]<default_price && (default_price-res[product_id] > default_price/100));
+                $dom_optional.each(function(){
+                    var id = $input.find('span[data-product-id]').data('product-id');
+                    var price = parseFloat($input.find(".text-danger > span.oe_currency_value").text());
+                    $input.find("span.oe_currency_value").last().text(price_to_str(res[id]));
+                    $input.find('.text-danger').toggle(res[id]<price && (price-res[id]>price/100));
+                });
+                openerp.jsonRpc("/shop/cart/update_json", 'call', {
+                'line_id': line_id,
+                'product_id': parseInt($input.data('product-id'),10),
+                'set_qty': value})
+                .then(function (data) {
+                    $input.data('update_change', false);
+                    var $q = $(".my_cart_quantity");
+                    if (value !== parseInt($input.val(), 10)) {
+                        $input.trigger('change');
+                        return;
+                    }
+                    var cart_quantity = data.cart_quantity === undefined ? 0 : data.cart_quantity;
+                    if (!data.quantity) {
+                        $("#cart_products").load(location.href + " #cart_products");
+                        $("#cart_total").load(location.href + " #cart_total");
+                        $(".my_cart_total").load(location.href + " .my_cart_total");
+                        $q.parent().parent().removeClass("hidden", !data.quantity);
+                        $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
+                        return;
+                    }
+                    $q.parent().parent().removeClass("hidden", !data.quantity);
+                    $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
+                    $input.val(data.quantity);
+                    $('.js_quantity[data-line-id='+line_id+']').val(data.quantity).html(data.quantity);
+                    $("#cart_total").replaceWith(data['website_sale.total']);
+                    $(".my_cart_total").load(location.href + " .my_cart_total");
+                });
+            });
+            return false;
         });
 
         $('.oe_website_sale .a-submit, #comment .a-submit').off('click').on('click', function () {
@@ -521,6 +580,25 @@ $(document).ready(function(){
     if ($("#add_to_cart").is(":visible")) { $("div.css_quantity.input-group.oe_website_spinner").removeClass("hidden"); }
     else { $("div.css_quantity.input-group.oe_website_spinner").addClass("hidden"); }
 
+    //blink ok button when filter form input changed
+    $("#desktop_product_navigator_filter").find(".checkbox").each(function() {
+        $(this).on("change", function() {
+            $(this).closest("form").find(".dn_ok").addClass("dn_blink");
+        });
+    });
+
+    $("#dn_filter_modal").find(".checkbox").each(function() {
+        $(this).on("change", function() {
+            $(this).closest("form").find(".dn_ok").addClass("dn_blink");
+        });
+    });
+
+    $("#dn_sort_modal").find(".radio").each(function() {
+        $(this).on("change", function() {
+            $(this).closest("form").find(".dn_ok").addClass("dn_blink");
+        });
+    });
+
     $(window).scroll(function() {
         if ($(window).scrollTop() + $(window).height() == $(document).height()) {
             if ($("#wrap").hasClass("autoload_grid")) {
@@ -547,10 +625,11 @@ function load_products_grid(page){
     openerp.jsonRpc("/dn_shop_json_grid", "call", {
         'page': current_page.toString(),
     }).done(function(data){
-        page_count = data['page_count'];
-        if (page_count >= current_page) {
+        //~ page_count = data['page_count'];
+        if (data['products'].length > 0) {
             var products_content = '';
             $.each(data['products'], function(key, info) {
+                var start_time = $.now();
                 var content = openerp.qweb.render('products_item_grid', {
                     'url': data['url'],
                     'data_id': data['products'][key]['product_id'],
@@ -572,6 +651,7 @@ function load_products_grid(page){
                     'product_variant_ids': data['products'][key]['product_variant_ids']
                 });
                 products_content += content;
+                console.log($.now() - start_time);
             });
             $("#desktop_product_grid").append(products_content);
             current_page ++;

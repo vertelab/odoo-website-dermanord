@@ -72,10 +72,9 @@
           <t t-call="webshop_dermanord.desktop_product_navigator" />
         </div>
         <div id="desktop_product_grid" class="col-md-9 col-xs-12">
-          <t t-foreach="products" t-as="product">
-              <t t-set="variant" t-value="product.get_default_variant()"/>
-                <t t-if="variant">
-                    <div class="dn_oe_product col-md-4 col-sm-6 col-xs-12">
+            <t t-foreach="products" t-as="product">
+                <div class="dn_oe_product col-md-4 col-sm-6 col-xs-12">
+                        <!--
                       <div class="dn_css_options" t-ignore="true" groups="base.group_website_publisher">
                         <div t-attf-class="dropdown dn_js_options" t-att-data-id="product.id">
                           <button class="btn btn-default" t-att-id="'dopprod-%s' % product.id" role="button" data-toggle="dropdown">
@@ -98,9 +97,9 @@
                           </ul>
                         </div>
                       </div>
-                    <div t-call="webshop_dermanord.products_item" />
+                      -->
+                      <div t-call="webshop_dermanord.products_item" />
                 </div>
-            </t>
             </t>
         </div>
       </div>
@@ -112,7 +111,7 @@
                     <div class="ribbon-wrapper">
                         <div class="ribbon btn btn-primary">News</div>
                     </div>
-                    <t t-if="product.is_offer_product()">
+                    <t t-if="product.is_offer_product">
                         <div class="offer-wrapper">
                             <i class="fa fa-star-o fa-3x" title="Offer"/>
                         </div>
@@ -197,13 +196,13 @@
         </template>
 
     <!-- better and faster -->
-    <template id="products_item" name="Product item">
+    <template id="products_itemZZ" name="Product item">
       <form action="/shop/cart/update" method="post">
         <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="'dn_product_div %s' % product.get_default_variant_ribbon()">
           <div class="ribbon-wrapper">
             <div class="ribbon btn btn-primary">News</div>
           </div>
-          <t t-if="product.is_offer_product()">
+          <t t-if="product.is_offer_product">
             <div class="offer-wrapper">
               <i class="fa fa-star-o fa-3x" title="Offer" />
             </div>
@@ -226,20 +225,11 @@
               </strong>
             </h4>
             <h5 class="text-muted" style="height: 15px;" t-field="product.dv_default_code" />
-            <!--<p class="p_desc"><t t-esc="product.dv_description_sale"/></p>-->
             <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price">
               <b class="text-muted">
                 <h4>
                   <t t-if="not is_reseller">
-<!--
-                    <del class="text-danger" style="white-space: nowrap;" t-field="product.dv_price" t-field-options='{
-                                          "widget": "monetary",
-                                          "from_currency": "product.company_id.currency_id",
-                                          "display_currency": "pricelist.currency_id"
-                                        }' />
-                    &amp;nbsp;
--->
-                    <span t-field="product.dv_price" style="white-space: nowrap;" t-field-options='{
+                    <span t-field="product.dv_recommended_price" style="white-space: nowrap;" t-field-options='{
                                            "widget": "monetary",
                                            "display_currency": "pricelist.currency_id"
                                        }' />
@@ -270,6 +260,72 @@
         </div>
       </form>
     </template>
+
+    <!-- fastest -->
+    <template id="products_item" name="Product item">
+        <t t-set="start_time" t-value="time.time()"/>
+      <form action="/shop/cart/update" method="post">
+        <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="'dn_product_div %s' % product['dv_ribbon']">
+          <div class="ribbon-wrapper">
+            <div class="ribbon btn btn-primary">News</div>
+          </div>
+          <t t-if="product['is_offer_product']">
+            <div class="offer-wrapper">
+              <i class="fa fa-star-o fa-3x" title="Offer" />
+            </div>
+          </t>
+          <div class="dn_product_image">
+            <div class="dn_product_image_div">
+              <a itemprop="url" t-att-href="'/dn_shop/product/%s' % product['id']">
+<!--
+                <t t-call="webshop_dermanord.form_values" />
+-->
+                <img itemprop="image" class="img img-responsive" t-att-src="product['dv_image_src']" t-att-alt="product['dv_name']" />
+                <div class="dn_product_image_hover_btn text-center hidden-xs">
+                  <p class="dn_btn dn_primary">DETAILS</p>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="dn_product_info text-center">
+            <h4 class="p_name">
+              <strong>
+                <a itemprop="name" t-att-href="'/dn_shop/product/%s' % product['id']" t-esc="product['dv_name']" />
+              </strong>
+            </h4>
+            <h5 class="text-muted" style="height: 15px;" t-esc="product['dv_default_code']" />
+            <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price">
+              <b class="text-muted">
+                <h4>
+                    <t t-if="not is_reseller">
+                        <span t-field="pricelist.currency_id.name" style="white-space: nowrap;"/>
+                        <span t-esc="('%.2f' %product['dv_recommended_price']).replace('.', ',')"/>
+                    </t>
+                  <t t-if="is_reseller">
+                    <div>
+                        <span t-field="pricelist.currency_id.name" style="white-space: nowrap;"/>
+                        <span t-esc="('%.2f' %product['dv_recommended_price']).replace('.', ',')" style="white-space: nowrap;"/>
+                        <span style="display: inline;">(rec inc tax)</span>
+                    </div>
+                    <div>
+                        <b t-field="pricelist.currency_id.name" style="white-space: nowrap;"/>
+                        <b t-esc="('%.2f' %product['dv_price']).replace('.', ',')" style="white-space: nowrap;"/>
+                        <span style="display: inline;">(your ex tax)</span>
+                    </div>
+                  </t>
+<!--
+                  <span itemprop="price" style="display:none;" t-esc="product.dv_price" />
+                  <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding" />
+-->
+                </h4>
+              </b>
+            </div>
+          </div>
+        </div>
+      </form>
+    <script>console.log('<t t-esc="'product: %s, load time: %s' %(product['id'], time.time() - start_time)"/>');</script>
+    </template>
+
     <template id="products_list_reseller_view" name="Product List For Reseller">
       <t t-call="website.layout">
         <t t-set="additional_title">Shop</t>
@@ -304,7 +360,7 @@
                               <i class="fa fa-tags fa-2x" title="News" />
                             </t>
                           </div>
-                          <t t-if="product.is_offer_product()">
+                          <t t-if="product.is_offer_product">
                             <div class="col-md-6 lst-offer-wrapper">
                               <i class="fa fa-star-o fa-2x" title="Offer" />
                             </div>
@@ -735,7 +791,8 @@
     <template id="product_price" inherit_id="website_sale.product_price">
       <xpath expr="//h4" position="replace">
         <p class="oe_price_h4 css_editable_mode_hidden decimal_precision" t-att-data-precision="user_id.partner_id.property_product_pricelist.currency_id.rounding">
-          <t t-if="is_reseller == 'yes'">
+          <t t-if="is_reseller">
+<!--
             <div>
               <span class="oe_recommended_price" t-field="product.list_price_tax" t-field-options='{
                               "widget": "monetary",
@@ -744,7 +801,8 @@
                            }' />
               <span style="display: inline;">(rec inc tax)</span>
             </div>
-            <b class="oe_price" style="white-space: nowrap;" t-field="product.price" t-field-options='{
+-->
+            <b class="oe_price" style="white-space: nowrap;" t-field="product.dv_price" t-field-options='{
                                "widget": "monetary",
                                "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                            }' />
@@ -752,7 +810,7 @@
             <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding" />
             <span style="display: inline;">(your ex tax)</span>
           </t>
-          <t t-if="is_reseller != 'yes'">
+          <t t-if="not is_reseller">
 <!--
             <span class="text-danger oe_default_price" style="text-decoration: line-through; white-space: nowrap;" t-field="product.lst_price" t-field-options='{
                           "widget": "monetary",
@@ -760,7 +818,7 @@
                           "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                        }' />
 -->
-            <b class="oe_price" style="white-space: nowrap;" t-field="product.price_tax" t-field-options='{
+            <b class="oe_recommended_price" style="white-space: nowrap;" t-field="product.dv_recommended_price" t-field-options='{
                            "widget": "monetary",
                            "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                        }' />

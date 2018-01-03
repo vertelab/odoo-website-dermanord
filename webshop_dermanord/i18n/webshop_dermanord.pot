@@ -138,7 +138,7 @@ msgstr ""
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.desktop_product_filter
 #: view:website:webshop_dermanord.dn_filter_navigator
-msgid "Current"
+msgid "News &amp; Offers"
 msgstr ""
 
 #. module: webshop_dermanord

@@ -57,6 +57,7 @@ class website(models.Model):
             return menu
 
     def get_breadcrumb(self, path, **params):
+        #~ _logger.warn('\n\npath: %s\nparams: %s\n\n' % (path, params))
         try:
             breadcrumb = []
             if path.startswith('/dn_shop/product/'): # url is a product
@@ -83,7 +84,6 @@ class website(models.Model):
                 return ''.join(breadcrumb)
             elif path.startswith('/home'): # url is on the user home page
                 path = path.split('/')[1:]
-                _logger.warn(path)
                 home_menu = self.env.ref('website.menu_homepage')
                 breadcrumb = ['<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name)]
                 if len(path) > 1:
@@ -107,14 +107,25 @@ class website(models.Model):
                         breadcrumb.append('<li><a href="/%s">%s</a></li>' % ('/'.join(path), _('File Claim')))
                 return ''.join(breadcrumb)
             else: # url is a normal menu or submenu
+                menu = None
                 path = path.split('/')
                 for i in range(len(path)):
                     nr = path[i].split('-')[-1]
                     if nr.isdigit():
                         path[i] = nr
+                # Check if this is the path to a blog post
+                if len(path) > 3 and path[1] == 'blog' and path[3] == 'post':
+                    blog = params.get('blog')
+                    blog_post = params.get('blog_post')
+                    if blog and blog_post:
+                        for tag in blog_post.tag_ids:
+                            menu = self.env['website.menu'].search([('url', '=', '/blog/%s/tag/%s' % (blog.id, tag.id))])
+                            if menu:
+                                breadcrumb.append('<li>%s</li>' % blog_post.name)
+                                break
                 path = '/'.join(path)
                 skipped = self.env.ref('theme_dermanord.footer_menu')
-                menu = self.env['website.menu'].search([('url', '=', path)])
+                menu = menu or self.env['website.menu'].search([('url', '=', path)])
                 while menu and menu != self.env.ref('website.main_menu') and menu != self.env.ref('website.menu_homepage'):
                     if menu not in skipped:
                         breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
