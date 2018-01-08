@@ -146,9 +146,23 @@ class Main(http.Controller):
 
     @http.route(['/resellers/competence/<model("res.partner.category"):competence>',], type='http', auth="public", website=True)
     def reseller_competence(self, competence, **post):
-        return request.website.render('reseller_dermanord.resellers', {
-            'resellers': request.env['res.partner'].sudo().search(['&', ('is_reseller', '=', True), ('child_category_ids', 'in', competence.id)])
-        })
+        context = {'competence': competence}
+        word = post.get('search')
+        if word:
+            context['resellers'] = request.env['res.partner'].sudo().search([
+                ('is_reseller', '=', True),
+                ('child_category_ids', '=', competence.id),
+                '|', ('name', 'ilike', word),
+                '|', ('brand_name', 'ilike', word),
+                '|', ('city', 'ilike', word),
+                '|', ('state_id.name', 'ilike', word),
+                '|', ('country_id.name', 'ilike', word),
+                ('child_category_ids.name', 'ilike', word)])
+        else:
+            context['resellers'] = request.env['res.partner'].sudo().search([
+                ('is_reseller', '=', True),
+                ('child_category_ids', '=', competence.id)])
+        return request.website.render('reseller_dermanord.resellers', context)
 
     @http.route([
         '/resellers',
