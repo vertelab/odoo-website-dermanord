@@ -67,7 +67,7 @@ class ProductIngredients(models.Model):
     _order = 'sequence, name, id'
 
     name = fields.Char(string="Name", translate=True)
-    description = fields.Text(string="Description", translate=True)
+    description = fields.Html(string="Description", translate=True)
     image = fields.Binary(string='Image')
     product_ids = fields.Many2many(comodel_name='product.product', relation='product_ingredient_rel',column1='ingredient_id',column2='product_id')
     sequence = fields.Integer()

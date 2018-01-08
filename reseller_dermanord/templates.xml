@@ -57,7 +57,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12 col-sm-12 col-xs-12 mb16">
-                                <form action="/resellers" method="post" class="pagination form-inline col-md-12 col-sm-12 col-xs-12 mb16">
+                                <form t-att-action="('/resellers/competence/%s' % competence.id) if competence else '/resellers'" method="post" class="pagination form-inline col-md-12 col-sm-12 col-xs-12 mb16">
                                     <div class="container text-center">
                                         <div class="input-group">
                                             <input name="search" class="form-control" placeholder="Search..." type="text"/>
