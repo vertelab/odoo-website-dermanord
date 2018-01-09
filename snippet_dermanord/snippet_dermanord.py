@@ -108,9 +108,12 @@ class snippet(http.Controller):
                             access = True
                             url = '/dn_shop/variant/%s' %(occ.object_id.id)
                     elif occ.object_id._name == 'product.public.category':
+                        access = True
                         url = '/dn_shop/category/%s' %occ.object_id.id
                     elif occ.object_id._name == 'blog.post':
-                        url = '/blog/%s/post/%s' %(occ.object_id.blog_id.id, occ.object_id.id)
+                        if occ.object_id.check_access_group(request.env.user):
+                            access = True
+                            url = '/blog/%s/post/%s' %(occ.object_id.blog_id.id, occ.object_id.id)
                     if access:
                         object_list.append(
                             {

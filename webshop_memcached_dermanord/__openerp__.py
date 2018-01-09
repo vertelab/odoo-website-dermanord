@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution, third party addon
-#    Copyright (C) 2004-2015 Vertel AB (<http://vertel.se>).
+#    Copyright (C) 2018- Vertel AB (<http://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,31 +20,21 @@
 ##############################################################################
 
 {
-    'name': 'Snippet Dermanord',
+    'name': 'Webshop MemCached Dermanord',
     'version': '1.0',
-    'category': 'Theme',
-    'summary': 'A Snippet Library',
+    'category': 'other',
+    'summary': 'website acceleration for webshop Dermanord using memcached',
     'description': """
-Extra snippets for Dermanord.
-=============================
+Add mechanisms to cache rendered sale pages
+This module depends on website_memcached
+
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': [
-        'webshop_dermanord',
-        'website_imagemagick',
-        'sale_promotions',
-        'crm_campaign_product',
-        'crm_campaign_blog',
-        'product_private',
-        'website_blog_private',
-    ],
+    'depends': ['website_memcached','webshop_dermanord'],
+    'external_dependencies': {'python': ['pymemcache',]},
     'data': [
-        'snippets_css_js.xml',
-        'snippets.xml',
-        'snippets_data.xml',
-        'security/ir.model.access.csv',
-    ],
-    'qweb': ['static/src/xml/snippets.xml'],
-    'application': True,
+],
+    'application': False,
 }
+
