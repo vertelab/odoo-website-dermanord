@@ -788,10 +788,10 @@ class WebsiteSale(website_sale):
         products = request.env['product.product'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=order)
 
         products_list = []
+        partner_pricelist = request.env.user.partner_id.property_product_pricelist
         for product in products:
             is_reseller = False
             currency = ''
-            partner_pricelist = request.env.user.partner_id.property_product_pricelist
             if partner_pricelist:
                 currency = partner_pricelist.currency_id.name
                 if partner_pricelist.for_reseller:
