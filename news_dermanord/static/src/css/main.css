@@ -24,7 +24,8 @@
     font-family: futura-pt-medium, sans-serif !important;
 }
 
-#blog_block p {
+#blog_block .dn_uppercase.mt32, #blog_block span {
+    font-family: futura-pt-medium, sans-serif !important;
     font-size: 18px !important;
     line-height: 1.2em !important;
 }
@@ -36,6 +37,12 @@
 
 .blog_list_item .col-md-10 {
     padding-left: 10px;
+}
+
+.cover.js_fullheight {
+    background-size: contain;
+    max-height: 450px !important;
+    min-height: 450px !important;
 }
 
 @media (max-width: 768px) {
