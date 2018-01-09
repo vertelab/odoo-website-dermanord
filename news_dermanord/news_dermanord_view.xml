@@ -19,9 +19,9 @@
                                         <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list"/>
                                     </t>
                                     <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_content_div">
-                                        <h6><i t-field="news_post.name" style="font-size: 28px; font-weight: 500;"/></h6>
+                                        <h6 t-field="news_post.name" style="font-size: 28px; font-weight: 500; padding-top: 0px; margin-top: 0px;"/>
                                         <h5 class="text-muted" style="color: #bbb;"><t t-esc="website.formatted_date(str(news_post.write_date)[:10])"/></h5>
-                                        <p t-field="news_post.subtitle" class="text-muted mt16"/>
+                                        <p t-field="news_post.subtitle" class="text-muted mt16 dn_blog_subtitle"/>
                                         <a t-att-href="'/blog/%s/post/%s' %(news_post.blog_id.id, news_post.id)"><i style="font-size: 20px; text-decoration: underline; color: #000;">Read more</i></a>
                                         <div class="blog_tag_div">
                                             <p class="dn_uppercase blog_content_tag">tags:</p>

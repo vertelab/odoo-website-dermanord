@@ -349,15 +349,123 @@
                 <t t-call="webshop_dermanord.desktop_product_navigator" />
               </div>
               <div id="desktop_product_list" class="col-md-9 col-xs-12">
+                  <table class="product_list_table table table-striped" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td>Art. nr</td>
+                        <td>Produkt</td>
+                        <td>Säljstart kund</td>
+                        <td>Ditt pris</td>
+                    </tr>
+                </thead>
+                  <tbody>
+                    <t t-foreach="products" t-as="product">
+                      <t t-set="purchase_phase" t-value="None"/>
+                        <t t-if="len(product.campaign_ids) &gt; 0">
+                          <t t-if="len(product.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist)) &gt; 0">
+                            <t t-set="purchase_phase" t-value="product.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist)[0]"/>
+                          </t>
+                        </t>
+                      <tr t-att-class="'tr_lst %s' % product.get_this_variant_ribbon()">
+                        <td class="td_lst">
+                          <div class="col-md-6 lst-ribbon-wrapper">
+                            <t t-if="(request.env.ref('website_sale.image_promo') in product.website_style_ids_variant) or (request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids)">
+                              <i class="fa fa-tags fa-2x" title="News"/>
+                            </t>
+                          </div>
+                          <t t-if="product.is_offer_product">
+                            <div class="col-md-6 lst-offer-wrapper">
+                              <i class="fa fa-star-o fa-2x" title="Offer"/>
+                            </div>
+                          </t>
+                        </td>
+                        <td>
+                          <h5 class="list_product_name">
+                              <span t-field="product.default_code"/>
+                          </h5>
+                        </td>
+                        <td>
+                          <h5 class="list_product_name">
+                            <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" t-att-class="product_price">
+                              <strong>
+                                <a t-att-href="keep('/dn_shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">
+                                  <span itemprop="name" t-field="product.name"/>
+                                  <t t-if="len(product.attribute_value_ids) &gt; 0">
+                                    <t t-foreach="product.attribute_value_ids" t-as="att">
+                                      <t t-esc="', %s' %att.name"/>
+                                    </t>
+                                  </t>
+                                </a>
+                              </strong>
+                            </div>
+                          </h5>
+                        </td>
+                        <td>
+                            <t t-if="purchase_phase">
+                                <h5>
+                                <div class="text-center">
+                                    <span t-field="purchase_phase.end_date"/>
+                                    <br/>
+                                    <!-- TODO: Replace dummy value -->
+                                    <span>(2018-06-30)</span>
+                                </div>
+                                </h5>
+                            </t>
+                        </td>
+                        <td>
+                          <h5>
+                            <b>
+                              <span t-field="product.price" style="white-space: nowrap;" t-field-options="{                                                                        &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }"/>
+                              <span itemprop="price" style="display:none;" t-esc="product.price">
+                                <a class="btn btn-default btn-xs fa fa-shopping-cart" t-att-href="keep('/dn_shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))"/>
+                              </span>
+                              <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class="decimal_precision" t-att-data-precision="website.pricelist_id.currency_id.rounding"/>
+                            </b>
+                          </h5>
+                          <!-- TODO: Replace dummy value -->
+                          <h5>
+                              (100 SEK)
+                          </h5>
+                        </td>
+                        <td>
+                          <div>
+                            <form t-att-action="keep('/shop/cart/update')" class="oe_dn_list" t-att-data-attribute_value_ids="product.id" method="POST">
+                              <div class="product_shop col-md-7 col-sm-7 col-xs-12" style="margin: 0px;">
+                                <input type="hidden" class="product_id" name="product_id" t-att-value="int(product)"/>
+                                <input type="hidden" name="return_url" t-att-value="request.httprequest.url"/>
+                                <div class="css_quantity input-group oe_website_spinner">
+                                  <span class="input-group-addon">
+                                    <a t-attf-href="#" class="mb8 js_add_cart_json">
+                                      <i class="fa fa-minus"/>
+                                    </a>
+                                  </span>
+                                  <input type="text" class="js_quantity form-control" data-min="1" name="add_qty" value="1"/>
+                                  <span class="input-group-addon">
+                                    <a t-attf-href="#" class="mb8 float_left js_add_cart_json">
+                                      <i class="fa fa-plus"/>
+                                    </a>
+                                  </span>
+                                </div>
+                                <a id="add_to_cart" class="btn btn-default js_check_product a-submit" href="#">
+                                  <i class="fa fa-shopping-cart a-submit" style="color: #CB683F;"/>
+                                </a>
+                              </div>
+                            </form>
+                          </div>
+                        </td>
+                      </tr>
+                    </t>
+                  </tbody>
+                </table>
+
+<!--
                 <table class="product_list_table table table-striped" style="width: 100%;">
                   <tbody>
                     <t t-foreach="products" t-as="product">
                       <tr t-att-class="'tr_lst %s' % product.get_this_variant_ribbon()">
                         <td class="td_lst">
                           <div class="col-md-6 lst-ribbon-wrapper">
-                            <!--
-                                 <div class="lst_ribbon btn btn-primary">News</div>
-                            -->
                             <t t-if="(request.env.ref('website_sale.image_promo') in product.website_style_ids_variant) or (request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids)">
                               <i class="fa fa-tags fa-2x" title="News" />
                             </t>
@@ -440,6 +548,7 @@
                     </t>
                   </tbody>
                 </table>
+-->
               </div>
             </div>
           </t>
