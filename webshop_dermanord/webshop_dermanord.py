@@ -640,7 +640,7 @@ class WebsiteSale(website_sale):
         #~ import profile
         #~ _logger.error(timeit.timeit("request.env['product.template'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)"))
         search_start = timer()
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read_access_group(domain, fields=['id', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price'], limit=PPG, order=default_order)
+        products = request.env['product.template'].sudo().with_context(pricelist=pricelist.id).search_read_access_group(domain, fields=['id', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price'], limit=PPG, order=default_order)
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
         #~ request.env['product.template'].get_all_variant_data(products)   2 sek
@@ -718,7 +718,7 @@ class WebsiteSale(website_sale):
         search_start = timer()
         # relist which product templates the current user is allowed to see
         # TODO: always get same product in the last?? why?
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read_access_group(domain, limit=6, offset=22+int(page)*6, fields=['id', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'dv_description_sale', 'product_variant_ids'], order=order)
+        products = request.env['product.template'].sudo().with_context(pricelist=pricelist.id).search_read_access_group(domain, limit=6, offset=22+int(page)*6, fields=['id', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'dv_description_sale', 'product_variant_ids'], order=order)
 
         search_end = timer()
         _logger.warn('search end: %s' %(timer() - start_time))
