@@ -124,8 +124,8 @@
                                 </div>
                                 <t t-if="len(reseller.child_competence_ids) != 0">
                                     <h3>Our competences</h3>
-                                    <ul t-foreach="reseller.child_competence_ids.split(',')" t-as="categ">
-                                        <li><span t-esc="categ"/></li>
+                                    <ul t-foreach="reseller.child_competence_ids" t-as="categ">
+                                        <li><span t-esc="categ.name"/></li>
                                     </ul>
                                 </t>
                             </div>
