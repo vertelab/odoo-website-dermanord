@@ -287,7 +287,7 @@ $(document).ready(function(){
                         $("#cart_products").load(location.href + " #cart_products");
                         $("#cart_total").load(location.href + " #cart_total");
                         $(".my_cart_total").load(location.href + " .my_cart_total");
-                        $q.parent().parent().removeClass("hidden", !data.quantity);
+                        //~ $q.parent().parent().removeClass("hidden", !data.quantity);
                         $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
                         return;
                     }
@@ -369,7 +369,7 @@ $(document).ready(function(){
                         $("#cart_products").load(location.href + " #cart_products");
                         $("#cart_total").load(location.href + " #cart_total");
                         $(".my_cart_total").load(location.href + " .my_cart_total");
-                        $q.parent().parent().removeClass("hidden", !data.quantity);
+                        //~ $q.parent().parent().removeClass("hidden", !data.quantity);
                         $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
                         return;
                     }

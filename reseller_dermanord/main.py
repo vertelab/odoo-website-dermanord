@@ -151,17 +151,17 @@ class Main(http.Controller):
         if word:
             context['resellers'] = request.env['res.partner'].sudo().search([
                 ('is_reseller', '=', True),
-                ('child_category_ids', '=', competence.id),
+                ('child_competence_ids', '=', competence.id),
                 '|', ('name', 'ilike', word),
                 '|', ('brand_name', 'ilike', word),
                 '|', ('city', 'ilike', word),
                 '|', ('state_id.name', 'ilike', word),
                 '|', ('country_id.name', 'ilike', word),
-                ('child_category_ids.name', 'ilike', word)])
+                ('child_competence_ids.name', 'ilike', word)])
         else:
             context['resellers'] = request.env['res.partner'].sudo().search([
                 ('is_reseller', '=', True),
-                ('child_category_ids', '=', competence.id)])
+                ('child_competence_ids', '=', competence.id)])
         return request.website.render('reseller_dermanord.resellers', context)
 
     @http.route([
