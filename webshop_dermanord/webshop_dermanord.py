@@ -65,6 +65,10 @@ class crm_campaign_object(models.Model):
 class product_template(models.Model):
     _inherit = 'product.template'
 
+    @api.model
+    def request_env(self):
+        return request.env
+
     @api.one
     def _blog_post_ids(self):
         if type(self.id) is int:
@@ -773,7 +777,7 @@ class WebsiteSale(website_sale):
     @http.route(['/dn_shop_json_list'], type='json', auth='public', website=True)
     def dn_shop_json_list(self, page=0, **kw):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
-
+        sale_ribbon = request.env.ref('website_sale.image_promo')
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
             context['pricelist'] = int(pricelist)
@@ -786,10 +790,8 @@ class WebsiteSale(website_sale):
         domain = request.session.get('current_domain')
         order = request.session.get('current_order')
 
-        pager = request.website.pager(url=url, total=request.session.get('product_count'), page=page, step=PPG, scope=7, url_args=None)
         # relist which product templates the current user is allowed to see
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=order)
-
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order give strange result
         products_list = []
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
         for product in products:
@@ -808,11 +810,13 @@ class WebsiteSale(website_sale):
                 if len(product.product_tmpl_id.campaign_ids) > 0:
                     if len(product.product_tmpl_id.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)) > 0:
                         purchase_phase = product.product_tmpl_id.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)[0]
+            _logger.warn('%s :: %s' %(sale_ribbon, product.website_style_ids))
             products_list.append({
                 'lst_ribbon_style': product.get_this_variant_ribbon(),
                 'variant_id': product.id,
                 'product_href': '/dn_shop/variant/%s' %product.id,
                 'product_name': product.name,
+                'is_news_product': True if sale_ribbon in product.website_style_ids else False,
                 'is_offer_product': product.is_offer_product,
                 'purchase_phase': True if purchase_phase else False,
                 'product_name_col': 'product_price col-md-6 col-sm-6 col-xs-12' if purchase_phase else 'product_price col-md-8 col-sm-8 col-xs-12',
