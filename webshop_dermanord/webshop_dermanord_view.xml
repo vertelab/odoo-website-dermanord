@@ -2,6 +2,35 @@
 <openerp>
     <data>
 
+        <record id="product_template_tree_view" model="ir.ui.view">
+            <field name="name">product.template.empty.product.tree</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <tree string="Product">
+                    <field name="name"/>
+                    <field name="categ_id"/>
+                    <field name="type"/>
+                    <field name="state"/>
+                    <field name="uom_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="product_template_action" model="ir.actions.act_window">
+            <field name="name">Variantless Templates</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="product_template_tree_view"/>
+            <field name="context">{}</field>
+            <field name="domain">[('product_variant_count', '=', 0)]</field>
+        </record>
+        
+        <menuitem action="product_template_action"
+            id="menu_product_template_action"
+            parent="base.menu_product" sequence="100" />
+        
         <template id="checkout_dermanord" name="Checkout Dermanord" inherit_id="website_sale.checkout">
             <xpath expr="//div[@class='col-md-8 oe_cart']/div/div" position="before">
                 <div class="oe_structure"/>
