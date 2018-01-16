@@ -111,5 +111,17 @@
             </t>
         </template>
 
+        <template id="detail" inherit_id="website_hr_recruitment.detail">
+            <xpath expr="//t[@t-call='website.layout']" position="attributes">
+                <attribute name="t-call">theme_dermanord.submenu_dermanord</attribute>
+            </xpath>
+            <xpath expr="//div[@class='col-sm-5']" position="attributes">
+                <attribute name="class">col-sm-5 hidden</attribute>
+            </xpath>
+            <xpath expr="//div[@class='col-sm-7']" position="attributes">
+                <attribute name="class">col-sm-7 col-sm-offset-5</attribute>
+            </xpath>
+        </template>
+
     </data>
 </openerp>

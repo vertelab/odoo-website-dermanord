@@ -70,8 +70,9 @@ class website(models.Model):
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
                 return ''.join(reversed(breadcrumb))
             elif path.startswith('/event'): # url is an event
-                breadcrumb.append('<li><a href="%s">%s</a></li>' %('/', 'Home'))
-                breadcrumb.append('<li><a href="%s">%s</a></li>' %('/event/', 'Event'))
+                home_menu = self.env.ref('website.menu_homepage')
+                breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
+                breadcrumb.append('<li><a href="%s">%s</a></li>' %('/event/', self.env.ref('website_event.menu_events').name))
                 if len(path.split('/'))>2:
                     event_id = path.split('/')[2].split('?')[0].split('-')[-1]
                     event = self.env['event.event'].browse(int(event_id))
@@ -81,6 +82,13 @@ class website(models.Model):
                 #~ home_menu = self.env.ref('website.menu_homepage')
                 #~ breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
                 #~ breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
+                return ''.join(breadcrumb)
+            elif path.startswith('/jobs/detail'): # url is a jobs
+                home_menu = self.env.ref('website.menu_homepage')
+                breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
+                breadcrumb.append('<li><a href="%s">%s</a></li>' %('/jobs/start/', self.env.ref('website_hr_recruitment_dermanord.jobs_start_menu').name))
+                breadcrumb.append('<li><a href="%s">%s</a></li>' %('/jobs/', self.env.ref('website_hr_recruitment.menu_jobs').name))
+                breadcrumb.append('<li>%s</li>' %params.get('job').name)
                 return ''.join(breadcrumb)
             elif path.startswith('/home'): # url is on the user home page
                 path = path.split('/')[1:]
