@@ -83,8 +83,8 @@
                     </t>
                 </div>
                 <div id="filter_btn_group" class="btn-group">
-                    <button class="mt32 dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit">OK</button>
-                    <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()"><i class="fa fa-trash-o"/> Clear All</button>
+                    <button class="mt32 dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
+                    <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;"><i class="fa fa-trash-o"/> Clear All</button>
                 </div>
             </form>
         </template>
@@ -412,8 +412,8 @@
         <template id="desktop_product_filter_form" name="Desktop Product Filter Form">
             <form t-att-action="'/dn_list' if url == '/dn_list' else '/dn_shop'" method="post">
                 <div class="btn-group">
-                    <button class="mt32 dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit">OK</button>
-                    <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()"><i class="fa fa-trash-o"/> Clear All</button>
+                    <button class="mt32 dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
+                    <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;"><i class="fa fa-trash-o"/> Clear All</button>
                 </div>
                 <div class="container" style="padding: 0px;">
                     <t t-set="first_facet" t-value="0"/>

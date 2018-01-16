@@ -72,6 +72,12 @@ msgstr "Kategorier"
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.desktop_product_filter_form
 #: view:website:webshop_dermanord.dn_filter_form
+msgid "Search"
+msgstr "Sök"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.desktop_product_filter_form
+#: view:website:webshop_dermanord.dn_filter_form
 msgid "Clear All"
 msgstr "Rensa"
 
