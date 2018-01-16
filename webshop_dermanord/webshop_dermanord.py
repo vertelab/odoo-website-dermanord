@@ -65,6 +65,13 @@ class crm_campaign_object(models.Model):
 class product_template(models.Model):
     _inherit = 'product.template'
 
+    product_variant_count = fields.Integer(string='# of Product Variants', compute='_compute_product_variant_count', store=True)
+
+    @api.one
+    @api.depends('product_variant_ids.active')
+    def _compute_product_variant_count(self):
+        self.product_variant_count = len(self.product_variant_ids.filtered('active'))
+
     @api.one
     def _blog_post_ids(self):
         if type(self.id) is int:
