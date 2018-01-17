@@ -31,6 +31,7 @@
 
     <data>
 
+<!--
     <template id="contactus" name="Dermanord Contact" inherit_id="website.contactus">
         <xpath expr="//div[@groups='base.group_website_publisher']" position="replace">
         </xpath>
@@ -41,6 +42,7 @@
             <attribute name="class">text-center mt64 mb64</attribute>
         </xpath>
     </template>
+-->
 
     <template id="company_description" name="Dermanord Company Description" inherit_id="website.company_description">
         <xpath expr="//address" position="replace"></xpath>

@@ -213,7 +213,7 @@ msgid "Dv recommended price"
 msgstr ""
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/webshop_dermanord.py:1132
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1119
 #, python-format
 msgid "Few in stock"
 msgstr ""
@@ -239,7 +239,7 @@ msgid "I Agree with the"
 msgstr ""
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/webshop_dermanord.py:1130
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1117
 #, python-format
 msgid "In stock"
 msgstr ""
@@ -467,7 +467,7 @@ msgid "Shop"
 msgstr ""
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/webshop_dermanord.py:1134
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1121
 #, python-format
 msgid "Shortage"
 msgstr ""

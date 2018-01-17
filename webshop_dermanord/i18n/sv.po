@@ -72,6 +72,12 @@ msgstr "Kategorier"
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.desktop_product_filter_form
 #: view:website:webshop_dermanord.dn_filter_form
+msgid "Search"
+msgstr "Sök"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.desktop_product_filter_form
+#: view:website:webshop_dermanord.dn_filter_form
 msgid "Clear All"
 msgstr "Rensa"
 
@@ -130,6 +136,12 @@ msgid "Done"
 msgstr "Klar"
 
 #. module: webshop_dermanord
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1119
+#, python-format
+msgid "Few in stock"
+msgstr "Fåtal i lager"
+
+#. module: webshop_dermanord
 #: view:website:website.layout
 msgid "Filter"
 msgstr "Filtrera"
@@ -143,6 +155,12 @@ msgstr "För återförsäljare"
 #: view:website:website_sale.payment
 msgid "I Agree with the"
 msgstr "Jag godkänner"
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1117
+#, python-format
+msgid "In stock"
+msgstr "I lager"
 
 #. module: webshop_dermanord
 #: field:product.product,ingredient_ids:0
@@ -364,6 +382,12 @@ msgstr "Leveransadress"
 #: view:website:webshop_dermanord.products_list_reseller_view
 msgid "Shop"
 msgstr "Webbutik"
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1121
+#, python-format
+msgid "Shortage"
+msgstr "Slut i lager"
 
 #. module: webshop_dermanord
 #: model:product.facet,name:webshop_dermanord.facet_skin_type
