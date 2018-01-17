@@ -629,6 +629,7 @@ function load_products_grid(page){
         if (data['products'].length > 0) {
             var products_content = '';
             $.each(data['products'], function(key, info) {
+                console.log(data['products'][key]);
                 var start_time = $.now();
                 var content = openerp.qweb.render('products_item_grid', {
                     'url': data['url'],

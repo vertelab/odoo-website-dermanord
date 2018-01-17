@@ -140,11 +140,14 @@ class product_template(models.Model):
                     res[p.id] = {'recommended_price': 0.0, 'price': 0.0, 'price_tax': 0.0, 'default_code': 'error', 'description_sale': '%s' %e, 'image_src': placeholder}
         return res
 
+    #These fileds should not be stored. Because default variant is user depended.
     @api.multi
-    @api.depends('name', 'default_code')
+    #@api.depends('product_variant_ids.name', 'product_variant_ids.default_code', 'product_variant_ids.description_sale', 'product_variant_ids.image_ids.image_attachment_id', 'product_variant_ids.website_style_ids_variant', 'website_style_ids')
     def _get_all_variant_data(self):
         pricelist = self.env.ref('product.list0')
         placeholder = '/web/static/src/img/placeholder.png'
+        environ = request.httprequest.headers.environ
+        _logger.warn(environ.get("REMOTE_ADDR"))
         for p in self:
             try:
                 variant = p.get_default_variant()
@@ -165,20 +168,20 @@ class product_template(models.Model):
                 p.dv_recommended_price = 0.0
                 p.dv_price = 0.0
                 p.dv_price_tax = 0.0
-                p.dv_default_code = 'error'
+                p.dv_default_code = 'except'
                 p.dv_description_sale = '%s' %e
                 p.dv_image_src = placeholder
                 p.dv_ribbon = ''
                 p.dv_product = None
-    dv_recommended_price = fields.Float(compute='_get_all_variant_data', store=True)
+    dv_recommended_price = fields.Float(compute='_get_all_variant_data')#, store=True)
     dv_price = fields.Float(compute='_get_all_variant_data')
     dv_price_tax = fields.Float(compute='_get_all_variant_data')
-    dv_default_code = fields.Char(compute='_get_all_variant_data', store=True)
-    dv_description_sale = fields.Text(compute='_get_all_variant_data', store=True)
-    dv_image_src = fields.Char(compute='_get_all_variant_data', store=True)
-    dv_name = fields.Char(compute='_get_all_variant_data', store=True)
-    dv_ribbon = fields.Char(compute='_get_all_variant_data', store=True)
-    dv_product = fields.Many2one(comodel_name='product.product', compute='_get_all_variant_data', store=True)
+    dv_default_code = fields.Char(compute='_get_all_variant_data')#, store=True)
+    dv_description_sale = fields.Text(compute='_get_all_variant_data')#, store=True)
+    dv_image_src = fields.Char(compute='_get_all_variant_data')#, store=True)
+    dv_name = fields.Char(compute='_get_all_variant_data')#, store=True)
+    dv_ribbon = fields.Char(compute='_get_all_variant_data')#, store=True)
+    dv_product = fields.Many2one(comodel_name='product.product', compute='_get_all_variant_data')#, store=True)
 
 
     @api.multi
@@ -647,7 +650,7 @@ class WebsiteSale(website_sale):
         #~ import profile
         #~ _logger.error(timeit.timeit("request.env['product.template'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)"))
         search_start = timer()
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price'], limit=PPG, order=default_order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'website_style_ids_vairant', 'dv_description_sale', 'product_variant_ids', 'dv_product'], limit=PPG, order=default_order)
 
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
@@ -727,8 +730,7 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         # TODO: always get same product in the last?? why?
 
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=22+int(page)*6, fields=['id', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'dv_description_sale', 'product_variant_ids'], order=order)
-
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'website_style_ids_vairant', 'dv_description_sale', 'product_variant_ids', 'dv_product'], order=order)
 
         search_end = timer()
         _logger.warn('search end: %s' %(timer() - start_time))
@@ -794,7 +796,8 @@ class WebsiteSale(website_sale):
         order = request.session.get('current_order')
 
         # relist which product templates the current user is allowed to see
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order give strange result
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
+
         products_list = []
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
         for product in products:
