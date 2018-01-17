@@ -1163,6 +1163,14 @@ class WebsiteSale(website_sale):
             return request.redirect(kw.get('return_url'))
         return request.redirect("/shop/cart")
 
+    @http.route(['/website_sale_update_cart'], type='json', auth="public", website=True)
+    def website_sale_update_cart(self):
+        order = request.website.sale_get_order()
+        res = {}
+        if order:
+            res['amount_total'] = order.amount_total
+            res['cart_quantity'] = order.cart_quantity
+        return res
 
 class webshop_dermanord(http.Controller):
 

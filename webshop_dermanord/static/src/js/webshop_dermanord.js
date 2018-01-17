@@ -5,6 +5,12 @@ var page_count = 0;
 
 $(document).ready(function(){
 
+    openerp.jsonRpc("/website_sale_update_cart", "call", {
+    }).done(function(data){
+        $(".oe_currency_value").html(data['amount_total']);
+        $(".my_cart_quantity").html('(' + data['cart_quantity'] + ')');
+    });
+
     $("input[data-toggle='tooltip']").click(function() {
         $("input[data-toggle='tooltip']").tooltip('hide');
         $(this).tooltip();
@@ -629,7 +635,6 @@ function load_products_grid(page){
         if (data['products'].length > 0) {
             var products_content = '';
             $.each(data['products'], function(key, info) {
-                console.log(data['products'][key]);
                 var start_time = $.now();
                 var content = openerp.qweb.render('products_item_grid', {
                     'url': data['url'],
