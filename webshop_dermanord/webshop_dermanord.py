@@ -320,6 +320,127 @@ class ResPartner(models.Model):
 class Website(models.Model):
     _inherit = 'website'
 
+    # TODO: Move these functions from WebsiteSale
+    def get_form_values(self):
+        if not request.session.get('form_values'):
+            request.session['form_values'] = {}
+        return request.session.get('form_values')
+
+    def get_chosen_filter_qty(self, post):
+        chosen_filter_qty = 0
+        for k, v in post.iteritems():
+            if k not in ['post_form', 'order']:
+                chosen_filter_qty += 1
+        return chosen_filter_qty
+
+    def get_chosen_order(self, post):
+        sort_name = 'sold_qty'
+        sort_order = 'desc'
+        for k, v in post.iteritems():
+            if k == 'order':
+                sort_name = post.get('order').split(' ')[0]
+                sort_order = post.get('order').split(' ')[1]
+                break
+        return [sort_name, sort_order]
+
+    def get_domain_append(self, model, dic):
+        facet_ids = []
+        category_ids = []
+        ingredient_ids = []
+        not_ingredient_ids = []
+        current_ingredient = None
+        current_ingredient_key = None
+        current_news = None
+        current_offer = None
+        current_offer_reseller = None
+
+        for k, v in dic.iteritems():
+            if k.split('_')[0] == 'facet':
+                if v:
+                    facet_ids.append(int(v))
+                    request.session.get('form_values')['facet_%s_%s' %(k.split('_')[1], k.split('_')[2])] = k.split('_')[2]
+            if k.split('_')[0] == 'category':
+                if v:
+                     category_ids.append(int(v))
+                     request.session.get('form_values')['category_%s' %k.split('_')[1]] = k.split('_')[1]
+            if k.split('_')[0] == 'ingredient':
+                if v:
+                    ingredient_ids.append(int(v))
+                    request.session.get('form_values')['ingredient_%s' %k.split('_')[1]] = k.split('_')[1]
+            if k == 'current_news':
+                if v:
+                    current_news = 'current_news'
+                    request.session.get('form_values')['current_news'] = 'current_news'
+            if k == 'current_offer':
+                if v:
+                    current_offer = 'current_offer'
+                    request.session.get('form_values')['current_offer'] = 'current_offer'
+            if k == 'current_offer_reseller':
+                if v:
+                    current_offer_reseller = 'current_offer_reseller'
+                    request.session.get('form_values')['current_offer_reseller'] = 'current_offer_reseller'
+            if k.split('_')[0] == 'notingredient':
+                if v:
+                    not_ingredient_ids.append(int(v))
+                    request.session.get('form_values')['notingredient_%s' %k.split('_')[1]] = k.split('_')[1]
+            if k == 'current_ingredient':
+                if v:
+                    current_ingredient = v
+                    current_ingredient_key = 'ingredient_' + v
+                    ingredient_ids.append(int(v))
+
+        if current_ingredient:
+            dic['current_ingredient'] = int(current_ingredient)
+            dic[current_ingredient_key] = current_ingredient
+
+        domain_append = []
+        if category_ids:
+            domain_append += [('public_categ_ids', 'in', [id for id in category_ids])]
+        if facet_ids:
+            if model == 'product.product':
+                domain_append += [('facet_line_ids.value_ids', '=', id) for id in facet_ids]
+            if model == 'product.template':
+                domain_append += [('product_variant_ids.facet_line_ids.value_ids', '=', id) for id in facet_ids]
+        if ingredient_ids or not_ingredient_ids:
+            product_ids = request.env['product.product'].sudo().search_read(
+                [('ingredient_ids', '=', id) for id in ingredient_ids] + [('ingredient_ids', '!=', id) for id in not_ingredient_ids], ['id'])
+            domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
+        if request.session.get('form_values'):
+            if request.session.get('form_values').get('current_news') or request.session.get('form_values').get('current_offer') or request.session.get('form_values').get('current_offer_reseller'):
+                offer_domain = self.domain_current(model, dic)
+                if len(offer_domain) > 0:
+                    for d in offer_domain:
+                        domain_append.append(d)
+
+        return domain_append
+
+    def dn_shop_set_session(self, post, url):
+        """Update session for /dn_shop"""
+        default_order = 'sold_qty desc'
+        if post.get('order'):
+            default_order = post.get('order')
+            request.session.get('form_values')['order'] = default_order
+            request.session['current_order'] = default_order
+
+
+
+        if post.get('post_form') and post.get('post_form') == 'ok':
+            request.session['form_values'] = post
+
+        request.session['url'] = url
+        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
+        request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
+        request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
+
+
+
+        if post:
+            domain = self.get_domain_append('product.template', post)
+        else:
+            domain = self.get_domain_append('product.template', request.session.get('form_values', {}))
+        _logger.warn('\n\ndomain: %s\n' % domain)
+        request.session['current_domain'] = domain
+
     # API handling broken for unknown reasons. Decorators not working properly with this method.
     def sale_get_order(self, cr, uid, ids, force_create=False, code=None, update_pricelist=None, context=None):
         env = api.Environment(cr, uid, context)
@@ -585,6 +706,8 @@ class WebsiteSale(website_sale):
         return domain_append
 
 
+
+
     @http.route([
         '/dn_shop',
         '/dn_shop/page/<int:page>',
@@ -594,28 +717,25 @@ class WebsiteSale(website_sale):
     def dn_shop(self, page=0, category=None, search='', **post):
         start_all = timer()
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
-        attrib_list = request.httprequest.args.getlist('attrib')
-        attrib_values = [map(int, v.split("-")) for v in attrib_list if v]
-        attrib_set = set([v[1] for v in attrib_values])
-        domain = self._get_search_domain(search, category, attrib_values)
-        if len(post) > 0:
-            domain += self.get_domain_append('product.template', post)
-        else:
-            if request.session.get('form_values'):
-                domain += self.get_domain_append('product.template', request.session.get('form_values'))
-        request.session['current_domain'] = domain
+
+        url = "/dn_shop"
+        request.website.dn_shop_set_session(post, url)
+
+        # This looks like trash left over from /shop
+
+        #~ attrib_list = request.httprequest.args.getlist('attrib')
+        #~ _logger.warn('\n\nattrib_list: %s\npost: %s\n' % (attrib_list, post))
+        #~ attrib_values = [map(int, v.split("-")) for v in attrib_list if v]
+        #~ attrib_set = set([v[1] for v in attrib_values])
+        #~ domain = self._get_search_domain(search, category, attrib_values)
+
         domain_finished = timer()
+
         if category:
             if not request.session.get('form_values'):
                 request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
             request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
             self.get_form_values()['category_' + str(int(category))] = str(int(category))
-            #~ for k,v in request.session.get('form_values').items():
-                #~ if 'category_' in k:
-                    #~ del request.session['form_values'][k]
-                    #~ request.session['form_values']['category_%s' %int(category)] = '%s' %int(category)
-
-        #~ keep = QueryURL('/dn_shop', category=category and int(category), search=search, attrib=attrib_list)
 
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
@@ -623,33 +743,15 @@ class WebsiteSale(website_sale):
         else:
             pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
 
-        url = "/dn_shop"
-        #~ product_obj = pool.get('product.template')
-        #~ product_count = product_obj.search_count(cr, uid, domain, context=context)
+
         if search:
             post["search"] = search
-        #~ if category:
-            #~ category = pool['product.public.category'].browse(cr, uid, int(category), context=context)
-            #~ url = "/shop/category/%s" % slug(category)
-        if attrib_list:
-            post['attrib'] = attrib_list
+        #~ if attrib_list:
+            #~ post['attrib'] = attrib_list
 
-        default_order = 'sold_qty desc'
-        if post.get('order'):
-            default_order = post.get('order')
-            request.session.get('form_values')['order'] = default_order
-            request.session['current_order'] = default_order
-        #~ product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=default_order, context=context)
-        #~ products = product_obj.browse(cr, uid, product_ids, context=context)
-        # relist which product templates the current user is allowed to see
-        #~ for p in products:
-            #~ if len(p.sudo().access_group_ids) > 0 :
-                #~ _logger.error('Access_group %s' % (request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids&p.sudo().access_group_ids))
-                #~ if not request.env['res.users'].browse(uid).commercial_partner_id.access_group_ids & p.sudo().access_group_ids:
-                    #~ products -= p
-        #~ import profile
-        #~ _logger.error(timeit.timeit("request.env['product.template'].with_context(pricelist=pricelist.id).search_access_group(domain, limit=PPG, offset=pager['offset'], order=default_order)"))
         search_start = timer()
+        domain = request.session.get('current_domain')
+        default_order = request.session.get('default_order')
         products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'website_style_ids_vairant', 'dv_description_sale', 'product_variant_ids', 'dv_product'], limit=PPG, order=default_order)
 
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
@@ -673,19 +775,11 @@ class WebsiteSale(website_sale):
         #~ to_currency = pricelist.currency_id
         #~ compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
-        if post.get('post_form') and post.get('post_form') == 'ok':
-            request.session['form_values'] = post
-
-        request.session['url'] = url
-        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
-        request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
-        request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
-
         values = {
             'search': search,
             'category': category,
-            'attrib_values': attrib_values,
-            'attrib_set': attrib_set,
+            #~ 'attrib_values': attrib_values,
+            #~ 'attrib_set': attrib_set,
             'pricelist': pricelist,
             'products': products,
             #~ 'bins': table_compute().process(products),

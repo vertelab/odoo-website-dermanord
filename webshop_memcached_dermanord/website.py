@@ -35,14 +35,17 @@ class Website(models.Model):
     def get_search_values(self, kw):
         _logger.warn('\nkw: %s\n' % kw)
         _logger.warn('\nsession: %s\n\n' % request.session)
-        attrs = ['current_domain', 'chosen_filter_qty', 'form_values', 'sort_order', 'sort_name']
-        return (' pricelist: %s ' % get_pricelist()) + ' '.join(['%s: %s (session) | %s (post)' % (attr, request.session.get(attr), kw.get(attr)) for attr in attrs]).replace('{', '{{').replace('}', '}}')
+        attrs = ['chosen_filter_qty', 'form_values', 'sort_order', 'sort_name']
+        if kw:
+            request.website.dn_shop_set_session(kw, '/dn_shop')
+        _logger.warn('\nsession: %s\n\n' % request.session)
+        return (' pricelist: %s ' % get_pricelist()) + ' '.join(['%s: %s' % (attr, request.session.get(attr)) for attr in attrs]).replace('{', '{{').replace('}', '}}')
 
 class WebsiteSale(WebsiteSale):
 
     # '/dn_shop'
     #~ @memcached.route(key=lambda:'{db}{path}{context_uid}')
-    @memcached.route(key=lambda kw:'{db}{path}{logged_in}{lang}%s' % request.website.get_search_values(kw))
+    @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw))
     def dn_shop(self, page=0, category=None, search='', **post):
         return super(WebsiteSale, self).dn_shop(page, category, search, **post)
 
