@@ -1168,8 +1168,7 @@ class WebsiteSale(website_sale):
         order = request.website.sale_get_order()
         res = {'amount_total': '0.00', 'cart_quantity': '0'}
         if order:
-            amount_total = "%.2f" %order.amount_total
-            res['amount_total'] = amount_total
+            res['amount_total'] = "%.2f" %order.amount_total
             res['cart_quantity'] = order.cart_quantity
         if request.env.lang == 'sv_SE':
             res['amount_total'] = res['amount_total'].replace('.', ',')
