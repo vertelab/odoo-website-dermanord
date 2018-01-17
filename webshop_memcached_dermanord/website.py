@@ -43,21 +43,44 @@ class Website(models.Model):
 
 class WebsiteSale(WebsiteSale):
 
-    # '/dn_shop'
-    #~ @memcached.route(key=lambda:'{db}{path}{context_uid}')
+    #~ @http.route([
+        #~ '/dn_shop',
+        #~ '/dn_shop/page/<int:page>',
+        #~ '/dn_shop/category/<model("product.public.category"):category>',
+        #~ '/dn_shop/category/<model("product.public.category"):category>/page/<int:page>',
+    #~ ], type='http', auth="public", website=True)
     @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw))
     def dn_shop(self, page=0, category=None, search='', **post):
         return super(WebsiteSale, self).dn_shop(page, category, search, **post)
+
+    #~ @http.route([
+        #~ '/dn_list',
+        #~ '/dn_list/page/<int:page>',
+        #~ '/dn_list/category/<model("product.public.category"):category>',
+        #~ '/dn_list/category/<model("product.public.category"):category>/page/<int:page>',
+    #~ ], type='http', auth="public", website=True)
+    @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw))
+    def dn_list(self, page=0, category=None, search='', **post):
+        return super(WebsiteSale, self).dn_list(page, category, search, **post)
 
     #~ # '/dn_list'
     #~ @memcached.route()
     #~ def dn_list(self, page=0, category=None, search='', **post):
         #~ return super(WebsiteSale, self).dn_list(page, category, search, **post)
+  
+    # '/shop/product/<model("product.template"):product>'
+    @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw))
+    def product(self, product, category='', search='', **kwargs):
+        return super(WebsiteSale, self).product(product, category, search, **post)
 
-    #~ # '/shop/product/<model("product.template"):product>'
-    #~ @memcached.route()
-    #~ def product(self, product, category='', search='', **kwargs):
-        #~ return super(WebsiteSale, self).product(product, category, search, **post)
+    #~ @http.route([
+        #~ '/dn_shop/variant/<model("product.product"):variant>'
+    #~ ], type='http', auth="public", website=True)
+    @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw))
+    def dn_product_variant(self, variant, category='', search='', **kwargs):
+        return super(WebsiteSale, self).dn_product_variant(variant, category, search, **kwargs)
+
+
 
     #~ # '/shop/product/comment/<int:product_template_id>'
     #~ @memcached.route()
