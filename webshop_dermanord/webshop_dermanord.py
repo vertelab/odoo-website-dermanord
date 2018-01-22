@@ -249,7 +249,7 @@ class product_product(models.Model):
                 p.is_offer_product = True
             else:
                 p.is_offer_product = False
-    is_offer_product = fields.Boolean(compute='_is_offer_product', store=True)
+    is_offer_product = fields.Boolean(compute='_is_offer_product')#, store=True)
 
 class product_facet(models.Model):
     _inherit = 'product.facet'
