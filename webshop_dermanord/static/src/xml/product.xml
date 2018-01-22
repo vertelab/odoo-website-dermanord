@@ -26,7 +26,10 @@
                     </div>
                     <t t-if="is_offer_product">
                         <div class="offer-wrapper">
+                            <div class="ribbon ribbon_offer btn btn-primary">Offer</div>
+<!--
                             <i class="fa fa-star-o fa-3x" title="Offer"/>
+-->
                         </div>
                     </t>
                     <div class="dn_product_image">

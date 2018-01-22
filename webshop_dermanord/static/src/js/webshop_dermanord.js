@@ -81,10 +81,10 @@ $(document).ready(function(){
             offer_html = '';
             ribbon_html = '';
             if (data['offer']) {
-                offer_html = '<div class="offer-wrapper"><i class="fa fa-star-o fa-3x" title="Offer"/></div>';
+                offer_html = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">' + data['offer_text'] + '</div></div>';
             }
             if (data['ribbon']) {
-                ribbon_html = '<div class="ribbon-wrapper"><div class="ribbon btn btn-primary">News</div></div>';
+                ribbon_html = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">' + data['news_text'] + '</div></div>';
             }
             if (data['images'] != null) {
                 var big_html = '<div id="image_big" class="tab-content">';

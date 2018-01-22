@@ -2,9 +2,9 @@
                     Ingredient Dermanord
  ============================================================ */
 
-.ingredient_desc h6 {
+.ingredient_desc h6, .ingredient_desc i {
     color: #D27153;
-    font-size: 1.2em;
+    font-size: 0.4em;
 }
 
 .ingredient_desc h5 {

@@ -1312,6 +1312,8 @@ class webshop_dermanord(http.Controller):
                 value['use_desc'] = product.use_desc or ''
                 value['reseller_desc'] = (product.reseller_desc or '') if is_reseller else ''
                 value['offer'] = offer
+                value['offer_text'] = _('Offer')
+                value['news_text'] = _('News')
                 value['ribbon'] = request.env.ref('website_sale.image_promo') in product.website_style_ids_variant if len(product.website_style_ids_variant) > 0 else (request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids)
                 value['sale_ok'] = True if (product.sale_ok and in_stock and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
         return value

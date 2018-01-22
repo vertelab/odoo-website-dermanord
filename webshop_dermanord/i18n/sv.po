@@ -216,6 +216,7 @@ msgstr "Namn Ö-A"
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.desktop_product_filter
 #: view:website:webshop_dermanord.dn_filter_content
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1316
 msgid "News"
 msgstr "Nyheter"
 
@@ -232,6 +233,7 @@ msgstr "Not ordered from webshop"
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.desktop_product_filter
 #: view:website:webshop_dermanord.dn_filter_content
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1315
 msgid "Offer"
 msgstr "Erbjudande"
 

@@ -109,7 +109,7 @@ div.shipping-address, div.invoicing-address {
     right: 0px;
 }
 
-#image_big > div > .ribbon-wrapper > .ribbon {
+#image_big > div > .ribbon-wrapper > .ribbon_news {
     font: bold 15px Sans-Serif;
     color: white;
     text-align: center;
@@ -125,11 +125,30 @@ div.shipping-address, div.invoicing-address {
     cursor: default;
 }
 
+#image_big .ribbon_offer {
+    font: bold 15px Sans-Serif;
+    color: white;
+    text-align: center;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    position: relative;
+    padding: 7px 0;
+    left: -28px;
+    top: 15px;
+    width: 120px;
+    cursor: default;
+    font-size: 0.9em;
+}
+
 #image_big > div > .offer-wrapper {
+    width: 85px;
+    height: 88px;
     z-index: 5;
     overflow: hidden;
     position: absolute;
-    top: 30px;
+    top: 0px;
     left: 0px;
 }
 
@@ -556,20 +575,6 @@ select.dn_selection_dropdown + i.fa {
     cursor: default;
 }
 
-.dn_product_div .offer-wrapper {
-/*
-    width: 105px;
-    height: 108px;
-*/
-    width: 85px;
-    height: 88px;
-    z-index: 5;
-    overflow: hidden;
-    position: absolute;
-    top: 20px;
-    left: 20px;
-}
-
 .dn_product_div .ribbon_offer {
     font: bold 15px Sans-Serif;
     color: white;
@@ -580,16 +585,21 @@ select.dn_selection_dropdown + i.fa {
     -o-transform: rotate(-45deg);
     position: relative;
     padding: 7px 0;
-/*
-    left: -32px;
-    top: 22px;
-    width: 145px;
-*/
     left: -28px;
     top: 15px;
     width: 120px;
     cursor: default;
     font-size: 0.9em;
+}
+
+.dn_product_div .offer-wrapper {
+    width: 85px;
+    height: 88px;
+    z-index: 5;
+    overflow: hidden;
+    position: absolute;
+    top: 20px;
+    left: 20px;
 }
 
 .dn_product_div .offer-wrapper i {
