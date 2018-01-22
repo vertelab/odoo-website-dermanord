@@ -78,11 +78,13 @@ $(document).ready(function() {
             'campaign_date': '',
         }).done(function(data){
             if (data.length == 0) {
+                $("section.product_highlights").addClass("hidden");
                 //~ var message = '<h2 class="text-center text-muted css_non_editable_mode_hidden">No product highlight yet</h2>';
-                var message = '<h2 class="text-center text-muted">No product highlight yet</h2>';
-                $(".product_div").html(message);
+                //~ var message = '<h2 class="text-center text-muted">No product highlight yet</h2>';
+                //~ $(".product_div").html(message);
             }
             else {
+                $("section.product_highlights").removeClass("hidden");
                 var ph_content = '';
                 $.each(data, function(key, info) {
                     var content = '<a href="' + data[key]['url'] + '"><div class="col-md-3 col-sm-6 col-xs-12"><div class="ph_block"><img class="img img-responsive ph_img" src="' + data[key]['image'] + '"/><div class="container desc_div"><h4 class="dn_uppercase">' + data[key]['name'] + '</h4><p class="ph_desc text-muted">' + data[key]['description'] + '</p></div></div></div></a>';

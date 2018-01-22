@@ -129,11 +129,11 @@ website.snippet.options.product_highlights_option = website.snippet.Option.exten
             'campaign_date': '',
         }).done(function(data){
             if (data.length == 0) {
-                var message = '<h2 class="text-center text-muted css_non_editable_mode_hidden">No product highlight yet</h2>';
-                self.$target.find("h3").after(message);
+                //~ var message = '<h2 class="text-center text-muted css_non_editable_mode_hidden">No product highlight yet</h2>';
+                //~ self.$target.find("h3").after(message);
             }
             else {
-            var ph_content = '';
+                var ph_content = '';
                 $.each(data, function(key, info) {
                     var content = openerp.qweb.render('product_highlights_snippet', {
                         'ph_url': data[key]['url'],
