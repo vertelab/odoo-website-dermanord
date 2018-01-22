@@ -193,7 +193,7 @@ class product_template(models.Model):
                 p.is_offer_product = True
             else:
                 p.is_offer_product = False
-    is_offer_product = fields.Boolean(compute='_is_offer_product', store=True)
+    is_offer_product = fields.Boolean(compute='_is_offer_product')#, store=True)
 
 class product_product(models.Model):
     _inherit = 'product.product'
@@ -412,6 +412,74 @@ class Website(models.Model):
                     for d in offer_domain:
                         domain_append.append(d)
 
+        return domain_append
+
+    def domain_current(self, model, dic):
+        domain_current = []
+        domain_append = []
+        if 'current_news' in dic:
+            if model == 'product.template':
+                product_ids = request.env[model].search([('website_style_ids', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('id')
+                product_variants = request.env['product.product'].search([('website_style_ids_variant', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('product_tmpl_id')
+                if len(product_variants) > 0:
+                    product_ids += product_variants.mapped('id')
+            if model == 'product.product':
+                product_ids = request.env[model].search([('website_style_ids_variant', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('id')
+                product_tmpls = request.env['product.template'].search([('website_style_ids', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('product_variant_ids')
+                if len(product_tmpls) > 0:
+                    product_ids += product_tmpls.mapped('id')
+            if len(product_ids) == 0:
+                domain_current.append(('id', '=', 9999999999))
+            else:
+                domain_current.append(('id', 'in', product_ids))
+        if 'current_offer' in dic:
+            if model == 'product.template':
+                campaign_product_ids = request.env[model].get_campaign_tmpl(for_reseller=False).mapped('id')
+                #get product.template that have variants are in current offer
+                tmpl = request.env['product.product'].get_campaign_variants(for_reseller=False).mapped('product_tmpl_id')
+                if len(tmpl) > 0:
+                    for t in tmpl:
+                        if t.id not in campaign_product_ids:
+                            campaign_product_ids.append(t.id)
+            if model == 'product.product':
+                campaign_product_ids = request.env[model].get_campaign_variants(for_reseller=False).mapped('id')
+                tmpl = request.env['product.template'].get_campaign_tmpl(for_reseller=False)
+                if len(tmpl) > 0:
+                    for t in tmpl:
+                        campaign_product_ids += t.mapped('product_variant_ids').mapped('id')
+            if len(campaign_product_ids) == 0 and ('id', '=', 9999999999) not in domain_current:
+                domain_current.append(('id', '=', 9999999999))
+            else:
+                domain_current.append(('id', 'in', campaign_product_ids))
+        if 'current_offer_reseller' in dic:
+            if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
+                if model == 'product.template':
+                    campaign_product_reseller_ids = request.env[model].get_campaign_tmpl(for_reseller=True).mapped('id')
+                    tmpl = request.env['product.product'].get_campaign_variants(for_reseller=False).mapped('product_tmpl_id')
+                    if len(tmpl) > 0:
+                        for t in tmpl:
+                            if t.id not in campaign_product_reseller_ids:
+                                campaign_product_reseller_ids.append(t.id)
+                if model == 'product.product':
+                    campaign_product_reseller_ids = request.env[model].get_campaign_variants(for_reseller=True).mapped('id')
+                    tmpl = request.env['product.template'].get_campaign_tmpl(for_reseller=True)
+                    if len(tmpl) > 0:
+                        for t in tmpl:
+                            campaign_product_reseller_ids += t.product_variant_ids.mapped('id')
+                if len(campaign_product_reseller_ids) == 0 and ('id', '=', 9999999999) not in domain_current:
+                    domain_current.append(('id', '=', 9999999999))
+                else:
+                    domain_current.append(('id', 'in', campaign_product_reseller_ids))
+        for i in domain_current:
+            if domain_current.count(i) > 1:
+                domain_current.remove(i)
+        if len(domain_current) > 1:
+            for d in domain_current:
+                if domain_current.index(d) == 0 or (len(domain_current) == 3 and domain_current.index(d) == 1):
+                    domain_append.append('|')
+                domain_append.append(domain_current[domain_current.index(d)])
+        if len(domain_current) == 1:
+            domain_append.append(domain_current[0])
         return domain_append
 
     def dn_shop_set_session(self, post, url):
