@@ -1329,7 +1329,7 @@ class WebsiteFullTextSearch(WebsiteFullTextSearch):
 
     @http.route(['/search_suggestion'], type='json', auth="public", website=True)
     def search_suggestion(self, search='', facet=None, res_model=None, limit=0, offset=0, **kw):
-        result = request.env['fts.fts'].term_search(search, facet, res_model, limit, offset)
+        result = request.env['fts.fts'].term_search(search.lower(), facet, res_model, limit, offset)
         result_list = result['terms']
         rl = []
         i = 0
