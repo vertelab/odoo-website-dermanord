@@ -25,7 +25,7 @@ function load_blog_post_list(page){
             var blog_content = '';
             $.each(data['blog_posts'], function(key, info) {
                 var content = openerp.qweb.render('blog_post_item', {
-                    'background_image_css': data['blog_posts']['background_image_css'],
+                    'background_image_css': data['blog_posts'][key]['background_image_css'],
                     'post_name': data['blog_posts'][key]['post_name'],
                     'post_subtitle': data['blog_posts'][key]['post_subtitle'],
                     'write_date': data['blog_posts'][key]['write_date'],
