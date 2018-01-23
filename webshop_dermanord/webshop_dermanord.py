@@ -186,13 +186,16 @@ class product_template(models.Model):
 
     @api.multi
     def _is_offer_product(self):
-        for p in self:
-            if (p in p.get_campaign_tmpl(for_reseller=False)) or (p in p.get_campaign_tmpl(for_reseller=True)):
-                p.is_offer_product = True
-            elif len(p.get_campaign_variants(for_reseller=False) & p.product_variant_ids) > 0 or len(p.get_campaign_variants(for_reseller=True) & p.product_variant_ids) > 0:
-                p.is_offer_product = True
-            else:
-                p.is_offer_product = False
+        if self.env['crm.tracking.campaign'].is_current(fields.Date.today(), env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
+            for p in self:
+                if (p in p.get_campaign_tmpl(for_reseller=False)) or (p in p.get_campaign_tmpl(for_reseller=True)):
+                    p.is_offer_product = True
+                elif len(p.get_campaign_variants(for_reseller=False) & p.product_variant_ids) > 0 or len(p.get_campaign_variants(for_reseller=True) & p.product_variant_ids) > 0:
+                    p.is_offer_product = True
+                else:
+                    p.is_offer_product = False
+        else:
+            p.is_offer_product = False
     is_offer_product = fields.Boolean(compute='_is_offer_product')#, store=True)
 
 class product_product(models.Model):

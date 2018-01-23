@@ -19,7 +19,6 @@ function load_blog_post_list(page){
     openerp.jsonRpc("/website_blog_json_list", "call", {
         'page': page,
     }).done(function(data){
-        console.log(data);
         var page_count = data['page'];
         if (page_count >= current_page) {
             var blog_content = '';
