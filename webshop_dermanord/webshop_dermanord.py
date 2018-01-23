@@ -830,7 +830,7 @@ class WebsiteSale(website_sale):
         search_start = timer()
         domain = request.session.get('current_domain')
         default_order = request.session.get('default_order')
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'website_style_ids_variant', 'dv_description_sale', 'product_variant_ids', 'dv_product'], limit=PPG, order=default_order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'website_style_ids_variant', 'dv_description_sale', 'dv_product'], limit=PPG, order=default_order)
 
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
