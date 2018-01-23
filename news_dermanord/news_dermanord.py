@@ -46,7 +46,7 @@ class WebsiteBlog(WebsiteBlog):
         blog_post_list = []
         if request.session.get('blog_domain'):
             str_read_more = u'Läs mer' if request.context.get('lang') == 'sv_SE' else 'Read more'
-            str_tags = 'Etiketter' if request.context.get('lang') == 'sv_SE' else 'Tags'
+            str_tags = 'Etiketter:' if request.context.get('lang') == 'sv_SE' else 'Tags:'
             blog_posts = request.env['blog.post'].search(request.session['blog_domain']['domain'], order=request.session['blog_domain']['order'], limit=BPG, offset=(int(page)+1)*BPG)
             if len(blog_posts) > 0:
                 for p in blog_posts:
