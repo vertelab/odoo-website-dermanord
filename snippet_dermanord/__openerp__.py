@@ -36,6 +36,7 @@ Extra snippets for Dermanord.
         'sale_promotions',
         'crm_campaign_product',
         'crm_campaign_blog',
+        'crm_campaign_phase',
         'product_private',
         'website_blog_private',
     ],
