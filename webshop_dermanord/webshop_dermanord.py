@@ -186,16 +186,23 @@ class product_template(models.Model):
 
     @api.multi
     def _is_offer_product(self):
-        if self.env['crm.tracking.campaign'].is_current(fields.Date.today(), env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
-            for p in self:
-                if (p in p.get_campaign_tmpl(for_reseller=False)) or (p in p.get_campaign_tmpl(for_reseller=True)):
-                    p.is_offer_product = True
-                elif len(p.get_campaign_variants(for_reseller=False) & p.product_variant_ids) > 0 or len(p.get_campaign_variants(for_reseller=True) & p.product_variant_ids) > 0:
-                    p.is_offer_product = True
-                else:
-                    p.is_offer_product = False
-        else:
+        is_reseller = self.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller
+        #~ if is_reseller:
+            #~ campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')])
+        #~ else:
+            #~ campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
+        #~ for campaign in campaigns:
+            #~ if campaign.is_current(fields.Date.today(),for_reseller):
+                #~ for o in campaign.object_ids:
+                    #~ if o.object_id._name == 'product.template':
+                        #~ if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
+                            #~ products |= o.object_id
+        for p in self:
             p.is_offer_product = False
+            if p in p.get_campaign_tmpl(for_reseller=is_reseller):
+                p.is_offer_product = True
+            elif len(p.get_campaign_variants(for_reseller=is_reseller) & p.product_variant_ids) > 0:
+                p.is_offer_product = True
     is_offer_product = fields.Boolean(compute='_is_offer_product')#, store=True)
 
 class product_product(models.Model):
@@ -245,13 +252,13 @@ class product_product(models.Model):
 
     @api.multi
     def _is_offer_product(self):
+        is_reseller = self.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller
         for p in self:
-            if (p in p.get_campaign_variants(for_reseller=False)) or (p in p.get_campaign_variants(for_reseller=True)):
+            p.is_offer_product = False
+            if p in p.get_campaign_variants(for_reseller=is_reseller):
                 p.is_offer_product = True
-            elif p.product_tmpl_id in p.product_tmpl_id.get_campaign_tmpl(for_reseller=False) or p.product_tmpl_id in p.product_tmpl_id.get_campaign_tmpl(for_reseller=True):
+            elif p.product_tmpl_id in p.product_tmpl_id.get_campaign_tmpl(for_reseller=is_reseller):
                 p.is_offer_product = True
-            else:
-                p.is_offer_product = False
     is_offer_product = fields.Boolean(compute='_is_offer_product')#, store=True)
 
 class product_facet(models.Model):
@@ -458,7 +465,7 @@ class Website(models.Model):
             if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
                 if model == 'product.template':
                     campaign_product_reseller_ids = request.env[model].get_campaign_tmpl(for_reseller=True).mapped('id')
-                    tmpl = request.env['product.product'].get_campaign_variants(for_reseller=False).mapped('product_tmpl_id')
+                    tmpl = request.env['product.product'].get_campaign_variants(for_reseller=True).mapped('product_tmpl_id')
                     if len(tmpl) > 0:
                         for t in tmpl:
                             if t.id not in campaign_product_reseller_ids:
