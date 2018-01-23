@@ -34,7 +34,8 @@ News page for Dermanord
     'data': [
         'news_dermanord_view.xml',
         'news_dermanord_data.xml',
-],
+    ],
+    'qweb': ['static/src/xml/templates.xml'],
     'application': False,
 }
 

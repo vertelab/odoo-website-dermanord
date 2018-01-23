@@ -31,6 +31,7 @@ import werkzeug
 import logging
 _logger = logging.getLogger(__name__)
 
+BPG = 8
 
 class website(models.Model):
     _inherit = 'website'
@@ -291,12 +292,10 @@ class WebsiteBlog(WebsiteBlog):
             domain += [('tag_ids', '=', tag.id)]
         if date_begin and date_end:
             domain += [("create_date", ">=", date_begin), ("create_date", "<=", date_end)]
-
+        order = 'create_date desc'
         blog_url = QueryURL('', ['blog', 'tag'], blog=blog, tag=tag, date_begin=date_begin, date_end=date_end)
         post_url = QueryURL('', ['blogpost'], tag_id=tag and tag.id or None, date_begin=date_begin, date_end=date_end)
-        _logger.warn(domain)
-        blog_post_ids = blog_post_obj.search(cr, uid, domain, order="create_date desc", context=context)
-        _logger.warn(blog_post_ids)
+        blog_post_ids = blog_post_obj.search(cr, uid, domain, order=order, limit=BPG, context=context)
         blog_posts = blog_post_obj.browse(cr, uid, blog_post_ids, context=context)
 
         pager = request.website.pager(
@@ -311,7 +310,16 @@ class WebsiteBlog(WebsiteBlog):
         blog_posts = blog_posts[pager_begin:pager_end]
 
         tags = blog.all_tags()[blog.id]
-        _logger.warn(blog_posts)
+
+        if not request.session.get('blog_domain'):
+            request.session['blog_domain'] = {}
+        request.session['blog_domain'] = {
+            'domain': domain,
+            'order': order,
+            'tag': tag.id if tag else False,
+        }
+        _logger.warn('request.session: %s' %request.session['blog_domain'])
+
         values = {
             'blog': blog,
             'blogs': blogs,
@@ -332,7 +340,6 @@ class WebsiteBlog(WebsiteBlog):
                 _logger.error('Cannot reder template %s' %blog.post_short.name)
         else:
             return request.website.render("website_blog.blog_post_short", values)
-
 
     @http.route([
             '''/blog/<model("blog.blog"):blog>/post/<model("blog.post", "[('blog_id','=',blog[0])]"):blog_post>''',
@@ -401,7 +408,7 @@ class WebsiteBlog(WebsiteBlog):
             return request.website.render(blog.post_complete.id, values)
             #~ except:
                 #~ _logger.error('Cannot reder template %s' %blog.post_complete.name)
-                
+
         else:
             #~ if (blog_post.security_type == 'private' and request.env['res.users'].browse(uid) in blog_post.group_ids.mapped('users')) or blog_post.security_type == 'public':
             return request.website.render("website_blog.blog_post_complete", values)
