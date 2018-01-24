@@ -141,36 +141,37 @@ class product_template(models.Model):
         return res
 
     #These fileds should not be stored. Because default variant is user depended.
-    @api.one
+    @api.multi
     #@api.depends('product_variant_ids.name', 'product_variant_ids.default_code', 'product_variant_ids.description_sale', 'product_variant_ids.image_ids.image_attachment_id', 'product_variant_ids.website_style_ids_variant', 'website_style_ids')
     def _get_all_variant_data(self):
         pricelist = self.env.ref('product.list0')
         placeholder = '/web/static/src/img/placeholder.png'
         environ = request.httprequest.headers.environ
         _logger.warn(environ.get("REMOTE_ADDR"))
-        try:
-            variant = self.get_default_variant().read(['name', 'price', 'default_code', 'description_sale', 'attribute_value_ids', 'image_ids', 'website_style_ids_variant'])
-            attribute_value_ids = self.env['product.attribute.value'].browse(variant[0]['attribute_value_ids'])
-            image_ids = self.env['base_multi_image.image'].browse(variant[0]['image_ids'])
-            website_style_ids_variant = self.env['product.style'].browse(variant[0]['website_style_ids_variant'])
-            if variant:
-                self.dv_recommended_price = pricelist.price_get(variant[0]['id'], 1)[1] + sum([c.get('amount', 0.0) for c in self.sudo().taxes_id.compute_all(pricelist.price_get(variant[0]['id'], 1)[1], 1, None, self.env.user.partner_id)['taxes']])
-                self.dv_price = variant[0]['price']
-                self.dv_price_tax = self.dv_price + sum(c.get('amount', 0.0) for c in self.sudo().taxes_id.compute_all(self.dv_price, 1, None, self.env.user.partner_id)['taxes'])
-                self.dv_default_code = variant[0]['default_code'] or ''
-                self.dv_description_sale = variant[0]['description_sale'] or ''
-                self.dv_name = self.name if self.use_tmpl_name else ', '.join([self.name] + attribute_value_ids.mapped('name'))
-                self.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(image_ids[0].image_attachment_id.id, 'snippet_dermanord.img_product') if (image_ids and image_ids[0].image_attachment_id) else placeholder
-                self.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in self.website_style_ids])
-        except Exception as e:
-            self.dv_recommended_price = 0.0
-            self.dv_price = 0.0
-            self.dv_price_tax = 0.0
-            self.dv_default_code = 'except'
-            self.dv_description_sale = '%s' %e
-            self.dv_name = 'Error'
-            self.dv_image_src = placeholder
-            self.dv_ribbon = ''
+        for p in self:
+            try:
+                variant = p.get_default_variant().read(['name', 'price', 'default_code', 'description_sale', 'attribute_value_ids', 'image_ids', 'website_style_ids_variant'])
+                attribute_value_ids = self.env['product.attribute.value'].browse(variant[0]['attribute_value_ids'])
+                image_ids = self.env['base_multi_image.image'].browse(variant[0]['image_ids'])
+                website_style_ids_variant = self.env['product.style'].browse(variant[0]['website_style_ids_variant'])
+                if variant:
+                    p.dv_recommended_price = pricelist.price_get(variant[0]['id'], 1)[1] + sum([c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(pricelist.price_get(variant[0]['id'], 1)[1], 1, None, self.env.user.partner_id)['taxes']])
+                    p.dv_price = variant[0]['price']
+                    p.dv_price_tax = p.dv_price + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(p.dv_price, 1, None, self.env.user.partner_id)['taxes'])
+                    p.dv_default_code = variant[0]['default_code'] or ''
+                    p.dv_description_sale = variant[0]['description_sale'] or ''
+                    p.dv_name = p.name if p.use_tmpl_name else ', '.join([p.name] + attribute_value_ids.mapped('name'))
+                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(image_ids[0].image_attachment_id.id, 'snippet_dermanord.img_product') if (image_ids and image_ids[0].image_attachment_id) else placeholder
+                    p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
+            except Exception as e:
+                p.dv_recommended_price = 0.0
+                p.dv_price = 0.0
+                p.dv_price_tax = 0.0
+                p.dv_default_code = 'except'
+                p.dv_description_sale = '%s' %e
+                p.dv_name = 'Error'
+                p.dv_image_src = placeholder
+                p.dv_ribbon = ''
     dv_recommended_price = fields.Float(compute='_get_all_variant_data')#, store=True)
     dv_price = fields.Float(compute='_get_all_variant_data')
     dv_price_tax = fields.Float(compute='_get_all_variant_data')
@@ -179,8 +180,6 @@ class product_template(models.Model):
     dv_image_src = fields.Char(compute='_get_all_variant_data')#, store=True)
     dv_name = fields.Char(compute='_get_all_variant_data')#, store=True)
     dv_ribbon = fields.Char(compute='_get_all_variant_data')#, store=True)
-    dv_product = fields.Many2one(comodel_name='product.product', compute='_get_all_variant_data')#, store=True)
-
 
     @api.multi
     def _is_offer_product(self):
