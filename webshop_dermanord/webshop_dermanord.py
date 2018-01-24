@@ -55,7 +55,7 @@ class crm_campaign_object(models.Model):
     @api.one
     def _product_price(self):
         if self.object_id._name == 'product.template':
-            variant = self.object_id.dv_product
+            variant = self.object_id.get_default_variant()
             self.product_price = self.env.ref('product.list0').price_get(variant.id, 1)[1] + sum([c.get('amount', 0.0) for c in variant.sudo().taxes_id.compute_all(self.env.ref('product.list0').price_get(variant.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
         if self.object_id._name == 'product.product':
             self.product_price = self.env.ref('product.list0').price_get(self.object_id.id, 1)[1] + sum([c.get('amount', 0.0) for c in self.object_id.sudo().taxes_id.compute_all(self.env.ref('product.list0').price_get(self.object_id.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
@@ -141,38 +141,36 @@ class product_template(models.Model):
         return res
 
     #These fileds should not be stored. Because default variant is user depended.
-    @api.multi
+    @api.one
     #@api.depends('product_variant_ids.name', 'product_variant_ids.default_code', 'product_variant_ids.description_sale', 'product_variant_ids.image_ids.image_attachment_id', 'product_variant_ids.website_style_ids_variant', 'website_style_ids')
     def _get_all_variant_data(self):
         pricelist = self.env.ref('product.list0')
         placeholder = '/web/static/src/img/placeholder.png'
         environ = request.httprequest.headers.environ
         _logger.warn(environ.get("REMOTE_ADDR"))
-        for p in self:
-            try:
-                variant = p.get_default_variant()
-                p.dv_product = variant
-                if variant:
-                    p.dv_recommended_price = pricelist.price_get(variant.id, 1)[1] + sum([c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(pricelist.price_get(variant.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
-                    p.dv_price = variant.price
-                    p.dv_price_tax = p.dv_price + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(p.dv_price, 1, None, self.env.user.partner_id)['taxes'])
-                    p.dv_default_code = variant.default_code or ''
-                    p.dv_description_sale = variant.description_sale or ''
-                    p.dv_name = p.name if p.use_tmpl_name else ', '.join([variant.name] + variant.attribute_value_ids.mapped('name'))
-                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant.image_ids[0].image_attachment_id.id, 'snippet_dermanord.img_product') if (variant.image_ids and variant.image_ids[0].image_attachment_id) else placeholder
-                    if len(variant.website_style_ids_variant) > 0:
-                        p.dv_ribbon = ' '.join([s.html_class for s in variant.website_style_ids_variant])
-                    else:
-                        p.dv_ribbon = ' '.join([s.html_class for s in p.website_style_ids])
-            except Exception as e:
-                p.dv_recommended_price = 0.0
-                p.dv_price = 0.0
-                p.dv_price_tax = 0.0
-                p.dv_default_code = 'except'
-                p.dv_description_sale = '%s' %e
-                p.dv_image_src = placeholder
-                p.dv_ribbon = ''
-                p.dv_product = None
+        try:
+            variant = self.get_default_variant().read(['name', 'price', 'default_code', 'description_sale', 'attribute_value_ids', 'image_ids', 'website_style_ids_variant'])
+            attribute_value_ids = self.env['product.attribute.value'].browse(variant[0]['attribute_value_ids'])
+            image_ids = self.env['base_multi_image.image'].browse(variant[0]['image_ids'])
+            website_style_ids_variant = self.env['product.style'].browse(variant[0]['website_style_ids_variant'])
+            if variant:
+                self.dv_recommended_price = pricelist.price_get(variant[0]['id'], 1)[1] + sum([c.get('amount', 0.0) for c in self.sudo().taxes_id.compute_all(pricelist.price_get(variant[0]['id'], 1)[1], 1, None, self.env.user.partner_id)['taxes']])
+                self.dv_price = variant[0]['price']
+                self.dv_price_tax = self.dv_price + sum(c.get('amount', 0.0) for c in self.sudo().taxes_id.compute_all(self.dv_price, 1, None, self.env.user.partner_id)['taxes'])
+                self.dv_default_code = variant[0]['default_code'] or ''
+                self.dv_description_sale = variant[0]['description_sale'] or ''
+                self.dv_name = self.name if self.use_tmpl_name else ', '.join([self.name] + attribute_value_ids.mapped('name'))
+                self.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(image_ids[0].image_attachment_id.id, 'snippet_dermanord.img_product') if (image_ids and image_ids[0].image_attachment_id) else placeholder
+                self.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in self.website_style_ids])
+        except Exception as e:
+            self.dv_recommended_price = 0.0
+            self.dv_price = 0.0
+            self.dv_price_tax = 0.0
+            self.dv_default_code = 'except'
+            self.dv_description_sale = '%s' %e
+            self.dv_name = 'Error'
+            self.dv_image_src = placeholder
+            self.dv_ribbon = ''
     dv_recommended_price = fields.Float(compute='_get_all_variant_data')#, store=True)
     dv_price = fields.Float(compute='_get_all_variant_data')
     dv_price_tax = fields.Float(compute='_get_all_variant_data')
@@ -830,7 +828,7 @@ class WebsiteSale(website_sale):
         search_start = timer()
         domain = request.session.get('current_domain')
         default_order = request.session.get('default_order')
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'website_style_ids_variant', 'dv_description_sale', 'dv_product'], limit=PPG, order=default_order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=default_order)
 
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
@@ -902,7 +900,7 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         # TODO: always get same product in the last?? why?
 
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'website_style_ids_variant', 'dv_description_sale', 'product_variant_ids', 'dv_product'], order=order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'website_style_ids_variant', 'dv_description_sale', 'product_variant_ids'], order=order)
 
         search_end = timer()
         _logger.warn('search end: %s' %(timer() - start_time))
@@ -1065,7 +1063,7 @@ class WebsiteSale(website_sale):
             'category_list': category_list,
             'main_object': product,
             'product': product,
-            'show_purchase_button': self.show_purchase_button(product.dv_product),
+            'show_purchase_button': self.show_purchase_button(product.get_default_variant()),
             'get_attribute_value_ids': self.get_attribute_value_ids,
             'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
             'shop_footer': True,
