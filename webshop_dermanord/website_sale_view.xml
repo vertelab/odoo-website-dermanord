@@ -252,10 +252,11 @@
                             <t t-if="purchase_phase">
                                 <h5>
                                 <div class="text-center">
-                                    <span t-field="purchase_phase.end_date"/>
+                                    <!-- campaign start date -->
+                                    <span t-field="purchase_phase.campaign_id.date_start"/>
                                     <br/>
-                                    <!-- TODO: Replace dummy value -->
-                                    <span>(2018-06-30)</span>
+                                    <!-- reseller phase end date -->
+                                    <span t-field="purchase_phase.end_date"/>
                                 </div>
                                 </h5>
                             </t>
@@ -270,9 +271,10 @@
                               <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class="decimal_precision" t-att-data-precision="website.pricelist_id.currency_id.rounding"/>
                             </b>
                           </h5>
-                          <!-- TODO: Replace dummy value -->
+                          <!-- recommended price -->
                           <h5>
-                              (100 SEK)
+                              (<span t-field="product.recommended_price" style="white-space: nowrap;" t-field-options="{                                                                        &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }"/>
+                              <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class="decimal_precision" t-att-data-precision="website.pricelist_id.currency_id.rounding"/>)
                           </h5>
                         </td>
                         <td>
