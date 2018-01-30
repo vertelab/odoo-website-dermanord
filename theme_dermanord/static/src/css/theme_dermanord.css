@@ -244,6 +244,25 @@ ul.wizard li.text-primary .chevron::before {
     border-color: #BB602F;
 }
 
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus
+{
+    background-color: #000;
+    border-color: #000;
+}
+
+.pagination a:hover {
+    color: #000 !important;
+}
+
+.pagination > .active > a:hover {
+    color: #fff !important;
+}
+
+.pagination > li > a, .pagination > li > span
+{
+    color: #000;
+}
+
 @media (max-width: 991px) {
     .dn_footer_menu {
         -webkit-columns: auto 2; /* Chrome, Safari, Opera */
