@@ -74,12 +74,13 @@
                                         <t t-if="resellers">
                                             <t t-foreach="resellers" t-as="reseller">
                                                 <div class="reseller_cell grid-item" style="width: 33.333%;">
+                                                    <t t-set="visit" t-value="request.env['res.partner'].browse(reseller.address_get(adr_pref=['visit']).get('visit'))"/>
                                                     <a t-att-href="'/reseller/%s' %reseller.id"><h4><strong><t t-esc="reseller.brand_name if reseller.brand_name else reseller.name"/></strong></h4></a>
                                                     <!--<p class="text-muted"><t t-esc="','.join(reseller.category_id.mapped('name'))"/></p>-->
                                                     <p>
-                                                        <t t-if="reseller.street"><span t-esc="reseller.street"/><br/></t>
-                                                        <t t-if="reseller.street2"><span t-esc="reseller.street2"/><br/></t>
-                                                        <t t-if="reseller.zip"><span t-esc="reseller.zip"/></t> <t t-if="reseller.city"><span t-esc="reseller.city"/><br/></t>
+                                                        <t t-if="visit.street"><span t-esc="visit.street"/><br/></t>
+                                                        <t t-if="visit.street2"><span t-esc="visit.street2"/><br/></t>
+                                                        <t t-if="visit.zip"><span t-esc="visit.zip"/></t> <t t-if="visit.city"><span t-esc="visit.city"/><br/></t>
                                                         <t t-if="reseller.country_id"><span t-esc="reseller.country_id.name"/></t>
                                                     </p>
                                                     <t t-if="reseller.email"><p style="text-decoration: underline;"><a t-att-href="'mailto:%s' %reseller.email"><span t-esc="reseller.email"/></a></p></t>
