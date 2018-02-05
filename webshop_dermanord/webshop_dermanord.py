@@ -1334,53 +1334,53 @@ class webshop_dermanord(http.Controller):
                 return variants[0].ingredients if len(variants) > 0 else ''
 
 
-class WebsiteFullTextSearch(WebsiteFullTextSearch):
+#~ class WebsiteFullTextSearch(WebsiteFullTextSearch):
 
-    @http.route(['/search_suggestion'], type='json', auth="public", website=True)
-    def search_suggestion(self, search='', facet=None, res_model=None, limit=0, offset=0, **kw):
-        result = request.env['fts.fts'].term_search(search.lower(), facet, res_model, limit, offset)
-        result_list = result['terms']
-        rl = []
-        i = 0
-        while i < len(result_list) and len(rl) < 5:
-            r = result_list[i]
-            try:
-                if r.model_record._name == 'product.public.category':
-                    rl.append({
-                        'res_id': r.res_id,
-                        'model_record': r.model_record._name,
-                        'name': r.model_record.name,
-                    })
-                elif r.model_record._name == 'product.template':
-                    if len(r.model_record.sudo().access_group_ids) == 0 or (len(r.model_record.sudo().access_group_ids) > 0 and request.env.user in r.model_record.sudo().access_group_ids.mapped('users')):
-                        rl.append({
-                            'res_id': r.res_id,
-                            'model_record': r.model_record._name,
-                            'name': r.model_record.name,
-                        })
-                elif r.model_record._name == 'product.product':
-                    if len(r.model_record.sudo().access_group_ids) == 0 or (len(r.model_record.sudo().access_group_ids) > 0 and request.env.user in r.model_record.sudo().access_group_ids.mapped('users')):
-                        rl.append({
-                            'res_id': r.res_id,
-                            'model_record': r.model_record._name,
-                            'name': r.model_record.name,
-                            'product_tmpl_id': r.model_record.product_tmpl_id.id,
-                        })
-                elif r.model_record._name == 'blog.post':
-                    rl.append({
-                        'res_id': r.res_id,
-                        'model_record': r.model_record._name,
-                        'name': r.model_record.name,
-                        'blog_id': r.model_record.blog_id.id,
-                    })
-                elif r.model_record._name == 'product.facet.line':
-                    rl.append({
-                        'res_id': r.res_id,
-                        'model_record': r.model_record._name,
-                        'product_tmpl_id': r.model_record.product_tmpl_id.id,
-                        'product_name': r.model_record.product_tmpl_id.name,
-                    })
-            except:
-                pass
-            i += 1
-        return rl
+    #~ @http.route(['/search_suggestion'], type='json', auth="public", website=True)
+    #~ def search_suggestion(self, search='', facet=None, res_model=None, limit=0, offset=0, **kw):
+        #~ result = request.env['fts.fts'].term_search(search.lower(), facet, res_model, limit, offset)
+        #~ result_list = result['terms']
+        #~ rl = []
+        #~ i = 0
+        #~ while i < len(result_list) and len(rl) < 5:
+            #~ r = result_list[i]
+            #~ try:
+                #~ if r.model_record._name == 'product.public.category':
+                    #~ rl.append({
+                        #~ 'res_id': r.res_id,
+                        #~ 'model_record': r.model_record._name,
+                        #~ 'name': r.model_record.name,
+                    #~ })
+                #~ elif r.model_record._name == 'product.template':
+                    #~ if len(r.model_record.sudo().access_group_ids) == 0 or (len(r.model_record.sudo().access_group_ids) > 0 and request.env.user in r.model_record.sudo().access_group_ids.mapped('users')):
+                        #~ rl.append({
+                            #~ 'res_id': r.res_id,
+                            #~ 'model_record': r.model_record._name,
+                            #~ 'name': r.model_record.name,
+                        #~ })
+                #~ elif r.model_record._name == 'product.product':
+                    #~ if len(r.model_record.sudo().access_group_ids) == 0 or (len(r.model_record.sudo().access_group_ids) > 0 and request.env.user in r.model_record.sudo().access_group_ids.mapped('users')):
+                        #~ rl.append({
+                            #~ 'res_id': r.res_id,
+                            #~ 'model_record': r.model_record._name,
+                            #~ 'name': r.model_record.name,
+                            #~ 'product_tmpl_id': r.model_record.product_tmpl_id.id,
+                        #~ })
+                #~ elif r.model_record._name == 'blog.post':
+                    #~ rl.append({
+                        #~ 'res_id': r.res_id,
+                        #~ 'model_record': r.model_record._name,
+                        #~ 'name': r.model_record.name,
+                        #~ 'blog_id': r.model_record.blog_id.id,
+                    #~ })
+                #~ elif r.model_record._name == 'product.facet.line':
+                    #~ rl.append({
+                        #~ 'res_id': r.res_id,
+                        #~ 'model_record': r.model_record._name,
+                        #~ 'product_tmpl_id': r.model_record.product_tmpl_id.id,
+                        #~ 'product_name': r.model_record.product_tmpl_id.name,
+                    #~ })
+            #~ except:
+                #~ pass
+            #~ i += 1
+        #~ return rl
