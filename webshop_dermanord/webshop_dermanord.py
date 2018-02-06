@@ -369,11 +369,11 @@ class Website(models.Model):
             if k.split('_')[0] == 'category':
                 if v:
                      category_ids.append(int(v))
-                     request.session.get('form_values')['category_%s' %k.split('_')[1]] = k.split('_')[1]
+                     request.session.get('form_values')['category_%s' % int(v)] = int(v)
             if k.split('_')[0] == 'ingredient':
                 if v:
                     ingredient_ids.append(int(v))
-                    request.session.get('form_values')['ingredient_%s' %k.split('_')[1]] = k.split('_')[1]
+                    request.session.get('form_values')['ingredient_%s' %int(v)] = int(v)
             if k == 'current_news':
                 if v:
                     current_news = 'current_news'
@@ -389,7 +389,7 @@ class Website(models.Model):
             if k.split('_')[0] == 'notingredient':
                 if v:
                     not_ingredient_ids.append(int(v))
-                    request.session.get('form_values')['notingredient_%s' %k.split('_')[1]] = k.split('_')[1]
+                    request.session.get('form_values')['notingredient_%s' % int(v)] = int(v)
             if k == 'current_ingredient':
                 if v:
                     current_ingredient = v
