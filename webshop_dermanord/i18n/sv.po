@@ -34,7 +34,7 @@ msgstr "&times;"
 #: view:website:website_sale.product_price
 #, python-format
 msgid "(your ex tax)"
-msgstr "(ditt ex moms)"
+msgstr "(ditt exkl. moms)"
 
 #. module: webshop_dermanord
 #. openerp-web
@@ -44,7 +44,7 @@ msgstr "(ditt ex moms)"
 #: view:website:website_sale.product_price
 #, python-format
 msgid "(rec inc tax)"
-msgstr "(rek ink moms)"
+msgstr "(rek inkl. moms)"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.cart
