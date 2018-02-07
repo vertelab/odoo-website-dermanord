@@ -51,6 +51,7 @@ class WebsiteSale(WebsiteSale):
     #~ ], type='http', auth="public", website=True)
     @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw), flush_type='dn_shop')
     def dn_shop(self, page=0, category=None, search='', **post):
+        request.website.dn_shop_set_session(post, "/dn_shop")
         return super(WebsiteSale, self).dn_shop(page, category, search, **post)
 
     #~ @http.route([
@@ -68,7 +69,7 @@ class WebsiteSale(WebsiteSale):
     #~ def dn_list(self, page=0, category=None, search='', **post):
         #~ return super(WebsiteSale, self).dn_list(page, category, search, **post)
   
-    # '/shop/product/<model("product.template"):product>'
+    # '/dn_shop/product/<model("product.template"):product>'
     @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw), flush_type='dn_shop')
     def product(self, product, category='', search='', **kwargs):
         return super(WebsiteSale, self).product(product, category, search, **post)
@@ -87,10 +88,10 @@ class WebsiteSale(WebsiteSale):
     #~ def product_comment(self, product_template_id, **post):
         #~ return super(WebsiteSale, self).product_comment(product_template_id, **post)
 
-    #~ # '/dn_shop/variant/<model("product.product"):variant>'
-    #~ @memcached.route()
-    #~ def dn_product_variant(self, variant, category='', search='', **kwargs):
-        #~ return super(WebsiteSale, self).dn_product_variant(variant, category, search, **kwargs)
+    # '/dn_shop/variant/<model("product.product"):variant>'
+    @memcached.route()
+    def dn_product_variant(self, variant, category='', search='', **kwargs):
+        return super(WebsiteSale, self).dn_product_variant(variant, category, search, **kwargs)
 
     #~ # '/shop/cart'
     #~ @memcached.route()

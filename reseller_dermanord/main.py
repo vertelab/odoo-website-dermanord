@@ -40,6 +40,7 @@ class res_partner(models.Model):
     brand_name = fields.Char(string='Brand Name')
     is_reseller = fields.Boolean(string='Show Reseller in websearch')
     top_image = fields.Binary(string='Top Image')
+    type = fields.Selection(selection_add=[('visit', 'Visit')])
 
     #~ @api.one
     #~ def _is_reseller(self):
