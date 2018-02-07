@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="register_form" inherit_id="website_reseller_register.register_form" name="Website Reseller Register Form Dermanord">
+            <xpath expr="//div[@id='company_name']" position="after">
+                <h4 id="title_salon">
+                    <strong>Salon Information</strong>
+                </h4>
+                <div t-att-class="'form-group %s' %validation.get('company_brand_name')">
+                    <label for="company_brand_name">Brand Name</label>
+                    <input type="text" class="form-control" name="company_brand_name" t-att-value="issue.partner_id.brand_name" placeholder="" />
+                    <small t-esc="help.get('help_company_brand_name')" />
+                </div>
+                <div t-att-class="'form-group %s' %validation.get('company_phone')">
+                    <label for="company_phone">Phone</label>
+                    <input type="text" class="form-control" name="company_phone" t-att-value="issue.partner_id.phone" placeholder="" />
+                    <small t-esc="help.get('help_company_street')" />
+                </div>
+                <div t-att-class="'form-group %s' %validation.get('company_email')">
+                    <label for="company_email">Email</label>
+                    <input type="email" class="form-control" name="company_email" t-att-value="issue.partner_id.email" placeholder="" />
+                    <small t-esc="help.get('help_company_email')" />
+                </div>
+                <div t-att-class="'form-group %s' %validation.get('company_website')">
+                    <label for="company_website">Website</label>
+                    <input type="text" class="form-control" name="company_website" t-att-value="issue.partner_id.website" placeholder="" />
+                    <small t-esc="help.get('help_company_website')" />
+                </div>
+                <div t-att-class="'form-group %s' %validation.get('company_street')">
+                    <label for="company_street">Street</label>
+                    <input type="text" class="form-control" name="company_street" t-att-value="issue.partner_id.street" placeholder="" />
+                    <small t-esc="help.get('help_company_street')" />
+                </div>
+                <div t-att-class="'form-group %s' %validation.get('company_street2')">
+                    <label for="company_street2">Street 2</label>
+                    <input type="text" class="form-control" name="company_street2" t-att-value="issue.partner_id.street2" placeholder="" />
+                    <small t-esc="help.get('help_company_street2')" />
+                </div>
+                <div t-att-class="'form-group %s' %validation.get('company_zip')">
+                    <label for="company_zip">Zip</label>
+                    <input type="text" class="form-control" name="company_zip" t-att-value="issue.partner_id.zip" placeholder="" />
+                    <small t-esc="help.get('help_company_zip')" />
+                </div>
+                <div t-att-class="'form-group %s' %validation.get('company_city')">
+                    <label for="company_city">City</label>
+                    <input type="text" class="form-control" name="company_city" t-att-value="issue.partner_id.city" placeholder="" />
+                    <small t-esc="help.get('help_company_city')" />
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" name="company_is_reseller" t-att="{'checked': 'checked'} if issue.partner_id.is_reseller else {}"/>Would you like your salon to be shown in your website?</label>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</openerp>
