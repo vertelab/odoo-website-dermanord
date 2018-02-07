@@ -1,0 +1,777 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* snippet_dermanord
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0-20170901\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-02-06 08:02+0000\n"
+"PO-Revision-Date: 2018-02-06 08:02+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "2D Transitions"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "A Section Subtitle"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "A great way to catch your reader's attention is to tell a story.\n"
+"                                        Everything you consider writing can be told as a story."
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Back Pulse"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Background Transitions"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Banner"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Banner Fade"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Blogs"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bob"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Border Fade"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Border Transitions"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bounce In"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bounce Out"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bounce To Bottom"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bounce To Left"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bounce To Right"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bounce To Top"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Box Shadow Inset"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Box Shadow Outset"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bubble Bottom"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bubble Float Bottom"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bubble Float Left"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bubble Float Right"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bubble Float Top"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bubble Left"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bubble Right"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Bubble Top"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Buzz"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Buzz Out"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Categories"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Curl Bottom Left"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Curl Bottom Right"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Curl Top Left"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Curl Top Right"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Curls"
+msgstr ""
+
+#. module: snippet_dermanord
+#. openerp-web
+#: code:addons/snippet_dermanord/static/src/xml/snippets.xml:13
+#: view:website:website.snippets
+#, python-format
+msgid "DISCOVER MORE"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Deepskin organics guarantees the best organic nourishment for the skin, body and hair"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Ex mel feugiat dissentias, et eam dicta labore epicuri, iisque pertinax vis ne. Ea intellegat voluptatum vis, ei magna consul sea, te his natum oratio. His brute gloriatur cu, et eum ipsum oblique consequat. Justo consulatu ius ei, eu labore possit vim, qui ad essent vocibus. Eu nec delectus oportere vituperatoribus."
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Experiences Banner"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Fade"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Float"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Float Shadow"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Glow"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Great stories are for everyone even when only written for\n"
+"                                        just one person. If you try to write with a wide general\n"
+"                                        audience in mind, your story will ring false and be bland.\n"
+"                                        No one will be interested. Write for one person. If it’s genuine for the one, it’s genuine for the rest."
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Great stories have personality. Consider telling\n"
+"                                        a great story that provides personality. Writing a story\n"
+"                                        with personality for potential clients will asist with\n"
+"                                        making a relationship connection. This shows up in small\n"
+"                                        quirks like word choices or phrases. Write from your point\n"
+"                                        of view, not from someone else's experience."
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Grow"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Grow Rotate"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Grow Shadow"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Hang"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Hollow"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Back"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Bob"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Bounce"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Buzz"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Buzz Out"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Down"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Drop"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Fade"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Float"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Float Away"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Forward"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Grow"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Grow Rotate"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Hang"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Pop"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Pulse"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Pulse Grow"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Pulse Shrink"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Push"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Rotate"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Shrink"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Sink"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Sink Away"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Spin"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Up"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Wobble Horizontal"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icon Wobble Vertical"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Icons"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Image text"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Lorem ipsum dolor sit amet"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Lorem ipsum dolor sit amet, class pharetra id elit leo. Massa leo per orci ullamcorper egestas, in diam, fermentum phasellus elit praesent morbi."
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Lorem ipsum dolor sit amet, mea id tacimates moderatius referrentur, ea vel nisl dissentias. Per dicat ludus eirmod cu, idque reprimique temporibus at per. Vel ex aeque epicuri partiendo. Sonet consulatu vel at. Commune invenire ut mei, cu sed prompta hendrerit."
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "MÅ Stor bild"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "MÅ Stor rubrik"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "MÅ Textblock"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "MÅ img(L)-txt"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "MÅ img(S)-txt"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Notes Cubes"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Odoo CMS - a big picture"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Odoo image and text block"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Outline In"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Outline Out"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Overline From Center"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Overline From Left"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Overline From right"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Overline Reveal"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Pop"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Product Highlights"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Pulse"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Pulse Grow"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Pulse Shrink"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Push"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Radial In"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Radial Out"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Read more..."
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Rectangle In"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Rectangle Out"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Reveal"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Ripple In"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Ripple Out"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Rotate"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Round Corners"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Shadow"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Shadow Radial"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Shadow and Glow Transitions"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Shop deepskin organics"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Shrink"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Shutter In Horizontal"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Shutter In Vertical"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Shutter Out Horizontal"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Shutter Out Vertical"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Sink"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Skew"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Skew Backward"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Skew Forward"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Speech Bubbles"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Start with the customer – find out what they want\n"
+"                                        and give it to them."
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Subrubrik textstycke"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Sweep To Bottom"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Sweep To Left"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Sweep To Right"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Sweep To Top"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Trim"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Two Column Image"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Two Column Text"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Underline From Center"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Underline From Left"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Underline From Right"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Underline Reveal"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Wobble Bottom"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Wobble Horizontal"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Wobble Skew"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Wobble To Bottom Right"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Wobble To Top Right"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Wobble Top"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippet_options
+msgid "Wobble Vertical"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Write one or two paragraphs describing your product,\n"
+"                                        services or a specific feature. To be successful\n"
+"                                        your content needs to be useful to your readers."
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Your Banner Title"
+msgstr ""
+
+#. module: snippet_dermanord
+#: view:website:website.snippets
+msgid "Your Website Title"
+msgstr ""
+
