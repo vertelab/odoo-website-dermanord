@@ -63,11 +63,11 @@
 
                                     <t t-if="is_reseller == 'yes'">
                                         <div>
-                                            <span class="oe_recommended_price" t-esc="list_price_tax"/> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" /> <span style="display: inline;">(rek ink moms)</span>
+                                            <span class="oe_recommended_price" t-esc="list_price_tax"/> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" /> <span style="display: inline;">(rek inkl. moms)</span>
                                         </div>
                                         <div>
                                             <b class="oe_price"
-                                            t-esc="price"/> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" /> <span style="display: inline;">(ditt ex moms)</span>
+                                            t-esc="price"/> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" /> <span style="display: inline;">(ditt exkl. moms)</span>
                                         </div>
                                     </t>
                                 </h4>
