@@ -142,29 +142,37 @@ class product_template(models.Model):
 
     #These fileds should not be stored. Because default variant is user depended.
     @api.multi
+    @api.depends('price')
     #@api.depends('product_variant_ids.name', 'product_variant_ids.default_code', 'product_variant_ids.description_sale', 'product_variant_ids.image_ids.image_attachment_id', 'product_variant_ids.website_style_ids_variant', 'website_style_ids')
     def _get_all_variant_data(self):
         pricelist = self.env.ref('product.list0')
+        pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45')])
+        pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20')])
         placeholder = '/web/static/src/img/placeholder.png'
         environ = request.httprequest.headers.environ
         _logger.warn(environ.get("REMOTE_ADDR"))
         for p in self:
             try:
-                variant = p.get_default_variant().read(['name', 'price', 'default_code', 'description_sale', 'attribute_value_ids', 'image_ids', 'website_style_ids_variant'])
+                variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'image_ids', 'website_style_ids_variant'])
                 attribute_value_ids = self.env['product.attribute.value'].browse(variant[0]['attribute_value_ids'])
-                image_ids = self.env['base_multi_image.image'].browse(variant[0]['image_ids'])
-                website_style_ids_variant = self.env['product.style'].browse(variant[0]['website_style_ids_variant'])
+                image_ids = self.env['base_multi_image.image'].read(variant[0]['image_ids'][0], ['image_attachment_id']) #browse(variant[0]['image_ids'])
+                website_style_ids_variant = self.env['product.style'].read(variant[0]['website_style_ids_variant'], ['html_class']) #.browse(variant[0]['website_style_ids_variant'])
                 if variant:
-                    p.dv_recommended_price = pricelist.price_get(variant[0]['id'], 1)[1] + sum([c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(pricelist.price_get(variant[0]['id'], 1)[1], 1, None, self.env.user.partner_id)['taxes']])
+                    p.dv_recommended_price = variant[0]['recommended_price']
+                    p.dv_price_45 = variant[0]['price_45']
+                    p.dv_price_20 = variant[0]['price_20']
                     p.dv_price = variant[0]['price']
                     p.dv_price_tax = p.dv_price + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(p.dv_price, 1, None, self.env.user.partner_id)['taxes'])
                     p.dv_default_code = variant[0]['default_code'] or ''
                     p.dv_description_sale = variant[0]['description_sale'] or ''
                     p.dv_name = p.name if p.use_tmpl_name else ', '.join([p.name] + attribute_value_ids.mapped('name'))
-                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(image_ids[0].image_attachment_id.id, 'snippet_dermanord.img_product') if (image_ids and image_ids[0].image_attachment_id) else placeholder
-                    p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
+                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(image_ids[0]['image_attachment_id'], 'snippet_dermanord.img_product') if (image_ids and image_ids[0]['image_attachment_id']) else placeholder
+                    #~ p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
+                    p.dv_ribbon = website_style_ids_variant[0]['html_class'] if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
             except Exception as e:
                 p.dv_recommended_price = 0.0
+                p.dv_price_45 = 0.0
+                p.dv_price_20 = 0.0
                 p.dv_price = 0.0
                 p.dv_price_tax = 0.0
                 p.dv_default_code = 'except'
@@ -172,14 +180,16 @@ class product_template(models.Model):
                 p.dv_name = 'Error'
                 p.dv_image_src = placeholder
                 p.dv_ribbon = ''
-    dv_recommended_price = fields.Float(compute='_get_all_variant_data')#, store=True)
-    dv_price = fields.Float(compute='_get_all_variant_data')
-    dv_price_tax = fields.Float(compute='_get_all_variant_data')
-    dv_default_code = fields.Char(compute='_get_all_variant_data')#, store=True)
-    dv_description_sale = fields.Text(compute='_get_all_variant_data')#, store=True)
-    dv_image_src = fields.Char(compute='_get_all_variant_data')#, store=True)
-    dv_name = fields.Char(compute='_get_all_variant_data')#, store=True)
-    dv_ribbon = fields.Char(compute='_get_all_variant_data')#, store=True)
+    dv_recommended_price = fields.Float(compute='_get_all_variant_data', store=True)
+    dv_price_45 = fields.Float(compute='_get_all_variant_data', store=True)
+    dv_price_20 = fields.Float(compute='_get_all_variant_data', store=True)
+    dv_price = fields.Float(compute='_get_all_variant_data', store=True)
+    dv_price_tax = fields.Float(compute='_get_all_variant_data', store=True)
+    dv_default_code = fields.Char(compute='_get_all_variant_data', store=True)
+    dv_description_sale = fields.Text(compute='_get_all_variant_data', store=True)
+    dv_image_src = fields.Char(compute='_get_all_variant_data', store=True)
+    dv_name = fields.Char(compute='_get_all_variant_data', store=True)
+    dv_ribbon = fields.Char(compute='_get_all_variant_data', store=True)
 
     @api.multi
     def _is_offer_product(self):
@@ -205,18 +215,22 @@ class product_template(models.Model):
 class product_product(models.Model):
     _inherit = 'product.product'
 
-    recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True)
+    recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    price_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    price_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
 
     @api.one
+    @api.depends('lst_price', 'product_tmpl_id.list_price')
     def get_product_tax(self):
-        res = 0
-        price = self.env.ref('product.list0').price_get(self.id, 1)[1]
-        for c in self.sudo().taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']:
-            res += c.get('amount', 0.0)
-        self.recommended_price = price + res
+        price = self.env.ref('product.list0').price_get(self.id, 1)[self.env.ref('product.list0').id]
+        pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45')])
+        pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20')])
+        self.price_45 = pricelist_45.price_get(self.id, 1)[pricelist_45.id]
+        self.price_20 = pricelist_20.price_get(self.id, 1)[pricelist_20.id]
+        self.recommended_price = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
 
     @api.model
     def update_sold_qty(self):
