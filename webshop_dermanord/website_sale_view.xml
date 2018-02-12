@@ -208,6 +208,7 @@
                 </thead>
                   <tbody>
                     <t t-foreach="products" t-as="product">
+                        <t t-set="start_time" t-value="time.time()"/>
                       <t t-set="purchase_phase" t-value="None"/>
                         <t t-if="len(product.campaign_ids) &gt; 0">
                           <t t-if="len(product.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist)) &gt; 0">
@@ -264,7 +265,18 @@
                         <td>
                           <h5>
                             <b>
-                              <span t-field="product.price" style="white-space: nowrap;" t-field-options="{                                                                        &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }"/>
+                                <t t-if="user_id.partner_id.property_product_pricelist.name == u'Återförsäljare 45'">
+                                    <span t-field="product.price_45" style="white-space: nowrap;" t-field-options="{                                                                        &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }"/>
+                                    <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name"/>
+                                </t>
+                                <t t-if="user_id.partner_id.property_product_pricelist.name == 'Special 20'">
+                                    <span t-field="product.price_20" style="white-space: nowrap;" t-field-options="{                                                                        &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }"/>
+                                    <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name"/>
+                                </t>
+                                <t t-if="user_id.partner_id.property_product_pricelist.name not in [u'Återförsäljare 45', 'Special 20']">
+                                    <span t-field="product.price" style="white-space: nowrap;" t-field-options="{                                                                        &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }"/>
+                                    <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name"/>
+                                </t>
                               <span itemprop="price" style="display:none;" t-esc="product.price">
                                 <a class="btn btn-default btn-xs fa fa-shopping-cart" t-att-href="keep('/dn_shop/variant/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))"/>
                               </span>
@@ -304,6 +316,7 @@
                           </div>
                         </td>
                       </tr>
+                      <script>console.log('<t t-esc="'product: %s, load time: %s' %(product['id'], time.time() - start_time)"/>');</script>
                     </t>
                   </tbody>
                 </table>
@@ -762,10 +775,21 @@
               <span style="display: inline;">(rec inc tax)</span>
             </div>
 -->
-            <b class="oe_price" style="white-space: nowrap;" t-field="product.dv_price" t-field-options='{
-                               "widget": "monetary",
-                               "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-                           }' />
+            <t t-if="user_id.partner_id.property_product_pricelist.name == u'Återförsäljare 45'">
+                <b class="oe_price" style="white-space: nowrap;" t-field="product.dv_price_45" t-field-options='{
+                   "widget": "monetary",
+                   "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+               }' />
+            </t>
+            <t t-if="user_id.partner_id.property_product_pricelist.name == 'Special 20'">
+                <b class="oe_price" style="white-space: nowrap;" t-field="product.dv_price_20" t-field-options='{
+                   "widget": "monetary",
+                   "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+               }' />
+            </t>
+            <t t-if="user_id.partner_id.property_product_pricelist.name not in [u'Återförsäljare 45', 'Special 20']">
+                <b class="oe_price" style="white-space: nowrap;">None</b>
+            </t>
             <span itemprop="price" style="display:none;" t-esc="product.price" />
             <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding" />
             <span style="display: inline;">(your ex tax)</span>
