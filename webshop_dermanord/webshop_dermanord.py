@@ -392,8 +392,8 @@ class Website(models.Model):
                     request.session.get('form_values')['notingredient_%s' % int(v)] = int(v)
             if k == 'current_ingredient':
                 if v:
-                    current_ingredient = v
-                    current_ingredient_key = 'ingredient_' + v
+                    current_ingredient = int(v)
+                    current_ingredient_key = 'ingredient_%s' % int(v)
                     ingredient_ids.append(int(v))
 
         if current_ingredient:
@@ -494,7 +494,8 @@ class Website(models.Model):
         default_order = 'sold_qty desc'
         if post.get('order'):
             default_order = post.get('order')
-            request.session.get('form_values')['order'] = default_order
+            if request.session.get('form_values'):
+                request.session['form_values']['order'] = default_order
             request.session['current_order'] = default_order
 
 
