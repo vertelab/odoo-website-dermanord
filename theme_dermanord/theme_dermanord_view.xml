@@ -371,7 +371,8 @@
 <!--
                                 <img t-att-src="'/web/binary/image?model=res.country&amp;id=%s&amp;field=image' %request.env['res.country'].search([('code', '=', lg[0].split('_')[1].lower())]).id" style="height: 20px;"/>
 -->
-                                <span t-esc="lg[0].split('_')[1]"/>
+                                <span t-if="lg[0] != 'en_US'"><t t-esc="lg[0].split('_')[1]"/></span>
+                                <span t-if="lg[0] == 'en_US'">EN</span>
                             </a>
                         </div>
                     </ol>
@@ -539,7 +540,7 @@
                                         <p style="margin-left: 120px;"/>
                                         <h1>Vänsterjusterat</h1>
                                         <p>Lorem ipsum dolor sit amet, class pharetra id elit leo. Massa leo per orci ullamcorper egestas, in diam, fermentum phasellus elit praesent morbi. Volutpat luctus eu nostra ipsum dui pulvinar, eget velit porttitor elit pede. Diam ipsum velit, incididunt commodo eu penatibus. Duis consectetuer, at ultrices sapien2 massa2 a dolor, vitae lectus elementum maecenas, iaculis non elit congue. Fermentum ultricies.</p>
-                                        <h1 style="text-align: center;">Centererat</h1>
+                                        <h1 style="text-align: center;">Centrerat</h1>
                                         <p style="text-align: center;">Lorem ipsum dolor sit amet, class pharetra id elit leo. Massa leo per orci ullamcorper egestas, in diam, fermentum phasellus elit praesent morbi. Volutpat luctus eu nostra ipsum dui pulvinar, eget velit porttitor elit pede. Diam ipsum velit, incididunt commodo eu penatibus. Duis consectetuer, at ultrices sapien2 massa2 a dolor, vitae lectus elementum maecenas, iaculis non elit congue. Fermentum ultricies.</p>
                                         <p style="text-align: center;"/>
                                         <h1 style="text-align: right;">Högerjusterat</h1>
