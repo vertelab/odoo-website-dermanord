@@ -48,7 +48,7 @@
             </xpath>
         </template>
 
-        <template id="event_description_full" inherit_id="website_event_sale.event_description_full" name="Inherit Website Event Sale event_description_full">
+        <template id="event_description_full_website_event_sale" inherit_id="website_event_sale.event_description_full" name="Inherit Website Event Sale event_description_full">
             <xpath expr="//button[@type='submit']" position="replace">
                 <t t-if="event.event_ticket_ids.filtered(lambda t: not t.is_expired)">
                     <button type="submit" class="btn btn-primary btn-lg pull-right" t-if="event.seats_available or not event.seats_max">Order Now</button>
