@@ -33,7 +33,7 @@ msgstr "&times;"
 #: view:website:website_sale.cart
 #: view:website:website_sale.product_price
 #, python-format
-msgid "(your ex tax)"
+msgid "(your excl. tax)"
 msgstr "(ditt exkl. moms)"
 
 #. module: webshop_dermanord
@@ -43,7 +43,7 @@ msgstr "(ditt exkl. moms)"
 #: view:website:website_sale.cart
 #: view:website:website_sale.product_price
 #, python-format
-msgid "(rec inc tax)"
+msgid "(rec incl. tax)"
 msgstr "(rek inkl. moms)"
 
 #. module: webshop_dermanord

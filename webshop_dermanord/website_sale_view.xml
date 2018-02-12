@@ -154,12 +154,12 @@
                     <div>
                         <span t-field="pricelist.currency_id.name" style="white-space: nowrap;"/>
                         <span t-esc="('%.2f' %product['dv_recommended_price']).replace('.', ',')" style="white-space: nowrap;"/>
-                        <span style="display: inline;">(rec inc tax)</span>
+                        <span style="display: inline;">(rec incl. tax)</span>
                     </div>
                     <div>
                         <b t-field="pricelist.currency_id.name" style="white-space: nowrap;"/>
                         <b t-esc="('%.2f' %product['dv_price']).replace('.', ',')" style="white-space: nowrap;"/>
-                        <span style="display: inline;">(your ex tax)</span>
+                        <span style="display: inline;">(your excl. tax)</span>
                     </div>
                   </t>
 <!--
@@ -432,7 +432,7 @@
                               "from_currency": "line.product_id.company_id.currency_id",
                               "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                            }' />
-              <span style="display: inline;">(rec inc tax)</span>
+              <span style="display: inline;">(rec incl. tax)</span>
             </div>
             <div>
               <span style="white-space: nowrap;" t-field="line.discounted_price" t-field-options='{
@@ -440,7 +440,7 @@
                                "from_currency": "website_sale_order.pricelist_id.currency_id",
                                "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                            }' />
-              <span style="display: inline;">(your ex tax)</span>
+              <span style="display: inline;">(your excl. tax)</span>
             </div>
           </t>
         </td>
@@ -495,14 +495,14 @@
                                   "from_currency": "product.company_id.currency_id",
                                   "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                                }' />
-                <span style="display: inline;">(rec inc tax)</span>
+                <span style="display: inline;">(rec incl. tax)</span>
               </div>
               <div>
                 <span t-field="product.price" style="white-space: nowrap;" t-field-options='{
                                    "widget": "monetary",
                                    "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                                 }' />
-                <span style="display: inline;">(your ex tax)</span>
+                <span style="display: inline;">(your excl. tax)</span>
               </div>
             </t>
           </td>
