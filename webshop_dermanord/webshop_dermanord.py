@@ -49,6 +49,29 @@ class blog_post(models.Model):
     product_tmpl_ids = fields.Many2many(comodel_name='product.template', string='Product Templates')
 
 
+class crm_tracking_campaign(models.Model):
+    _inherit = 'crm.tracking.campaign'
+
+    @api.multi
+    def write(self, vals):
+        for r in self:
+            for o in r.object_ids:
+                if o.object_id._name == 'product.template':
+                    o.object_id.write({'campaign_changed': True})
+                elif o.object_id._name == 'product.product':
+                    o.object_id.product_tmpl_id.write({'campaign_changed': True})
+        return super(crm_tracking_campaign, self).write(vals)
+
+    @api.model
+    def create(self, vals):
+        for o in self.env['crm.campaign.object'].browse(vals.get('object_ids')):
+            if o.object_id._name == 'product.template':
+                o.object_id.write({'campaign_changed': True})
+            elif o.object_id._name == 'product.product':
+                o.object_id.product_tmpl_id.write({'campaign_changed': True})
+        return super(crm_tracking_campaign, self).create(vals)
+
+
 class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
 
@@ -60,6 +83,23 @@ class crm_campaign_object(models.Model):
         if self.object_id._name == 'product.product':
             self.product_price = self.env.ref('product.list0').price_get(self.object_id.id, 1)[1] + sum([c.get('amount', 0.0) for c in self.object_id.sudo().taxes_id.compute_all(self.env.ref('product.list0').price_get(self.object_id.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
     product_price = fields.Float(string='Price for public', compute='_product_price')
+
+    @api.model
+    def create(self, vals):
+        if vals.get('object_id') and vals['object_id'][0] == 'product.template':
+            self.env['product.template'].browse(vals['object_id'][1]).write({'campaign_changed': True})
+        elif vals.get('object_id') and vals['object_id'][0] == 'product.product':
+            self.env['product.product'].browse(vals['object_id'][1]).product_tmpl_id.write({'campaign_changed': True})
+        return super(crm_campaign_object, self).create(vals)
+
+    @api.multi
+    def write(self, vals):
+        for r in self:
+            if r.object_id and r.object_id._name == 'product.template':
+                r.object_id.write({'campaign_changed': True})
+            elif r.object_id and r.object_id._name == 'product.product':
+                r.object_id.product_tmpl_id.write({'campaign_changed': True})
+        return super(crm_campaign_object, self).write(vals)
 
 
 class product_template(models.Model):
@@ -84,6 +124,7 @@ class product_template(models.Model):
     recommended_price = fields.Float(compute='get_product_tax')
     sold_qty = fields.Integer(string='Sold', default=0)
     use_tmpl_name = fields.Boolean(string='Use Template Name', help='When checked. The template name will be used in webshop')
+    campaign_changed = fields.Boolean()
 
     @api.multi
     def get_default_variant(self):
@@ -191,26 +232,16 @@ class product_template(models.Model):
     dv_name = fields.Char(compute='_get_all_variant_data', store=True)
     dv_ribbon = fields.Char(compute='_get_all_variant_data', store=True)
 
-    @api.multi
+    @api.one
+    @api.depends('campaign_changed')
     def _is_offer_product(self):
-        is_reseller = self.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller
-        #~ if is_reseller:
-            #~ campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')])
-        #~ else:
-            #~ campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
-        #~ for campaign in campaigns:
-            #~ if campaign.is_current(fields.Date.today(),for_reseller):
-                #~ for o in campaign.object_ids:
-                    #~ if o.object_id._name == 'product.template':
-                        #~ if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
-                            #~ products |= o.object_id
-        for p in self:
-            p.is_offer_product = False
-            if p in p.get_campaign_tmpl(for_reseller=is_reseller):
-                p.is_offer_product = True
-            elif len(p.get_campaign_variants(for_reseller=is_reseller) & p.product_variant_ids) > 0:
-                p.is_offer_product = True
-    is_offer_product = fields.Boolean(compute='_is_offer_product')#, store=True)
+        if self in self.get_campaign_tmpl(for_reseller=True):
+            self.is_offer_product_reseller = True
+        if self in self.get_campaign_tmpl(for_reseller=False):
+            self.is_offer_product_consumer = True
+    is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
+    is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
+
 
 class product_product(models.Model):
     _inherit = 'product.product'
@@ -261,16 +292,19 @@ class product_product(models.Model):
         else:
             return ' '.join([s.html_class for s in self.product_tmpl_id.website_style_ids])
 
-    @api.multi
+    @api.one
+    @api.depends('product_tmpl_id.campaign_changed')
     def _is_offer_product(self):
-        is_reseller = self.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller
-        for p in self:
-            p.is_offer_product = False
-            if p in p.get_campaign_variants(for_reseller=is_reseller):
-                p.is_offer_product = True
-            elif p.product_tmpl_id in p.product_tmpl_id.get_campaign_tmpl(for_reseller=is_reseller):
-                p.is_offer_product = True
-    is_offer_product = fields.Boolean(compute='_is_offer_product')#, store=True)
+        if self in self.get_campaign_variants(for_reseller=True):
+            self.is_offer_product_reseller = True
+        elif self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=True):
+            self.is_offer_product_reseller = True
+        if self in self.get_campaign_variants(for_reseller=False):
+            self.is_offer_product_consumer = True
+        elif self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False):
+            self.is_offer_product_consumer = True
+    is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
+    is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
 
 class product_facet(models.Model):
     _inherit = 'product.facet'
@@ -503,7 +537,7 @@ class Website(models.Model):
             domain_append.append(domain_current[0])
         return domain_append
 
-    def dn_shop_set_session(self, post, url):
+    def dn_shop_set_session(self, model, post, url):
         """Update session for /dn_shop"""
         default_order = 'sold_qty desc'
         if post.get('order'):
@@ -525,9 +559,9 @@ class Website(models.Model):
 
 
         if post:
-            domain = self.get_domain_append('product.template', post)
+            domain = self.get_domain_append(model, post)
         else:
-            domain = self.get_domain_append('product.template', request.session.get('form_values', {}))
+            domain = self.get_domain_append(model, request.session.get('form_values', {}))
         _logger.warn('\n\ndomain: %s\n' % domain)
         request.session['current_domain'] = domain
 
@@ -809,7 +843,7 @@ class WebsiteSale(website_sale):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
         url = "/dn_shop"
-        request.website.dn_shop_set_session(post, url)
+        request.website.dn_shop_set_session('product.template', post, url)
 
         # This looks like trash left over from /shop
 
@@ -1093,13 +1127,15 @@ class WebsiteSale(website_sale):
     ], type='http', auth="public", website=True)
     def dn_list(self, page=0, category=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
-        domain = self._get_search_domain(search, category, None)
-        if len(post) > 0:
-            domain += self.get_domain_append('product.product', post)
-        else:
-            if request.session.get('form_values'):
-                domain += self.get_domain_append('product.product', request.session.get('form_values'))
-        request.session['current_domain'] = domain
+        url = "/dn_list"
+        request.website.dn_shop_set_session('product.product', post, url)
+        #~ domain = self._get_search_domain(search, category, None)
+        #~ if len(post) > 0:
+            #~ domain += self.get_domain_append('product.product', post)
+        #~ else:
+            #~ if request.session.get('form_values'):
+                #~ domain += self.get_domain_append('product.product', request.session.get('form_values'))
+        #~ request.session['current_domain'] = domain
 
         if category:
             if not request.session.get('form_values'):
@@ -1111,7 +1147,7 @@ class WebsiteSale(website_sale):
                     #~ del request.session['form_values'][k]
                     #~ request.session['form_values']['category_%s' %int(category)] = '%s' %int(category)
 
-        keep = QueryURL('/dn_list', category=category and int(category), search=search, attrib=None)
+        #~ keep = QueryURL('/dn_list', category=category and int(category), search=search, attrib=None)
 
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
@@ -1119,22 +1155,19 @@ class WebsiteSale(website_sale):
         else:
             pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
 
-        url = "/dn_list"
-
-        product_obj = pool.get('product.product')
-        product_count = product_obj.search_count(cr, uid, domain, context=context)
         if search:
             post["search"] = search
-        pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
-        default_order = 'sold_qty desc'
-        if post.get('order'):
-            default_order = post.get('order')
-            request.session.get('form_values')['order'] = default_order
-            request.session['current_order'] = default_order
-        products_all = request.env['product.product'].with_context(pricelist=pricelist.id).search_access_group(domain, order=default_order)
-        pager = request.website.pager(url=url, total=len(products_all), page=page, step=PPG, scope=7, url_args=post)
-        request.session['product_count'] = len(products_all)
-        products = products_all[pager['offset']:pager['offset']+PPG]
+
+        #~ product_obj = pool.get('product.product')
+        #~ product_count = product_obj.search_count(cr, uid, domain, context=context)
+
+        #~ pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
+        domain = request.session.get('current_domain')
+        default_order = request.session.get('default_order')
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer'], limit=PPG, order=default_order)
+        #~ pager = request.website.pager(url=url, total=len(products_all), page=page, step=PPG, scope=7, url_args=post)
+        request.session['product_count'] = 2000
+        #~ products = products_all[pager['offset']:pager['offset']+PPG]
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id
@@ -1147,20 +1180,43 @@ class WebsiteSale(website_sale):
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
         request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
         request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
+        value_start = timer()
+
+        for p in products:
+            if len(p['campaign_ids']) > 0:
+                phases = request.env['crm.tracking.campaign'].browse(p['campaign_ids'][0]).mapped('phase_ids').filtered(lambda p: p.reseller_pricelist)
+                if len(phases) > 0:
+                    p['purchase_phase'] = {
+                        'date_start': phases[0].campaign_id.date_start,
+                        'end_date': phases[0].campaign_id.end_date,
+                    }
+                else:
+                    p['purchase_phase'] = {}
+            p['attribute_value_ids'] = [name['name'] for name in request.env['product.attribute.value'].search_read([('id', 'in', p['attribute_value_ids'])], ['name'])]
+            product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', p.get('website_style_ids_variant', []))], ['html_class'])])
+            if product_ribbon == '':
+                tmpl = request.env['product.template'].search_read([('id', 'in', p.get('product_tmpl_id', []))], ['website_style_ids'])
+                if tmpl:
+                    product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'id', tmpl.get('website_style_ids', []))], ['html_class'])])
+            p['get_this_variant_ribbon'] = product_ribbon
 
         values = {
             'search': search,
-            'pager': pager,
+            #~ 'pager': pager,
             'pricelist': pricelist,
             'products': products,
             'rows': PPR,
             'compute_currency': compute_currency,
-            'keep': keep,
+            #~ 'keep': keep,
             'url': url,
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
             'shop_footer': True,
         }
-        return request.website.render("webshop_dermanord.products_list_reseller_view", values)
+        _logger.warn('after value: %s' %(timer()-value_start))
+        start_render = timer()
+        res = request.website.render("webshop_dermanord.products_list_reseller_view", values)
+        _logger.warn('after render: %s' %(timer()-start_render))
+        return res
 
     @http.route([
         '/dn_shop/variant/<model("product.product"):variant>'
