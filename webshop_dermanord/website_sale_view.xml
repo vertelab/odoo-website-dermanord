@@ -254,17 +254,17 @@
                                                 <td>
                                                     <h5>
                                                         <b>
-                                                            <t t-if="user_id.partner_id.property_product_pricelist.name == u'Återförsäljare 45'">
+                                                            <t t-if="user_id.partner_id.property_product_pricelist.id == 3">
                                                                 <span t-esc="str('%.2f' %product['price_45']).replace('.', ',')" style="white-space: nowrap;"/>
                                                                 <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
-                                                            <t t-if="user_id.partner_id.property_product_pricelist.name == 'Special 20'">
+                                                            <t t-if="user_id.partner_id.property_product_pricelist.id == 6">
                                                                 <span t-esc="str('%.2f' %product['price_20']).replace('.', ',')" style="white-space: nowrap;"/>
                                                                 <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
-                                                            <t t-if="user_id.partner_id.property_product_pricelist.name not in [u'Återförsäljare 45', 'Special 20']">
+                                                            <t t-if="user_id.partner_id.property_product_pricelist.id not in [3, 6]">
                                                                 <span t-field="request.env['product.product'].browse(product['id']).price" style="white-space: nowrap;" t-field-options="{                                                                        &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }" />
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
@@ -278,11 +278,9 @@
                                                     </h5>
                                                     <!-- recommended price -->
                                                     <h5>
-                                                        (
-                                                        <span t-esc="str('%.2f' %product['recommended_price']).replace('.', ',')" style="white-space: nowrap;"/>
+                                                        (<span t-esc="str('%.2f' %product['recommended_price']).replace('.', ',')" style="white-space: nowrap;"/>
                                                         <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
-                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class="decimal_precision" t-att-data-precision="website.pricelist_id.currency_id.rounding" />
-                                                        )
+                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class="decimal_precision" t-att-data-precision="website.pricelist_id.currency_id.rounding" />)
                                                     </h5>
                                                 </td>
                                                 <td>

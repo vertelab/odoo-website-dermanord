@@ -102,48 +102,47 @@
                 </h5>
             </td>
             <td>
-                <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" t-att-class="product_name_col">
-                    <strong>
-                        <a t-att-href="product_href">
-                            <span itemprop="name" t-esc="product_name"/>
-                            <t t-esc="attribute_value_ids"/>
-                        </a>
-                    </strong>
-                </div>
+                <h5 class="list_product_name">
+                    <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" t-att-class="product_name_col">
+                        <strong>
+                            <a t-att-href="product_href">
+                                <span itemprop="name" t-esc="product_name"/>
+                                <t t-esc="attribute_value_ids"/>
+                            </a>
+                        </strong>
+                    </div>
+                </h5>
             </td>
             <td>
                 <t t-if="purchase_phase">
                     <h5>
-                    <div class="text-center">
-                        <span t-esc="purchase_phase_end_date"/>
-                        <br/>
-                        <!-- TODO: Replace dummy value -->
-                        <span>(2018-06-30)</span>
-                    </div>
+                        <div class="text-center">
+                            <span t-esc="purchase_phase_date_start"/>
+                            <br/>
+                            <span t-esc="purchase_phase_end_date"/>
+                        </div>
                     </h5>
                 </t>
             </td>
             <td>
                 <h5>
                     <b>
-                        <span t-field="price" style="white-space: nowrap;"/>
+                        <span t-esc="price" style="white-space: nowrap;"/>
                         <span itemprop="price" style="display:none;" t-esc="price"/>
                         <span itemprop="priceCurrency" style="display:none;" t-esc="currency" class="decimal_precision" t-att-data-precision="rounding"/>
                     </b>
                 </h5>
-                <!-- TODO: Replace dummy value -->
                 <h5>
-                    (100 SEK)
+                    (<span t-esc="recommended_price" style="white-space: nowrap;"/> <span t-esc="currency" style="white-space: nowrap;"/>)
                 </h5>
             </td>
-
             <td>
 <!--
                 <h5 class="col-md-6 col-sm-6 col-xs-12 list_product_name">
 
                 </h5>
 -->
-                <div class="text-center">
+                <div>
                     <form action="/shop/cart/update" class="oe_dn_list" t-att-data-attribute_value_ids="product_id" method="POST">
                         <div class="product_shop col-md-7 col-sm-7 col-xs-12" style="margin: 0px;">
                             <input type="hidden" class="product_id" name="product_id" t-att-value="product_id" />

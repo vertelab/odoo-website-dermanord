@@ -975,7 +975,7 @@ class WebsiteSale(website_sale):
                 'product_href': '/dn_shop/product/%s' %product['id'],
                 'product_id': product['id'],
                 'product_name': product['dv_name'],
-                'is_offer_product': product['is_offer_product'],
+                'is_offer_product': product['is_offer_product_reseller'] if request.env.user.partner_id.property_product_pricelist.for_reseller else product['is_offer_product_consumer'],
                 'style_options': style_options,
                 'grid_ribbon_style': 'dn_product_div %s' %product['dv_ribbon'],
                 'product_img_src': product['dv_image_src'],
@@ -1007,52 +1007,102 @@ class WebsiteSale(website_sale):
         else:
             pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
 
-        product_obj = pool.get('product.product')
         url = "/dn_list"
 
         domain = request.session.get('current_domain')
-        order = request.session.get('current_order')
+        default_order = request.session.get('default_order')
 
         # relist which product templates the current user is allowed to see
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
+        #~ products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
+
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=PPG, offset=(int(page)+1)*PPG, order=default_order)
 
         products_list = []
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
-        for product in products:
-            is_reseller = False
-            currency = ''
-            if partner_pricelist:
-                currency = partner_pricelist.currency_id.name
-                if partner_pricelist.for_reseller:
-                    is_reseller = True
-            attributes = product.attribute_value_ids.mapped('name')
-            purchase_phase = None
-            if len(product.campaign_ids) > 0:
-                if len(product.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)) > 0:
-                    purchase_phase = product.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)[0]
+        currency = ''
+        is_reseller = False
+        if partner_pricelist:
+            currency = partner_pricelist.currency_id.name
+            if partner_pricelist.for_reseller:
+                is_reseller = True
+
+        #~ for product in products:
+            #~ is_reseller = False
+            #~ currency = ''
+            #~ if partner_pricelist:
+                #~ currency = partner_pricelist.currency_id.name
+                #~ if partner_pricelist.for_reseller:
+                    #~ is_reseller = True
+            #~ attributes = product.attribute_value_ids.mapped('name')
+            #~ purchase_phase = None
+            #~ if len(product.campaign_ids) > 0:
+                #~ if len(product.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)) > 0:
+                    #~ purchase_phase = product.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)[0]
+            #~ else:
+                #~ if len(product.product_tmpl_id.campaign_ids) > 0:
+                    #~ if len(product.product_tmpl_id.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)) > 0:
+                        #~ purchase_phase = product.product_tmpl_id.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)[0]
+            #~ _logger.warn('%s :: %s' %(sale_ribbon, product.website_style_ids))
+
+        for p in products:
+            if len(p['campaign_ids']) > 0:
+                phases = request.env['crm.tracking.campaign'].browse(p['campaign_ids'][0]).mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)
+                if len(phases) > 0:
+                    p['purchase_phase'] = {
+                        'date_start': phases[0].campaign_id.date_start,
+                        'end_date': phases[0].campaign_id.end_date,
+                        'phase': len(phases) > 0,
+                    }
+                else:
+                    p['purchase_phase'] = {'phase': False}
             else:
-                if len(product.product_tmpl_id.campaign_ids) > 0:
-                    if len(product.product_tmpl_id.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)) > 0:
-                        purchase_phase = product.product_tmpl_id.campaign_ids[0].mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)[0]
-            _logger.warn('%s :: %s' %(sale_ribbon, product.website_style_ids))
+                tmpl = request.env['product.template'].search_read([('id', '=', p.get('product_tmpl_id', [0])[0])], ['campaign_ids'])
+                if len(tmpl[0]['campaign_ids']) > 0:
+                    phases = request.env['crm.tracking.campaign'].browse(tmpl[0]['campaign_ids'][0][0]).mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)
+                    if len(phases) > 0:
+                        p['purchase_phase'] = {
+                            'date_start': phases[0].campaign_id.date_start,
+                            'end_date': phases[0].campaign_id.end_date,
+                            'phase': len(phases) > 0,
+                        }
+                else:
+                    p['purchase_phase'] = {'phase': False}
+
+            p['attribute_value_ids'] = [name['name'] for name in request.env['product.attribute.value'].search_read([('id', 'in', p['attribute_value_ids'])], ['name'])]
+            product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', p.get('website_style_ids_variant', []))], ['html_class'])])
+            if product_ribbon == '':
+                tmpl = request.env['product.template'].search_read([('id', 'in', [t[0] for t in [p.get('product_tmpl_id', [])]])], ['website_style_ids'])
+                if tmpl:
+                    product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', tmpl[0].get('website_style_ids', []))], ['html_class'])])
+            p['get_this_variant_ribbon'] = product_ribbon
+
+            if request.env.user.partner_id.property_product_pricelist.name == u'Återförsäljare 45':
+                price = p['price_45']
+            if request.env.user.partner_id.property_product_pricelist.name == 'Special 20':
+                price = p['price_20']
+            else:
+                price = request.env['product.product'].browse(p['id']).price
+
             products_list.append({
-                'lst_ribbon_style': product.get_this_variant_ribbon(),
-                'variant_id': product.id,
-                'product_href': '/dn_shop/variant/%s' %product.id,
-                'product_name': product.name,
-                'is_news_product': True if sale_ribbon in product.website_style_ids else False,
-                'is_offer_product': product.is_offer_product,
-                'purchase_phase': True if purchase_phase else False,
-                'product_name_col': 'product_price col-md-6 col-sm-6 col-xs-12' if purchase_phase else 'product_price col-md-8 col-sm-8 col-xs-12',
-                'purchase_phase_end_date': purchase_phase.end_date if purchase_phase else '',
-                'price': "%.2f" % product.price,
+                'lst_ribbon_style': p['get_this_variant_ribbon'],
+                'variant_id': p['id'],
+                'product_href': '/dn_shop/variant/%s' %p['id'],
+                'product_name': p['name'],
+                'is_news_product': True if sale_ribbon in p['website_style_ids_variant'] else False,
+                'is_offer_product': p['is_offer_product_reseller'] if request.env.user.partner_id.property_product_pricelist.for_reseller else p['is_offer_product_consumer'],
+                'purchase_phase': True if p['purchase_phase']['phase'] else False,
+                'product_name_col': 'product_price col-md-6 col-sm-6 col-xs-12' if p['purchase_phase']['phase'] else 'product_price col-md-8 col-sm-8 col-xs-12',
+                'purchase_phase_date_start': p['purchase_phase']['date_start'] if p['purchase_phase']['phase'] else '',
+                'purchase_phase_end_date': p['purchase_phase']['end_date'] if p['purchase_phase']['phase'] else '',
+                'recommended_price': "%.2f" % p['recommended_price'],
+                'price': "%.2f" % price,
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
                 'is_reseller': 'yes' if is_reseller else 'no',
-                'default_code': product.default_code or '',
-                'attribute_value_ids': (' , ' + ' , '.join(attributes)) if len(attributes) > 0 else '',
-                'sale_ok': product.sale_ok,
-                'sale_start': product.sale_start,
+                'default_code': p['default_code'] or '',
+                'attribute_value_ids': (' , ' + ' , '.join(p['attribute_value_ids'])) if len(p['attribute_value_ids']) > 0 else '',
+                'sale_ok': p['sale_ok'],
+                'sale_start': p['sale_start'],
             })
 
         values = {
@@ -1129,25 +1179,12 @@ class WebsiteSale(website_sale):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
         url = "/dn_list"
         request.website.dn_shop_set_session('product.product', post, url)
-        #~ domain = self._get_search_domain(search, category, None)
-        #~ if len(post) > 0:
-            #~ domain += self.get_domain_append('product.product', post)
-        #~ else:
-            #~ if request.session.get('form_values'):
-                #~ domain += self.get_domain_append('product.product', request.session.get('form_values'))
-        #~ request.session['current_domain'] = domain
 
         if category:
             if not request.session.get('form_values'):
                 request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
             request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
             self.get_form_values()['category_' + str(int(category))] = str(int(category))
-            #~ for k,v in request.session.get('form_values').items():
-                #~ if 'category_' in k:
-                    #~ del request.session['form_values'][k]
-                    #~ request.session['form_values']['category_%s' %int(category)] = '%s' %int(category)
-
-        #~ keep = QueryURL('/dn_list', category=category and int(category), search=search, attrib=None)
 
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
@@ -1158,16 +1195,10 @@ class WebsiteSale(website_sale):
         if search:
             post["search"] = search
 
-        #~ product_obj = pool.get('product.product')
-        #~ product_count = product_obj.search_count(cr, uid, domain, context=context)
-
-        #~ pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
         domain = request.session.get('current_domain')
         default_order = request.session.get('default_order')
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer'], limit=PPG, order=default_order)
-        #~ pager = request.website.pager(url=url, total=len(products_all), page=page, step=PPG, scope=7, url_args=post)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id'], limit=PPG, order=default_order)
         request.session['product_count'] = 2000
-        #~ products = products_all[pager['offset']:pager['offset']+PPG]
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id
@@ -1195,19 +1226,17 @@ class WebsiteSale(website_sale):
             p['attribute_value_ids'] = [name['name'] for name in request.env['product.attribute.value'].search_read([('id', 'in', p['attribute_value_ids'])], ['name'])]
             product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', p.get('website_style_ids_variant', []))], ['html_class'])])
             if product_ribbon == '':
-                tmpl = request.env['product.template'].search_read([('id', 'in', p.get('product_tmpl_id', []))], ['website_style_ids'])
+                tmpl = request.env['product.template'].search_read([('id', '=', p.get('product_tmpl_id', [0])[0])], ['website_style_ids'])
                 if tmpl:
-                    product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'id', tmpl.get('website_style_ids', []))], ['html_class'])])
+                    product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', tmpl[0].get('website_style_ids', []))], ['html_class'])])
             p['get_this_variant_ribbon'] = product_ribbon
 
         values = {
             'search': search,
-            #~ 'pager': pager,
             'pricelist': pricelist,
             'products': products,
             'rows': PPR,
             'compute_currency': compute_currency,
-            #~ 'keep': keep,
             'url': url,
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
             'shop_footer': True,
