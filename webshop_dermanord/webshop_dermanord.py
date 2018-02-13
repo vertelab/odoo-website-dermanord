@@ -876,7 +876,7 @@ class WebsiteSale(website_sale):
         search_start = timer()
         domain = request.session.get('current_domain')
         default_order = request.session.get('default_order')
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=default_order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=default_order)
 
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
@@ -948,7 +948,7 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         # TODO: always get same product in the last?? why?
 
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'dv_description_sale', 'product_variant_ids'], order=order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'dv_description_sale', 'product_variant_ids'], order=order)
 
         search_end = timer()
         _logger.warn('search end: %s' %(timer() - start_time))
@@ -1337,6 +1337,14 @@ class WebsiteSale(website_sale):
         if kw.get('return_url'):
             return request.redirect(kw.get('return_url'))
         return request.redirect("/shop/cart")
+
+    @http.route(['/dn_shop/cart/update'], type='json', auth="public", website=True)
+    def dn_cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
+        _logger.warn(kw)
+        cr, uid, context = request.cr, request.uid, request.context
+        order = request.website.with_context(supress_checks=True).sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
+        _logger.warn(order)
+        return 'ok'
 
     @http.route(['/website_sale_update_cart'], type='json', auth="public", website=True)
     def website_sale_update_cart(self):

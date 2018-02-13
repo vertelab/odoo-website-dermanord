@@ -112,13 +112,19 @@
                     <div class="ribbon-wrapper">
                         <div class="ribbon ribbon_news btn btn-primary">News</div>
                     </div>
-                    <t t-if="product['is_offer_product']">
-                        <div class="offer-wrapper">
-                            <div class="ribbon ribbon_offer btn btn-primary">Offer</div>
-                            <!--
-                                 <i class="fa fa-star-o fa-3x" title="Offer" />
-                            -->
-                        </div>
+                    <t t-if="user_id.partner_id.property_product_pricelist.id == 3">
+                        <t t-if="product['is_offer_product_reseller']">
+                            <div class="offer-wrapper">
+                                <div class="ribbon ribbon_offer btn btn-primary">Offer</div>
+                            </div>
+                        </t>
+                    </t>
+                    <t t-if="user_id.partner_id.property_product_pricelist.id not in [3, 6]">
+                        <t t-if="product['is_offer_product_consumer']">
+                            <div class="offer-wrapper">
+                                <div class="ribbon ribbon_offer btn btn-primary">Offer</div>
+                            </div>
+                        </t>
                     </t>
                     <div class="dn_product_image">
                         <div class="dn_product_image_div">
@@ -285,7 +291,7 @@
                                                 </td>
                                                 <td>
                                                     <div>
-                                                        <form action="/shop/cart/update" class="oe_dn_list" t-att-data-attribute_value_ids="product['id']" method="POST">
+                                                        <form action="/dn_shop/cart/update" class="oe_dn_list" t-att-data-attribute_value_ids="product['id']" method="POST">
                                                             <div class="product_shop col-md-7 col-sm-7 col-xs-12" style="margin: 0px;">
                                                                 <input type="hidden" class="product_id" name="product_id" t-att-value="product['id']" />
                                                                 <input type="hidden" name="return_url" t-att-value="request.httprequest.url" />
@@ -302,8 +308,13 @@
                                                                         </a>
                                                                     </span>
                                                                 </div>
+<!--
                                                                 <a id="add_to_cart" class="btn btn-default js_check_product a-submit" href="#">
                                                                     <i class="fa fa-shopping-cart a-submit" style="color: #CB683F;" />
+                                                                </a>
+-->
+                                                                <a id="add_to_cart" class="btn btn-default dn_list_add_to_cart" href="javascript:void(0);">
+                                                                    <i class="fa fa-shopping-cart" style="color: #CB683F;" />
                                                                 </a>
                                                             </div>
                                                         </form>

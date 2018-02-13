@@ -625,6 +625,31 @@ $(document).ready(function(){
             //~ }
         //~ }
     //~ });
+
+    $(".dn_list_add_to_cart").click(function(){
+        var formData = JSON.stringify($(this).closest("form").serializeArray());
+        var form_arr = JSON.parse(formData);
+        var product_id = "0";
+        var add_qty = "0";
+        $.each(form_arr, function(key, info){
+            if(info['name'] == "product_id") {
+                product_id = info['value'];
+            }
+            if(info['name'] == "add_qty") {
+                add_qty = info['value'];
+            }
+        });
+        openerp.jsonRpc("/dn_shop/cart/update", "call", {
+            'product_id': product_id,
+            'add_qty': add_qty
+        }).done(function(data){
+            if(data == "ok") {
+                $("#my_cart_total").load(location.href + " #my_cart_total");
+                $("#my_cart_quantity").load(location.href + " #my_cart_quantity");
+            }
+        });
+    });
+
 });
 
 function load_products_grid(page){
