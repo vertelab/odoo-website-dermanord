@@ -72,7 +72,7 @@ class WebsiteSale(WebsiteSale):
     # '/dn_shop/product/<model("product.template"):product>'
     @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw), flush_type='dn_shop')
     def product(self, product, category='', search='', **kwargs):
-        return super(WebsiteSale, self).product(product, category, search, **post)
+        return super(WebsiteSale, self).product(product, category, search, **kwargs)
 
     #~ @http.route([
         #~ '/dn_shop/variant/<model("product.product"):variant>'
