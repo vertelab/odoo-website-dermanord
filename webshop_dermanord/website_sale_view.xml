@@ -232,11 +232,11 @@
                                                         <span t-esc="product['default_code']" />
                                                     </h5>
                                                 </td>
-                                                <td>
+                                                <td style="max-width: 250px;">
                                                     <h5 class="list_product_name">
-                                                        <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" t-att-class="product_price">
+                                                        <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_name">
                                                             <strong>
-                                                                <a t-att-href="'/dn_shop/variant/%s' % product['id']">
+                                                                <a t-att-href="'/dn_shop/variant/%s' % product['id']" t-att-title="product['name'] + ', '.join(product.get('attribute_value_ids', []))">
                                                                     <span itemprop="name" t-esc="product['name']" />
                                                                     <t t-esc="', '.join(product.get('attribute_value_ids', []))" />
                                                                 </a>
@@ -292,7 +292,7 @@
                                                 <td>
                                                     <div>
                                                         <form action="/dn_shop/cart/update" class="oe_dn_list" t-att-data-attribute_value_ids="product['id']" method="POST">
-                                                            <div class="product_shop col-md-7 col-sm-7 col-xs-12" style="margin: 0px;">
+                                                            <div class="product_shop" style="margin: 0px;">
                                                                 <input type="hidden" class="product_id" name="product_id" t-att-value="product['id']" />
                                                                 <input type="hidden" name="return_url" t-att-value="request.httprequest.url" />
                                                                 <div class="css_quantity input-group oe_website_spinner">

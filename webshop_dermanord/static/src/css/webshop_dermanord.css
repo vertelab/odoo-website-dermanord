@@ -209,7 +209,8 @@ div.shipping-address, div.invoicing-address {
     padding: 20px;
 }
 
-.product_price {
+.product_name {
+    max-width: 250px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -640,8 +641,12 @@ select.dn_selection_dropdown + i.fa {
 */
 
 /* Ribbon for promotionso on products (dn list) */
+tr.tr_lst td {
+    padding: 8px 4px !important;
+}
+
 .td_lst {
-    width: 100px
+    width: 100px;
 }
 
 .td_lst .lst-ribbon-wrapper {

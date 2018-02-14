@@ -1079,20 +1079,24 @@ class WebsiteSale(website_sale):
 
             if request.env.user.partner_id.property_product_pricelist.name == u'Återförsäljare 45':
                 price = p['price_45']
-            if request.env.user.partner_id.property_product_pricelist.name == 'Special 20':
+                _logger.warn(u'Återförsäljare 45: %s' %price)
+            elif request.env.user.partner_id.property_product_pricelist.name == 'Special 20':
                 price = p['price_20']
+                _logger.warn('Special 20: %s' %price)
             else:
                 price = request.env['product.product'].browse(p['id']).price
+                _logger.warn('price: %s' %price)
 
             products_list.append({
-                'lst_ribbon_style': 'tr_list %s' %p['get_this_variant_ribbon'],
+                'lst_ribbon_style': 'tr_lst %s' %p['get_this_variant_ribbon'],
                 'variant_id': p['id'],
                 'product_href': '/dn_shop/variant/%s' %p['id'],
                 'product_name': p['name'],
                 'is_news_product': True if sale_ribbon in p['website_style_ids_variant'] else False,
                 'is_offer_product': p['is_offer_product_reseller'] if request.env.user.partner_id.property_product_pricelist.for_reseller else p['is_offer_product_consumer'],
                 'purchase_phase': True if p['purchase_phase']['phase'] else False,
-                'product_name_col': 'product_price col-md-6 col-sm-6 col-xs-12' if p['purchase_phase']['phase'] else 'product_price col-md-8 col-sm-8 col-xs-12',
+                #~ 'product_name_col': 'product_price col-md-6 col-sm-6 col-xs-12' if p['purchase_phase']['phase'] else 'product_price col-md-8 col-sm-8 col-xs-12',
+                'product_name_col': 'product_name' if p['purchase_phase']['phase'] else 'product_name',
                 'purchase_phase_date_start': p['purchase_phase']['date_start'] if p['purchase_phase']['phase'] else '',
                 'purchase_phase_end_date': p['purchase_phase']['end_date'] if p['purchase_phase']['phase'] else '',
                 'recommended_price': "%.2f" % p['recommended_price'],
