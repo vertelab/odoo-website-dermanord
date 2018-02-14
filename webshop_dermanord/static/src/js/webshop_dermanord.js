@@ -11,30 +11,6 @@ $(document).ready(function(){
         $(".my_cart_quantity").html('(' + data['cart_quantity'] + ')');
     });
 
-    $(".dn_list_add_to_cart").click(function(){
-        var formData = JSON.stringify($(this).closest("form").serializeArray());
-        var form_arr = JSON.parse(formData);
-        var product_id = "0";
-        var add_qty = "0";
-        $.each(form_arr, function(key, info){
-            if(info['name'] == "product_id") {
-                product_id = info['value'];
-            }
-            if(info['name'] == "add_qty") {
-                add_qty = info['value'];
-            }
-        });
-        openerp.jsonRpc("/dn_list/cart/update", "call", {
-            'product_id': product_id,
-            'add_qty': add_qty
-        }).done(function(data){
-            if($.isArray(data)){
-                $(".my_cart_total").html(data[0]).hide().fadeIn(600);;
-                $(".my_cart_quantity").html('(' + data[1] + ')').hide().fadeIn(600);;
-            }
-        });
-    });
-
     $("input[data-toggle='tooltip']").click(function() {
         $("input[data-toggle='tooltip']").tooltip('hide');
         $(this).tooltip();
@@ -247,18 +223,20 @@ $(document).ready(function(){
 
         $(oe_website_sale).on("change", 'input[name="add_qty"]', function (event) {
             product_ids = [];
-            var product_dom = $(".js_product .js_add_cart_variants[data-attribute_value_ids]").last();
-            product_dom.data("attribute_value_ids").forEach(function(entry) {
-                product_ids.push(entry[0]);});
-            var qty = $(event.target).closest('form').find('input[name="add_qty"]').val();
+            var $product_dom = $(this).closest("form");
+            //~ $product_dom.data("attribute_value_ids").each(function(entry) {
+                //~ product_ids.push(entry[0]);
+            //~ });
+            product_ids.push($product_dom.data("attribute_value_ids"));
+            var qty = $product_dom.find('input[name="add_qty"]').val();
 
             openerp.jsonRpc("/shop/get_unit_price", 'call', {'product_ids': product_ids,'add_qty': parseInt(qty)})
             .then(function (data) {
-                var current = product_dom.data("attribute_value_ids");
+                var current = $product_dom.data("attribute_value_ids");
                 for(var j=0; j < current.length; j++){
                     current[j][2] = data[current[j][0]];
                 }
-                product_dom.attr("data-attribute_value_ids", JSON.stringify(current)).trigger("change");
+                $product_dom.attr("data-attribute_value_ids", JSON.stringify(current)).trigger("change");
             });
         });
 
@@ -341,7 +319,7 @@ $(document).ready(function(){
             var max = parseFloat($input.data("max") || Infinity);
             var quantity = ($link.has(".fa-minus").length ? -1 : 1) + parseFloat($input.val(),10);
             $input.val(quantity > min ? (quantity < max ? quantity : max) : min);
-            $('input[name="'+$input.attr("name")+'"]').val(quantity > min ? (quantity < max ? quantity : max) : min);
+            //~ $('input[name="'+$input.attr("name")+'"]').val(quantity > min ? (quantity < max ? quantity : max) : min);
             $input.change();
             return false;
         });
@@ -768,3 +746,28 @@ $(document).on('click', '.dn_js_options ul[name="style"] a', function (event) {
             $li.toggleClass("active", result);
         });
 });
+
+$(document).on('click', '.dn_list_add_to_cart', function (event) {
+    var formData = JSON.stringify($(this).closest("form").serializeArray());
+    var form_arr = JSON.parse(formData);
+    var product_id = "0";
+    var add_qty = "0";
+    $.each(form_arr, function(key, info){
+        if(info['name'] == "product_id") {
+            product_id = info['value'];
+        }
+        if(info['name'] == "add_qty") {
+            add_qty = info['value'];
+        }
+    });
+    openerp.jsonRpc("/dn_list/cart/update", "call", {
+        'product_id': product_id,
+        'add_qty': add_qty
+    }).done(function(data){
+        if($.isArray(data)){
+            $(".my_cart_total").html(data[0]).hide().fadeIn(600);;
+            $(".my_cart_quantity").html('(' + data[1] + ')').hide().fadeIn(600);;
+        }
+    });
+});
+

@@ -1084,7 +1084,7 @@ class WebsiteSale(website_sale):
                 price = request.env['product.product'].browse(p['id']).price
 
             products_list.append({
-                'lst_ribbon_style': p['get_this_variant_ribbon'],
+                'lst_ribbon_style': 'tr_list %s' %p['get_this_variant_ribbon'],
                 'variant_id': p['id'],
                 'product_href': '/dn_shop/variant/%s' %p['id'],
                 'product_name': p['name'],
