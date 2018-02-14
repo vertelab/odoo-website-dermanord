@@ -223,18 +223,20 @@ $(document).ready(function(){
 
         $(oe_website_sale).on("change", 'input[name="add_qty"]', function (event) {
             product_ids = [];
-            var product_dom = $(".js_product .js_add_cart_variants[data-attribute_value_ids]").last();
-            product_dom.data("attribute_value_ids").forEach(function(entry) {
-                product_ids.push(entry[0]);});
-            var qty = $(event.target).closest('form').find('input[name="add_qty"]').val();
+            var $product_dom = $(this).closest("form");
+            //~ $product_dom.data("attribute_value_ids").each(function(entry) {
+                //~ product_ids.push(entry[0]);
+            //~ });
+            product_ids.push($product_dom.data("attribute_value_ids"));
+            var qty = $product_dom.find('input[name="add_qty"]').val();
 
             openerp.jsonRpc("/shop/get_unit_price", 'call', {'product_ids': product_ids,'add_qty': parseInt(qty)})
             .then(function (data) {
-                var current = product_dom.data("attribute_value_ids");
+                var current = $product_dom.data("attribute_value_ids");
                 for(var j=0; j < current.length; j++){
                     current[j][2] = data[current[j][0]];
                 }
-                product_dom.attr("data-attribute_value_ids", JSON.stringify(current)).trigger("change");
+                $product_dom.attr("data-attribute_value_ids", JSON.stringify(current)).trigger("change");
             });
         });
 
@@ -317,7 +319,7 @@ $(document).ready(function(){
             var max = parseFloat($input.data("max") || Infinity);
             var quantity = ($link.has(".fa-minus").length ? -1 : 1) + parseFloat($input.val(),10);
             $input.val(quantity > min ? (quantity < max ? quantity : max) : min);
-            $('input[name="'+$input.attr("name")+'"]').val(quantity > min ? (quantity < max ? quantity : max) : min);
+            //~ $('input[name="'+$input.attr("name")+'"]').val(quantity > min ? (quantity < max ? quantity : max) : min);
             $input.change();
             return false;
         });
@@ -625,6 +627,7 @@ $(document).ready(function(){
             //~ }
         //~ }
     //~ });
+
 });
 
 function load_products_grid(page){
@@ -667,9 +670,11 @@ function load_products_grid(page){
 }
 
 function load_products_list(page){
+    var start_render = new Date();
     openerp.jsonRpc("/dn_shop_json_list", "call", {
         'page': current_page.toString(),
     }).done(function(data){
+        var product_count = 0;
         page_count = data['page_count'];
         if (page_count >= current_page) {
             var products_content = '';
@@ -684,8 +689,10 @@ function load_products_list(page){
                     'is_offer_product': data['products'][key]['is_offer_product'],
                     'product_name_col': data['products'][key]['product_name_col'],
                     'purchase_phase': data['products'][key]['purchase_phase'],
+                    'purchase_phase_start_date': data['products'][key]['purchase_phase_start_date'],
                     'purchase_phase_end_date': data['products'][key]['purchase_phase_end_date'],
                     'attribute_value_ids': data['products'][key]['attribute_value_ids'],
+                    'recommended_price': data['products'][key]['recommended_price'],
                     'price': data['products'][key]['price'],
                     'currency': data['products'][key]['currency'],
                     'rounding': data['products'][key]['rounding'],
@@ -693,12 +700,28 @@ function load_products_list(page){
                     'default_code': data['products'][key]['default_code']
                 });
                 products_content += content;
+                console.log('Product:', data['products'][key]['variant_id'], 'load in', data['products'][key]['load_time']*1000, 'ms');
+                product_count ++;
             });
             $(".oe_website_sale").find('tbody').append(products_content);
             current_page ++;
         }
+        var end_render  = new Date();
+        var time_render = end_render.getTime() - start_render.getTime();
+        console.log('Total', product_count, 'products load to html takes:', time_render, 'ms');
     });
 }
+
+var timer = function(name) {
+    var start = new Date();
+    return {
+        stop: function() {
+            var end  = new Date();
+            var time = end.getTime() - start.getTime();
+            console.log('Timer:', name, 'finished in', time, 'ms');
+        }
+    }
+};
 
 function webshop_restore_filter() {
     $("#dn_filter_modal").find(".modal-body").find("input[type=checkbox]").each(
@@ -741,3 +764,28 @@ $(document).on('click', '.dn_js_options ul[name="style"] a', function (event) {
             $li.toggleClass("active", result);
         });
 });
+
+$(document).on('click', '.dn_list_add_to_cart', function (event) {
+    var formData = JSON.stringify($(this).closest("form").serializeArray());
+    var form_arr = JSON.parse(formData);
+    var product_id = "0";
+    var add_qty = "0";
+    $.each(form_arr, function(key, info){
+        if(info['name'] == "product_id") {
+            product_id = info['value'];
+        }
+        if(info['name'] == "add_qty") {
+            add_qty = info['value'];
+        }
+    });
+    openerp.jsonRpc("/dn_list/cart/update", "call", {
+        'product_id': product_id,
+        'add_qty': add_qty
+    }).done(function(data){
+        if($.isArray(data)){
+            $(".my_cart_total").html(data[0]).hide().fadeIn(600);;
+            $(".my_cart_quantity").html('(' + data[1] + ')').hide().fadeIn(600);;
+        }
+    });
+});
+
