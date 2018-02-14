@@ -322,9 +322,7 @@
                                                 </td>
                                             </tr>
                                             <script>
-                                                console.log('
-                                                <t t-esc="'product: %s, load time: %s' %(product['id'], time.time() - start_time)" />
-                                                ');
+                                                console.log('<t t-esc="'product: %s, load time: %s' %(product['id'], time.time() - start_time)" />');
                                             </script>
                                         </t>
                                     </tbody>

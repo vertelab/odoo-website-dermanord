@@ -670,9 +670,11 @@ function load_products_grid(page){
 }
 
 function load_products_list(page){
+    var start_render = new Date();
     openerp.jsonRpc("/dn_shop_json_list", "call", {
         'page': current_page.toString(),
     }).done(function(data){
+        var product_count = 0;
         page_count = data['page_count'];
         if (page_count >= current_page) {
             var products_content = '';
@@ -698,12 +700,28 @@ function load_products_list(page){
                     'default_code': data['products'][key]['default_code']
                 });
                 products_content += content;
+                console.log('Product:', data['products'][key]['variant_id'], 'load in', data['products'][key]['load_time']*1000, 'ms');
+                product_count ++;
             });
             $(".oe_website_sale").find('tbody').append(products_content);
             current_page ++;
         }
+        var end_render  = new Date();
+        var time_render = end_render.getTime() - start_render.getTime();
+        console.log('Total', product_count, 'products load to html takes:', time_render, 'ms');
     });
 }
+
+var timer = function(name) {
+    var start = new Date();
+    return {
+        stop: function() {
+            var end  = new Date();
+            var time = end.getTime() - start.getTime();
+            console.log('Timer:', name, 'finished in', time, 'ms');
+        }
+    }
+};
 
 function webshop_restore_filter() {
     $("#dn_filter_modal").find(".modal-body").find("input[type=checkbox]").each(

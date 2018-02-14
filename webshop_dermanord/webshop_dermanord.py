@@ -1015,7 +1015,7 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         #~ products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
 
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=PPG, offset=(int(page)+1)*PPG, order=default_order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(int(page)+1)*10, order=default_order)
 
         products_list = []
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
@@ -1045,6 +1045,7 @@ class WebsiteSale(website_sale):
             #~ _logger.warn('%s :: %s' %(sale_ribbon, product.website_style_ids))
 
         for p in products:
+            p_start = timer()
             if len(p['campaign_ids']) > 0:
                 phases = request.env['crm.tracking.campaign'].browse(p['campaign_ids'][0]).mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)
                 if len(phases) > 0:
@@ -1103,6 +1104,7 @@ class WebsiteSale(website_sale):
                 'attribute_value_ids': (' , ' + ' , '.join(p['attribute_value_ids'])) if len(p['attribute_value_ids']) > 0 else '',
                 'sale_ok': p['sale_ok'],
                 'sale_start': p['sale_start'],
+                'load_time': timer() - p_start,
             })
 
         values = {
