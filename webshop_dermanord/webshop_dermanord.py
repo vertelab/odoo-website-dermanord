@@ -57,9 +57,9 @@ class crm_tracking_campaign(models.Model):
         for r in self:
             for o in r.object_ids:
                 if o.object_id._name == 'product.template':
-                    o.object_id.write({'campaign_changed': True})
+                    o.object_id.write({'campaign_changed': False if o.object_id.campaign_changed else True})
                 elif o.object_id._name == 'product.product':
-                    o.object_id.product_tmpl_id.write({'campaign_changed': True})
+                    o.object_id.product_tmpl_id.write({'campaign_changed': False if o.object_id.campaign_changed else True})
         return super(crm_tracking_campaign, self).write(vals)
 
     @api.model
@@ -183,7 +183,7 @@ class product_template(models.Model):
 
     #These fileds should not be stored. Because default variant is user depended.
     @api.multi
-    @api.depends('price')
+    @api.depends('name', 'price', 'default_code', 'description_sale', 'image', 'image_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
     #@api.depends('product_variant_ids.name', 'product_variant_ids.default_code', 'product_variant_ids.description_sale', 'product_variant_ids.image_ids.image_attachment_id', 'product_variant_ids.website_style_ids_variant', 'website_style_ids')
     def _get_all_variant_data(self):
         pricelist = self.env.ref('product.list0')
@@ -1015,7 +1015,7 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         #~ products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
 
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(int(page)+1)*10, order=default_order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=default_order)
 
         products_list = []
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
