@@ -29,8 +29,8 @@ $(document).ready(function(){
             'add_qty': add_qty
         }).done(function(data){
             if($.isArray(data)){
-                $(".my_cart_total").html('<i class="my_cart_total">' + data[0] + '</i>').hide().fadeIn(600);;
-                $(".my_cart_quantity").html('<i class="my_cart_quantity">(' + data[1] + ')</i>').hide().fadeIn(600);;
+                $(".my_cart_total").html(data[0]).hide().fadeIn(600);;
+                $(".my_cart_quantity").html('(' + data[1] + ')').hide().fadeIn(600);;
             }
         });
     });
