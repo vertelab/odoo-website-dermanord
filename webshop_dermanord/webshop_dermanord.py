@@ -1050,8 +1050,8 @@ class WebsiteSale(website_sale):
                 phases = request.env['crm.tracking.campaign'].browse(p['campaign_ids'][0]).mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)
                 if len(phases) > 0:
                     p['purchase_phase'] = {
-                        'date_start': phases[0].campaign_id.date_start,
-                        'end_date': phases[0].campaign_id.end_date,
+                        'start_date': phases[0].start_date,
+                        'end_date': phases[0].end_date,
                         'phase': len(phases) > 0,
                     }
                 else:
@@ -1097,7 +1097,7 @@ class WebsiteSale(website_sale):
                 'purchase_phase': True if p['purchase_phase']['phase'] else False,
                 #~ 'product_name_col': 'product_price col-md-6 col-sm-6 col-xs-12' if p['purchase_phase']['phase'] else 'product_price col-md-8 col-sm-8 col-xs-12',
                 'product_name_col': 'product_name' if p['purchase_phase']['phase'] else 'product_name',
-                'purchase_phase_date_start': p['purchase_phase']['date_start'] if p['purchase_phase']['phase'] else '',
+                'purchase_phase_start_date': p['purchase_phase']['start_date'] if p['purchase_phase']['phase'] else '',
                 'purchase_phase_end_date': p['purchase_phase']['end_date'] if p['purchase_phase']['phase'] else '',
                 'recommended_price': "%.2f" % p['recommended_price'],
                 'price': "%.2f" % price,
@@ -1224,8 +1224,8 @@ class WebsiteSale(website_sale):
                 phases = request.env['crm.tracking.campaign'].browse(p['campaign_ids'][0]).mapped('phase_ids').filtered(lambda p: p.reseller_pricelist)
                 if len(phases) > 0:
                     p['purchase_phase'] = {
-                        'date_start': phases[0].campaign_id.date_start,
-                        'end_date': phases[0].campaign_id.end_date,
+                        'start_date': phases[0].start_date,
+                        'end_date': phases[0].end_date,
                     }
                 else:
                     p['purchase_phase'] = {}

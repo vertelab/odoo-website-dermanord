@@ -236,9 +236,8 @@
                                                     <h5 class="list_product_name">
                                                         <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_name">
                                                             <strong>
-                                                                <a t-att-href="'/dn_shop/variant/%s' % product['id']" t-att-title="product['name'] + ', '.join(product.get('attribute_value_ids', []))">
-                                                                    <span itemprop="name" t-esc="product['name']" />
-                                                                    <t t-esc="', '.join(product.get('attribute_value_ids', []))" />
+                                                                <a t-att-href="'/dn_shop/variant/%s' % product['id']" t-att-title="'%s%s' %(product['name'], ' , ' + ', '.join(product.get('attribute_value_ids', [])))">
+                                                                    <span itemprop="name" t-esc="'%s%s' %(product['name'], ' , ' + ', '.join(product.get('attribute_value_ids', [])))" />
                                                                 </a>
                                                             </strong>
                                                         </div>
@@ -249,7 +248,7 @@
                                                         <h5>
                                                             <div class="text-center">
                                                                 <!-- campaign start date -->
-                                                                <span t-esc="product['purchase_phase']['date_start']" />
+                                                                <span t-esc="product['purchase_phase']['start_date']" />
                                                                 <br />
                                                                 <!-- reseller phase end date -->
                                                                 <span t-esc="product['purchase_phase']['end_date']" />

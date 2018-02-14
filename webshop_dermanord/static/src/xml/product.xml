@@ -117,7 +117,7 @@
                 <t t-if="purchase_phase">
                     <h5>
                         <div class="text-center">
-                            <span t-esc="purchase_phase_date_start"/>
+                            <span t-esc="purchase_phase_start_date"/>
                             <br/>
                             <span t-esc="purchase_phase_end_date"/>
                         </div>
