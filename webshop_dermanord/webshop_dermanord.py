@@ -59,7 +59,7 @@ class crm_tracking_campaign(models.Model):
                 if o.object_id._name == 'product.template':
                     o.object_id.write({'campaign_changed': False if o.object_id.campaign_changed else True})
                 elif o.object_id._name == 'product.product':
-                    o.object_id.product_tmpl_id.write({'campaign_changed': False if o.object_id.campaign_changed else True})
+                    o.object_id.product_tmpl_id.write({'campaign_changed': False if o.object_id.product_tmpl_id.campaign_changed else True})
         return super(crm_tracking_campaign, self).write(vals)
 
     @api.model
@@ -98,7 +98,7 @@ class crm_campaign_object(models.Model):
             if r.object_id and r.object_id._name == 'product.template':
                 r.object_id.write({'campaign_changed': False if r.object_id.campaign_changed else True})
             elif r.object_id and r.object_id._name == 'product.product':
-                r.object_id.product_tmpl_id.write({'campaign_changed': False if r.object_id.campaign_changed else True})
+                r.object_id.product_tmpl_id.write({'campaign_changed': False if r.object_id.product_tmpl_id.campaign_changed else True})
         return super(crm_campaign_object, self).write(vals)
 
 
