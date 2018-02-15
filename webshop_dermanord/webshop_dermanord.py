@@ -235,10 +235,12 @@ class product_template(models.Model):
     @api.one
     @api.depends('campaign_changed')
     def _is_offer_product(self):
-        if self in self.get_campaign_tmpl(for_reseller=True):
-            self.is_offer_product_reseller = True
-        if self in self.get_campaign_tmpl(for_reseller=False):
-            self.is_offer_product_consumer = True
+        self.is_offer_product_reseller = self in self.get_campaign_tmpl(for_reseller=True)
+        if not self.is_offer_product_reseller:
+            self.is_offer_product_reseller = self.product_variant_ids & self.get_campaign_variants(for_reseller=True)
+        self.is_offer_product_consumer = self in self.get_campaign_tmpl(for_reseller=False)
+        if not self.is_offer_product_consumer:
+            self.is_offer_product_consumer = self.product_variant_ids & self.get_campaign_variants(for_reseller=False)
     is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
     is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
 
@@ -295,14 +297,12 @@ class product_product(models.Model):
     @api.one
     @api.depends('product_tmpl_id.campaign_changed')
     def _is_offer_product(self):
-        if self in self.get_campaign_variants(for_reseller=True):
-            self.is_offer_product_reseller = True
-        elif self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=True):
-            self.is_offer_product_reseller = True
-        if self in self.get_campaign_variants(for_reseller=False):
-            self.is_offer_product_consumer = True
-        elif self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False):
-            self.is_offer_product_consumer = True
+        self.is_offer_product_reseller = self in self.get_campaign_variants(for_reseller=True)
+        if not self.is_offer_product_reseller:
+            self.is_offer_product_reseller = self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=True)
+        self.is_offer_product_consumer = self in self.get_campaign_variants(for_reseller=False)
+        if not self.is_offer_product_consumer:
+            self.is_offer_product_consumer = self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False)
     is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
     is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
 
