@@ -182,7 +182,7 @@ class product_template(models.Model):
         return res
 
     @api.multi
-    @api.depends('name', 'price', 'list_price', 'default_code', 'description_sale', 'image', 'image_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
+    @api.depends('name', 'price', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
     def _get_all_variant_data(self):
         pricelist = self.env.ref('product.list0')
         pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45')])
@@ -251,6 +251,8 @@ class product_product(models.Model):
     recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     price_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     price_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    tax_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    tax_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
@@ -263,6 +265,8 @@ class product_product(models.Model):
         pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20')])
         self.price_45 = pricelist_45.price_get(self.id, 1)[pricelist_45.id]
         self.price_20 = pricelist_20.price_get(self.id, 1)[pricelist_20.id]
+        self.tax_45 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_45, 1, None, self.env.user.partner_id)['taxes']))
+        self.tax_20 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_20, 1, None, self.env.user.partner_id)['taxes']))
         self.recommended_price = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
 
     @api.model
@@ -1021,7 +1025,7 @@ class WebsiteSale(website_sale):
 
         # relist which product templates the current user is allowed to see
         #~ products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=default_order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'tax_45', 'tax_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=default_order)
 
         products_list = []
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
@@ -1085,13 +1089,13 @@ class WebsiteSale(website_sale):
 
             if request.env.user.partner_id.property_product_pricelist.name == u'Återförsäljare 45':
                 price = p['price_45']
-                _logger.warn(u'Återförsäljare 45: %s' %price)
+                tax = p['tax_45']
             elif request.env.user.partner_id.property_product_pricelist.name == 'Special 20':
                 price = p['price_20']
-                _logger.warn('Special 20: %s' %price)
+                tax = p['tax_20']
             else:
                 price = request.env['product.product'].browse(p['id']).price
-                _logger.warn('price: %s' %price)
+                tax = sum(map(lambda x: x.get('amount', 0.0), request.env['product.product'].browse(p['id']).taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
 
             products_list.append({
                 'lst_ribbon_style': 'tr_lst %s' %p['get_this_variant_ribbon'],
@@ -1107,6 +1111,7 @@ class WebsiteSale(website_sale):
                 'purchase_phase_end_date': p['purchase_phase']['end_date'] if p['purchase_phase']['phase'] else '',
                 'recommended_price': "%.2f" % p['recommended_price'],
                 'price': "%.2f" % price,
+                'tax': "%.2f" % tax,
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
                 'is_reseller': 'yes' if is_reseller else 'no',
@@ -1209,7 +1214,7 @@ class WebsiteSale(website_sale):
 
         domain = request.session.get('current_domain')
         default_order = request.session.get('default_order')
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id'], limit=PPG, order=default_order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'tax_45', 'tax_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id'], limit=PPG, order=default_order)
         request.session['product_count'] = 2000
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
