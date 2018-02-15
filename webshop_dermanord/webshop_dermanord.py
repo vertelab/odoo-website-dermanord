@@ -181,10 +181,8 @@ class product_template(models.Model):
                     res[p.id] = {'recommended_price': 0.0, 'price': 0.0, 'price_tax': 0.0, 'default_code': 'error', 'description_sale': '%s' %e, 'image_src': placeholder}
         return res
 
-    #These fileds should not be stored. Because default variant is user depended.
     @api.multi
-    @api.depends('name', 'price', 'default_code', 'description_sale', 'image', 'image_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
-    #@api.depends('product_variant_ids.name', 'product_variant_ids.default_code', 'product_variant_ids.description_sale', 'product_variant_ids.image_ids.image_attachment_id', 'product_variant_ids.website_style_ids_variant', 'website_style_ids')
+    @api.depends('name', 'price', 'list_price', 'default_code', 'description_sale', 'image', 'image_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
     def _get_all_variant_data(self):
         pricelist = self.env.ref('product.list0')
         pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45')])
@@ -193,11 +191,12 @@ class product_template(models.Model):
         environ = request.httprequest.headers.environ
         _logger.warn(environ.get("REMOTE_ADDR"))
         for p in self:
+            variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'image_ids', 'website_style_ids_variant'])
             try:
                 variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'image_ids', 'website_style_ids_variant'])
                 attribute_value_ids = self.env['product.attribute.value'].browse(variant[0]['attribute_value_ids'])
-                image_ids = self.env['base_multi_image.image'].read(variant[0]['image_ids'][0], ['image_attachment_id']) #browse(variant[0]['image_ids'])
-                website_style_ids_variant = self.env['product.style'].read(variant[0]['website_style_ids_variant'], ['html_class']) #.browse(variant[0]['website_style_ids_variant'])
+                image_ids = self.env['base_multi_image.image'].browse(variant[0]['image_ids']).read(['image_attachment_id'])
+                website_style_ids_variant = self.env['product.style'].browse(variant[0]['website_style_ids_variant']).read(['html_class'])
                 if variant:
                     p.dv_recommended_price = variant[0]['recommended_price']
                     p.dv_price_45 = variant[0]['price_45']
@@ -207,10 +206,11 @@ class product_template(models.Model):
                     p.dv_default_code = variant[0]['default_code'] or ''
                     p.dv_description_sale = variant[0]['description_sale'] or ''
                     p.dv_name = p.name if p.use_tmpl_name else ', '.join([p.name] + attribute_value_ids.mapped('name'))
-                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(image_ids[0]['image_attachment_id'], 'snippet_dermanord.img_product') if (image_ids and image_ids[0]['image_attachment_id']) else placeholder
+                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(image_ids[0]['image_attachment_id'][0], 'snippet_dermanord.img_product') if (image_ids and image_ids[0]) else placeholder
                     #~ p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
                     p.dv_ribbon = website_style_ids_variant[0]['html_class'] if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
             except Exception as e:
+                _logger.error(e)
                 p.dv_recommended_price = 0.0
                 p.dv_price_45 = 0.0
                 p.dv_price_20 = 0.0
@@ -589,6 +589,12 @@ class Website(models.Model):
                 request.session['sale_order_id'] = sale_order.id
         return sale_order
 
+    def price_formate(self, price):
+        if request.env.lang == 'sv_SE':
+            return ('%.2f' %price).replace('.', ',')
+        else:
+            return '%.2f' %price
+
 class WebsiteSale(website_sale):
 
     mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
@@ -876,7 +882,7 @@ class WebsiteSale(website_sale):
         search_start = timer()
         domain = request.session.get('current_domain')
         default_order = request.session.get('default_order')
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=default_order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=default_order)
 
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
@@ -919,6 +925,7 @@ class WebsiteSale(website_sale):
             #~ 'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
             'shop_footer': True,
+            'page_lang': request.env.lang,
         }
         _logger.error('to continue to qweb timer %s\ndomain: %s\npricelist: %s\nsearch: %s\nvalues: %s' % (timer() - start_all, domain_finished - start_all, search_start - domain_finished, search_end - search_start, timer() - search_end))
         render_start = timer()
@@ -948,7 +955,7 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         # TODO: always get same product in the last?? why?
 
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'price', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_tax', 'website_style_ids', 'dv_description_sale', 'product_variant_ids'], order=order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale', 'product_variant_ids'], order=order)
 
         search_end = timer()
         _logger.warn('search end: %s' %(timer() - start_time))
@@ -1014,7 +1021,6 @@ class WebsiteSale(website_sale):
 
         # relist which product templates the current user is allowed to see
         #~ products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
-
         products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=default_order)
 
         products_list = []
