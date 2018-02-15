@@ -96,9 +96,9 @@ class crm_campaign_object(models.Model):
     def write(self, vals):
         for r in self:
             if r.object_id and r.object_id._name == 'product.template':
-                r.object_id.write({'campaign_changed': True})
+                r.object_id.write({'campaign_changed': False if r.object_id.campaign_changed else True})
             elif r.object_id and r.object_id._name == 'product.product':
-                r.object_id.product_tmpl_id.write({'campaign_changed': True})
+                r.object_id.product_tmpl_id.write({'campaign_changed': False if r.object_id.campaign_changed else True})
         return super(crm_campaign_object, self).write(vals)
 
 
