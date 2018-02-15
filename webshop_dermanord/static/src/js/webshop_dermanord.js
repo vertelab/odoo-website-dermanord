@@ -694,6 +694,7 @@ function load_products_list(page){
                     'attribute_value_ids': data['products'][key]['attribute_value_ids'],
                     'recommended_price': data['products'][key]['recommended_price'],
                     'price': data['products'][key]['price'],
+                    'tax': data['products'][key]['tax'],
                     'currency': data['products'][key]['currency'],
                     'rounding': data['products'][key]['rounding'],
                     'is_reseller': data['products'][key]['is_reseller'],
