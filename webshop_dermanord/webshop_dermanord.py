@@ -1353,15 +1353,19 @@ class WebsiteSale(website_sale):
     @http.route(['/dn_list/cart/update'], type='json', auth="public", website=True)
     def dn_cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
         cr, uid, context = request.cr, request.uid, request.context
-        order = request.website.with_context(supress_checks=True).sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
-        line = order.get('line_id', None)
-        if line:
-            order = request.env['sale.order.line'].browse(line).order_id
-            amount_total = '%.2f' %order.amount_total
-            if request.env.lang == 'sv_SE':
-                amount_total = amount_total.replace('.', ',')
-            qty = order.cart_quantity
-            return [order.amount_total, qty]
+        try:
+            order = request.website.with_context(supress_checks=True).sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
+            line = order.get('line_id', None)
+            if line:
+                order = request.env['sale.order.line'].browse(line).order_id
+                amount_total = '%.2f' %order.amount_total
+                if request.env.lang == 'sv_SE':
+                    amount_total = amount_total.replace('.', ',')
+                qty = order.cart_quantity
+                return [order.amount_total, qty]
+        except Exception as e:
+            _logger.error('Error in customer order: %s (%s)' %(e, order.name if order else ''))
+            return e
         else:
             return None
 

@@ -786,6 +786,9 @@ $(document).on('click', '.dn_list_add_to_cart', function (event) {
             $(".my_cart_total").html(data[0]).hide().fadeIn(600);;
             $(".my_cart_quantity").html('(' + data[1] + ')').hide().fadeIn(600);;
         }
+        else {
+            window.alert(data);
+        }
     });
 });
 
