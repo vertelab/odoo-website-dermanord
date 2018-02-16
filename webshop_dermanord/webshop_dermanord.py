@@ -634,8 +634,9 @@ class Website(models.Model):
         request.session['current_domain'] = domain
 
     # API handling broken for unknown reasons. Decorators not working properly with this method.
-    @api.model
-    def sale_get_order(self,force_create=False, code=None, update_pricelist=None):
+    def sale_get_order(self, cr, uid, ids, force_create=False, code=None, update_pricelist=None, context=None):
+        env = api.Environment(cr, uid, context)
+        sale_order_obj = env['sale.order']
         sale_order_id = request.session.get('sale_order_id')
 
         #~ if sale_order_id: # Check if order has been tampered on backoffice
@@ -644,27 +645,27 @@ class Website(models.Model):
                 #~ sale_order_id = None
 
         # Test validity of the sale_order_id
-        sale_order = self.env['sale.order'].sudo().search([('id', '=', sale_order_id)])
+        sale_order = env['sale.order'].sudo().search([('id', '=', sale_order_id)])
 
         # create so if needed
         if not sale_order and (force_create or code):
             values = {
-                'user_id': self.env.user.id,
-                'partner_id': self.env.user.partner_id.id,
-                'pricelist_id': self.env.user.partner_id.property_product_pricelist.id,
-                'section_id': self.env.ref('website.salesteam_website_sales').id,
+                'user_id': env.user.id,
+                'partner_id': env.user.partner_id.id,
+                'pricelist_id': env.user.partner_id.property_product_pricelist.id,
+                'section_id': env.ref('website.salesteam_website_sales').id,
             }
             sale_order = sale.env['sale.order'].sudo().create(values)
-            sale_order.write(self.env['sale.order'].onchange_partner_id([], self.env.user.partner_id.id)['value'])
+            sale_order.write(env['sale.order'].onchange_partner_id([], env.user.partner_id.id)['value'])
             request.session['sale_order_id'] = sale_order.id
 
         #~ sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
 
         # Find old sale order that is a webshop cart.
-        if self.env.user != self.env.ref('base.public_user') and not sale_order:
-            sale_order = self.env['sale.order'].sudo().search([
-                ('partner_id', '=', self.env.user.partner_id.id),
-                ('section_id', '=', self.env.ref('website.salesteam_website_sales').id),
+        if env.user != env.ref('base.public_user') and not sale_order:
+            sale_order = env['sale.order'].sudo().search([
+                ('partner_id', '=', env.user.partner_id.id),
+                ('section_id', '=', env.ref('website.salesteam_website_sales').id),
                 ('state', '=', 'draft'),
             ], limit=1)
             if sale_order:
