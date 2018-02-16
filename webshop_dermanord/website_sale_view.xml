@@ -268,17 +268,18 @@
                                                     <h5>
                                                         <b>
                                                             <t t-if="user_id.partner_id.property_product_pricelist.id == 3">
-                                                                <span t-esc="str('%.2f' %product['price_45']).replace('.', ',')" style="white-space: nowrap;"/>
+                                                                <span t-esc="str('%.2f' %product['price_45']).replace('.', ',')" style="white-space: nowrap;" id="your_price" t-att-data-price="product['price_45']" t-att-data-tax="product['tax_45']"/>
                                                                 <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
                                                             <t t-if="user_id.partner_id.property_product_pricelist.id == 6">
-                                                                <span t-esc="str('%.2f' %product['price_20']).replace('.', ',')" style="white-space: nowrap;"/>
+                                                                <span t-esc="str('%.2f' %product['price_20']).replace('.', ',')" style="white-space: nowrap;" id="your_price" t-att-data-price="product['price_20']" t-att-data-tax="product['tax_20']"/>
                                                                 <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
                                                             <t t-if="user_id.partner_id.property_product_pricelist.id not in [3, 6]">
-                                                                <span t-field="request.env['product.product'].browse(product['id']).price" style="white-space: nowrap;" t-field-options="{                                                                        &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }" />
+                                                                <span t-field="request.env['product.product'].browse(product['id']).price" style="white-space: nowrap;" t-field-options="{
+                                                                &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }" />
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
 <!--

@@ -34,6 +34,8 @@ import werkzeug
 from heapq import nlargest
 import math
 
+from openerp import SUPERUSER_ID
+
 from timeit import default_timer as timer
 
 import logging
@@ -182,7 +184,7 @@ class product_template(models.Model):
         return res
 
     @api.multi
-    @api.depends('name', 'price', 'list_price', 'default_code', 'description_sale', 'image', 'image_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
+    @api.depends('name', 'price', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
     def _get_all_variant_data(self):
         pricelist = self.env.ref('product.list0')
         pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45')])
@@ -251,6 +253,8 @@ class product_product(models.Model):
     recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     price_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     price_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    tax_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    tax_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
@@ -263,6 +267,8 @@ class product_product(models.Model):
         pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20')])
         self.price_45 = pricelist_45.price_get(self.id, 1)[pricelist_45.id]
         self.price_20 = pricelist_20.price_get(self.id, 1)[pricelist_20.id]
+        self.tax_45 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_45, 1, None, self.env.user.partner_id)['taxes']))
+        self.tax_20 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_20, 1, None, self.env.user.partner_id)['taxes']))
         self.recommended_price = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
 
     @api.model
@@ -678,6 +684,69 @@ class Website(models.Model):
 
 class WebsiteSale(website_sale):
 
+    @http.route(['/shop/confirm_order'], type='http', auth="public", website=True)
+    def confirm_order(self, **post):
+        order = request.website.sale_get_order()
+        if not order:
+            return request.redirect("/shop")
+        redirection = self.checkout_redirection(order)
+        if redirection:
+            return redirection
+        
+        values = self.checkout_values(post)
+        values["error"] = self.checkout_form_validate(values["checkout"])
+        if values["error"]:
+            return request.website.render("website_sale.checkout", values)
+        self.checkout_form_save(values["checkout"])
+        request.session['sale_last_order_id'] = order.id
+        request.website.sale_get_order(update_pricelist=True)
+        return request.redirect("/shop/payment")
+
+    @http.route(['/shop/payment'], type='http', auth="public", website=True)
+    def payment(self, **post):
+        """ Payment step. This page proposes several payment means based on available
+        payment.acquirer. State at this point :
+
+         - a draft sale order with lines; otherwise, clean context / session and
+           back to the shop
+         - no transaction in context / session, or only a draft one, if the customer
+           did go to a payment.acquirer website but closed the tab without
+           paying / canceling
+        """
+        payment_obj = request.env['payment.acquirer']
+        sale_order_obj = request.env['sale.order']
+
+        order = request.website.sale_get_order()
+        redirection = self.checkout_redirection(order)
+        if redirection:
+            return redirection
+
+        shipping_partner_id = False
+        if order:
+            if order.partner_shipping_id.id:
+                shipping_partner_id = order.partner_shipping_id.id
+            else:
+                shipping_partner_id = order.partner_invoice_id.id
+        values = {
+            'order': order.sudo()
+        }
+        values['errors'] = sale_order_obj._get_errors(order)
+        values.update(sale_order_obj._get_website_data(order))
+        if not values['errors']:
+            acquirer_ids = payment_obj.sudo().search([('website_published', '=', True), ('company_id', '=', order.company_id.id)])
+            values['acquirers'] = list(acquirer_ids)
+            render_ctx = dict(request.env.context, submit_class='btn btn-primary', submit_txt=_('Pay Now'))
+            for acquirer in values['acquirers']:
+                acquirer.button = acquirer.with_context(render_ctx).render(
+                    '/',
+                    order.amount_total,
+                    order.pricelist_id.currency_id.id,
+                    partner_id=shipping_partner_id,
+                    tx_values={
+                        'return_url': '/shop/payment/validate',
+                    })
+        return request.website.render("website_sale.payment", values)
+
     mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
 
     def show_purchase_button(self, product):
@@ -697,10 +766,12 @@ class WebsiteSale(website_sale):
         return error
 
     def checkout_values(self, data=None):
+        start = timer()
         #TODO: Completely replace this function to cut down on load times.
         if not data:
             data = {}
         res = super(WebsiteSale, self).checkout_values(data)
+        _logger.warn('checkout_values super: %s' % (timer() - start))
         if request.env.user != request.website.user_id:
             partner = request.env.user.partner_id
             invoicing_id = int(data.get("invoicing_id", '-2'))
@@ -719,15 +790,73 @@ class WebsiteSale(website_sale):
             res['invoicings'] = invoicings.sudo()
             res['invoicing_id'] = invoicing_id
             res['checkout']['invoicing_id'] = invoicing_id
+        _logger.warn('checkout_values: %s' % (timer() - start))
         return res
 
+    #_logger.warn(':%s' % (timer() - start))
     def checkout_form_save(self, checkout):
-        super(WebsiteSale, self).checkout_form_save(checkout)
+        start = timer()
+        
+        
         order = request.website.sale_get_order(force_create=1)
-        order.date_order = fields.Datetime.now()
-        partner_invoice_id = checkout.get('invoicing_id') or request.env.user.partner_id.id
-        if order.partner_invoice_id.id != partner_invoice_id:
-            order.write({'partner_invoice_id': partner_invoice_id})
+
+        orm_partner = request.env['res.partner']
+        orm_user = request.env['res.users']
+        order_obj = request.env['sale.order'].sudo()
+
+        partner_lang = request.lang if request.lang in [lang.code for lang in request.website.language_ids] else None
+
+        _logger.warn('1:%s' % (timer() - start))
+        # set partner_id
+        partner_id = None
+        if request.env.user != request.website.user_id:
+            partner_id = request.env.user.partner_id
+        elif order.partner_id:
+            user_ids = request.env['res.users'].sudo().search(
+                [("partner_id", "=", order.partner_id.id)], active_test=False)
+            if not user_ids or request.website.user_id not in user_ids:
+                partner_id = order.partner_id
+        _logger.warn('2:%s' % (timer() - start))
+
+        order_info = {
+            'partner_id': partner_id.id,
+            'message_follower_ids': [(4, partner_id.id), (3, request.website.partner_id.id)],
+            'partner_invoice_id': checkout.get('invoicing_id') or partner_id.id,
+            'date_order': fields.Datetime.now(),
+        }
+        order_info.update(order.onchange_partner_id(partner_id.id)['value'])
+        address_change = order.onchange_delivery_id(order.company_id.id, partner_id.id,
+                                                        checkout.get('shipping_id'), None)['value']
+        order_info.update(address_change)
+        _logger.warn('5:%s' % (timer() - start))
+        if address_change.get('fiscal_position'):
+            fiscal_update = order.onchange_fiscal_position(address_change['fiscal_position'],
+                                                               [(4, l.id) for l in order.order_line])['value']
+            order_info.update(fiscal_update)
+        _logger.warn('6:%s' % (timer() - start))
+        order_info.pop('user_id')
+        order_info.update(partner_shipping_id=checkout.get('shipping_id') or partner_id.id)
+        _logger.warn('7:%s' % (timer() - start))
+        order.sudo().write(order_info)
+        _logger.warn('8:%s' % (timer() - start))
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        #super(WebsiteSale, self).checkout_form_save(checkout)
+        _logger.warn('checkout_form_save super:%s' % (timer() - start))
+        #~ order = request.website.sale_get_order(force_create=1)
+        #~ order.date_order = fields.Datetime.now()
+        #~ partner_invoice_id = checkout.get('invoicing_id') or request.env.user.partner_id.id
+        #~ if order.partner_invoice_id.id != partner_invoice_id:
+            #~ order.write({'partner_invoice_id': partner_invoice_id})
+            
+        _logger.warn('checkout_form_save:%s' % (timer() - start))
 
     def get_attribute_value_ids(self, product):
         def get_sale_start(product):
@@ -1102,7 +1231,7 @@ class WebsiteSale(website_sale):
 
         # relist which product templates the current user is allowed to see
         #~ products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=default_order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'tax_45', 'tax_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=default_order)
 
         products_list = []
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
@@ -1166,13 +1295,13 @@ class WebsiteSale(website_sale):
 
             if request.env.user.partner_id.property_product_pricelist.name == u'Återförsäljare 45':
                 price = p['price_45']
-                _logger.warn(u'Återförsäljare 45: %s' %price)
+                tax = p['tax_45']
             elif request.env.user.partner_id.property_product_pricelist.name == 'Special 20':
                 price = p['price_20']
-                _logger.warn('Special 20: %s' %price)
+                tax = p['tax_20']
             else:
                 price = request.env['product.product'].browse(p['id']).price
-                _logger.warn('price: %s' %price)
+                tax = sum(map(lambda x: x.get('amount', 0.0), request.env['product.product'].browse(p['id']).taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
 
             products_list.append({
                 'lst_ribbon_style': 'tr_lst %s' %p['get_this_variant_ribbon'],
@@ -1188,6 +1317,7 @@ class WebsiteSale(website_sale):
                 'purchase_phase_end_date': p['purchase_phase']['end_date'] if p['purchase_phase']['phase'] else '',
                 'recommended_price': "%.2f" % p['recommended_price'],
                 'price': "%.2f" % price,
+                'tax': "%.2f" % tax,
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
                 'is_reseller': 'yes' if is_reseller else 'no',
@@ -1290,7 +1420,7 @@ class WebsiteSale(website_sale):
 
         domain = request.session.get('current_domain')
         default_order = request.session.get('default_order')
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id'], limit=PPG, order=default_order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'tax_45', 'tax_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id'], limit=PPG, order=default_order)
         request.session['product_count'] = 2000
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
