@@ -392,7 +392,7 @@ class sale_order(models.Model):
             request.session['sale_order_id'] = None
             raise Warning(_('It is forbidden to modify a sale order which is not in draft status'))
 
-        line = self.line_ids.filtered(lambda l: if line_id and l.product_id.id == product_id or line_id == l.id)
+        line = self.order_line.filtered(lambda l: True if not line_id and l.product_id.id == product_id else line_id == l.id)
         if len(line) > 1:
             line = line_id[0]
 
@@ -404,20 +404,22 @@ class sale_order(models.Model):
                         product=product.id,
                         partner_id=self.partner_id.id,
                         fiscal_position=self.fiscal_position.id,
-                        qty=add_qty,
-                        company_id=self.company_id.id)
+                        qty=set_qty or add_qty,
+                        #~ company_id=self.company_id.id
                     )['value']
             values['name'] = product.description_sale and "%s\n%s" % (product.display_name, product.description_sale) or product.display_name
             values['product_id'] = product.id
             values['order_id'] = self.id
+            values['product_uom_qty'] = set_qty or add_qty
             if values.get('tax_id') != None:
                 values['tax_id'] = [(6, 0, values['tax_id'])]
             line = self.env['sale.order.line'].create(values)
+            if add_qty:
+                add_qty = 0
 
         # compute new quantity
         if set_qty:
             quantity = set_qty
-            line.product_uom_qty = set_qty
         elif add_qty != None:
             quantity = line.product_uom_qty + (add_qty or 0)
 
@@ -425,13 +427,17 @@ class sale_order(models.Model):
         if quantity <= 0:
             line.unlink()
 
-        return {'line_id': line.id,
-                'line': line,
+        elif quantity != line.product_uom_qty:
+            line.product_uom_qty = quantity
+
+        return {
+                'name': self.name,
+                'line_id': line.id,
                 'quantity': quantity,
                 'cart_quantity': self.cart_quantity,
                 'amount_total':self.amount_total,
                 'amount_untaxed': self.amount_untaxed,
-                }
+            }
 
 
 class Website(models.Model):
@@ -638,31 +644,25 @@ class Website(models.Model):
                 #~ sale_order_id = None
 
         # Test validity of the sale_order_id
-        if sale_order_id and self.env['sale.order'].sudo().exists(sale_order_id):
-            sale_order = self.env['sale.order'].sudo().brobse(sale_order_id)
-        else:
-            sale_order_id = None
+        sale_order = self.env['sale.order'].sudo().search([('id', '=', sale_order_id)])
 
         # create so if needed
-        if not sale_order_id and (force_create or code):
-            # TODO cache partner_id session
-            partner = self.env['res.users'].sudo().browse(self.uid).partner_id
-
+        if not sale_order and (force_create or code):
             values = {
-                'user_id': self.user_id.id,
-                'partner_id': partner.id,
-                'pricelist_id': partner.property_product_pricelist.id,
+                'user_id': self.env.user.id,
+                'partner_id': self.env.user.partner_id.id,
+                'pricelist_id': self.env.user.partner_id.property_product_pricelist.id,
                 'section_id': self.env.ref('website.salesteam_website_sales').id,
             }
-            sale_order_id = sale.env['sale.order'].sudo().create(values)
-            sale_order.write(sale_order_id.onchange_partner_id([], partner.id)['value'])
-            request.session['sale_order_id'] = sale_order_id
+            sale_order = sale.env['sale.order'].sudo().create(values)
+            sale_order.write(self.env['sale.order'].onchange_partner_id([], self.env.user.partner_id.id)['value'])
+            request.session['sale_order_id'] = sale_order.id
 
         #~ sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
 
         # Find old sale order that is a webshop cart.
-        if self.uid != self.env.ref('base.public_user') and not sale_order:
-            sale_order = sale_order_obj.sudo().search([
+        if self.env.user != self.env.ref('base.public_user') and not sale_order:
+            sale_order = self.env['sale.order'].sudo().search([
                 ('partner_id', '=', self.env.user.partner_id.id),
                 ('section_id', '=', self.env.ref('website.salesteam_website_sales').id),
                 ('state', '=', 'draft'),
@@ -671,15 +671,11 @@ class Website(models.Model):
                 request.session['sale_order_id'] = sale_order.id
         return sale_order
 
-
     def price_formate(self, price):
         if request.env.lang == 'sv_SE':
             return ('%.2f' %price).replace('.', ',')
         else:
             return '%.2f' %price
-
-
-
 
 
 class WebsiteSale(website_sale):
@@ -1566,9 +1562,9 @@ class WebsiteSale(website_sale):
         cr, uid, context = request.cr, request.uid, request.context
         try:
             res = request.website.with_context(supress_checks=True).sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
-            return [request.website.price_formate(order['amount_untaxed']), order['cart_quantity']]
+            return [request.website.price_formate(res['amount_untaxed']), res['cart_quantity']]
         except Exception as e:
-            _logger.error('Error in customer order: %s (%s)' %(e, order.name if order else ''))
+            _logger.error('Error in customer order: %s' %e)
             return e
         else:
             return None
