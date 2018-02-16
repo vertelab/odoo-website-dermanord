@@ -1342,7 +1342,7 @@ class WebsiteSale(website_sale):
                 #~ tax = p['tax_20']
             else:
                 price = request.env['product.product'].browse(p['id']).price
-                tax = sum(map(lambda x: x.get('amount', 0.0), request.env['product.product'].browse(p['id']).taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
+                #tax = sum(map(lambda x: x.get('amount', 0.0), request.env['product.product'].browse(p['id']).taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
 
             products_list.append({
                 'lst_ribbon_style': 'tr_lst %s' %p['get_this_variant_ribbon'],
@@ -1357,7 +1357,7 @@ class WebsiteSale(website_sale):
                 'purchase_phase_start_date': p['purchase_phase']['start_date'] if p['purchase_phase']['phase'] else '',
                 'purchase_phase_end_date': p['purchase_phase']['end_date'] if p['purchase_phase']['phase'] else '',
                 'recommended_price': "%.2f" % p['recommended_price'],
-                'price': "%.2f" %request.website.price_formate(price),
+                'price': request.website.price_formate(price),
                 #~ 'tax': "%.2f" %request.website.price_formate(tax),
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
