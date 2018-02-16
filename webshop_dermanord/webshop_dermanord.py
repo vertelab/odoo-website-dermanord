@@ -647,20 +647,6 @@ class Website(models.Model):
         # Test validity of the sale_order_id
         sale_order = env['sale.order'].sudo().search([('id', '=', sale_order_id)])
 
-        # create so if needed
-        if not sale_order and (force_create or code):
-            values = {
-                'user_id': env.user.id,
-                'partner_id': env.user.partner_id.id,
-                'pricelist_id': env.user.partner_id.property_product_pricelist.id,
-                'section_id': env.ref('website.salesteam_website_sales').id,
-            }
-            sale_order = sale.env['sale.order'].sudo().create(values)
-            sale_order.write(env['sale.order'].onchange_partner_id([], env.user.partner_id.id)['value'])
-            request.session['sale_order_id'] = sale_order.id
-
-        #~ sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
-
         # Find old sale order that is a webshop cart.
         if env.user != env.ref('base.public_user') and not sale_order:
             sale_order = env['sale.order'].sudo().search([
@@ -670,6 +656,64 @@ class Website(models.Model):
             ], limit=1)
             if sale_order:
                 request.session['sale_order_id'] = sale_order.id
+
+        # create so if needed
+        if not sale_order and (force_create or code):
+            values = {
+                'user_id': env.user.id,
+                'partner_id': env.user.partner_id.id,
+                'pricelist_id': env.user.partner_id.property_product_pricelist.id,
+                'section_id': env.ref('website.salesteam_website_sales').id,
+            }
+            sale_order = env['sale.order'].sudo().create(values)
+            sale_order.write(env['sale.order'].onchange_partner_id(env.user.partner_id.id)['value'])
+            request.session['sale_order_id'] = sale_order.id
+
+        #~ sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
+
+        # TODO: Fix code and and update_pricelist
+
+        #~ if code and code != sale_order.pricelist_id.code:
+                #~ pricelist_ids = self.pool['product.pricelist'].search(cr, SUPERUSER_ID, [('code', '=', code)], context=context)
+                #~ if pricelist_ids:
+                    #~ pricelist_id = pricelist_ids[0]
+                    #~ request.session['sale_order_code_pricelist_id'] = pricelist_id
+                    #~ update_pricelist = True
+
+            #~ pricelist_id = request.session.get('sale_order_code_pricelist_id') or partner.property_product_pricelist.id
+
+            #~ # check for change of partner_id ie after signup
+            #~ if sale_order.partner_id.id != partner.id and request.website.partner_id.id != partner.id:
+                #~ flag_pricelist = False
+                #~ if pricelist_id != sale_order.pricelist_id.id:
+                    #~ flag_pricelist = True
+                #~ fiscal_position = sale_order.fiscal_position and sale_order.fiscal_position.id or False
+
+                #~ values = sale_order_obj.onchange_partner_id(cr, SUPERUSER_ID, [sale_order_id], partner.id, context=context)['value']
+                #~ if values.get('fiscal_position'):
+                    #~ order_lines = map(int,sale_order.order_line)
+                    #~ values.update(sale_order_obj.onchange_fiscal_position(cr, SUPERUSER_ID, [],
+                        #~ values['fiscal_position'], [[6, 0, order_lines]], context=context)['value'])
+
+                #~ values['partner_id'] = partner.id
+                #~ sale_order_obj.write(cr, SUPERUSER_ID, [sale_order_id], values, context=context)
+
+                #~ if flag_pricelist or values.get('fiscal_position', False) != fiscal_position:
+                    #~ update_pricelist = True
+
+            #~ # update the pricelist
+            #~ if update_pricelist:
+                #~ values = {'pricelist_id': pricelist_id}
+                #~ values.update(sale_order.onchange_pricelist_id(pricelist_id, None)['value'])
+                #~ sale_order.write(values)
+                #~ for line in sale_order.order_line:
+                    #~ if line.exists():
+                        #~ sale_order._cart_update(product_id=line.product_id.id, line_id=line.id, add_qty=0)
+
+            #~ # update browse record
+            #~ if (code and code != sale_order.pricelist_id.code) or sale_order.partner_id.id !=  partner.id:
+                #~ sale_order = sale_order_obj.browse(cr, SUPERUSER_ID, sale_order.id, context=context)
+
         return sale_order
 
     def price_formate(self, price):

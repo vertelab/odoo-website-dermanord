@@ -321,6 +321,7 @@ $(document).ready(function(){
             $input.val(quantity > min ? (quantity < max ? quantity : max) : min);
             //~ $('input[name="'+$input.attr("name")+'"]').val(quantity > min ? (quantity < max ? quantity : max) : min);
             $input.change();
+            $("#top_menu").find("a[href='/shop/cart']").closest("li").css({"display": "none"});
             return false;
         });
 
@@ -389,6 +390,7 @@ $(document).ready(function(){
                     $(".my_cart_total").load(location.href + " .my_cart_total");
                 });
             });
+            $("#top_menu").find("a[href='/shop/cart']").closest("li").css({"display": "none"});
             return false;
         });
 
