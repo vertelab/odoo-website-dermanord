@@ -253,8 +253,8 @@ class product_product(models.Model):
     recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     price_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     price_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    tax_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    tax_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    #~ tax_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    #~ tax_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
@@ -267,8 +267,8 @@ class product_product(models.Model):
         pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20')])
         self.price_45 = pricelist_45.price_get(self.id, 1)[pricelist_45.id]
         self.price_20 = pricelist_20.price_get(self.id, 1)[pricelist_20.id]
-        self.tax_45 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_45, 1, None, self.env.user.partner_id)['taxes']))
-        self.tax_20 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_20, 1, None, self.env.user.partner_id)['taxes']))
+        #~ self.tax_45 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_45, 1, None, self.env.user.partner_id)['taxes']))
+        #~ self.tax_20 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_20, 1, None, self.env.user.partner_id)['taxes']))
         self.recommended_price = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
 
     @api.model
@@ -611,7 +611,7 @@ class WebsiteSale(website_sale):
         redirection = self.checkout_redirection(order)
         if redirection:
             return redirection
-        
+
         values = self.checkout_values(post)
         values["error"] = self.checkout_form_validate(values["checkout"])
         if values["error"]:
@@ -715,8 +715,8 @@ class WebsiteSale(website_sale):
     #_logger.warn(':%s' % (timer() - start))
     def checkout_form_save(self, checkout):
         start = timer()
-        
-        
+
+
         order = request.website.sale_get_order(force_create=1)
 
         orm_partner = request.env['res.partner']
@@ -758,15 +758,15 @@ class WebsiteSale(website_sale):
         _logger.warn('7:%s' % (timer() - start))
         order.sudo().write(order_info)
         _logger.warn('8:%s' % (timer() - start))
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
         #super(WebsiteSale, self).checkout_form_save(checkout)
         _logger.warn('checkout_form_save super:%s' % (timer() - start))
         #~ order = request.website.sale_get_order(force_create=1)
@@ -774,7 +774,7 @@ class WebsiteSale(website_sale):
         #~ partner_invoice_id = checkout.get('invoicing_id') or request.env.user.partner_id.id
         #~ if order.partner_invoice_id.id != partner_invoice_id:
             #~ order.write({'partner_invoice_id': partner_invoice_id})
-            
+
         _logger.warn('checkout_form_save:%s' % (timer() - start))
 
     def get_attribute_value_ids(self, product):
@@ -1150,7 +1150,7 @@ class WebsiteSale(website_sale):
 
         # relist which product templates the current user is allowed to see
         #~ products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'tax_45', 'tax_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=default_order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=default_order)
 
         products_list = []
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
@@ -1214,10 +1214,10 @@ class WebsiteSale(website_sale):
 
             if request.env.user.partner_id.property_product_pricelist.name == u'Återförsäljare 45':
                 price = p['price_45']
-                tax = p['tax_45']
+                #~ tax = p['tax_45']
             elif request.env.user.partner_id.property_product_pricelist.name == 'Special 20':
                 price = p['price_20']
-                tax = p['tax_20']
+                #~ tax = p['tax_20']
             else:
                 price = request.env['product.product'].browse(p['id']).price
                 tax = sum(map(lambda x: x.get('amount', 0.0), request.env['product.product'].browse(p['id']).taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
@@ -1235,8 +1235,8 @@ class WebsiteSale(website_sale):
                 'purchase_phase_start_date': p['purchase_phase']['start_date'] if p['purchase_phase']['phase'] else '',
                 'purchase_phase_end_date': p['purchase_phase']['end_date'] if p['purchase_phase']['phase'] else '',
                 'recommended_price': "%.2f" % p['recommended_price'],
-                'price': "%.2f" % price,
-                'tax': "%.2f" % tax,
+                'price': "%.2f" %request.website.price_formate(price),
+                #~ 'tax': "%.2f" %request.website.price_formate(tax),
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
                 'is_reseller': 'yes' if is_reseller else 'no',
@@ -1339,7 +1339,7 @@ class WebsiteSale(website_sale):
 
         domain = request.session.get('current_domain')
         default_order = request.session.get('default_order')
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'tax_45', 'tax_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id'], limit=PPG, order=default_order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id'], limit=PPG, order=default_order)
         request.session['product_count'] = 2000
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
@@ -1484,15 +1484,8 @@ class WebsiteSale(website_sale):
     def dn_cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
         cr, uid, context = request.cr, request.uid, request.context
         try:
-            order = request.website.with_context(supress_checks=True).sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
-            line = order.get('line_id', None)
-            if line:
-                order = request.env['sale.order.line'].browse(line).order_id
-                amount_total = '%.2f' %order.amount_total
-                if request.env.lang == 'sv_SE':
-                    amount_total = amount_total.replace('.', ',')
-                qty = order.cart_quantity
-                return [order.amount_total, qty]
+            res = request.website.with_context(supress_checks=True).sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
+            return [request.website.price_formate(order['amount_untaxed']), order['cart_quantity']]
         except Exception as e:
             _logger.error('Error in customer order: %s (%s)' %(e, order.name if order else ''))
             return e
@@ -1504,10 +1497,8 @@ class WebsiteSale(website_sale):
         order = request.website.sale_get_order()
         res = {'amount_total': '0.00', 'cart_quantity': '0'}
         if order:
-            res['amount_total'] = "%.2f" %order.amount_total
+            res['amount_total'] = request.website.price_formate(order.amount_total)
             res['cart_quantity'] = order.cart_quantity
-        if request.env.lang == 'sv_SE':
-            res['amount_total'] = res['amount_total'].replace('.', ',')
         return res
 
 class webshop_dermanord(http.Controller):

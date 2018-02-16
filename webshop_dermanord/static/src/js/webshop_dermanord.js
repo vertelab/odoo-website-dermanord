@@ -694,7 +694,7 @@ function load_products_list(page){
                     'attribute_value_ids': data['products'][key]['attribute_value_ids'],
                     'recommended_price': data['products'][key]['recommended_price'],
                     'price': data['products'][key]['price'],
-                    'tax': data['products'][key]['tax'],
+                    //~ 'tax': data['products'][key]['tax'],
                     'currency': data['products'][key]['currency'],
                     'rounding': data['products'][key]['rounding'],
                     'is_reseller': data['products'][key]['is_reseller'],
@@ -779,13 +779,19 @@ $(document).on('click', '.dn_list_add_to_cart', function (event) {
             add_qty = info['value'];
         }
     });
+
     var unit_price = parseFloat($(this).closest("tr").find("#your_price").data("price"));
-    var unit_tax = parseFloat($(this).closest("tr").find("#your_price").data("tax"));
-    var cart_total = parseFloat($(".my_cart_total").html().replace(",", ".").replace(" ", ""));
+    //~ var unit_tax = parseFloat($(this).closest("tr").find("#your_price").data("tax"));
+    var cart_sum = $(".my_cart_total").html();
+    var seperator = ",";
+    if (cart_sum.indexOf(".") != -1) {
+         seperator = ".";
+    }
+    var cart_total = parseFloat(cart_sum.replace(",", ".").replace(" ", ""));
     var cart_html = $(".my_cart_quantity").html();
     var cart_qty = cart_html.substring(cart_html.lastIndexOf("(")+1,cart_html.lastIndexOf(")"));
-    var current_total = cart_total + (unit_price + unit_tax) * parseFloat(add_qty);
-    $(".my_cart_total").html(parseFloat(current_total).toFixed(2));
+    var current_total = cart_total + unit_price * parseFloat(add_qty);
+    $(".my_cart_total").html(parseFloat(current_total).toFixed(2).replace(".", seperator));
     $(".my_cart_quantity").html('(' + (parseInt(add_qty) + parseInt(cart_qty)) + ')');
 
     openerp.jsonRpc("/dn_list/cart/update", "call", {
