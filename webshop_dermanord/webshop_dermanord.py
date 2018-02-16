@@ -378,6 +378,62 @@ class ResPartner(models.Model):
 
         return HTMLSafe(html)
 
+
+class sale_order(models.Model):
+    _inherit='sale.order'
+
+    @api.multi
+    def _cart_update(self,product_id=None, line_id=None, add_qty=0, set_qty=0, **kwargs):
+        """ Add or set product quantity, add_qty can be negative """
+        self.ensure_one()
+
+        quantity = 0
+        if self.state != 'draft':
+            request.session['sale_order_id'] = None
+            raise Warning(_('It is forbidden to modify a sale order which is not in draft status'))
+
+        line = self.line_ids.filtered(lambda l: if line_id and l.product_id.id == product_id or line_id == l.id)
+        if len(line) > 1:
+            line = line_id[0]
+
+        # Create line if no line with product_id can be located
+        if not line:
+            product = self.env['product.product'].browse(product_id)
+            values = self.env['sale.order.line'].sudo().product_id_change(
+                        pricelist=self.pricelist_id.id,
+                        product=product.id,
+                        partner_id=self.partner_id.id,
+                        fiscal_position=self.fiscal_position.id,
+                        qty=add_qty,
+                        company_id=self.company_id.id)
+                    )['value']
+            values['name'] = product.description_sale and "%s\n%s" % (product.display_name, product.description_sale) or product.display_name
+            values['product_id'] = product.id
+            values['order_id'] = self.id
+            if values.get('tax_id') != None:
+                values['tax_id'] = [(6, 0, values['tax_id'])]
+            line = self.env['sale.order.line'].create(values)
+
+        # compute new quantity
+        if set_qty:
+            quantity = set_qty
+            line.product_uom_qty = set_qty
+        elif add_qty != None:
+            quantity = line.product_uom_qty + (add_qty or 0)
+
+        # Remove zero of negative lines
+        if quantity <= 0:
+            line.unlink()
+
+        return {'line_id': line.id,
+                'line': line,
+                'quantity': quantity,
+                'cart_quantity': self.cart_quantity,
+                'amount_total':self.amount_total,
+                'amount_untaxed': self.amount_untaxed,
+                }
+
+
 class Website(models.Model):
     _inherit = 'website'
 
@@ -572,9 +628,8 @@ class Website(models.Model):
         request.session['current_domain'] = domain
 
     # API handling broken for unknown reasons. Decorators not working properly with this method.
-    def sale_get_order(self, cr, uid, ids, force_create=False, code=None, update_pricelist=None, context=None):
-        env = api.Environment(cr, uid, context)
-        sale_order_obj = env['sale.order']
+    @api.model
+    def sale_get_order(self,force_create=False, code=None, update_pricelist=None):
         sale_order_id = request.session.get('sale_order_id')
 
         #~ if sale_order_id: # Check if order has been tampered on backoffice
@@ -582,24 +637,50 @@ class Website(models.Model):
             #~ if sale_order and sale_order.order_line.filtered(lambda l: l.state not in ['draft']):
                 #~ sale_order_id = None
 
-        sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
+        # Test validity of the sale_order_id
+        if sale_order_id and self.env['sale.order'].sudo().exists(sale_order_id):
+            sale_order = self.env['sale.order'].sudo().brobse(sale_order_id)
+        else:
+            sale_order_id = None
+
+        # create so if needed
+        if not sale_order_id and (force_create or code):
+            # TODO cache partner_id session
+            partner = self.env['res.users'].sudo().browse(self.uid).partner_id
+
+            values = {
+                'user_id': self.user_id.id,
+                'partner_id': partner.id,
+                'pricelist_id': partner.property_product_pricelist.id,
+                'section_id': self.env.ref('website.salesteam_website_sales').id,
+            }
+            sale_order_id = sale.env['sale.order'].sudo().create(values)
+            sale_order.write(sale_order_id.onchange_partner_id([], partner.id)['value'])
+            request.session['sale_order_id'] = sale_order_id
+
+        #~ sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
 
         # Find old sale order that is a webshop cart.
-        if env.user != env.ref('base.public_user') and not sale_order:
+        if self.uid != self.env.ref('base.public_user') and not sale_order:
             sale_order = sale_order_obj.sudo().search([
-                ('partner_id', '=', env.user.partner_id.id),
-                ('section_id', '=', env.ref('website.salesteam_website_sales').id),
+                ('partner_id', '=', self.env.user.partner_id.id),
+                ('section_id', '=', self.env.ref('website.salesteam_website_sales').id),
                 ('state', '=', 'draft'),
             ], limit=1)
             if sale_order:
                 request.session['sale_order_id'] = sale_order.id
         return sale_order
 
+
     def price_formate(self, price):
         if request.env.lang == 'sv_SE':
             return ('%.2f' %price).replace('.', ',')
         else:
             return '%.2f' %price
+
+
+
+
 
 class WebsiteSale(website_sale):
 
