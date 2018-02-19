@@ -57,6 +57,7 @@ $(document).ready(function(){
 
     // This method updates product images, prices, ingredients, descriptions and facets when a variant has been choosen.
     function update_product_info(event_source, product_id) {
+        var $price = $(event_source).closest('tr.js_product, .oe_website_sale').find(".oe_price");
         var $img = $(event_source).closest('tr.js_product, .oe_website_sale').find('span[data-oe-model^="product."][data-oe-type="image"] img:first, img.product_detail_img');
         var $img_big = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_big");
         var $img_thumb = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_nav");
@@ -77,6 +78,10 @@ $(document).ready(function(){
         openerp.jsonRpc("/get/product_variant_data", "call", {
             'product_id': product_id,
         }).done(function(data){
+            // update price
+            if (data['price']) {
+                $price.html(data['price']);
+            }
             // update images
             offer_html = '';
             ribbon_html = '';
@@ -229,8 +234,7 @@ $(document).ready(function(){
             //~ });
             product_ids.push($product_dom.data("attribute_value_ids"));
             var qty = $product_dom.find('input[name="add_qty"]').val();
-
-            openerp.jsonRpc("/shop/get_unit_price", 'call', {'product_ids': product_ids,'add_qty': parseInt(qty)})
+            openerp.jsonRpc("/shop/get_unit_price", 'call', {'product_ids': product_ids[0], 'add_qty': parseInt(qty)})
             .then(function (data) {
                 var current = $product_dom.data("attribute_value_ids");
                 for(var j=0; j < current.length; j++){
@@ -392,9 +396,10 @@ $(document).ready(function(){
             return false;
         });
 
-        $('.oe_website_sale .a-submit, #comment .a-submit').off('click').on('click', function () {
-            $(this).closest('form').submit();
-        });
+        //~ $('.oe_website_sale .a-submit, #comment .a-submit').off('click').on('click', function () {
+            //~ $(this).closest('form').submit();
+        //~ });
+
         $('form.js_attributes input, form.js_attributes select', oe_website_sale).on('change', function () {
             $(this).closest("form").submit();
         });
@@ -766,7 +771,10 @@ $(document).on('click', '.dn_js_options ul[name="style"] a', function (event) {
         });
 });
 
-$(document).on('click', '.dn_list_add_to_cart', function (event) {
+// This method called by "add_to_cart" button in both dn_shop and dn_list.
+// Method do a calculation and according to the product unit_price * quantity and update the cart total amount.
+// Method does a RPC-call, after response update cart again with current order total amount.
+$(document).on('click', '.dn_list_add_to_cart, .oe_website_sale .a-submit, #comment .a-submit', function (event) {
     var formData = JSON.stringify($(this).closest("form").serializeArray());
     var form_arr = JSON.parse(formData);
     var product_id = "0";
@@ -780,7 +788,15 @@ $(document).on('click', '.dn_list_add_to_cart', function (event) {
         }
     });
 
-    var unit_price = parseFloat($(this).closest("tr").find(".your_price").data("price"));
+    if ($(this).closest("tr").length == 0) {
+        // unit price in dn_list
+        var unit_price = parseFloat($(this).closest("form").find(".oe_price").text());
+    }
+    else {
+        // unit price in dn_shop product detail view
+        var unit_price = parseFloat($(this).closest("tr").closest("tr").find(".your_price").data("price"));
+    }
+
     //~ var unit_tax = parseFloat($(this).closest("tr").find(".your_price").data("tax"));
     var cart_sum = $(".my_cart_total").html();
     var seperator = ",";
@@ -794,7 +810,7 @@ $(document).on('click', '.dn_list_add_to_cart', function (event) {
     $(".my_cart_total").html(parseFloat(current_total).toFixed(2).replace(".", seperator));
     $(".my_cart_quantity").html('(' + (parseInt(add_qty) + parseInt(cart_qty)) + ')');
 
-    openerp.jsonRpc("/dn_list/cart/update", "call", {
+    openerp.jsonRpc("/dn_shop/cart/update", "call", {
         'product_id': product_id,
         'add_qty': add_qty
     }).done(function(data){
@@ -807,4 +823,3 @@ $(document).on('click', '.dn_list_add_to_cart', function (event) {
         }
     });
 });
-

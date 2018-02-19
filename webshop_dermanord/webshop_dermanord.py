@@ -253,8 +253,6 @@ class product_product(models.Model):
     recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     price_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     price_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    #~ tax_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    #~ tax_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
@@ -267,9 +265,9 @@ class product_product(models.Model):
         pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20')])
         self.price_45 = pricelist_45.price_get(self.id, 1)[pricelist_45.id]
         self.price_20 = pricelist_20.price_get(self.id, 1)[pricelist_20.id]
+        self.recommended_price = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
         #~ self.tax_45 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_45, 1, None, self.env.user.partner_id)['taxes']))
         #~ self.tax_20 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_20, 1, None, self.env.user.partner_id)['taxes']))
-        self.recommended_price = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
 
     @api.model
     def update_sold_qty(self):
@@ -1594,15 +1592,15 @@ class WebsiteSale(website_sale):
 
         return request.website.render("website_sale.cart", values)
 
-    @http.route(['/shop/cart/update'], type='http', auth="public", methods=['POST'], website=True)
-    def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
-        cr, uid, context = request.cr, request.uid, request.context
-        request.website.with_context(supress_checks=True).sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
-        if kw.get('return_url'):
-            return request.redirect(kw.get('return_url'))
-        return request.redirect("/shop/cart")
+    #~ @http.route(['/shop/cart/update'], type='http', auth="public", methods=['POST'], website=True)
+    #~ def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
+        #~ cr, uid, context = request.cr, request.uid, request.context
+        #~ request.website.with_context(supress_checks=True).sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
+        #~ if kw.get('return_url'):
+            #~ return request.redirect(kw.get('return_url'))
+        #~ return request.redirect("/shop/cart")
 
-    @http.route(['/dn_list/cart/update'], type='json', auth="public", website=True)
+    @http.route(['/dn_shop/cart/update'], type='json', auth="public", website=True)
     def dn_cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
         cr, uid, context = request.cr, request.uid, request.context
         try:
@@ -1683,6 +1681,15 @@ class webshop_dermanord(http.Controller):
                 elif product.product_tmpl_id in product.product_tmpl_id.get_campaign_tmpl(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
                     offer = True
 
+                if request.env.user.partner_id.property_product_pricelist.name == u'Återförsäljare 45':
+                    price = product.price_45
+                elif request.env.user.partner_id.property_product_pricelist.name == 'Special 20':
+                    price = product.price_20
+                else:
+                    price = product.price
+
+                value['id'] = product.id
+                value['price'] = request.website.price_formate(price)
                 value['instock'] = instock
                 value['images'] = images
                 value['facets'] = facets
