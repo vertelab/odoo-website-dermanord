@@ -245,7 +245,7 @@ $(document).ready(function(){
             $(ev.currentTarget).parents(".thumbnail").toggleClass("disabled");
         });
 
-        $(oe_website_sale).find(".oe_cart input.js_quantity").on("change", function () {
+        $(oe_website_sale).find(".oe_cart input.js_quantity").live("change", function () {
             var $input = $(this);
             if ($input.data('update_change')) {
                 return;
@@ -332,7 +332,6 @@ $(document).ready(function(){
             $input.val(0);
             $('input[name="'+$input.attr("name")+'"]').val(0);
             $input.change();
-            //force to update change
             if ($input.data('update_change')) {
                 return;
             }
@@ -378,7 +377,6 @@ $(document).ready(function(){
                         $("#cart_products").load(location.href + " #cart_products");
                         $("#cart_total").load(location.href + " #cart_total");
                         $(".my_cart_total").load(location.href + " .my_cart_total");
-                        //~ $q.parent().parent().removeClass("hidden", !data.quantity);
                         $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
                         return;
                     }
@@ -782,8 +780,8 @@ $(document).on('click', '.dn_list_add_to_cart', function (event) {
         }
     });
 
-    var unit_price = parseFloat($(this).closest("tr").find("#your_price").data("price"));
-    //~ var unit_tax = parseFloat($(this).closest("tr").find("#your_price").data("tax"));
+    var unit_price = parseFloat($(this).closest("tr").find(".your_price").data("price"));
+    //~ var unit_tax = parseFloat($(this).closest("tr").find(".your_price").data("tax"));
     var cart_sum = $(".my_cart_total").html();
     var seperator = ",";
     if (cart_sum.indexOf(".") != -1) {

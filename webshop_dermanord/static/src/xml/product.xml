@@ -127,7 +127,7 @@
             <td>
                 <h5>
                     <b>
-                        <span t-esc="price" t-att-data-price="price" style="white-space: nowrap;"/>
+                        <span t-esc="price" t-att-data-price="price" style="white-space: nowrap;" class="your_price"/>
                         <span itemprop="priceCurrency" style="display:none;" t-esc="currency" class="decimal_precision" t-att-data-precision="rounding"/>
                     </b>
                 </h5>
