@@ -810,7 +810,7 @@ $(document).on('click', '.dn_list_add_to_cart, .oe_website_sale .a-submit, #comm
     $(".my_cart_total").html(parseFloat(current_total).toFixed(2).replace(".", seperator));
     $(".my_cart_quantity").html('(' + (parseInt(add_qty) + parseInt(cart_qty)) + ')');
 
-    openerp.jsonRpc("/dn_shop/cart/update", "call", {
+    openerp.jsonRpc("/shop/cart/update", "call", {
         'product_id': product_id,
         'add_qty': add_qty
     }).done(function(data){

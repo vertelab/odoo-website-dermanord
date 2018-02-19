@@ -299,7 +299,7 @@
                                                 </td>
                                                 <td>
                                                     <div>
-                                                        <form action="/dn_shop/cart/update" class="oe_dn_list" t-att-data-attribute_value_ids="product['id']" method="POST">
+                                                        <form action="/shop/cart/update" class="oe_dn_list" t-att-data-attribute_value_ids="product['id']" method="POST">
                                                             <div class="product_shop" style="margin: 0px;">
                                                                 <input type="hidden" class="product_id" name="product_id" t-att-value="product['id']" />
                                                                 <input type="hidden" name="return_url" t-att-value="request.httprequest.url" />
