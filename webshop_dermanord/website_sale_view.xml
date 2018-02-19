@@ -346,12 +346,13 @@
             <xpath expr="//a[@t-attf-href='/shop/product/#{ slug(line.product_id.product_tmpl_id) }']" position="replace">
                 <a t-attf-href="/dn_shop/variant/#{ slug(line.product_id) }">
                     <strong t-if="line.product_id.default_code">
-                        [
-                        <t t-esc="line.product_id.default_code" />
-                        ]
+                        [<t t-esc="line.product_id.default_code" />]
                     </strong>
                     <strong t-esc="line.product_id.with_context(display_default_code=False).display_name" />
                 </a>
+            </xpath>
+            <xpath expr="//span[@t-field='line.product_id.image_small']" position="replace">
+                <img t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id" class="img_payment"/>
             </xpath>
             <xpath expr="//td[@name='price']" position="replace">
                 <td class="text-center" name="price" style="width: 200px;">
