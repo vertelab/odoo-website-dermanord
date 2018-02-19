@@ -1610,7 +1610,7 @@ class WebsiteSale(website_sale):
         #~ return request.redirect("/shop/cart")
 
     @http.route(['/shop/cart/update'], type='json', auth="public", website=True)
-    def dn_cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
+    def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
         try:
             #~ done = False
             #~ retries = 5
