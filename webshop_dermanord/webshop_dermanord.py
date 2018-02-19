@@ -33,6 +33,7 @@ from openerp.addons.base.ir.ir_qweb import HTMLSafe
 import werkzeug
 from heapq import nlargest
 import math
+import time
 
 from openerp import SUPERUSER_ID
 
@@ -862,22 +863,35 @@ class WebsiteSale(website_sale):
         order_info = {
             'partner_id': partner_id.id,
             'message_follower_ids': [(4, partner_id.id), (3, request.website.partner_id.id)],
-            'partner_invoice_id': checkout.get('invoicing_id') or partner_id.id,
             'date_order': fields.Datetime.now(),
         }
-        order_info.update(order.onchange_partner_id(partner_id.id)['value'])
-        address_change = order.onchange_delivery_id(order.company_id.id, partner_id.id,
-                                                        checkout.get('shipping_id'), None)['value']
-        order_info.update(address_change)
+        _logger.warn('order_info: %s order: %s' % (order_info['partner_id'], order.partner_id))
+        if order_info['partner_id'] != order.partner_id.id:
+            order_info.update(order.onchange_partner_id(partner_id.id)['value'])
+        # Reset to the specified shipping and invoice adresses
+        order_info.update({
+            'partner_invoice_id': checkout.get('invoicing_id') or partner_id.id,
+            'partner_shipping_id': checkout.get('shipping_id') or partner_id.id,
+        })
+        _logger.warn(order_info)
+        if order_info['partner_id'] != order.partner_id or order_info['shipping_id'] != order.partner_shipping_id.id:
+            _logger.warn('partner_shipping_id: %s\nshipping_id: %s' % (order.partner_shipping_id, checkout.get('shipping_id')))
+            address_change = order.onchange_delivery_id(
+                order.company_id.id, partner_id.id, checkout.get('shipping_id'), None)['value']
+            for key in address_change:
+                _logger.warn('%s:\t%s\t%s\t%s' % (key, getattr(order, key), address_change[key], order_info.get(key)))
+            order_info.update(address_change)
+            if address_change.get('fiscal_position') and address_change.get('fiscal_position') != order.fiscal_position.id:
+                fiscal_update = order.onchange_fiscal_position(
+                    address_change['fiscal_position'],
+                    [(4, l.id) for l in order.order_line])['value']
+                order_info.update(fiscal_update)
         _logger.warn('5:%s' % (timer() - start))
-        if address_change.get('fiscal_position'):
-            fiscal_update = order.onchange_fiscal_position(address_change['fiscal_position'],
-                                                               [(4, l.id) for l in order.order_line])['value']
-            order_info.update(fiscal_update)
-        _logger.warn('6:%s' % (timer() - start))
-        order_info.pop('user_id')
-        order_info.update(partner_shipping_id=checkout.get('shipping_id') or partner_id.id)
+        _logger.warn(order_info)
+        if 'user_id' in order_info:
+            order_info.pop('user_id')
         _logger.warn('7:%s' % (timer() - start))
+        _logger.warn(order_info)
         order.sudo().write(order_info)
         _logger.warn('8:%s' % (timer() - start))
 
@@ -1372,7 +1386,7 @@ class WebsiteSale(website_sale):
         values = {
             'products': products_list,
             'url': url,
-            'page_count': int(math.ceil(float(request.session.get('product_count')) / float(PPG))),
+            'page_count': int(math.ceil(float(request.session.get('product_count', 2000)) / float(PPG))),
         }
 
         return values
@@ -1597,7 +1611,20 @@ class WebsiteSale(website_sale):
     @http.route(['/shop/cart/update'], type='http', auth="public", methods=['POST'], website=True)
     def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
         cr, uid, context = request.cr, request.uid, request.context
-        request.website.with_context(supress_checks=True).sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
+        #~ done = False
+        #~ retries = 5
+        #~ while not done and retries > 0:
+            #~ try:
+        order._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
+                #~ done = True
+            #~ except Exception as e:
+                #~ _logger.warn('_cart_update: %s' % retries)
+                #~ if retries == 0:
+                    #~ raise e
+                #~ retries -= 1
+                #~ _logger.warn(e)
+                #~ request.cr.rollback()
+                #~ time.sleep(.1)
         if kw.get('return_url'):
             return request.redirect(kw.get('return_url'))
         return request.redirect("/shop/cart")
@@ -1606,7 +1633,20 @@ class WebsiteSale(website_sale):
     def dn_cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
         cr, uid, context = request.cr, request.uid, request.context
         try:
-            res = request.website.with_context(supress_checks=True).sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
+            #~ done = False
+            #~ retries = 5
+            #~ while not done and retries > 0:
+                #~ try:
+            res = request.website.with_context().sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
+                    #~ done = True
+                #~ except Exception as e:
+                    #~ _logger.warn('_cart_update: %s' % retries)
+                    #~ if retries == 0:
+                        #~ raise e
+                    #~ retries -= 1
+                    #~ _logger.warn(e)
+                    #~ request.cr.rollback()
+                    #~ time.sleep(.1)
             return [request.website.price_formate(res['amount_untaxed']), res['cart_quantity']]
         except Exception as e:
             _logger.error('Error in customer order: %s' %e)
