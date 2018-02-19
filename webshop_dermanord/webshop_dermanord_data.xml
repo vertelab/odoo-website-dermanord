@@ -4,6 +4,7 @@
         <!-- ingredients -->
         <record id="img_ingredients" model="image.recipe">
             <field name="name">Ingredients</field>
+            <field name="image_format">jpeg</field>
             <field name="description">Define the canvas size to limit the image maximum size.
 PS: The canvas will always be the given size</field>
             <field name="recipe">bg = Image()
@@ -33,6 +34,7 @@ res = bg
         <!-- product payment -->
         <record id="img_payment" model="image.recipe">
             <field name="name">Product payment</field>
+            <field name="image_format">jpeg</field>
             <field name="description">Define the canvas size to limit the image maximum size.
 PS: The canvas will always be the given size</field>
             <field name="recipe">bg = Image()
@@ -62,6 +64,7 @@ res = bg
         <!-- search result -->
         <record id="img_search_result" model="image.recipe">
             <field name="name">Search Result</field>
+            <field name="image_format">jpeg</field>
             <field name="description">Define the canvas size to limit the image maximum size.
 PS: The canvas will always be the given size</field>
             <field name="recipe">bg = Image()

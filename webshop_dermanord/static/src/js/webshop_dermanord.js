@@ -789,11 +789,11 @@ $(document).on('click', '.dn_list_add_to_cart, #add_to_cart.a-submit', function 
     });
 
     if ($(this).closest("tr").length == 0) {
-        // unit price in dn_list
+        // unit price in dn_shop product detail view
         var unit_price = parseFloat($(this).closest("form").find(".oe_price").text());
     }
     else {
-        // unit price in dn_shop product detail view
+        // unit price in dn_list
         var unit_price = parseFloat($(this).closest("tr").closest("tr").find(".your_price").data("price"));
     }
 
