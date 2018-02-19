@@ -612,8 +612,6 @@ class Website(models.Model):
                 request.session['form_values']['order'] = default_order
             request.session['current_order'] = default_order
 
-
-
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
 
@@ -621,8 +619,6 @@ class Website(models.Model):
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
         request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
         request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
-
-
 
         if post:
             domain = self.get_domain_append(model, post)
@@ -1122,7 +1118,6 @@ class WebsiteSale(website_sale):
         else:
             pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
 
-
         if search:
             post["search"] = search
         #~ if attrib_list:
@@ -1130,8 +1125,8 @@ class WebsiteSale(website_sale):
 
         search_start = timer()
         domain = request.session.get('current_domain')
-        default_order = request.session.get('default_order')
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=default_order)
+        current_order = request.session.get('current_order')
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=current_order)
 
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
@@ -1266,11 +1261,11 @@ class WebsiteSale(website_sale):
         url = "/dn_list"
 
         domain = request.session.get('current_domain')
-        default_order = request.session.get('default_order')
+        current_order = request.session.get('current_order')
 
         # relist which product templates the current user is allowed to see
         #~ products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=default_order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=current_order)
 
         products_list = []
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
@@ -1458,8 +1453,8 @@ class WebsiteSale(website_sale):
             post["search"] = search
 
         domain = request.session.get('current_domain')
-        default_order = request.session.get('default_order')
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id'], limit=PPG, order=default_order)
+        current_order = request.session.get('current_order')
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id'], limit=PPG, order=current_order)
         request.session['product_count'] = 2000
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
