@@ -1602,15 +1602,12 @@ class WebsiteSale(website_sale):
 
     @http.route(['/dn_shop/cart/update'], type='json', auth="public", website=True)
     def dn_cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
-        cr, uid, context = request.cr, request.uid, request.context
         try:
             res = request.website.with_context(supress_checks=True).sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
             return [request.website.price_formate(res['amount_untaxed']), res['cart_quantity']]
         except Exception as e:
             _logger.error('Error in customer order: %s' %e)
             return e
-        else:
-            return None
 
     @http.route(['/website_sale_update_cart'], type='json', auth="public", website=True)
     def website_sale_update_cart(self):
