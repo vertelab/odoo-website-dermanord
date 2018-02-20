@@ -2,12 +2,28 @@ var website = openerp.website;
 website.add_template_file('/webshop_dermanord/static/src/xml/product.xml');
 var current_page = 0;
 var page_count = 0;
+var lang = $("html").attr("lang");
+
+function langPriceFormat(nStr) {
+    nStr += '';
+    var ts = ' ';
+    var dec = ',';
+    if (lang == 'en-US') { var ts = ','; var dec = '.'; }
+    var x = nStr.split('.');
+    var x1 = x[0];
+    var x2 = x.length > 1 ? dec + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + ts + '$2');
+    }
+    return x1 + x2;
+}
 
 $(document).ready(function(){
 
     openerp.jsonRpc("/website_sale_update_cart", "call", {
     }).done(function(data){
-        $(".my_cart_total").html(data['amount_total']);
+        $(".my_cart_total").html(langPriceFormat(data['amount_untaxed']));
         $(".my_cart_quantity").html('(' + data['cart_quantity'] + ')');
     });
 
@@ -57,7 +73,7 @@ $(document).ready(function(){
 
     // This method updates product images, prices, ingredients, descriptions and facets when a variant has been choosen.
     function update_product_info(event_source, product_id) {
-        var $price = $(event_source).closest('tr.js_product, .oe_website_sale').find(".oe_price");
+        var $price = $('.js_add_cart_variants').find(".oe_price");
         var $img = $(event_source).closest('tr.js_product, .oe_website_sale').find('span[data-oe-model^="product."][data-oe-type="image"] img:first, img.product_detail_img');
         var $img_big = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_big");
         var $img_thumb = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_nav");
@@ -203,8 +219,14 @@ $(document).ready(function(){
             $default_code.html(data['default_code']);
         });
 
-        $img.parent().attr('data-oe-model', 'product.product').attr('data-oe-id', product_id)
-            .data('oe-model', 'product.product').data('oe-id', product_id);
+        $img.parent().attr('data-oe-model', 'product.product').attr('data-oe-id', product_id).data('oe-model', 'product.product').data('oe-id', product_id);
+    }
+
+    var product_price_form = $('form.js_add_cart_variants');
+    if (product_price_form.length > 0) {
+        if (product_price_form.data('attribute_value_ids').length == 1) {
+            update_product_info(none, product_price_form.data('attribute_value_ids')[0]);
+        }
     }
 
     $('.oe_website_sale').each(function () {
@@ -636,14 +658,15 @@ $(document).ready(function(){
 });
 
 function load_products_grid(page){
+    var start_render = new Date();
     openerp.jsonRpc("/dn_shop_json_grid", "call", {
         'page': current_page.toString(),
     }).done(function(data){
+        var product_count = 0;
         //~ page_count = data['page_count'];
         if (data['products'].length > 0) {
             var products_content = '';
             $.each(data['products'], function(key, info) {
-                var start_time = $.now();
                 var content = openerp.qweb.render('products_item_grid', {
                     'url': data['url'],
                     'data_id': data['products'][key]['product_id'],
@@ -665,13 +688,16 @@ function load_products_grid(page){
                     'product_variant_ids': data['products'][key]['product_variant_ids']
                 });
                 products_content += content;
-                console.log($.now() - start_time);
+                console.log('Product:', data['products'][key]['product_id'], 'load in', data['products'][key]['load_time']*1000, 'ms');
+                product_count ++;
             });
             $("#desktop_product_grid").append(products_content);
             current_page ++;
         }
+        var end_render  = new Date();
+        var time_render = end_render.getTime() - start_render.getTime();
+        console.log('Total', product_count, 'products load to html takes:', time_render, 'ms');
     });
-
 }
 
 function load_products_list(page){
@@ -790,24 +816,29 @@ $(document).on('click', '.dn_list_add_to_cart, #add_to_cart.a-submit', function 
 
     if ($(this).closest("tr").length == 0) {
         // unit price in dn_shop product detail view
-        var unit_price = parseFloat($(this).closest("form").find(".oe_price").text());
+        if (lang == 'en-US'){
+            var unit_price = parseFloat($(this).closest("form").find(".oe_price").text());
+        }
+        else{
+            var unit_price = parseFloat($(this).closest("form").find(".oe_price").text().replace(",", "."));
+        }
     }
     else {
         // unit price in dn_list
         var unit_price = parseFloat($(this).closest("tr").closest("tr").find(".your_price").data("price"));
     }
-
     //~ var unit_tax = parseFloat($(this).closest("tr").find(".your_price").data("tax"));
     var cart_sum = $(".my_cart_total").html();
-    var seperator = ",";
-    if (cart_sum.indexOf(".") != -1) {
-         seperator = ".";
+    if (lang == 'en-US'){
+        var cart_total = parseFloat(cart_sum.replace(",", ""));
     }
-    var cart_total = parseFloat(cart_sum.replace(",", ".").replace(" ", ""));
+    else{
+         var cart_total = parseFloat(cart_sum.replace(" ", "").replace(",", "."));
+    }
     var cart_html = $(".my_cart_quantity").html();
     var cart_qty = cart_html.substring(cart_html.lastIndexOf("(")+1,cart_html.lastIndexOf(")"));
     var current_total = cart_total + unit_price * parseFloat(add_qty);
-    $(".my_cart_total").html(parseFloat(current_total).toFixed(2).replace(".", seperator));
+    $(".my_cart_total").html(langPriceFormat(parseFloat(current_total).toFixed(2)));
     $(".my_cart_quantity").html('(' + (parseInt(add_qty) + parseInt(cart_qty)) + ')');
 
     openerp.jsonRpc("/shop/cart/update", "call", {
@@ -815,7 +846,7 @@ $(document).on('click', '.dn_list_add_to_cart, #add_to_cart.a-submit', function 
         'add_qty': add_qty
     }).done(function(data){
         if($.isArray(data)){
-            $(".my_cart_total").html(data[0]).hide().fadeIn(600);
+            $(".my_cart_total").html(langPriceFormat(data[0])).hide().fadeIn(600);
             $(".my_cart_quantity").html('(' + data[1] + ')').hide().fadeIn(600);
         }
         else {

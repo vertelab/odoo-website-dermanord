@@ -152,7 +152,7 @@
                                     <t t-if="user_id.partner_id.property_product_pricelist.id == 3">
                                         <div>
                                             <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
-                                            <span t-esc="website.price_formate(product['dv_recommended_price'])" style="white-space: nowrap;" />
+                                            <span t-esc="website.price_formate(product['dv_recommended_price']) if user_id.lang == 'sv_SE' else website.price_formate(product['dv_recommended_price_en'])" style="white-space: nowrap;" />
                                             <span style="display: inline;">(rec incl. tax)</span>
                                         </div>
                                         <div>
@@ -164,7 +164,7 @@
                                     <t t-if="user_id.partner_id.property_product_pricelist.id == 6">
                                         <div>
                                             <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
-                                            <span t-esc="website.price_formate(product['dv_recommended_price'])" style="white-space: nowrap;" />
+                                            <span t-esc="website.price_formate(product['dv_recommended_price']) if user_id.lang == 'sv_SE' else website.price_formate(product['dv_recommended_price_en'])" style="white-space: nowrap;" />
                                             <span style="display: inline;">(rec incl. tax)</span>
                                         </div>
                                         <div>
@@ -174,8 +174,16 @@
                                         </div>
                                     </t>
                                     <t t-if="user_id.partner_id.property_product_pricelist.id not in [3, 6]">
-                                        <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
-                                        <span t-esc="website.price_formate(product['dv_recommended_price'])" />
+                                        <div>
+                                            <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
+                                            <span t-esc="website.price_formate(product['dv_recommended_price']) if user_id.lang == 'sv_SE' else website.price_formate(product['dv_recommended_price_en'])" style="white-space: nowrap;" />
+                                            <span style="display: inline;">(rec incl. tax)</span>
+                                        </div>
+                                        <div>
+                                            <b t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
+                                            <b t-esc="website.price_formate(user_id.partner_id.property_product_pricelist.price_get(product['id'], 1)[user_id.partner_id.property_product_pricelist.id])" style="white-space: nowrap;" />
+                                            <span style="display: inline;">(your excl. tax)</span>
+                                        </div>
                                     </t>
                                     <!--
                                          <span itemprop="price" style="display:none;" t-esc="product.dv_price" />
@@ -211,7 +219,7 @@
                                             <td>Art. nr</td>
                                             <td>Produkt</td>
                                             <td>Säljstart kund</td>
-                                            <td>Ditt pris</td>
+                                            <td style="min-width: 100px;">Ditt pris</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -292,7 +300,7 @@
                                                     </h5>
                                                     <!-- recommended price -->
                                                     <h5>
-                                                        (<span t-esc="str('%.2f' %product['recommended_price']).replace('.', ',')" style="white-space: nowrap;"/>
+                                                        (<span t-esc="str('%.2f' %product['recommended_price']).replace('.', ',') if user_id.lang == 'sv_SE' else str('%.2f' %product['recommended_price_en'])" style="white-space: nowrap;"/>
                                                         <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                                         <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class="decimal_precision" t-att-data-precision="website.pricelist_id.currency_id.rounding" />)
                                                     </h5>
@@ -364,8 +372,16 @@
                         }' />
                     </t>
                     <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
-                        <div>
+                        <div t-if="user_id.lang == 'sv_SE'">
                             <span t-field="line.product_id.recommended_price" t-field-options='{
+                              "widget": "monetary",
+                              "from_currency": "line.product_id.company_id.currency_id",
+                              "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                           }' />
+                            <span style="display: inline;">(rec incl. tax)</span>
+                        </div>
+                        <div t-if="user_id.lang == 'en_US'">
+                            <span t-field="line.product_id.recommended_price_en" t-field-options='{
                               "widget": "monetary",
                               "from_currency": "line.product_id.company_id.currency_id",
                               "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
@@ -427,8 +443,16 @@
                            }' />
                         </t>
                         <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
-                            <div>
+                            <div t-if="user_id.lang == 'sv_SE'">
                                 <span t-field="product.recommended_price" t-field-options='{
+                                  "widget": "monetary",
+                                  "from_currency": "product.company_id.currency_id",
+                                  "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                               }' />
+                                <span style="display: inline;">(rec incl. tax)</span>
+                            </div>
+                            <div t-if="user_id.lang == 'en_US'">
+                                <span t-field="product.recommended_price_en" t-field-options='{
                                   "widget": "monetary",
                                   "from_currency": "product.company_id.currency_id",
                                   "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
