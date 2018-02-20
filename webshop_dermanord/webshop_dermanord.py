@@ -194,7 +194,6 @@ class product_template(models.Model):
         environ = request.httprequest.headers.environ
         _logger.warn(environ.get("REMOTE_ADDR"))
         for p in self:
-            variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'image_ids', 'website_style_ids_variant'])
             try:
                 variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'image_ids', 'website_style_ids_variant'])
                 attribute_value_ids = self.env['product.attribute.value'].browse(variant[0]['attribute_value_ids'])
