@@ -203,12 +203,14 @@ $(document).ready(function(){
             $default_code.html(data['default_code']);
         });
 
-        $img.parent().attr('data-oe-model', 'product.product').attr('data-oe-id', product_id)
-            .data('oe-model', 'product.product').data('oe-id', product_id);
+        $img.parent().attr('data-oe-model', 'product.product').attr('data-oe-id', product_id).data('oe-model', 'product.product').data('oe-id', product_id);
     }
 
-    if ($('.js_add_cart_variants').data('attribute_value_ids').length == 1) {
-        update_product_info(this, $('.js_add_cart_variants').data('attribute_value_ids')[0]);
+    var product_price_form = $('form.js_add_cart_variants');
+    if (product_price_form.length > 0) {
+        if (product_price_form.data('attribute_value_ids').length == 1) {
+            update_product_info(none, product_price_form.data('attribute_value_ids')[0]);
+        }
     }
 
     $('.oe_website_sale').each(function () {
@@ -640,14 +642,15 @@ $(document).ready(function(){
 });
 
 function load_products_grid(page){
+    var start_render = new Date();
     openerp.jsonRpc("/dn_shop_json_grid", "call", {
         'page': current_page.toString(),
     }).done(function(data){
+        var product_count = 0;
         //~ page_count = data['page_count'];
         if (data['products'].length > 0) {
             var products_content = '';
             $.each(data['products'], function(key, info) {
-                var start_time = $.now();
                 var content = openerp.qweb.render('products_item_grid', {
                     'url': data['url'],
                     'data_id': data['products'][key]['product_id'],
@@ -669,11 +672,15 @@ function load_products_grid(page){
                     'product_variant_ids': data['products'][key]['product_variant_ids']
                 });
                 products_content += content;
-                console.log($.now() - start_time);
+                console.log('Product:', data['products'][key]['product_id'], 'load in', data['products'][key]['load_time']*1000, 'ms');
+                product_count ++;
             });
             $("#desktop_product_grid").append(products_content);
             current_page ++;
         }
+        var end_render  = new Date();
+        var time_render = end_render.getTime() - start_render.getTime();
+        console.log('Total', product_count, 'products load to html takes:', time_render, 'ms');
     });
 
 }
