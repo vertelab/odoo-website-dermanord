@@ -34,6 +34,7 @@ import werkzeug
 from heapq import nlargest
 import math
 import time
+from multiprocessing import Lock
 
 from openerp import SUPERUSER_ID
 
@@ -42,6 +43,7 @@ from timeit import default_timer as timer
 import logging
 _logger = logging.getLogger(__name__)
 
+from .thread import dn_webshop_queue
 PPG = 21 # Products Per Page
 PPR = 3  # Products Per Row
 
@@ -382,7 +384,7 @@ class sale_order(models.Model):
     _inherit='sale.order'
 
     @api.multi
-    def _cart_update(self,product_id=None, line_id=None, add_qty=0, set_qty=0, **kwargs):
+    def _cart_update(self, product_id=None, line_id=None, add_qty=0, set_qty=0, **kwargs):
         """ Add or set product quantity, add_qty can be negative """
         self.ensure_one()
 
@@ -438,6 +440,7 @@ class sale_order(models.Model):
                 'amount_untaxed': self.amount_untaxed,
             }
 
+dn_cart_update = {}
 
 class Website(models.Model):
     _inherit = 'website'
@@ -719,6 +722,8 @@ class Website(models.Model):
 
 
 class WebsiteSale(website_sale):
+    
+    dn_cart_lock = Lock()
 
     @http.route(['/shop/confirm_order'], type='http', auth="public", website=True)
     def confirm_order(self, **post):
@@ -780,7 +785,7 @@ class WebsiteSale(website_sale):
                     partner_id=shipping_partner_id,
                     tx_values={
                         'return_url': '/shop/payment/validate',
-                    })
+                    })[0]
         return request.website.render("website_sale.payment", values)
 
     mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
@@ -833,7 +838,6 @@ class WebsiteSale(website_sale):
     def checkout_form_save(self, checkout):
         start = timer()
 
-
         order = request.website.sale_get_order(force_create=1)
 
         orm_partner = request.env['res.partner']
@@ -842,7 +846,6 @@ class WebsiteSale(website_sale):
 
         partner_lang = request.lang if request.lang in [lang.code for lang in request.website.language_ids] else None
 
-        _logger.warn('1:%s' % (timer() - start))
         # set partner_id
         partner_id = None
         if request.env.user != request.website.user_id:
@@ -852,14 +855,12 @@ class WebsiteSale(website_sale):
                 [("partner_id", "=", order.partner_id.id)], active_test=False)
             if not user_ids or request.website.user_id not in user_ids:
                 partner_id = order.partner_id
-        _logger.warn('2:%s' % (timer() - start))
 
         order_info = {
             'partner_id': partner_id.id,
             'message_follower_ids': [(4, partner_id.id), (3, request.website.partner_id.id)],
             'date_order': fields.Datetime.now(),
         }
-        _logger.warn('order_info: %s order: %s' % (order_info['partner_id'], order.partner_id))
         if order_info['partner_id'] != order.partner_id.id:
             order_info.update(order.onchange_partner_id(partner_id.id)['value'])
         # Reset to the specified shipping and invoice adresses
@@ -867,27 +868,18 @@ class WebsiteSale(website_sale):
             'partner_invoice_id': checkout.get('invoicing_id') or partner_id.id,
             'partner_shipping_id': checkout.get('shipping_id') or partner_id.id,
         })
-        _logger.warn(order_info)
         if order_info['partner_id'] != order.partner_id or order_info['shipping_id'] != order.partner_shipping_id.id:
-            _logger.warn('partner_shipping_id: %s\nshipping_id: %s' % (order.partner_shipping_id, checkout.get('shipping_id')))
             address_change = order.onchange_delivery_id(
                 order.company_id.id, partner_id.id, checkout.get('shipping_id'), None)['value']
-            for key in address_change:
-                _logger.warn('%s:\t%s\t%s\t%s' % (key, getattr(order, key), address_change[key], order_info.get(key)))
             order_info.update(address_change)
             if address_change.get('fiscal_position') and address_change.get('fiscal_position') != order.fiscal_position.id:
                 fiscal_update = order.onchange_fiscal_position(
                     address_change['fiscal_position'],
                     [(4, l.id) for l in order.order_line])['value']
                 order_info.update(fiscal_update)
-        _logger.warn('5:%s' % (timer() - start))
-        _logger.warn(order_info)
         if 'user_id' in order_info:
             order_info.pop('user_id')
-        _logger.warn('7:%s' % (timer() - start))
-        _logger.warn(order_info)
         order.sudo().write(order_info)
-        _logger.warn('8:%s' % (timer() - start))
 
 
 
@@ -1608,28 +1600,22 @@ class WebsiteSale(website_sale):
         #~ if kw.get('return_url'):
             #~ return request.redirect(kw.get('return_url'))
         #~ return request.redirect("/shop/cart")
-
+    
     @http.route(['/shop/cart/update'], type='json', auth="public", website=True)
     def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
-        try:
-            #~ done = False
-            #~ retries = 5
-            #~ while not done and retries > 0:
-                #~ try:
-            res = request.website.with_context().sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
-                    #~ done = True
-                #~ except Exception as e:
-                    #~ _logger.warn('_cart_update: %s' % retries)
-                    #~ if retries == 0:
-                        #~ raise e
-                    #~ retries -= 1
-                    #~ _logger.warn(e)
-                    #~ request.cr.rollback()
-                    #~ time.sleep(.1)
-            return [request.website.price_formate(res['amount_untaxed']), res['cart_quantity']]
-        except Exception as e:
-            _logger.error('Error in customer order: %s' %e)
-            return e
+
+        start = timer()
+        locked = True
+        while not self.dn_cart_lock.acquire(False):
+            if timer() - start > 2:
+                locked = False
+                break
+        res = request.website.sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
+        if locked:
+            self.dn_cart_lock.release()
+        return [request.website.price_formate(res['amount_untaxed']), res['cart_quantity']]
+
+        
 
     @http.route(['/website_sale_update_cart'], type='json', auth="public", website=True)
     def website_sale_update_cart(self):
