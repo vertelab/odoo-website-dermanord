@@ -801,9 +801,11 @@ $(document).on('click', '.dn_js_options ul[name="style"] a', function (event) {
 // Method does a calculation according to the product unit_price * quantity and update the cart total amount.
 // Method does a RPC-call, after response update cart again with current order total amount.
 $(document).on('click', '.dn_list_add_to_cart, #add_to_cart.a-submit', function (event) {
+    var self = $(this);
     var my_cart_total = $(".my_cart_total");
     my_cart_total.closest("a").css({"pointer-events": "none", "cursor": "default"});
     my_cart_total.closest("a").attr("id", "");
+    self.attr("data-finished", "");
     var formData = JSON.stringify($(this).closest("form").serializeArray());
     var form_arr = JSON.parse(formData);
     var product_id = "0";
@@ -849,10 +851,13 @@ $(document).on('click', '.dn_list_add_to_cart, #add_to_cart.a-submit', function 
         'add_qty': add_qty
     }).done(function(data){
         if($.isArray(data)){
-            my_cart_total.html(langPriceFormat(data[0]));
-            $(".my_cart_quantity").html('(' + data[1] + ')');
-            my_cart_total.closest("a").css({"pointer-events": "", "cursor": ""});
-            my_cart_total.closest("a").attr("id", "cart_updated");
+            self.attr("data-finished", "done");
+            if ($(".dn_list_add_to_cart[data-finished='']").length == 0) {
+                my_cart_total.html(langPriceFormat(data[0]));
+                $(".my_cart_quantity").html('(' + data[1] + ')');
+                my_cart_total.closest("a").css({"pointer-events": "", "cursor": ""});
+                my_cart_total.closest("a").attr("id", "cart_updated");
+            }
         }
         else {
             window.alert(data);
