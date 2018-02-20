@@ -1340,10 +1340,10 @@ class WebsiteSale(website_sale):
                     product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', tmpl[0].get('website_style_ids', []))], ['html_class'])])
             p['get_this_variant_ribbon'] = product_ribbon
 
-            if request.env.user.partner_id.property_product_pricelist.name == u'Återförsäljare 45':
+            if request.env.user.partner_id.property_product_pricelist.id == 3:
                 price = p['price_45']
                 #~ tax = p['tax_45']
-            elif request.env.user.partner_id.property_product_pricelist.name == 'Special 20':
+            elif request.env.user.partner_id.property_product_pricelist.id == 6:
                 price = p['price_20']
                 #~ tax = p['tax_20']
             else:
@@ -1625,6 +1625,7 @@ class WebsiteSale(website_sale):
                     #~ _logger.warn(e)
                     #~ request.cr.rollback()
                     #~ time.sleep(.1)
+            _logger.warn('<<<<<<<<< res: %s ' %res)
             return [request.website.price_formate(res['amount_untaxed']), res['cart_quantity']]
         except Exception as e:
             _logger.error('Error in customer order: %s' %e)
@@ -1699,9 +1700,9 @@ class webshop_dermanord(http.Controller):
                 elif product.product_tmpl_id in product.product_tmpl_id.get_campaign_tmpl(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
                     offer = True
 
-                if request.env.user.partner_id.property_product_pricelist.name == u'Återförsäljare 45':
+                if request.env.user.partner_id.property_product_pricelist.id == 3:
                     price = product.price_45
-                elif request.env.user.partner_id.property_product_pricelist.name == 'Special 20':
+                elif request.env.user.partner_id.property_product_pricelist.id == 6:
                     price = product.price_20
                 else:
                     price = product.price
