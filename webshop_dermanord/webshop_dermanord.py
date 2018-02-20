@@ -43,7 +43,6 @@ from timeit import default_timer as timer
 import logging
 _logger = logging.getLogger(__name__)
 
-from .thread import dn_webshop_queue
 PPG = 21 # Products Per Page
 PPR = 3  # Products Per Row
 
