@@ -1625,7 +1625,6 @@ class WebsiteSale(website_sale):
                     #~ _logger.warn(e)
                     #~ request.cr.rollback()
                     #~ time.sleep(.1)
-            _logger.warn('<<<<<<<<< res: %s ' %res)
             return [request.website.price_formate(res['amount_untaxed']), res['cart_quantity']]
         except Exception as e:
             _logger.error('Error in customer order: %s' %e)
@@ -1634,9 +1633,9 @@ class WebsiteSale(website_sale):
     @http.route(['/website_sale_update_cart'], type='json', auth="public", website=True)
     def website_sale_update_cart(self):
         order = request.website.sale_get_order()
-        res = {'amount_total': '0.00', 'cart_quantity': '0'}
+        res = {'amount_untaxed': '0.00', 'cart_quantity': '0'}
         if order:
-            res['amount_total'] = request.website.price_formate(order.amount_total)
+            res['amount_untaxed'] = request.website.price_formate(order.amount_untaxed)
             res['cart_quantity'] = order.cart_quantity
         return res
 

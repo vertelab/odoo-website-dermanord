@@ -7,7 +7,7 @@ $(document).ready(function(){
 
     openerp.jsonRpc("/website_sale_update_cart", "call", {
     }).done(function(data){
-        $(".my_cart_total").html(data['amount_total']);
+        $(".my_cart_total").html(data['amount_untaxed']);
         $(".my_cart_quantity").html('(' + data['cart_quantity'] + ')');
     });
 
