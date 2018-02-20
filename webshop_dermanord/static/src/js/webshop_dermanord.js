@@ -2,12 +2,28 @@ var website = openerp.website;
 website.add_template_file('/webshop_dermanord/static/src/xml/product.xml');
 var current_page = 0;
 var page_count = 0;
+var lang = $("html").attr("lang");
+
+function langPriceFormat(nStr) {
+    nStr += '';
+    var ts = ' ';
+    var dec = ',';
+    if (lang == 'en-US') { var ts = ','; var dec = '.'; }
+    var x = nStr.split('.');
+    var x1 = x[0];
+    var x2 = x.length > 1 ? dec + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + ts + '$2');
+    }
+    return x1 + x2;
+}
 
 $(document).ready(function(){
 
     openerp.jsonRpc("/website_sale_update_cart", "call", {
     }).done(function(data){
-        $(".my_cart_total").html(data['amount_untaxed']);
+        $(".my_cart_total").html(langPriceFormat(data['amount_untaxed']));
         $(".my_cart_quantity").html('(' + data['cart_quantity'] + ')');
     });
 
@@ -682,7 +698,6 @@ function load_products_grid(page){
         var time_render = end_render.getTime() - start_render.getTime();
         console.log('Total', product_count, 'products load to html takes:', time_render, 'ms');
     });
-
 }
 
 function load_products_list(page){
@@ -801,24 +816,29 @@ $(document).on('click', '.dn_list_add_to_cart, #add_to_cart.a-submit', function 
 
     if ($(this).closest("tr").length == 0) {
         // unit price in dn_shop product detail view
-        var unit_price = parseFloat($(this).closest("form").find(".oe_price").text());
+        if (lang == 'en-US'){
+            var unit_price = parseFloat($(this).closest("form").find(".oe_price").text());
+        }
+        else{
+            var unit_price = parseFloat($(this).closest("form").find(".oe_price").text().replace(",", "."));
+        }
     }
     else {
         // unit price in dn_list
         var unit_price = parseFloat($(this).closest("tr").closest("tr").find(".your_price").data("price"));
     }
-
     //~ var unit_tax = parseFloat($(this).closest("tr").find(".your_price").data("tax"));
     var cart_sum = $(".my_cart_total").html();
-    var seperator = ",";
-    if (cart_sum.indexOf(".") != -1) {
-         seperator = ".";
+    if (lang == 'en-US'){
+        var cart_total = parseFloat(cart_sum.replace(",", ""));
     }
-    var cart_total = parseFloat(cart_sum.replace(",", ".").replace(" ", ""));
+    else{
+         var cart_total = parseFloat(cart_sum.replace(" ", "").replace(",", "."));
+    }
     var cart_html = $(".my_cart_quantity").html();
     var cart_qty = cart_html.substring(cart_html.lastIndexOf("(")+1,cart_html.lastIndexOf(")"));
     var current_total = cart_total + unit_price * parseFloat(add_qty);
-    $(".my_cart_total").html(parseFloat(current_total).toFixed(2).replace(".", seperator));
+    $(".my_cart_total").html(langPriceFormat(parseFloat(current_total).toFixed(2)));
     $(".my_cart_quantity").html('(' + (parseInt(add_qty) + parseInt(cart_qty)) + ')');
 
     openerp.jsonRpc("/shop/cart/update", "call", {
@@ -826,7 +846,7 @@ $(document).on('click', '.dn_list_add_to_cart, #add_to_cart.a-submit', function 
         'add_qty': add_qty
     }).done(function(data){
         if($.isArray(data)){
-            $(".my_cart_total").html(data[0]).hide().fadeIn(600);
+            $(".my_cart_total").html(langPriceFormat(data[0])).hide().fadeIn(600);
             $(".my_cart_quantity").html('(' + data[1] + ')').hide().fadeIn(600);
         }
         else {

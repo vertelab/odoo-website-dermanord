@@ -380,7 +380,7 @@
                            }' />
                             <span style="display: inline;">(rec incl. tax)</span>
                         </div>
-                        <div t-if="user_id.lang.code == 'en_US'">
+                        <div t-if="user_id.lang == 'en_US'">
                             <span t-field="line.product_id.recommended_price_en" t-field-options='{
                               "widget": "monetary",
                               "from_currency": "line.product_id.company_id.currency_id",
@@ -451,7 +451,7 @@
                                }' />
                                 <span style="display: inline;">(rec incl. tax)</span>
                             </div>
-                            <div t-if="user_id.lang.code == 'en_US'">
+                            <div t-if="user_id.lang == 'en_US'">
                                 <span t-field="product.recommended_price_en" t-field-options='{
                                   "widget": "monetary",
                                   "from_currency": "product.company_id.currency_id",
