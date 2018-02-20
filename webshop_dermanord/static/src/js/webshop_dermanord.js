@@ -396,9 +396,9 @@ $(document).ready(function(){
             return false;
         });
 
-        //~ $('.oe_website_sale .a-submit, #comment .a-submit').off('click').on('click', function () {
-            //~ $(this).closest('form').submit();
-        //~ });
+        $('.oe_website_sale .a-submit:not(.dn_list_add_to_cart, #add_to_cart.a-submit), #comment .a-submit').off('click').on('click', function () {
+            $(this).closest('form').submit();
+        });
 
         $('form.js_attributes input, form.js_attributes select', oe_website_sale).on('change', function () {
             $(this).closest("form").submit();
@@ -774,7 +774,7 @@ $(document).on('click', '.dn_js_options ul[name="style"] a', function (event) {
 // This method called by "add_to_cart" button in both dn_shop and dn_list.
 // Method does a calculation according to the product unit_price * quantity and update the cart total amount.
 // Method does a RPC-call, after response update cart again with current order total amount.
-$(document).on('click', '.dn_list_add_to_cart, .oe_website_sale .a-submit, #comment .a-submit', function (event) {
+$(document).on('click', '.dn_list_add_to_cart, #add_to_cart.a-submit', function (event) {
     var formData = JSON.stringify($(this).closest("form").serializeArray());
     var form_arr = JSON.parse(formData);
     var product_id = "0";
