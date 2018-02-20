@@ -322,11 +322,11 @@ $(document).ready(function(){
                         $("#cart_total").load(location.href + " #cart_total");
                         $(".my_cart_total").load(location.href + " .my_cart_total");
                         //~ $q.parent().parent().removeClass("hidden", !data.quantity);
-                        $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
+                        $q.html("(" + cart_quantity + ")");
                         return;
                     }
                     $q.parent().parent().removeClass("hidden", !data.quantity);
-                    $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
+                    $q.html("(" + cart_quantity + ")");
                     $input.val(data.quantity);
                     $('.js_quantity[data-line-id='+line_id+']').val(data.quantity).html(data.quantity);
                     $("#cart_total").replaceWith(data['website_sale.total']);
@@ -403,11 +403,11 @@ $(document).ready(function(){
                         $("#cart_products").load(location.href + " #cart_products");
                         $("#cart_total").load(location.href + " #cart_total");
                         $(".my_cart_total").load(location.href + " .my_cart_total");
-                        $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
+                        $q.html("(" + cart_quantity + ")");
                         return;
                     }
                     $q.parent().parent().removeClass("hidden", !data.quantity);
-                    $q.html("(" + cart_quantity + ")").hide().fadeIn(600);
+                    $q.html("(" + cart_quantity + ")");
                     $input.val(data.quantity);
                     $('.js_quantity[data-line-id='+line_id+']').val(data.quantity).html(data.quantity);
                     $("#cart_total").replaceWith(data['website_sale.total']);
@@ -849,8 +849,8 @@ $(document).on('click', '.dn_list_add_to_cart, #add_to_cart.a-submit', function 
         'add_qty': add_qty
     }).done(function(data){
         if($.isArray(data)){
-            my_cart_total.html(langPriceFormat(data[0])).hide().fadeIn(600);
-            $(".my_cart_quantity").html('(' + data[1] + ')').hide().fadeIn(600);
+            my_cart_total.html(langPriceFormat(data[0]));
+            $(".my_cart_quantity").html('(' + data[1] + ')');
             my_cart_total.closest("a").css({"pointer-events": "", "cursor": ""});
             my_cart_total.closest("a").attr("id", "cart_updated");
         }
