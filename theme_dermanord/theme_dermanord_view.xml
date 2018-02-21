@@ -274,7 +274,7 @@
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: left;">
-                            &amp;copy; 2017 MARIA ÅKERBERG
+                            &amp;copy; <t t-esc="time.strftime('%Y')"/> MARIA ÅKERBERG
                         </div>
                     </div>
                 </t>
