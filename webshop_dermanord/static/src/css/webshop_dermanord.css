@@ -390,8 +390,8 @@ div.shipping-address, div.invoicing-address {
 }
 
 .img_payment {
-    width: 64px;
-    height: 64px;
+    width: 64px !important;
+    height: 64px !important;
 }
 
 #dn_filter_modal .modal-body .container {
