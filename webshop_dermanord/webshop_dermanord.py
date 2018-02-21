@@ -731,7 +731,7 @@ class Website(models.Model):
 
 
 class WebsiteSale(website_sale):
-    
+
     dn_cart_lock = Lock()
 
     @http.route(['/shop/confirm_order'], type='http', auth="public", website=True)
@@ -1359,7 +1359,7 @@ class WebsiteSale(website_sale):
                 'purchase_phase_start_date': p['purchase_phase']['start_date'] if p['purchase_phase']['phase'] else '',
                 'purchase_phase_end_date': p['purchase_phase']['end_date'] if p['purchase_phase']['phase'] else '',
                 'recommended_price': "%.2f" % p['recommended_price'] if request.env.user.lang == 'sv_SE' else "%.2f" % p['recommended_price_en'],
-                'price': request.website.price_formate(price),
+                'price': "%.2f" %price,
                 #~ 'tax': "%.2f" %request.website.price_formate(tax),
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
@@ -1603,7 +1603,7 @@ class WebsiteSale(website_sale):
         #~ if kw.get('return_url'):
             #~ return request.redirect(kw.get('return_url'))
         #~ return request.redirect("/shop/cart")
-    
+
     @http.route(['/shop/cart/update'], type='json', auth="public", website=True)
     def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
 
@@ -1618,7 +1618,7 @@ class WebsiteSale(website_sale):
             self.dn_cart_lock.release()
         return [request.website.price_formate(res['amount_untaxed']), res['cart_quantity']]
 
-        
+
 
     @http.route(['/website_sale_update_cart'], type='json', auth="public", website=True)
     def website_sale_update_cart(self):
