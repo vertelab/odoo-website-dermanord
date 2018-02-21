@@ -33,6 +33,8 @@ from openerp.addons.base.ir.ir_qweb import HTMLSafe
 import werkzeug
 from heapq import nlargest
 import math
+import time
+from multiprocessing import Lock
 
 from openerp import SUPERUSER_ID
 
@@ -186,21 +188,20 @@ class product_template(models.Model):
     @api.multi
     @api.depends('name', 'price', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
     def _get_all_variant_data(self):
-        pricelist = self.env.ref('product.list0')
         pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45')])
         pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20')])
         placeholder = '/web/static/src/img/placeholder.png'
         environ = request.httprequest.headers.environ
         _logger.warn(environ.get("REMOTE_ADDR"))
         for p in self:
-            variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'image_ids', 'website_style_ids_variant'])
             try:
-                variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'image_ids', 'website_style_ids_variant'])
+                variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'image_ids', 'website_style_ids_variant'])
                 attribute_value_ids = self.env['product.attribute.value'].browse(variant[0]['attribute_value_ids'])
                 image_ids = self.env['base_multi_image.image'].browse(variant[0]['image_ids']).read(['image_attachment_id'])
                 website_style_ids_variant = self.env['product.style'].browse(variant[0]['website_style_ids_variant']).read(['html_class'])
                 if variant:
                     p.dv_recommended_price = variant[0]['recommended_price']
+                    p.dv_recommended_price_en = variant[0]['recommended_price_en']
                     p.dv_price_45 = variant[0]['price_45']
                     p.dv_price_20 = variant[0]['price_20']
                     p.dv_price = variant[0]['price']
@@ -214,6 +215,7 @@ class product_template(models.Model):
             except Exception as e:
                 _logger.error(e)
                 p.dv_recommended_price = 0.0
+                p.dv_recommended_price_en = 0.0
                 p.dv_price_45 = 0.0
                 p.dv_price_20 = 0.0
                 p.dv_price = 0.0
@@ -224,6 +226,7 @@ class product_template(models.Model):
                 p.dv_image_src = placeholder
                 p.dv_ribbon = ''
     dv_recommended_price = fields.Float(compute='_get_all_variant_data', store=True)
+    dv_recommended_price_en = fields.Float(compute='_get_all_variant_data', store=True)
     dv_price_45 = fields.Float(compute='_get_all_variant_data', store=True)
     dv_price_20 = fields.Float(compute='_get_all_variant_data', store=True)
     dv_price = fields.Float(compute='_get_all_variant_data', store=True)
@@ -251,10 +254,9 @@ class product_product(models.Model):
     _inherit = 'product.product'
 
     recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    recommended_price_en = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     price_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     price_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    #~ tax_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    #~ tax_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
@@ -262,14 +264,22 @@ class product_product(models.Model):
     @api.one
     @api.depends('lst_price', 'product_tmpl_id.list_price')
     def get_product_tax(self):
-        price = self.env.ref('product.list0').price_get(self.id, 1)[self.env.ref('product.list0').id]
+        pricelist = self.env['res.lang'].search([('code', '=', 'sv_SE')]).pricelist_id
+        if not pricelist:
+            pricelist = self.env.ref('product.list0')
+        pricelist_en = self.env['res.lang'].search([('code', '=', 'en_US')]).pricelist_id
+        if not pricelist_en:
+            pricelist_en = self.env.ref('product.list0')
+        price = pricelist.price_get(self.id, 1)[pricelist.id]
+        price_en = pricelist_en.price_get(self.id, 1)[pricelist_en.id]
         pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45')])
         pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20')])
         self.price_45 = pricelist_45.price_get(self.id, 1)[pricelist_45.id]
         self.price_20 = pricelist_20.price_get(self.id, 1)[pricelist_20.id]
+        self.recommended_price = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
+        self.recommended_price_en = price_en + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price_en, 1, None, self.env.user.partner_id)['taxes']))
         #~ self.tax_45 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_45, 1, None, self.env.user.partner_id)['taxes']))
         #~ self.tax_20 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_20, 1, None, self.env.user.partner_id)['taxes']))
-        self.recommended_price = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
 
     @api.model
     def update_sold_qty(self):
@@ -383,7 +393,7 @@ class sale_order(models.Model):
     _inherit='sale.order'
 
     @api.multi
-    def _cart_update(self,product_id=None, line_id=None, add_qty=0, set_qty=0, **kwargs):
+    def _cart_update(self, product_id=None, line_id=None, add_qty=0, set_qty=0, **kwargs):
         """ Add or set product quantity, add_qty can be negative """
         self.ensure_one()
 
@@ -439,6 +449,7 @@ class sale_order(models.Model):
                 'amount_untaxed': self.amount_untaxed,
             }
 
+dn_cart_update = {}
 
 class Website(models.Model):
     _inherit = 'website'
@@ -614,8 +625,6 @@ class Website(models.Model):
                 request.session['form_values']['order'] = default_order
             request.session['current_order'] = default_order
 
-
-
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
 
@@ -623,8 +632,6 @@ class Website(models.Model):
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
         request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
         request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
-
-
 
         if post:
             domain = self.get_domain_append(model, post)
@@ -725,6 +732,8 @@ class Website(models.Model):
 
 class WebsiteSale(website_sale):
 
+    dn_cart_lock = Lock()
+
     @http.route(['/shop/confirm_order'], type='http', auth="public", website=True)
     def confirm_order(self, **post):
         order = request.website.sale_get_order()
@@ -785,7 +794,7 @@ class WebsiteSale(website_sale):
                     partner_id=shipping_partner_id,
                     tx_values={
                         'return_url': '/shop/payment/validate',
-                    })
+                    })[0]
         return request.website.render("website_sale.payment", values)
 
     mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
@@ -838,7 +847,6 @@ class WebsiteSale(website_sale):
     def checkout_form_save(self, checkout):
         start = timer()
 
-
         order = request.website.sale_get_order(force_create=1)
 
         orm_partner = request.env['res.partner']
@@ -847,7 +855,6 @@ class WebsiteSale(website_sale):
 
         partner_lang = request.lang if request.lang in [lang.code for lang in request.website.language_ids] else None
 
-        _logger.warn('1:%s' % (timer() - start))
         # set partner_id
         partner_id = None
         if request.env.user != request.website.user_id:
@@ -857,37 +864,31 @@ class WebsiteSale(website_sale):
                 [("partner_id", "=", order.partner_id.id)], active_test=False)
             if not user_ids or request.website.user_id not in user_ids:
                 partner_id = order.partner_id
-        _logger.warn('2:%s' % (timer() - start))
 
         order_info = {
             'partner_id': partner_id.id,
             'message_follower_ids': [(4, partner_id.id), (3, request.website.partner_id.id)],
-            'partner_invoice_id': checkout.get('invoicing_id') or partner_id.id,
             'date_order': fields.Datetime.now(),
         }
-        order_info.update(order.onchange_partner_id(partner_id.id)['value'])
-        address_change = order.onchange_delivery_id(order.company_id.id, partner_id.id,
-                                                        checkout.get('shipping_id'), None)['value']
-        order_info.update(address_change)
-        _logger.warn('5:%s' % (timer() - start))
-        if address_change.get('fiscal_position'):
-            fiscal_update = order.onchange_fiscal_position(address_change['fiscal_position'],
-                                                               [(4, l.id) for l in order.order_line])['value']
-            order_info.update(fiscal_update)
-        _logger.warn('6:%s' % (timer() - start))
-        order_info.pop('user_id')
-        order_info.update(partner_shipping_id=checkout.get('shipping_id') or partner_id.id)
-        _logger.warn('7:%s' % (timer() - start))
+        if order_info['partner_id'] != order.partner_id.id:
+            order_info.update(order.onchange_partner_id(partner_id.id)['value'])
+        # Reset to the specified shipping and invoice adresses
+        order_info.update({
+            'partner_invoice_id': checkout.get('invoicing_id') or partner_id.id,
+            'partner_shipping_id': checkout.get('shipping_id') or partner_id.id,
+        })
+        if order_info['partner_id'] != order.partner_id or order_info['shipping_id'] != order.partner_shipping_id.id:
+            address_change = order.onchange_delivery_id(
+                order.company_id.id, partner_id.id, checkout.get('shipping_id'), None)['value']
+            order_info.update(address_change)
+            if address_change.get('fiscal_position') and address_change.get('fiscal_position') != order.fiscal_position.id:
+                fiscal_update = order.onchange_fiscal_position(
+                    address_change['fiscal_position'],
+                    [(4, l.id) for l in order.order_line])['value']
+                order_info.update(fiscal_update)
+        if 'user_id' in order_info:
+            order_info.pop('user_id')
         order.sudo().write(order_info)
-        _logger.warn('8:%s' % (timer() - start))
-
-
-
-
-
-
-
-
 
         #super(WebsiteSale, self).checkout_form_save(checkout)
         _logger.warn('checkout_form_save super:%s' % (timer() - start))
@@ -919,9 +920,9 @@ class WebsiteSale(website_sale):
             currency_id = self.get_pricelist().currency_id.id
             for p in product.product_variant_ids:
                 price = currency_obj.compute(cr, uid, website_currency_id, currency_id, p.lst_price)
-                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
+                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
         else:
-            attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)] for p in product.sudo().product_variant_ids]
+            attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)] for p in product.sudo().product_variant_ids]
 
         return attribute_value_ids
 
@@ -1124,7 +1125,6 @@ class WebsiteSale(website_sale):
         else:
             pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
 
-
         if search:
             post["search"] = search
         #~ if attrib_list:
@@ -1132,8 +1132,8 @@ class WebsiteSale(website_sale):
 
         search_start = timer()
         domain = request.session.get('current_domain')
-        default_order = request.session.get('default_order')
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=default_order)
+        current_order = request.session.get('current_order')
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=current_order)
 
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
@@ -1206,7 +1206,7 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         # TODO: always get same product in the last?? why?
 
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale', 'product_variant_ids'], order=order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale', 'product_variant_ids'], order=order)
 
         search_end = timer()
         _logger.warn('search end: %s' %(timer() - start_time))
@@ -1222,6 +1222,7 @@ class WebsiteSale(website_sale):
                 is_reseller = True
 
         for product in products:
+            p_start = timer()
             #~ image_src = ''
 
             #those style options only can be set on product.template
@@ -1239,13 +1240,14 @@ class WebsiteSale(website_sale):
                 'product_img_src': product['dv_image_src'],
                 'price': request.website.price_formate(product['dv_price']),
                 'price_tax': "%.2f" % product['dv_price_tax'],
-                'list_price_tax': request.website.price_formate(product['dv_recommended_price']),
+                'list_price_tax': request.website.price_formate(product['dv_recommended_price']) if request.env.user.lang == 'sv_SE' else request.website.price_formate(product['dv_recommended_price_en']),
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
                 'is_reseller': 'yes' if is_reseller else 'no',
                 'default_code': product['dv_default_code'],
                 'description_sale': product['dv_description_sale'],
                 'product_variant_ids': True if product['product_variant_ids'] else False,
+                'load_time': timer() - p_start,
             })
 
         values = {
@@ -1268,11 +1270,11 @@ class WebsiteSale(website_sale):
         url = "/dn_list"
 
         domain = request.session.get('current_domain')
-        default_order = request.session.get('default_order')
+        current_order = request.session.get('current_order')
 
         # relist which product templates the current user is allowed to see
         #~ products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=default_order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'recommended_price_en', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=current_order)
 
         products_list = []
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
@@ -1334,10 +1336,10 @@ class WebsiteSale(website_sale):
                     product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', tmpl[0].get('website_style_ids', []))], ['html_class'])])
             p['get_this_variant_ribbon'] = product_ribbon
 
-            if request.env.user.partner_id.property_product_pricelist.name == u'Återförsäljare 45':
+            if request.env.user.partner_id.property_product_pricelist.id == 3:
                 price = p['price_45']
                 #~ tax = p['tax_45']
-            elif request.env.user.partner_id.property_product_pricelist.name == 'Special 20':
+            elif request.env.user.partner_id.property_product_pricelist.id == 6:
                 price = p['price_20']
                 #~ tax = p['tax_20']
             else:
@@ -1356,8 +1358,8 @@ class WebsiteSale(website_sale):
                 'product_name_col': 'product_name' if p['purchase_phase']['phase'] else 'product_name',
                 'purchase_phase_start_date': p['purchase_phase']['start_date'] if p['purchase_phase']['phase'] else '',
                 'purchase_phase_end_date': p['purchase_phase']['end_date'] if p['purchase_phase']['phase'] else '',
-                'recommended_price': "%.2f" % p['recommended_price'],
-                'price': request.website.price_formate(price),
+                'recommended_price': "%.2f" % p['recommended_price'] if request.env.user.lang == 'sv_SE' else "%.2f" % p['recommended_price_en'],
+                'price': "%.2f" %price,
                 #~ 'tax': "%.2f" %request.website.price_formate(tax),
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
@@ -1372,7 +1374,7 @@ class WebsiteSale(website_sale):
         values = {
             'products': products_list,
             'url': url,
-            'page_count': int(math.ceil(float(request.session.get('product_count')) / float(PPG))),
+            'page_count': int(math.ceil(float(request.session.get('product_count', 2000)) / float(PPG))),
         }
 
         return values
@@ -1460,8 +1462,8 @@ class WebsiteSale(website_sale):
             post["search"] = search
 
         domain = request.session.get('current_domain')
-        default_order = request.session.get('default_order')
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id'], limit=PPG, order=default_order)
+        current_order = request.session.get('current_order')
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'recommended_price_en', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id'], limit=PPG, order=current_order)
         request.session['product_count'] = 2000
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
@@ -1594,32 +1596,36 @@ class WebsiteSale(website_sale):
 
         return request.website.render("website_sale.cart", values)
 
-    @http.route(['/shop/cart/update'], type='http', auth="public", methods=['POST'], website=True)
-    def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
-        cr, uid, context = request.cr, request.uid, request.context
-        request.website.with_context(supress_checks=True).sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
-        if kw.get('return_url'):
-            return request.redirect(kw.get('return_url'))
-        return request.redirect("/shop/cart")
+    #~ @http.route(['/shop/cart/update'], type='http', auth="public", methods=['POST'], website=True)
+    #~ def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
+        #~ cr, uid, context = request.cr, request.uid, request.context
+        #~ request.website.with_context(supress_checks=True).sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
+        #~ if kw.get('return_url'):
+            #~ return request.redirect(kw.get('return_url'))
+        #~ return request.redirect("/shop/cart")
 
-    @http.route(['/dn_list/cart/update'], type='json', auth="public", website=True)
-    def dn_cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
-        cr, uid, context = request.cr, request.uid, request.context
-        try:
-            res = request.website.with_context(supress_checks=True).sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
-            return [request.website.price_formate(res['amount_untaxed']), res['cart_quantity']]
-        except Exception as e:
-            _logger.error('Error in customer order: %s' %e)
-            return e
-        else:
-            return None
+    @http.route(['/shop/cart/update'], type='json', auth="public", website=True)
+    def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
+
+        start = timer()
+        locked = True
+        while not self.dn_cart_lock.acquire(False):
+            if timer() - start > 2:
+                locked = False
+                break
+        res = request.website.sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
+        if locked:
+            self.dn_cart_lock.release()
+        return [request.website.price_formate(res['amount_untaxed']), res['cart_quantity']]
+
+
 
     @http.route(['/website_sale_update_cart'], type='json', auth="public", website=True)
     def website_sale_update_cart(self):
         order = request.website.sale_get_order()
-        res = {'amount_total': '0.00', 'cart_quantity': '0'}
+        res = {'amount_untaxed': '0.00', 'cart_quantity': '0'}
         if order:
-            res['amount_total'] = request.website.price_formate(order.amount_total)
+            res['amount_untaxed'] = request.website.price_formate(order.amount_untaxed)
             res['cart_quantity'] = order.cart_quantity
         return res
 
@@ -1683,6 +1689,15 @@ class webshop_dermanord(http.Controller):
                 elif product.product_tmpl_id in product.product_tmpl_id.get_campaign_tmpl(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
                     offer = True
 
+                if request.env.user.partner_id.property_product_pricelist.id == 3:
+                    price = product.price_45
+                elif request.env.user.partner_id.property_product_pricelist.id == 6:
+                    price = product.price_20
+                else:
+                    price = product.price
+
+                value['id'] = product.id
+                value['price'] = request.website.price_formate(price)
                 value['instock'] = instock
                 value['images'] = images
                 value['facets'] = facets

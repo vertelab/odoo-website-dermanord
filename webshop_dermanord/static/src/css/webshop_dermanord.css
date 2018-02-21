@@ -389,6 +389,11 @@ div.shipping-address, div.invoicing-address {
     margin-top: 8px;
 }
 
+.img_payment {
+    width: 64px;
+    height: 64px;
+}
+
 #dn_filter_modal .modal-body .container {
     padding: 0px;
 }
