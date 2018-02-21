@@ -70,10 +70,13 @@ class WebsiteSale(WebsiteSale):
     #~ def dn_list(self, page=0, category=None, search='', **post):
         #~ return super(WebsiteSale, self).dn_list(page, category, search, **post)
 
-    # '/dn_shop/product/<model("product.template"):product>'
+
+    #~ @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
     @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw), flush_type='dn_shop')
-    def product(self, product, category='', search='', **post):
-        return super(WebsiteSale, self).product(product, category, search, **post)
+    def dn_product(self, product, category='', search='', **post):
+        return super(WebsiteSale, self).dn_product(product, category, search, **post)
+
+
 
     #~ @http.route([
         #~ '/dn_shop/variant/<model("product.product"):variant>'
