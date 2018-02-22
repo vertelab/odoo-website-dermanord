@@ -134,7 +134,7 @@ class product_template(models.Model):
     @api.multi
     def get_default_variant(self):
         self.ensure_one()
-        variants = self.product_variant_ids.filtered(lambda v: request.env.ref('website_sale.image_promo') in v.website_style_ids_variant)
+        variants = self.product_variant_ids.filtered(lambda v: self.env.ref('website_sale.image_promo') in v.website_style_ids)
         if len(variants) > 0:
             vs = variants.filtered(lambda v: v.check_access_group(self.env.user))
             return vs[0] if len(vs) > 0 else super(product_template, self).get_default_variant()
@@ -187,7 +187,7 @@ class product_template(models.Model):
         return res
 
     @api.multi
-    @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
+    @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_ids', 'website_style_ids', 'attribute_line_ids.value_ids', 'product_variant_ids.default_code', 'product_variant_ids.website_style_ids', 'product_variant_ids.default_variant')
     def _get_all_variant_data(self):
         pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45')])
         pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20')])
@@ -262,7 +262,7 @@ class product_product(models.Model):
     so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
-
+    
     @api.one
     @api.depends('lst_price', 'product_tmpl_id.list_price')
     def get_product_tax(self):
