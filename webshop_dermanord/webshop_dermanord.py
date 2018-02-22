@@ -35,6 +35,7 @@ from heapq import nlargest
 import math
 import time
 from multiprocessing import Lock
+import sys, traceback
 
 from openerp import SUPERUSER_ID
 
@@ -211,8 +212,9 @@ class product_template(models.Model):
                     p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(image_ids[0]['image_attachment_id'][0], 'snippet_dermanord.img_product') if (image_ids and image_ids[0]) else placeholder
                     #~ p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
                     p.dv_ribbon = website_style_ids_variant[0]['html_class'] if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
-            except Exception as e:
-                _logger.error(e)
+            except:
+                e = sys.exc_info()
+                _logger.error(''.join(traceback.format_exception(e[0], e[1], e[2])))
                 p.dv_recommended_price = 0.0
                 p.dv_recommended_price_en = 0.0
                 p.dv_price_45 = 0.0
@@ -220,7 +222,7 @@ class product_template(models.Model):
                 p.dv_price = 0.0
                 p.dv_price_tax = 0.0
                 p.dv_default_code = 'except'
-                p.dv_description_sale = '%s' %e
+                p.dv_description_sale = '%s' % e[1]
                 p.dv_name = 'Error'
                 p.dv_image_src = placeholder
                 p.dv_ribbon = ''

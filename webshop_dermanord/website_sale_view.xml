@@ -181,7 +181,7 @@
                                         </div>
                                         <div>
                                             <b t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
-                                            <b t-esc="website.price_formate(user_id.partner_id.property_product_pricelist.price_get(product['dv_id'], 1)[user_id.partner_id.property_product_pricelist.id])" style="white-space: nowrap;" />
+                                            <b t-esc="website.price_formate(user_id.partner_id.property_product_pricelist.price_get(product['dv_id'], 1)[user_id.partner_id.property_product_pricelist.id] if product['dv_id'] else 0.0)" style="white-space: nowrap;" />
                                             <span style="display: inline;">(your excl. tax)</span>
                                         </div>
                                     </t>
