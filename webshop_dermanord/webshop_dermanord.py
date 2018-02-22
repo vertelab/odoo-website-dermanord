@@ -186,13 +186,11 @@ class product_template(models.Model):
         return res
 
     @api.multi
-    @api.depends('name', 'price', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
+    @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
     def _get_all_variant_data(self):
         pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45')])
         pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20')])
         placeholder = '/web/static/src/img/placeholder.png'
-        environ = request.httprequest.headers.environ
-        _logger.warn(environ.get("REMOTE_ADDR"))
         for p in self:
             try:
                 variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'image_ids', 'website_style_ids_variant'])
@@ -200,6 +198,7 @@ class product_template(models.Model):
                 image_ids = self.env['base_multi_image.image'].browse(variant[0]['image_ids']).read(['image_attachment_id'])
                 website_style_ids_variant = self.env['product.style'].browse(variant[0]['website_style_ids_variant']).read(['html_class'])
                 if variant:
+                    p.dv_id = variant[0]['id']
                     p.dv_recommended_price = variant[0]['recommended_price']
                     p.dv_recommended_price_en = variant[0]['recommended_price_en']
                     p.dv_price_45 = variant[0]['price_45']
@@ -225,6 +224,7 @@ class product_template(models.Model):
                 p.dv_name = 'Error'
                 p.dv_image_src = placeholder
                 p.dv_ribbon = ''
+    dv_id = fields.Integer(compute='_get_all_variant_data', store=True)
     dv_recommended_price = fields.Float(compute='_get_all_variant_data', store=True)
     dv_recommended_price_en = fields.Float(compute='_get_all_variant_data', store=True)
     dv_price_45 = fields.Float(compute='_get_all_variant_data', store=True)
@@ -1133,7 +1133,7 @@ class WebsiteSale(website_sale):
         search_start = timer()
         domain = request.session.get('current_domain')
         current_order = request.session.get('current_order')
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=current_order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=current_order)
 
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
