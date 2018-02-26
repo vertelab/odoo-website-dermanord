@@ -57,6 +57,12 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12 col-sm-12 col-xs-12 mb16">
+                                <div class="readable">
+                                    <h6 class="text-center">Hitta en återförsäljare nära dig</h6>
+                                    <p>Du hittar MARIA ÅKERBERG hos välutbildade hud- och spaterapeuter och massörer, som både säljer våra produkter och använder dem i sina professionella behandlingar.</p>
+                                    <p>Använd sökfältet nedan för att hitta en återförsäljare i din närhet. Klicka på återförsäljaren för att se öppettider, besöksadress och annan information om salongen.</p>
+                                    <p>I sökfältet kan du ange namn, stad och land.</p>
+                                </div>
                                 <form t-att-action="('/resellers/competence/%s' % competence.id) if competence else '/resellers'" method="post" class="pagination form-inline col-md-12 col-sm-12 col-xs-12 mb16">
                                     <div class="container text-center">
                                         <div class="input-group">
@@ -69,6 +75,11 @@
                                         </div>
                                     </div>
                                 </form>
+                                <div class="readable">
+                                    <h2 class=""><i>Vill du bli återförsäljare?</i></h2>
+                                    <p>Vill du också använda och sälja MARIA ÅKERBERG?</p>
+                                    <p><a href="/reseller_register/new">Läs mer om hur vi samarbetar och anmäl ditt intresse här.</a></p>
+                                </div>
                                 <div class="col-md-12 col-sm-12 col-xs-12 mb16">
                                     <div class="grid">
                                         <t t-if="resellers">

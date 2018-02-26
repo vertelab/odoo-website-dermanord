@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* theme_dermanord
+#   * theme_dermanord
 #
 msgid ""
 msgstr ""
@@ -2506,6 +2506,11 @@ msgstr ""
 #: model:website.menu,name:theme_dermanord.footer_menu
 msgid "Footer Menu"
 msgstr ""
+
+#. module: theme_dermanord
+#: model:website.menu,name:theme_dermanord.footer_menu_reseller_register
+msgid "BECOME RESELLER"
+msgstr "BLI ÅTERFÖRSÄLJARE"
 
 #. module: theme_dermanord
 #: view:website:website.snippets
