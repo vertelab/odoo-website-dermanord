@@ -62,10 +62,23 @@
                     "fields": ["name", "address", "phone", "mobile", "fax", "email"]}'/>
             </address>
         </xpath>
+        <xpath expr="//a[@t-att-href='res_company.google_map_link()']" position="replace">
+            <t t-call="website_partner_google_maps.google_maps">
+                <t t-set="div_class" t-value="'mt16'"/>
+                <t t-set="width" t-value="'100%'"/>
+                <t t-set="height" t-value="'400px'"/>
+                <t t-set="zoom" t-value="12"/>
+                <t t-set="center" t-value="res_company.partner_id"/>
+                <t t-set="partners" t-value="res_company.partner_id"/>
+                <t t-set="icon" t-value="'/reseller_dermanord/static/src/img/dn_maps_marker.png'"/>
+                <t t-set="api_key" t-value="request.env['ir.config_parameter'].get_param('google_maps_api')"/>
+            </t>
+        </xpath>
+<!--
         <xpath expr="//img" position="attributes">
             <attribute name="class">img-responsive</attribute>
         </xpath>
-<!--
+
         <xpath expr="//img" position="replace">
             <img class="thumbnail img-responsive" t-att-src="res_company.google_map_img(marker={'icon': request.env['ir.config_parameter'].get_param('dermanord_map_marker','http://wiggum.vertel.se/dn_maps_marker.png')})" />
         </xpath>
