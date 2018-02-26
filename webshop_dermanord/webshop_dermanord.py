@@ -626,7 +626,7 @@ class Website(models.Model):
             default_order = post.get('order')
             if request.session.get('form_values'):
                 request.session['form_values']['order'] = default_order
-            request.session['current_order'] = default_order
+        request.session['current_order'] = default_order
 
         if post.get('post_form') and post.get('post_form') == 'ok':
             request.session['form_values'] = post
