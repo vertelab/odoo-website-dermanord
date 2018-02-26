@@ -32,9 +32,9 @@ Resellers Page
     'website': 'http://www.vertel.se',
     'depends': [
         'website_partner',
+        'website_partner_google_maps',
         'website_masonry',
         'child_catagory_tags',
-        'base_geolocalize',
         'postgres_geo_fields',
         'event_participant_dermanord',
         'website_sale_home',

@@ -133,13 +133,22 @@
                             <div class="reseller_cell col-md-4 col-sm-4 col-xs-12 mb16">
                                 <h1><t t-esc="reseller.brand_name if reseller.brand_name else reseller.name"/></h1>
                                 <!-- Google maps -->
-                                <div id="map" class="mt16" style="width: 100%; height: 400px;"></div>
+                                <t t-call="website_partner_google_maps.google_maps">
+                                    <t t-set="div_class" t-value="'mt16'"/>
+                                    <t t-set="width" t-value="'100%'"/>
+                                    <t t-set="height" t-value="'400px'"/>
+                                    <t t-set="zoom" t-value="12"/>
+                                    <t t-set="center" t-value="reseller"/>
+                                    <t t-set="partners" t-value="reseller"/>
+                                    <t t-set="icon" t-value="'/reseller_dermanord/static/src/img/dn_maps_marker.png'"/>
+                                </t>
                                 <hr/>
                                 <h4 class="dn_uppercase">Address</h4>
+                                <t t-set="visit" t-value="request.env['res.partner'].browse(reseller.address_get(adr_pref=['visit']).get('visit'))"/>
                                 <p>
-                                    <t t-if="reseller.street"><span t-esc="reseller.street"/><br/></t>
-                                    <t t-if="reseller.street2"><span t-esc="reseller.street2"/><br/></t>
-                                    <t t-if="reseller.zip"><span t-esc="reseller.zip"/></t> <t t-if="reseller.city"><span t-esc="reseller.city"/><br/></t>
+                                    <t t-if="visit.street"><span t-esc="visit.street"/><br/></t>
+                                    <t t-if="visit.street2"><span t-esc="visit.street2"/><br/></t>
+                                    <t t-if="visit.zip"><span t-esc="visit.zip"/></t> <t t-if="visit.city"><span t-esc="visit.city"/><br/></t>
                                     <t t-if="reseller.country_id"><span t-esc="reseller.country_id.name"/></t>
                                 </p>
                                 <hr/>
@@ -163,9 +172,6 @@
                     </div>
                 </div>
                 <div class="oe_structure"/>
-                <script>
-                    <t t-esc="reseller_geo"/>
-                </script>
 <!--
                 <script>
                   function initMap() {

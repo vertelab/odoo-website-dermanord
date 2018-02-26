@@ -183,24 +183,9 @@ class Main(http.Controller):
                 resellers = request.env['res.partner'].sudo().search(['&', ('is_reseller', '=', True), ('id', 'in', closest_ids)])
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
         else:
-            marker_tmp = """function initMap() {
-                    var center = {lat: %s, lng: %s};
-                    var map = new google.maps.Map(document.getElementById('map'), {
-                      zoom: 12,
-                      center: center
-                    });
-                    var marker%s = new google.maps.Marker({
-                        title: '%s',
-                        position: {lat: %s, lng: %s},
-                        map: map,
-                        icon: 'http://wiggum.vertel.se/dn_maps_marker.png'
-                    });
-                  }"""
             partner = request.env['res.partner'].sudo().browse(int(partner))
-            pos = partner.get_position()
             return request.website.render('reseller_dermanord.reseller', {
                 'reseller': partner,
-                'reseller_geo': marker_tmp %(pos['lat'], pos['lng'], partner.id, partner.name.replace("'", ''), pos['lat'], pos['lng']),
             })
 
         #~ if partner:
