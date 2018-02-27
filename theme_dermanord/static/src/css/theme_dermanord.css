@@ -195,6 +195,16 @@ h1, .dn_uppercase {
     border-color: #BB602F;
 }
 
+.label-danger {
+    background-color: #CB683F;
+    border-color: #CB683F;
+}
+
+.label-info {
+    background-color: #000;
+    border-color: #000;
+}
+
 .text-primary, td a {
     color: #BB602F;
 }
