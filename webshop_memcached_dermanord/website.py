@@ -29,6 +29,7 @@ from openerp.addons.website_sale.controllers.main import get_pricelist
 import logging
 _logger = logging.getLogger(__name__)
 
+
 class Website(models.Model):
     _inherit = 'website'
 
@@ -49,7 +50,7 @@ class WebsiteSale(WebsiteSale):
         #~ '/dn_shop/category/<model("product.public.category"):category>',
         #~ '/dn_shop/category/<model("product.public.category"):category>/page/<int:page>',
     #~ ], type='http', auth="public", website=True)
-    @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw), flush_type='dn_shop')
+    @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw), flush_type=lambda kw: 'dn_shop')
     def dn_shop(self, page=0, category=None, search='', **post):
         request.website.dn_shop_set_session('product.template', post, "/dn_shop")
         return super(WebsiteSale, self).dn_shop(page, category, search, **post)
@@ -60,7 +61,7 @@ class WebsiteSale(WebsiteSale):
         #~ '/dn_list/category/<model("product.public.category"):category>',
         #~ '/dn_list/category/<model("product.public.category"):category>/page/<int:page>',
     #~ ], type='http', auth="public", website=True)
-    @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw), flush_type='dn_shop')
+    @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw), flush_type=lambda kw: 'dn_shop')
     def dn_list(self, page=0, category=None, search='', **post):
         request.website.dn_shop_set_session('product.product', post, "/dn_list")
         return super(WebsiteSale, self).dn_list(page, category, search, **post)
@@ -72,7 +73,7 @@ class WebsiteSale(WebsiteSale):
 
 
     #~ @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
-    @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw), flush_type='dn_shop')
+    @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw), flush_type=lambda kw: 'dn_shop')
     def dn_product(self, product, category='', search='', **post):
         return super(WebsiteSale, self).dn_product(product, category, search, **post)
 
@@ -81,7 +82,7 @@ class WebsiteSale(WebsiteSale):
     #~ @http.route([
         #~ '/dn_shop/variant/<model("product.product"):variant>'
     #~ ], type='http', auth="public", website=True)
-    @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw), flush_type='dn_shop')
+    @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw), flush_type=lambda kw: 'dn_shop')
     def dn_product_variant(self, variant, category='', search='', **kwargs):
         return super(WebsiteSale, self).dn_product_variant(variant, category, search, **kwargs)
 

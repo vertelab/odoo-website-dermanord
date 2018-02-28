@@ -57,6 +57,12 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12 col-sm-12 col-xs-12 mb16">
+                                <div class="readable">
+                                    <h6 class="text-center">Hitta en återförsäljare nära dig</h6>
+                                    <p>Du hittar MARIA ÅKERBERG hos välutbildade hud- och spaterapeuter och massörer, som både säljer våra produkter och använder dem i sina professionella behandlingar.</p>
+                                    <p>Använd sökfältet nedan för att hitta en återförsäljare i din närhet. Klicka på återförsäljaren för att se öppettider, besöksadress och annan information om salongen.</p>
+                                    <p>I sökfältet kan du ange namn, stad och land.</p>
+                                </div>
                                 <form t-att-action="('/resellers/competence/%s' % competence.id) if competence else '/resellers'" method="post" class="pagination form-inline col-md-12 col-sm-12 col-xs-12 mb16">
                                     <div class="container text-center">
                                         <div class="input-group">
@@ -69,6 +75,11 @@
                                         </div>
                                     </div>
                                 </form>
+                                <div class="readable">
+                                    <h2 class=""><i>Vill du bli återförsäljare?</i></h2>
+                                    <p>Vill du också använda och sälja MARIA ÅKERBERG?</p>
+                                    <p><a href="/reseller_register/new">Läs mer om hur vi samarbetar och anmäl ditt intresse här.</a></p>
+                                </div>
                                 <div class="col-md-12 col-sm-12 col-xs-12 mb16">
                                     <div class="grid">
                                         <t t-if="resellers">
@@ -132,14 +143,24 @@
                             </div>
                             <div class="reseller_cell col-md-4 col-sm-4 col-xs-12 mb16">
                                 <h1><t t-esc="reseller.brand_name if reseller.brand_name else reseller.name"/></h1>
+                                <t t-set="visit" t-value="request.env['res.partner'].browse(reseller.address_get(adr_pref=['visit']).get('visit'))"/>
                                 <!-- Google maps -->
-                                <div id="map" class="mt16" style="width: 100%; height: 400px;"></div>
+                                <t t-call="website_partner_google_maps.google_maps">
+                                    <t t-set="div_class" t-value="'mt16'"/>
+                                    <t t-set="width" t-value="'100%'"/>
+                                    <t t-set="height" t-value="'400px'"/>
+                                    <t t-set="zoom" t-value="12"/>
+                                    <t t-set="center" t-value="visit"/>
+                                    <t t-set="partners" t-value="visit"/>
+                                    <t t-set="icon" t-value="'/reseller_dermanord/static/src/img/dn_maps_marker.png'"/>
+                                    <t t-set="api_key" t-value="request.env['ir.config_parameter'].get_param('google_maps_api')"/>
+                                </t>
                                 <hr/>
                                 <h4 class="dn_uppercase">Address</h4>
                                 <p>
-                                    <t t-if="reseller.street"><span t-esc="reseller.street"/><br/></t>
-                                    <t t-if="reseller.street2"><span t-esc="reseller.street2"/><br/></t>
-                                    <t t-if="reseller.zip"><span t-esc="reseller.zip"/></t> <t t-if="reseller.city"><span t-esc="reseller.city"/><br/></t>
+                                    <t t-if="visit.street"><span t-esc="visit.street"/><br/></t>
+                                    <t t-if="visit.street2"><span t-esc="visit.street2"/><br/></t>
+                                    <t t-if="visit.zip"><span t-esc="visit.zip"/></t> <t t-if="visit.city"><span t-esc="visit.city"/><br/></t>
                                     <t t-if="reseller.country_id"><span t-esc="reseller.country_id.name"/></t>
                                 </p>
                                 <hr/>
@@ -163,9 +184,6 @@
                     </div>
                 </div>
                 <div class="oe_structure"/>
-                <script>
-                    <t t-esc="reseller_geo"/>
-                </script>
 <!--
                 <script>
                   function initMap() {
@@ -178,7 +196,6 @@
                   }
                 </script>
 -->
-                <script t-att-src="'https://maps.googleapis.com/maps/api/js?key=%s&amp;callback=initMap' %request.env['ir.config_parameter'].get_param('google_maps_api')"></script>
             </t>
         </template>
 
