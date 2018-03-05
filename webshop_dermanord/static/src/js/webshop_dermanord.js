@@ -110,12 +110,12 @@ $(document).ready(function(){
             if (data['images'] != null) {
                 var big_html = '<div id="image_big" class="tab-content">';
                 $.each(data['images'], function(index, value) {
-                    big_html += '<div id="' + value + '" class="tab-pane fade ' + ((index == 0) ? 'active in' : '') + '">' + offer_html + ribbon_html + '<img class="img img-responsive product_detail_img" style="margin: auto;" src="/imagefield/base_multi_image.image/image_main/' + value + '/ref/website_sale_product_gallery.img_product_detail"/></div>';
+                    big_html += '<div id="' + value + '" class="tab-pane fade ' + ((index == 0) ? 'active in' : '') + '">' + offer_html + ribbon_html + '<img class="img img-responsive product_detail_img" style="margin: auto;" src="/imagefield/ir.attachment/datas/' + value + '/ref/website_sale_product_gallery.img_product_detail"/></div>';
                 });
                 big_html += '</div>';
                 var tumb_html = '<ul id="image_nav" class="nav nav-pills">';
                 $.each(data['images'], function(index, value) {
-                    tumb_html += '<li class="' + ((index == 0) ? 'active' : '') + ' ' + ((index > 1) ? 'hidden-xs' : '') + '"><a data-toggle="tab" href="#' + value + '"><img class="img img-responsive" src="/imagefield/base_multi_image.image/image_main/' + value + '/ref/website_sale_product_gallery.img_product_thumbnail"/>';
+                    tumb_html += '<li class="' + ((index == 0) ? 'active' : '') + ' ' + ((index > 1) ? 'hidden-xs' : '') + '"><a data-toggle="tab" href="#' + value + '"><img class="img img-responsive" src="/imagefield/ir.attachment/datas/' + value + '/ref/website_sale_product_gallery.img_product_thumbnail"/>';
                 });
                 tumb_html += '</ul>';
                 $img_big.replaceWith(big_html);

@@ -187,17 +187,15 @@ class product_template(models.Model):
         return res
 
     @api.multi
-    @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
+    @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'product_variant_ids.image_attachment_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
     def _get_all_variant_data(self):
         pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45')])
         pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20')])
         placeholder = '/web/static/src/img/placeholder.png'
         for p in self:
             try:
-                variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'image_ids', 'website_style_ids_variant'])[0]
+                variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'image_main_id', 'website_style_ids_variant'])[0]
                 attribute_value_ids = self.env['product.attribute.value'].browse(variant['attribute_value_ids'])
-                image_ids = self.env['base_multi_image.image'].browse(variant['image_ids']).read(['image_attachment_id'])
-                image_ids = image_ids and image_ids[0]
                 website_style_ids_variant = self.env['product.style'].browse(variant['website_style_ids_variant']).read(['html_class'])
                 if variant:
                     p.dv_id = variant['id']
@@ -210,7 +208,7 @@ class product_template(models.Model):
                     p.dv_default_code = variant['default_code'] or ''
                     p.dv_description_sale = variant['description_sale'] or ''
                     p.dv_name = p.name if p.use_tmpl_name else ', '.join([p.name] + attribute_value_ids.mapped('name'))
-                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(image_ids['image_attachment_id'][0], 'snippet_dermanord.img_product') if (image_ids and image_ids['image_attachment_id']) else placeholder
+                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['image_main_id'][0], 'snippet_dermanord.img_product') if variant['image_main_id'] else placeholder
                     #~ p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
                     p.dv_ribbon = website_style_ids_variant['html_class'] if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
             except:
@@ -1648,17 +1646,9 @@ class webshop_dermanord(http.Controller):
         if product_id:
             product = request.env['product.product'].browse(int(product_id))
             if product:
-                image_ids = product.image_ids.filtered(lambda i: product in i.product_variant_ids)
-                default_image_ids = product.image_ids.filtered(lambda i: len(i.product_variant_ids) == 0)
-                images = []
-
-                if len(image_ids) > 0:
-                    images = image_ids.mapped('id') + default_image_ids.mapped('id')
-                else:
-                    images.append(0)
-                    for d in default_image_ids.mapped('id'):
-                        images.append(d)
-                    #~ images = default_image_ids.mapped('id') or None
+                image_ids = product.image_attachment_ids
+                default_image_ids = product.product_tmpl_id.image_attachment_ids
+                images = (image_ids.mapped('id') + default_image_ids.mapped('id')) or [0]
 
                 facets = {}
                 if len(product.facet_line_ids) > 0:

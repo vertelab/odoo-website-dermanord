@@ -44,7 +44,6 @@ Extra snippets for Dermanord.
         'snippets_css_js.xml',
         'snippets.xml',
         'snippets_data.xml',
-        'security/ir.model.access.csv',
     ],
     'qweb': ['static/src/xml/snippets.xml'],
     'application': True,
