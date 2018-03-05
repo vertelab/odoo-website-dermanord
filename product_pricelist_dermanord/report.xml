@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <template id="report_pricelist">
+            <t t-call="report.html_container">
+                <t t-call="report.internal_layout">
+                    <div class="page">
+                        <h2>Price List</h2>
+<!--
+                        <div class="row mt32 mb32">
+                            <div class="col-xs-3">
+                                <strong>Price List Name</strong>:<br/>
+                                <span t-esc="get_pricelist(data['form']['pricelist_id_one'])"/>
+                            </div>
+                            <div class="col-xs-3">
+                                <strong>Currency</strong>:<br/>
+                                <span t-esc="get_currency(data['form']['pricelist_id_one'])"/>
+                            </div>
+                            <div class="col-xs-3">
+                                <strong>Print date</strong>:<br/>
+                                <t t-esc="formatLang(time.strftime('%Y-%m-%d'), date=True)"/>
+                            </div>
+                        </div>
+-->
+
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <strong>Description</strong>
+                                    </th>
+                                    <th>
+                                        <strong>Pricelist Two</strong>
+                                    </th>
+                                    <th>
+                                        <strong>Pricelist One</strong>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="data" t-as="c">
+                                    <tr>
+                                        <td colspan="100">
+                                            <strong t-esc="c['name']"/>
+                                        </td>
+                                    </tr>
+                                    <tr t-foreach="c['products']" t-as="p">
+<!--
+                                        <td>
+                                            <t t-if="p.get('code')">
+                                                [<span t-esc="p['code']"/>]
+                                            </t>
+                                            <span t-esc="p['name']"/>
+                                        </td>
+-->
+                                        <td>
+                                            <span t-esc="p['col1']"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="p['col2']"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <report
+            id="action_report_pricelist_dermanord"
+            string="Pricelist"
+            model="product.product"
+            report_type="qweb-pdf"
+            name="product_pricelist_dermanord.report_pricelist"
+            file="product_pricelist_dermanord.report_pricelist"
+            menu="False"/>
+
+    </data>
+</openerp>
