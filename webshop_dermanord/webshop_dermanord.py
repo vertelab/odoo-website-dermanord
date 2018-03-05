@@ -189,8 +189,8 @@ class product_template(models.Model):
     @api.multi
     @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_ids', 'website_style_ids', 'attribute_line_ids.value_ids', 'product_variant_ids.default_code', 'product_variant_ids.website_style_ids', 'product_variant_ids.default_variant')
     def _get_all_variant_data(self):
-        pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45')])
-        pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20')])
+        pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45'), ('currency_id', '=', self.env['res.lang'].search([('code', '=', 'sv_SE')]).pricelist_id.currency_id.id)])
+        pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20'), ('currency_id', '=', self.env['res.lang'].search([('code', '=', 'sv_SE')]).pricelist_id.currency_id.id)])
         placeholder = '/web/static/src/img/placeholder.png'
         for p in self:
             try:
@@ -262,7 +262,7 @@ class product_product(models.Model):
     so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
-    
+
     @api.one
     @api.depends('lst_price', 'product_tmpl_id.list_price')
     def get_product_tax(self):
@@ -274,8 +274,8 @@ class product_product(models.Model):
             pricelist_en = self.env.ref('product.list0')
         price = pricelist.price_get(self.id, 1)[pricelist.id]
         price_en = pricelist_en.price_get(self.id, 1)[pricelist_en.id]
-        pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45')])
-        pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20')])
+        pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45'), ('currency_id', '=', pricelist.currency_id.id)])
+        pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20'), ('currency_id', '=', pricelist.currency_id.id)])
         self.price_45 = pricelist_45.price_get(self.id, 1)[pricelist_45.id]
         self.price_20 = pricelist_20.price_get(self.id, 1)[pricelist_20.id]
         self.recommended_price = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
@@ -1232,6 +1232,8 @@ class WebsiteSale(website_sale):
             for style in request.env['product.style'].search([]):
                 style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style.id in product['website_style_ids'] else '', style.id, style.html_class, style.name)
 
+            _logger.warn('lang: %s' %request.env.user.lang)
+            _logger.warn('dv_recommended_price: %s' %(request.website.price_formate(product['dv_recommended_price']) if request.env.user.lang == 'sv_SE' else request.website.price_formate(product['dv_recommended_price_en'])))
             products_list.append({
                 'product_href': '/dn_shop/product/%s' %product['id'],
                 'product_id': product['id'],
