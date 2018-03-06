@@ -135,7 +135,7 @@
                     (<span t-esc="recommended_price" style="white-space: nowrap;"/> <span t-esc="currency" style="white-space: nowrap;"/>)
                 </h5>
             </td>
-            <td>
+            <td t-if="sale_ok">
 <!--
                 <h5 class="col-md-6 col-sm-6 col-xs-12 list_product_name">
 
@@ -169,6 +169,7 @@
                     </form>
                 </div>
             </td>
+            <td t-if="not sale_ok"/>
         </tr>
     </t>
 

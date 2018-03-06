@@ -718,6 +718,7 @@ function load_products_list(page){
                     'product_name': data['products'][key]['product_name'],
                     'is_news_product': data['products'][key]['is_news_product'],
                     'is_offer_product': data['products'][key]['is_offer_product'],
+                    'sale_ok': data['products'][key]['sale_ok'],
                     'product_name_col': data['products'][key]['product_name_col'],
                     'purchase_phase': data['products'][key]['purchase_phase'],
                     'purchase_phase_start_date': data['products'][key]['purchase_phase_start_date'],
