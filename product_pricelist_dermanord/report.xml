@@ -5,7 +5,7 @@
         <template id="product_pricelist_dermanord.pricelist_layout_header">
             <div class="header">
                 <div class="row">
-                    <div class="col-xs-6">
+                    <div class="col-xs-7">
                         <h2 class="dn_uppcase">Price List</h2>
                         <div class="row mb32">
                             <div class="col-xs-12">
@@ -26,7 +26,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-6 mt32">
+                    <div class="col-xs-8 mt32">
                         <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px; margin: auto; display: block;"/>
                     </div>
                 </div>
