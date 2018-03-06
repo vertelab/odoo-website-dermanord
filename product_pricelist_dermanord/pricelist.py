@@ -47,7 +47,7 @@ class product_pricelist_dermanord(models.TransientModel):
             'categories': [],
         }
         for c in self.env['product.category'].search([], order='parent_id, name'):
-            products = self.env['product.product'].search([('categ_id', '=', c.id), ('sale_ok', '=', True), ('website_published', '=', True)], order='default_code')
+            products = self.env['product.product'].search([('categ_id', '=', c.id), ('sale_ok', '=', True)], order='default_code')
             if len(products) > 0:
                 data['categories'].append({
                     'name': c.display_name,
