@@ -25,7 +25,7 @@
     'category': 'product',
     'summary': '',
     'description': """
-Product Pricepist Report
+Product Pricelist Report
 ========================
 """,
     'author': 'Vertel AB',

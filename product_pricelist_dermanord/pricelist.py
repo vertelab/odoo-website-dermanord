@@ -32,22 +32,32 @@ class product_pricelist_dermanord(models.TransientModel):
     pricelist_title_two = fields.Char(string='Column Title 2')
     pricelist_id_one = fields.Many2one(comodel_name='product.pricelist', string='Pricelist 1', required=True)
     pricelist_id_two = fields.Many2one(comodel_name='product.pricelist', string='Pricelist 2')
-    version_id_one = fields.Many2one(comodel_name='product.pricelist.version', string='Pricelist Version 1', domain="[('pricelist_id', '=', pricelist_id_one)]", required=True)
-    version_id_two = fields.Many2one(comodel_name='product.pricelist.version', string='Pricelist Version 2', domain="[('pricelist_id', '=', pricelist_id_two)]")
+    date = fields.Date(string='Date', required=True)
+    fiscal_position_id = fields.Many2one(comodel_name='account.fiscal.position', string='Fiscal Position', required=True)
 
     @api.multi
     def print_report(self):
-        data = []
-        for c in self.env['product.category'].search([]):
-            products = self.env['product.product'].search([('categ_id', '=', c.id), ('sale_ok', '=', True), ('website_published', '=', True)])
-            data.append({
-                'name': c.name,
-                'products': [{
-                    'name': p.name,
-                    'col1': p.get_price_by_version(self.env['product.pricelist.version'].browse(self.version_id_two.id)) if self.version_id_two else '',
-                    'col2': p.get_price_by_version(self.env['product.pricelist.version'].browse(self.pricelist_id_one.id)),
-                } for p in products]
-            })
+        data = {
+            'date': self.date,
+            'pricelist_title_one': self.pricelist_title_one,
+            'pricelist_title_two': self.pricelist_title_two,
+            'pricelist': (('%s + ' %self.pricelist_id_two.name) if self.pricelist_id_two else '') + self.pricelist_id_one.name,
+            'fiscal_position': self.fiscal_position_id.name,
+            'currency': self.pricelist_id_one.currency_id.name,
+            'categories': [],
+        }
+        for c in self.env['product.category'].search([], order='parent_id, name'):
+            products = self.env['product.product'].search([('categ_id', '=', c.id), ('sale_ok', '=', True), ('website_published', '=', True)], order='default_code')
+            if len(products) > 0:
+                data['categories'].append({
+                    'name': c.display_name,
+                    'products': [{
+                        'name': p.name,
+                        'code': p.default_code,
+                        'col1': p.get_price_by_pricelist(self.pricelist_id_one, self.date, self.fiscal_position_id),
+                        'col2': p.get_price_by_pricelist(self.pricelist_id_two, self.date, self.fiscal_position_id) if self.pricelist_id_two else '',
+                    } for p in products]
+                })
         return self.pool['report'].get_action(self._cr, self._uid, [], 'product_pricelist_dermanord.report_pricelist', data=data, context=self._context)
 
 
@@ -55,8 +65,12 @@ class product_product(models.Model):
     _inherit = 'product.product'
 
     @api.multi
-    def get_price_by_version(self, version):
-        return 10.0
+    def get_price_by_pricelist(self, pricelist, date, fiscal_position_id):
+        price_rule = self.env['product.pricelist'].with_context(date=date)._price_rule_get_multi(pricelist, [(self, 1, self.env.user.partner_id)])
+        taxes = 0.0
+        for c in fiscal_position_id.map_tax(self.taxes_id).compute_all(self.lst_price, 1, None, self.env.user.partner_id)['taxes']:
+            taxes += c.get('amount', 0.0)
+        return "%.2f" %(price_rule[self.id][0] + taxes)
 
 
 class ReportPricelist(models.AbstractModel):
