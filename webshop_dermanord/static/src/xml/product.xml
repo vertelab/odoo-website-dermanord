@@ -58,16 +58,15 @@
                             <b class="text-muted">
                                 <h4>
                                     <t t-if="is_reseller == 'no'">
-                                        <span class="oe_price" t-esc="price_tax" style="white-space: nowrap;" /> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" />
+                                        <span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_price" t-esc="price_tax" style="white-space: nowrap;" />
                                     </t>
 
                                     <t t-if="is_reseller == 'yes'">
                                         <div>
-                                            <span class="oe_recommended_price" t-esc="list_price_tax"/> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" /> <span style="display: inline;">(rec incl. tax)</span>
+                                            <span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_recommended_price" t-esc="list_price_tax" style="display: inline;"/> <span style="display: inline;">(rec incl. tax)</span>
                                         </div>
                                         <div>
-                                            <b class="oe_price"
-                                            t-esc="price"/> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" /> <span style="display: inline;">(your excl. tax)</span>
+                                            <b><span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_price" t-esc="price"/></b> <span style="display: inline;">(your excl. tax)</span>
                                         </div>
                                     </t>
                                 </h4>

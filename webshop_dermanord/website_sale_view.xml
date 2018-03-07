@@ -179,7 +179,7 @@
 <!--
                                             <span t-esc="website.price_format(product['dv_recommended_price']) if user_id.lang == 'sv_SE' else website.price_format(product['dv_recommended_price_en'])" style="white-space: nowrap;" />
 -->
-                                            <b t-esc="website.price_format(user_id.partner_id.property_product_pricelist.price_get(product['dv_id'], 1)[user_id.partner_id.property_product_pricelist.id] if product['dv_id'] else 0.0)" style="white-space: nowrap;" />
+                                            <span t-esc="website.price_format(user_id.partner_id.property_product_pricelist.price_get(product['dv_id'], 1)[user_id.partner_id.property_product_pricelist.id] if product['dv_id'] else 0.0)" style="white-space: nowrap;" />
                                         </div>
                                     </t>
                                     <!--

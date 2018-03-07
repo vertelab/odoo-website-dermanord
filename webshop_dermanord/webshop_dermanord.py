@@ -1219,7 +1219,7 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         # TODO: always get same product in the last?? why?
 
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale', 'product_variant_ids'], order=order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale', 'product_variant_ids', 'dv_id'], order=order)
 
         search_end = timer()
         _logger.warn('search end: %s' %(timer() - start_time))
@@ -1243,8 +1243,6 @@ class WebsiteSale(website_sale):
             for style in request.env['product.style'].search([]):
                 style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style.id in product['website_style_ids'] else '', style.id, style.html_class, style.name)
 
-            _logger.warn('lang: %s' %request.env.user.lang)
-            _logger.warn('dv_recommended_price: %s' %(request.website.price_format(product['dv_recommended_price']) if request.env.user.lang == 'sv_SE' else request.website.price_format(product['dv_recommended_price_en'])))
             products_list.append({
                 'product_href': '/dn_shop/product/%s' %product['id'],
                 'product_id': product['id'],
@@ -1253,7 +1251,7 @@ class WebsiteSale(website_sale):
                 'style_options': style_options,
                 'grid_ribbon_style': 'dn_product_div %s' %product['dv_ribbon'],
                 'product_img_src': product['dv_image_src'],
-                'price': request.website.price_format(product['dv_price']),
+                'price': request.website.price_format(partner_pricelist.price_get(product['dv_id'], 1)[partner_pricelist.id] if product['dv_id'] else 0.0),
                 'price_tax': "%.2f" % product['dv_price_tax'],
                 'list_price_tax': request.website.price_format(product['dv_recommended_price']) if request.env.user.lang == 'sv_SE' else request.website.price_format(product['dv_recommended_price_en']),
                 'currency': currency,
