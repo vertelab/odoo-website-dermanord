@@ -169,7 +169,7 @@
                     </form>
                 </div>
             </td>
-            <td t-if="not sale_ok"/>
+            <td t-if="!sale_ok"/>
         </tr>
     </t>
 
