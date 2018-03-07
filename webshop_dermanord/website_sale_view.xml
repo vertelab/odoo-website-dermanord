@@ -283,8 +283,8 @@
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
                                                             <t t-if="user_id.partner_id.property_product_pricelist.id not in [3, 6]">
-                                                                <span t-field="request.env['product.product'].browse(product['id']).price" style="white-space: nowrap;" class="your_price" t-field-options="{
-                                                                &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }" />
+                                                                <span t-field="request.env['product.product'].browse(product['id']).with_context(pricelist=user_id.partner_id.commercial_partner_id.property_product_pricelist.id).price" style="white-space: nowrap;" class="your_price" t-field-options="{
+                                                                &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }" t-att-data-price="request.env['product.product'].browse(product['id']).with_context(pricelist=user_id.partner_id.commercial_partner_id.property_product_pricelist.id).price"/>
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
 <!--

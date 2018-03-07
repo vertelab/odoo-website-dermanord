@@ -49,6 +49,7 @@ Special layout for Dermanord AB webshop
         'website_sale_instock',
         'website_sale_lang_pricelist',
         'crm_campaign_phase_default_variant',
+        'website_sale_delivery',
         ],
     'data': [
         'webshop_dermanord_view.xml',
