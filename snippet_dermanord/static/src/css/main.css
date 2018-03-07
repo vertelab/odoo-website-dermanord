@@ -245,4 +245,7 @@ a {
         float: unset !important;
         margin: auto;
     }
+    .di_desktop_content {
+        top: 0%;
+    }
 }
