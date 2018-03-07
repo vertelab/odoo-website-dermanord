@@ -154,7 +154,48 @@ msgstr "Sön:"
 msgid "Sunday:"
 msgstr "Söndag:"
 
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Opening Hours"
+msgstr "Öppettider"
+
 #. module: reseller_dermanord
 #: view:website:website_sale_home.home_page
 msgid "Weekday"
 msgstr "Veckodag"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Opening Time"
+msgstr "Öppnar"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Closing Time"
+msgstr "Stänger"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Lunch Start"
+msgstr "Lunchstart"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Lunch End"
+msgstr "Stämmer"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Closed"
+msgstr "Stängt"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Top Image"
+msgstr "Toppbild"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Reseller Description"
+msgstr "ÅFbeskrivning"
