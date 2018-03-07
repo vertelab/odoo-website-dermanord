@@ -74,7 +74,9 @@
 }
 
 .blog_background_image_list {
+/*
     border: 1px solid grey;
+*/
     height: 300px;
     background-repeat: no-repeat;
     -o-background-size: cover;

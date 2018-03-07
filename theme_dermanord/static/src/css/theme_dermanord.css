@@ -518,7 +518,9 @@ footer input, footer .input-group-addon {
     width: 100%;
     padding: 0px;
     max-height: 450px;
+/*
     border-bottom: 1px solid #f5f5f5;
+*/
 }
 
 .dn_header_banner {

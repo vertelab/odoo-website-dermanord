@@ -119,6 +119,13 @@ msgstr "Nyhet"
 
 #. module: webshop_dermanord
 #. openerp-web
+#: code:addons/webshop_dermanord/static/src/xml/product.xml:25
+#, python-format
+msgid "News"
+msgstr "Nyhet"
+
+#. module: webshop_dermanord
+#. openerp-web
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:14
 #: view:website:webshop_dermanord.products_item
 #, python-format
