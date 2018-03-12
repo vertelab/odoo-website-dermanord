@@ -203,8 +203,6 @@ class product_template(models.Model):
                     p.dv_recommended_price_en = variant['recommended_price_en']
                     p.dv_price_45 = variant['price_45']
                     p.dv_price_20 = variant['price_20']
-                    p.dv_price = variant['price']
-                    p.dv_price_tax = p.dv_price + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(p.dv_price, 1, None, self.env.user.partner_id)['taxes'])
                     p.dv_default_code = variant['default_code'] or ''
                     p.dv_description_sale = variant['description_sale'] or ''
                     p.dv_name = p.name if p.use_tmpl_name else ', '.join([p.name] + attribute_value_ids.mapped('name'))
@@ -218,8 +216,6 @@ class product_template(models.Model):
                 p.dv_recommended_price_en = 0.0
                 p.dv_price_45 = 0.0
                 p.dv_price_20 = 0.0
-                p.dv_price = 0.0
-                p.dv_price_tax = 0.0
                 p.dv_default_code = 'except'
                 p.dv_description_sale = '%s' % e[1]
                 p.dv_name = 'Error'
@@ -230,8 +226,6 @@ class product_template(models.Model):
     dv_recommended_price_en = fields.Float(compute='_get_all_variant_data', store=True)
     dv_price_45 = fields.Float(compute='_get_all_variant_data', store=True)
     dv_price_20 = fields.Float(compute='_get_all_variant_data', store=True)
-    dv_price = fields.Float(compute='_get_all_variant_data', store=True)
-    dv_price_tax = fields.Float(compute='_get_all_variant_data', store=True)
     dv_default_code = fields.Char(compute='_get_all_variant_data', store=True)
     dv_description_sale = fields.Text(compute='_get_all_variant_data', store=True)
     dv_image_src = fields.Char(compute='_get_all_variant_data', store=True)
@@ -1146,7 +1140,7 @@ class WebsiteSale(website_sale):
         search_start = timer()
         domain = request.session.get('current_domain')
         current_order = request.session.get('current_order')
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=current_order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price_45', 'dv_price_20', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=current_order)
 
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
@@ -1219,7 +1213,7 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         # TODO: always get same product in the last?? why?
 
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale', 'product_variant_ids', 'dv_id'], order=order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price_45', 'dv_price_20', 'website_style_ids', 'dv_description_sale', 'product_variant_ids', 'dv_id'], order=order)
 
         search_end = timer()
         _logger.warn('search end: %s' %(timer() - start_time))
@@ -1243,6 +1237,16 @@ class WebsiteSale(website_sale):
             for style in request.env['product.style'].search([]):
                 style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style.id in product['website_style_ids'] else '', style.id, style.html_class, style.name)
 
+            two_price = False
+            if request.env.user.partner_id.property_product_pricelist.id == 3:
+                price = product['dv_price_45']
+                two_price = True
+            elif request.env.user.partner_id.property_product_pricelist.id == 6:
+                price = product['dv_price_20']
+                two_price = True
+            else:
+                price = request.env['product.product'].browse(product['dv_id']).with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
+
             products_list.append({
                 'product_href': '/dn_shop/product/%s' %product['id'],
                 'product_id': product['id'],
@@ -1251,9 +1255,10 @@ class WebsiteSale(website_sale):
                 'style_options': style_options,
                 'grid_ribbon_style': 'dn_product_div %s' %product['dv_ribbon'],
                 'product_img_src': product['dv_image_src'],
-                'price': request.website.price_format(partner_pricelist.price_get(product['dv_id'], 1)[partner_pricelist.id] if product['dv_id'] else 0.0),
-                'price_tax': "%.2f" % product['dv_price_tax'],
+                #~ 'price': request.website.price_format(partner_pricelist.price_get(product['dv_id'], 1)[partner_pricelist.id] if product['dv_id'] else 0.0),
+                'price': request.website.price_format(price),
                 'list_price_tax': request.website.price_format(product['dv_recommended_price']) if request.env.user.lang == 'sv_SE' else request.website.price_format(product['dv_recommended_price_en']),
+                'two_price': two_price,
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
                 'is_reseller': 'yes' if is_reseller else 'no',
@@ -1357,7 +1362,7 @@ class WebsiteSale(website_sale):
                 price = p['price_20']
                 #~ tax = p['tax_20']
             else:
-                price = request.env['product.product'].browse(p['id']).price
+                price = request.env['product.product'].browse(p['id']).with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
                 #tax = sum(map(lambda x: x.get('amount', 0.0), request.env['product.product'].browse(p['id']).taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
 
             products_list.append({
@@ -1372,8 +1377,8 @@ class WebsiteSale(website_sale):
                 'product_name_col': 'product_name' if p['purchase_phase']['phase'] else 'product_name',
                 'purchase_phase_start_date': p['purchase_phase']['start_date'] if p['purchase_phase']['phase'] else '',
                 'purchase_phase_end_date': p['purchase_phase']['end_date'] if p['purchase_phase']['phase'] else '',
-                'recommended_price': "%.2f" % p['recommended_price'] if request.env.user.lang == 'sv_SE' else "%.2f" % p['recommended_price_en'],
-                'price': "%.2f" %price,
+                'price': request.website.price_format(price),
+                'recommended_price': request.website.price_format(p['recommended_price']) if request.env.user.lang == 'sv_SE' else request.website.price_format(p['recommended_price_en']),
                 #~ 'tax': "%.2f" %request.website.price_format(tax),
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
