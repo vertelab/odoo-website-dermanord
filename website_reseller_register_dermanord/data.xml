@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <record id="menu_reseller_register_info" model="website.menu">
-            <field name="name">Infomation</field>
+            <field name="name">Information</field>
             <field name="sequence">151</field>
             <field name="url">/reseller_register/information</field>
             <field name="parent_id" ref="theme_dermanord.footer_menu_reseller_register" />

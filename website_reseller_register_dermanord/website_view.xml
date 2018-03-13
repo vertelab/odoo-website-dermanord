@@ -56,9 +56,7 @@
         </template>
         <template id="reseller_register_info" name="Reseller Register Information">
             <t t-call="theme_dermanord.submenu_dermanord">
-                <div id="wrap" class="oe_structure oe_empty">
-                    <div class="oe_structure"/>
-                </div>
+                <div id="wrap" class="oe_structure oe_empty"/>
             </t>
         </template>
         <template id="contact_form" inherit_id="website_reseller_register.contact_form" name="Website Reseller Register Contact Form Dermanord">

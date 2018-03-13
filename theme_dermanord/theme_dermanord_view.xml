@@ -13,15 +13,13 @@
         <record id="footer_menu_reseller_register" model="website.menu">
             <field name="name">BECOME RESELLER</field>
             <field name="sequence">150</field>
-            <field name="url">/reseller_register</field>
+            <field name="url">/reseller_registration</field>
             <field name="parent_id" ref="theme_dermanord.footer_menu" />
         </record>
 
         <template id="reseller_register" name="Reseller Register">
             <t t-call="theme_dermanord.submenu_dermanord">
-                <div id="wrap" class="oe_structure oe_empty">
-                    <div class="oe_structure"/>
-                </div>
+                <div id="wrap" class="oe_structure oe_empty"/>
             </t>
         </template>
 
