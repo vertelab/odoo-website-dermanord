@@ -48,7 +48,7 @@
         </template>
 
         <template id="resellers" name="Resellers">
-            <t t-call="website.layout">
+            <t t-call="theme_dermanord.submenu_dermanord">
                 <div id="wrap">
                     <div class="oe_structure"/>
                     <div class="col-md-12 col-sm-12 col-xs-12 dn_header_container" style="padding: 0px; background-color: #000;">
@@ -209,9 +209,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 col-sm-4 control-label" for="website_short_description">Website Description</label>
+                        <label class="col-md-3 col-sm-4 control-label" for="website_short_description">Reseller Description</label>
                         <div class="col-md-7 col-sm-8">
-                            <textarea id="website_short_description" type="text" class="form-control" name="website_short_description" placeholder="Website Description..." rows="10" cols="70" ><t t-raw="home_user.partner_id.commercial_partner_id.website_short_description"/></textarea>
+                            <textarea id="website_short_description" type="text" class="form-control" name="website_short_description" placeholder="Reseller Description..." rows="10" cols="70" ><t t-raw="home_user.partner_id.commercial_partner_id.website_short_description"/></textarea>
                         </div>
                     </div>
                     <div class="form-group">
@@ -227,11 +227,11 @@
                             <table class="table table-striped">
                                 <thead>
                                     <th>Weekday</th>
-                                    <th>Open Time</th>
-                                    <th>Close Time</th>
-                                    <th>Break Start</th>
-                                    <th>Break Stop</th>
-                                    <th>Close</th>
+                                    <th>Opening Time</th>
+                                    <th>Closing Time</th>
+                                    <th>Lunch Start</th>
+                                    <th>Lunch End</th>
+                                    <th>Closed</th>
                                 </thead>
                                 <tbody>
                                     <tr>

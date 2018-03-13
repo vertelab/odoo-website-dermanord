@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_product_pricelist_dermanord" model="ir.ui.view">
+            <field name="name">Product Pricelist Dermanord</field>
+            <field name="model">product.pricelist.dermanord</field>
+            <field name="arch" type="xml">
+                <form string="Price List">
+                    <group>
+                        <group>
+                            <field name="date" />
+                        </group>
+                    </group>
+                    <group>
+                        <group col="2">
+                            <field name="pricelist_title_one"/>
+                            <field name="pricelist_id_one" widget="selection" />
+                        </group>
+                    </group>
+                    <group>
+                        <group col="2">
+                            <field name="pricelist_title_two"/>
+                            <field name="pricelist_id_two" widget="selection" />
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="fiscal_position_id" widget="selection" />
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="Print" type="object" class="oe_highlight" />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <act_window id="action_product_pricelist_dermanord" key2="client_print_multi" name="Price List Report (Dermanord)" res_model="product.pricelist.dermanord" src_model="product.product" groups="product.group_sale_pricelist" view_mode="form" target="new" view_type="form" />
+        <menuitem id="menu_product_pricelist_dermanord" action="action_product_pricelist_dermanord" parent="product.menu_product_pricelist_main" sequence="10"/>
+
+    </data>
+</openerp>

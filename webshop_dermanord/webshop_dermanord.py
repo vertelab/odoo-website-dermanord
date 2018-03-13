@@ -194,7 +194,7 @@ class product_template(models.Model):
         placeholder = '/web/static/src/img/placeholder.png'
         for p in self:
             try:
-                variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'image_main_id', 'website_style_ids_variant'])[0]
+                variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'v_image_main_id', 'website_style_ids_variant'])[0]
                 attribute_value_ids = self.env['product.attribute.value'].browse(variant['attribute_value_ids'])
                 website_style_ids_variant = self.env['product.style'].browse(variant['website_style_ids_variant']).read(['html_class'])
                 if variant:
@@ -203,12 +203,10 @@ class product_template(models.Model):
                     p.dv_recommended_price_en = variant['recommended_price_en']
                     p.dv_price_45 = variant['price_45']
                     p.dv_price_20 = variant['price_20']
-                    p.dv_price = variant['price']
-                    p.dv_price_tax = p.dv_price + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(p.dv_price, 1, None, self.env.user.partner_id)['taxes'])
                     p.dv_default_code = variant['default_code'] or ''
                     p.dv_description_sale = variant['description_sale'] or ''
                     p.dv_name = p.name if p.use_tmpl_name else ', '.join([p.name] + attribute_value_ids.mapped('name'))
-                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['image_main_id'][0], 'snippet_dermanord.img_product') if variant['image_main_id'] else placeholder
+                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['v_image_main_id'][0], 'snippet_dermanord.img_product') if variant['v_image_main_id'] else placeholder
                     #~ p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
                     p.dv_ribbon = website_style_ids_variant['html_class'] if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
             except:
@@ -218,8 +216,6 @@ class product_template(models.Model):
                 p.dv_recommended_price_en = 0.0
                 p.dv_price_45 = 0.0
                 p.dv_price_20 = 0.0
-                p.dv_price = 0.0
-                p.dv_price_tax = 0.0
                 p.dv_default_code = 'except'
                 p.dv_description_sale = '%s' % e[1]
                 p.dv_name = 'Error'
@@ -230,8 +226,6 @@ class product_template(models.Model):
     dv_recommended_price_en = fields.Float(compute='_get_all_variant_data', store=True)
     dv_price_45 = fields.Float(compute='_get_all_variant_data', store=True)
     dv_price_20 = fields.Float(compute='_get_all_variant_data', store=True)
-    dv_price = fields.Float(compute='_get_all_variant_data', store=True)
-    dv_price_tax = fields.Float(compute='_get_all_variant_data', store=True)
     dv_default_code = fields.Char(compute='_get_all_variant_data', store=True)
     dv_description_sale = fields.Text(compute='_get_all_variant_data', store=True)
     dv_image_src = fields.Char(compute='_get_all_variant_data', store=True)
@@ -724,7 +718,7 @@ class Website(models.Model):
 
         return sale_order
 
-    def price_formate(self, price):
+    def price_format(self, price):
         if request.env.lang == 'sv_SE':
             return ('%.2f' %price).replace('.', ',')
         else:
@@ -1088,8 +1082,20 @@ class WebsiteSale(website_sale):
             domain_append.append(domain_current[0])
         return domain_append
 
-
-
+    def in_stock(self, product_id):
+        instock = ''
+        in_stock = True
+        product = request.env['product.product'].search_read([('id', '=', product_id)], fields=['is_mto_route', 'sale_ok', 'instock_percent'])[0]
+        if not product['is_mto_route']:
+            if product['sale_ok']:
+                if product['instock_percent'] > 100.0:
+                    instock = _('In stock')
+                elif product['instock_percent'] >= 50.0 and product['instock_percent'] <= 100.0:
+                    instock = _('Few in stock')
+                elif product['instock_percent'] < 50.0:
+                    instock = _('Shortage')
+                    in_stock = False
+        return [in_stock, instock]
 
     @http.route([
         '/dn_shop',
@@ -1134,7 +1140,7 @@ class WebsiteSale(website_sale):
         search_start = timer()
         domain = request.session.get('current_domain')
         current_order = request.session.get('current_order')
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=current_order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price_45', 'dv_price_20', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=current_order)
 
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
@@ -1207,7 +1213,7 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         # TODO: always get same product in the last?? why?
 
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price', 'dv_price_45', 'dv_price_20', 'dv_price_tax', 'website_style_ids', 'dv_description_sale', 'product_variant_ids'], order=order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price_45', 'dv_price_20', 'website_style_ids', 'dv_description_sale', 'product_variant_ids', 'dv_id'], order=order)
 
         search_end = timer()
         _logger.warn('search end: %s' %(timer() - start_time))
@@ -1231,8 +1237,19 @@ class WebsiteSale(website_sale):
             for style in request.env['product.style'].search([]):
                 style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style.id in product['website_style_ids'] else '', style.id, style.html_class, style.name)
 
-            _logger.warn('lang: %s' %request.env.user.lang)
-            _logger.warn('dv_recommended_price: %s' %(request.website.price_formate(product['dv_recommended_price']) if request.env.user.lang == 'sv_SE' else request.website.price_formate(product['dv_recommended_price_en'])))
+            two_price = False
+            if request.env.user.partner_id.property_product_pricelist.id == 3:
+                price = product['dv_price_45']
+                two_price = True
+            elif request.env.user.partner_id.property_product_pricelist.id == 6:
+                price = product['dv_price_20']
+                two_price = True
+            elif request.env.user.partner_id.property_product_pricelist.id not in [3, 6] and request.env.user.partner_id.property_product_pricelist.for_reseller:
+                price = request.env['product.product'].browse(product['dv_id']).with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
+                two_price = True
+            else:
+                price = product['dv_recommended_price'] if request.env.user.lang == 'sv_SE' else product['dv_recommended_price_en']
+
             products_list.append({
                 'product_href': '/dn_shop/product/%s' %product['id'],
                 'product_id': product['id'],
@@ -1241,9 +1258,10 @@ class WebsiteSale(website_sale):
                 'style_options': style_options,
                 'grid_ribbon_style': 'dn_product_div %s' %product['dv_ribbon'],
                 'product_img_src': product['dv_image_src'],
-                'price': request.website.price_formate(product['dv_price']),
-                'price_tax': "%.2f" % product['dv_price_tax'],
-                'list_price_tax': request.website.price_formate(product['dv_recommended_price']) if request.env.user.lang == 'sv_SE' else request.website.price_formate(product['dv_recommended_price_en']),
+                #~ 'price': request.website.price_format(partner_pricelist.price_get(product['dv_id'], 1)[partner_pricelist.id] if product['dv_id'] else 0.0),
+                'price': request.website.price_format(price),
+                'list_price_tax': request.website.price_format(product['dv_recommended_price']) if request.env.user.lang == 'sv_SE' else request.website.price_format(product['dv_recommended_price_en']),
+                'two_price': two_price,
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
                 'is_reseller': 'yes' if is_reseller else 'no',
@@ -1338,6 +1356,7 @@ class WebsiteSale(website_sale):
                 if tmpl:
                     product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', tmpl[0].get('website_style_ids', []))], ['html_class'])])
             p['get_this_variant_ribbon'] = product_ribbon
+            p['sale_ok'] = True if (p['sale_ok'] and self.in_stock(p['id'])[0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
 
             if request.env.user.partner_id.property_product_pricelist.id == 3:
                 price = p['price_45']
@@ -1345,8 +1364,10 @@ class WebsiteSale(website_sale):
             elif request.env.user.partner_id.property_product_pricelist.id == 6:
                 price = p['price_20']
                 #~ tax = p['tax_20']
+            elif request.env.user.partner_id.property_product_pricelist.id not in [3, 6] and request.env.user.partner_id.property_product_pricelist.for_reseller:
+                price = request.env['product.product'].browse(p['id']).with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
             else:
-                price = request.env['product.product'].browse(p['id']).price
+                price = p['recommended_price'] if request.env.user.lang == 'sv_SE' else p['recommended_price_en']
                 #tax = sum(map(lambda x: x.get('amount', 0.0), request.env['product.product'].browse(p['id']).taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
 
             products_list.append({
@@ -1361,9 +1382,9 @@ class WebsiteSale(website_sale):
                 'product_name_col': 'product_name' if p['purchase_phase']['phase'] else 'product_name',
                 'purchase_phase_start_date': p['purchase_phase']['start_date'] if p['purchase_phase']['phase'] else '',
                 'purchase_phase_end_date': p['purchase_phase']['end_date'] if p['purchase_phase']['phase'] else '',
-                'recommended_price': "%.2f" % p['recommended_price'] if request.env.user.lang == 'sv_SE' else "%.2f" % p['recommended_price_en'],
-                'price': "%.2f" %price,
-                #~ 'tax': "%.2f" %request.website.price_formate(tax),
+                'price': request.website.price_format(price),
+                'recommended_price': request.website.price_format(p['recommended_price']) if request.env.user.lang == 'sv_SE' else request.website.price_format(p['recommended_price_en']),
+                #~ 'tax': "%.2f" %request.website.price_format(tax),
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
                 'is_reseller': 'yes' if is_reseller else 'no',
@@ -1466,7 +1487,7 @@ class WebsiteSale(website_sale):
 
         domain = request.session.get('current_domain')
         current_order = request.session.get('current_order')
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'recommended_price_en', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id'], limit=PPG, order=current_order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'recommended_price_en', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id', 'sale_ok'], limit=PPG, order=current_order)
         request.session['product_count'] = 2000
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
@@ -1499,6 +1520,7 @@ class WebsiteSale(website_sale):
                 if tmpl:
                     product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', tmpl[0].get('website_style_ids', []))], ['html_class'])])
             p['get_this_variant_ribbon'] = product_ribbon
+            p['sale_ok'] = True if (p['sale_ok'] and self.in_stock(p['id'])[0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
 
         values = {
             'search': search,
@@ -1619,20 +1641,16 @@ class WebsiteSale(website_sale):
         res = request.website.sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
         if locked:
             self.dn_cart_lock.release()
-        return [request.website.price_formate(res['amount_untaxed']), res['cart_quantity']]
-
-
+        return [request.website.price_format(res['amount_untaxed']), res['cart_quantity']]
 
     @http.route(['/website_sale_update_cart'], type='json', auth="public", website=True)
     def website_sale_update_cart(self):
         order = request.website.sale_get_order()
         res = {'amount_untaxed': '0.00', 'cart_quantity': '0'}
         if order:
-            res['amount_untaxed'] = request.website.price_formate(order.amount_untaxed)
+            res['amount_untaxed'] = request.website.price_format(order.amount_untaxed)
             res['cart_quantity'] = order.cart_quantity
         return res
-
-class webshop_dermanord(http.Controller):
 
     @http.route(['/dn_shop/search'], type='json', auth="public", website=True)
     def search(self, **kw):
@@ -1666,34 +1684,26 @@ class webshop_dermanord(http.Controller):
                     for i in product_ingredients:
                         ingredients.append([i.id, i.name])
 
-                instock = ''
-                in_stock = True
-                if not product.is_mto_route:
-                    if product.sale_ok:
-                        if product.instock_percent > 100.0:
-                            instock = _('In stock')
-                        elif product.instock_percent >= 50.0 and product.instock_percent <= 100.0:
-                            instock = _('Few in stock')
-                        elif product.instock_percent < 50.0:
-                            instock = _('Shortage')
-                            in_stock = False
-
                 offer = False
                 if product in product.get_campaign_variants(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
                     offer = True
                 elif product.product_tmpl_id in product.product_tmpl_id.get_campaign_tmpl(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
                     offer = True
 
+                recommended_price = product.recommended_price if request.env.lang == 'sv_SE' else product.recommended_price_en
                 if request.env.user.partner_id.property_product_pricelist.id == 3:
                     price = product.price_45
                 elif request.env.user.partner_id.property_product_pricelist.id == 6:
                     price = product.price_20
+                elif request.env.user.partner_id.property_product_pricelist.for_reseller and request.env.user.partner_id.property_product_pricelist.id not in [3, 6]:
+                    price = product.with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
                 else:
-                    price = product.price
+                    price = recommended_price
 
                 value['id'] = product.id
-                value['price'] = request.website.price_formate(price)
-                value['instock'] = instock
+                value['recommended_price'] = request.website.price_format(recommended_price)
+                value['price'] = request.website.price_format(price)
+                value['instock'] = self.in_stock(product.id)[1]
                 value['images'] = images
                 value['facets'] = facets
                 value['ingredients_description'] = ingredients_description
@@ -1706,7 +1716,7 @@ class webshop_dermanord(http.Controller):
                 value['offer_text'] = _('Offer')
                 value['news_text'] = _('News')
                 value['ribbon'] = request.env.ref('website_sale.image_promo') in product.website_style_ids_variant if len(product.website_style_ids_variant) > 0 else (request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids)
-                value['sale_ok'] = True if (product.sale_ok and in_stock and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
+                value['sale_ok'] = True if (product.sale_ok and self.in_stock(product.id)[0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
         return value
 
     @http.route(['/get/product_variant_value'], type='json', auth="public", website=True)

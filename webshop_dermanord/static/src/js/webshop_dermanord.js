@@ -73,6 +73,7 @@ $(document).ready(function(){
 
     // This method updates product images, prices, ingredients, descriptions and facets when a variant has been choosen.
     function update_product_info(event_source, product_id) {
+        var $recommended_price = $('.js_add_cart_variants').find(".oe_recommended_price");
         var $price = $('.js_add_cart_variants').find(".oe_price");
         var $img = $(event_source).closest('tr.js_product, .oe_website_sale').find('span[data-oe-model^="product."][data-oe-type="image"] img:first, img.product_detail_img');
         var $img_big = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_big");
@@ -95,7 +96,8 @@ $(document).ready(function(){
             'product_id': product_id,
         }).done(function(data){
             // update price
-            if (data['price']) {
+            if (data['recommended_price'] && data['price']) {
+                $recommended_price.html(data['recommended_price']);
                 $price.html(data['price']);
             }
             // update images
@@ -678,8 +680,8 @@ function load_products_grid(page){
                     'is_offer_product': data['products'][key]['is_offer_product'],
                     'product_img_src': data['products'][key]['product_img_src'],
                     'price': data['products'][key]['price'],
-                    'price_tax': data['products'][key]['price_tax'],
                     'list_price_tax': data['products'][key]['list_price_tax'],
+                    'two_price': data['products'][key]['two_price'],
                     'currency': data['products'][key]['currency'],
                     'rounding': data['products'][key]['rounding'],
                     'is_reseller': data['products'][key]['is_reseller'],
@@ -718,6 +720,7 @@ function load_products_list(page){
                     'product_name': data['products'][key]['product_name'],
                     'is_news_product': data['products'][key]['is_news_product'],
                     'is_offer_product': data['products'][key]['is_offer_product'],
+                    'sale_ok': data['products'][key]['sale_ok'],
                     'product_name_col': data['products'][key]['product_name_col'],
                     'purchase_phase': data['products'][key]['purchase_phase'],
                     'purchase_phase_start_date': data['products'][key]['purchase_phase_start_date'],

@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution, third party addon
-#    Copyright (C) 2004-2015 Vertel AB (<http://vertel.se>).
+#    Copyright (C) 2018- Vertel AB (<http://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,44 +20,21 @@
 ##############################################################################
 
 {
-    'name': 'Webshop Dermanord',
+    'name': 'Product Pricelist Dermanord',
     'version': '1.0',
-    'category': '',
+    'category': 'product',
     'summary': '',
     'description': """
-Special layout for Dermanord AB webshop
-====================
+Product Pricelist Report
+========================
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': [
-        'product_multi_image_attachment',
-        'website_sale_product_gallery',
-        'website_blog',
-        'product_dermanord',
-        'website_sale_previous_products',
-        'website_sale_terms',
-        'website_sale_comment',
-        'website_product_pcategory',
-        'website_imagemagick',
-        'product_ingredients',
-        'product_facets',
-        'website_bootstrap_select2',
-        'website_fts_product',
-        'website_fts_popular',
-        'product_attribute_value_image',
-        'website_sale_instock',
-        'website_sale_lang_pricelist',
-        'crm_campaign_phase_default_variant',
-        'website_sale_delivery',
-        ],
+    'depends': ['product', 'report'],
     'data': [
-        'webshop_dermanord_view.xml',
-        'website_sale_view.xml',
-        'filter_sort_modal.xml',
-        'webshop_dermanord_data.xml',
+        'report.xml',
+        'pricelist_view.xml',
     ],
-    'qweb': ['static/src/xml/product.xml'],
     'application': False,
 }
 

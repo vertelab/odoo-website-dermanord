@@ -20,20 +20,17 @@
 ##############################################################################
 
 {
-    'name': 'Website Reseller Register Dermanord',
+    'name': 'Facetter Import Dermanord',
     'version': '0.1',
-    'category': 'website',
+    'category': 'unknown',
     'description': """
-Dermanord special reseller register
-===================================
+Facetter Import Dermanord
+=========================
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_reseller_register', 'reseller_dermanord', 'theme_dermanord'],
-    'data': [
-        'data.xml',
-        'website_view.xml',
-    ],
+    'depends': ['product'],
+    'data': [],
     'application': False,
     'installable': True,
 }

@@ -47,6 +47,11 @@ msgid "(rec incl. tax)"
 msgstr "(rek inkl. moms)"
 
 #. module: webshop_dermanord
+#: view:website:webshop_dermanord.cart_delivery
+msgid "Amount (excl. tax):"
+msgstr "Belopp (excl. moms):"
+
+#. module: webshop_dermanord
 #: view:website:website_sale.cart
 msgid "Add to Cart"
 msgstr "Lägg i kundvagnen"
@@ -114,6 +119,13 @@ msgstr "Nyheter & Erbjudanden"
 
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.products_item
+msgid "News"
+msgstr "Nyhet"
+
+#. module: webshop_dermanord
+#. openerp-web
+#: code:addons/webshop_dermanord/static/src/xml/product.xml:25
+#, python-format
 msgid "News"
 msgstr "Nyhet"
 

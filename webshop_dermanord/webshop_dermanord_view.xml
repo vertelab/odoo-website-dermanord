@@ -243,6 +243,34 @@
             </xpath>
         </template>
 
+        <template id="cart_delivery" inherit_id="website_sale_delivery.cart_delivery">
+            <xpath expr="//tr[@id='order_delivery']" position="replace"/>
+            <xpath expr="//tr[@id='order_total_taxes']" position="replace"/>
+            <xpath expr="//tr[@id='order_total']" position="before">
+                <tr width="120" class="text-muted" id="order_total_untaxed">
+                    <td>Amount (excl. tax):</td>
+                    <td class="text-right">
+                        <span t-field="website_sale_order.amount_untaxed" style="white-space: nowrap;" t-field-options="{                         &quot;widget&quot;: &quot;monetary&quot;,                         &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                         &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                     }"/>
+                    </td>
+                </tr>
+                <tr width="120" class="text-muted" id="order_total_taxes">
+                    <td><abbr title="Taxes may be updated after providing shipping address">Taxes:</abbr></td>
+                    <td class="text-right">
+                        <span t-field="website_sale_order.amount_tax" style="white-space: nowrap;" t-field-options="{                         &quot;widget&quot;: &quot;monetary&quot;,                         &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                         &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                     }"/>
+                    </td>
+                </tr>
+                <tr class="text-muted" id="order_delivery">
+                    <td><abbr title="Delivery will be updated after choosing a new delivery method">Delivery:</abbr></td>
+                    <td class="text-right">
+                        <span t-field="website_sale_order.amount_delivery" t-field-options='{
+                            "widget": "monetary",
+                            "display_currency": "website_sale_order.currency_id"
+                        }'/>
+                    </td>
+                </tr>
+            </xpath>
+        </template>
+
         <record id="website_sale_comment.payment" model="ir.ui.view">
             <field name="active" eval="False"/>
         </record>

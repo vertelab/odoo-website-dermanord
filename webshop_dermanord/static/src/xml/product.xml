@@ -58,17 +58,21 @@
                             <b class="text-muted">
                                 <h4>
                                     <t t-if="is_reseller == 'no'">
-                                        <span class="oe_price" t-esc="price_tax" style="white-space: nowrap;" /> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" />
+                                        <span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_price" t-esc="price" style="white-space: nowrap;" />
                                     </t>
 
                                     <t t-if="is_reseller == 'yes'">
-                                        <div>
-                                            <span class="oe_recommended_price" t-esc="list_price_tax"/> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" /> <span style="display: inline;">(rec incl. tax)</span>
-                                        </div>
-                                        <div>
-                                            <b class="oe_price"
-                                            t-esc="price"/> <span itemprop="priceCurrency" t-esc="currency" class='decimal_precision' t-att-data-precision="rounding" /> <span style="display: inline;">(your excl. tax)</span>
-                                        </div>
+                                        <t t-if="two_price">
+                                            <div>
+                                                <span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_recommended_price" t-esc="list_price_tax" style="display: inline;"/> <span style="display: inline;">(rec incl. tax)</span>
+                                            </div>
+                                            <div>
+                                                <b><span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_price" t-esc="price"/></b> <span style="display: inline;">(your excl. tax)</span>
+                                            </div>
+                                        </t>
+                                        <t t-if="!two_price">
+                                            <span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_price" t-esc="price" style="white-space: nowrap;" />
+                                        </t>
                                     </t>
                                 </h4>
                             </b>
@@ -135,7 +139,7 @@
                     (<span t-esc="recommended_price" style="white-space: nowrap;"/> <span t-esc="currency" style="white-space: nowrap;"/>)
                 </h5>
             </td>
-            <td>
+            <td t-if="sale_ok">
 <!--
                 <h5 class="col-md-6 col-sm-6 col-xs-12 list_product_name">
 
@@ -169,6 +173,7 @@
                     </form>
                 </div>
             </td>
+            <td t-if="!sale_ok"/>
         </tr>
     </t>
 
