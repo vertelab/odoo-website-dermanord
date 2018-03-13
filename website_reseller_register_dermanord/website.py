@@ -60,3 +60,7 @@ class reseller_register(reseller_register):
         value['help_company_zip'] = _('')
         value['help_company_city'] = _('')
         return value
+
+    @http.route(['/reseller_register/information'], type='http', auth='public', website=True)
+    def reseller_register_info(self, **post):
+        return request.website.render('website_reseller_register_dermanord.reseller_register_info', {})

@@ -48,7 +48,7 @@
         </template>
 
         <template id="resellers" name="Resellers">
-            <t t-call="website.layout">
+            <t t-call="theme_dermanord.submenu_dermanord">
                 <div id="wrap">
                     <div class="oe_structure"/>
                     <div class="col-md-12 col-sm-12 col-xs-12 dn_header_container" style="padding: 0px; background-color: #000;">

@@ -181,6 +181,11 @@ class ThemeDermanord(http.Controller):
         return request.registry['website']._image(request.cr, request.uid, 'res.company', user.company_id.id, 'logo',
                                                   response, max_width=1024, max_height=None, )
 
+    @http.route(['/reseller_register'], type='http', auth='public', website=True)
+    def reseller_register(self, **post):
+        return request.website.render('theme_dermanord.reseller_register', {})
+
+
 class ResCompany(models.Model):
     _inherit = 'res.company'
 

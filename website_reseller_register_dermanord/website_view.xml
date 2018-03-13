@@ -2,6 +2,9 @@
 <openerp>
     <data>
         <template id="register_form" inherit_id="website_reseller_register.register_form" name="Website Reseller Register Form Dermanord">
+            <xpath expr="//t[@t-call='website.layout']" position="attributes">
+                <attribute name="t-call">theme_dermanord.submenu_dermanord</attribute>
+            </xpath>
             <xpath expr="//div[@id='company_name']" position="after">
                 <h4 id="title_salon">
                     <strong>Salon Information</strong>
@@ -49,6 +52,18 @@
                 <div class="checkbox">
                     <label><input type="checkbox" name="company_is_reseller" t-att="{'checked': 'checked'} if issue.partner_id.is_reseller else {}"/>Would you like your salon to be shown in your website?</label>
                 </div>
+            </xpath>
+        </template>
+        <template id="reseller_register_info" name="Reseller Register Information">
+            <t t-call="theme_dermanord.submenu_dermanord">
+                <div id="wrap" class="oe_structure oe_empty">
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </template>
+        <template id="contact_form" inherit_id="website_reseller_register.contact_form" name="Website Reseller Register Contact Form Dermanord">
+            <xpath expr="//t[@t-call='website.layout']" position="attributes">
+                <attribute name="t-call">theme_dermanord.submenu_dermanord</attribute>
             </xpath>
         </template>
     </data>
