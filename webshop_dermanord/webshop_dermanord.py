@@ -194,7 +194,7 @@ class product_template(models.Model):
         placeholder = '/web/static/src/img/placeholder.png'
         for p in self:
             try:
-                variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'image_main_id', 'website_style_ids_variant'])[0]
+                variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'v_image_main_id', 'website_style_ids_variant'])[0]
                 attribute_value_ids = self.env['product.attribute.value'].browse(variant['attribute_value_ids'])
                 website_style_ids_variant = self.env['product.style'].browse(variant['website_style_ids_variant']).read(['html_class'])
                 if variant:
@@ -206,7 +206,7 @@ class product_template(models.Model):
                     p.dv_default_code = variant['default_code'] or ''
                     p.dv_description_sale = variant['description_sale'] or ''
                     p.dv_name = p.name if p.use_tmpl_name else ', '.join([p.name] + attribute_value_ids.mapped('name'))
-                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['image_main_id'][0], 'snippet_dermanord.img_product') if variant['image_main_id'] else placeholder
+                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['v_image_main_id'][0], 'snippet_dermanord.img_product') if variant['v_image_main_id'] else placeholder
                     #~ p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
                     p.dv_ribbon = website_style_ids_variant['html_class'] if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
             except:
@@ -1244,8 +1244,11 @@ class WebsiteSale(website_sale):
             elif request.env.user.partner_id.property_product_pricelist.id == 6:
                 price = product['dv_price_20']
                 two_price = True
-            else:
+            elif request.env.user.partner_id.property_product_pricelist.id not in [3, 6] and request.env.user.partner_id.property_product_pricelist.for_reseller:
                 price = request.env['product.product'].browse(product['dv_id']).with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
+                two_price = True
+            else:
+                price = product['dv_recommended_price'] if request.env.user.lang == 'sv_SE' else product['dv_recommended_price_en']
 
             products_list.append({
                 'product_href': '/dn_shop/product/%s' %product['id'],
@@ -1361,8 +1364,10 @@ class WebsiteSale(website_sale):
             elif request.env.user.partner_id.property_product_pricelist.id == 6:
                 price = p['price_20']
                 #~ tax = p['tax_20']
-            else:
+            elif request.env.user.partner_id.property_product_pricelist.id not in [3, 6] and request.env.user.partner_id.property_product_pricelist.for_reseller:
                 price = request.env['product.product'].browse(p['id']).with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
+            else:
+                price = p['recommended_price'] if request.env.user.lang == 'sv_SE' else p['recommended_price_en']
                 #tax = sum(map(lambda x: x.get('amount', 0.0), request.env['product.product'].browse(p['id']).taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
 
             products_list.append({
@@ -1685,14 +1690,18 @@ class WebsiteSale(website_sale):
                 elif product.product_tmpl_id in product.product_tmpl_id.get_campaign_tmpl(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
                     offer = True
 
+                recommended_price = product.recommended_price if request.env.lang == 'sv_SE' else product.recommended_price_en
                 if request.env.user.partner_id.property_product_pricelist.id == 3:
                     price = product.price_45
                 elif request.env.user.partner_id.property_product_pricelist.id == 6:
                     price = product.price_20
+                elif request.env.user.partner_id.property_product_pricelist.for_reseller and request.env.user.partner_id.property_product_pricelist.id not in [3, 6]:
+                    price = product.with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
                 else:
-                    price = product.price
+                    price = recommended_price
 
                 value['id'] = product.id
+                value['recommended_price'] = request.website.price_format(recommended_price)
                 value['price'] = request.website.price_format(price)
                 value['instock'] = self.in_stock(product.id)[1]
                 value['images'] = images

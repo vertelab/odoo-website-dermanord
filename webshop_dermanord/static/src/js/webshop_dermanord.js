@@ -73,6 +73,7 @@ $(document).ready(function(){
 
     // This method updates product images, prices, ingredients, descriptions and facets when a variant has been choosen.
     function update_product_info(event_source, product_id) {
+        var $recommended_price = $('.js_add_cart_variants').find(".oe_recommended_price");
         var $price = $('.js_add_cart_variants').find(".oe_price");
         var $img = $(event_source).closest('tr.js_product, .oe_website_sale').find('span[data-oe-model^="product."][data-oe-type="image"] img:first, img.product_detail_img');
         var $img_big = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_big");
@@ -95,7 +96,8 @@ $(document).ready(function(){
             'product_id': product_id,
         }).done(function(data){
             // update price
-            if (data['price']) {
+            if (data['recommended_price'] && data['price']) {
+                $recommended_price.html(data['recommended_price']);
                 $price.html(data['price']);
             }
             // update images
