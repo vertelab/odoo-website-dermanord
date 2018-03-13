@@ -67,13 +67,17 @@ class DermanordImport(models.TransientModel):
                     contact = None
                 # Check kundnummer
                     partner = self.env['res.partner'].search([('customer_no','=',row[0].strip())])
+                    if len(partner) > 0:
+                        partner = partner[0].commercial_partner_id
                 # Check given/family name
                     if partner:
-                        contact = partner.child_ids.filtered(lambda c: c.name.lower() in '%s %s'.lower() % (row[1].strip(),row[2].strip()) or c.email.strip().lower() == row[3].strip().lower())
+                        contact = partner.child_ids.filtered(lambda c: c.name.lower() in ('%s %s' % (row[1].strip(),row[2].strip())).lower() or c.email.strip().lower() if c.email else '' == row[3].strip().lower())
                     else:
                         partner = self.env['res.partner'].search(['|',('name','ilike','%s %s' % (row[1].strip(),row[2].strip())),('email','ilike',row[3].strip())])
+                        if len(partner) > 0:
+                            partner = partner[0].commercial_partner_id
                         if partner:
-                            contact = partner.child_ids.filtered(lambda c: c.name.lower() in '%s %s'.lower() % (row[1].strip(),row[2].strip()) or c.email.strip().lower() == row[3].strip().lower())
+                            contact = partner.child_ids.filtered(lambda c: c.name.lower() in ('%s %s' % (row[1].strip(),row[2].strip())).lower() or  c.email.strip().lower() if c.email else '' == row[3].strip().lower())
                     if contact:
                         pass
                         # If found res.partner (check res.users to) send invitation mail 
@@ -83,9 +87,9 @@ class DermanordImport(models.TransientModel):
                             'name': '%s %s' % (row[1].strip(),row[2].strip()),
                             'email': row[3].strip(),
                             'login': row[3].strip(),
-                            'groups_id': [(6,0,[])]
+                            'groups_id': [(6,0,[242,283])],
+                            'parent_id': partner.id,
                         })
-                        contact.parent_id.id = partner.id
                         #~ contact.action_reset_password()
                     else:
                         contact = None
