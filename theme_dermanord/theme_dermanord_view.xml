@@ -414,7 +414,7 @@
                                             </h5>
                                         </a>
                                     </li>
-                                    <li class="hidden-lg hidden-md hidden-sm">
+                                    <li t-att-class="'hidden-lg hidden-md hidden-sm %s' %('active' if submenu == current_menu else '')">
                                         <a t-att-href="submenu.url" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
                                             <h5 class="dn_uppercase">
                                                 <t t-esc="submenu.name"/>
