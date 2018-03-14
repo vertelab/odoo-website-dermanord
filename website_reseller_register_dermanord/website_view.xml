@@ -21,7 +21,21 @@
                                     </h5>
                                 </a>
                             </li>
+                            <li t-att-class="'hidden-lg hidden-md hidden-sm %s' %('active' if current_menu.url == '/reseller_register/information' else '')">
+                                <a href="/reseller_register/information" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
+                                    <h5 class="dn_uppercase">
+                                        Information
+                                    </h5>
+                                </a>
+                            </li>
                             <li t-att-class="'hidden-xs %s' %('active' if current_menu.url != '/reseller_register/information' else '')">
+                                <a href="/reseller_register/new" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
+                                    <h5 class="dn_uppercase">
+                                        Registration
+                                    </h5>
+                                </a>
+                            </li>
+                            <li t-att-class="'hidden-lg hidden-md hidden-sm %s' %('active' if current_menu.url != '/reseller_register/information' else '')">
                                 <a href="/reseller_register/new" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
                                     <h5 class="dn_uppercase">
                                         Registration
