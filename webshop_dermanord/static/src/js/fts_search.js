@@ -17,7 +17,7 @@ $(document).ready(function(){
                         content += c;
                     }
                     else if (data[key]['model_record'] == 'product.product'){
-                        var c = '<li><a href="/dn_shop/product/' + data[key]['product_tmpl_id'] + '">' + data[key]['name'] + '</a></li>';
+                        var c = '<li><a href="/dn_shop/variant/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
                         content += c;
                     }
                     else if (data[key]['model_record'] == 'product.public.category'){
