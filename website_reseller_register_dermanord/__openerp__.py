@@ -31,7 +31,6 @@ Dermanord special reseller register
     'website': 'http://www.vertel.se',
     'depends': ['website_reseller_register', 'reseller_dermanord', 'theme_dermanord'],
     'data': [
-        'data.xml',
         'website_view.xml',
     ],
     'application': False,
