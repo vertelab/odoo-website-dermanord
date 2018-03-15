@@ -28,6 +28,7 @@ Dermanord special reseller register
 ===================================
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['website_reseller_register', 'reseller_dermanord', 'theme_dermanord'],
     'data': [

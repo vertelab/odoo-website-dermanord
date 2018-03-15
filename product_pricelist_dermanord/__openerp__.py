@@ -29,6 +29,7 @@ Product Pricelist Report
 ========================
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['product', 'report'],
     'data': [

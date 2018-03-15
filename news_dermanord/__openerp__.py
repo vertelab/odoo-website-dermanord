@@ -29,6 +29,7 @@ News page for Dermanord
 ====================
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['website_blog_dermanord','theme_dermanord'],
     'data': [
