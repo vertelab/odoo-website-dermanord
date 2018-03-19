@@ -112,9 +112,6 @@
                                     </tr>
                                     <tr t-foreach="c['products']" t-as="p">
                                         <td class="dn_uppcase">
-                                            <t t-if="p.get('code')">
-                                                [<span t-esc="p['code']"/>]
-                                            </t>
                                             <span t-esc="p['name']"/>
                                         </td>
                                         <td t-if="p['col2'] != ''">

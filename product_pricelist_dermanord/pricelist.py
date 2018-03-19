@@ -46,19 +46,24 @@ class product_pricelist_dermanord(models.TransientModel):
             'currency': self.pricelist_id_one.currency_id.name,
             'categories': [],
         }
-        for c in self.env['product.category'].search([], order='parent_id, name'):
-            products = self.env['product.product'].search([('categ_id', '=', c.id), ('sale_ok', '=', True)], order='default_code')
-            if len(products) > 0:
-                data['categories'].append({
-                    'name': c.display_name,
-                    'products': [{
-                        'name': p.name,
-                        'code': p.default_code,
-                        'col1': p.get_price_by_pricelist(self.pricelist_id_one, self.date, self.fiscal_position_id),
-                        'col2': p.get_price_by_pricelist(self.pricelist_id_two, self.date, self.fiscal_position_id) if self.pricelist_id_two else '',
-                    } for p in products]
-                })
+        all_products = self.env['product.product'].search([('id', 'in', self._context.get('active_ids', [])), ('sale_ok', '=', True)], order='default_code')
+        for c in self.env['product.category'].search([('id', 'in', all_products.mapped('categ_id').mapped('id'))], order='parent_id, name'):
+            products = all_products.filtered(lambda p: p.categ_id == c)
+            data['categories'].append({
+                'name': self.categ_name_format(c.display_name, c.name_report),
+                'products': [{
+                    'name': p.display_name,
+                    'col1': p.get_price_by_pricelist(self.pricelist_id_one, self.date, self.fiscal_position_id),
+                    'col2': p.get_price_by_pricelist(self.pricelist_id_two, self.date, self.fiscal_position_id) if self.pricelist_id_two else '',
+                } for p in products]
+            })
         return self.pool['report'].get_action(self._cr, self._uid, [], 'product_pricelist_dermanord.report_pricelist', data=data, context=self._context)
+
+    def categ_name_format(self, display_name, name_report):
+        if '/' in display_name:
+            return '/'.join(display_name.split('/')[:-1]+[' %s' %name_report]) if name_report else display_name
+        else:
+            return name_report if name_report else display_name
 
 
 class product_product(models.Model):
@@ -73,6 +78,12 @@ class product_product(models.Model):
         return "%.2f" %(price_rule[self.id][0] + taxes)
 
 
+class product_category(models.Model):
+    _inherit = 'product.category'
+
+    name_report = fields.Char(string='Name for Report', translate=True)
+
+
 class ReportPricelist(models.AbstractModel):
     _name = 'report.product_pricelist_dermanord.report_pricelist'
 
@@ -84,4 +95,5 @@ class ReportPricelist(models.AbstractModel):
             'docs': self,
             'data': data,
         }
-        return report_obj.render('product_pricelist_dermanord.report_pricelist', docargs)
+        res = report_obj.render('product_pricelist_dermanord.report_pricelist', docargs)
+        return res
