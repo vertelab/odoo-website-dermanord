@@ -97,8 +97,8 @@
                                                         <t t-if="visit.zip"><span t-esc="visit.zip"/></t> <t t-if="visit.city"><span t-esc="visit.city"/><br/></t>
                                                         <t t-if="reseller.country_id"><span t-esc="reseller.country_id.name"/></t>
                                                     </p>
-                                                    <t t-if="reseller.email"><p style="text-decoration: underline;"><a t-att-href="'mailto:%s' %reseller.email"><span t-esc="reseller.email"/></a></p></t>
-                                                    <t t-if="reseller.phone"><p><a t-att-href="'tel:%s' %reseller.phone"><span t-esc="reseller.phone"/></a></p></t>
+                                                    <t t-if="visit.email"><p style="text-decoration: underline;"><a t-att-href="'mailto:%s' %visit.email"><span t-esc="visit.email"/></a></p></t>
+                                                    <t t-if="visit.phone"><p><a t-att-href="'tel:%s' %visit.phone"><span t-esc="visit.phone"/></a></p></t>
                                                     <t t-if="reseller.website"><p style="text-decoration: underline;"><a t-att-href="reseller.website"><span t-esc="reseller.website.replace('http://', '')"/></a></p></t>
                                                 </div>
                                             </t>

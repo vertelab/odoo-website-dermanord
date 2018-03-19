@@ -156,7 +156,10 @@ class Main(http.Controller):
         if not partner:
             word = post.get('search', False)
             if word and word != '':
-                resellers = request.env['res.partner'].sudo().search(['&', ('is_reseller', '=', True), '|', ('name', 'ilike', word), '|', ('brand_name', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), '|', ('country_id.name', 'ilike', word), ('child_category_ids.name', 'ilike', word)])
+                visit_ids = [p['parent_id'][0] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit')], ['parent_id'])]
+                resellers = request.env['res.partner'].sudo().search([('id', 'not in', visit_ids), ('is_reseller', '=', True), '|', ('name', 'ilike', word), '|', ('brand_name', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), '|', ('country_id.name', 'ilike', word), ('child_category_ids.name', 'ilike', word)])
+                visits = request.env['res.partner'].sudo().search([('type', '=', 'visit'), '|', ('name', 'ilike', word), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)])
+                resellers |= visits.mapped('parent_id')
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
             else:
                 closest_ids = request.env['res.partner'].geoip_search('position', request.httprequest.remote_addr, 10)
