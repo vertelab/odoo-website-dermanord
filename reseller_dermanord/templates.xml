@@ -85,7 +85,10 @@
                                         <t t-if="resellers">
                                             <t t-foreach="resellers" t-as="reseller">
                                                 <div class="reseller_cell grid-item" style="width: 33.333%;">
-                                                    <t t-set="visit" t-value="request.env['res.partner'].browse(reseller.address_get(adr_pref=['visit']).get('visit'))"/>
+                                                    <t t-set="visit" t-value="reseller.child_ids.filtered(lambda c: c.type == 'visit') if reseller.is_company else None"/>
+                                                    <t t-if="not visit">
+                                                        <t t-set="visit" t-value="reseller.commercial_partner_id"/>
+                                                    </t>
                                                     <a t-att-href="'/reseller/%s' %reseller.id"><h4><strong><t t-esc="reseller.brand_name if reseller.brand_name else reseller.name"/></strong></h4></a>
                                                     <!--<p class="text-muted"><t t-esc="','.join(reseller.category_id.mapped('name'))"/></p>-->
                                                     <p>
@@ -143,7 +146,10 @@
                             </div>
                             <div class="reseller_cell col-md-4 col-sm-4 col-xs-12 mb16">
                                 <h1><t t-esc="reseller.brand_name if reseller.brand_name else reseller.name"/></h1>
-                                <t t-set="visit" t-value="request.env['res.partner'].browse(reseller.address_get(adr_pref=['visit']).get('visit'))"/>
+                                <t t-set="visit" t-value="reseller.child_ids.filtered(lambda c: c.type == 'visit') if reseller.is_company else None"/>
+                                <t t-if="not visit">
+                                    <t t-set="visit" t-value="reseller.commercial_partner_id"/>
+                                </t>
                                 <!-- Google maps -->
                                 <t t-call="website_partner_google_maps.google_maps">
                                     <t t-set="div_class" t-value="'mt16'"/>
