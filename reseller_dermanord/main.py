@@ -261,6 +261,16 @@ class Main(http.Controller):
 
 class website_sale_home(website_sale_home):
 
+    def get_address_type(self):
+        res = super(website_sale_home, self).get_address_type()
+        res.append('visit')
+        return res
+
+    def get_children_by_address_type(self, company):
+        res = super(website_sale_home, self).get_children_by_address_type(company)
+        res.update({'visit': company.child_ids.filtered(lambda c: c.type == 'visit')[0] if company.child_ids.filtered(lambda c: c.type == 'visit') else None})
+        return res
+
     @http.route(['/home/<model("res.users"):home_user>/info_update',], type='http', auth="user", website=True)
     def info_update(self, home_user=None, **post):
         # update data for main partner
