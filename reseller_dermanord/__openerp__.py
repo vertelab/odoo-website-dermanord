@@ -32,6 +32,7 @@ Resellers Page
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': [
+        'partner_token',
         'website_partner',
         'website_partner_google_maps',
         'website_masonry',

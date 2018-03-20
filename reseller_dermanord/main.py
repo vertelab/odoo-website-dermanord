@@ -267,8 +267,8 @@ class website_sale_home(website_sale_home):
         self.validate_user(home_user)
         if home_user == request.env.user:
             home_user = home_user.sudo()
-        home_user.email = post.get('email')
-        home_user.login = post.get('login')
+        #~ home_user.email = post.get('email')
+        #~ home_user.login = post.get('login')
         if post.get('confirm_password'):
             home_user.password = post.get('password')
         if home_user.partner_id.commercial_partner_id.is_reseller:
@@ -342,7 +342,7 @@ class website_sale_home(website_sale_home):
                 sunday.break_stop = self.get_time_float(post.get('sunday_break_stop') or '0.0')
                 sunday.close = True if post.get('sunday_close') == '1' else False
 
-
+        self.update_info(home_user, post)
         return werkzeug.utils.redirect("/home/%s" % home_user.id)
 
     def get_time_float(self, time):

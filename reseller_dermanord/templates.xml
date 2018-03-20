@@ -206,7 +206,7 @@
         </template>
 
         <template id="home_page" inherit_id="website_sale_home.home_page" name="Home Page Inherited Reseller Dermanord">
-            <xpath expr="//form/div[@class='form-group'][last()]" position="before">
+            <xpath expr="//t[@t-call='website_sale_home.company_info_form']" position="before">
                 <t t-if="home_user.partner_id.commercial_partner_id.is_reseller">
                     <div class="form-group">
                         <label class="col-md-3 col-sm-4 control-label" for="brand_name">Brand Name</label>
