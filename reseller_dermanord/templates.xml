@@ -223,11 +223,17 @@
                     <div class="form-group">
                         <label class="col-md-3 col-sm-4 control-label" for="top_image">Top Image</label>
                         <div class="col-md-7 col-sm-8">
-                            <input id="top_image" type="file" name="top_image" accept="image/*" capture="camera"/>
                             <t t-if="home_user.partner_id.commercial_partner_id.top_image"><img t-att-src="'/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image' %home_user.partner_id.commercial_partner_id.id" style="max-width: 200px;"/></t>
+                            <input id="top_image" type="file" name="top_image" accept="image/*" capture="camera"/>
                         </div>
                     </div>
                 </t>
+            </xpath>
+        </template>
+
+        <template id="contact_form" inherit_id="website_sale_home.contact_form" name="Contact Form Inherited Reseller Dermanord">
+            <xpath expr="//img[@id='contact_img']" position="replace">
+                <img id="contact_img" t-att-src="'/imagefield/res.partner/image/%s/ref/reseller_dermanord.reseller_contact_img' %contact.id" style="max-width: 200px;"/>
             </xpath>
         </template>
 
