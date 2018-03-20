@@ -227,87 +227,97 @@
                             <t t-if="home_user.partner_id.commercial_partner_id.top_image"><img t-att-src="'/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image' %home_user.partner_id.commercial_partner_id.id" style="max-width: 200px;"/></t>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-md-3 col-sm-4 control-label" for="top_image">Opening Hours</label>
-                        <div class="col-md-7 col-sm-8">
-                            <table class="table table-striped">
-                                <thead>
-                                    <th>Weekday</th>
-                                    <th>Opening Time</th>
-                                    <th>Closing Time</th>
-                                    <th>Lunch Start</th>
-                                    <th>Lunch End</th>
-                                    <th>Closed</th>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <t t-set="monday" t-value="home_user.partner_id.commercial_partner_id.opening_hours_ids.filtered(lambda o: o.dayofweek == 'monday')"/>
-                                        <td>Monday:</td>
-                                        <td><input type="number" class="form-control" name="monday_open_time" step="0.01" t-att-value="website.get_float_time(monday.open_time)" /></td>
-                                        <td><input type="number" class="form-control" name="monday_close_time" step="0.01" t-att-value="website.get_float_time(monday.close_time)" /></td>
-                                        <td><input type="number" class="form-control" name="monday_break_start" step="0.01" t-att-value="website.get_float_time(monday.break_start)" /></td>
-                                        <td><input type="number" class="form-control" name="monday_break_stop" step="0.01" t-att-value="website.get_float_time(monday.break_stop)" /></td>
-                                        <td><input type="checkbox" name="monday_close" value="1" t-att="{'checked': 1} if monday.close else {}"/></td>
-                                    </tr>
-                                    <tr>
-                                        <t t-set="tuesday" t-value="home_user.partner_id.commercial_partner_id.opening_hours_ids.filtered(lambda o: o.dayofweek == 'tuesday')"/>
-                                        <td>Tuesday:</td>
-                                        <td><input type="number" class="form-control" name="tuesday_open_time" step="0.01" t-att-value="website.get_float_time(tuesday.open_time)" /></td>
-                                        <td><input type="number" class="form-control" name="tuesday_close_time" step="0.01" t-att-value="website.get_float_time(tuesday.close_time)" /></td>
-                                        <td><input type="number" class="form-control" name="tuesday_break_start" step="0.01" t-att-value="website.get_float_time(tuesday.break_start)" /></td>
-                                        <td><input type="number" class="form-control" name="tuesday_break_stop" step="0.01" t-att-value="website.get_float_time(tuesday.break_stop)" /></td>
-                                        <td><input type="checkbox" name="tuesday_close" value="1" t-att="{'checked': 1} if tuesday.close else {}"/></td>
-                                    </tr>
-                                    <tr>
-                                        <t t-set="wednesday" t-value="home_user.partner_id.commercial_partner_id.opening_hours_ids.filtered(lambda o: o.dayofweek == 'wednesday')"/>
-                                        <td>Wednesday:</td>
-                                        <td><input type="number" class="form-control" name="wednesday_open_time" step="0.01" t-att-value="website.get_float_time(wednesday.open_time)" /></td>
-                                        <td><input type="number" class="form-control" name="wednesday_close_time" step="0.01" t-att-value="website.get_float_time(wednesday.close_time)" /></td>
-                                        <td><input type="number" class="form-control" name="wednesday_break_start" step="0.01" t-att-value="website.get_float_time(wednesday.break_start)" /></td>
-                                        <td><input type="number" class="form-control" name="wednesday_break_stop" step="0.01" t-att-value="website.get_float_time(wednesday.break_stop)" /></td>
-                                        <td><input type="checkbox" name="wednesday_close" value="1" t-att="{'checked': 1} if wednesday.close else {}"/></td>
-                                    </tr>
-                                    <tr>
-                                        <t t-set="thursday" t-value="home_user.partner_id.commercial_partner_id.opening_hours_ids.filtered(lambda o: o.dayofweek == 'thursday')"/>
-                                        <td>Thursday:</td>
-                                        <td><input type="number" class="form-control" name="thursday_open_time" step="0.01" t-att-value="website.get_float_time(thursday.open_time)" /></td>
-                                        <td><input type="number" class="form-control" name="thursday_close_time" step="0.01" t-att-value="website.get_float_time(thursday.close_time)" /></td>
-                                        <td><input type="number" class="form-control" name="thursday_break_start" step="0.01" t-att-value="website.get_float_time(thursday.break_start)" /></td>
-                                        <td><input type="number" class="form-control" name="thursday_break_stop" step="0.01" t-att-value="website.get_float_time(thursday.break_stop)" /></td>
-                                        <td><input type="checkbox" name="thursday_close" value="1" t-att="{'checked': 1} if thursday.close else {}"/></td>
-                                    </tr>
-                                    <tr>
-                                        <t t-set="friday" t-value="home_user.partner_id.commercial_partner_id.opening_hours_ids.filtered(lambda o: o.dayofweek == 'friday')"/>
-                                        <td>Friday:</td>
-                                        <td><input type="number" class="form-control" name="friday_open_time" step="0.01" t-att-value="website.get_float_time(friday.open_time)" /></td>
-                                        <td><input type="number" class="form-control" name="friday_close_time" step="0.01" t-att-value="website.get_float_time(friday.close_time)" /></td>
-                                        <td><input type="number" class="form-control" name="friday_break_start" step="0.01" t-att-value="website.get_float_time(friday.break_start)" /></td>
-                                        <td><input type="number" class="form-control" name="friday_break_stop" step="0.01" t-att-value="website.get_float_time(friday.break_stop)" /></td>
-                                        <td><input type="checkbox" name="friday_close" value="1" t-att="{'checked': 1} if friday.close else {}"/></td>
-                                    </tr>
-                                    <tr>
-                                        <t t-set="saturday" t-value="home_user.partner_id.commercial_partner_id.opening_hours_ids.filtered(lambda o: o.dayofweek == 'saturday')"/>
-                                        <td>Saturday:</td>
-                                        <td><input type="number" class="form-control" name="saturday_open_time" step="0.01" t-att-value="website.get_float_time(saturday.open_time)" /></td>
-                                        <td><input type="number" class="form-control" name="saturday_close_time" step="0.01" t-att-value="website.get_float_time(saturday.close_time)" /></td>
-                                        <td><input type="number" class="form-control" name="saturday_break_start" step="0.01" t-att-value="website.get_float_time(saturday.break_start)" /></td>
-                                        <td><input type="number" class="form-control" name="saturday_break_stop" step="0.01" t-att-value="website.get_float_time(saturday.break_stop)" /></td>
-                                        <td><input type="checkbox" name="saturday_close" value="1" t-att="{'checked': 1} if saturday.close else {}"/></td>
-                                    </tr>
-                                    <tr>
-                                        <t t-set="sunday" t-value="home_user.partner_id.commercial_partner_id.opening_hours_ids.filtered(lambda o: o.dayofweek == 'sunday')"/>
-                                        <td>Sunday:</td>
-                                        <td><input type="number" class="form-control" name="sunday_open_time" step="0.01" t-att-value="website.get_float_time(sunday.open_time)" /></td>
-                                        <td><input type="number" class="form-control" name="sunday_close_time" step="0.01" t-att-value="website.get_float_time(sunday.close_time)" /></td>
-                                        <td><input type="number" class="form-control" name="sunday_break_start" step="0.01" t-att-value="website.get_float_time(sunday.break_start)" /></td>
-                                        <td><input type="number" class="form-control" name="sunday_break_stop" step="0.01" t-att-value="website.get_float_time(sunday.break_stop)" /></td>
-                                        <td><input type="checkbox" name="sunday_close" value="1" t-att="{'checked': 1} if sunday.close else {}"/></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </t>
+            </xpath>
+        </template>
+
+        <template id="company_info_form" inherit_id="website_sale_home.company_info_form" name="Company Info Form Inherited Reseller Dermanord">
+            <xpath expr="//ul[@class='nav nav-tabs']" position="inside">
+                <li class="">
+                    <a data-toggle="tab" href="#opening_hours" class="hidden-xs">Opening Hours</a>
+                    <a data-toggle="tab" href="#opening_hours" class="hidden-lg hidden-md hidden-sm">
+                        <i class="fa fa-clock-o" />
+                    </a>
+                </li>
+            </xpath>
+            <xpath expr="//div[@id='contact']" position="after">
+                <div id="opening_hours" class="tab-pane fade">
+                    <table class="table table-striped">
+                        <thead>
+                            <th>Weekday</th>
+                            <th>Opening Time</th>
+                            <th>Closing Time</th>
+                            <th>Lunch Start</th>
+                            <th>Lunch End</th>
+                            <th>Closed</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <t t-set="monday" t-value="home_user.partner_id.commercial_partner_id.opening_hours_ids.filtered(lambda o: o.dayofweek == 'monday')"/>
+                                <td>Monday:</td>
+                                <td><input type="number" class="form-control" name="monday_open_time" step="0.01" t-att-value="website.get_float_time(monday.open_time)" /></td>
+                                <td><input type="number" class="form-control" name="monday_close_time" step="0.01" t-att-value="website.get_float_time(monday.close_time)" /></td>
+                                <td><input type="number" class="form-control" name="monday_break_start" step="0.01" t-att-value="website.get_float_time(monday.break_start)" /></td>
+                                <td><input type="number" class="form-control" name="monday_break_stop" step="0.01" t-att-value="website.get_float_time(monday.break_stop)" /></td>
+                                <td><input type="checkbox" name="monday_close" value="1" t-att="{'checked': 1} if monday.close else {}"/></td>
+                            </tr>
+                            <tr>
+                                <t t-set="tuesday" t-value="home_user.partner_id.commercial_partner_id.opening_hours_ids.filtered(lambda o: o.dayofweek == 'tuesday')"/>
+                                <td>Tuesday:</td>
+                                <td><input type="number" class="form-control" name="tuesday_open_time" step="0.01" t-att-value="website.get_float_time(tuesday.open_time)" /></td>
+                                <td><input type="number" class="form-control" name="tuesday_close_time" step="0.01" t-att-value="website.get_float_time(tuesday.close_time)" /></td>
+                                <td><input type="number" class="form-control" name="tuesday_break_start" step="0.01" t-att-value="website.get_float_time(tuesday.break_start)" /></td>
+                                <td><input type="number" class="form-control" name="tuesday_break_stop" step="0.01" t-att-value="website.get_float_time(tuesday.break_stop)" /></td>
+                                <td><input type="checkbox" name="tuesday_close" value="1" t-att="{'checked': 1} if tuesday.close else {}"/></td>
+                            </tr>
+                            <tr>
+                                <t t-set="wednesday" t-value="home_user.partner_id.commercial_partner_id.opening_hours_ids.filtered(lambda o: o.dayofweek == 'wednesday')"/>
+                                <td>Wednesday:</td>
+                                <td><input type="number" class="form-control" name="wednesday_open_time" step="0.01" t-att-value="website.get_float_time(wednesday.open_time)" /></td>
+                                <td><input type="number" class="form-control" name="wednesday_close_time" step="0.01" t-att-value="website.get_float_time(wednesday.close_time)" /></td>
+                                <td><input type="number" class="form-control" name="wednesday_break_start" step="0.01" t-att-value="website.get_float_time(wednesday.break_start)" /></td>
+                                <td><input type="number" class="form-control" name="wednesday_break_stop" step="0.01" t-att-value="website.get_float_time(wednesday.break_stop)" /></td>
+                                <td><input type="checkbox" name="wednesday_close" value="1" t-att="{'checked': 1} if wednesday.close else {}"/></td>
+                            </tr>
+                            <tr>
+                                <t t-set="thursday" t-value="home_user.partner_id.commercial_partner_id.opening_hours_ids.filtered(lambda o: o.dayofweek == 'thursday')"/>
+                                <td>Thursday:</td>
+                                <td><input type="number" class="form-control" name="thursday_open_time" step="0.01" t-att-value="website.get_float_time(thursday.open_time)" /></td>
+                                <td><input type="number" class="form-control" name="thursday_close_time" step="0.01" t-att-value="website.get_float_time(thursday.close_time)" /></td>
+                                <td><input type="number" class="form-control" name="thursday_break_start" step="0.01" t-att-value="website.get_float_time(thursday.break_start)" /></td>
+                                <td><input type="number" class="form-control" name="thursday_break_stop" step="0.01" t-att-value="website.get_float_time(thursday.break_stop)" /></td>
+                                <td><input type="checkbox" name="thursday_close" value="1" t-att="{'checked': 1} if thursday.close else {}"/></td>
+                            </tr>
+                            <tr>
+                                <t t-set="friday" t-value="home_user.partner_id.commercial_partner_id.opening_hours_ids.filtered(lambda o: o.dayofweek == 'friday')"/>
+                                <td>Friday:</td>
+                                <td><input type="number" class="form-control" name="friday_open_time" step="0.01" t-att-value="website.get_float_time(friday.open_time)" /></td>
+                                <td><input type="number" class="form-control" name="friday_close_time" step="0.01" t-att-value="website.get_float_time(friday.close_time)" /></td>
+                                <td><input type="number" class="form-control" name="friday_break_start" step="0.01" t-att-value="website.get_float_time(friday.break_start)" /></td>
+                                <td><input type="number" class="form-control" name="friday_break_stop" step="0.01" t-att-value="website.get_float_time(friday.break_stop)" /></td>
+                                <td><input type="checkbox" name="friday_close" value="1" t-att="{'checked': 1} if friday.close else {}"/></td>
+                            </tr>
+                            <tr>
+                                <t t-set="saturday" t-value="home_user.partner_id.commercial_partner_id.opening_hours_ids.filtered(lambda o: o.dayofweek == 'saturday')"/>
+                                <td>Saturday:</td>
+                                <td><input type="number" class="form-control" name="saturday_open_time" step="0.01" t-att-value="website.get_float_time(saturday.open_time)" /></td>
+                                <td><input type="number" class="form-control" name="saturday_close_time" step="0.01" t-att-value="website.get_float_time(saturday.close_time)" /></td>
+                                <td><input type="number" class="form-control" name="saturday_break_start" step="0.01" t-att-value="website.get_float_time(saturday.break_start)" /></td>
+                                <td><input type="number" class="form-control" name="saturday_break_stop" step="0.01" t-att-value="website.get_float_time(saturday.break_stop)" /></td>
+                                <td><input type="checkbox" name="saturday_close" value="1" t-att="{'checked': 1} if saturday.close else {}"/></td>
+                            </tr>
+                            <tr>
+                                <t t-set="sunday" t-value="home_user.partner_id.commercial_partner_id.opening_hours_ids.filtered(lambda o: o.dayofweek == 'sunday')"/>
+                                <td>Sunday:</td>
+                                <td><input type="number" class="form-control" name="sunday_open_time" step="0.01" t-att-value="website.get_float_time(sunday.open_time)" /></td>
+                                <td><input type="number" class="form-control" name="sunday_close_time" step="0.01" t-att-value="website.get_float_time(sunday.close_time)" /></td>
+                                <td><input type="number" class="form-control" name="sunday_break_start" step="0.01" t-att-value="website.get_float_time(sunday.break_start)" /></td>
+                                <td><input type="number" class="form-control" name="sunday_break_stop" step="0.01" t-att-value="website.get_float_time(sunday.break_stop)" /></td>
+                                <td><input type="checkbox" name="sunday_close" value="1" t-att="{'checked': 1} if sunday.close else {}"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </xpath>
         </template>
 
