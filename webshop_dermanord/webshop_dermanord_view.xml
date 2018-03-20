@@ -283,103 +283,101 @@
             <xpath expr="//t[@t-foreach='terms']" position="replace">
                 <script>var dermanord_kw = "<t t-esc='kw'/>";</script>
                 <t t-foreach="terms" t-as="term">
-                    <t t-if="term.res_model == 'product.template'">
-                        <t t-if="len(term.model_record.sudo().access_group_ids) == 0 or (len(term.model_record.sudo().access_group_ids) &gt; 0 and user_id in term.model_record.sudo().access_group_ids.mapped('users'))">
-                            <div class="col-md-12 col-sm-12 col-xs-12 mt16">
-                                <div class="col-md-3 col-sm-3 col-xs-3">
-                                    <t t-if="term.model_record.image">
-                                        <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/%s' %(term.res_id, 'webshop_dermanord.img_search_result')"/>
-                                    </t>
-                                    <t t-if="not term.model_record.image">
-                                        <img class="img img-responsive" src="/website_logo.png"/>
-                                    </t>
-                                </div>
-                                <div class="col-md-9 col-sm-9 col-xs-9">
-                                    <a t-att-href="'/dn_shop/product/%s' %term.res_id">
-                                        <h4><t t-esc="term.model_record.name"/> [Product]</h4>
-                                    </a>
-                                    <p class="text-muted result_desc"><t t-esc="term.model_record.description_sale"/></p>
-                                </div>
+                    <t t-if="term['model'] == 'product.template'">
+                        <div class="col-md-12 col-sm-12 col-xs-12 mt16">
+                            <div class="col-md-3 col-sm-3 col-xs-3">
+                                <t t-if="term['object'].image">
+                                    <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/%s' %(term['id'], 'webshop_dermanord.img_search_result')"/>
+                                </t>
+                                <t t-if="not term['object'].image">
+                                    <img class="img img-responsive" src="/website_logo.png"/>
+                                </t>
                             </div>
-                        </t>
+                            <div class="col-md-9 col-sm-9 col-xs-9">
+                                <a t-att-href="'/dn_shop/product/%s' %term['id']">
+                                    <h4><t t-esc="term['object'].name"/> [Product]</h4>
+                                </a>
+                                <p class="text-muted result_desc"><t t-esc="term['object'].description_sale"/></p>
+                            </div>
+                        </div>
                     </t>
-                    <t t-if="term.res_model == 'product.product'">
-                        <t t-if="len(term.model_record.sudo().access_group_ids) == 0 or (len(term.model_record.sudo().access_group_ids) &gt; 0 and user_id in term.model_record.sudo().access_group_ids.mapped('users'))">
+                    <t t-if="term['model'] == 'product.product'">
+                        <t t-if="len(term['object'].sudo().access_group_ids) == 0 or (len(term['object'].sudo().access_group_ids) &gt; 0 and user_id in term['object'].sudo().access_group_ids.mapped('users'))">
                             <div class="col-md-12 col-sm-12 col-xs-12 mt16">
                                 <div class="col-md-3 col-sm-3 col-xs-3">
-                                    <t t-if="term.model_record.image">
-                                        <img class="img img-responsive" t-att-src="'/imagefield/product.product/image/%s/ref/%s' %(term.res_id, 'webshop_dermanord.img_search_result')"/>
+                                    <t t-if="term['object'].image">
+                                        <img class="img img-responsive" t-att-src="'/imagefield/product.product/image/%s/ref/%s' %(term['id'], 'webshop_dermanord.img_search_result')"/>
                                     </t>
-                                    <t t-if="not term.model_record.image">
+                                    <t t-if="not term['object'].image">
                                         <img class="img img-responsive" src="/website_logo.png"/>
                                     </t>
                                 </div>
                                 <div class="col-md-9 col-sm-9 col-xs-9">
-                                    <a t-att-href="'/dn_shop/variant/%s' %term.res_id">
-                                        <h4><t t-esc="term.model_record.name"/> [Product]</h4>
+                                    <a t-att-href="'/dn_shop/variant/%s' %term['id']">
+                                        <h4><t t-esc="term['object'].name"/> [Product]</h4>
                                     </a>
-                                    <p class="text-muted"><t t-esc="term.model_record.default_code"/></p>
-                                    <t t-foreach="term.model_record.attribute_value_ids" t-as="value">
+                                    <p class="text-muted"><t t-esc="term['object'].default_code"/></p>
+                                    <t t-foreach="term['object'].attribute_value_ids" t-as="value">
                                         <span class="dn_tags" t-esc="'%s ' %value.name"/>
                                     </t>
-                                    <p class="text-muted result_desc"><t t-esc="term.model_record.product_tmpl_id.description_sale"/></p>
+                                    <p class="text-muted result_desc"><t t-esc="term['object'].product_tmpl_id.description_sale"/></p>
                                 </div>
                             </div>
                         </t>
                     </t>
-                    <t t-if="term.res_model == 'product.public.category'">
+                    <t t-if="term['model'] == 'product.public.category'">
                         <div class="col-md-12 col-sm-12 col-xs-12 mt16">
                             <div class="col-md-3 col-sm-3 col-xs-3">
-                                <t t-if="term.model_record.image_medium">
-                                    <img class="img img-responsive" t-att-src="'/imagefield/product.public.category/image_medium/%s/ref/%s' %(term.res_id, 'webshop_dermanord.img_search_result')"/>
+                                <t t-if="term['object'].image_medium">
+                                    <img class="img img-responsive" t-att-src="'/imagefield/product.public.category/image_medium/%s/ref/%s' %(term['id'], 'webshop_dermanord.img_search_result')"/>
                                 </t>
-                                <t t-if="not term.model_record.image_medium">
+                                <t t-if="not term['object'].image_medium">
                                     <img class="img img-responsive" src="/website_logo.png"/>
                                 </t>
                             </div>
                             <div class="col-md-9 col-sm-9 col-xs-9">
-                                <a t-att-href="'/dn_shop/category/%s' %term.res_id">
-                                    <h4><t t-esc="term.model_record.name"/> [Category]</h4>
+                                <a t-att-href="'/dn_shop/category/%s' %term['id']">
+                                    <h4><t t-esc="term['object'].name"/> [Category]</h4>
                                 </a>
                             </div>
                         </div>
                     </t>
-                    <t t-if="term.res_model == 'blog.post'">
+                    <t t-if="term['model'] == 'blog.post'">
                         <div class="col-md-12 col-sm-12 col-xs-12 mt16">
                             <div class="col-md-3 col-sm-3 col-xs-3">
-                                <t t-if="term.model_record.background_image">
-                                    <img class="img img-responsive" t-att-src="'/imagefield/blog.post/background_image/%s/ref/%s' %(term.res_id, 'webshop_dermanord.img_search_result')"/>
+                                <t t-if="term['object'].background_image">
+                                    <img class="img img-responsive" t-att-src="'/imagefield/blog.post/background_image/%s/ref/%s' %(term['id'], 'webshop_dermanord.img_search_result')"/>
                                 </t>
-                                <t t-if="not term.model_record.background_image">
+                                <t t-if="not term['object'].background_image">
                                     <img class="img img-responsive" src="/website_logo.png"/>
                                 </t>
                             </div>
                             <div class="col-md-9 col-sm-9 col-xs-9">
-                                <a t-att-href="'/blog/%s/post/%s' %(request.env['blog.post'].browse(term.res_id).blog_id.id, term.res_id)">
-                                    <h4><t t-esc="term.model_record.name"/> [Blog Post]</h4>
+                                <a t-att-href="'/blog/%s/post/%s' %(request.env['blog.post'].browse(term['id']).blog_id.id, term['id'])">
+                                    <h4><t t-esc="term['object'].name"/> [Blog Post]</h4>
                                 </a>
-                                <p class="text-muted result_desc"><t t-esc="term.model_record.subtitle"/></p>
+                                <p class="text-muted result_desc"><t t-esc="term['object'].subtitle"/></p>
                             </div>
                         </div>
                     </t>
-                    <t t-if="term.res_model == 'product.facet.line'">
+                    <t t-if="term['model'] == 'product.facet.line'">
                         <div class="col-md-12 col-sm-12 col-xs-12 mt16">
                             <div class="col-md-3 col-sm-3 col-xs-3">
-                                <t t-if="term.model_record.product_tmpl_id.image">
-                                    <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/%s' %(term.model_record.product_tmpl_id.id, 'webshop_dermanord.img_search_result')"/>
+                                <t t-if="term['object'].product_tmpl_id.image">
+                                    <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/%s' %(term['object'].product_tmpl_id.id, 'webshop_dermanord.img_search_result')"/>
                                 </t>
-                                <t t-if="not term.model_record.product_tmpl_id.image">
+                                <t t-if="not term['object'].product_tmpl_id.image">
                                     <img class="img img-responsive" src="/website_logo.png"/>
                                 </t>
                             </div>
                             <div class="col-md-9 col-sm-9 col-xs-9">
-                                <a t-att-href="'/dn_shop/product/%s' %term.model_record.product_tmpl_id">
-                                    <h4><t t-esc="term.model_record.product_tmpl_id.name"/> [Facet]</h4>
+                                <a t-att-href="'/dn_shop/product/%s' %term['object'].product_tmpl_id">
+                                    <h4><t t-esc="term['object'].product_tmpl_id.name"/> [Facet]</h4>
                                 </a>
-                                <t t-foreach="term.model_record.product_tmpl_id.facet_line_ids.with_context({'res_id': term.res_id}).filtered(lambda f: f.id == f._context.get('res_id'))[0].value_ids" t-as="value">
+                                <t t-foreach="term['object'].product_tmpl_id.facet_line_ids.with_context({'res_id': term['id']}).filtered(lambda f: f.id == f._context.get('res_id'))[0].value_ids" t-as="value">
                                     <span class="dn_facets" t-esc="'%s ' %value.name"/>
                                 </t>
-                                <p class="text-muted result_desc"><t t-esc="term.model_record.product_tmpl_id.description_sale"/></p>
+                                <p class="text-muted result_desc"><t t-esc="term['object'].product_tmpl_id.description_sale"/></p>
                             </div>
                         </div>
                     </t>
