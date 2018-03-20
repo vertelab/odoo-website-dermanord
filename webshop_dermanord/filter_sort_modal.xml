@@ -217,7 +217,7 @@
                             <div class="checkbox">
                                 <label>
                                     <t t-if="request.session.get('form_values')">
-                                        <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id" t-att="{'checked': '1'} if request.session.get('form_values').get('category_%s' %category.id) == str(category.id) else {}"/><t t-esc="category.name"/>
+                                        <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id" t-att="{'checked': '1'} if request.session.get('form_values').get('category_%s' %category.id) == category.id else {}"/><t t-esc="category.name"/>
                                     </t>
                                     <t t-if="not request.session.get('form_values')">
                                         <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id"/><t t-esc="category.name"/>
@@ -253,7 +253,7 @@
                             <div class="checkbox">
                                 <label class="col-md-6 col-sm-6 col-xs-6" style="float: left;">
                                     <t t-if="request.session.get('form_values')">
-                                        <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('ingredient_%s' %ingredient.id) == str(ingredient.id) else {}" class="like"/><i class="fa fa-smile-o like_icon"/>
+                                        <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('ingredient_%s' %ingredient.id) == ingredient.id else {}" class="like"/><i class="fa fa-smile-o like_icon"/>
                                         </t>
                                     <t t-if="not request.session.get('form_values')">
                                         <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" class="like"/><i class="fa fa-smile-o like_icon"/>
@@ -355,7 +355,7 @@
                 <t t-if="len(filter_categories) &gt; 0">
                     <t t-foreach="filter_categories" t-as="category">
                         <t t-if="request.session.get('form_values')">
-                            <t t-if="request.session.get('form_values').get('category_%s' %category.id) == str(category.id)">
+                            <t t-if="request.session.get('form_values').get('category_%s' %category.id) == category.id">
                                 <input type="hidden" t-att-name="'category_%s' %category.id" t-att-value="category.id"/>
                             </t>
                         </t>
@@ -376,10 +376,10 @@
                 <t t-if="len(filter_ingredients) &gt; 0">
                     <t t-foreach="filter_ingredients" t-as="ingredient">
                         <t t-if="request.session.get('form_values')">
-                            <t t-if="request.session.get('form_values').get('ingredient_%s' %ingredient.id) == str(ingredient.id)">
+                            <t t-if="request.session.get('form_values').get('ingredient_%s' %ingredient.id) == ingredient.id">
                                 <input type="hidden" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id"/>
                             </t>
-                            <t t-if="request.session.get('form_values').get('notingredient_%s' %ingredient.id) == str(ingredient.id)">
+                            <t t-if="request.session.get('form_values').get('notingredient_%s' %ingredient.id) == ingredient.id">
                                 <input type="hidden" t-att-name="'notingredient_%s' %ingredient.id" t-att-value="ingredient.id"/>
                             </t>
                         </t>
@@ -516,7 +516,7 @@
                                             <h5>
                                                 <label>
                                                     <t t-if="request.session.get('form_values')">
-                                                        <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id" t-att="{'checked': '1'} if request.session.get('form_values').get('category_%s' %category.id) == str(category.id) else {}"/><t t-esc="category.name"/>
+                                                        <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id" t-att="{'checked': '1'} if request.session.get('form_values').get('category_%s' %category.id) == category.id else {}"/><t t-esc="category.name"/>
                                                     </t>
                                                     <t t-if="not request.session.get('form_values')">
                                                         <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id"/><t t-esc="category.name"/>
@@ -596,7 +596,7 @@
                                             <h5>
                                                 <label class="col-md-6 col-sm-6 col-xs-6" style="float: left;">
                                                     <t t-if="request.session.get('form_values')">
-                                                        <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('ingredient_%s' %ingredient.id) == str(ingredient.id) else {}" class="like"/><i class="fa fa-smile-o like_icon"/>
+                                                        <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('ingredient_%s' %ingredient.id) == ingredient.id else {}" class="like"/><i class="fa fa-smile-o like_icon"/>
                                                         </t>
                                                     <t t-if="not request.session.get('form_values')">
                                                         <input type="checkbox" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id" class="like"/><i class="fa fa-smile-o like_icon"/>
@@ -604,7 +604,7 @@
                                                 </label>
                                                 <label class="col-md-6 col-sm-6 col-xs-6" style="float: right;">
                                                     <t t-if="request.session.get('form_values')">
-                                                        <input type="checkbox" t-att-name="'notingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('notingredient_%s' %ingredient.id) == str(ingredient.id) else {}" class="unlike"/><i class="fa fa-frown-o unlike_icon"/>
+                                                        <input type="checkbox" t-att-name="'notingredient_%s' %ingredient.id" t-att-value="ingredient.id" t-att="{'checked': '1'} if request.session.get('form_values').get('notingredient_%s' %ingredient.id) == ingredient.id else {}" class="unlike"/><i class="fa fa-frown-o unlike_icon"/>
                                                         </t>
                                                     <t t-if="not request.session.get('form_values')">
                                                         <input type="checkbox" t-att-name="'notingredient_%s' %ingredient.id" t-att-value="ingredient.id" class="unlike"/><i class="fa fa-frown-o unlike_icon"/>
@@ -665,7 +665,7 @@
                 <t t-if="len(filter_categories) &gt; 0">
                     <t t-foreach="filter_categories" t-as="category">
                         <t t-if="request.session.get('form_values')">
-                            <t t-if="request.session.get('form_values').get('category_%s' %category.id) == str(category.id)">
+                            <t t-if="request.session.get('form_values').get('category_%s' %category.id) == category.id">
                                 <input type="hidden" t-att-name="'category_%s' %category.id" t-att-value="category.id"/>
                             </t>
                         </t>
@@ -686,10 +686,10 @@
                 <t t-if="len(filter_ingredients) &gt; 0">
                     <t t-foreach="filter_ingredients" t-as="ingredient">
                         <t t-if="request.session.get('form_values')">
-                            <t t-if="request.session.get('form_values').get('ingredient_%s' %ingredient.id) == str(ingredient.id)">
+                            <t t-if="request.session.get('form_values').get('ingredient_%s' %ingredient.id) == ingredient.id">
                                 <input type="hidden" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="ingredient.id"/>
                             </t>
-                            <t t-if="request.session.get('form_values').get('notingredient_%s' %ingredient.id) == str(ingredient.id)">
+                            <t t-if="request.session.get('form_values').get('notingredient_%s' %ingredient.id) == ingredient.id">
                                 <input type="hidden" t-att-name="'notingredient_%s' %ingredient.id" t-att-value="ingredient.id"/>
                             </t>
                         </t>

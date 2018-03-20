@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution, third party addon
-#    Copyright (C) 2018- Vertel AB (<http://vertel.se>).
+#    Copyright (C) 2017- Vertel AB (<http://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,22 +20,22 @@
 ##############################################################################
 
 {
-    'name': 'Product Pricelist Dermanord',
+    'name': 'Import Joomla Users',
     'version': '1.0',
-    'category': 'product',
-    'summary': '',
+    'category': '',
     'description': """
-Product Pricelist Report
-========================
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['product', 'report'],
+    'depends': ['sale_customer_no',],
+    'external_dependencies': {
+        'python': ['unicodecsv'],
+    },
     'data': [
-        'report.xml',
-        'pricelist_view.xml',
-    ],
+        'user_import_view.xml',
+        ],
     'application': False,
+    'installable': True,
 }
-
+# vim:expandtab:smartindent:tabstop=4s:softtabstop=4:shiftwidth=4:

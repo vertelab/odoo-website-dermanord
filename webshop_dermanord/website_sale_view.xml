@@ -173,19 +173,24 @@
                                             <span style="display: inline;">(your excl. tax)</span>
                                         </div>
                                     </t>
-                                    <t t-if="user_id.partner_id.property_product_pricelist.id not in [3, 6]">
+                                    <t t-if="user_id.partner_id.property_product_pricelist.id not in [3, 6] and user_id.partner_id.property_product_pricelist.for_reseller">
                                         <div>
                                             <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
-<!--
                                             <span t-esc="website.price_format(product['dv_recommended_price']) if user_id.lang == 'sv_SE' else website.price_format(product['dv_recommended_price_en'])" style="white-space: nowrap;" />
--->
-                                            <span t-esc="website.price_format(user_id.partner_id.property_product_pricelist.price_get(product['dv_id'], 1)[user_id.partner_id.property_product_pricelist.id] if product['dv_id'] else 0.0)" style="white-space: nowrap;" />
+                                            <span style="display: inline;">(rec incl. tax)</span>
+                                        </div>
+                                        <div>
+                                            <b t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
+                                            <b t-esc="website.price_format(user_id.partner_id.property_product_pricelist.price_get(product['dv_id'], 1)[user_id.partner_id.property_product_pricelist.id] if product['dv_id'] else 0.0)" style="white-space: nowrap;" />
+                                            <span style="display: inline;">(your excl. tax)</span>
                                         </div>
                                     </t>
-                                    <!--
-                                         <span itemprop="price" style="display:none;" t-esc="product.dv_price" />
-                                         <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding" />
-                                    -->
+                                    <t t-if="user_id.partner_id.property_product_pricelist.id not in [3, 6] and not user_id.partner_id.property_product_pricelist.for_reseller">
+                                        <div>
+                                            <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
+                                            <span t-esc="website.price_format(product['dv_recommended_price']) if user_id.lang == 'sv_SE' else website.price_format(product['dv_recommended_price_en'])" style="white-space: nowrap;" />
+                                        </div>
+                                    </t>
                                 </h4>
                             </b>
                         </div>
@@ -282,9 +287,9 @@
                                                                 <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
-                                                            <t t-if="user_id.partner_id.property_product_pricelist.id not in [3, 6]">
-                                                                <span t-field="request.env['product.product'].browse(product['id']).price" style="white-space: nowrap;" class="your_price" t-field-options="{
-                                                                &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }" />
+                                                            <t t-if="user_id.partner_id.property_product_pricelist.id not in [3, 6] and user_id.partner_id.property_product_pricelist.for_reseller">
+                                                                <span t-field="request.env['product.product'].browse(product['id']).with_context(pricelist=user_id.partner_id.commercial_partner_id.property_product_pricelist.id).price" style="white-space: nowrap;" class="your_price" t-field-options="{
+                                                                &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }" t-att-data-price="request.env['product.product'].browse(product['id']).with_context(pricelist=user_id.partner_id.commercial_partner_id.property_product_pricelist.id).price"/>
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
 <!--
@@ -712,75 +717,36 @@
             <xpath expr="//h4" position="replace">
                 <p class="oe_price_h4 css_editable_mode_hidden decimal_precision" t-att-data-precision="user_id.partner_id.property_product_pricelist.currency_id.rounding">
                     <t t-if="is_reseller">
-                        <!--
-                             <div>
-                             <span class="oe_recommended_price" t-field="product.list_price_tax" t-field-options='{
-                             "widget": "monetary",
-                             "from_currency": "product.company_id.currency_id",
-                             "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-                             }' />
-                             <span style="display: inline;">(rec inc tax)</span>
-                             </div>
-                        -->
-                        <t t-if="user_id.partner_id.property_product_pricelist.name == u'Återförsäljare 45'">
-                            <b class="oe_price" style="white-space: nowrap;" t-field="product.dv_price_45" t-field-options='{
-                   "widget": "monetary",
-                   "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-               }' />
-                        </t>
-                        <t t-if="user_id.partner_id.property_product_pricelist.name == 'Special 20'">
-                            <b class="oe_price" style="white-space: nowrap;" t-field="product.dv_price_20" t-field-options='{
-                   "widget": "monetary",
-                   "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-               }' />
-                        </t>
-                        <t t-if="user_id.partner_id.property_product_pricelist.name not in [u'Återförsäljare 45', 'Special 20']">
-                            <b class="oe_price" style="white-space: nowrap;">None</b>
-                        </t>
-                        <span itemprop="price" style="display:none;" t-esc="product.price" />
-                        <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding" />
-                        <span style="display: inline;">(your ex tax)</span>
+                        <div>
+                            <span t-field="user_id.partner_id.property_product_pricelist.currency_id.name" style="white-space: nowrap;" />
+                            <span class="oe_recommended_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_recommended_price) if user_id.lang == 'sv_SE' else website.price_format(product.dv_recommended_price_en)"/>
+                            <span style="display: inline;">(rec incl. tax)</span>
+                        </div>
+                        <div>
+                            <b t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
+                            <t t-if="user_id.partner_id.property_product_pricelist.id == 6">
+                                <b class="oe_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_price_45)"/>
+                            </t>
+                            <t t-if="user_id.partner_id.property_product_pricelist.id == 3">
+                                <b class="oe_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_price_20)"/>
+                            </t>
+                            <t t-if="user_id.partner_id.property_product_pricelist.id not in [3, 6] and user_id.partner_id.property_product_pricelist.for_reseller">
+                                <b class="oe_price" t-esc="website.price_format(user_id.partner_id.property_product_pricelist.price_get(product.dv_id, 1)[user_id.partner_id.property_product_pricelist.id] if product.dv_id else 0.0)" style="white-space: nowrap;"/>
+                            </t>
+                            <span style="display: inline;">(your excl. tax)</span>
+                        </div>
                     </t>
                     <t t-if="not is_reseller">
-                        <!--
-                             <span class="text-danger oe_default_price" style="text-decoration: line-through; white-space: nowrap;" t-field="product.lst_price" t-field-options='{
-                             "widget": "monetary",
-                             "from_currency": "product.company_id.currency_id",
-                             "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-                             }' />
-                        -->
-                        <b class="oe_recommended_price" style="white-space: nowrap;" t-field="product.dv_recommended_price" t-field-options='{
-                           "widget": "monetary",
-                           "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-                       }' />
-                        <span itemprop="price" style="display:none;" t-esc="product.price" />
-                        <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding" />
+                        <span t-field="user_id.partner_id.property_product_pricelist.currency_id.name" style="white-space: nowrap;" />
+                        <b class="oe_recommended_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_recommended_price) if user_id.lang == 'sv_SE' else website.price_format(product.dv_recommended_price_en)"/>
                     </t>
                 </p>
             </xpath>
-            <!--
-                 <xpath expr="//span[@class='text-danger oe_default_price']" position="attributes">
-                 <attribute name="class">text-danger oe_default_price hidden</attribute>
-                 </xpath>
-                 <xpath expr="//b[@class='oe_price']" position="attributes">
-                 <attribute name="class">oe_price hidden</attribute>
-                 </xpath>
-                 <xpath expr="//b[@t-field='product.price']" position="after">
-                 <span class="text-danger oe_default_price" style="text-decoration: line-through; white-space: nowrap;"
-                 t-field="product.list_price_tax"
-                 t-field-options='{
-                 "widget": "monetary",
-                 "from_currency": "product.company_id.currency_id",
-                 "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-                 }'/>
-                 <b class="oe_price" style="white-space: nowrap;"
-                 t-field="product.price_tax"
-                 t-field-options='{
-                 "widget": "monetary",
-                 "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-                 }'/>
-                 </xpath>
-            -->
+        </template>
+        <template id="product_quantity" inherit_id="website_sale.product_quantity" name="Select Quantity Override">
+            <xpath expr="//div[@class='css_quantity input-group oe_website_spinner']" position="attributes">
+                <attribute name="t-if">user_id.partner_id.property_product_pricelist.for_reseller</attribute>
+            </xpath>
         </template>
         <!-- Produktvisning enskild produkt -->
         <template id="product_view" name="Product View">

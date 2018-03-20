@@ -32,6 +32,7 @@ Nice formatted ingredients
 
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['website_imagemagick','product','website_sale','website_sale_product_gallery'],
     'data': [

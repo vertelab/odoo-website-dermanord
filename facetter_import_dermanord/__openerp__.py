@@ -20,22 +20,19 @@
 ##############################################################################
 
 {
-    'name': 'Product Pricelist Dermanord',
-    'version': '1.0',
-    'category': 'product',
-    'summary': '',
+    'name': 'Facetter Import Dermanord',
+    'version': '0.1',
+    'category': 'unknown',
     'description': """
-Product Pricelist Report
-========================
+Facetter Import Dermanord
+=========================
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['product', 'report'],
-    'data': [
-        'report.xml',
-        'pricelist_view.xml',
-    ],
+    'depends': ['product'],
+    'data': [],
     'application': False,
+    'installable': True,
 }
-
+# vim:expandtab:smartindent:tabstop=4s:softtabstop=4:shiftwidth=4:

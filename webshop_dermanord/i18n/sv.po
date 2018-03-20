@@ -47,6 +47,11 @@ msgid "(rec incl. tax)"
 msgstr "(rek inkl. moms)"
 
 #. module: webshop_dermanord
+#: view:website:webshop_dermanord.cart_delivery
+msgid "Amount (excl. tax):"
+msgstr "Belopp (excl. moms):"
+
+#. module: webshop_dermanord
 #: view:website:website_sale.cart
 msgid "Add to Cart"
 msgstr "Lägg i kundvagnen"

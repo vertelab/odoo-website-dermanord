@@ -156,7 +156,10 @@ class Main(http.Controller):
         if not partner:
             word = post.get('search', False)
             if word and word != '':
-                resellers = request.env['res.partner'].sudo().search(['&', ('is_reseller', '=', True), '|', ('name', 'ilike', word), '|', ('brand_name', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), '|', ('country_id.name', 'ilike', word), ('child_category_ids.name', 'ilike', word)])
+                visit_ids = [p['parent_id'][0] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit')], ['parent_id'])]
+                resellers = request.env['res.partner'].sudo().search([('id', 'not in', visit_ids), ('is_reseller', '=', True), '|', ('name', 'ilike', word), '|', ('brand_name', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), '|', ('country_id.name', 'ilike', word), ('child_category_ids.name', 'ilike', word)])
+                visits = request.env['res.partner'].sudo().search([('type', '=', 'visit'), '|', ('name', 'ilike', word), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)])
+                resellers |= visits.mapped('parent_id')
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
             else:
                 closest_ids = request.env['res.partner'].geoip_search('position', request.httprequest.remote_addr, 10)
@@ -258,14 +261,24 @@ class Main(http.Controller):
 
 class website_sale_home(website_sale_home):
 
+    def get_address_type(self):
+        res = super(website_sale_home, self).get_address_type()
+        res.append('visit')
+        return res
+
+    def get_children_by_address_type(self, company):
+        res = super(website_sale_home, self).get_children_by_address_type(company)
+        res.update({'visit': company.child_ids.filtered(lambda c: c.type == 'visit')[0] if company.child_ids.filtered(lambda c: c.type == 'visit') else None})
+        return res
+
     @http.route(['/home/<model("res.users"):home_user>/info_update',], type='http', auth="user", website=True)
     def info_update(self, home_user=None, **post):
         # update data for main partner
         self.validate_user(home_user)
         if home_user == request.env.user:
             home_user = home_user.sudo()
-        home_user.email = post.get('email')
-        home_user.login = post.get('login')
+        #~ home_user.email = post.get('email')
+        #~ home_user.login = post.get('login')
         if post.get('confirm_password'):
             home_user.password = post.get('password')
         if home_user.partner_id.commercial_partner_id.is_reseller:
@@ -339,7 +352,7 @@ class website_sale_home(website_sale_home):
                 sunday.break_stop = self.get_time_float(post.get('sunday_break_stop') or '0.0')
                 sunday.close = True if post.get('sunday_close') == '1' else False
 
-
+        self.update_info(home_user, post)
         return werkzeug.utils.redirect("/home/%s" % home_user.id)
 
     def get_time_float(self, time):
