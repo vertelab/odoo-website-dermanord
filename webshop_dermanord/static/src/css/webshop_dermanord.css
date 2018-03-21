@@ -211,7 +211,6 @@ div.shipping-address, div.invoicing-address {
 
 .product_name {
     max-width: 250px;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
