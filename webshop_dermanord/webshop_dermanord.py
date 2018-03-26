@@ -458,7 +458,7 @@ class Website(models.Model):
     def get_chosen_filter_qty(self, post):
         chosen_filter_qty = 0
         for k, v in post.iteritems():
-            if k not in ['post_form', 'order']:
+            if k not in ['post_form', 'order', 'current_ingredient']:
                 chosen_filter_qty += 1
         return chosen_filter_qty
 
