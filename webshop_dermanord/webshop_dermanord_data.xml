@@ -1,34 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data noupdate="0">
-        <!-- ingredients -->
-        <record id="img_ingredients" model="image.recipe">
-            <field name="name">Ingredients</field>
+        <record id="img_ingredients_big" model="image.recipe">
+            <field name="name">Ingredients Big</field>
             <field name="image_format">jpeg</field>
-            <field name="description">Define the canvas size to limit the image maximum size.
-PS: The canvas will always be the given size</field>
-            <field name="recipe">bg = Image()
-bg.blank(width=int(canvas_size), height=int(canvas_size), background=Color(bg_color))
-bg.format = 'png'
-image.transform(resize='%sx%s' %(int(canvas_size), int(canvas_size)))
-if image.width &gt;= image.height:
-    bg.composite(image, 0, (int(canvas_size)-image.height)/2)
+            <field name="description"></field>
+            <field name="recipe">if float(image.width)/float(image.height) &gt;= float(horizontal)/float(vertical):
+    if image.height &gt; int(height):
+        image.transform(resize='%sx&gt;' %int(float(height)*float(image.width)/float(image.height)))
+        image.crop(width=int(float(height)/float(vertical)*float(horizontal)), height=int(height), gravity='center')
+    else:
+        image.transform(resize='%sx&gt;' %int(float(height)*float(image.width)/float(image.height)))
+        image.crop(width=int(float(image.height)/float(vertical)*float(horizontal)), height=image.height, gravity='center')
 else:
-    bg.composite(image, (int(canvas_size)-image.width)/2, 0)
-res = bg
-            </field>
+    if float(image.width) &gt; float(height)*float(horizontal)/float(vertical):
+        image.transform(resize='%sx&gt;' %int(float(height)*float(horizontal)/float(vertical)))
+        image.crop(width=int(float(height)*float(horizontal)/float(vertical)), height=int(height), gravity='center')
+    else:
+        image.transform(resize='%sx&gt;' %image.width)
+        image.crop(width=image.width, height=int(float(image.width)/float(horizontal)*float(vertical)), gravity='center')</field>
         </record>
-
-        <record id="img_ingredients_param_canvas" model="image.recipe.param">
-            <field name="name">canvas_size</field>
-            <field name="value">300</field>
-            <field name="recipe_id" ref="webshop_dermanord.img_ingredients"/>
+        <record id="img_ingredients_big_height_xs" model="image.recipe.param">
+            <field name="name">height</field>
+            <field name="value">197</field>
+            <field name="device_type">xs</field>
+            <field name="recipe_id" ref="webshop_dermanord.img_ingredients_big"/>
         </record>
-
-        <record id="img_ingredients_param_bg_color" model="image.recipe.param">
-            <field name="name">bg_color</field>
-            <field name="value">#ffffff</field>
-            <field name="recipe_id" ref="webshop_dermanord.img_ingredients"/>
+        <record id="img_ingredients_big_height_sm" model="image.recipe.param">
+            <field name="name">height</field>
+            <field name="value">280</field>
+            <field name="device_type">sm</field>
+            <field name="recipe_id" ref="webshop_dermanord.img_ingredients_big"/>
+        </record>
+        <record id="img_ingredients_big_height_md" model="image.recipe.param">
+            <field name="name">height</field>
+            <field name="value">280</field>
+            <field name="device_type">md</field>
+            <field name="recipe_id" ref="webshop_dermanord.img_ingredients_big"/>
+        </record>
+        <record id="img_ingredients_big_height_lg" model="image.recipe.param">
+            <field name="name">height</field>
+            <field name="value">280</field>
+            <field name="device_type">lg</field>
+            <field name="recipe_id" ref="webshop_dermanord.img_ingredients_big"/>
+        </record>
+        <record id="img_ingredients_big_horizontal" model="image.recipe.param">
+            <field name="name">horizontal</field>
+            <field name="value">16</field>
+            <field name="recipe_id" ref="webshop_dermanord.img_ingredients_big"/>
+        </record>
+        <record id="img_ingredients_big_vertical" model="image.recipe.param">
+            <field name="name">vertical</field>
+            <field name="value">9</field>
+            <field name="recipe_id" ref="webshop_dermanord.img_ingredients_big"/>
         </record>
 
         <!-- product payment -->

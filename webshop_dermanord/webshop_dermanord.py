@@ -252,7 +252,7 @@ class product_product(models.Model):
     recommended_price_en = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     price_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     price_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')
+    #~ so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')  # performance hog, do we need it?
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
 
@@ -458,7 +458,7 @@ class Website(models.Model):
     def get_chosen_filter_qty(self, post):
         chosen_filter_qty = 0
         for k, v in post.iteritems():
-            if k not in ['post_form', 'order']:
+            if k not in ['post_form', 'order', 'current_ingredient']:
                 chosen_filter_qty += 1
         return chosen_filter_qty
 
@@ -629,6 +629,8 @@ class Website(models.Model):
         request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
 
         if post:
+            request.session['form_values']['current_ingredient'] = post.get('current_ingredient')
+            request.session['current_ingredient'] = post.get('current_ingredient')
             domain = self.get_domain_append(model, post)
         else:
             domain = self.get_domain_append(model, request.session.get('form_values', {}))
@@ -940,11 +942,11 @@ class WebsiteSale(website_sale):
             if k.split('_')[0] == 'category':
                 if v:
                      category_ids.append(int(v))
-                     request.session.get('form_values')['category_%s' %k.split('_')[1]] = k.split('_')[1]
+                     request.session.get('form_values')['category_%s' %k.split('_')[1]] = int(k.split('_')[1])
             if k.split('_')[0] == 'ingredient':
                 if v:
                     ingredient_ids.append(int(v))
-                    request.session.get('form_values')['ingredient_%s' %k.split('_')[1]] = k.split('_')[1]
+                    request.session.get('form_values')['ingredient_%s' %k.split('_')[1]] = int(k.split('_')[1])
             if k == 'current_news':
                 if v:
                     current_news = 'current_news'
@@ -1122,9 +1124,11 @@ class WebsiteSale(website_sale):
 
         if category:
             if not request.session.get('form_values'):
-                request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
-            request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
-            self.get_form_values()['category_' + str(int(category))] = str(int(category))
+                request.session['form_values'] = {'category_%s' %int(category): int(category)}
+            request.session['form_values'] = {'category_%s' %int(category): int(category)}
+            self.get_form_values()['category_' + str(int(category))] = int(category)
+            request.session['current_domain'] = [('public_categ_ids', 'in', [int(category)])]
+            request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
 
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
@@ -1162,7 +1166,6 @@ class WebsiteSale(website_sale):
         #~ from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         #~ to_currency = pricelist.currency_id
         #~ compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
-
         values = {
             'search': search,
             'category': category,
@@ -1181,7 +1184,7 @@ class WebsiteSale(website_sale):
             'url': url,
             #~ 'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
             #~ 'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
-            'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
+            'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
             'shop_footer': True,
             'page_lang': request.env.lang,
         }
@@ -1472,9 +1475,11 @@ class WebsiteSale(website_sale):
 
         if category:
             if not request.session.get('form_values'):
-                request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
-            request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
-            self.get_form_values()['category_' + str(int(category))] = str(int(category))
+                request.session['form_values'] = {'category_%s' %int(category): int(category)}
+            request.session['form_values'] = {'category_%s' %int(category): int(category)}
+            self.get_form_values()['category_' + str(int(category))] = int(category)
+            request.session['current_domain'] = [('public_categ_ids', 'in', [int(category)])]
+            request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
 
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
@@ -1529,7 +1534,7 @@ class WebsiteSale(website_sale):
             'rows': PPR,
             'compute_currency': compute_currency,
             'url': url,
-            'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient')),
+            'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
             'shop_footer': True,
         }
         _logger.warn('after value: %s' %(timer()-value_start))

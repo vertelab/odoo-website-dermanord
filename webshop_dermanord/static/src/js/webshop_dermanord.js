@@ -143,14 +143,14 @@ $(document).ready(function(){
             if (data['ingredients'] != null) {
                 var ingredient_html = '<div id="ingredients_div"><div class="container mb16 hidden-xs"><h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>';
                 $.each(data['ingredients'], function(index, value) {
-                    ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/webshop_dermanord.img_ingredients"/><h6 class="text-center"><i>' + value[1] + '</h6></div></a>';
+                    ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/product_ingredients.img_ingredients"/><h6 class="text-center"><i>' + value[1] + '</h6></div></a>';
                 });
                 ingredient_html += '</div></div>';
                 $ingredient_div.replaceWith(ingredient_html);
 
                 var ingredient_mobile_html = '<div id="ingredients_div_mobile"><div class="container mb16 hidden-lg hidden-md hidden-sm"><h4 class="text-center dn_uppercase">made from all-natural ingredients</h4><div class="col-md-12"><div class="carousel slide" id="ingredient_carousel" data-ride="carousel"><div class="carousel-inner" style="padding-bottom: 40px;">';
                 $.each(data['ingredients'], function(index, value) {
-                    ingredient_mobile_html += '<div class="item ingredient_desc' + ((index == 0) ? ' active' : '') + '"><a href="/dn_shop/?current_ingredient=' + value[0] + '"><img class="img img-responsive" style="margin: auto; height: 230px !important;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/webshop_dermanord.img_ingredients"/><h6 class="text-center"><i>' + value[1] + '</i></h6></a></div>';
+                    ingredient_mobile_html += '<div class="item ingredient_desc' + ((index == 0) ? ' active' : '') + '"><a href="/dn_shop/?current_ingredient=' + value[0] + '"><img class="img img-responsive" style="margin: auto; height: 230px !important;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/product_ingredients.img_ingredients"/><h6 class="text-center"><i>' + value[1] + '</i></h6></a></div>';
                 });
                 ingredient_mobile_html += '</div><ol class="carousel-indicators">';
                 $.each(data['ingredients'], function(index, value) {
