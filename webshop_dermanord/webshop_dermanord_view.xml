@@ -302,28 +302,26 @@
                         </div>
                     </t>
                     <t t-if="term['model'] == 'product.product'">
-                        <t t-if="len(term['object'].sudo().access_group_ids) == 0 or (len(term['object'].sudo().access_group_ids) &gt; 0 and user_id in term['object'].sudo().access_group_ids.mapped('users'))">
-                            <div class="col-md-12 col-sm-12 col-xs-12 mt16">
-                                <div class="col-md-3 col-sm-3 col-xs-3">
-                                    <t t-if="term['object'].image">
-                                        <img class="img img-responsive" t-att-src="'/imagefield/product.product/image/%s/ref/%s' %(term['id'], 'webshop_dermanord.img_search_result')"/>
-                                    </t>
-                                    <t t-if="not term['object'].image">
-                                        <img class="img img-responsive" src="/website_logo.png"/>
-                                    </t>
-                                </div>
-                                <div class="col-md-9 col-sm-9 col-xs-9">
-                                    <a t-att-href="'/dn_shop/variant/%s' %term['id']">
-                                        <h4><t t-esc="term['object'].name"/> [Product]</h4>
-                                    </a>
-                                    <p class="text-muted"><t t-esc="term['object'].default_code"/></p>
-                                    <t t-foreach="term['object'].attribute_value_ids" t-as="value">
-                                        <span class="dn_tags" t-esc="'%s ' %value.name"/>
-                                    </t>
-                                    <p class="text-muted result_desc"><t t-esc="term['object'].product_tmpl_id.description_sale"/></p>
-                                </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12 mt16">
+                            <div class="col-md-3 col-sm-3 col-xs-3">
+                                <t t-if="term['object'].image">
+                                    <img class="img img-responsive" t-att-src="'/imagefield/product.product/image/%s/ref/%s' %(term['id'], 'webshop_dermanord.img_search_result')"/>
+                                </t>
+                                <t t-if="not term['object'].image">
+                                    <img class="img img-responsive" src="/website_logo.png"/>
+                                </t>
                             </div>
-                        </t>
+                            <div class="col-md-9 col-sm-9 col-xs-9">
+                                <a t-att-href="'/dn_shop/variant/%s' %term['id']">
+                                    <h4><t t-esc="term['object'].name"/> [Product]</h4>
+                                </a>
+                                <p class="text-muted"><t t-esc="term['object'].default_code"/></p>
+                                <t t-foreach="term['object'].attribute_value_ids" t-as="value">
+                                    <span class="dn_tags" t-esc="'%s ' %value.name"/>
+                                </t>
+                                <p class="text-muted result_desc"><t t-esc="term['object'].product_tmpl_id.description_sale"/></p>
+                            </div>
+                        </div>
                     </t>
                     <t t-if="term['model'] == 'product.public.category'">
                         <div class="col-md-12 col-sm-12 col-xs-12 mt16">

@@ -235,6 +235,16 @@
             <xpath expr="//img[@id='contact_img']" position="replace">
                 <img id="contact_img" t-att-src="'/imagefield/res.partner/image/%s/ref/reseller_dermanord.reseller_contact_img' %contact.id" style="max-width: 200px;"/>
             </xpath>
+            <xpath expr="//div[@class='form-group']" position="after">
+                    <div t-att-class="'form-group'">
+                        <label class="col-md-3 col-sm-4 control-label">Courses</label>
+                        <div class="col-md-7 col-sm-8">
+                            <t t-foreach="partner and partner.event_type_ids or []" t-as="event">
+                                <span t-esc="event.name" class="oe_website_home_partner_course"/>
+                            </t>
+                        </div>
+                    </div>
+            </xpath>
         </template>
 
         <template id="company_info_form" inherit_id="website_sale_home.company_info_form" name="Company Info Form Inherited Reseller Dermanord">

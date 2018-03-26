@@ -1666,9 +1666,7 @@ class WebsiteSale(website_sale):
         if product_id:
             product = request.env['product.product'].browse(int(product_id))
             if product:
-                image_ids = product.image_attachment_ids
-                default_image_ids = product.product_tmpl_id.image_attachment_ids
-                images = (image_ids.mapped('id') + default_image_ids.mapped('id')) or [0]
+                images = product.get_image_attachment_ids()
 
                 facets = {}
                 if len(product.facet_line_ids) > 0:
