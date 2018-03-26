@@ -458,7 +458,7 @@ class Website(models.Model):
     def get_chosen_filter_qty(self, post):
         chosen_filter_qty = 0
         for k, v in post.iteritems():
-            if k not in ['post_form', 'order']:
+            if k not in ['post_form', 'order', 'current_ingredient']:
                 chosen_filter_qty += 1
         return chosen_filter_qty
 
@@ -942,11 +942,11 @@ class WebsiteSale(website_sale):
             if k.split('_')[0] == 'category':
                 if v:
                      category_ids.append(int(v))
-                     request.session.get('form_values')['category_%s' %k.split('_')[1]] = k.split('_')[1]
+                     request.session.get('form_values')['category_%s' %k.split('_')[1]] = int(k.split('_')[1])
             if k.split('_')[0] == 'ingredient':
                 if v:
                     ingredient_ids.append(int(v))
-                    request.session.get('form_values')['ingredient_%s' %k.split('_')[1]] = k.split('_')[1]
+                    request.session.get('form_values')['ingredient_%s' %k.split('_')[1]] = int(k.split('_')[1])
             if k == 'current_news':
                 if v:
                     current_news = 'current_news'
@@ -1124,9 +1124,11 @@ class WebsiteSale(website_sale):
 
         if category:
             if not request.session.get('form_values'):
-                request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
-            request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
-            self.get_form_values()['category_' + str(int(category))] = str(int(category))
+                request.session['form_values'] = {'category_%s' %int(category): int(category)}
+            request.session['form_values'] = {'category_%s' %int(category): int(category)}
+            self.get_form_values()['category_' + str(int(category))] = int(category)
+            request.session['current_domain'] = [('public_categ_ids', 'in', [int(category)])]
+            request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
 
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
@@ -1473,9 +1475,11 @@ class WebsiteSale(website_sale):
 
         if category:
             if not request.session.get('form_values'):
-                request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
-            request.session['form_values'] = {'category_%s' %int(category): '%s' %int(category)}
-            self.get_form_values()['category_' + str(int(category))] = str(int(category))
+                request.session['form_values'] = {'category_%s' %int(category): int(category)}
+            request.session['form_values'] = {'category_%s' %int(category): int(category)}
+            self.get_form_values()['category_' + str(int(category))] = int(category)
+            request.session['current_domain'] = [('public_categ_ids', 'in', [int(category)])]
+            request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
 
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
