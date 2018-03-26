@@ -60,7 +60,7 @@
                     <h6 class="text-center">
                         <span t-field="current_ingredient.name" />
                     </h6>
-                    <span itemprop="image" t-field="current_ingredient.image" t-field-options='{"widget": "image", "alt-field": "name"}' />
+                    <img t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(current_ingredient.id, 'webshop_dermanord.img_ingredients_big')" />
                     <p class="mt16">
                         <span t-field="current_ingredient.description" />
                     </p>
