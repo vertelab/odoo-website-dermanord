@@ -190,9 +190,12 @@ a {
 }
 
 .di_desktop_content {
+    max-width: 1400px !important;
+    margin: auto;
     position: absolute;
     top: 30%;
     left: 0%;
+    right: 0px;
 }
 
 .image_text_narrow {
