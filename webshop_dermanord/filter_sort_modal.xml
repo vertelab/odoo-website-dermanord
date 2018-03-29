@@ -417,9 +417,7 @@
                 </div>
                 <div class="container" style="padding: 0px;">
                     <t t-set="first_facet" t-value="0"/>
-                    <t t-if="len(filter_facets) &gt; 0">
-                        <t t-call="webshop_dermanord.desktop_product_filter"/>
-                    </t>
+                    <t t-call="webshop_dermanord.desktop_product_filter"/>
                 </div>
                 <input type="hidden" name="order" t-att-value="request.session.get('form_values', {}).get('order') or 'sold_qty desc'"/>
             </form>
