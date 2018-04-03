@@ -249,7 +249,7 @@
 
         <template id="company_info_form" inherit_id="website_sale_home.company_info_form" name="Company Info Form Inherited Reseller Dermanord">
             <xpath expr="//ul[@class='nav nav-tabs']" position="inside">
-                <li class="">
+                <li class="" t-if="home_user.partner_id.commercial_partner_id.is_reseller">
                     <a data-toggle="tab" href="#opening_hours" class="hidden-xs">Opening Hours</a>
                     <a data-toggle="tab" href="#opening_hours" class="hidden-lg hidden-md hidden-sm">
                         <i class="fa fa-clock-o" />
@@ -257,7 +257,7 @@
                 </li>
             </xpath>
             <xpath expr="//div[@id='contact']" position="after">
-                <div id="opening_hours" class="tab-pane fade">
+                <div id="opening_hours" class="tab-pane fade" t-if="home_user.partner_id.commercial_partner_id.is_reseller">
                     <table class="table table-striped">
                         <thead>
                             <th>Weekday</th>
@@ -333,6 +333,13 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="form-group">
+                        <label class="col-md-3 col-sm-4 control-label" for="opening_hours_exceptions">Exceptions</label>
+                        <div class="col-md-7 col-sm-8">
+                            <textarea class="form-control" name="opening_hours_exceptions" rows="5"><t t-esc="home_user.partner_id.commercial_partner_id.opening_hours_exceptions or ''"/></textarea>
+                            <small>This field is used to print dates when the salon is closed and that are exceptions from the opening hours stated above. If this field isn't filled out it won't be shown in the salon's opening hours.</small>
+                        </div>
+                    </div>
                 </div>
             </xpath>
             <xpath expr="//li[@id='nav_invoice']" position="after">
