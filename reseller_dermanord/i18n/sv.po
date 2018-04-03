@@ -78,6 +78,7 @@ msgid "Email:"
 msgstr "Epost:"
 
 #. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
 #: view:website:website_sale_home.company_info_form
 msgid "Exceptions"
 msgstr "Undantag"

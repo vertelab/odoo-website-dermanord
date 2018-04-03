@@ -178,6 +178,14 @@
                                     <p>Fri: <span t-esc="reseller.opening_hours_ids[4].opening_hours if len(reseller.opening_hours_ids) &gt; 4 else None"/></p>
                                     <p>Sat: <span t-esc="reseller.opening_hours_ids[5].opening_hours if len(reseller.opening_hours_ids) &gt; 5 else None"/></p>
                                     <p>Sun: <span t-esc="reseller.opening_hours_ids[6].opening_hours if len(reseller.opening_hours_ids) &gt; 6 else None"/></p>
+                                    <t t-if="reseller.opening_hours_exceptions">
+                                        <div>
+                                            <h4>Exceptions</h4>
+                                            <t t-foreach="reseller.opening_hours_exceptions.split('\n')" t-as="opening_hour_line">
+                                                <p t-esc="opening_hour_line"/>
+                                            </t>
+                                        </div>
+                                    </t>
                                 <hr/>
                                 <h4 class="dn_uppercase">Contact</h4>
                                 <p>
