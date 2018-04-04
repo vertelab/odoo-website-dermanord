@@ -48,15 +48,24 @@ class product_pricelist_dermanord(models.TransientModel):
         }
         all_products = self.env['product.product'].search([('id', 'in', self._context.get('active_ids', [])), ('sale_ok', '=', True)], order='default_code')
         for c in self.env['product.category'].search([('id', 'in', all_products.mapped('categ_id').mapped('id'))], order='parent_id, name'):
-            products = all_products.filtered(lambda p: p.categ_id == c)
-            data['categories'].append({
+            show_categ = False
+            d = {
                 'name': self.categ_name_format(c.display_name, c.name_report),
-                'products': [{
-                    'name': p.display_name,
-                    'col1': p.get_price_by_pricelist(self.pricelist_id_one, self.date, self.fiscal_position_id),
-                    'col2': p.get_price_by_pricelist(self.pricelist_id_two, self.date, self.fiscal_position_id) if self.pricelist_id_two else '',
-                } for p in products]
-            })
+                'products': []
+            }
+            products = all_products.filtered(lambda p: p.categ_id == c)
+            for p in products:
+                col1_price = p.get_price_by_pricelist(self.pricelist_id_one, self.date, self.fiscal_position_id)
+                col2_price = p.get_price_by_pricelist(self.pricelist_id_two, self.date, self.fiscal_position_id) if self.pricelist_id_two else ''
+                if col1_price != '0.0000' and col2_price != '0.0000':
+                    d['products'].append({
+                        'name': p.display_name,
+                        'col1': '%.2f' %float(col1_price),
+                        'col2': '%.2f' %float(col2_price),
+                    })
+                    show_categ = True
+            if show_categ:
+                data['categories'].append(d)
         return self.pool['report'].get_action(self._cr, self._uid, [], 'product_pricelist_dermanord.report_pricelist', data=data, context=self._context)
 
     def categ_name_format(self, display_name, name_report):
@@ -75,7 +84,7 @@ class product_product(models.Model):
         taxes = 0.0
         for c in fiscal_position_id.map_tax(self.taxes_id).compute_all(self.lst_price, 1, None, self.env.user.partner_id)['taxes']:
             taxes += c.get('amount', 0.0)
-        return "%.2f" %(price_rule[self.id][0] + taxes)
+        return '%.4f' %(price_rule[self.id][0] + taxes)
 
 
 class product_category(models.Model):
