@@ -69,12 +69,13 @@ class crm_tracking_campaign(models.Model):
 
     @api.model
     def create(self, vals):
-        for o in self.env['crm.campaign.object'].browse(vals.get('object_ids')):
+        res = super(crm_tracking_campaign, self).create(vals)
+        for o in res.object_ids:
             if o.object_id._name == 'product.template':
                 o.object_id.write({'campaign_changed': True})
             elif o.object_id._name == 'product.product':
                 o.object_id.product_tmpl_id.write({'campaign_changed': True})
-        return super(crm_tracking_campaign, self).create(vals)
+        return res
 
 
 class crm_campaign_object(models.Model):

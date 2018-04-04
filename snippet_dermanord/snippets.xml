@@ -315,7 +315,6 @@
                     <section class="oe_snippet_body product_highlights">
                         <div class="container">
                             <div class="row mt32 mb32">
-                                <h2 class="text-center mt16 mb16 dn_uppercase">Product Highlights</h2>
                                 <div class="product_div"/>
                             </div>
                         </div>
