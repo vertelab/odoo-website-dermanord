@@ -596,6 +596,14 @@
                             </p>
                         </t>
                     </div>
+                    <div t-if="len(product.public_categ_ids) &gt; 0" class="col-md-12 no_padding_div">
+                        <h2 class="category_title dn_uppercase">Categories</h2>
+                        <t t-foreach="product.public_categ_ids" t-as="pc">
+                            <a t-att-href="'/dn_shop/category/%s' %pc.id">
+                                <p style="color: #777;" t-field="pc.name" />
+                            </a>
+                        </t>
+                    </div>
                     <div class="col-md-12 facet_div">
                         <t t-if="product_product and product_product.facet_line_ids">
                             <div class="col-md-6">
