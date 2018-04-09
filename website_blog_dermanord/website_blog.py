@@ -209,7 +209,7 @@ class blog_post_object(models.Model):
             if self.object_id._name == 'product.template' or self.object_id._name == 'product.product':
                 self.name = self.object_id.name
                 self.description = self.object_id.description_sale
-                self.image = self.object_id.image if self.object_id.image else (self.object_id.image_attachment_ids.sorted(lambda p: p.sequence)[0] if len(self.object_id.image_attachment_ids) > 0 else None)
+                self.image = self.object_id.image if self.object_id.image else (self.object_id.image_attachment_ids.sorted(lambda p: p.sequence)[0].datas if len(self.object_id.image_attachment_ids) > 0 else None)
                 self.access_group_ids = self.object_id.access_group_ids
 
     @api.one
