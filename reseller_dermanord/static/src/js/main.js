@@ -8,8 +8,6 @@ $(document).ready(function() {
         $(this).find("input").val('1');
         $(this).addClass("hidden");
     });
-    d = new Date();
-    $("#myimg").attr("src", "/myimg.jpg?"+d.getTime());
 });
 
 function reseller_restore_filter() {
