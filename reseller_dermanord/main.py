@@ -273,7 +273,6 @@ class website_sale_home(website_sale_home):
 
     @http.route(['/home/<model("res.users"):home_user>/info_update',], type='http', auth="user", website=True)
     def info_update(self, home_user=None, **post):
-        _logger.warn('\n\nbla bla\n|%s|\n' % post.get('opening_hours_exceptions'))
         # update data for main partner
         self.validate_user(home_user)
         if home_user == request.env.user:
@@ -288,6 +287,8 @@ class website_sale_home(website_sale_home):
             commercial_partner.website_short_description = post.get('website_short_description')
             if post.get('top_image'):
                 commercial_partner.top_image = base64.encodestring(post.get('top_image').read())
+            if post.get('remove_img') and post.get('remove_img') == '1':
+                commercial_partner.top_image = None
             if post.get('monday_open_time'):
 
                 monday = commercial_partner.opening_hours_ids.filtered(lambda o: o.dayofweek == 'monday')
@@ -353,7 +354,6 @@ class website_sale_home(website_sale_home):
                 sunday.break_stop = self.get_time_float(post.get('sunday_break_stop') or '0.0')
                 sunday.close = True if post.get('sunday_close') == '1' else False
             if post.get('opening_hours_exceptions') != None and post.get('opening_hours_exceptions') != commercial_partner.opening_hours_exceptions:
-                _logger.warn('writing')
                 commercial_partner.opening_hours_exceptions = post.get('opening_hours_exceptions')
 
         self.update_info(home_user, post)

@@ -52,7 +52,7 @@
                 <div id="wrap">
                     <div class="oe_structure"/>
                     <div class="col-md-12 col-sm-12 col-xs-12 dn_header_container" style="padding: 0px; background-color: #000;">
-                        <img alt="Odoo CMS - a big picture" class="img img-responsive" src="/website/static/src/img/library/ipad.png" style="margin: 0 auto; width: 100%; max-width: 1366px;"/>
+                        <img alt="Odoo CMS - a big picture" class="img img-responsive" t-att-src="'/imagefield/ir.attachment/datas/%s/ref/theme_dermanord.dn_header_img' %request.env.ref('reseller_dermanord.find_reseller_top_img').id" style="margin: 0 auto; width: 100%; max-width: 1366px;"/>
                     </div>
                     <div class="container">
                         <div class="row">
@@ -231,7 +231,10 @@
                     <div class="form-group">
                         <label class="col-md-3 col-sm-4 control-label" for="top_image">Top Image</label>
                         <div class="col-md-7 col-sm-8">
-                            <t t-if="home_user.partner_id.commercial_partner_id.top_image"><img t-att-src="'/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image' %home_user.partner_id.commercial_partner_id.id" style="max-width: 200px;"/></t>
+                            <t t-if="home_user.partner_id.commercial_partner_id.top_image">
+                                <img id="top_image_show" t-att-src="'/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image?%s' %(home_user.partner_id.commercial_partner_id.id, time.strftime('%Y%m%d%H%M%S'))" style="max-width: 200px;"/>
+                                <i id="remove_img" class="fa fa-trash-o fa-2x"><input name="remove_img" class="hidden" value="0"/></i>
+                            </t>
                             <input id="top_image" type="file" name="top_image" accept="image/*" capture="camera"/>
                         </div>
                     </div>
