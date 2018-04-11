@@ -3,6 +3,11 @@ $(document).ready(function() {
         $("#reseller_description_div").height(300);
         $("#reseller_description_div").find(".read-more").removeClass("hidden");
     }
+    $("i#remove_img").click(function(){
+        $("img#top_image_show").attr("src", "");
+        $(this).find("input").val('1');
+        $(this).addClass("hidden");
+    });
 });
 
 function reseller_restore_filter() {

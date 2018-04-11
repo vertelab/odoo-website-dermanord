@@ -523,7 +523,7 @@ class Website(models.Model):
             dic['current_ingredient'] = int(current_ingredient)
             dic[current_ingredient_key] = current_ingredient
 
-        domain_append = []
+        domain_append = [('sale_ok', '=', True)]
         if category_ids:
             domain_append += [('public_categ_ids', 'in', [id for id in category_ids])]
         if facet_ids:
@@ -545,7 +545,7 @@ class Website(models.Model):
         return domain_append
 
     def domain_current(self, model, dic):
-        domain_current = []
+        domain_current = [('sale_ok', '=', True)]
         domain_append = []
         if 'current_news' in dic:
             if model == 'product.template':

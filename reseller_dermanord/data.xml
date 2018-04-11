@@ -99,4 +99,13 @@ else:
         </record>
 
     </data>
+
+    <data noupdate="1">
+        <record id="find_reseller_top_img" model="ir.attachment">
+            <field name="name">Find Reseller Top Image</field>
+            <field name="type">binary</field>
+            <field name="res_model">ir.ui.view</field>
+        </record>
+    </data>
+
 </openerp>
