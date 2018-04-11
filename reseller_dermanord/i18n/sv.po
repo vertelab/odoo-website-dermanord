@@ -216,8 +216,8 @@ msgstr "Gata"
 
 #. module: reseller_dermanord
 #: view:website:website_sale_home.company_info_form
-msgid "Street 2"
-msgstr "Gata 2"
+msgid "Street row 2"
+msgstr "Gata rad 2"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller

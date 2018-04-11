@@ -266,6 +266,9 @@ class website_sale_home(website_sale_home):
         res.append('visit')
         return res
 
+    def get_address_types_readonly(self):
+        return ['delivery', 'invoice']
+
     def get_children_by_address_type(self, company):
         res = super(website_sale_home, self).get_children_by_address_type(company)
         res.update({'visit': company.child_ids.filtered(lambda c: c.type == 'visit')[0] if company.child_ids.filtered(lambda c: c.type == 'visit') else None})
@@ -273,7 +276,6 @@ class website_sale_home(website_sale_home):
 
     @http.route(['/home/<model("res.users"):home_user>/info_update',], type='http', auth="user", website=True)
     def info_update(self, home_user=None, **post):
-        _logger.warn('\n\nbla bla\n|%s|\n' % post.get('opening_hours_exceptions'))
         # update data for main partner
         self.validate_user(home_user)
         if home_user == request.env.user:
@@ -355,7 +357,6 @@ class website_sale_home(website_sale_home):
             if post.get('opening_hours_exceptions') != None and post.get('opening_hours_exceptions') != commercial_partner.opening_hours_exceptions:
                 _logger.warn('writing')
                 commercial_partner.opening_hours_exceptions = post.get('opening_hours_exceptions')
-
         self.update_info(home_user, post)
         return werkzeug.utils.redirect("/home/%s" % home_user.id)
 
