@@ -277,8 +277,13 @@ msgstr "Vill du också använda och sälja MARIA ÅKERBERG?"
 
 #. module: reseller_dermanord
 #: view:website:website_sale_home.company_info_form
-msgid "Visit"
-msgstr "Besök"
+msgid "*To make changes, contact Maria Åkerberg below"
+msgstr "*För ändring kontakta Maria Åkerberg nedan"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Visit Address"
+msgstr "Besöksadress"
 
 #. module: reseller_dermanord
 #: model:ir.model,name:reseller_dermanord.model_website

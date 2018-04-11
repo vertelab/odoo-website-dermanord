@@ -153,13 +153,31 @@ class Main(http.Controller):
         '/reseller/<int:partner>',
     ], type='http', auth="public", website=True)
     def reseller(self, partner=None, country=None, city='', competence=None, **post):
+        _logger.warn('\n\ndermanord\n%s\n' % post)
         if not partner:
-            word = post.get('search', False)
+            word = post.get('search_resellers', False)
             if word and word != '':
+                # Find all visiting addresses
                 visit_ids = [p['parent_id'][0] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit')], ['parent_id'])]
-                resellers = request.env['res.partner'].sudo().search([('id', 'not in', visit_ids), ('is_reseller', '=', True), '|', ('name', 'ilike', word), '|', ('brand_name', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), '|', ('country_id.name', 'ilike', word), ('child_category_ids.name', 'ilike', word)])
-                visits = request.env['res.partner'].sudo().search([('type', '=', 'visit'), '|', ('name', 'ilike', word), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)])
-                resellers |= visits.mapped('parent_id')
+                # Find all matching visit addresses
+                matching_visit_ids = [p['parent_id'][0] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), '|', ('name', 'ilike', word), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['parent_id'])]
+                # Find (partners that have a matching visit address OR brand name OR child category) OR (partners whose address match the search and DON'T have a visit address)
+                resellers = request.env['res.partner'].sudo().search([
+                    ('is_reseller', '=', True),
+                    '|',
+                        '|', '|',
+                            ('id', 'in', matching_visit_ids),
+                            ('brand_name', 'ilike', word),
+                            ('child_category_ids.name', 'ilike', word),
+                        '&',
+                            ('id', 'not in', visit_ids),
+                            '|', '|', '|', '|', '|',
+                                ('name', 'ilike', word),
+                                ('street', 'ilike', word),
+                                ('street2', 'ilike', word),
+                                ('city', 'ilike', word),
+                                ('state_id.name', 'ilike', word),
+                                ('country_id.name', 'ilike', word),])
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
             else:
                 closest_ids = request.env['res.partner'].geoip_search('position', request.httprequest.remote_addr, 10)
