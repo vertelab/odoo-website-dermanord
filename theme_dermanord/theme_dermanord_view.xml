@@ -155,7 +155,7 @@
                             </div>
                             <div id="my_page_div" class="col-xs-2">
                                 <div class="hidden-lg hidden-md hidden-sm">
-                                    <a t-att-href="'/home/%s' %user_id.id" role="menuitem" style="color: #000;"><i class="fa fa-user fa-2x"/></a>
+                                    <a href="/home" role="menuitem" style="color: #000;"><i class="fa fa-user fa-2x"/></a>
                                 </div>
                             </div>
                             <div id="shop_cart_div" class="col-xs-2">
