@@ -3,6 +3,7 @@ var shop_cart = $("#top_menu").find("a[href$='/shop/cart']").closest("li");
 var divider = $("#top_menu").find(".divider").closest("li");
 var my_account = $("#top_menu > li").last();
 var more_menu = $("#top_menu").find("li#more_dropdown");
+//~ var total_height_before_main = 0;
 var menu_items = [];
 
 $("#top_menu").children().each(function() { // those menu items should not included in more menu
@@ -26,10 +27,9 @@ jQuery.expr[':'].contains = function(a, i, m) {
 };
 
 dermanord_resize_for_menu = function() {
-    var total_height_before_main = 0;
-    $("main").prevAll().each(function(){
-        total_height_before_main += $(this).height();
-    });
+    //~ $("main").prevAll().each(function(){
+        //~ total_height_before_main += $(this).height();
+    //~ });
     if($(window).width() > 758) {
         var max_li_width = $("#top_menu").width() - li_width_init;
         var li_width = 0;
@@ -56,7 +56,7 @@ dermanord_resize_for_menu = function() {
         menu = $(".navbar.navbar-default.navbar-static-top");
         bt = menu.css('border-top-width');
         bb = menu.css('border-bottom-width');
-        height = menu.height() + parseFloat(bt.substring(0, bt.length-2)) + parseFloat(bb.substring(0, bb.length-2)) - total_height_before_main;
+        height = menu.height() + parseFloat(bt.substring(0, bt.length-2)) + parseFloat(bb.substring(0, bb.length-2));
         breadcrumb = $("ol.dn_breadcrumb");
         if(breadcrumb.length == 1) {
             breadcrumb.css({"margin-top": height});
