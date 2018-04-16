@@ -233,7 +233,7 @@
                         <div class="col-md-7 col-sm-8">
                             <t t-if="home_user.partner_id.commercial_partner_id.top_image">
                                 <img id="top_image_show" t-att-src="'/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image?%s' %(home_user.partner_id.commercial_partner_id.id, time.strftime('%Y%m%d%H%M%S'))" style="max-width: 200px;"/>
-                                <i id="remove_img" class="fa fa-trash-o fa-2x"><input name="remove_img" class="hidden" value="0"/></i>
+                                <i id="remove_img" class="fa fa-trash-o fa-2x" t-att-data-partner_id="home_user.partner_id.commercial_partner_id.id"><input name="remove_img" class="hidden" value="0"/></i>
                             </t>
                             <input id="top_image" type="file" name="top_image" accept="image/*" capture="camera"/>
                         </div>

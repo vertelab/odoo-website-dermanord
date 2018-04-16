@@ -4,9 +4,16 @@ $(document).ready(function() {
         $("#reseller_description_div").find(".read-more").removeClass("hidden");
     }
     $("i#remove_img").click(function(){
-        $("img#top_image_show").attr("src", "");
-        $(this).find("input").val('1');
-        $(this).addClass("hidden");
+        var self = $(this);
+        openerp.jsonRpc("/remove_img", "call", {
+            'partner_id': self.data("partner_id")
+        }).done(function(data){
+            if (data) {
+                $("img#top_image_show").attr("src", "");
+                self.find("input").val('1');
+                self.addClass("hidden");
+            }
+        });
     });
 });
 
