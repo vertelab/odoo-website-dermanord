@@ -26,6 +26,10 @@ jQuery.expr[':'].contains = function(a, i, m) {
 };
 
 dermanord_resize_for_menu = function() {
+    var total_height_before_main = 0;
+    $("main").prevAll().each(function(){
+        total_height_before_main += $(this).height();
+    });
     if($(window).width() > 758) {
         var max_li_width = $("#top_menu").width() - li_width_init;
         var li_width = 0;
@@ -52,7 +56,7 @@ dermanord_resize_for_menu = function() {
         menu = $(".navbar.navbar-default.navbar-static-top");
         bt = menu.css('border-top-width');
         bb = menu.css('border-bottom-width');
-        height = menu.height() + parseFloat(bt.substring(0, bt.length-2)) + parseFloat(bb.substring(0, bb.length-2));
+        height = menu.height() + parseFloat(bt.substring(0, bt.length-2)) + parseFloat(bb.substring(0, bb.length-2)) - total_height_before_main;
         breadcrumb = $("ol.dn_breadcrumb");
         if(breadcrumb.length == 1) {
             breadcrumb.css({"margin-top": height});
