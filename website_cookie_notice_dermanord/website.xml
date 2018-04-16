@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <template id="message" inherit_id="website_cookie_notice.message" name="Cookies notice Inherited Website_cookie_notice_dermanord">
+        <template id="message" inherit_id="website_cookie_notice.message" name="Cookies notice Inherited website_cookie_notice_dermanord">
             <xpath expr="//div[@id='website_cookie_notice']" position="attributes">
                 <attribute name="style">position: fixed !important; bottom: 0px; width: 100%; z-index: 1003;</attribute>
             </xpath>

@@ -20,20 +20,20 @@
 ##############################################################################
 
 {
-    'name': 'Website Cookie Notice Dermanord',
+    'name': 'Website Saleorder Report Dermanord',
     'version': '1.0',
     'category': 'website',
     'summary': '',
     'description': """
-Reposition cookie layout
-========================
+Configurations in sale order report for Dermanord
+=================================================
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['website_cookie_notice', 'theme_dermanord'],
+    'depends': ['webshop_dermanord'],
     'data': [
-        'website.xml',
+        'report_saleorder.xml',
 ],
     'application': False,
 }
