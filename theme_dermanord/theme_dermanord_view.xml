@@ -114,7 +114,22 @@
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu js_language_selector hidden-xs col-md-12 col-sm-12 col-xs-12 futura_pt_m" t-if="(request.website_multilang and len(languages) &gt; 1) or editable">
-                            <li t-foreach="languages" t-as="lg">
+                            <t t-set="master_language" t-value="None"/>
+                            <t t-set="other_languages" t-value="[]"/>
+                            <t t-foreach="languages" t-as="lg">
+                                <t t-if="lg[0] == 'ma_ST'">
+                                    <t t-set="master_language" t-value="lg"/>
+                                </t>
+                                <t t-if="lg[0] != 'ma_ST'">
+                                    <t t-set="other_languages" t-value="other_languages + [lg]"/>
+                                </t>
+                            </t>
+                            <li groups="base.group_website_publisher">
+                                <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=master_language[0])" t-att-data-default-lang="editable and 'true' if master_language[0] == website.default_lang_code else None" t-att-data-lang="master_language[0]" class="js_change_lang">
+                                    <t t-esc="master_language[1].split('/').pop()"/>
+                                </a>
+                            </li>
+                            <li t-foreach="other_languages" t-as="lg">
                                 <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
                                     <t t-esc="lg[1].split('/').pop()"/>
                                 </a>
@@ -384,7 +399,14 @@
 <!--
                                 <img t-att-src="'/web/binary/image?model=res.country&amp;id=%s&amp;field=image' %request.env['res.country'].search([('code', '=', lg[0].split('_')[1].lower())]).id" style="height: 20px;"/>
 -->
-                                <span t-if="lg[0] != 'en_US'"><t t-esc="lg[0].split('_')[1]"/></span>
+                                <span t-if="lg[0] != 'en_US'">
+                                    <t t-if="lg[0] == 'ma_ST'">
+                                        <t t-esc="lg[0].split('_')[1]" groups="base.group_website_publisher"/>
+                                    </t>
+                                    <t t-if="lg[0] != 'ma_ST'">
+                                        <t t-esc="lg[0].split('_')[1]"/>
+                                    </t>
+                                </span>
                                 <span t-if="lg[0] == 'en_US'">EN</span>
                             </a>
                         </div>
