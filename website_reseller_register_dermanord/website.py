@@ -29,13 +29,16 @@ _logger = logging.getLogger(__name__)
 
 class reseller_register(reseller_register):
 
+    def get_address_type(self):
+        res = super(reseller_register, self).get_address_type()
+        return res + ['visit']
+
     def company_fileds(self):
         value = super(reseller_register, self).company_fileds()
-        return value + ['brand_name', 'street', 'street2', 'zip', 'city', 'phone', 'email', 'is_reseller']
+        return value + ['brand_name', 'street', 'street2', 'zip', 'city', 'country_id', 'phone', 'email', 'is_reseller']
 
     def get_company_post(self, post):
         value = super(reseller_register, self).get_company_post(post)
-        _logger.warn(post.get('company_is_reseller'))
         value.update({
             'brand_name': post.get('company_brand_name'),
             'phone': post.get('company_phone'),
@@ -59,6 +62,12 @@ class reseller_register(reseller_register):
         value['help_company_street2'] = _('')
         value['help_company_zip'] = _('')
         value['help_company_city'] = _('')
+        value['help_visit_street'] = _('')
+        value['help_visit_street2'] = _('')
+        value['help_visit_zip'] = _('')
+        value['help_visit_city'] = _('')
+        value['help_visit_phone'] = _('')
+        value['help_visit_email'] = _('')
         return value
 
     @http.route(['/reseller_register/information'], type='http', auth='public', website=True)
