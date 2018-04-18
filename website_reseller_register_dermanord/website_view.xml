@@ -57,7 +57,7 @@
             <xpath expr="//div[@class='oe_structure oe_empty']" position="before">
                 <t t-call="website_reseller_register_dermanord.menu_header"/>
             </xpath>
-            <xpath expr="//div[@id='company_org']" position="after">
+            <xpath expr="//ul[@class='nav nav-tabs']" position="before">
                 <h4 id="title_salon" class="col-md-12">
                     <strong>Salon Information</strong>
                 </h4>
