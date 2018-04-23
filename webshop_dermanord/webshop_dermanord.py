@@ -523,7 +523,7 @@ class Website(models.Model):
             dic['current_ingredient'] = int(current_ingredient)
             dic[current_ingredient_key] = current_ingredient
 
-        domain_append = [('sale_ok', '=', True)]
+        domain_append = [('sale_ok', '=', True),('event_ok', '=', False)]
         if category_ids:
             domain_append += [('public_categ_ids', 'in', [id for id in category_ids])]
         if facet_ids:
