@@ -15,6 +15,39 @@
                     <label for="website_short_description"/>
                     <field name="website_short_description"/>
                 </field>
+                <div position="inside">
+                    <label for="webshop_category_ids"/>
+                    <field name="webshop_category_ids" widget="many2many_tags"/>
+                </div>
+            </field>
+        </record>
+        
+<!--
+        <record id="view_partner_form" model="ir.ui.view">
+            <field name="name">event.participant.inherit.res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                <field name="category_id" position="after">
+                    <div t-if="is_company">
+                        <label for="child_category_ids"/>
+                        <field name="child_category_ids" widget="many2many_tags" />
+                    </div>
+                </field>
+            </field>
+        </record>
+-->
+        <record id="view_res_partner_filter_reseller_dermanord" model="ir.ui.view">
+            <field name="name">.res.partner.reseller.dermanord.select</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter" />
+            <field name="arch" type="xml">
+                <field name="user_id" position="before">
+                    <field name="webshop_category_ids" string="Webshop Category"/>
+<!--
+                     filter_domain="[('child_category_ids', 'ilike', self)]"/>
+-->
+                </field>
             </field>
         </record>
 

@@ -41,6 +41,7 @@ class res_partner(models.Model):
     is_reseller = fields.Boolean(string='Show Reseller in websearch')
     top_image = fields.Binary(string='Top Image')
     type = fields.Selection(selection_add=[('visit', 'Visit')])
+    webshop_category_ids = fields.Many2many(comodel_name='product.public.category', string='Product Categories', domain=[('website_published', '=', True)])
 
     #~ @api.one
     #~ def _is_reseller(self):
@@ -153,7 +154,6 @@ class Main(http.Controller):
         '/reseller/<int:partner>',
     ], type='http', auth="public", website=True)
     def reseller(self, partner=None, country=None, city='', competence=None, **post):
-        _logger.warn('\n\ndermanord\n%s\n' % post)
         if not partner:
             word = post.get('search_resellers', False)
             if word and word != '':
@@ -379,6 +379,14 @@ class website_sale_home(website_sale_home):
         self.update_info(home_user, post)
         return werkzeug.utils.redirect("/home/%s" % home_user.id)
 
+    def update_info(self, home_user, post):
+        res = super(website_sale_home, self).update_info(home_user, post)
+        
+        categories = request.env['product.public.category'].search([('id', 'in', [int(i) for i in request.httprequest.form.getlist('webshop_category_ids')]), ('website_published', '=', True)])
+        if categories and (categories != home_user.partner_id.commercial_partner_id.webshop_category_ids):
+            home_user.partner_id.commercial_partner_id.webshop_category_ids = categories
+        return res
+
     def get_time_float(self, time):
         return (math.floor(float(time)) + (float(time)%1)/0.6) if time else 0.0
 
@@ -396,3 +404,8 @@ class website(models.Model):
     @api.model
     def get_float_time(self, time):
         return ("%.2f" %(math.floor(float(time)) + (float(time)%1)*0.6)) if time else 0.0
+
+    def sale_home_get_data(self, home_user, post):
+        values = super(website, self).sale_home_get_data(home_user, post)
+        values['webshop_category_ids'] = [(category['id'], category['name']) for category in request.env['product.public.category'].search_read([('website_published', '=', True)], ['name'])]
+        return values

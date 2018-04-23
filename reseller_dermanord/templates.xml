@@ -222,6 +222,17 @@
                             <input id="brand_name" type="text" class="form-control" name="brand_name" placeholder="Brand Name..." t-att-value="home_user.partner_id.commercial_partner_id.brand_name" />
                         </div>
                     </div>
+                    <div t-att-class="'form-group %s' %validation.get('webshop_category_ids', '')">
+                        <label class="col-md-3 col-sm-4 control-label" for="webshop_category_ids">Product Categories</label>
+                        <div class="col-md-7 col-sm-8">
+                            <select class="form-control" name="webshop_category_ids" t-att="input_attrs">
+                                <t t-foreach="webshop_category_ids" t-as="category">
+                                    <option t-att-value="category[0]" t-att="category[0] in home_user.partner_id.commercial_partner_id.webshop_category_ids else {}"><t t-esc="category[1]"/></option>
+                                </t>
+                            </select>
+                            <small t-esc="help.get('help_webshop_category_ids', '')" />
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label class="col-md-3 col-sm-4 control-label" for="website_short_description">Reseller Description</label>
                         <div class="col-md-7 col-sm-8">
