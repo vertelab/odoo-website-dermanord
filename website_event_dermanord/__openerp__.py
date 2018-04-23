@@ -30,6 +30,7 @@ Event page for Dermanord
 Specify URL to Dermanord map marker in parameter dermanord_map_marker.
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['website_event', 'theme_dermanord', 'website_google_maps_fix', 'website_partner_google_maps',],
     'data': [

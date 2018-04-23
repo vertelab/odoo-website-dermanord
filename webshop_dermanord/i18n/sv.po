@@ -473,5 +473,10 @@ msgstr "Användning"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.product
+msgid "Categories"
+msgstr "Kategorier"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.product
 msgid "For Resellers"
 msgstr "För återförsäljare"

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="message" inherit_id="website_cookie_notice.message" name="Cookies notice Inherited website_cookie_notice_dermanord">
+            <xpath expr="//div[@id='website_cookie_notice']" position="attributes">
+                <attribute name="style">position: fixed !important; bottom: 0px; width: 100%; z-index: 1003;</attribute>
+            </xpath>
+            <xpath expr="//div[@class='col-xs-10']" position="attributes">
+                <attribute name="class">col-md-10 col-sm-10 col-xs-10</attribute>
+            </xpath>
+            <xpath expr="//div[@class='col-xs-2 text-center']" position="attributes">
+                <attribute name="class">col-md-2 col-sm-2 col-xs-2 text-center</attribute>
+            </xpath>
+        </template>
+        <template id="website_cookie_notice.cookiebanner" inherit_id="website.layout">
+            <xpath expr="//div[@id='wrapwrap']" position="inside">
+                <t t-call="website_cookie_notice.message"/>
+            </xpath>
+        </template>
+        <template id="assets_frontend" inherit_id="website.assets_frontend">
+            <xpath expr="." position="inside">
+                <link href="/website_cookie_notice_dermanord/static/src/css/main.css" rel="stylesheet" />
+                <script type="text/javascript" src="/website_cookie_notice_dermanord/static/src/js/main.js" />
+            </xpath>
+        </template>
+    </data>
+</openerp>

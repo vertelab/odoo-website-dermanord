@@ -153,10 +153,31 @@ class Main(http.Controller):
         '/reseller/<int:partner>',
     ], type='http', auth="public", website=True)
     def reseller(self, partner=None, country=None, city='', competence=None, **post):
+        _logger.warn('\n\ndermanord\n%s\n' % post)
         if not partner:
-            word = post.get('search', False)
+            word = post.get('search_resellers', False)
             if word and word != '':
-                resellers = request.env['res.partner'].sudo().search(['&', ('is_reseller', '=', True), '|', ('name', 'ilike', word), '|', ('brand_name', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), '|', ('country_id.name', 'ilike', word), ('child_category_ids.name', 'ilike', word)])
+                # Find all visiting addresses
+                visit_ids = [p['parent_id'][0] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit')], ['parent_id'])]
+                # Find all matching visit addresses
+                matching_visit_ids = [p['parent_id'][0] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), '|', ('name', 'ilike', word), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['parent_id'])]
+                # Find (partners that have a matching visit address OR brand name OR child category) OR (partners whose address match the search and DON'T have a visit address)
+                resellers = request.env['res.partner'].sudo().search([
+                    ('is_reseller', '=', True),
+                    '|',
+                        '|', '|',
+                            ('id', 'in', matching_visit_ids),
+                            ('brand_name', 'ilike', word),
+                            ('child_category_ids.name', 'ilike', word),
+                        '&',
+                            ('id', 'not in', visit_ids),
+                            '|', '|', '|', '|', '|',
+                                ('name', 'ilike', word),
+                                ('street', 'ilike', word),
+                                ('street2', 'ilike', word),
+                                ('city', 'ilike', word),
+                                ('state_id.name', 'ilike', word),
+                                ('country_id.name', 'ilike', word),])
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
             else:
                 closest_ids = request.env['res.partner'].geoip_search('position', request.httprequest.remote_addr, 10)
@@ -258,14 +279,27 @@ class Main(http.Controller):
 
 class website_sale_home(website_sale_home):
 
+    def get_address_type(self):
+        res = super(website_sale_home, self).get_address_type()
+        res.append('visit')
+        return res
+
+    def get_address_types_readonly(self):
+        return ['delivery', 'invoice']
+
+    def get_children_by_address_type(self, company):
+        res = super(website_sale_home, self).get_children_by_address_type(company)
+        res.update({'visit': company.child_ids.filtered(lambda c: c.type == 'visit')[0] if company.child_ids.filtered(lambda c: c.type == 'visit') else None})
+        return res
+
     @http.route(['/home/<model("res.users"):home_user>/info_update',], type='http', auth="user", website=True)
     def info_update(self, home_user=None, **post):
         # update data for main partner
         self.validate_user(home_user)
         if home_user == request.env.user:
             home_user = home_user.sudo()
-        home_user.email = post.get('email')
-        home_user.login = post.get('login')
+        #~ home_user.email = post.get('email')
+        #~ home_user.login = post.get('login')
         if post.get('confirm_password'):
             home_user.password = post.get('password')
         if home_user.partner_id.commercial_partner_id.is_reseller:
@@ -274,6 +308,8 @@ class website_sale_home(website_sale_home):
             commercial_partner.website_short_description = post.get('website_short_description')
             if post.get('top_image'):
                 commercial_partner.top_image = base64.encodestring(post.get('top_image').read())
+            if post.get('remove_img') and post.get('remove_img') == '1':
+                commercial_partner.top_image = None
             if post.get('monday_open_time'):
 
                 monday = commercial_partner.opening_hours_ids.filtered(lambda o: o.dayofweek == 'monday')
@@ -338,13 +374,21 @@ class website_sale_home(website_sale_home):
                 sunday.break_start = self.get_time_float(post.get('sunday_break_start') or '0.0')
                 sunday.break_stop = self.get_time_float(post.get('sunday_break_stop') or '0.0')
                 sunday.close = True if post.get('sunday_close') == '1' else False
-
-
+            if post.get('opening_hours_exceptions') != None and post.get('opening_hours_exceptions') != commercial_partner.opening_hours_exceptions:
+                commercial_partner.opening_hours_exceptions = post.get('opening_hours_exceptions')
+        self.update_info(home_user, post)
         return werkzeug.utils.redirect("/home/%s" % home_user.id)
 
     def get_time_float(self, time):
         return (math.floor(float(time)) + (float(time)%1)/0.6) if time else 0.0
 
+    @http.route(['/remove_img',], type='json', auth="user", website=True)
+    def remove_img(self, partner_id='0', **post):
+        partner = request.env['res.partner'].browse(int(partner_id))
+        if partner:
+            partner.write({'top_image': None})
+            return True
+        return False
 
 class website(models.Model):
     _inherit = 'website'

@@ -46,19 +46,33 @@ class product_pricelist_dermanord(models.TransientModel):
             'currency': self.pricelist_id_one.currency_id.name,
             'categories': [],
         }
-        for c in self.env['product.category'].search([], order='parent_id, name'):
-            products = self.env['product.product'].search([('categ_id', '=', c.id), ('sale_ok', '=', True)], order='default_code')
-            if len(products) > 0:
-                data['categories'].append({
-                    'name': c.display_name,
-                    'products': [{
-                        'name': p.name,
-                        'code': p.default_code,
-                        'col1': p.get_price_by_pricelist(self.pricelist_id_one, self.date, self.fiscal_position_id),
-                        'col2': p.get_price_by_pricelist(self.pricelist_id_two, self.date, self.fiscal_position_id) if self.pricelist_id_two else '',
-                    } for p in products]
-                })
+        all_products = self.env['product.product'].search([('id', 'in', self._context.get('active_ids', [])), ('sale_ok', '=', True)], order='default_code')
+        for c in self.env['product.category'].search([('id', 'in', all_products.mapped('categ_id').mapped('id'))], order='parent_id, name'):
+            show_categ = False
+            d = {
+                'name': self.categ_name_format(c.display_name, c.name_report),
+                'products': []
+            }
+            products = all_products.filtered(lambda p: p.categ_id == c)
+            for p in products:
+                col1_price = p.get_price_by_pricelist(self.pricelist_id_one, self.date, self.fiscal_position_id)
+                col2_price = p.get_price_by_pricelist(self.pricelist_id_two, self.date, self.fiscal_position_id) if self.pricelist_id_two else ''
+                if col1_price != '0.0000' and col2_price != '0.0000':
+                    d['products'].append({
+                        'name': p.display_name,
+                        'col1': '%.2f' %float(col1_price),
+                        'col2': '%.2f' %float(col2_price),
+                    })
+                    show_categ = True
+            if show_categ:
+                data['categories'].append(d)
         return self.pool['report'].get_action(self._cr, self._uid, [], 'product_pricelist_dermanord.report_pricelist', data=data, context=self._context)
+
+    def categ_name_format(self, display_name, name_report):
+        if '/' in display_name:
+            return '/'.join(display_name.split('/')[:-1]+[' %s' %name_report]) if name_report else display_name
+        else:
+            return name_report if name_report else display_name
 
 
 class product_product(models.Model):
@@ -70,7 +84,13 @@ class product_product(models.Model):
         taxes = 0.0
         for c in fiscal_position_id.map_tax(self.taxes_id).compute_all(self.lst_price, 1, None, self.env.user.partner_id)['taxes']:
             taxes += c.get('amount', 0.0)
-        return "%.2f" %(price_rule[self.id][0] + taxes)
+        return '%.4f' %(price_rule[self.id][0] + taxes)
+
+
+class product_category(models.Model):
+    _inherit = 'product.category'
+
+    name_report = fields.Char(string='Name for Report', translate=True)
 
 
 class ReportPricelist(models.AbstractModel):
@@ -84,4 +104,5 @@ class ReportPricelist(models.AbstractModel):
             'docs': self,
             'data': data,
         }
-        return report_obj.render('product_pricelist_dermanord.report_pricelist', docargs)
+        res = report_obj.render('product_pricelist_dermanord.report_pricelist', docargs)
+        return res

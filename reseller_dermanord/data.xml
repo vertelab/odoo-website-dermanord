@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
+    <data>
 
         <record id="reseller_tag" model="res.partner.category">
             <field name="name">Reseller</field>
@@ -24,6 +24,7 @@
 
         <record id="reseller_top_image" model="image.recipe">
             <field name="name">Reseller Header Image</field>
+            <field name="image_format">jpeg</field>
             <field name="description"></field>
             <field name="recipe">if float(image.width)/float(image.height) &gt;= float(horizontal)/float(vertical):
     if image.height &gt; int(height):
@@ -59,5 +60,52 @@ else:
             <field name="recipe_id" ref="reseller_dermanord.reseller_top_image"/>
         </record>
 
+        <record id="reseller_contact_img" model="image.recipe">
+            <field name="name">Contact Image</field>
+            <field name="image_format">jpeg</field>
+            <field name="description"></field>
+            <field name="recipe">if float(image.width)/float(image.height) &gt;= float(horizontal)/float(vertical):
+    if image.height &gt; int(height):
+        image.transform(resize='%sx&gt;' %int(float(height)*float(image.width)/float(image.height)))
+        image.crop(width=int(float(height)/float(vertical)*float(horizontal)), height=int(height), gravity='center')
+    else:
+        image.crop(width=int(float(image.height)/float(vertical)*float(horizontal)), height=image.height, gravity='center')
+        image.transform(resize='%sx&gt;' %int(float(height)*float(image.width)/float(image.height)))
+else:
+    if float(image.width) &gt; float(height)*float(horizontal)/float(vertical):
+        image.transform(resize='%sx&gt;' %int(float(height)*float(horizontal)/float(vertical)))
+        image.crop(width=int(float(height)*float(horizontal)/float(vertical)), height=int(height), gravity='center')
+    else:
+        image.transform(resize='%sx&gt;' %image.width)
+        image.crop(width=image.width, height=int(float(image.width)/float(horizontal)*float(vertical)), gravity='center')</field>
+        </record>
+
+        <record id="reseller_contact_img_param_height" model="image.recipe.param">
+            <field name="name">height</field>
+            <field name="value">300</field>
+            <field name="recipe_id" ref="reseller_dermanord.reseller_contact_img"/>
+        </record>
+
+        <record id="reseller_contact_img_param_horizontal" model="image.recipe.param">
+            <field name="name">horizontal</field>
+            <field name="value">3</field>
+            <field name="recipe_id" ref="reseller_dermanord.reseller_contact_img"/>
+        </record>
+
+        <record id="reseller_contact_img_param_vertical" model="image.recipe.param">
+            <field name="name">vertical</field>
+            <field name="value">4</field>
+            <field name="recipe_id" ref="reseller_dermanord.reseller_contact_img"/>
+        </record>
+
     </data>
+
+    <data noupdate="1">
+        <record id="find_reseller_top_img" model="ir.attachment">
+            <field name="name">Find Reseller Top Image</field>
+            <field name="type">binary</field>
+            <field name="res_model">ir.ui.view</field>
+        </record>
+    </data>
+
 </openerp>

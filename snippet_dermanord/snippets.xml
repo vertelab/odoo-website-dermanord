@@ -18,7 +18,7 @@
                                 <img class="img img-responsive di_mobile_img hidden-lg hidden-md hidden-sm" src="/website/static/src/img/china_thumb.jpg"/>
                                 <div class="container di_desktop_content">
                                     <div class="row content">
-                                        <div class="col-md-offset-4 col-sm-offset-4 col-md-8 col-sm-8 text-center">
+                                        <div class="col-md-offset-5 col-sm-offset-5 col-md-7 col-sm-7 text-center">
                                             <h3 class="mb32">
                                                 <i>Your Banner Title</i>
                                             </h3>
@@ -315,7 +315,6 @@
                     <section class="oe_snippet_body product_highlights">
                         <div class="container">
                             <div class="row mt32 mb32">
-                                <h2 class="text-center mt16 mb16 dn_uppercase">Product Highlights</h2>
                                 <div class="product_div"/>
                             </div>
                         </div>

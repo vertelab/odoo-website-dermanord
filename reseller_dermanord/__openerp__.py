@@ -29,8 +29,10 @@ Resellers Page
 ==============
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': [
+        'partner_token',
         'website_partner',
         'website_partner_google_maps',
         'website_masonry',
@@ -41,10 +43,11 @@ Resellers Page
         'website_partner_opening_hours',
     ],
     'data': [
+        'data.xml',
+        'res_config_view.xml',
         'security/ir.model.access.csv',
         'res_partner_view.xml',
         'templates.xml',
-        'data.xml',
         #~ 'filter_sort_modal.xml',
     ],
     'application': False,

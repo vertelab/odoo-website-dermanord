@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution, third party addon
-#    Copyright (C) 2018- Vertel AB (<http://vertel.se>).
+#    Copyright (C) 2004-2015 Vertel AB (<http://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,24 +18,24 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+from openerp import fields, api, models, _
+import logging
+_logger = logging.getLogger(__name__)
 
-{
-    'name': 'Product Pricelist Dermanord',
-    'version': '1.0',
-    'category': 'product',
-    'summary': '',
-    'description': """
-Product Pricelist Report
-========================
-""",
-    'author': 'Vertel AB',
-    'license': 'AGPL-3',
-    'website': 'http://www.vertel.se',
-    'depends': ['product', 'report'],
-    'data': [
-        'report.xml',
-        'pricelist_view.xml',
-    ],
-    'application': False,
-}
+class website_config_settings(models.TransientModel):
+    _inherit = 'website.config.settings'
 
+    find_reseller_top_img = fields.Binary(string='Image for "Find Reseller Page"')
+
+    @api.multi
+    def set_default_parameters(self):
+        img = self.env.ref('reseller_dermanord.find_reseller_top_img')
+        img.write({'datas': self.find_reseller_top_img})
+
+    @api.model
+    def get_default_parameters(self, fields=None):
+        return {
+            'find_reseller_top_img': self.env.ref('reseller_dermanord.find_reseller_top_img').datas or None,
+        }
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

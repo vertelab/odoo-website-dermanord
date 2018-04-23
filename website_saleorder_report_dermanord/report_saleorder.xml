@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_saleorder_document" inherit_id="sale.report_saleorder_document" name="Report Saleorder Document Inherited website_saleorder_report_sdermanord">
+            <xpath expr="//h2/span[2]" position="replace">
+                <span t-if="o.state in ['draft','sent']">
+                    <t t-if="o.section_id == request.env.ref('website.salesteam_website_sales')">Order N° </t>
+                    <t t-if="o.section_id != request.env.ref('website.salesteam_website_sales')">Quotation N° </t>
+                </span>
+            </xpath>
+        </template>
+    </data>
+</openerp>

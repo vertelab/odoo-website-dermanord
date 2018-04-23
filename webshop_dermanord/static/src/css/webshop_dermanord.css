@@ -211,7 +211,6 @@ div.shipping-address, div.invoicing-address {
 
 .product_name {
     max-width: 250px;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -435,6 +434,7 @@ span[data-oe-expression="ingredient.image"] > img {
     max-width: 500px;
     width: 100%;
     margin: auto;
+    display: block;
 }
 
 #ingredient > h5 {

@@ -18,8 +18,8 @@
                         <t t-foreach="ingredients" t-as="ingredient">
                             <a t-att-href="'/dn_shop/?current_ingredient=%s' %ingredient.id">
                                 <div class="col-md-3 col-sm-3 ingredient_desc">
-                                    <img class="img img-responsive" style="margin: auto;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
-                                    <h6 class="text-center"><i t-field="ingredient.name"/></h6>
+                                    <img class="img img-responsive" style="margin: auto;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'product_ingredients.img_ingredients')"/>
+                                    <h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i t-field="ingredient.name"/></h6>
 <!--
                                     <h5 class="text-muted text-center" t-field="ingredient.description"/>
 -->
@@ -45,12 +45,12 @@
                         <h4 class="text-center dn_uppercase">made from all-natural ingredients</h4>
                         <div class="col-md-12">
                             <div class="carousel slide" id="ingredient_carousel" data-ride="carousel">
-                                <div class="carousel-inner" style="padding-bottom: 40px;">
+                                <div class="carousel-inner" style="width: 100%;">
                                     <t t-foreach="ingredients" t-as="ingredient">
                                         <div t-att-class="'item ingredient_desc %s' %('active' if ingredient_index == 0 else '')">
                                             <a t-att-href="'/dn_shop/?current_ingredient=%s' %ingredient.id">
-                                                <img class="img img-responsive" style="margin: auto; height: 230px !important;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'webshop_dermanord.img_ingredients')"/>
-                                                <h6 class="text-center"><i t-field="ingredient.name"/></h6>
+                                                <img class="img img-responsive" style="margin: auto; display: block;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'product_ingredients.img_ingredients')"/>
+                                                <h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i t-field="ingredient.name"/></h6>
 <!--
                                                 <t t-if="ingredient.description">
                                                     <h5 class="text-muted text-center" t-field="ingredient.description"/>
@@ -63,13 +63,21 @@
                                         </div>
                                     </t>
                                 </div>
-                                <ol class="carousel-indicators">
+                                <div class="carousel-control left" data-slide="prev" data-target="#ingredient_carousel" href="#ingredient_carousel" style="width: 10%; left: 0px;">
+                                    <i class="fa fa-chevron-left" style="right: 20%; color: #000;"/>
+                                </div>
+                                <div class="carousel-control right" data-slide="next" data-target="#ingredient_carousel" href="#ingredient_carousel" style="width: 10%; right: 0px;">
+                                    <i class="fa fa-chevron-right" style="left: 20%; color: #000;"/>
+                                </div>
+                                <ol class="carousel-indicators" style="bottom: -10px;">
                                     <t t-foreach="ingredients" t-as="ingredient">
                                         <li t-att-class="'active' if ingredient_index == 0 else ''" t-att-data-slide-to="'0' if ingredient_index == 0 else ingredient_index" data-target="#ingredient_carousel"/>
                                     </t>
                                 </ol>
                             </div>
+<!--
                             <img src="/snippet_dermanord/static/src/img/finger.png" class="touch_finger hidden-lg hidden-md hidden-sm" style="margin: auto; display: block;"/>
+-->
                         </div>
                     </div>
                 </t>

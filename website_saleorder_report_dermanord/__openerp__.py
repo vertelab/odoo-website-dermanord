@@ -20,22 +20,21 @@
 ##############################################################################
 
 {
-    'name': 'Product Pricelist Dermanord',
+    'name': 'Website Saleorder Report Dermanord',
     'version': '1.0',
-    'category': 'product',
+    'category': 'website',
     'summary': '',
     'description': """
-Product Pricelist Report
-========================
+Configurations in sale order report for Dermanord
+=================================================
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['product', 'report'],
+    'depends': ['webshop_dermanord'],
     'data': [
-        'report.xml',
-        'pricelist_view.xml',
-    ],
+        'report_saleorder.xml',
+],
     'application': False,
 }
 

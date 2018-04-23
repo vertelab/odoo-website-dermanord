@@ -20,22 +20,21 @@
 ##############################################################################
 
 {
-    'name': 'Product Pricelist Dermanord',
+    'name': 'Website Cookie Notice Dermanord',
     'version': '1.0',
-    'category': 'product',
+    'category': 'website',
     'summary': '',
     'description': """
-Product Pricelist Report
+Reposition cookie layout
 ========================
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['product', 'report'],
+    'depends': ['website_cookie_notice', 'theme_dermanord'],
     'data': [
-        'report.xml',
-        'pricelist_view.xml',
-    ],
+        'website.xml',
+],
     'application': False,
 }
 

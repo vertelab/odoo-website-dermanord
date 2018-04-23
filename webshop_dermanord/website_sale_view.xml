@@ -60,7 +60,7 @@
                     <h6 class="text-center">
                         <span t-field="current_ingredient.name" />
                     </h6>
-                    <span itemprop="image" t-field="current_ingredient.image" t-field-options='{"widget": "image", "alt-field": "name"}' />
+                    <img t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(current_ingredient.id, 'webshop_dermanord.img_ingredients_big')" />
                     <p class="mt16">
                         <span t-field="current_ingredient.description" />
                     </p>
@@ -594,6 +594,14 @@
                                     <span t-field="product_product.reseller_desc" />
                                 </t>
                             </p>
+                        </t>
+                    </div>
+                    <div t-if="len(product.public_categ_ids) &gt; 0" class="col-md-12 no_padding_div">
+                        <h2 class="category_title dn_uppercase">Categories</h2>
+                        <t t-foreach="product.public_categ_ids" t-as="pc">
+                            <a t-att-href="'/dn_shop/category/%s' %pc.id">
+                                <p style="color: #777;" t-field="pc.name" />
+                            </a>
                         </t>
                     </div>
                     <div class="col-md-12 facet_div">

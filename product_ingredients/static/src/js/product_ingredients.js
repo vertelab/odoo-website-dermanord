@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    //~ openerp.website.add_template_file('/product_ingredients/static/src/xml/templates.xml');
+    openerp.website.add_template_file('/product_ingredients/static/src/xml/templates.xml');
     $('.ingredient_slide').each(function (index, element)
     {
         element = $(element);
@@ -9,7 +9,7 @@ $(document).ready(function () {
             console.log(data);
             var indicator_content = '';
             var ingredients_content = '';
-            for (i = 0; i < data.length; i++) { 
+            for (i = 0; i < data.length; i++) {
                 var i_content = openerp.qweb.render('ingredient_slide_indicators', {
                         'indicator': i == 0 ? "active" : "",
                         'slide_nr': i,

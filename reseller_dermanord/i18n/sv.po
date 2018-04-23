@@ -1,21 +1,19 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#   * reseller_dermanord
+#	* reseller_dermanord
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 8.0-20170906\n"
+"Project-Id-Version: Odoo Server 8.0-20170901\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-09 06:20+0000\n"
-"PO-Revision-Date: 2017-10-09 08:22+0200\n"
+"POT-Creation-Date: 2018-04-03 11:21+0000\n"
+"PO-Revision-Date: 2018-04-03 11:21+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
-"Language: sv\n"
-"X-Generator: Poedit 2.0.1\n"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
@@ -23,15 +21,56 @@ msgid "Address"
 msgstr "Adress"
 
 #. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Använd sökfältet nedan för att hitta en återförsäljare i din närhet. Klicka på återförsäljaren för att se öppettider, besöksadress och annan information om salongen."
+msgstr "Använd sökfältet nedan för att hitta en återförsäljare i din närhet. Klicka på återförsäljaren för att se öppettider, besöksadress och annan information om salongen."
+
+#. module: reseller_dermanord
 #: view:res.partner:reseller_dermanord.view_partner_form
 #: field:res.partner,brand_name:0
+#: view:website:website_sale_home.home_page
 msgid "Brand Name"
 msgstr "Varumärke"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.home_page
+msgid "Brand Name..."
+msgstr "Varumärke..."
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "City"
+msgstr "Stad"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Closed"
+msgstr "Stängt"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Closing Time"
+msgstr "Stänger"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
 msgid "Contact"
 msgstr "Kontakt"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.contact_form
+msgid "Courses"
+msgstr "Kurser"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Du hittar MARIA ÅKERBERG hos välutbildade hud- och spaterapeuter och massörer, som både säljer våra produkter och använder dem i sina professionella behandlingar."
+msgstr "Du hittar MARIA ÅKERBERG hos välutbildade hud- och spaterapeuter och massörer, som både säljer våra produkter och använder dem i sina professionella behandlingar."
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Email"
+msgstr "E-post"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
@@ -40,9 +79,70 @@ msgstr "Epost:"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
+#: view:website:website_sale_home.company_info_form
+msgid "Exceptions"
+msgstr "Undantag"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Fri:"
+msgstr "Fre:"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Friday:"
+msgstr "Fredag:"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Hitta en återförsäljare nära dig"
+msgstr "Hitta en återförsäljare nära dig"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "I sökfältet kan du ange namn, stad och land."
+msgstr "I sökfältet kan du ange namn, stad och land."
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Lunch End"
+msgstr "Lunchslut"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Lunch Start"
+msgstr "Lunchstart"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Läs mer om hur vi samarbetar och anmäl ditt intresse här."
+msgstr "Läs mer om hur vi samarbetar och anmäl ditt intresse här."
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Mon:"
+msgstr "Mån:"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Monday:"
+msgstr "Måndag:"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
 #: view:website:reseller_dermanord.resellers
 msgid "Odoo CMS - a big picture"
 msgstr "Odoo CMS - a big picture"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Opening Hours"
+msgstr "Öppettider"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Opening Time"
+msgstr "Öppnar"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
@@ -57,82 +157,32 @@ msgstr "Våra kompetenser"
 #. module: reseller_dermanord
 #: model:ir.model,name:reseller_dermanord.model_res_partner
 msgid "Partner"
-msgstr "Återförsäljare"
+msgstr "Företag"
 
 #. module: reseller_dermanord
-#: view:website:reseller_dermanord.resellers
-msgid "Search..."
-msgstr "Sök..."
-
-#. module: reseller_dermanord
-#: field:res.partner,is_reseller:0
-msgid "Show Reseller in websearch"
-msgstr "Visa ÅF i webbsökningen"
+#: view:website:website_sale_home.company_info_form
+msgid "Phone"
+msgstr "Telefon"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
-msgid "Telephone:"
-msgstr "Telefon:"
-
-#. module: reseller_dermanord
-#: view:website:reseller_dermanord.reseller
-msgid "Website:"
-msgstr "Webbplats:"
+msgid "Read More"
+msgstr "Läs mer"
 
 #. module: reseller_dermanord
 #: model:res.partner.category,name:reseller_dermanord.reseller_tag
-msgid "Återförsäljare"
+msgid "Reseller"
 msgstr "Återförsäljare"
 
 #. module: reseller_dermanord
-#: view:website:reseller_dermanord.reseller
-msgid "Mon:"
-msgstr "Mån:"
+#: view:website:website_sale_home.home_page
+msgid "Reseller Description"
+msgstr "ÅFbeskrivning"
 
 #. module: reseller_dermanord
 #: view:website:website_sale_home.home_page
-msgid "Monday:"
-msgstr "Måndag:"
-
-#. module: reseller_dermanord
-#: view:website:reseller_dermanord.reseller
-msgid "Tue:"
-msgstr "Tis:"
-
-#. module: reseller_dermanord
-#: view:website:website_sale_home.home_page
-msgid "Tuesday:"
-msgstr "Tisdag:"
-
-#. module: reseller_dermanord
-#: view:website:reseller_dermanord.reseller
-msgid "Wed:"
-msgstr "Ons:"
-
-#. module: reseller_dermanord
-#: view:website:website_sale_home.home_page
-msgid "Wednesday:"
-msgstr "Onsdag:"
-
-#. module: reseller_dermanord
-#: view:website:reseller_dermanord.reseller
-msgid "Thu:"
-msgstr "Tor:"
-
-#. module: reseller_dermanord
-#: view:website:website_sale_home.home_page
-msgid "Thursday:"
-msgstr "Torsdag:"
-
-#. module: reseller_dermanord
-#: view:website:reseller_dermanord.reseller
-msgid "Fri:"
-msgstr "Fre:"
-
-#. module: reseller_dermanord
-#: view:website:website_sale_home.home_page
-msgid "Friday:"
-msgstr "Fredag:"
+msgid "Reseller Description..."
+msgstr "ÅFbeskrivning..."
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
@@ -140,9 +190,34 @@ msgid "Sat:"
 msgstr "Lör:"
 
 #. module: reseller_dermanord
-#: view:website:website_sale_home.home_page
+#: view:website:website_sale_home.company_info_form
 msgid "Saturday:"
 msgstr "Lördag:"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Search..."
+msgstr "Sök..."
+
+#. module: reseller_dermanord
+#: model:ir.actions.server,name:reseller_dermanord.searchable_reseller
+msgid "Set Reseller"
+msgstr "Sätt Återförsäljare"
+
+#. module: reseller_dermanord
+#: field:res.partner,is_reseller:0
+msgid "Show Reseller in websearch"
+msgstr "Visa ÅF i webbsökningen"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Street"
+msgstr "Gata"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Street row 2"
+msgstr "Gata rad 2"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
@@ -150,52 +225,93 @@ msgid "Sun:"
 msgstr "Sön:"
 
 #. module: reseller_dermanord
-#: view:website:website_sale_home.home_page
+#: view:website:website_sale_home.company_info_form
 msgid "Sunday:"
 msgstr "Söndag:"
 
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Telephone:"
+msgstr "Telefon:"
 
 #. module: reseller_dermanord
-#: view:website:website_sale_home.home_page
-msgid "Opening Hours"
-msgstr "Öppettider"
+#: view:website:website_sale_home.company_info_form
+msgid "This field is used to print dates when the salon is closed and that are exceptions from the opening hours stated above. If this field isn't filled out it won't be shown in the salon's opening hours."
+msgstr "Detta fält används för att skriva ut dagar då salongen inte har öppet och som är undantag från öppettiderna ovan. Om detta fält är ifyllt kommer det att visas i anslutning till salongens öppettider."
 
 #. module: reseller_dermanord
-#: view:website:website_sale_home.home_page
-msgid "Weekday"
-msgstr "Veckodag"
+#: view:website:reseller_dermanord.reseller
+msgid "Thu:"
+msgstr "Tor:"
 
 #. module: reseller_dermanord
-#: view:website:website_sale_home.home_page
-msgid "Opening Time"
-msgstr "Öppnar"
+#: view:website:website_sale_home.company_info_form
+msgid "Thursday:"
+msgstr "Torsdag:"
 
 #. module: reseller_dermanord
-#: view:website:website_sale_home.home_page
-msgid "Closing Time"
-msgstr "Stänger"
-
-#. module: reseller_dermanord
-#: view:website:website_sale_home.home_page
-msgid "Lunch Start"
-msgstr "Lunchstart"
-
-#. module: reseller_dermanord
-#: view:website:website_sale_home.home_page
-msgid "Lunch End"
-msgstr "Stämmer"
-
-#. module: reseller_dermanord
-#: view:website:website_sale_home.home_page
-msgid "Closed"
-msgstr "Stängt"
-
-#. module: reseller_dermanord
+#: field:res.partner,top_image:0
 #: view:website:website_sale_home.home_page
 msgid "Top Image"
 msgstr "Toppbild"
 
 #. module: reseller_dermanord
-#: view:website:website_sale_home.home_page
-msgid "Reseller Description"
-msgstr "ÅFbeskrivning"
+#: view:website:reseller_dermanord.reseller
+msgid "Tue:"
+msgstr "Tis:"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Tuesday:"
+msgstr "Tisdag:"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Vill du bli återförsäljare?"
+msgstr "Vill du bli återförsäljare?"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Vill du också använda och sälja MARIA ÅKERBERG?"
+msgstr "Vill du också använda och sälja MARIA ÅKERBERG?"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "*To make changes, contact Maria Åkerberg below"
+msgstr "*För ändring kontakta Maria Åkerberg nedan"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Visit Address"
+msgstr "Besöksadress"
+
+#. module: reseller_dermanord
+#: model:ir.model,name:reseller_dermanord.model_website
+msgid "Website"
+msgstr "Webbplats"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Website:"
+msgstr "Webbplats:"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Wed:"
+msgstr "Ons:"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Wednesday:"
+msgstr "Onsdag:"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Weekday"
+msgstr "Veckodag"
+
+#. module: reseller_dermanord
+#: view:website:website_sale_home.company_info_form
+msgid "Zip"
+msgstr "Postkod"
+

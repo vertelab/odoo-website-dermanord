@@ -10,21 +10,6 @@
             <field name="parent_id" ref="website.main_menu" />
         </record>
 
-        <record id="footer_menu_reseller_register" model="website.menu">
-            <field name="name">BECOME RESELLER</field>
-            <field name="sequence">150</field>
-            <field name="url">/reseller_register</field>
-            <field name="parent_id" ref="theme_dermanord.footer_menu" />
-        </record>
-
-        <template id="reseller_register" name="Reseller Register">
-            <t t-call="theme_dermanord.submenu_dermanord">
-                <div id="wrap" class="oe_structure oe_empty">
-                    <div class="oe_structure"/>
-                </div>
-            </t>
-        </template>
-
     </data>
 
 <!--
@@ -129,7 +114,22 @@
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu js_language_selector hidden-xs col-md-12 col-sm-12 col-xs-12 futura_pt_m" t-if="(request.website_multilang and len(languages) &gt; 1) or editable">
-                            <li t-foreach="languages" t-as="lg">
+                            <t t-set="master_language" t-value="None"/>
+                            <t t-set="other_languages" t-value="[]"/>
+                            <t t-foreach="languages" t-as="lg">
+                                <t t-if="lg[0] == 'ma_ST'">
+                                    <t t-set="master_language" t-value="lg"/>
+                                </t>
+                                <t t-if="lg[0] != 'ma_ST'">
+                                    <t t-set="other_languages" t-value="other_languages + [lg]"/>
+                                </t>
+                            </t>
+                            <li groups="base.group_website_publisher">
+                                <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=master_language[0])" t-att-data-default-lang="editable and 'true' if master_language[0] == website.default_lang_code else None" t-att-data-lang="master_language[0]" class="js_change_lang">
+                                    <t t-esc="master_language[1].split('/').pop()"/>
+                                </a>
+                            </li>
+                            <li t-foreach="other_languages" t-as="lg">
                                 <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
                                     <t t-esc="lg[1].split('/').pop()"/>
                                 </a>
@@ -170,7 +170,7 @@
                             </div>
                             <div id="my_page_div" class="col-xs-2">
                                 <div class="hidden-lg hidden-md hidden-sm">
-                                    <a t-att-href="'/home/%s' %user_id.id" role="menuitem" style="color: #000;"><i class="fa fa-user fa-2x"/></a>
+                                    <a href="/home" role="menuitem" style="color: #000;"><i class="fa fa-user fa-2x"/></a>
                                 </div>
                             </div>
                             <div id="shop_cart_div" class="col-xs-2">
@@ -393,15 +393,33 @@
                 <t t-if="not no_breadcrumb and website">
                     <ol class="breadcrumb dn_breadcrumb">
                         <t t-raw="website.get_breadcrumb(request.httprequest.path, product=product, blog=blog, blog_post=blog_post, job=job)"/>
-                        <div class="btn-group pull-right lg-flag hidden-lg hidden-md hidden-sm" t-foreach="languages" t-as="lg" style="padding: 0px 2px;">
-                            <span t-if="lg_index != (len(languages)-1)"> | </span>
-                            <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
-<!--
-                                <img t-att-src="'/web/binary/image?model=res.country&amp;id=%s&amp;field=image' %request.env['res.country'].search([('code', '=', lg[0].split('_')[1].lower())]).id" style="height: 20px;"/>
--->
-                                <span t-if="lg[0] != 'en_US'"><t t-esc="lg[0].split('_')[1]"/></span>
-                                <span t-if="lg[0] == 'en_US'">EN</span>
+                        <t t-set="master_language" t-value="None"/>
+                        <t t-set="other_languages" t-value="[]"/>
+                        <t t-foreach="languages" t-as="lg">
+                            <t t-if="lg[0] == 'ma_ST'">
+                                <t t-set="master_language" t-value="lg"/>
+                            </t>
+                            <t t-if="lg[0] != 'ma_ST'">
+                                <t t-set="other_languages" t-value="other_languages + [lg]"/>
+                            </t>
+                        </t>
+                        <div class="btn-group pull-right lg-flag hidden-lg hidden-md hidden-sm" style="padding: 0px 2px;">
+                            <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=master_language[0])" t-att-data-default-lang="editable and 'true' if master_language[0] == website.default_lang_code else None" t-att-data-lang="master_language[0]" class="js_change_lang" groups="base.group_website_publisher">
+                                <span t-esc="master_language[0].split('_')[1]"/>
                             </a>
+                            <span groups="base.group_website_publisher"> | </span>
+                            <t t-foreach="other_languages" t-as="lg">
+                                <span t-if="lg_index != (len(languages)-1) and lg_index != 0"> | </span>
+                                <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
+<!--
+                                    <img t-att-src="'/web/binary/image?model=res.country&amp;id=%s&amp;field=image' %request.env['res.country'].search([('code', '=', lg[0].split('_')[1].lower())]).id" style="height: 20px;"/>
+-->
+                                    <span t-if="lg[0] != 'en_US'">
+                                        <t t-esc="lg[0].split('_')[1]"/>
+                                    </span>
+                                    <span t-if="lg[0] == 'en_US'">EN</span>
+                                </a>
+                            </t>
                         </div>
                     </ol>
                 </t>
@@ -429,7 +447,7 @@
                                             </h5>
                                         </a>
                                     </li>
-                                    <li class="hidden-lg hidden-md hidden-sm">
+                                    <li t-att-class="'hidden-lg hidden-md hidden-sm %s' %('active' if submenu == current_menu else '')">
                                         <a t-att-href="submenu.url" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
                                             <h5 class="dn_uppercase">
                                                 <t t-esc="submenu.name"/>

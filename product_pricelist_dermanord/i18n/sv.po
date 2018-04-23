@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0-20171009\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-06 13:53+0000\n"
-"PO-Revision-Date: 2018-03-06 14:59+0100\n"
+"POT-Creation-Date: 2018-03-19 09:29+0000\n"
+"PO-Revision-Date: 2018-03-19 10:33+0100\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -40,12 +40,12 @@ msgstr "Kolumn titel 2"
 #. module: product_pricelist_dermanord
 #: field:product.pricelist.dermanord,create_uid:0
 msgid "Created by"
-msgstr "Created by"
+msgstr "Skapad av"
 
 #. module: product_pricelist_dermanord
 #: field:product.pricelist.dermanord,create_date:0
 msgid "Created on"
-msgstr "Created on"
+msgstr "Skapad på"
 
 #. module: product_pricelist_dermanord
 #: view:website:product_pricelist_dermanord.pricelist_layout_header
@@ -61,7 +61,7 @@ msgstr "Datum"
 #: field:product.pricelist.dermanord,display_name:0
 #: field:report.product_pricelist_dermanord.report_pricelist,display_name:0
 msgid "Display Name"
-msgstr "Display Name"
+msgstr "Visningsnamn"
 
 #. module: product_pricelist_dermanord
 #: view:website:product_pricelist_dermanord.pricelist_layout_footer
@@ -89,17 +89,22 @@ msgstr "ID"
 #: field:product.pricelist.dermanord,__last_update:0
 #: field:report.product_pricelist_dermanord.report_pricelist,__last_update:0
 msgid "Last Modified on"
-msgstr "Last Modified on"
+msgstr "Senast ändrad på"
 
 #. module: product_pricelist_dermanord
 #: field:product.pricelist.dermanord,write_uid:0
 msgid "Last Updated by"
-msgstr "Last Updated by"
+msgstr "Senast ändrad av"
 
 #. module: product_pricelist_dermanord
 #: field:product.pricelist.dermanord,write_date:0
 msgid "Last Updated on"
-msgstr "Last Updated on"
+msgstr "Senast uppdaterad på"
+
+#. module: product_pricelist_dermanord
+#: field:product.category,name_report:0
+msgid "Name for Report"
+msgstr "Namn för rapport"
 
 #. module: product_pricelist_dermanord
 #: view:website:product_pricelist_dermanord.pricelist_layout_footer
@@ -119,7 +124,6 @@ msgstr "Prislista"
 
 #. module: product_pricelist_dermanord
 #: model:ir.actions.act_window,name:product_pricelist_dermanord.action_product_pricelist_dermanord
-#: model:ir.ui.menu,name:product_pricelist_dermanord.menu_product_pricelist_dermanord
 msgid "Price List Report (Dermanord)"
 msgstr "Prislista rapport (Dermanord)"
 
@@ -150,9 +154,14 @@ msgid "Product"
 msgstr "Produkt"
 
 #. module: product_pricelist_dermanord
+#: model:ir.model,name:product_pricelist_dermanord.model_product_category
+msgid "Product Category"
+msgstr "Produktkategori"
+
+#. module: product_pricelist_dermanord
 #: model:ir.model,name:product_pricelist_dermanord.model_product_pricelist_dermanord
 msgid "Product Pricelist Dermanord"
-msgstr "Produk prislista Dermanord"
+msgstr "Produkt prislista Dermanord"
 
 #. module: product_pricelist_dermanord
 #: view:website:product_pricelist_dermanord.pricelist_layout_header

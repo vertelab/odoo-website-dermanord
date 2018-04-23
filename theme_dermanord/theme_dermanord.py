@@ -43,6 +43,8 @@ class website(models.Model):
     def current_menu(self, path):
         menu = self.env['website.menu'].search([('url', '=', path)])
         url = [x.split('-')[-1] if x.split('-')[-1].isdigit() else x for x in path.split('/')]
+        _logger.warn('path: %s' %path)
+        _logger.warn('url: %s' %url)
         while not menu and url:
             _logger.warn('/'.join(url))
             menu = self.env['website.menu'].search([('url', '=', '/'.join(url))])
@@ -180,10 +182,6 @@ class ThemeDermanord(http.Controller):
         response = werkzeug.wrappers.Response()
         return request.registry['website']._image(request.cr, request.uid, 'res.company', user.company_id.id, 'logo',
                                                   response, max_width=1024, max_height=None, )
-
-    @http.route(['/reseller_register'], type='http', auth='public', website=True)
-    def reseller_register(self, **post):
-        return request.website.render('theme_dermanord.reseller_register', {})
 
 
 class ResCompany(models.Model):

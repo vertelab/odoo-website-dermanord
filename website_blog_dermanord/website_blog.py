@@ -207,9 +207,12 @@ class blog_post_object(models.Model):
         #~ _logger.warn('fuelds: %s | %s' % (self.object_id.__dict__.keys(),self.object_id._search))
         if self.object_id:
             if self.object_id._name == 'product.template' or self.object_id._name == 'product.product':
-                self.name = self.object_id.name
-                self.description = self.object_id.description_sale
-                self.image = self.object_id.image
+                if self.object_id._name == 'product.product':
+                    self.name = self.object_id.name + (', ' + ','.join(a.name for a in self.object_id.attribute_value_ids)) if len(self.object_id.attribute_value_ids) > 0 else ''
+                else:
+                    self.name = self.object_id.name
+                self.description = self.object_id.description_sale if self.object_id._name == 'product.template' else self.object_id.public_desc
+                self.image = self.object_id.image if self.object_id.image else (self.object_id.image_attachment_ids.sorted(lambda p: p.sequence)[0].datas if len(self.object_id.image_attachment_ids) > 0 else None)
                 self.access_group_ids = self.object_id.access_group_ids
 
     @api.one
@@ -405,7 +408,7 @@ class WebsiteBlog(WebsiteBlog):
             },context=context)
         if blog.post_complete:
             #~ try:
-            return request.website.render(blog.post_complete.id, values)
+            return request.website.render(blog.post_complete.xml_id, values)
             #~ except:
                 #~ _logger.error('Cannot reder template %s' %blog.post_complete.name)
 

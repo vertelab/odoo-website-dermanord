@@ -36,9 +36,10 @@ class Website(models.Model):
     def get_search_values(self, kw):
         #~ _logger.warn('\nkw: %s\n' % kw)
         #~ _logger.warn('\nsession: %s\n\n' % request.session)
-        attrs = ['chosen_filter_qty', 'form_values', 'sort_order', 'sort_name']
+        attrs = ['chosen_filter_qty', 'form_values', 'sort_order', 'sort_name', 'current_ingredient']
         if kw:
             request.website.dn_shop_set_session('product.template', kw, '/dn_shop')
+
         #~ _logger.warn('\nsession: %s\n\n' % request.session)
         return (' pricelist: %s ' % get_pricelist()) + ' '.join(['%s: %s' % (attr, request.session.get(attr)) for attr in attrs]).replace('{', '{{').replace('}', '}}')
 

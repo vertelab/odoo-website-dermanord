@@ -29,6 +29,7 @@ Blog configuration for Dermanord AB
 ===================================
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['website_blog_private', 'website_sale', 'website_imagemagick', 'product_private', 'product_dermanord'],
     'data': [
