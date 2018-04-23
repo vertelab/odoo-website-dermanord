@@ -1667,7 +1667,7 @@ class WebsiteSale(website_sale):
             product = request.env['product.product'].browse(int(product_id))
             if product:
                 image_ids = product.image_attachment_ids
-                default_image_ids = product.product_tmpl_id.image_attachment_ids
+                default_image_ids = product.product_tmpl_id.image_attachment_ids.sorted(lambda r: r.sequence)
                 images = (image_ids.mapped('id') + default_image_ids.mapped('id')) or [0]
 
                 facets = {}
