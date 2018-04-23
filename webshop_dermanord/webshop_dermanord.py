@@ -523,7 +523,7 @@ class Website(models.Model):
             dic['current_ingredient'] = int(current_ingredient)
             dic[current_ingredient_key] = current_ingredient
 
-        domain_append = [('sale_ok', '=', True)]
+        domain_append = [('sale_ok', '=', True),('event_ok', '=', False)]
         if category_ids:
             domain_append += [('public_categ_ids', 'in', [id for id in category_ids])]
         if facet_ids:
@@ -1673,7 +1673,6 @@ class WebsiteSale(website_sale):
             product = request.env['product.product'].browse(int(product_id))
             if product:
                 images = product.get_image_attachment_ids()
-
                 facets = {}
                 if len(product.facet_line_ids) > 0:
                     for line in product.facet_line_ids:
