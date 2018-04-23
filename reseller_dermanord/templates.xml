@@ -143,6 +143,12 @@
                                         <li><span t-esc="categ.name"/></li>
                                     </ul>
                                 </t>
+                                <t t-if="len(reseller.webshop_category_ids) != 0">
+                                    <h3>Product Categories</h3>
+                                    <ul t-foreach="reseller.webshop_category_ids" t-as="wcateg">
+                                        <li><span t-esc="wcateg.name"/></li>
+                                    </ul>
+                                </t>
                             </div>
                             <div class="reseller_cell col-md-4 col-sm-4 col-xs-12 mb16">
                                 <h1><t t-esc="reseller.brand_name if reseller.brand_name else reseller.name"/></h1>
