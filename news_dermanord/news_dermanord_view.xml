@@ -11,12 +11,12 @@
                     <div class="blog_list_item mb32">
                         <div class="row">
                             <t t-foreach="blog_posts" t-as="news_post">
-                                <div class="col-md-offset-2 col-sm-offset-2 col-md-10 col-sm-10 col-xs-12">
+                                <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12">
                                     <t t-if="news_post.background_image and '/ir.attachment/' in news_post.background_image">
-                                        <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list" t-att-style="'background-image: url(&quot;/imagefield/ir.attachment/datas/%s/ref/theme_dermanord.dn_header_img&quot;);' %news_post.background_image[(news_post.background_image.index('ir.attachment/')+len('ir.attachment/')):news_post.background_image.index('/datas')].split('_')[0]"/>
+                                        <div class="col-md-6 col-sm-12 col-xs-12 mt16 mb16 blog_background_image_list" t-att-style="'background-image: url(&quot;/imagefield/ir.attachment/datas/%s/ref/news_dermanord.blog_background_image_list_img&quot;);' %news_post.background_image[(news_post.background_image.index('ir.attachment/')+len('ir.attachment/')):news_post.background_image.index('/datas')].split('_')[0]"/>
                                     </t>
                                     <t t-if="not news_post.background_image or '/ir.attachment/' not in news_post.background_image">
-                                        <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_background_image_list"/>
+                                        <div class="col-md-6 col-sm-12 col-xs-12 mt16 mb16 blog_background_image_list"/>
                                     </t>
                                     <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_content_div">
                                         <h6 t-field="news_post.name" style="font-size: 28px; font-weight: 500; padding-top: 0px; margin-top: 0px;"/>

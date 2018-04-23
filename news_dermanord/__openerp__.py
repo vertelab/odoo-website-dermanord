@@ -33,8 +33,8 @@ News page for Dermanord
     'website': 'http://www.vertel.se',
     'depends': ['website_blog_dermanord','theme_dermanord'],
     'data': [
-        'news_dermanord_view.xml',
         'news_dermanord_data.xml',
+        'news_dermanord_view.xml',
     ],
     'qweb': ['static/src/xml/templates.xml'],
     'application': False,
