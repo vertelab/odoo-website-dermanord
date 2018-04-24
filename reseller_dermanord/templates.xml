@@ -51,7 +51,7 @@
             <t t-call="theme_dermanord.submenu_dermanord">
                 <div id="wrap">
                     <div class="oe_structure"/>
-                    <div class="col-md-12 col-sm-12 col-xs-12 dn_header_container" style="padding: 0px; background-color: #000;">
+                    <div t-if="not competence" class="col-md-12 col-sm-12 col-xs-12 dn_header_container" style="padding: 0px; background-color: #000;">
                         <img alt="Odoo CMS - a big picture" class="img img-responsive" t-att-src="'/imagefield/ir.attachment/datas/%s/ref/theme_dermanord.dn_header_img' %request.env.ref('reseller_dermanord.find_reseller_top_img').id" style="margin: 0 auto; width: 100%; max-width: 1366px;"/>
                     </div>
                     <div class="container">
