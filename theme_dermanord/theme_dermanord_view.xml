@@ -410,8 +410,8 @@
                                 <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=master_language[0])" t-att-data-default-lang="editable and 'true' if master_language[0] == website.default_lang_code else None" t-att-data-lang="master_language[0]" class="js_change_lang" groups="base.group_website_publisher">
                                     <span t-esc="master_language[0].split('_')[1]"/>
                                 </a>
+                                <span groups="base.group_website_publisher"> | </span>
                             </t>
-                            <span groups="base.group_website_publisher"> | </span>
                             <t t-foreach="other_languages" t-as="lg">
                                 <span t-if="lg_index != (len(languages)-1) and lg_index != 0"> | </span>
                                 <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
