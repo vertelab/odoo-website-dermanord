@@ -186,6 +186,11 @@ msgstr "ÅFbeskrivning..."
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
+msgid "Product Categories"
+msgstr "Produktkategorier"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
 msgid "Sat:"
 msgstr "Lör:"
 
