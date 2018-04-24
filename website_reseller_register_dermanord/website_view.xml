@@ -158,7 +158,7 @@
             <xpath expr="//div[@id='invoice']" position="after">
                 <div id="visit" class="tab-pane fade">
                     <p id="instruction_visit" />
-                    <t t-set="visit" t-value="issue.partner_id.child_ids.filtered(lambda c: c.type == 'visit')[0] or None"/>
+                    <t t-set="visit" t-value="issue.partner_id.child_ids.filtered(lambda c: c.type == 'visit')[0] if issue.partner_id.child_ids.filtered(lambda c: c.type == 'visit') else None"/>
                     <div t-att-class="'form-group %s' %validation.get('visit_street')">
                         <label class="col-md-3 col-sm-4 control-label" for="visit_street">Street</label>
                         <div class="col-md-7 col-sm-8">
