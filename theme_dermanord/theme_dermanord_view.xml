@@ -124,11 +124,13 @@
                                     <t t-set="other_languages" t-value="other_languages + [lg]"/>
                                 </t>
                             </t>
-                            <li groups="base.group_website_publisher">
-                                <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=master_language[0])" t-att-data-default-lang="editable and 'true' if master_language[0] == website.default_lang_code else None" t-att-data-lang="master_language[0]" class="js_change_lang">
-                                    <t t-esc="master_language[1].split('/').pop()"/>
-                                </a>
-                            </li>
+                            <t t-if="master_language">
+                                <li groups="base.group_website_publisher">
+                                    <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=master_language[0])" t-att-data-default-lang="editable and 'true' if master_language[0] == website.default_lang_code else None" t-att-data-lang="master_language[0]" class="js_change_lang">
+                                        <t t-esc="master_language[1].split('/').pop()"/>
+                                    </a>
+                                </li>
+                            </t>
                             <li t-foreach="other_languages" t-as="lg">
                                 <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
                                     <t t-esc="lg[1].split('/').pop()"/>
@@ -404,9 +406,11 @@
                             </t>
                         </t>
                         <div class="btn-group pull-right lg-flag hidden-lg hidden-md hidden-sm" style="padding: 0px 2px;">
-                            <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=master_language[0])" t-att-data-default-lang="editable and 'true' if master_language[0] == website.default_lang_code else None" t-att-data-lang="master_language[0]" class="js_change_lang" groups="base.group_website_publisher">
-                                <span t-esc="master_language[0].split('_')[1]"/>
-                            </a>
+                            <t t-if="master_language">
+                                <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=master_language[0])" t-att-data-default-lang="editable and 'true' if master_language[0] == website.default_lang_code else None" t-att-data-lang="master_language[0]" class="js_change_lang" groups="base.group_website_publisher">
+                                    <span t-esc="master_language[0].split('_')[1]"/>
+                                </a>
+                            </t>
                             <span groups="base.group_website_publisher"> | </span>
                             <t t-foreach="other_languages" t-as="lg">
                                 <span t-if="lg_index != (len(languages)-1) and lg_index != 0"> | </span>
