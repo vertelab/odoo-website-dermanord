@@ -36,8 +36,8 @@ class reseller_register(reseller_register):
         res = super(reseller_register, self).get_address_type()
         return res + ['visit']
 
-    def company_fileds(self):
-        value = super(reseller_register, self).company_fileds()
+    def company_fields(self):
+        value = super(reseller_register, self).company_fields()
         return value + ['brand_name', 'street', 'street2', 'zip', 'city', 'country_id', 'phone', 'email', 'is_reseller']
 
     def update_partner_info(self, issue, post):
