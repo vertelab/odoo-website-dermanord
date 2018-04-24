@@ -381,7 +381,7 @@ class website_sale_home(website_sale_home):
 
     def update_info(self, home_user, post):
         res = super(website_sale_home, self).update_info(home_user, post)
-        
+
         categories = request.env['product.public.category'].search([('id', 'in', [int(i) for i in request.httprequest.form.getlist('webshop_category_ids')]), ('website_published', '=', True)])
         if categories and (categories != home_user.partner_id.commercial_partner_id.webshop_category_ids):
             home_user.partner_id.commercial_partner_id.webshop_category_ids = categories
