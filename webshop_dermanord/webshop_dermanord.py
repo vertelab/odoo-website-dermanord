@@ -206,7 +206,7 @@ class product_template(models.Model):
                     p.dv_price_20 = variant['price_20']
                     p.dv_default_code = variant['default_code'] or ''
                     p.dv_description_sale = variant['description_sale'] or ''
-                    p.dv_name = p.name if p.use_tmpl_name else ', '.join([p.name] + attribute_value_ids.mapped('name'))
+                    p.dv_name = p.name if p.use_tmpl_name else '%s %s' % (p.name, ', '.join(attribute_value_ids.mapped('name')))
                     p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['v_image_main_id'][0], 'snippet_dermanord.img_product') if variant['v_image_main_id'] else placeholder
                     #~ p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
                     p.dv_ribbon = website_style_ids_variant['html_class'] if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
