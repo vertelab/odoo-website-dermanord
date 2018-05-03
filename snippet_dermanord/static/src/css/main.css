@@ -85,7 +85,7 @@ a {
 
 .ph_block {
     width: 260px;
-    height: 400px;
+    height: 500px;
     border: 3px solid #fff;
     margin: auto;
 }
@@ -155,7 +155,7 @@ a {
 }
 
 .ph_block .ph_desc {
-    height: 3.3em;
+    height: 9.9em;
     margin-bottom: 30px;
     line-height: 1.1em;
     overflow: hidden;
