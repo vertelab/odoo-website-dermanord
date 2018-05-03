@@ -224,12 +224,12 @@ $(document).ready(function(){
         $img.parent().attr('data-oe-model', 'product.product').attr('data-oe-id', product_id).data('oe-model', 'product.product').data('oe-id', product_id);
     }
 
-    var product_price_form = $('form.js_add_cart_variants');
-    if (product_price_form.length > 0) {
-        if (product_price_form.data('attribute_value_ids').length == 1) {
-            update_product_info(none, product_price_form.data('attribute_value_ids')[0]);
-        }
-    }
+    //~ var product_price_form = $('form.js_add_cart_variants');
+    //~ if (product_price_form.length > 0) {
+        //~ if (product_price_form.data('attribute_value_ids').length == 1) {
+            //~ update_product_info(none, product_price_form.data('attribute_value_ids')[0]);
+        //~ }
+    //~ }
 
     $('.oe_website_sale').each(function () {
         var oe_website_sale = this;
