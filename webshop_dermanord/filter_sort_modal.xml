@@ -8,7 +8,7 @@
                     <t t-set="filter_facets" t-value="request.env['product.facet'].get_filtered_facets(request.session.get('form_values'))"/>
                     <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])"/>
 <!--
-                    
+
                     <t t-set="filter_ingredients" t-value="request.env['product.ingredient'].search([], order='name')"/>
 -->
                     <div id="dn_filter_modal" class="modal fade" role="dialog">
@@ -669,7 +669,7 @@
                         <input type="hidden" name="current_offer_reseller" value="current_offer_reseller"/>
                     </t>
                 </t>
-                <t t-if="len(filter_categories) &gt; 0">
+                <t t-if="filter_categories">
                     <t t-foreach="filter_categories" t-as="category">
                         <t t-if="request.session.get('form_values')">
                             <t t-if="request.session.get('form_values').get('category_%s' %category.id) == category.id">
