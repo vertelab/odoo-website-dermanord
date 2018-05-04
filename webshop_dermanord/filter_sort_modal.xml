@@ -119,7 +119,7 @@
                 <li>
                     <a data-toggle="tab" href="#category">
                         <h5>Categories
-                            <t t-if="len(filter_categories) &gt; 0 and request.session.get('form_values')">
+                            <t t-if="filter_categories and request.session.get('form_values')">
                                 <t t-set="category_count" t-value="0"/>
                                 <t t-foreach="filter_categories" t-as="category">
                                     <t t-if="'category_%s' %category.id in request.session.get('form_values').keys()">
@@ -219,7 +219,7 @@
                     </div>
                 </div>
                 <div id="category" class="tab-pane fade">
-                    <t t-if="len(filter_categories) &gt; 0">
+                    <t t-if="filter_categories">
                         <t t-foreach="filter_categories" t-as="category">
                             <div class="checkbox">
                                 <label>
@@ -359,7 +359,7 @@
                         <input type="hidden" name="current_offer_reseller" value="current_offer_reseller"/>
                     </t>
                 </t>
-                <t t-if="len(filter_categories) &gt; 0">
+                <t t-if="filter_categories">
                     <t t-foreach="filter_categories" t-as="category">
                         <t t-if="request.session.get('form_values')">
                             <t t-if="request.session.get('form_values').get('category_%s' %category.id) == category.id">
@@ -502,7 +502,7 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 Categories <a data-toggle="collapse" href="#desktop_category" class="pull-right"><i class="desktop_angle fa fa-angle-down"/></a>
-                                <t t-if="len(filter_categories) &gt; 0 and request.session.get('form_values')">
+                                <t t-if="filter_categories and request.session.get('form_values')">
                                     <t t-set="category_count" t-value="0"/>
                                     <t t-foreach="filter_categories" t-as="category">
                                         <t t-if="'category_%s' %category.id in request.session.get('form_values').keys()">
@@ -517,7 +517,7 @@
                         </div>
                         <div id="desktop_category" class="panel-collapse collapse">
                             <div class="panel-body">
-                                <t t-if="len(filter_categories) &gt; 0">
+                                <t t-if="filter_categories">
                                     <t t-foreach="filter_categories" t-as="category">
                                         <div class="checkbox">
                                             <h5>
