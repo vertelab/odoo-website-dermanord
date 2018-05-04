@@ -30,6 +30,7 @@ from openerp.addons.website_sale.controllers.main import website_sale, QueryURL,
 from openerp.addons.website.models.website import slug
 from openerp.addons.website_fts.website_fts import WebsiteFullTextSearch
 from openerp.addons.base.ir.ir_qweb import HTMLSafe
+from openerp.addons.portal.wizard.portal_wizard import extract_email
 import werkzeug
 from heapq import nlargest
 import math
@@ -46,6 +47,23 @@ _logger = logging.getLogger(__name__)
 
 PPG = 21 # Products Per Page
 PPR = 3  # Products Per Row
+
+class wizard_user(models.TransientModel):
+    _inherit = 'portal.wizard.user'
+
+    @api.model
+    def _create_user(self, wizard_user):
+        """ create a new user for wizard_user.partner_id
+            @param wizard_user: browse record of model portal.wizard.user
+            @return: browse record of model res.users
+        """
+        create_context = dict(self._context or {}, noshortcut=True, no_reset_password=True)       # to prevent shortcut creation
+        values = {
+            'email': extract_email(wizard_user.email),
+            'login': extract_email(wizard_user.email),
+            'partner_id': wizard_user.partner_id.id,
+        }
+        return self.env['res.users'].browse(self.env['res.users'].with_context(create_context)._signup_create_user(values))
 
 class blog_post(models.Model):
     _inherit = 'blog.post'
@@ -542,18 +560,17 @@ class Website(models.Model):
         return domain_append
 
     def domain_current(self, model, dic):
-        domain_current = [('sale_ok', '=', True)]
-        domain_append = []
+        domain_current = []
         def append_domain(domain1, domain2):
             if domain1:
-                domain1 = ['|'] + domain1
-            return domain1 + domain2
+                domain1.insert(0, '|')
+            domain1 += domain2
         if 'current_news' in dic:
             promo_id = request.env.ref('website_sale.image_promo').id
             if model == 'product.template':
-                domain_append = append_domain(domain_append, ['|', ('website_style_ids', '=', promo_id), ('product_variant_ids.website_style_ids_variant', '=', promo_id)])
+                append_domain(domain_current, ['|', ('website_style_ids', '=', promo_id), ('product_variant_ids.website_style_ids_variant', '=', promo_id)])
             if model == 'product.product':
-                domain_append = append_domain(domain_append, ['|', ('product_tmpl_id.website_style_ids', '=', promo_id), ('website_style_ids_variant', '=', promo_id)])
+                append_domain(domain_current, ['|', ('product_tmpl_id.website_style_ids', '=', promo_id), ('website_style_ids_variant', '=', promo_id)])
         for offer_type in ['current_offer', 'current_offer_reseller']:
             if offer_type in dic:
                 reseller = offer_type == 'current_offer_reseller'
@@ -568,10 +585,10 @@ class Website(models.Model):
                         request.env[model].get_campaign_variants(for_reseller=reseller).mapped('id') +
                         request.env['product.template'].get_campaign_tmpl(for_reseller=reseller).mapped('id')))
                 if campaign_product_ids:
-                    domain_append = append_domain(domain_append, [('id', 'in', campaign_product_ids)])
+                    append_domain(domain_current, [('id', 'in', campaign_product_ids)])
                 else:
-                    domain_append = append_domain(domain_append, [('id', '=', 0)])
-        return [('sale_ok', '=', True)] + domain_append
+                    append_domain(domain_current, [('id', '=', 0)])
+        return [('sale_ok', '=', True)] + domain_current
 
     def dn_shop_set_session(self, model, post, url):
         """Update session for /dn_shop"""

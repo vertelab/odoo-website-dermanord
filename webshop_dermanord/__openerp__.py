@@ -32,6 +32,7 @@ Special layout for Dermanord AB webshop
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': [
+        'portal',
         'product_multi_image_attachment',
         'website_sale_product_gallery',
         'website_blog',
