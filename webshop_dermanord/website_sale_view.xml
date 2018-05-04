@@ -64,6 +64,7 @@
                     <p class="mt16">
                         <span t-field="current_ingredient.description" />
                     </p>
+                    <h3 class="mt32 mb32 text-center">Examples of products containing this ingredient</h3>
                 </div>
             </t>
             <div class="container oe_website_sale">
