@@ -61,7 +61,7 @@
                     </ul>
                 </div>
                 <div class="text-right">
-                    <p>Created: <span t-esc="time.strftime('%Y-%m-%d')"/></p>
+                    <small><span t-esc="time.strftime('%Y-%m-%d')"/></small>
                 </div>
             </div>
         </template>

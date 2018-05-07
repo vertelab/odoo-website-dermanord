@@ -113,11 +113,6 @@ msgstr "Sida:"
 
 #. module: product_pricelist_dermanord
 #: view:website:product_pricelist_dermanord.pricelist_layout_footer
-msgid "Created: "
-msgstr "Skapad: "
-
-#. module: product_pricelist_dermanord
-#: view:website:product_pricelist_dermanord.pricelist_layout_footer
 msgid "Phone:"
 msgstr "Tel:"
 

@@ -75,7 +75,8 @@ class product_pricelist_dermanord(models.TransientModel):
                 data['categories'].append(d)
         ctx = self._context.copy()
         ctx['translatable'] = True
-        ctx['lang'] = self.lang.code
+        ctx['report_lang'] = self.lang.code
+        ctx['lang'] = self.lang.code # this does not work
         return self.pool['report'].get_action(self._cr, self._uid, [], 'product_pricelist_dermanord.report_pricelist', data=data, context=ctx)
 
     def categ_name_format(self, display_name, name_report):
@@ -115,5 +116,5 @@ class ReportPricelist(models.AbstractModel):
             'doc_model': report.model,
             'o': data,
         }
-        res = report_obj.with_context(translatable=self._context['translatable'], lang=self._context['lang']).render('product_pricelist_dermanord.report_pricelist', docargs)
+        res = report_obj.with_context(translatable=self._context['translatable'], lang=self._context['report_lang']).render('product_pricelist_dermanord.report_pricelist', docargs)
         return res
