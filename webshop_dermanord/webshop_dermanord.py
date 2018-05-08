@@ -207,7 +207,7 @@ class product_template(models.Model):
                     p.dv_name = p.name if p.use_tmpl_name else variant['fullname']
                     p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['image_main_id'][0], 'snippet_dermanord.img_product') if variant['image_main_id'] else placeholder
                     #~ p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if website_style_ids_variant else ' '.join([s.html_class for s in p.website_style_ids])
-                    p.dv_ribbon = website_style_ids_variant['html_class'] if website_style_ids_variant else ' '.join([s.html_class for s in p.website_style_ids])=======
+                    p.dv_ribbon = website_style_ids_variant['html_class'] if website_style_ids_variant else ' '.join([s.html_class for s in p.website_style_ids])
             except:
                 e = sys.exc_info()
                 _logger.error(''.join(traceback.format_exception(e[0], e[1], e[2])))
