@@ -17,7 +17,7 @@
             <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])" />
             <t t-set="filter_ingredients" t-value="request.env['product.ingredient'].search([])" />
             <input type="hidden" name="order" t-att-value="request.session.get('form_values', {}).get('order') or 'name asc'" />
-            <t t-if="len(filter_facets) &gt; 0">
+            <t t-if="filter_facets and len(filter_facets) &gt; 0">
                 <t t-foreach="filter_facets" t-as="facet">
                     <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])" />
                     <t t-if="len(facet_values) &gt; 0">
@@ -29,14 +29,14 @@
                     </t>
                 </t>
             </t>
-            <t t-if="len(filter_categories) &gt; 0">
+            <t t-if="filter_categories and len(filter_categories) &gt; 0">
                 <t t-foreach="filter_categories" t-as="category">
                     <t t-if="request.session.get('form_values')">
                         <input type="hidden" t-att-name="'category_%s' %category.id" t-att-value="request.session.get('form_values').get('category_%s' %category.id) if request.session.get('form_values').get('category_%s' %category.id) else ''" />
                     </t>
                 </t>
             </t>
-            <t t-if="len(filter_ingredients) &gt; 0">
+            <t t-if="filter_ingredients and len(filter_ingredients) &gt; 0">
                 <t t-foreach="filter_ingredients" t-as="ingredient">
                     <t t-if="request.session.get('form_values')">
                         <input type="hidden" t-att-name="'ingredient_%s' %ingredient.id" t-att-value="request.session.get('form_values').get('ingredient_%s' %ingredient.id) if request.session.get('form_values').get('ingredient_%s' %ingredient.id) else ''" />
@@ -64,6 +64,7 @@
                     <p class="mt16">
                         <span t-field="current_ingredient.description" />
                     </p>
+                    <h3 class="mt32 mb32 text-center">Examples of products containing this ingredient</h3>
                 </div>
             </t>
             <div class="container oe_website_sale">

@@ -30,6 +30,7 @@ from openerp.addons.website_sale.controllers.main import website_sale, QueryURL,
 from openerp.addons.website.models.website import slug
 from openerp.addons.website_fts.website_fts import WebsiteFullTextSearch
 from openerp.addons.base.ir.ir_qweb import HTMLSafe
+from openerp.addons.portal.wizard.portal_wizard import extract_email
 import werkzeug
 from heapq import nlargest
 import math
@@ -46,6 +47,23 @@ _logger = logging.getLogger(__name__)
 
 PPG = 21 # Products Per Page
 PPR = 3  # Products Per Row
+
+class wizard_user(models.TransientModel):
+    _inherit = 'portal.wizard.user'
+
+    @api.model
+    def _create_user(self, wizard_user):
+        """ create a new user for wizard_user.partner_id
+            @param wizard_user: browse record of model portal.wizard.user
+            @return: browse record of model res.users
+        """
+        create_context = dict(self._context or {}, noshortcut=True, no_reset_password=True)       # to prevent shortcut creation
+        values = {
+            'email': extract_email(wizard_user.email),
+            'login': extract_email(wizard_user.email),
+            'partner_id': wizard_user.partner_id.id,
+        }
+        return self.env['res.users'].browse(self.env['res.users'].with_context(create_context)._signup_create_user(values))
 
 class blog_post(models.Model):
     _inherit = 'blog.post'
@@ -176,6 +194,7 @@ class product_template(models.Model):
         for p in self:
             try:
                 variant = p.get_default_variant().read(['name', 'fullname', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'v_image_main_id', 'website_style_ids_variant'])[0]
+                attribute_value_ids = self.env['product.attribute.value'].browse(variant['attribute_value_ids'])
                 website_style_ids_variant = self.env['product.style'].browse(variant['website_style_ids_variant']).read(['html_class'])
                 if variant:
                     p.dv_id = variant['id']
@@ -186,9 +205,9 @@ class product_template(models.Model):
                     p.dv_default_code = variant['default_code'] or ''
                     p.dv_description_sale = variant['description_sale'] or ''
                     p.dv_name = p.name if p.use_tmpl_name else variant['fullname']
-                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['v_image_main_id'][0], 'snippet_dermanord.img_product') if variant['v_image_main_id'] else placeholder
-                    #~ p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
-                    p.dv_ribbon = website_style_ids_variant['html_class'] if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
+                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['image_main_id'][0], 'snippet_dermanord.img_product') if variant['image_main_id'] else placeholder
+                    #~ p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if website_style_ids_variant else ' '.join([s.html_class for s in p.website_style_ids])
+                    p.dv_ribbon = website_style_ids_variant['html_class'] if website_style_ids_variant else ' '.join([s.html_class for s in p.website_style_ids])=======
             except:
                 e = sys.exc_info()
                 _logger.error(''.join(traceback.format_exception(e[0], e[1], e[2])))
@@ -285,10 +304,7 @@ class product_product(models.Model):
     # get this variant ribbon. if there's not one, get the template's ribbon
     @api.multi
     def get_this_variant_ribbon(self):
-        if len(self.website_style_ids_variant) > 0:
-            return ' '.join([s.html_class for s in self.website_style_ids_variant])
-        else:
-            return ' '.join([s.html_class for s in self.product_tmpl_id.website_style_ids])
+        return ' '.join([s.html_class for s in self.website_style_ids_variant] + [s.html_class for s in self.product_tmpl_id.website_style_ids])
 
     @api.one
     @api.depends('product_tmpl_id.campaign_changed')
@@ -529,72 +545,35 @@ class Website(models.Model):
         return domain_append
 
     def domain_current(self, model, dic):
-        domain_current = [('sale_ok', '=', True)]
-        domain_append = []
+        domain_current = []
+        def append_domain(domain1, domain2):
+            if domain1:
+                domain1.insert(0, '|')
+            domain1 += domain2
         if 'current_news' in dic:
+            promo_id = request.env.ref('website_sale.image_promo').id
             if model == 'product.template':
-                product_ids = request.env[model].search([('website_style_ids', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('id')
-                product_variants = request.env['product.product'].search([('website_style_ids_variant', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('product_tmpl_id')
-                if len(product_variants) > 0:
-                    product_ids += product_variants.mapped('id')
+                append_domain(domain_current, ['|', ('website_style_ids', '=', promo_id), ('product_variant_ids.website_style_ids_variant', '=', promo_id)])
             if model == 'product.product':
-                product_ids = request.env[model].search([('website_style_ids_variant', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('id')
-                product_tmpls = request.env['product.template'].search([('website_style_ids', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('product_variant_ids')
-                if len(product_tmpls) > 0:
-                    product_ids += product_tmpls.mapped('id')
-            if len(product_ids) == 0:
-                domain_current.append(('id', '=', 9999999999))
-            else:
-                domain_current.append(('id', 'in', product_ids))
-        if 'current_offer' in dic:
-            if model == 'product.template':
-                campaign_product_ids = request.env[model].get_campaign_tmpl(for_reseller=False).mapped('id')
-                #get product.template that have variants are in current offer
-                tmpl = request.env['product.product'].get_campaign_variants(for_reseller=False).mapped('product_tmpl_id')
-                if len(tmpl) > 0:
-                    for t in tmpl:
-                        if t.id not in campaign_product_ids:
-                            campaign_product_ids.append(t.id)
-            if model == 'product.product':
-                campaign_product_ids = request.env[model].get_campaign_variants(for_reseller=False).mapped('id')
-                tmpl = request.env['product.template'].get_campaign_tmpl(for_reseller=False)
-                if len(tmpl) > 0:
-                    for t in tmpl:
-                        campaign_product_ids += t.mapped('product_variant_ids').mapped('id')
-            if len(campaign_product_ids) == 0 and ('id', '=', 9999999999) not in domain_current:
-                domain_current.append(('id', '=', 9999999999))
-            else:
-                domain_current.append(('id', 'in', campaign_product_ids))
-        if 'current_offer_reseller' in dic:
-            if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
+                append_domain(domain_current, ['|', ('product_tmpl_id.website_style_ids', '=', promo_id), ('website_style_ids_variant', '=', promo_id)])
+        for offer_type in ['current_offer', 'current_offer_reseller']:
+            if offer_type in dic:
+                reseller = offer_type == 'current_offer_reseller'
+                # TODO: This looks like a lot of browses. Should be possible to shorten it considerably.
                 if model == 'product.template':
-                    campaign_product_reseller_ids = request.env[model].get_campaign_tmpl(for_reseller=True).mapped('id')
-                    tmpl = request.env['product.product'].get_campaign_variants(for_reseller=True).mapped('product_tmpl_id')
-                    if len(tmpl) > 0:
-                        for t in tmpl:
-                            if t.id not in campaign_product_reseller_ids:
-                                campaign_product_reseller_ids.append(t.id)
+                    #get product.template that have variants are in current offer
+                    campaign_product_ids = list(set(
+                        request.env[model].get_campaign_tmpl(for_reseller=reseller).mapped('id') +
+                        request.env['product.product'].get_campaign_variants(for_reseller=reseller).mapped('product_tmpl_id').mapped('id')))
                 if model == 'product.product':
-                    campaign_product_reseller_ids = request.env[model].get_campaign_variants(for_reseller=True).mapped('id')
-                    tmpl = request.env['product.template'].get_campaign_tmpl(for_reseller=True)
-                    if len(tmpl) > 0:
-                        for t in tmpl:
-                            campaign_product_reseller_ids += t.product_variant_ids.mapped('id')
-                if len(campaign_product_reseller_ids) == 0 and ('id', '=', 9999999999) not in domain_current:
-                    domain_current.append(('id', '=', 9999999999))
+                    campaign_product_ids = list(set(
+                        request.env[model].get_campaign_variants(for_reseller=reseller).mapped('id') +
+                        request.env['product.template'].get_campaign_tmpl(for_reseller=reseller).mapped('id')))
+                if campaign_product_ids:
+                    append_domain(domain_current, [('id', 'in', campaign_product_ids)])
                 else:
-                    domain_current.append(('id', 'in', campaign_product_reseller_ids))
-        for i in domain_current:
-            if domain_current.count(i) > 1:
-                domain_current.remove(i)
-        if len(domain_current) > 1:
-            for d in domain_current:
-                if domain_current.index(d) == 0 or (len(domain_current) == 3 and domain_current.index(d) == 1):
-                    domain_append.append('|')
-                domain_append.append(domain_current[domain_current.index(d)])
-        if len(domain_current) == 1:
-            domain_append.append(domain_current[0])
-        return domain_append
+                    append_domain(domain_current, [('id', '=', 0)])
+        return [('sale_ok', '=', True)] + domain_current
 
     def dn_shop_set_session(self, model, post, url):
         """Update session for /dn_shop"""
@@ -610,8 +589,7 @@ class Website(models.Model):
 
         request.session['url'] = url
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
-        request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
-        request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
+        request.session['sort_name'], request.session['sort_order'] = self.get_chosen_order(self.get_form_values())
 
         if post:
             request.session['form_values']['current_ingredient'] = post.get('current_ingredient')
@@ -908,167 +886,6 @@ class WebsiteSale(website_sale):
 
         return attribute_value_ids
 
-    def get_domain_append(self, model, dic):
-        facet_ids = []
-        category_ids = []
-        ingredient_ids = []
-        not_ingredient_ids = []
-        current_ingredient = None
-        current_ingredient_key = None
-        current_news = None
-        current_offer = None
-        current_offer_reseller = None
-
-        for k, v in dic.iteritems():
-            if k.split('_')[0] == 'facet':
-                if v:
-                    facet_ids.append(int(v))
-                    request.session.get('form_values')['facet_%s_%s' %(k.split('_')[1], k.split('_')[2])] = k.split('_')[2]
-            if k.split('_')[0] == 'category':
-                if v:
-                     category_ids.append(int(v))
-                     request.session.get('form_values')['category_%s' %k.split('_')[1]] = int(k.split('_')[1])
-            if k.split('_')[0] == 'ingredient':
-                if v:
-                    ingredient_ids.append(int(v))
-                    request.session.get('form_values')['ingredient_%s' %k.split('_')[1]] = int(k.split('_')[1])
-            if k == 'current_news':
-                if v:
-                    current_news = 'current_news'
-                    request.session.get('form_values')['current_news'] = 'current_news'
-            if k == 'current_offer':
-                if v:
-                    current_offer = 'current_offer'
-                    request.session.get('form_values')['current_offer'] = 'current_offer'
-            if k == 'current_offer_reseller':
-                if v:
-                    current_offer_reseller = 'current_offer_reseller'
-                    request.session.get('form_values')['current_offer_reseller'] = 'current_offer_reseller'
-            if k.split('_')[0] == 'notingredient':
-                if v:
-                    not_ingredient_ids.append(int(v))
-                    request.session.get('form_values')['notingredient_%s' %k.split('_')[1]] = k.split('_')[1]
-            if k == 'current_ingredient':
-                if v:
-                    current_ingredient = v
-                    current_ingredient_key = 'ingredient_' + v
-                    ingredient_ids.append(int(v))
-
-        if current_ingredient:
-            dic['current_ingredient'] = int(current_ingredient)
-            dic[current_ingredient_key] = current_ingredient
-
-        domain_append = []
-        if category_ids:
-            domain_append += [('public_categ_ids', 'in', [id for id in category_ids])]
-        if facet_ids:
-            if model == 'product.product':
-                domain_append += [('facet_line_ids.value_ids', '=', id) for id in facet_ids]
-            if model == 'product.template':
-                domain_append += [('product_variant_ids.facet_line_ids.value_ids', '=', id) for id in facet_ids]
-        if ingredient_ids or not_ingredient_ids:
-            product_ids = request.env['product.product'].sudo().search_read(
-                [('ingredient_ids', '=', id) for id in ingredient_ids] + [('ingredient_ids', '!=', id) for id in not_ingredient_ids], ['id'])
-            domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
-        if request.session.get('form_values'):
-            if request.session.get('form_values').get('current_news') or request.session.get('form_values').get('current_offer') or request.session.get('form_values').get('current_offer_reseller'):
-                offer_domain = self.domain_current(model, dic)
-                if len(offer_domain) > 0:
-                    for d in offer_domain:
-                        domain_append.append(d)
-
-        return domain_append
-
-    def get_form_values(self):
-        if not request.session.get('form_values'):
-            request.session['form_values'] = {}
-        return request.session.get('form_values')
-
-    def get_chosen_filter_qty(self, post):
-        chosen_filter_qty = 0
-        for k, v in post.iteritems():
-            if k not in ['post_form', 'order']:
-                chosen_filter_qty += 1
-        return chosen_filter_qty
-
-    def get_chosen_order(self, post):
-        sort_name = 'sold_qty'
-        sort_order = 'desc'
-        for k, v in post.iteritems():
-            if k == 'order':
-                sort_name = post.get('order').split(' ')[0]
-                sort_order = post.get('order').split(' ')[1]
-                break
-        return [sort_name, sort_order]
-
-    def domain_current(self, model, dic):
-        domain_current = []
-        domain_append = []
-        if 'current_news' in dic:
-            if model == 'product.template':
-                product_ids = request.env[model].search([('website_style_ids', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('id')
-                product_variants = request.env['product.product'].search([('website_style_ids_variant', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('product_tmpl_id')
-                if len(product_variants) > 0:
-                    product_ids += product_variants.mapped('id')
-            if model == 'product.product':
-                product_ids = request.env[model].search([('website_style_ids_variant', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('id')
-                product_tmpls = request.env['product.template'].search([('website_style_ids', 'in', request.env.ref('website_sale.image_promo').id)]).mapped('product_variant_ids')
-                if len(product_tmpls) > 0:
-                    product_ids += product_tmpls.mapped('id')
-            if len(product_ids) == 0:
-                domain_current.append(('id', '=', 9999999999))
-            else:
-                domain_current.append(('id', 'in', product_ids))
-        if 'current_offer' in dic:
-            if model == 'product.template':
-                campaign_product_ids = request.env[model].get_campaign_tmpl(for_reseller=False).mapped('id')
-                #get product.template that have variants are in current offer
-                tmpl = request.env['product.product'].get_campaign_variants(for_reseller=False).mapped('product_tmpl_id')
-                if len(tmpl) > 0:
-                    for t in tmpl:
-                        if t.id not in campaign_product_ids:
-                            campaign_product_ids.append(t.id)
-            if model == 'product.product':
-                campaign_product_ids = request.env[model].get_campaign_variants(for_reseller=False).mapped('id')
-                tmpl = request.env['product.template'].get_campaign_tmpl(for_reseller=False)
-                if len(tmpl) > 0:
-                    for t in tmpl:
-                        campaign_product_ids += t.mapped('product_variant_ids').mapped('id')
-            if len(campaign_product_ids) == 0 and ('id', '=', 9999999999) not in domain_current:
-                domain_current.append(('id', '=', 9999999999))
-            else:
-                domain_current.append(('id', 'in', campaign_product_ids))
-        if 'current_offer_reseller' in dic:
-            if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
-                if model == 'product.template':
-                    campaign_product_reseller_ids = request.env[model].get_campaign_tmpl(for_reseller=True).mapped('id')
-                    tmpl = request.env['product.product'].get_campaign_variants(for_reseller=False).mapped('product_tmpl_id')
-                    if len(tmpl) > 0:
-                        for t in tmpl:
-                            if t.id not in campaign_product_reseller_ids:
-                                campaign_product_reseller_ids.append(t.id)
-                if model == 'product.product':
-                    campaign_product_reseller_ids = request.env[model].get_campaign_variants(for_reseller=True).mapped('id')
-                    tmpl = request.env['product.template'].get_campaign_tmpl(for_reseller=True)
-                    if len(tmpl) > 0:
-                        for t in tmpl:
-                            campaign_product_reseller_ids += t.product_variant_ids.mapped('id')
-                if len(campaign_product_reseller_ids) == 0 and ('id', '=', 9999999999) not in domain_current:
-                    domain_current.append(('id', '=', 9999999999))
-                else:
-                    domain_current.append(('id', 'in', campaign_product_reseller_ids))
-        for i in domain_current:
-            if domain_current.count(i) > 1:
-                domain_current.remove(i)
-        if len(domain_current) > 1:
-            for d in domain_current:
-                if domain_current.index(d) == 0 or (len(domain_current) == 3 and domain_current.index(d) == 1):
-                    domain_append.append('|')
-                domain_append.append(domain_current[domain_current.index(d)])
-        if len(domain_current) == 1:
-            domain_append.append(domain_current[0])
-        return domain_append
-
     def in_stock(self, product_id):
         instock = ''
         in_stock = True
@@ -1111,9 +928,9 @@ class WebsiteSale(website_sale):
             if not request.session.get('form_values'):
                 request.session['form_values'] = {'category_%s' %int(category): int(category)}
             request.session['form_values'] = {'category_%s' %int(category): int(category)}
-            self.get_form_values()['category_' + str(int(category))] = int(category)
+            request.website.get_form_values()['category_' + str(int(category))] = int(category)
             request.session['current_domain'] = [('public_categ_ids', 'in', [int(category)])]
-            request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
+            request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
 
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
@@ -1129,7 +946,7 @@ class WebsiteSale(website_sale):
         search_start = timer()
         domain = request.session.get('current_domain')
         current_order = request.session.get('current_order')
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price_45', 'dv_price_20', 'website_style_ids', 'dv_description_sale'], limit=PPG, order=current_order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price_45', 'dv_price_20', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
 
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
@@ -1201,7 +1018,7 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         # TODO: always get same product in the last?? why?
 
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price_45', 'dv_price_20', 'website_style_ids', 'dv_description_sale', 'product_variant_ids', 'dv_id'], order=order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price_45', 'dv_price_20', 'website_style_ids_variant', 'dv_description_sale', 'product_variant_ids', 'dv_id'], order=order)
 
         search_end = timer()
         _logger.warn('search end: %s' %(timer() - start_time))
@@ -1423,9 +1240,8 @@ class WebsiteSale(website_sale):
             context['pricelist'] = int(self.get_pricelist())
             product = template_obj.browse(cr, uid, int(product), context=context)
 
-        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
-        request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
-        request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
+        request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
+        request.session['sort_name'], request.session['sort_order'] = request.website.get_chosen_order(request.website.get_form_values())
 
         values = {
             'search': search,
@@ -1462,9 +1278,9 @@ class WebsiteSale(website_sale):
             if not request.session.get('form_values'):
                 request.session['form_values'] = {'category_%s' %int(category): int(category)}
             request.session['form_values'] = {'category_%s' %int(category): int(category)}
-            self.get_form_values()['category_' + str(int(category))] = int(category)
+            request.website.get_form_values()['category_' + str(int(category))] = int(category)
             request.session['current_domain'] = [('public_categ_ids', 'in', [int(category)])]
-            request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
+            request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
 
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
@@ -1488,9 +1304,8 @@ class WebsiteSale(website_sale):
             request.session['form_values'] = post
 
         request.session['url'] = url
-        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
-        request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
-        request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
+        request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
+        request.session['sort_name'], request.session['sort_order'] = request.website.get_chosen_order(request.website.get_form_values())
         value_start = timer()
 
         for p in products:
@@ -1562,9 +1377,8 @@ class WebsiteSale(website_sale):
             context['pricelist'] = int(self.get_pricelist())
             product = template_obj.browse(cr, uid, variant.sudo().product_tmpl_id.id, context=context)
 
-        request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
-        request.session['sort_name'] = self.get_chosen_order(self.get_form_values())[0]
-        request.session['sort_order'] = self.get_chosen_order(self.get_form_values())[1]
+        request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
+        request.session['sort_name'], request.session['sort_order'] = request.website.get_chosen_order(request.website.get_form_values())
 
         values = {
             'search': search,
@@ -1687,6 +1501,8 @@ class WebsiteSale(website_sale):
                 else:
                     price = recommended_price
 
+                sale_ribbon = request.env.ref('website_sale.image_promo')
+
                 value['id'] = product.id
                 value['recommended_price'] = request.website.price_format(recommended_price)
                 value['price'] = request.website.price_format(price)
@@ -1702,7 +1518,7 @@ class WebsiteSale(website_sale):
                 value['offer'] = offer
                 value['offer_text'] = _('Offer')
                 value['news_text'] = _('News')
-                value['ribbon'] = request.env.ref('website_sale.image_promo') in product.website_style_ids_variant if len(product.website_style_ids_variant) > 0 else (request.env.ref('website_sale.image_promo') in product.product_tmpl_id.website_style_ids)
+                value['ribbon'] = sale_ribbon in product.website_style_ids_variant if product.website_style_ids_variant else (sale_ribbon in product.product_tmpl_id.website_style_ids)
                 value['sale_ok'] = True if (product.sale_ok and self.in_stock(product.id)[0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
         return value
 

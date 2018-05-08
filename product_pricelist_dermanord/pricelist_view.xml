@@ -40,6 +40,7 @@
                     <group>
                         <group>
                             <field name="fiscal_position_id" widget="selection" />
+                            <field name="lang" widget="selection" />
                         </group>
                     </group>
                     <footer>
@@ -50,10 +51,10 @@
                 </form>
             </field>
         </record>
+
         <act_window id="action_product_pricelist_dermanord" key2="client_print_multi" name="Price List Report (Dermanord)" res_model="product.pricelist.dermanord" src_model="product.product" groups="product.group_sale_pricelist" view_mode="form" target="new" view_type="form" />
-<!--
-        <menuitem id="menu_product_pricelist_dermanord" action="action_product_pricelist_dermanord" parent="product.menu_product_pricelist_main" sequence="10"/>
--->
+
+        <menuitem id="menu_product_pricelist_dermanord" name="Price List Report Saleable (Dermanord)" action="action_product_pricelist_dermanord" parent="product.menu_product_pricelist_main" sequence="10"/>
 
     </data>
 </openerp>

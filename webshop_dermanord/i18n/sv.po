@@ -480,3 +480,8 @@ msgstr "Kategorier"
 #: view:website:website_sale.product
 msgid "For Resellers"
 msgstr "För återförsäljare"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord..dn_shop
+msgid "Examples of products containing this ingredient"
+msgstr "Exempel på produkter som innehåller denna ingrediens"

@@ -42,13 +42,16 @@
 }
 
 .bpp_block h4 {
-    height: 2em;
+    height: 3.2em;
     padding: 15px 0px;
-    line-height: 1.5em;
+    line-height: 1.2em;
     overflow: hidden;
     position: relative;
+/*
     white-space: nowrap;
+*/
     color: #000 !important;
+    font-weight: bold;
 }
 
 .bpp_block h4::after {
@@ -57,7 +60,7 @@
     bottom: 0;
     right: 0;
     width: 10%;
-    height: 1.1em;
+    height: 1.2em;
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 

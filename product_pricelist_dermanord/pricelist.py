@@ -34,6 +34,9 @@ class product_pricelist_dermanord(models.TransientModel):
     pricelist_id_two = fields.Many2one(comodel_name='product.pricelist', string='Pricelist 2')
     date = fields.Date(string='Date', required=True)
     fiscal_position_id = fields.Many2one(comodel_name='account.fiscal.position', string='Fiscal Position', required=True)
+    def compute_lang(self):
+        return self.env['res.lang'].search([('code', '=', 'sv_SE')])
+    lang = fields.Many2one(comodel_name='res.lang', string='Language', default=compute_lang, required=True)
 
     @api.multi
     def print_report(self):
@@ -45,8 +48,12 @@ class product_pricelist_dermanord(models.TransientModel):
             'fiscal_position': self.fiscal_position_id.name,
             'currency': self.pricelist_id_one.currency_id.name,
             'categories': [],
+            'pricelist_id': self.pricelist_id_one.id,
         }
-        all_products = self.env['product.product'].search([('id', 'in', self._context.get('active_ids', [])), ('sale_ok', '=', True)], order='default_code')
+        domain = [('sale_ok', '=', True)]
+        if self._context.get('active_ids'):
+            domain.append(('id', 'in', self._context.get('active_ids')))
+        all_products = self.env['product.product'].search(domain, order='default_code')
         for c in self.env['product.category'].search([('id', 'in', all_products.mapped('categ_id').mapped('id'))], order='parent_id, name'):
             show_categ = False
             d = {
@@ -66,7 +73,11 @@ class product_pricelist_dermanord(models.TransientModel):
                     show_categ = True
             if show_categ:
                 data['categories'].append(d)
-        return self.pool['report'].get_action(self._cr, self._uid, [], 'product_pricelist_dermanord.report_pricelist', data=data, context=self._context)
+        ctx = self._context.copy()
+        ctx['translatable'] = True
+        ctx['report_lang'] = self.lang.code
+        ctx['lang'] = self.lang.code # this does not work
+        return self.pool['report'].get_action(self._cr, self._uid, [], 'product_pricelist_dermanord.report_pricelist', data=data, context=ctx)
 
     def categ_name_format(self, display_name, name_report):
         if '/' in display_name:
@@ -101,8 +112,9 @@ class ReportPricelist(models.AbstractModel):
         report_obj = self.env['report']
         report = report_obj._get_report_from_name('product_pricelist_dermanord.report_pricelist')
         docargs = {
-            'docs': self,
-            'data': data,
+            'doc_ids': docids,
+            'doc_model': report.model,
+            'o': data,
         }
-        res = report_obj.render('product_pricelist_dermanord.report_pricelist', docargs)
+        res = report_obj.with_context(translatable=self._context['translatable'], lang=self._context['report_lang']).render('product_pricelist_dermanord.report_pricelist', docargs)
         return res

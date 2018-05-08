@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* product_pricelist_dermanord
+#   * product_pricelist_dermanord
 #
 msgid ""
 msgstr ""
@@ -126,6 +126,11 @@ msgstr "Prislista"
 #: model:ir.actions.act_window,name:product_pricelist_dermanord.action_product_pricelist_dermanord
 msgid "Price List Report (Dermanord)"
 msgstr "Prislista rapport (Dermanord)"
+
+#. module: product_pricelist_dermanord
+#: model:ir.ui.menu,name:product_pricelist_dermanord.menu_product_pricelist_dermanord
+msgid "Price List Report Saleable (Dermanord)"
+msgstr "Prislista rapport säljbar (Dermanord)"
 
 #. module: product_pricelist_dermanord
 #: model:ir.actions.report.xml,name:product_pricelist_dermanord.action_report_pricelist_dermanord
