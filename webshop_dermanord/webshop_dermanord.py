@@ -167,26 +167,6 @@ class product_template(models.Model):
         self.price_tax = self.price + res
         self.recommended_price = 0.0
 
-    @api.model
-    def Xget_all_variant_data(self, products):
-        pricelist = self.env.ref('product.list0')
-        res = {}
-        placeholder = '/web/static/src/img/placeholder.png'
-        for p in products:
-            variant = p.get_default_variant()
-            if variant:
-                res[p.id]= {}
-                try:
-                    res[p.id]['recommended_price'] = pricelist.price_get(variant.id, 1)[1] + sum([c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(pricelist.price_get(variant.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
-                    res[p.id]['price'] = variant.price
-                    res[p.id]['price_tax'] = res[p.id]['price'] + sum(c.get('amount', 0.0) for c in p.sudo().taxes_id.compute_all(res[p.id]['price'], 1, None, self.env.user.partner_id)['taxes'])
-                    res[p.id]['default_code'] = variant.default_code or ''
-                    res[p.id]['description_sale'] = variant.description_sale or ''
-                    res[p.id]['image_src'] = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant.image_ids[0].image_attachment_id.id, 'snippet_dermanord.img_product') if (variant.image_ids and variant.image_ids[0].image_attachment_id) else placeholder
-                except Exception as e:
-                    res[p.id] = {'recommended_price': 0.0, 'price': 0.0, 'price_tax': 0.0, 'default_code': 'error', 'description_sale': '%s' %e, 'image_src': placeholder}
-        return res
-
     @api.multi
     @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'product_variant_ids.image_attachment_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
     def _get_all_variant_data(self):
@@ -195,8 +175,7 @@ class product_template(models.Model):
         placeholder = '/web/static/src/img/placeholder.png'
         for p in self:
             try:
-                variant = p.get_default_variant().read(['name', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'attribute_value_ids', 'v_image_main_id', 'website_style_ids_variant'])[0]
-                attribute_value_ids = self.env['product.attribute.value'].browse(variant['attribute_value_ids'])
+                variant = p.get_default_variant().read(['name', 'fullname', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'v_image_main_id', 'website_style_ids_variant'])[0]
                 website_style_ids_variant = self.env['product.style'].browse(variant['website_style_ids_variant']).read(['html_class'])
                 if variant:
                     p.dv_id = variant['id']
@@ -206,7 +185,7 @@ class product_template(models.Model):
                     p.dv_price_20 = variant['price_20']
                     p.dv_default_code = variant['default_code'] or ''
                     p.dv_description_sale = variant['description_sale'] or ''
-                    p.dv_name = p.name if p.use_tmpl_name else '%s %s' % (p.name, ', '.join(attribute_value_ids.mapped('name')))
+                    p.dv_name = p.name if p.use_tmpl_name else variant['fullname']
                     p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['v_image_main_id'][0], 'snippet_dermanord.img_product') if variant['v_image_main_id'] else placeholder
                     #~ p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
                     p.dv_ribbon = website_style_ids_variant['html_class'] if len(website_style_ids_variant) > 0 else ' '.join([s.html_class for s in p.website_style_ids])
@@ -256,6 +235,11 @@ class product_product(models.Model):
     #~ so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')  # performance hog, do we need it?
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
+
+    @api.one
+    def _fullname(self):
+        self.fullname = '%s %s' % (self.name, ', '.join(self.attribute_value_ids.mapped('name')))
+    fullname = fields.Char(compute='_fullname')
 
     @api.one
     @api.depends('lst_price', 'product_tmpl_id.list_price')
