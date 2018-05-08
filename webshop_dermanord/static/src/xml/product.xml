@@ -109,9 +109,8 @@
                 <h5 class="list_product_name">
                     <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" t-att-class="product_name_col">
                         <strong>
-                            <a t-att-href="product_href" t-att-title="product_name + attribute_value_ids">
-                                <span itemprop="name" t-esc="product_name"/>
-                                <t t-esc="attribute_value_ids"/>
+                            <a t-att-href="product_href" t-att-title="fullname">
+                                <span itemprop="name" t-esc="fullname"/>
                             </a>
                         </strong>
                     </div>

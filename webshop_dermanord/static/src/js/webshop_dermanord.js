@@ -725,7 +725,7 @@ function load_products_list(page){
                     'purchase_phase': data['products'][key]['purchase_phase'],
                     'purchase_phase_start_date': data['products'][key]['purchase_phase_start_date'],
                     'purchase_phase_end_date': data['products'][key]['purchase_phase_end_date'],
-                    'attribute_value_ids': data['products'][key]['attribute_value_ids'],
+                    'fullname': data['products'][key]['fullname'],
                     'recommended_price': data['products'][key]['recommended_price'],
                     'price': data['products'][key]['price'],
                     //~ 'tax': data['products'][key]['tax'],

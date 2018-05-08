@@ -10,19 +10,19 @@
                         <div class="row mb32">
                             <div class="col-xs-12">
                                 <strong class="dn_uppcase">Valid From</strong>:
-                                <span class="dn_uppcase" t-esc="data['date']"/>
+                                <span class="dn_uppcase" t-esc="o['date']"/>
                             </div>
                             <div class="col-xs-12">
                                 <strong class="dn_uppcase">Price List</strong>:
-                                <span class="dn_uppcase" t-esc="data['pricelist']"/>
+                                <span class="dn_uppcase" t-esc="o['pricelist']"/>
                             </div>
                             <div class="col-xs-12">
                                 <strong class="dn_uppcase">Fiscal Position</strong>:
-                                <span class="dn_uppcase" t-esc="data['fiscal_position']"/>
+                                <span class="dn_uppcase" t-esc="o['fiscal_position']"/>
                             </div>
                             <div class="col-xs-12">
                                 <strong class="dn_uppcase">Currency</strong>:
-                                <span class="dn_uppcase" t-esc="data['currency']"/>
+                                <span class="dn_uppcase" t-esc="o['currency']"/>
                             </div>
                         </div>
                     </div>
@@ -60,6 +60,9 @@
                         <li><span class="topage"/></li>
                     </ul>
                 </div>
+                <div class="text-right">
+                    <small><span t-esc="time.strftime('%Y-%m-%d')"/></small>
+                </div>
             </div>
         </template>
 
@@ -76,35 +79,26 @@
             <t t-call="product_pricelist_dermanord.pricelist_layout_footer" />
         </template>
 
-        <template id="report_pricelist">
-            <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet"/>
-            <style>
-                .dn_uppcase {
-                    text-transform: uppercase;
-                }
-                .page {
-                    font-family: 'Lato', sans-serif;
-                }
-            </style>
-            <t t-call="report.html_container">
-                <t t-call="product_pricelist_dermanord.pricelist_layout">
-                    <div class="page">
+        <template id="report_pricelist_document">
+            <t t-call="product_pricelist_dermanord.pricelist_layout">
+                <div class="page">
+                    <div class="row">
                         <table class="table table-condensed">
                             <thead>
                                 <tr>
                                     <th>
                                         <strong class="dn_uppcase">Product</strong>
                                     </th>
-                                    <th t-if="data['pricelist_title_two']">
-                                        <strong class="dn_uppcase"><t t-esc="data['pricelist_title_two']"/></strong>
+                                    <th t-if="o['pricelist_title_two']">
+                                        <strong class="dn_uppcase"><t t-esc="o['pricelist_title_two']"/></strong>
                                     </th>
                                     <th>
-                                        <strong class="dn_uppcase"><t t-esc="data['pricelist_title_one']"/></strong>
+                                        <strong class="dn_uppcase"><t t-esc="o['pricelist_title_one']"/></strong>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-foreach="data['categories']" t-as="c">
+                                <t t-foreach="o['categories']" t-as="c">
                                     <tr>
                                         <td colspan="100">
                                             <strong class="dn_uppcase" t-esc="c['name']"/>
@@ -125,7 +119,22 @@
                             </tbody>
                         </table>
                     </div>
-                </t>
+                </div>
+            </t>
+        </template>
+
+        <template id="report_pricelist">
+            <t t-call="report.html_container">
+                <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet"/>
+                <style>
+                    .dn_uppcase {
+                        text-transform: uppercase;
+                    }
+                    .page {
+                        font-family: 'Lato', sans-serif;
+                    }
+                </style>
+                <t t-call="product_pricelist_dermanord.report_pricelist_document"/>
             </t>
         </template>
 
