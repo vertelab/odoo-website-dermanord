@@ -22,7 +22,7 @@ msgstr ""
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
-msgid "Brand Name"
+msgid "Salon Name"
 msgstr ""
 
 #. module: website_reseller_register_dermanord
@@ -112,7 +112,7 @@ msgstr ""
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
-msgid "Reseller Description..."
+msgid "This text will be shown for end consumers on our list of resellers"
 msgstr ""
 
 #. module: website_reseller_register_dermanord
@@ -143,6 +143,13 @@ msgstr ""
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
 msgid "This field is used to print dates when the salon is closed and that are exceptions from the opening hours stated above. If this field isn't filled out it won't be shown in the salon's opening hours."
+msgstr ""
+
+
+#. module: website_reseller_register_dermanord
+#: code:addons/website_reseller_register_dermanord/website.py:150
+#, python-format
+msgid "This image will be shown for end consumers on our list of resellers"
 msgstr ""
 
 #. module: website_reseller_register_dermanord
@@ -182,7 +189,7 @@ msgstr ""
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
-msgid "Would you like your salon to be shown in your website?"
+msgid "Would you like your salon to be shown on our list of resellers?"
 msgstr ""
 
 #. module: website_reseller_register_dermanord

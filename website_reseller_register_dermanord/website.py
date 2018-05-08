@@ -147,6 +147,7 @@ class reseller_register(reseller_register):
         value['help_visit_city'] = _('')
         value['help_visit_phone'] = _('')
         value['help_visit_email'] = _('')
+        value['help_top_image'] = _('This image will be shown for end consumers on our list of resellers')
         return value
 
     @http.route(['/reseller_register/information'], type='http', auth='public', website=True)

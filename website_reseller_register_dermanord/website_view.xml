@@ -62,7 +62,7 @@
                     <strong>Salon Information</strong>
                 </h4>
                 <div t-att-class="'form-group %s' %validation.get('company_brand_name')">
-                    <label class="col-md-3 col-sm-4 control-label" for="company_brand_name">Brand Name</label>
+                    <label class="col-md-3 col-sm-4 control-label" for="company_brand_name">Salon Name</label>
                     <div class="col-md-7 col-sm-8">
                         <input type="text" class="form-control" name="company_brand_name" t-att-value="issue.partner_id.brand_name" placeholder="" />
                         <small t-esc="help.get('help_company_brand_name')" />
@@ -120,7 +120,7 @@
                 <div class="form-group">
                     <label class="col-md-3 col-sm-4 control-label" for="website_short_description">Reseller Description</label>
                     <div class="col-md-7 col-sm-8">
-                        <textarea id="website_short_description" type="text" class="form-control" name="website_short_description" placeholder="Reseller Description..." rows="10" cols="70" ><t t-raw="issue.partner_id.website_short_description"/></textarea>
+                        <textarea id="website_short_description" type="text" class="form-control" name="website_short_description" placeholder="This text will be shown for end consumers on our list of resellers" rows="10" cols="70" ><t t-raw="issue.partner_id.website_short_description"/></textarea>
                     </div>
                 </div>
                 <div class="form-group">
@@ -131,11 +131,12 @@
                             <i id="remove_img" class="fa fa-trash-o fa-2x" t-att-data-partner_id="issue.partner_id.id"><input name="remove_img" class="hidden" value="0"/></i>
                         </t>
                         <input id="top_image" type="file" name="top_image" accept="image/*" capture="camera"/>
+                        <small t-esc="help.get('help_top_image')" />
                     </div>
                 </div>
                 <div class="form-group checkbox">
                     <div class="col-md-7 col-md-offset-3 col-sm-8 col-sm-offset-4 mb32">
-                        <label><input type="checkbox" name="company_is_reseller" t-att="{'checked': 'checked'} if issue.partner_id.is_reseller else {}"/>Would you like your salon to be shown in our website?</label>
+                        <label><input type="checkbox" name="company_is_reseller" t-att="{'checked': 'checked'} if issue.partner_id.is_reseller else {}"/>Would you like your salon to be shown on our list of resellers?</label>
                     </div>
                 </div>
             </xpath>

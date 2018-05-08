@@ -24,8 +24,8 @@ msgstr "BLI ÅTERFÖRSÄLJARE"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
-msgid "Brand Name"
-msgstr "Varumärke"
+msgid "Salon Name"
+msgstr "Salongsnamn"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
@@ -110,17 +110,17 @@ msgstr "Registrering"
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
 msgid "Reseller Description"
-msgstr "ÅFbeskrivning"
+msgstr "Beskrivning av verksamheten"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
-msgid "Reseller Description..."
-msgstr "ÅFbeskrivning..."
+msgid "This text will be shown for end consumers on our list of resellers"
+msgstr "Denna text kommer att synas för slutkonsument på vår lista över återförsäljare"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
 msgid "Salon Information"
-msgstr "Salonginformation"
+msgstr "Salongsinformation"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
@@ -146,6 +146,12 @@ msgstr "Sönday:"
 #: view:website:website_reseller_register.register_form
 msgid "This field is used to print dates when the salon is closed and that are exceptions from the opening hours stated above. If this field isn't filled out it won't be shown in the salon's opening hours."
 msgstr "Detta fält används för att skriva ut dagar då salongen inte har öppet och som är undantag från öppettiderna ovan. Om detta fält är ifyllt kommer det att visas i anslutning till salongens öppettider."
+
+#. module: website_reseller_register_dermanord
+#: code:addons/website_reseller_register_dermanord/website.py:150
+#, python-format
+msgid "This image will be shown for end consumers on our list of resellers"
+msgstr "Denna bild kommer att synas för slutkonsument på vår lista över återförsäljare"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
@@ -184,8 +190,8 @@ msgstr "Veckodag"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
-msgid "Would you like your salon to be shown in our website?"
-msgstr "Vill du ha din salong att visas på vår webbplats?"
+msgid "Would you like your salon to be shown on our list of resellers?"
+msgstr "Vill du att din salong ska visas på vår lista över återförsäljare?"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
