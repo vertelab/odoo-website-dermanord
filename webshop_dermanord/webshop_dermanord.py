@@ -193,8 +193,8 @@ class product_template(models.Model):
         placeholder = '/web/static/src/img/placeholder.png'
         for p in self:
             try:
-                variant = p.get_default_variant().read(['name', 'fullname', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'v_image_main_id', 'website_style_ids_variant'])[0]
-                website_style_ids_variant = self.env['product.style'].browse(variant['website_style_ids_variant']).read(['html_class'])
+                variant = p.get_default_variant().read(['name', 'fullname', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'image_main_id', 'website_style_ids_variant'])[0]
+                website_style_ids_variant = ' '.join([s['html_class'] for s in self.env['product.style'].browse(variant['website_style_ids_variant']).read(['html_class'])])
                 if variant:
                     p.dv_id = variant['id']
                     p.dv_recommended_price = variant['recommended_price']
@@ -206,7 +206,7 @@ class product_template(models.Model):
                     p.dv_name = p.name if p.use_tmpl_name else variant['fullname']
                     p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['image_main_id'][0], 'snippet_dermanord.img_product') if variant['image_main_id'] else placeholder
                     #~ p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if website_style_ids_variant else ' '.join([s.html_class for s in p.website_style_ids])
-                    p.dv_ribbon = website_style_ids_variant['html_class'] if website_style_ids_variant else ' '.join([s.html_class for s in p.website_style_ids])
+                    p.dv_ribbon = website_style_ids_variant if len(website_style_ids_variant) > 0 else ' '.join(p.website_style_ids.mapped('html_class'))
             except:
                 e = sys.exc_info()
                 _logger.error(''.join(traceback.format_exception(e[0], e[1], e[2])))
@@ -214,7 +214,7 @@ class product_template(models.Model):
                 p.dv_recommended_price_en = 0.0
                 p.dv_price_45 = 0.0
                 p.dv_price_20 = 0.0
-                p.dv_default_code = 'except'
+                p.dv_default_code = '%s' % e
                 p.dv_description_sale = '%s' % e[1]
                 p.dv_name = 'Error'
                 p.dv_image_src = placeholder
