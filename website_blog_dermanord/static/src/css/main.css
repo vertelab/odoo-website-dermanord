@@ -80,7 +80,7 @@
 /*
     border: 1px solid grey;
 */
-    min-height: 300px;
+    min-height: 84px;
     background-repeat: no-repeat;
     -o-background-size: cover;
     -moz-background-size: cover;
@@ -111,6 +111,24 @@
         min-height: 100% !important;
         background-size: cover;
         padding-top: 32.14%;
+    }
+}
+
+@media (min-width: 992px and max-width: 1199px) {
+    .blog_background_image_list {
+        min-height: 67px;
+    }
+}
+
+@media (min-width: 768px and max-width: 991px) {
+    .blog_background_image_list {
+        min-height: 67px;
+    }
+}
+
+@media (max-width: 767px) {
+    .blog_background_image_list {
+        min-height: 200px;
     }
 }
 
