@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
         <record id="img_product" model="image.recipe">
             <field name="name">Blog Post Products</field>
             <field name="description">Define the canvas size to limit the image maximum size.
@@ -29,6 +29,7 @@ res = bg
             <field name="recipe_id" ref="website_blog_dermanord.img_product"/>
         </record>
 
+<!--
         <record id="img_post" model="image.recipe">
             <field name="name">Related Blog Post</field>
             <field name="description">Define the canvas size to limit the image maximum size.
@@ -54,6 +55,67 @@ res = bg
         <record id="img_post_param_bg_color" model="image.recipe.param">
             <field name="name">bg_color</field>
             <field name="value">#ffffff</field>
+            <field name="recipe_id" ref="website_blog_dermanord.img_post"/>
+        </record>
+-->
+
+        <record id="img_post" model="image.recipe">
+            <field name="name">Related Blog Post</field>
+            <field name="image_format">jpeg</field>
+            <field name="description"></field>
+            <field name="recipe">if float(image.width)/float(image.height) &gt;= float(horizontal)/float(vertical):
+    if image.height &gt; int(height):
+        image.transform(resize='%sx&gt;' %int(float(height)*float(image.width)/float(image.height)))
+        image.crop(width=int(float(height)/float(vertical)*float(horizontal)), height=int(height), gravity='center')
+    else:
+        image.transform(resize='%sx&gt;' %int(float(height)*float(image.width)/float(image.height)))
+        image.crop(width=int(float(image.height)/float(vertical)*float(horizontal)), height=image.height, gravity='center')
+else:
+    if float(image.width) &gt; float(height)*float(horizontal)/float(vertical):
+        image.transform(resize='%sx&gt;' %int(float(height)*float(horizontal)/float(vertical)))
+        image.crop(width=int(float(height)*float(horizontal)/float(vertical)), height=int(height), gravity='center')
+    else:
+        image.transform(resize='%sx&gt;' %image.width)
+        image.crop(width=image.width, height=int(float(image.width)/float(horizontal)*float(vertical)), gravity='center')</field>
+        </record>
+
+        <record id="img_post_param_height_xs" model="image.recipe.param">
+            <field name="name">height</field>
+            <field name="value">200</field>
+            <field name="device_type">xs</field>
+            <field name="recipe_id" ref="website_blog_dermanord.img_post"/>
+        </record>
+
+        <record id="img_post_param_height_sm" model="image.recipe.param">
+            <field name="name">height</field>
+            <field name="value">67</field>
+            <field name="device_type">sm</field>
+            <field name="recipe_id" ref="website_blog_dermanord.img_post"/>
+        </record>
+
+        <record id="img_post_param_height_md" model="image.recipe.param">
+            <field name="name">height</field>
+            <field name="value">84</field>
+            <field name="device_type">md</field>
+            <field name="recipe_id" ref="website_blog_dermanord.img_post"/>
+        </record>
+
+        <record id="img_post_param_height_lg" model="image.recipe.param">
+            <field name="name">height</field>
+            <field name="value">84</field>
+            <field name="device_type">lg</field>
+            <field name="recipe_id" ref="website_blog_dermanord.img_post"/>
+        </record>
+
+        <record id="img_post_param_img_horizontal" model="image.recipe.param">
+            <field name="name">horizontal</field>
+            <field name="value">1366</field>
+            <field name="recipe_id" ref="website_blog_dermanord.img_post"/>
+        </record>
+
+        <record id="img_post_param_img_vertical" model="image.recipe.param">
+            <field name="name">vertical</field>
+            <field name="value">450</field>
             <field name="recipe_id" ref="website_blog_dermanord.img_post"/>
         </record>
     </data>

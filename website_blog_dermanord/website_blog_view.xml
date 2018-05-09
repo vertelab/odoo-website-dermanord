@@ -156,9 +156,9 @@
                                 <t t-if="not post.background_image or '/ir.attachment/' not in post.background_image">
                                     <div class="col-md-12 col-sm-12 col-xs-12 mt16 mb16 blog_background_image_list"/>
                                 </t>
-                                <div class="container bpr_desc_div text-center">
-                                    <h4 class="dn_uppercase" t-field="post.name"/>
-                                    <h5 class="bpr_desc" t-field="post.subtitle"/>
+                                <div class="container bpr_desc_div">
+                                    <h4 class="dn_uppercase text-center" t-field="post.name"/>
+                                    <h5 class="bpr_desc" style="font-family: futura-pt-light, sans-serif;" t-field="post.subtitle"/>
                                 </div>
                             </div>
                         </a>
