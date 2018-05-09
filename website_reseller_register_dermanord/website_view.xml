@@ -159,6 +159,16 @@
             <xpath expr="//div[@id='invoice']" position="after">
                 <div id="visit" class="tab-pane fade">
                     <p id="instruction_visit" />
+                    <div class="form-group checkbox">
+                        <div class="col-md-7 col-md-offset-3 col-sm-8 col-sm-offset-4 mb32">
+                            <label><input type="checkbox" class="oe_reseller_register_copy_address" name="visit_copy_delivery"/>Same as delivery address</label>
+                        </div>
+                    </div>
+                    <div class="form-group checkbox">
+                        <div class="col-md-7 col-md-offset-3 col-sm-8 col-sm-offset-4 mb32">
+                            <label><input type="checkbox" class="oe_reseller_register_copy_address" name="visit_copy_invoice"/>Same as invoice address</label>
+                        </div>
+                    </div>
                     <t t-set="visit" t-value="issue.partner_id.child_ids.filtered(lambda c: c.type == 'visit')[0] if issue.partner_id.child_ids.filtered(lambda c: c.type == 'visit') else None"/>
                     <div t-att-class="'form-group %s' %validation.get('visit_street')">
                         <label class="col-md-3 col-sm-4 control-label" for="visit_street">Street</label>
@@ -192,6 +202,7 @@
                         <label class="col-md-3 col-sm-4 control-label" for="visit_country_id">Country</label>
                         <div class="col-md-7 col-sm-8">
                             <select class="form-control" name="visit_country_id">
+                                <option value="" t-att="{'selected': '1'} if (not visit or not visit.country_id) else {}" disabled="1">Choose country</option>
                                 <t t-foreach="country_selection" t-as="country">
                                     <option t-att-value="country[0]" t-att="{'selected': '1'} if country[0] == (visit and visit.country_id and visit.country_id.id) else {}"><t t-esc="country[1]"/></option>
                                 </t>
