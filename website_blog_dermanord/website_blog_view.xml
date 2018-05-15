@@ -143,7 +143,7 @@
                     <h2 class="text-center mb16" style="font-family: futura-pt-heavy, sans-serif;">Related Posts</h2>
                     <t t-foreach="blog_post.related_posts" t-as="post">
                         <a t-att-href="'/blog/%s/post/%s' %(blog_post.blog_id.id, post.id)">
-                            <div class="col-md-3 col-xs-12 bpr_block">
+                            <div class="col-md-3 col-sm-6 col-xs-12 bpr_block">
                                 <t t-if="post.background_image and '/ir.attachment/' in post.background_image">
                                     <div class="col-md-12 col-sm-12 col-xs-12 mt16 mb16 blog_background_image_list dn_blog_post_image_div" t-att-style="'background-image: url(&quot;/imagefield/ir.attachment/datas/%s/ref/website_blog_dermanord.img_post&quot;);' %post.background_image[(post.background_image.index('ir.attachment/')+len('ir.attachment/')):post.background_image.index('/datas')].split('_')[0]">
                                         <div class="dn_blog_post_image_hover_btn text-center hidden-xs">
@@ -156,9 +156,9 @@
                                 <t t-if="not post.background_image or '/ir.attachment/' not in post.background_image">
                                     <div class="col-md-12 col-sm-12 col-xs-12 mt16 mb16 blog_background_image_list"/>
                                 </t>
-                                <div class="container bpr_desc_div text-center">
-                                    <h4 class="dn_uppercase" t-field="post.name"/>
-                                    <h5 class="bpr_desc" t-field="post.subtitle"/>
+                                <div class="container bpr_desc_div">
+                                    <h4 class="dn_uppercase text-center" t-field="post.name"/>
+                                    <h5 class="bpr_desc" style="font-family: futura-pt-light, sans-serif;" t-field="post.subtitle"/>
                                 </div>
                             </div>
                         </a>
