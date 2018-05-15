@@ -205,20 +205,21 @@ class product_template(models.Model):
                     p.dv_description_sale = variant['description_sale'] or ''
                     p.dv_name = p.name if p.use_tmpl_name else variant['fullname']
                     p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['image_main_id'][0], 'snippet_dermanord.img_product') if variant['image_main_id'] else placeholder
-                    #~ p.dv_ribbon = ' '.join([s.html_class for s in website_style_ids_variant]) if website_style_ids_variant else ' '.join([s.html_class for s in p.website_style_ids])
-                    p.dv_ribbon = website_style_ids_variant if len(website_style_ids_variant) > 0 else ' '.join(p.website_style_ids.mapped('html_class'))
+                    p.dv_ribbon = website_style_ids_variant if website_style_ids_variant else ' '.join([c for c in p.website_style_ids.mapped('html_class') if c]))
             except:
                 e = sys.exc_info()
-                _logger.error(''.join(traceback.format_exception(e[0], e[1], e[2])))
+                tb = ''.join(traceback.format_exception(e[0], e[1], e[2]))
+                _logger.error(tb)
                 p.dv_recommended_price = 0.0
                 p.dv_recommended_price_en = 0.0
                 p.dv_price_45 = 0.0
                 p.dv_price_20 = 0.0
-                p.dv_default_code = '%s' % e
+                p.dv_default_code = '%s' % 'error'
                 p.dv_description_sale = '%s' % e[1]
                 p.dv_name = 'Error'
                 p.dv_image_src = placeholder
                 p.dv_ribbon = ''
+                p.message_post(body=tb.replace('\n', '<br/>'), subject='Default variant recompute failed on %s' % p.name, type='notification', content_subtype='html')
     dv_id = fields.Integer(compute='_get_all_variant_data', store=True)
     dv_recommended_price = fields.Float(compute='_get_all_variant_data', store=True)
     dv_recommended_price_en = fields.Float(compute='_get_all_variant_data', store=True)
@@ -572,7 +573,7 @@ class Website(models.Model):
                     append_domain(domain_current, [('id', 'in', campaign_product_ids)])
                 else:
                     append_domain(domain_current, [('id', '=', 0)])
-        return [('sale_ok', '=', True)] + domain_current
+        return [('sale_ok', '=', True), ('dv_name', '!=', 'Error')] + domain_current
 
     def dn_shop_set_session(self, model, post, url):
         """Update session for /dn_shop"""
