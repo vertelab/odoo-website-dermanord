@@ -191,6 +191,7 @@ class product_template(models.Model):
         pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45'), ('currency_id', '=', self.env['res.lang'].search([('code', '=', 'sv_SE')]).pricelist_id.currency_id.id)])
         pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20'), ('currency_id', '=', self.env['res.lang'].search([('code', '=', 'sv_SE')]).pricelist_id.currency_id.id)])
         placeholder = '/web/static/src/img/placeholder.png'
+        
         for p in self:
             try:
                 variant = p.get_default_variant().read(['name', 'fullname', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'image_main_id', 'website_style_ids_variant'])[0]
@@ -210,6 +211,7 @@ class product_template(models.Model):
                 e = sys.exc_info()
                 tb = ''.join(traceback.format_exception(e[0], e[1], e[2]))
                 _logger.error(tb)
+                p.message_post(body=tb.replace('\n', '<br/>'), subject='Default variant recompute failed on %s' % p.name)
                 p.dv_recommended_price = 0.0
                 p.dv_recommended_price_en = 0.0
                 p.dv_price_45 = 0.0
@@ -219,7 +221,7 @@ class product_template(models.Model):
                 p.dv_name = 'Error'
                 p.dv_image_src = placeholder
                 p.dv_ribbon = ''
-                p.message_post(body=tb.replace('\n', '<br/>'), subject='Default variant recompute failed on %s' % p.name, type='notification', content_subtype='html')
+                
     dv_id = fields.Integer(compute='_get_all_variant_data', store=True)
     dv_recommended_price = fields.Float(compute='_get_all_variant_data', store=True)
     dv_recommended_price_en = fields.Float(compute='_get_all_variant_data', store=True)
