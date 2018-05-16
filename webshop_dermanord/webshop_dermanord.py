@@ -211,7 +211,15 @@ class product_template(models.Model):
                 e = sys.exc_info()
                 tb = ''.join(traceback.format_exception(e[0], e[1], e[2]))
                 _logger.error(tb)
-                p.message_post(body=tb.replace('\n', '<br/>'), subject='Default variant recompute failed on %s' % p.name)
+                self.env['mail.message'].create({
+                    'body': tb.replace('\n', '<br/>'),
+                    'subject': 'Default variant recompute failed on %s' % p.name,
+                    'author_id': self.env.ref('base.partner_root').id,
+                    'res_id': p.id,
+                    'model': p._name,
+                    'type': 'notification',
+                    'partner_ids': [(4, pid) for pid in p.message_follower_ids.mapped('id')],
+                })
                 p.dv_recommended_price = 0.0
                 p.dv_recommended_price_en = 0.0
                 p.dv_price_45 = 0.0
