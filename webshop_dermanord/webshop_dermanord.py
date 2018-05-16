@@ -191,7 +191,7 @@ class product_template(models.Model):
         pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45'), ('currency_id', '=', self.env['res.lang'].search([('code', '=', 'sv_SE')]).pricelist_id.currency_id.id)])
         pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20'), ('currency_id', '=', self.env['res.lang'].search([('code', '=', 'sv_SE')]).pricelist_id.currency_id.id)])
         placeholder = '/web/static/src/img/placeholder.png'
-        
+
         for p in self:
             try:
                 variant = p.get_default_variant().read(['name', 'fullname', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'image_main_id', 'website_style_ids_variant'])[0]
@@ -229,7 +229,7 @@ class product_template(models.Model):
                 p.dv_name = 'Error'
                 p.dv_image_src = placeholder
                 p.dv_ribbon = ''
-                
+
     dv_id = fields.Integer(compute='_get_all_variant_data', store=True)
     dv_recommended_price = fields.Float(compute='_get_all_variant_data', store=True)
     dv_recommended_price_en = fields.Float(compute='_get_all_variant_data', store=True)
@@ -978,6 +978,10 @@ class WebsiteSale(website_sale):
         #~ from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         #~ to_currency = pricelist.currency_id
         #~ compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
+        no_product_message = ''
+        if len(products) == 0:
+            no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
+
         values = {
             'search': search,
             'category': category,
@@ -999,6 +1003,7 @@ class WebsiteSale(website_sale):
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
             'shop_footer': True,
             'page_lang': request.env.lang,
+            'no_product_message': no_product_message,
         }
         _logger.error('to continue to qweb timer %s\ndomain: %s\npricelist: %s\nsearch: %s\nvalues: %s' % (timer() - start_all, domain_finished - start_all, search_start - domain_finished, search_end - search_start, timer() - search_end))
         render_start = timer()
@@ -1317,6 +1322,10 @@ class WebsiteSale(website_sale):
             p['get_this_variant_ribbon'] = product_ribbon
             p['sale_ok'] = True if (p['sale_ok'] and self.in_stock(p['id'])[0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
 
+        no_product_message = ''
+        if len(products) == 0:
+            no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
+
         values = {
             'search': search,
             'pricelist': pricelist,
@@ -1326,6 +1335,7 @@ class WebsiteSale(website_sale):
             'url': url,
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
             'shop_footer': True,
+            'no_product_message': no_product_message,
         }
         _logger.warn('after value: %s' %(timer()-value_start))
         start_render = timer()

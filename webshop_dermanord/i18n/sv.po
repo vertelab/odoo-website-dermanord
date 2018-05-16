@@ -485,3 +485,10 @@ msgstr "För återförsäljare"
 #: view:website:webshop_dermanord..dn_shop
 msgid "Examples of products containing this ingredient"
 msgstr "Exempel på produkter som innehåller denna ingrediens"
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/webshop_dermanord.py:983
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1327
+#, python-format
+msgid "Your filtering did not match any results. Please choose something else and try again."
+msgstr "Din filtering gav inga träffar. Vänligen välj något annat och försök igen."

@@ -73,6 +73,9 @@
                     <t t-call="webshop_dermanord.desktop_product_navigator" />
                 </div>
                 <div id="desktop_product_grid" class="col-md-9 col-xs-12">
+                    <t t-if="no_product_message != ''">
+                        <h2 class="text-center mt128" t-esc="no_product_message"/>
+                    </t>
                     <t t-foreach="products" t-as="product">
                         <div class="dn_oe_product col-md-4 col-sm-6 col-xs-12">
                             <!--
@@ -215,7 +218,10 @@
                                 <t t-call="webshop_dermanord.desktop_product_navigator" />
                             </div>
                             <div id="desktop_product_list" class="col-md-9 col-xs-12">
-                                <table class="product_list_table table table-striped" style="width: 100%;">
+                                <t t-if="no_product_message != ''">
+                                    <h2 class="text-center mt128" t-esc="no_product_message"/>
+                                </t>
+                                <table t-if="no_product_message == ''" class="product_list_table table table-striped" style="width: 100%;">
                                     <thead>
                                         <tr>
                                             <td />
