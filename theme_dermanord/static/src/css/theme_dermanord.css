@@ -41,6 +41,7 @@ h6 {
     font-style: italic;
     font-size: 60px;
     padding-top: 40px;
+    word-wrap: break-word;
 }
 
 i, .kepler_std_i {
