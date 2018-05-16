@@ -76,14 +76,12 @@
             <form t-att-action="'/dn_list' if url == '/dn_list' else '/dn_shop'" method="post">
                 <div class="container" style="padding: 0px;">
                     <t t-set="first_facet" t-value="0"/>
-                    <t t-if="len(filter_facets) &gt; 0">
-                        <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
-                            <t t-call="webshop_dermanord.dn_filter_navigator"/>
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
-                            <t t-call="webshop_dermanord.dn_filter_content"/>
-                        </div>
-                    </t>
+                    <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
+                        <t t-call="webshop_dermanord.dn_filter_navigator"/>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
+                        <t t-call="webshop_dermanord.dn_filter_content"/>
+                    </div>
                 </div>
                 <div id="filter_btn_group" class="btn-group">
                     <button class="mt32 dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
