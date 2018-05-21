@@ -344,7 +344,7 @@
                         <div class="col-md-12 col-sm-12 col-xs-12 mt16">
                             <div class="col-md-3 col-sm-3 col-xs-3">
                                 <t t-if="term['object'].background_image">
-                                    <img class="img img-responsive" t-att-src="'/imagefield/blog.post/background_image/%s/ref/%s' %(term['id'], 'webshop_dermanord.img_search_result')"/>
+                                    <img class="img img-responsive" t-att-src="term['object'].background_image"/>
                                 </t>
                                 <t t-if="not term['object'].background_image">
                                     <img class="img img-responsive" src="/website_logo.png"/>
