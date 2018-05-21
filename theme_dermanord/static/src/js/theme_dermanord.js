@@ -6,6 +6,8 @@ var more_menu = $("#top_menu").find("li#more_dropdown");
 //~ var total_height_before_main = 0;
 var menu_items = [];
 
+openerp.website.add_template_file('/theme_dermanord/static/src/xml/theme_dermanord.xml');
+
 $("#top_menu").children().each(function() { // those menu items should not included in more menu
     if($(this).attr("id") == "fts_search_btn")
         return false;
