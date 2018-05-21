@@ -128,7 +128,7 @@
                     </div>
                     <div class="container">
                         <div class="row">
-                            <div class="col-md-8 col-sm-8 col-xs-12 mt32 mb16">
+                            <div class="col-md-8 col-sm-8 mt32 mb16 hidden-xs">
                                 <div id="reseller_description_div">
                                     <t t-if="reseller.website_short_description">
                                         <t t-foreach="reseller.website_short_description.split('\n')" t-as="r">
@@ -150,12 +150,34 @@
                                     </ul>
                                 </t>
                             </div>
-                            <div class="reseller_cell col-md-4 col-sm-4 col-xs-12 mb16">
+                            <div class="reseller_cell col-md-4 col-sm-4 col-xs-12 mt16 mb16">
                                 <h1><t t-esc="reseller.brand_name if reseller.brand_name else reseller.name"/></h1>
                                 <t t-set="visit" t-value="reseller.child_ids.filtered(lambda c: c.type == 'visit') if reseller.is_company else None"/>
                                 <t t-if="not visit">
                                     <t t-set="visit" t-value="reseller.commercial_partner_id"/>
                                 </t>
+                                <div class="col-xs-12 mb16 hidden-lg hidden-md hidden-sm">
+                                    <div id="reseller_description_div">
+                                        <t t-if="reseller.website_short_description">
+                                            <t t-foreach="reseller.website_short_description.split('\n')" t-as="r">
+                                                <p><t t-esc="r"/></p>
+                                            </t>
+                                        </t>
+                                        <p class="read-more hidden"><a href="#" class="button">Read More</a></p>
+                                    </div>
+                                    <t t-if="reseller.child_competence_ids">
+                                        <h3>Our competences</h3>
+                                        <ul t-foreach="reseller.child_competence_ids" t-as="categ">
+                                            <li><span t-esc="categ.name"/></li>
+                                        </ul>
+                                    </t>
+                                    <t t-if="reseller.webshop_category_ids">
+                                        <h3>Product Categories</h3>
+                                        <ul t-foreach="reseller.webshop_category_ids" t-as="wcateg">
+                                            <li><span t-esc="wcateg.name"/></li>
+                                        </ul>
+                                    </t>
+                                </div>
                                 <!-- Google maps -->
                                 <t t-call="website_partner_google_maps.google_maps">
                                     <t t-set="div_class" t-value="'mt16'"/>
