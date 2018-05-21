@@ -50,13 +50,16 @@
         </template>
 
         <template id="index" inherit_id="website_event.index">
-             <xpath expr="//ol[@class='breadcrumb mb0']" position="replace"/>
-             <xpath expr="//div[@itemprop='location']" position="replace">
+            <xpath expr="//ol[@class='breadcrumb mb0']" position="replace"/>
+            <xpath expr="//div[@itemprop='location']" position="replace">
                 <div itemprop="location" t-field="event.address_id" t-field-options='{
                     "widget": "contact",
                     "no_marker": 1,
                     "fields": ["city"]
                     }'/>
+            </xpath>
+            <xpath expr="//small[@t-if='not event.address_id']" position="attributes">
+                <attribute name="class">label label-info hidden</attribute>
             </xpath>
         </template>
 
