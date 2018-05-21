@@ -26,7 +26,7 @@
                                         <div class="blog_tag_div">
                                             <p class="dn_uppercase blog_content_tag">tags:</p>
                                             <t t-foreach="news_post.tag_ids" t-as="tag">
-                                                <a t-att-href="'/blog/%s/tag/%s' %(news_post.blog_id.id, tag.id)"><span t-field="tag.name" class="post_tag dn_uppercase" style="background: #000; padding: 10px; color: #fff; margin: 0px 10px 0px 0px;"/></a>
+                                                <a t-att-href="'/blog/%s/tag/%s' %(news_post.blog_id.id, tag.id)"><span t-field="tag.name" class="post_tag dn_uppercase"/></a>
                                             </t>
                                         </div>
                                     </div>
@@ -70,7 +70,7 @@
                     <div id="blog_content" t-field="blog_post.content" class="mt32"/>
                     <p class="dn_uppercase mt32">tags:</p>
                     <t t-foreach="blog_post.tag_ids" t-as="tag">
-                        <a t-att-href="'/blog/%s/tag/%s' %(blog_post.blog_id.id, tag.id)"><span t-field="tag.name" class="post_tag dn_uppercase" style="background: #000; padding: 10px; color: #fff; margin: 0px 10px 0px 0px;"/></a>
+                        <a t-att-href="'/blog/%s/tag/%s' %(blog_post.blog_id.id, tag.id)"><span t-field="tag.name" class="post_tag dn_uppercase"/></a>
                     </t>
                 </div>
                 <div class="container mt32 mb32">

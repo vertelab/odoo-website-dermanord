@@ -1,6 +1,9 @@
 ﻿/*=============================================================
                     News Dermanord
  ============================================================ */
+ body {
+}
+
 .post_tag {
     background: #000;
     padding: 10px;
@@ -63,6 +66,9 @@
 */
 
 @media (max-width: 768px) {
+    .post_tag {
+        padding: 5px;
+    }
 /*
     .blog_content_div {
         padding-left: 15px !important;
