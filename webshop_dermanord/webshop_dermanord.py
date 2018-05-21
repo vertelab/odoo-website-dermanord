@@ -455,6 +455,16 @@ class sale_order(models.Model):
                 'amount_untaxed': self.amount_untaxed,
             }
 
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+    
+    @api.multi
+    def sale_home_confirm_copy(self):
+        _logger.warn('\n\ndermanord\n')
+        if self.is_delivery or self.is_min_order_fee:
+            return False
+        return super(SaleOrderLine, self).sale_home_confirm_copy()
+
 dn_cart_update = {}
 
 class Website(models.Model):
