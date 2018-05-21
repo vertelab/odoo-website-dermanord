@@ -124,7 +124,7 @@
                     <div class="oe_structure"/>
                     <div class="col-md-12 col-sm-12 col-xs-12" style="background-color: #000;">
                         <span itemprop="image" t-field="reseller.top_image" t-field-options='{"widget": "image", "class": "css_non_editable_mode_hidden", "alt-field": "name"}'/>
-                        <img alt="Odoo CMS - a big picture" class="img img-responsive css_editable_mode_hidden" t-att-src="'/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image' %reseller.id" style="margin: auto;"/>
+                        <img class="img img-responsive css_editable_mode_hidden" t-att-src="'/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image' %reseller.id if reseller.top_image else '/imagefield/ir.attachment/datas/%s/ref/reseller_dermanord.reseller_top_image' %request.env.ref('reseller_dermanord.find_reseller_top_img').id" style="margin: auto;"/>
                     </div>
                     <div class="container">
                         <div class="row">
