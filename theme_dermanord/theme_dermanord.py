@@ -146,6 +146,62 @@ class website(models.Model):
         except:
             return ['<li><a href="/">Home</a></li>']
 
+    def enumerate_pages(self, cr, uid, ids, query_string=None, context=None):
+        """ Available pages in the website/CMS. This is mostly used for links
+        generation and can be overridden by modules setting up new HTML
+        controllers for dynamic pages (e.g. blog).
+
+        By default, returns template views marked as pages.
+
+        :param str query_string: a (user-provided) string, fetches pages
+                                 matching the string
+        :returns: a list of mappings with two keys: ``name`` is the displayable
+                  name of the resource (page), ``url`` is the absolute URL
+                  of the same.
+        :rtype: list({name: str, url: str})
+        """
+        router = request.httprequest.app.get_db_router(request.db)
+        # Force enumeration to be performed as public user
+        url_set = set()
+        for rule in router.iter_rules():
+            if not self.rule_is_enumerable(rule):
+                continue
+
+            converters = rule._converters or {}
+            if query_string and not converters and (query_string not in rule.build([{}], append_unknown=False)[1]):
+                continue
+            if rule.rule == '/imagemagick/<model("ir.attachment"):image>/id/<model("image.recipe"):recipe>':
+                continue
+            values = [{}]
+            convitems = converters.items()
+            # converters with a domain are processed after the other ones
+            gd = lambda x: hasattr(x[1], 'domain') and (x[1].domain <> '[]')
+            convitems.sort(lambda x, y: cmp(gd(x), gd(y)))
+            for (i,(name, converter)) in enumerate(convitems):
+                newval = []
+                for val in values:
+                    query = i==(len(convitems)-1) and query_string
+                    for v in converter.generate(request.cr, uid, query=query, args=val, context=context):
+                        newval.append( val.copy() )
+                        v[name] = v['loc']
+                        del v['loc']
+                        newval[-1].update(v)
+                values = newval
+
+            for value in values:
+                domain_part, url = rule.build(value, append_unknown=False)
+                page = {'loc': url}
+                for key,val in value.items():
+                    if key.startswith('__'):
+                        page[key[2:]] = val
+                if url in ('/sitemap.xml',):
+                    continue
+                if url in url_set:
+                    continue
+                url_set.add(url)
+
+                yield page
+
 class website_config_settings(models.TransientModel):
     _inherit = 'website.config.settings'
 
