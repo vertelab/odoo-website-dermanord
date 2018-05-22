@@ -2,7 +2,7 @@
 <openerp>
     <data>
 
-        <record id="view_cavarosa_import_form" model="ir.ui.view">
+        <record id="view_dermanord_import_form" model="ir.ui.view">
             <field name="name">user.dermanord.import.wizard.form</field>
             <field name="model">user.dermanord.import.wizard</field>
             <field name="type">form</field>
@@ -10,37 +10,18 @@
                 <form string="Joomla Import">
                     <sheet>
                         <group>
+                            <field name="filter_name"/>
+                            <field name="group_ids" widget="many2many_tags"/>
                             <field name="user_file"  filename="file_name" />
                             <field name="file_name" invisible="1"/>
-<!--
-                            <field name="order_url"/>
--->
-                            <field name="info" readonly="1"/>
                             <field name="mime" invisible="1"/>
-<!--
-                            <field name="import_type" invisible="1"/>
--->
-                            <field name="tmp_file" invisible="1"/>
+                            <field name="users" invisible="1"/>
                         </group>
-                        <group>
-                        <span>Filer vi har stöd för</span><br/>
-<!--
-                        <span> </span><span>Fina mig i Hedemora AB (pdf)</span>
-                        <span> </span><span>Lyko Online AB (Excel)</span>
-                        <span> </span><span>SKINCITY SWEDEN AB (pdf/Excel)</span>
-                        <span> </span><span>Isaksen &amp; CO AS (Excel)</span>
-                        <span> </span><span>Nordic Web Trading AB (Excel)</span>
-                        <span> </span><span>Eckerö Group - Rederiaktiebolaget Eckerö (Birka) (Text)</span>
-                        <span> </span><span>Tailwide AB (Naturligt snygg) (Url)</span>
-                        <span> </span><span>Bangerhead AB (Excel)</span>
--->
-                        </group>
+                        <field name="messages"/>
                     </sheet>
-<!--
-                    <footer attrs="{'invisible': ['|', ('mime', '=', False), ('import_type', '=', False)]}">
--->
                     <footer >
-                        <button name="import_files" type="object" string="Import" class="oe_highlight" />
+                        <button name="import_files" type="object" string="Import" class="oe_highlight" attrs="{'invisible': [('users', '!=', False)]}"/>
+                        <button name="goto_users" type="object" string="Visa användare" class="oe_highlight" attrs="{'invisible': [('users', '=', False)]}"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel" />
                     </footer>
@@ -61,5 +42,40 @@
         </record>
         <menuitem action="action_dermanord_import_users" id="menu_dermanord_user_import" parent="base.menu_users" sequence="99" groups="base.group_no_one"/>
 
+        <record id="category_imported" model="res.partner.category">
+            <field name="name">Importerad</field>
+        </record>
+        
+<!--
+        <record id="category_unmatched" model="res.partner.category">
+            <field name="name">Omatchad</field>
+        </record>
+-->
+        
+        <record id="view_dermanord_import_partner_search" model="ir.ui.view">
+            <field name="name">res.partner.search.import_joomla</field>
+            <field name="model">res.partner</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <filter name="supplier" position="after">
+                    <filter string="Importerade" name="joomla_imported" domain="[('category_id', '=', %(category_imported)d)]" help="Importerade från Joomla"/>
+                </filter>
+            </field>
+        </record>
+        
+        <record id="action_password_email" model="ir.actions.server">
+            <field name="name">Skicka inbjudan</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="code">env['res.users'].browse(context.get('active_ids') or context.get('active_id')).with_context(create_user=True).action_reset_password()</field>
+        </record>
+        
+        <record id="menu_action_password_email" model="ir.values">
+            <field name="name">Skicka inbjudan</field>
+            <field name="model">res.users</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,%s' % ref('action_password_email')"/>
+        </record>
+        
     </data>
 </openerp>

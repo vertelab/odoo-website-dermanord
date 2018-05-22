@@ -20,8 +20,10 @@
 ##############################################################################
 from openerp import models, fields, api, _
 from openerp.exceptions import except_orm, Warning, RedirectWarning
+from openerp.tools import safe_eval
 import base64
 from cStringIO import StringIO
+from difflib import SequenceMatcher
 
 from subprocess import Popen, PIPE
 import os
@@ -50,74 +52,140 @@ except:
 class DermanordImport(models.TransientModel):
     _name = 'user.dermanord.import.wizard'
 
+    def _default_filter_name(self):
+        return 'Import %s' % fields.Datetime.to_string(fields.Datetime.context_timestamp(self, fields.Datetime.from_string(fields.Datetime.now())))
+
+    def _default_group_ids(self):
+        return self.env['res.groups'].search([('name', '=', 'ÅF')], limit=1)
+
     user_file = fields.Binary(string='Order file')
     mime = fields.Selection([('url','url'),('text','text/plain'),('pdf','application/pdf'),('xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),('xls','application/vnd.ms-excel'),('xlm','application/vnd.ms-office')])
-    info = fields.Text(string='Info')
-    tmp_file = fields.Char(string='Tmp File')
     file_name = fields.Char(string='File Name')
+    filter_name = fields.Char(string='Filternamn', help="Kommer generera filter med detta namn för att hitta skapade partners och användare.", default=_default_filter_name)
+    messages = fields.Html(string='Meddelanden', readonly=True)
+    group_ids = fields.Many2many(string='Grupper', comodel_name='res.groups', default=_default_group_ids, help="Grupper utöver de som är definierade på template-användaren.")
+    users = fields.Char()
+
+    @api.multi
+    def goto_users(self):
+        ids = safe_eval(self.users or '[]')
+        action = self.env['ir.actions.act_window'].for_xml_id('base', 'action_res_users')
+        action.update({
+            'domain': [('id', 'in', ids)],
+            'context': {},
+        })
+        return action
+        
 
     @api.multi
     def import_files(self):
         f = csv.reader(StringIO(base64.b64decode(self.user_file)))
+        partners = self.env['res.partner'].browse()
+        users = self.env['res.users'].browse()
+        imported = self.env.ref('import_joomla.category_imported')
+        #~ unmatched = self.env.ref('import_joomla.category_unmatched')
+        warnings, info = [], []
+
         for row in f:
             if row[0]:
-                #~ _logger.warn(row)
+                customer_no = row[0].strip()
+                email = row[3].strip().lower()
+                name = ' '.join([row[1].strip(), row[2].strip()])
                 # Check blocked
                 if row[4] == '0':
+                    # Check for contact
                     contact = None
-                # Check kundnummer
-                    partner = self.env['res.partner'].search([('customer_no','=',row[0].strip())])
-                    if len(partner) > 0:
-                        partner = partner[0].commercial_partner_id
-                # Check given/family name
-                    if partner:
-                        contact = partner.child_ids.filtered(lambda c: c.name.lower() in ('%s %s' % (row[1].strip(),row[2].strip())).lower() or c.email.strip().lower() if c.email else '' == row[3].strip().lower())
-                    else:
-                        partner = self.env['res.partner'].search(['|',('name','ilike','%s %s' % (row[1].strip(),row[2].strip())),('email','ilike',row[3].strip())])
-                        if len(partner) > 0:
-                            partner = partner[0].commercial_partner_id
-                        if partner:
-                            contact = partner.child_ids.filtered(lambda c: c.name.lower() in ('%s %s' % (row[1].strip(),row[2].strip())).lower() or  c.email.strip().lower() if c.email else '' == row[3].strip().lower())
+                    for partner in self.env['res.partner'].search([('customer_no', '=', customer_no), ('email', '=ilike', email), ('type', '=', 'contact')]):
+                        if not contact:
+                            contact = partner
+                        else:
+                            # Multiple hits. Compare names and find best match
+                            if SequenceMatcher(None, name, partner.name).ratio() > SequenceMatcher(None, name, contact.name).ratio():
+                                contact = partner
+                    
+                    # Check for parent and create new contact
+                    if not contact:
+                        parent = self.env['res.partner'].search([('customer_no', '=', customer_no), ('parent_id', '=', False)])
+                        if parent:
+                            contact = self.env['res.partner'].create({
+                                'name': name,
+                                'email': email,
+                                'parent_id': parent.id,
+                                'type': 'contact',
+                                'category_id': [(6, 0, [imported.id])],
+                            })
+                    
+                    #Check for user and create if needed
                     if contact:
-                        pass
-                        # If found res.partner (check res.users to) send invitation mail 
-                    elif partner:    
-                        # If not found create and send invitation mail
-                        contact  = self.env['res.users'].with_context(no_reset_password=True).create({
-                            'name': '%s %s' % (row[1].strip(),row[2].strip()),
-                            'email': row[3].strip(),
-                            'login': row[3].strip(),
-                            'groups_id': [(6,0,[242,283])],
-                            'parent_id': partner.id,
-                        })
-                        #~ contact.action_reset_password()
+                        partners |= contact
+                        user = self.env['res.users'].search([('partner_id', '=', contact.id)])
+                        if not user:
+                            user = self.env['res.users'].browse(self.env['res.users']._signup_create_user({
+                                'name': name,
+                                'email': email,
+                                'login': email,
+                                'partner_id': contact.id,
+                            }))
+                        user.groups_id |= self.group_ids
+                        users |= user
                     else:
-                        contact = None
-                        _logger.error('no partner found %s ' % row)
+                        # No partner found.
+                        warnings.append(u"Kunde ej matcha %s (%s, %s) mot en befintlig kund!" % (name, customer_no, email))
+                        #~ contact = self.env['res.partner'].create({
+                            #~ 'email': email,
+                            #~ 'name': name,
+                            #~ 'parent_id': parent.id,
+                            #~ 'type': 'contact',
+                            #~ 'category_id': [(6, 0, [unmatched.id])],
+                        #~ })
+                elif row[4] == '1':
+                    _logger.warn('\n\n%s\n%s\n%s\n' % (name, customer_no, email))
+                    info.append(u"Hoppade över %s (%s, %s). Joomla-användaren inaktiverad." % (name, customer_no, email))
 
-                        
-                # Check e-mail
-                
-                
-                
-
-        
-        
-        
-        
-
-
-        return {'type': 'ir.actions.act_window',
-                'res_model': 'res.users',
+        messages = ''
+        if warnings:
+            messages += '<h2>Varningar</h2>\n\t<ul>\n'
+            for warning in warnings:
+                messages += '\t\t<li>%s</li>\n' % warning
+            messages += '\t</ul>\n'
+        if info:
+            messages += '<h2>Info</h2>\n\t<ul>\n'
+            for inf in info:
+                messages += '\t\t<li>%s</li>\n' % inf
+            messages += '\t</ul>\n'
+        self.messages = messages
+        if self.filter_name:
+            self.env['ir.filters'].create({
+                'name': self.filter_name,
+                'model_id': 'res.partner',
+                'user_id': False,
+                'domain': [('id', 'in', [p.id for p in partners])],
+            })
+            self.env['ir.filters'].create({
+                'name': self.filter_name,
+                'model_id': 'res.users',
+                'user_id': False,
+                'domain': [('id', 'in', [u.id for u in users])],
+            })
+        _logger.warn('imported joomla users\nfilters: %s\partners: %s\nusers: %s' % (self.filter_name, [p.id for p in partners], [u.id for u in users]))
+        self.users = str([u.id for u in users])
+        if self.messages:
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'user.dermanord.import.wizard',
                 'view_type': 'form',
                 'view_mode': 'form',
-                 'view_id': self.env.ref('base.view_users_tree').id,
-                 'res_id': contact.id if contact else None,
-                 'target': 'current',
-                 'context': {},
-                 }
+                'res_id': self.id,
+                'target': 'new',
+                'context': {},
+            }
+        return self.goto_users()
 
-
+    def get_label(self, name):
+        label = self.env['res.partner.category'].search([('name', '=', name)])
+        if not label:
+            label = self.env['res.partner.category'].create({'name': name})
+        return label
 
     def get_selection_text(self,field,value):
         for type,text in self.fields_get([field])[field]['selection']:
