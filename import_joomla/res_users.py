@@ -56,7 +56,7 @@ class DermanordImport(models.TransientModel):
         return 'Import %s' % fields.Datetime.to_string(fields.Datetime.context_timestamp(self, fields.Datetime.from_string(fields.Datetime.now())))
 
     def _default_group_ids(self):
-        return self.env['res.groups'].search([('name', '=', 'ÅF')], limit=1)
+        return self.env.ref('__export__.res_groups_283', False)
 
     user_file = fields.Binary(string='Order file')
     mime = fields.Selection([('url','url'),('text','text/plain'),('pdf','application/pdf'),('xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),('xls','application/vnd.ms-excel'),('xlm','application/vnd.ms-office')])
