@@ -158,7 +158,7 @@ class Main(http.Controller):
             word = post.get('search_resellers', False)
             if word and word != '':
                 # Find all visiting addresses
-                visit_ids = [p['parent_id'][0] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit')], ['parent_id'])]
+                visit_ids = [p['parent_id'][0] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit')], ['parent_id']) if p['parent_id']]
                 # Find all matching visit addresses
                 matching_visit_ids = [p['parent_id'][0] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), '|', ('name', 'ilike', word), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['parent_id'])]
                 # Find (partners that have a matching visit address OR brand name OR child category) OR (partners whose address match the search and DON'T have a visit address)
@@ -184,7 +184,7 @@ class Main(http.Controller):
                 resellers = request.env['res.partner'].sudo().search(['&', ('is_reseller', '=', True), ('id', 'in', closest_ids)])
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
         else:
-            partner = request.env['res.partner'].sudo().browse(int(partner))
+            partner = request.env['res.partner'].sudo().search([('id', '=', int(partner)), ('is_reseller', '=', True)])
             return request.website.render('reseller_dermanord.reseller', {
                 'reseller': partner,
             })
