@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template id="template" xml:space="preserve">
+    <t t-extend="website.editor.dialog.link">
+        <t t-jquery="div.link-style:first > div > div:first ul li:first" t-operation="after">
+            <li>
+                <label class="dn_btn dn_primary">Dermanord<input value="dn_btn dn_primary" class="link-style" type="radio" name="link-style-type"/></label>
+            </li>
+        </t>
+    </t>
+</template>

@@ -460,7 +460,6 @@ class SaleOrderLine(models.Model):
     
     @api.multi
     def sale_home_confirm_copy(self):
-        _logger.warn('\n\ndermanord\n')
         if self.is_delivery or self.is_min_order_fee:
             return False
         return super(SaleOrderLine, self).sale_home_confirm_copy()
