@@ -1,6 +1,7 @@
 ﻿/*=============================================================
                     Webshop Dermanord
  ============================================================ */
+body {}
 
 .dn_btn {
     display: inline-block;
@@ -683,6 +684,10 @@ tr.tr_lst td {
     #image_nav > li {
         width: 24.7% !important;
     }
+}
+
+.js_sale {
+    padding-bottom: 32px;
 }
 
 @media screen and (min-width: 992px) and (max-width: 1199px) {
