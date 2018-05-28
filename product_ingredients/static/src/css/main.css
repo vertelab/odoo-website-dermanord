@@ -5,6 +5,7 @@
 .ingredient_desc h6, .ingredient_desc i {
     color: #D27153;
     font-size: 0.4em;
+    overflow-wrap: normal;
 }
 
 .ingredient_desc h5 {

@@ -71,7 +71,7 @@ $(document).ready(function(){
         }
     });
 
-    // This method updates product images, prices, ingredients, descriptions and facets when a variant has been choosen.
+    // This method updates product images, prices, ingredients, descriptions and facets when a variant has been chosen.
     function update_product_info(event_source, product_id) {
         var $recommended_price = $('.js_add_cart_variants').find(".oe_recommended_price");
         var $price = $('.js_add_cart_variants').find(".oe_price");
@@ -224,12 +224,13 @@ $(document).ready(function(){
         $img.parent().attr('data-oe-model', 'product.product').attr('data-oe-id', product_id).data('oe-model', 'product.product').data('oe-id', product_id);
     }
 
-    //~ var product_price_form = $('form.js_add_cart_variants');
-    //~ if (product_price_form.length > 0) {
-        //~ if (product_price_form.data('attribute_value_ids').length == 1) {
-            //~ update_product_info(none, product_price_form.data('attribute_value_ids')[0]);
-        //~ }
-    //~ }
+    // There was probably some reason we disabled this. Write it down next time.
+    var product_price_form = $('form.js_add_cart_variants');
+    if (product_price_form.length > 0) {
+        if (product_price_form.data('attribute_value_ids').length == 1) {
+            update_product_info($('.oe_website_sale'), product_price_form.data('attribute_value_ids')[0]);
+        }
+    }
 
     $('.oe_website_sale').each(function () {
         var oe_website_sale = this;

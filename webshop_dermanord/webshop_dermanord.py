@@ -242,7 +242,7 @@ class product_template(models.Model):
     dv_ribbon = fields.Char(compute='_get_all_variant_data', store=True)
 
     @api.one
-    @api.depends('campaign_changed')
+    @api.depends('campaign_changed', 'product_variant_ids.campaign_changed')
     def _is_offer_product(self):
         self.is_offer_product_reseller = self in self.get_campaign_tmpl(for_reseller=True)
         if not self.is_offer_product_reseller:
