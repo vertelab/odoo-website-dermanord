@@ -30,11 +30,57 @@
         <menuitem action="product_template_action"
             id="menu_product_template_action"
             parent="base.menu_product" sequence="100" />
-
+        
+        <template id="cart_dermanord" name="Checkout Dermanord" inherit_id="website_sale.cart">
+            <!-- Navigation bar -->
+            <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
+                <li class="text-muted">Delivery details<span class="chevron"/></li>
+            </xpath>
+            
+            <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">
+                <li class="text-muted">Shipping &amp; payment<span class="chevron"/></li>
+            </xpath>
+            
+            <xpath expr="//ul[@class='wizard pull-right']/li[4]" position="replace">
+                <li class="text-muted">Order confirmation<span class="chevron"/></li>
+            </xpath>
+            <!-- //Navigation bar -->
+        </template>
+        
+        <template id="confirmation_dermanord" name="Checkout Dermanord" inherit_id="website_sale.confirmation">
+            <!-- Navigation bar -->
+            <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
+                <li>Delivery details<span class="chevron"/></li>
+            </xpath>
+            
+            <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">
+                <li>Shipping &amp; payment<span class="chevron"/></li>
+            </xpath>
+            
+            <xpath expr="//ul[@class='wizard pull-right']/li[4]" position="replace">
+                <li class="text-primary">Order confirmation<span class="chevron"/></li>
+            </xpath>
+            <!-- //Navigation bar -->
+        </template>
+        
         <template id="checkout_dermanord" name="Checkout Dermanord" inherit_id="website_sale.checkout">
             <xpath expr="//div[@class='col-md-8 oe_cart']/div/div" position="before">
                 <div class="oe_structure"/>
             </xpath>
+            
+            <!-- Navigation bar -->
+            <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
+                <li class="text-primary">Delivery details<span class="chevron"/></li>
+            </xpath>
+            
+            <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">
+                <li class="text-muted">Shipping &amp; payment<span class="chevron"/></li>
+            </xpath>
+            
+            <xpath expr="//ul[@class='wizard pull-right']/li[4]" position="replace">
+                <li class="text-muted">Order confirmation<span class="chevron"/></li>
+            </xpath>
+            <!-- //Navigation bar -->
 
             <xpath expr="//input[@name='name']/.." position="attributes">
                 <attribute name="t-attf-class">form-group #{error.get('name') and 'has-error' or ''} col-lg-6 hidden</attribute>
@@ -151,6 +197,20 @@
         </template>
 
         <template id="payment_dermanord" name="Payment Dermanord" inherit_id="website_sale.payment">
+            <!-- Navigation bar -->
+            <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
+                <li>Delivery details<span class="chevron"/></li>
+            </xpath>
+            
+            <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">
+                <li class="text-primary">Shipping &amp; payment<span class="chevron"/></li>
+            </xpath>
+            
+            <xpath expr="//ul[@class='wizard pull-right']/li[4]" position="replace">
+                <li class="text-muted">Order confirmation<span class="chevron"/></li>
+            </xpath>
+            <!-- //Navigation bar -->
+            
             <xpath expr="//div[@class='col-lg-8 col-sm-9 oe_cart']" position="replace">
                 <div class="col-lg-8 col-sm-9">
                   <t t-set="website_sale_order" t-value="website.sale_get_order()"/>
@@ -505,7 +565,7 @@
                 <filter string="Done" position="after">
                     <filter string="Web Orders" domain="[('section_id', '=', %(website.salesteam_website_sales)d)]" help="Ordered from webshop"/>
                     <filter string="Not Web Orders" domain="[('section_id', '&lt;&gt;', %(website.salesteam_website_sales)d)]" help="Not ordered from webshop"/>
-                    <filter string="Confimed Web Orders" domain="[('section_id', '=', %(website.salesteam_website_sales)d), ('state','=','sent')]" help="Order confimed from Web"/>
+                    <filter string="Confirmed Web Orders" domain="[('section_id', '=', %(website.salesteam_website_sales)d), ('state','=','sent')]" help="Order confirmed from Web"/>
                 </filter>
             </field>
         </record>

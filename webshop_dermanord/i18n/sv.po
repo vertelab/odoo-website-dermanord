@@ -138,6 +138,14 @@ msgid "DETAILS"
 msgstr "DETALJER"
 
 #. module: webshop_dermanord
+#: view:website:website_sale.cart
+#: view:website:website_sale.checkout
+#: view:website:website_sale.confirmation
+#: view:website:website_sale.payment
+msgid "Delivery details"
+msgstr "Leveransinformation"
+
+#. module: webshop_dermanord
 #: model:ir.model,name:webshop_dermanord.model_blog_post
 msgid "Document Page"
 msgstr "Dokumentsida"
@@ -257,13 +265,21 @@ msgstr "Erbjudande Återförsäljare"
 
 #. module: webshop_dermanord
 #: view:sale.order:webshop_dermanord.view_sales_order_filter
-msgid "Confimed Web Orders"
+msgid "Confirmed Web Orders"
 msgstr "Bekräftade Webbordrar"
 
 #. module: webshop_dermanord
 #: view:sale.order:webshop_dermanord.view_sales_order_filter
-msgid "Order confimed from Web"
-msgstr "Order confimed from Web"
+msgid "Order confirmed from Web"
+msgstr "Order bekräftad på webben"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.cart
+#: view:website:website_sale.checkout
+#: view:website:website_sale.confirmation
+#: view:website:website_sale.payment
+msgid "Order confirmation"
+msgstr "Beställning slutförd"
 
 #. module: webshop_dermanord
 #: view:sale.order:webshop_dermanord.view_sales_order_filter
@@ -385,6 +401,19 @@ msgstr "Remedy"
 #: model:ir.model,name:webshop_dermanord.model_sale_order
 msgid "Sale Order"
 msgstr "Kundorder"
+
+#. module: webshop_dermanord
+#: model:ir.model,name:webshop_dermanord.model_sale_order_line
+msgid "Sale Order line"
+msgstr "Kundorderrad"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.cart
+#: view:website:website_sale.checkout
+#: view:website:website_sale.confirmation
+#: view:website:website_sale.payment
+msgid "Shipping & payment"
+msgstr "Frakt och betalning"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.checkout
