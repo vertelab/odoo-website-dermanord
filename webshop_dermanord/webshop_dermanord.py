@@ -505,7 +505,6 @@ class Website(models.Model):
         current_ingredient_key = None
         current_news = None
         current_offer = None
-        current_offer_reseller = None
 
         for k, v in dic.iteritems():
             if k.split('_')[0] == 'facet':
@@ -528,10 +527,6 @@ class Website(models.Model):
                 if v:
                     current_offer = 'current_offer'
                     request.session.get('form_values')['current_offer'] = 'current_offer'
-            if k == 'current_offer_reseller':
-                if v:
-                    current_offer_reseller = 'current_offer_reseller'
-                    request.session.get('form_values')['current_offer_reseller'] = 'current_offer_reseller'
             if k.split('_')[0] == 'notingredient':
                 if v:
                     not_ingredient_ids.append(int(v))
@@ -559,7 +554,7 @@ class Website(models.Model):
                 [('ingredient_ids', '=', id) for id in ingredient_ids] + [('ingredient_ids', '!=', id) for id in not_ingredient_ids], ['id'])
             domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
         if request.session.get('form_values'):
-            if request.session.get('form_values').get('current_news') or request.session.get('form_values').get('current_offer') or request.session.get('form_values').get('current_offer_reseller'):
+            if request.session.get('form_values').get('current_news') or request.session.get('form_values').get('current_offer'):
                 offer_domain = self.domain_current(model, dic)
                 if len(offer_domain) > 0:
                     for d in offer_domain:
@@ -579,9 +574,9 @@ class Website(models.Model):
                 append_domain(domain_current, ['|', ('website_style_ids', '=', promo_id), ('product_variant_ids.website_style_ids_variant', '=', promo_id)])
             if model == 'product.product':
                 append_domain(domain_current, ['|', ('product_tmpl_id.website_style_ids', '=', promo_id), ('website_style_ids_variant', '=', promo_id)])
-        for offer_type in ['current_offer', 'current_offer_reseller']:
+        for offer_type in ['current_offer']:
             if offer_type in dic:
-                reseller = offer_type == 'current_offer_reseller'
+                reseller = request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller
                 # TODO: This looks like a lot of browses. Should be possible to shorten it considerably.
                 if model == 'product.template':
                     #get product.template that have variants are in current offer
