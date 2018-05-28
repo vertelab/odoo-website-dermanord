@@ -193,7 +193,11 @@ class product_template(models.Model):
         placeholder = '/web/static/src/img/placeholder.png'
 
         for p in self:
+            if not p.product_variant_ids:
+                continue
             try:
+                if not p.product_variant_ids:
+                    continue
                 variant = p.get_default_variant().read(['name', 'fullname', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'image_main_id', 'website_style_ids_variant'])[0]
                 website_style_ids_variant = ' '.join([s['html_class'] for s in self.env['product.style'].browse(variant['website_style_ids_variant']).read(['html_class'])])
                 if variant:
