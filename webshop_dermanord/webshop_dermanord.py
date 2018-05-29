@@ -290,7 +290,12 @@ class product_product(models.Model):
         self.price_45 = pricelist_45.price_get(self.id, 1)[pricelist_45.id]
         self.price_20 = pricelist_20.price_get(self.id, 1)[pricelist_20.id]
         self.recommended_price = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
-        self.recommended_price_en = price_en + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price_en, 1, None, self.env.user.partner_id)['taxes']))
+        fpos_en = self.env['res.lang'].search([('code', '=', 'en_US')]).fiscal_position_id
+        if fpos_en:
+            taxes_en = fpos_en.map_tax(self.taxes_id)
+        else:
+            taxes_en = self.taxes_id
+        self.recommended_price_en = price_en + sum(map(lambda x: x.get('amount', 0.0), taxes_en.compute_all(price_en, 1, None, self.env.user.partner_id)['taxes']))
         #~ self.tax_45 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_45, 1, None, self.env.user.partner_id)['taxes']))
         #~ self.tax_20 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_20, 1, None, self.env.user.partner_id)['taxes']))
 
