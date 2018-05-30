@@ -45,9 +45,9 @@ class product_pricelist_dermanord(models.TransientModel):
         data = {
             'date': self.date,
             'pricelist_title_one': self.pricelist_title_one,
-            'pricelist_title_two': self.pricelist_title_two,
+            'pricelist_title_two': self.pricelist_title_two if self.pricelist_id_two else '',
             'pricelist': (('%s + ' %self.pricelist_id_two.name) if self.pricelist_id_two else '') + self.pricelist_id_one.name,
-            'fiscal_position': (('%s + ' % self.fiscal_position_id_two.name) if self.fiscal_position_id_two else '') + self.fiscal_position_id_one.name,
+            'fiscal_position': (('%s + ' % self.fiscal_position_id_two.name) if self.pricelist_id_two else '') + self.fiscal_position_id_one.name,
             'currency': self.pricelist_id_one.currency_id.name,
             'categories': [],
             'pricelist_id': self.pricelist_id_one.id,
@@ -70,7 +70,7 @@ class product_pricelist_dermanord(models.TransientModel):
                     d['products'].append({
                         'name': p.display_name,
                         'col1': '%.2f' %float(col1_price),
-                        'col2': '%.2f' %float(col2_price),
+                        'col2': '%.2f' %float(col2_price) if col2_price else '',
                     })
                     show_categ = True
             if show_categ:

@@ -34,9 +34,9 @@
                     </group>
                     <group>
                         <group col="2">
-                            <field name="pricelist_title_two"/>
+                            <field name="pricelist_title_two" attrs="{'required': [('pricelist_id_two', '!=', False)]}"/>
                             <field name="pricelist_id_two" widget="selection" />
-                            <field name="fiscal_position_id_two" widget="selection" />
+                            <field name="fiscal_position_id_two" widget="selection" attrs="{'required': [('pricelist_id_two', '!=', False)]}"/>
                         </group>
                     </group>
                     <group>
