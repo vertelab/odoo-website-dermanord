@@ -33,7 +33,9 @@ class product_pricelist_dermanord(models.TransientModel):
     pricelist_id_one = fields.Many2one(comodel_name='product.pricelist', string='Pricelist 1', required=True)
     pricelist_id_two = fields.Many2one(comodel_name='product.pricelist', string='Pricelist 2')
     date = fields.Date(string='Date', required=True)
-    fiscal_position_id = fields.Many2one(comodel_name='account.fiscal.position', string='Fiscal Position', required=True)
+    fiscal_position_id_one = fields.Many2one(comodel_name='account.fiscal.position', string='Fiscal Position 1', required=True)
+    fiscal_position_id_two = fields.Many2one(comodel_name='account.fiscal.position', string='Fiscal Position 2')
+
     def compute_lang(self):
         return self.env['res.lang'].search([('code', '=', 'sv_SE')])
     lang = fields.Many2one(comodel_name='res.lang', string='Language', default=compute_lang, required=True)
@@ -45,7 +47,7 @@ class product_pricelist_dermanord(models.TransientModel):
             'pricelist_title_one': self.pricelist_title_one,
             'pricelist_title_two': self.pricelist_title_two,
             'pricelist': (('%s + ' %self.pricelist_id_two.name) if self.pricelist_id_two else '') + self.pricelist_id_one.name,
-            'fiscal_position': self.fiscal_position_id.name,
+            'fiscal_position': (('%s + ' % self.fiscal_position_id_two.name) if self.fiscal_position_id_two else '') + self.fiscal_position_id_one.name,
             'currency': self.pricelist_id_one.currency_id.name,
             'categories': [],
             'pricelist_id': self.pricelist_id_one.id,
@@ -62,8 +64,8 @@ class product_pricelist_dermanord(models.TransientModel):
             }
             products = all_products.filtered(lambda p: p.categ_id == c)
             for p in products:
-                col1_price = p.get_price_by_pricelist(self.pricelist_id_one, self.date, self.fiscal_position_id)
-                col2_price = p.get_price_by_pricelist(self.pricelist_id_two, self.date, self.fiscal_position_id) if self.pricelist_id_two else ''
+                col1_price = p.get_price_by_pricelist(self.pricelist_id_one, self.date, self.fiscal_position_id_one)
+                col2_price = p.get_price_by_pricelist(self.pricelist_id_two, self.date, self.fiscal_position_id_two) if self.pricelist_id_two else ''
                 if col1_price != '0.0000' and col2_price != '0.0000':
                     d['products'].append({
                         'name': p.display_name,

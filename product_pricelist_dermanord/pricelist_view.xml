@@ -29,17 +29,18 @@
                         <group col="2">
                             <field name="pricelist_title_one"/>
                             <field name="pricelist_id_one" widget="selection" />
+                            <field name="fiscal_position_id_one" widget="selection" />
                         </group>
                     </group>
                     <group>
                         <group col="2">
                             <field name="pricelist_title_two"/>
                             <field name="pricelist_id_two" widget="selection" />
+                            <field name="fiscal_position_id_two" widget="selection" />
                         </group>
                     </group>
                     <group>
                         <group>
-                            <field name="fiscal_position_id" widget="selection" />
                             <field name="lang" widget="selection" />
                         </group>
                     </group>
