@@ -466,7 +466,7 @@ class sale_order(models.Model):
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
-    
+
     @api.multi
     def sale_home_confirm_copy(self):
         if self.is_delivery or self.is_min_order_fee:
@@ -1331,7 +1331,7 @@ class WebsiteSale(website_sale):
             if product_ribbon == '':
                 tmpl = request.env['product.template'].search_read([('id', '=', p.get('product_tmpl_id', [0])[0])], ['website_style_ids'])
                 if tmpl:
-                    product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', tmpl[0].get('website_style_ids', []))], ['html_class'])])
+                    product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', tmpl[0].get('website_style_ids', []))], ['html_class']) if pro['html_class']])
             p['get_this_variant_ribbon'] = product_ribbon
             p['sale_ok'] = True if (p['sale_ok'] and self.in_stock(p['id'])[0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
 
