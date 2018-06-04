@@ -28,7 +28,7 @@
                         <div class="offer-wrapper">
                             <div class="ribbon ribbon_offer btn btn-primary">Offer</div>
 <!--
-                            <i class="fa fa-gift-o fa-3x" title="Offer"/>
+                            <i class="fa fa-gift fa-3x" title="Offer"/>
 -->
                         </div>
                     </t>
@@ -96,7 +96,7 @@
                 </t>
                 <t t-if="is_offer_product">
                     <div class="col-md-6 lst-offer-wrapper">
-                        <i class="fa fa-gift-o fa-2x" title="Offer"/>
+                        <i class="fa fa-gift fa-2x" title="Offer"/>
                     </div>
                 </t>
             </td>
