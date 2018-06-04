@@ -117,12 +117,12 @@
                 </h5>
             </td>
             <td>
-                <t t-if="purchase_phase">
+                <t t-if="campaign">
                     <h5>
                         <div class="text-center">
-                            <span t-esc="purchase_phase_start_date"/>
+                            <span t-esc="campaign_start_date"/>
                             <br/>
-                            <span t-esc="purchase_phase_end_date"/>
+                            <span t-esc="campaign_end_date"/>
                         </div>
                     </h5>
                 </t>

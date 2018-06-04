@@ -269,14 +269,14 @@
                                                     </h5>
                                                 </td>
                                                 <td>
-                                                    <t t-if="any(product.get('purchase_phase', {}))">
+                                                    <t t-if="any(product.get('campaign', {}))">
                                                         <h5>
                                                             <div class="text-center">
                                                                 <!-- campaign start date -->
-                                                                <span t-esc="product['purchase_phase']['start_date']" />
+                                                                <span t-esc="product['campaign']['start_date']" />
                                                                 <br />
                                                                 <!-- reseller phase end date -->
-                                                                <span t-esc="product['purchase_phase']['end_date']" />
+                                                                <span t-esc="product['campaign']['end_date']" />
                                                             </div>
                                                         </h5>
                                                     </t>

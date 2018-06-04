@@ -1142,33 +1142,39 @@ class WebsiteSale(website_sale):
         for p in products:
             p_start = timer()
             if len(p['campaign_ids']) > 0:
-                phases = request.env['crm.tracking.campaign'].browse(p['campaign_ids'][0]).mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)
-                if len(phases) > 0:
-                    p['purchase_phase'] = {
-                        'start_date': phases[0].start_date,
-                        'end_date': phases[0].end_date,
-                        'phase': len(phases) > 0,
+                campaign = request.env['crm.tracking.campaign'].browse(p['campaign_ids'][0])
+                if len(campaign) > 0:
+                    p['campaign'] = {
+                        'start_date': campaign.date_start,
+                        'end_date': campaign.date_stop or '',
                     }
                 else:
-                    p['purchase_phase'] = {'phase': False}
+                    p['campaign'] = {
+                        'start_date': '',
+                        'end_date': '',
+                    }
             else:
                 tmpl = request.env['product.template'].search_read([('id', '=', p.get('product_tmpl_id', [0])[0])], ['campaign_ids'])
                 if len(tmpl[0]['campaign_ids']) > 0:
-                    phases = request.env['crm.tracking.campaign'].browse(tmpl[0]['campaign_ids'][0][0]).mapped('phase_ids').filtered(lambda p: p.reseller_pricelist and fields.Date.today() >= p.start_date  and fields.Date.today() <= p.end_date)
-                    if len(phases) > 0:
-                        p['purchase_phase'] = {
-                            'date_start': phases[0].campaign_id.date_start,
-                            'end_date': phases[0].campaign_id.end_date,
-                            'phase': len(phases) > 0,
+                    campaign = request.env['crm.tracking.campaign'].browse(tmpl[0]['campaign_ids'][0][0])
+                    if len(campaign) > 0:
+                        p['campaign'] = {
+                            'start_date': campaign.date_start,
+                            'end_date': campaign.date_stop or '',
                         }
                 else:
-                    p['purchase_phase'] = {'phase': False}
+                    p['campaign'] = {
+                        'start_date': '',
+                        'end_date': '',
+                    }
 
             product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', p.get('website_style_ids_variant', []))], ['html_class'])])
             if product_ribbon == '':
                 tmpl = request.env['product.template'].search_read([('id', 'in', [t[0] for t in [p.get('product_tmpl_id', [])]])], ['website_style_ids'])
                 if tmpl:
-                    product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', tmpl[0].get('website_style_ids', []))], ['html_class'])])
+                    for pro in request.env['product.style'].search_read([('id', 'in', tmpl[0].get('website_style_ids', []))], ['html_class']):
+                        if pro.get('html_class'):
+                            product_ribbon += ' %s' %pro['html_class']
             p['get_this_variant_ribbon'] = product_ribbon
             p['sale_ok'] = True if (p['sale_ok'] and self.in_stock(p['id'])[0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
 
@@ -1191,11 +1197,11 @@ class WebsiteSale(website_sale):
                 'product_name': p['name'],
                 'is_news_product': True if sale_ribbon in p['website_style_ids_variant'] else False,
                 'is_offer_product': p['is_offer_product_reseller'] if request.env.user.partner_id.property_product_pricelist.for_reseller else p['is_offer_product_consumer'],
-                'purchase_phase': True if p['purchase_phase']['phase'] else False,
+                'campaign': True if p['campaign'] else False,
                 #~ 'product_name_col': 'product_price col-md-6 col-sm-6 col-xs-12' if p['purchase_phase']['phase'] else 'product_price col-md-8 col-sm-8 col-xs-12',
-                'product_name_col': 'product_name' if p['purchase_phase']['phase'] else 'product_name',
-                'purchase_phase_start_date': p['purchase_phase']['start_date'] if p['purchase_phase']['phase'] else '',
-                'purchase_phase_end_date': p['purchase_phase']['end_date'] if p['purchase_phase']['phase'] else '',
+                'product_name_col': 'product_name',
+                'campaign_start_date': p['campaign']['start_date'],
+                'campaign_end_date': p['campaign']['end_date'],
                 'price': request.website.price_format(price),
                 'recommended_price': request.website.price_format(p['recommended_price']) if request.env.user.lang == 'sv_SE' else request.website.price_format(p['recommended_price_en']),
                 #~ 'tax': "%.2f" %request.website.price_format(tax),
@@ -1319,14 +1325,17 @@ class WebsiteSale(website_sale):
 
         for p in products:
             if len(p['campaign_ids']) > 0:
-                phases = request.env['crm.tracking.campaign'].browse(p['campaign_ids'][0]).mapped('phase_ids').filtered(lambda p: p.reseller_pricelist)
-                if len(phases) > 0:
-                    p['purchase_phase'] = {
-                        'start_date': phases[0].start_date,
-                        'end_date': phases[0].end_date,
+                campaign = request.env['crm.tracking.campaign'].browse(p['campaign_ids'][0])
+                if len(campaign) > 0:
+                    p['campaign'] = {
+                        'start_date': campaign.date_start,
+                        'end_date': campaign.date_stop or '',
                     }
                 else:
-                    p['purchase_phase'] = {}
+                    p['campaign'] = {
+                        'start_date': '',
+                        'end_date': '',
+                    }
             product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', p.get('website_style_ids_variant', []))], ['html_class'])])
             if product_ribbon == '':
                 tmpl = request.env['product.template'].search_read([('id', '=', p.get('product_tmpl_id', [0])[0])], ['website_style_ids'])
