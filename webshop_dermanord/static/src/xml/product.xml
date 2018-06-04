@@ -28,7 +28,7 @@
                         <div class="offer-wrapper">
                             <div class="ribbon ribbon_offer btn btn-primary">Offer</div>
 <!--
-                            <i class="fa fa-star-o fa-3x" title="Offer"/>
+                            <i class="fa fa-gift-o fa-3x" title="Offer"/>
 -->
                         </div>
                     </t>
@@ -91,12 +91,12 @@
 <!--
                         <div class="lst_ribbon btn btn-primary">News</div>
 -->
-                        <i class="fa fa-tags fa-2x"/>
+                        <i class="fa fa-bullhorn fa-2x"/>
                     </div>
                 </t>
                 <t t-if="is_offer_product">
                     <div class="col-md-6 lst-offer-wrapper">
-                        <i class="fa fa-star-o fa-2x" title="Offer"/>
+                        <i class="fa fa-gift-o fa-2x" title="Offer"/>
                     </div>
                 </t>
             </td>

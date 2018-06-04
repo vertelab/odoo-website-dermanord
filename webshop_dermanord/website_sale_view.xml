@@ -238,17 +238,17 @@
                                                 <td class="td_lst">
                                                     <div class="col-md-6 lst-ribbon-wrapper">
                                                         <t t-if="'oe_ribbon_promo' in product['get_this_variant_ribbon'].split(',')">
-                                                            <i class="fa fa-tags fa-2x" title="News" />
+                                                            <i class="fa fa-bullhorn fa-2x" title="News" />
                                                         </t>
                                                     </div>
                                                     <t t-if="product['is_offer_product_reseller'] and user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                                                         <div class="col-md-6 lst-offer-wrapper">
-                                                            <i class="fa fa-star-o fa-2x" title="Offer" />
+                                                            <i class="fa fa-gift-o fa-2x" title="Offer" />
                                                         </div>
                                                     </t>
                                                     <t t-if="product['is_offer_product_consumer'] and not user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                                                         <div class="col-md-6 lst-offer-wrapper">
-                                                            <i class="fa fa-star-o fa-2x" title="Offer" />
+                                                            <i class="fa fa-gift-o fa-2x" title="Offer" />
                                                         </div>
                                                     </t>
                                                 </td>
