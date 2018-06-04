@@ -126,6 +126,22 @@ div.shipping-address, div.invoicing-address {
     cursor: default;
 }
 
+#image_big > div > .ribbon-wrapper > .ribbon_limited {
+    font: bold 12px Sans-Serif;
+    color: white;
+    text-align: center;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    position: relative;
+    padding: 1px 0;
+    left: -5px;
+    top: 13px;
+    width: 120px;
+    cursor: default;
+}
+
 #image_big .ribbon_offer {
     font: bold 15px Sans-Serif;
     color: white;
@@ -552,7 +568,7 @@ select.dn_selection_dropdown + i.fa {
 }
 
 /* Ribbon for promotionso on products (dn shop) */
-.dn_product_div.oe_ribbon_promo .ribbon-wrapper {
+.dn_product_div.oe_ribbon_promo .ribbon-wrapper, .dn_product_div.oe_ribbon_limited .ribbon-wrapper {
     display: block;
 }
 .dn_product_div .ribbon-wrapper {
@@ -576,6 +592,22 @@ select.dn_selection_dropdown + i.fa {
     -o-transform: rotate(45deg);
     position: relative;
     padding: 7px 0;
+    left: -5px;
+    top: 13px;
+    width: 120px;
+    cursor: default;
+}
+
+.dn_product_div .ribbon_limited {
+    font: bold 12px Sans-Serif;
+    color: white;
+    text-align: center;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    position: relative;
+    padding: 1px 0;
     left: -5px;
     top: 13px;
     width: 120px;

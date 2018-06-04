@@ -22,7 +22,8 @@
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="grid_ribbon_style">
                     <div class="ribbon-wrapper">
-                        <div class="ribbon ribbon_news btn btn-primary">News</div>
+                        <div t-if="grid_ribbon_style == 'dn_product_div oe_ribbon_promo'" class="ribbon ribbon_news btn btn-primary">News</div>
+                        <div t-if="grid_ribbon_style == 'dn_product_div oe_ribbon_limited'" class="ribbon ribbon_limited btn btn-primary">Limited<br/>Edition</div>
                     </div>
                     <t t-if="is_offer_product">
                         <div class="offer-wrapper">
