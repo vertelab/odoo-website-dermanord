@@ -24,6 +24,7 @@ from openerp import http
 from openerp.http import request
 
 import werkzeug
+from openerp.addons.website_hr_recruitment.controllers.main import website_hr_recruitment
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -43,7 +44,7 @@ class HrDepartment(models.Model):
     #~ website_description = fields.html('Website Description', translate=True)
     #~ sequence = fields.Integer('Sequence')
 
-class WebsiteRecruitment(http.Controller):
+class WebsiteRecruitment(website_hr_recruitment):
 
     @http.route([
         '/jobs/start',
@@ -78,3 +79,5 @@ class WebsiteRecruitment(http.Controller):
                 #~ 'employees': employees,
             })
 
+    def _get_applicant_files_fields(self):
+        return super(WebsiteRecruitment, self)._get_applicant_files_fields() + ['letter_file']

@@ -122,6 +122,18 @@
                 <attribute name="class">col-sm-7 col-sm-offset-5</attribute>
             </xpath>
         </template>
+        
+        <template id="apply" inherit_id="website_hr_recruitment.apply">
+            <xpath expr="//input[@name='ufile']/../.." position="after">
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-4 control-label" for="letter_file">Letter</label>
+                                <div class="col-md-7 col-sm-8">
+                                    <input class="input-file" id="fileInput" type="file" name="letter_file"/>
+                                    <span t-if="error.get('letter_file')">Please send again your resume.</span>
+                                </div>
+                            </div>
+            </xpath>
+        </template>
 
     </data>
 </openerp>
