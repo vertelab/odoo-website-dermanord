@@ -93,11 +93,11 @@ class product_product(models.Model):
 
     @api.multi
     def get_price_by_pricelist(self, pricelist, date, fiscal_position_id):
-        price_rule = self.env['product.pricelist'].with_context(date=date)._price_rule_get_multi(pricelist, [(self, 1, self.env.user.partner_id)])
+        price = self.env['product.pricelist'].with_context(date=date)._price_rule_get_multi(pricelist, [(self, 1, self.env.user.partner_id)])[self.id][0]
         taxes = 0.0
-        for c in fiscal_position_id.map_tax(self.taxes_id).compute_all(self.lst_price, 1, None, self.env.user.partner_id)['taxes']:
+        for c in fiscal_position_id.map_tax(self.taxes_id).compute_all(price, 1, None, self.env.user.partner_id)['taxes']:
             taxes += c.get('amount', 0.0)
-        return '%.4f' %(price_rule[self.id][0] + taxes)
+        return '%.4f' %(price + taxes)
 
 
 class product_category(models.Model):

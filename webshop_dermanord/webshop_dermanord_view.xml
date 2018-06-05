@@ -603,6 +603,7 @@
       <field name="arch" type="xml">
         <field name="active" position="after">
           <field name="for_reseller" />
+          <field name="rec_pricelist_id" attrs="{'invisible': [('for_reseller', '=', False)]}"/>
         </field>
       </field>
     </record>

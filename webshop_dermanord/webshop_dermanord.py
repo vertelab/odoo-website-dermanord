@@ -196,16 +196,17 @@ class product_template(models.Model):
             if not p.product_variant_ids:
                 continue
             try:
-                if not p.product_variant_ids:
-                    continue
-                variant = p.get_default_variant().read(['name', 'fullname', 'price', 'recommended_price', 'recommended_price_en', 'price_45', 'price_20', 'default_code', 'description_sale', 'image_main_id', 'website_style_ids_variant'])[0]
+                variant = p.get_default_variant().read(['name', 'fullname', 'price', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu', 'price_45', 'price_20', 'default_code', 'description_sale', 'image_main_id', 'website_style_ids_variant'])[0]
                 website_style_ids_variant = ' '.join([s['html_class'] for s in self.env['product.style'].browse(variant['website_style_ids_variant']).read(['html_class'])])
                 if variant:
                     p.dv_id = variant['id']
-                    p.dv_recommended_price = variant['recommended_price']
-                    p.dv_recommended_price_en = variant['recommended_price_en']
                     p.dv_price_45 = variant['price_45']
                     p.dv_price_20 = variant['price_20']
+                    p.dv_recommended_price = variant['recommended_price']
+                    p.dv_price_en = variant['price_en']
+                    p.dv_recommended_price_en = variant['recommended_price_en']
+                    p.dv_price_eu = variant['price_eu']
+                    p.dv_recommended_price_eu = variant['recommended_price_eu']
                     p.dv_default_code = variant['default_code'] or ''
                     p.dv_description_sale = variant['description_sale'] or ''
                     p.dv_name = p.name if p.use_tmpl_name else variant['fullname']
@@ -224,10 +225,13 @@ class product_template(models.Model):
                     'type': 'notification',
                     'partner_ids': [(4, pid) for pid in p.message_follower_ids.mapped('id')],
                 })
-                p.dv_recommended_price = 0.0
-                p.dv_recommended_price_en = 0.0
                 p.dv_price_45 = 0.0
                 p.dv_price_20 = 0.0
+                p.dv_recommended_price = 0.0
+                p.dv_price_en = 0.0
+                p.dv_recommended_price_en = 0.0
+                p.dv_price_eu = 0.0
+                p.dv_recommended_price_eu = 0.0
                 p.dv_default_code = '%s' % 'error'
                 p.dv_description_sale = '%s' % e[1]
                 p.dv_name = 'Error'
@@ -235,10 +239,13 @@ class product_template(models.Model):
                 p.dv_ribbon = ''
 
     dv_id = fields.Integer(compute='_get_all_variant_data', store=True)
-    dv_recommended_price = fields.Float(compute='_get_all_variant_data', store=True)
-    dv_recommended_price_en = fields.Float(compute='_get_all_variant_data', store=True)
     dv_price_45 = fields.Float(compute='_get_all_variant_data', store=True)
     dv_price_20 = fields.Float(compute='_get_all_variant_data', store=True)
+    dv_recommended_price = fields.Float(compute='_get_all_variant_data', store=True)
+    dv_price_en = fields.Float(compute='_get_all_variant_data', store=True)
+    dv_recommended_price_en = fields.Float(compute='_get_all_variant_data', store=True)
+    dv_price_eu = fields.Float(compute='_get_all_variant_data', store=True)
+    dv_recommended_price_eu = fields.Float(compute='_get_all_variant_data', store=True)
     dv_default_code = fields.Char(compute='_get_all_variant_data', store=True)
     dv_description_sale = fields.Text(compute='_get_all_variant_data', store=True)
     dv_image_src = fields.Char(compute='_get_all_variant_data', store=True)
@@ -261,10 +268,18 @@ class product_template(models.Model):
 class product_product(models.Model):
     _inherit = 'product.product'
 
-    recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    recommended_price_en = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    # === Prices ===
     price_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     price_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    
+    price_en = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    recommended_price_en = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    
+    price_eu = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    recommended_price_eu = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
+    # ==============
+    
     #~ so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')  # performance hog, do we need it?
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
@@ -277,27 +292,28 @@ class product_product(models.Model):
     @api.one
     @api.depends('lst_price', 'product_tmpl_id.list_price')
     def get_product_tax(self):
-        pricelist = self.env['res.lang'].search([('code', '=', 'sv_SE')]).pricelist_id
-        if not pricelist:
-            pricelist = self.env.ref('product.list0')
-        pricelist_en = self.env['res.lang'].search([('code', '=', 'en_US')]).pricelist_id
-        if not pricelist_en:
-            pricelist_en = self.env.ref('product.list0')
-        price = pricelist.price_get(self.id, 1)[pricelist.id]
-        price_en = pricelist_en.price_get(self.id, 1)[pricelist_en.id]
-        pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45'), ('currency_id', '=', pricelist.currency_id.id)])
-        pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20'), ('currency_id', '=', pricelist.currency_id.id)])
+        pricelist_45 = self.env.ref('webshop_dermanord.pricelist_af')
+        pricelist_20 = self.env.ref('webshop_dermanord.pricelist_special')
+        pl_rec_se = pricelist_45.rec_pricelist_id or self.env.ref('product.list0')
+        pricelist_us = self.env.ref('webshop_dermanord.pricelist_us')
+        pl_rec_us = pricelist_us.rec_pricelist_id or self.env.ref('product.list0')
+        pricelist_eu = self.env.ref('webshop_dermanord.pricelist_eu')
+        pl_rec_eu = pricelist_eu.rec_pricelist_id or self.env.ref('product.list0')
+        
+        # Swedish prices
         self.price_45 = pricelist_45.price_get(self.id, 1)[pricelist_45.id]
         self.price_20 = pricelist_20.price_get(self.id, 1)[pricelist_20.id]
+        price = pl_rec_se.price_get(self.id, 1)[pl_rec_se.id]
         self.recommended_price = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
-        fpos_en = self.env['res.lang'].search([('code', '=', 'en_US')]).fiscal_position_id
-        if fpos_en:
-            taxes_en = fpos_en.map_tax(self.taxes_id)
-        else:
-            taxes_en = self.taxes_id
-        self.recommended_price_en = price_en + sum(map(lambda x: x.get('amount', 0.0), taxes_en.compute_all(price_en, 1, None, self.env.user.partner_id)['taxes']))
-        #~ self.tax_45 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_45, 1, None, self.env.user.partner_id)['taxes']))
-        #~ self.tax_20 = sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(self.price_20, 1, None, self.env.user.partner_id)['taxes']))
+        
+        # US prices
+        self.price_en = pricelist_us.price_get(self.id, 1)[pricelist_us.id]
+        self.recommended_price_en = pl_rec_us.price_get(self.id, 1)[pl_rec_us.id]
+        
+        # EU prices
+        self.price_eu = pricelist_eu.price_get(self.id, 1)[pricelist_eu.id]
+        price = pl_rec_eu.price_get(self.id, 1)[pl_rec_eu.id]
+        self.recommended_price_eu = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
 
     @api.model
     def update_sold_qty(self):
@@ -365,6 +381,7 @@ class product_facet(models.Model):
 class product_pricelist(models.Model):
     _inherit = 'product.pricelist'
 
+    rec_pricelist_id = fields.Many2one(comodel_name='product.pricelist', string='Recommended Pricelist')
     for_reseller = fields.Boolean(string='For Reseller')
 
     @api.multi
@@ -620,7 +637,7 @@ class Website(models.Model):
             domain = self.get_domain_append(model, post)
         else:
             domain = self.get_domain_append(model, request.session.get('form_values', {}))
-        _logger.warn('\n\ndomain: %s\n' % domain)
+        # ~ _logger.warn('\n\ndomain: %s\n' % domain)
         request.session['current_domain'] = domain
 
     # API handling broken for unknown reasons. Decorators not working properly with this method.
@@ -804,7 +821,7 @@ class WebsiteSale(website_sale):
         if not data:
             data = {}
         res = super(WebsiteSale, self).checkout_values(data)
-        _logger.warn('checkout_values super: %s' % (timer() - start))
+        # ~ _logger.warn('checkout_values super: %s' % (timer() - start))
         if request.env.user != request.website.user_id:
             partner = request.env.user.partner_id
             invoicing_id = int(data.get("invoicing_id", '-2'))
@@ -823,10 +840,9 @@ class WebsiteSale(website_sale):
             res['invoicings'] = invoicings.sudo()
             res['invoicing_id'] = invoicing_id
             res['checkout']['invoicing_id'] = invoicing_id
-        _logger.warn('checkout_values: %s' % (timer() - start))
+        # ~ _logger.warn('checkout_values: %s' % (timer() - start))
         return res
 
-    #_logger.warn(':%s' % (timer() - start))
     def checkout_form_save(self, checkout):
         start = timer()
 
@@ -874,14 +890,14 @@ class WebsiteSale(website_sale):
         order.sudo().write(order_info)
 
         #super(WebsiteSale, self).checkout_form_save(checkout)
-        _logger.warn('checkout_form_save super:%s' % (timer() - start))
+        # ~ _logger.warn('checkout_form_save super:%s' % (timer() - start))
         #~ order = request.website.sale_get_order(force_create=1)
         #~ order.date_order = fields.Datetime.now()
         #~ partner_invoice_id = checkout.get('invoicing_id') or request.env.user.partner_id.id
         #~ if order.partner_invoice_id.id != partner_invoice_id:
             #~ order.write({'partner_invoice_id': partner_invoice_id})
 
-        _logger.warn('checkout_form_save:%s' % (timer() - start))
+        # ~ _logger.warn('checkout_form_save:%s' % (timer() - start))
 
     def get_attribute_value_ids(self, product):
         def get_sale_start(product):
@@ -1018,7 +1034,7 @@ class WebsiteSale(website_sale):
             'page_lang': request.env.lang,
             'no_product_message': no_product_message,
         }
-        _logger.error('to continue to qweb timer %s\ndomain: %s\npricelist: %s\nsearch: %s\nvalues: %s' % (timer() - start_all, domain_finished - start_all, search_start - domain_finished, search_end - search_start, timer() - search_end))
+        # ~ _logger.error('to continue to qweb timer %s\ndomain: %s\npricelist: %s\nsearch: %s\nvalues: %s' % (timer() - start_all, domain_finished - start_all, search_start - domain_finished, search_end - search_start, timer() - search_end))
         render_start = timer()
         #~ re = request.website.render("webshop_dermanord.products", values)
         #~ _logger.warn(re.render())
@@ -1026,7 +1042,7 @@ class WebsiteSale(website_sale):
         #~ res = request.env['ir.qweb'].render("webshop_dermanord.products", values, loader=view_obj.loader("webshop_dermanord.products"))
         #~ _logger.warn(re)
         #~ start = timer()
-        _logger.error('rendered finished %s' % (timer() - render_start))
+        # ~ _logger.error('rendered finished %s' % (timer() - render_start))
 
         return request.website.render("webshop_dermanord.products", values)
 
@@ -1049,7 +1065,7 @@ class WebsiteSale(website_sale):
         products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_price_45', 'dv_price_20', 'website_style_ids', 'dv_description_sale', 'product_variant_ids', 'dv_id'], order=order)
 
         search_end = timer()
-        _logger.warn('search end: %s' %(timer() - start_time))
+        # ~ _logger.warn('search end: %s' %(timer() - start_time))
 
         products_list = []
         is_reseller = False
@@ -1108,7 +1124,7 @@ class WebsiteSale(website_sale):
             'products': products_list,
             #~ 'page_count': int(math.ceil(float(request.session.get('product_count')) / float(PPG))),
         }
-        _logger.warn('end time: %s' %(timer() - search_end))
+        # ~ _logger.warn('end time: %s' %(timer() - search_end))
         return values
 
     @http.route(['/dn_shop_json_list'], type='json', auth='public', website=True)
@@ -1364,10 +1380,10 @@ class WebsiteSale(website_sale):
             'shop_footer': True,
             'no_product_message': no_product_message,
         }
-        _logger.warn('after value: %s' %(timer()-value_start))
+        # ~ _logger.warn('after value: %s' %(timer()-value_start))
         start_render = timer()
         res = request.website.render("webshop_dermanord.products_list_reseller_view", values)
-        _logger.warn('after render: %s' %(timer()-start_render))
+        # ~ _logger.warn('after render: %s' %(timer()-start_render))
         return res
 
     @http.route([
