@@ -128,7 +128,7 @@ $(document).ready(function(){
                 var facet_html = '<div class="col-md-12 facet_div">';
                 var category_value = '';
                 if (data['category'] != null) {
-                    var category_value = '&category_' + data['category'] + '=' + data['category'];
+                    var category_value = '&' + data['category'];
                 }
                 $.each(data['facets'], function(index, value) {
                     facet_html += '<div class="col-md-6"><h2 class="dn_uppercase">' + index + '</h2>';

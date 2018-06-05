@@ -240,7 +240,7 @@
                 console.log('<t t-esc="'product: %s, load time: %s' %(product['id'], time.time() - start_time)" />');
             </script>
         </template>
-        
+
         <template id="products_list_reseller_view" name="Product List For Reseller">
             <t t-call="website.layout">
                 <t t-set="additional_title">Shop</t>
@@ -660,7 +660,7 @@
                                     <h2 class="dn_uppercase" t-field="facet.name" />
                                     <t t-set="facet_value_ids" t-value="product_product.facet_line_ids.mapped('value_ids') &amp; facet.value_ids" />
                                     <t t-foreach="facet_value_ids" t-as="value">
-                                        <a t-att-href="'/dn_shop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, ('&amp;category_%s=%s' %(product.public_categ_ids[0].id, product.public_categ_ids[0].id) if len(product.public_categ_ids) &gt; 0 else ''))" class="text-muted">
+                                        <a t-att-href="'/dn_shop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, ('&amp;%s' %'&amp;'.join(['category_%s=%s' %(c.id, c.id) for c in product.public_categ_ids]) if len(product.public_categ_ids) &gt; 0 else ''))" class="text-muted">
                                             <span t-field="value.name" />
                                         </a>
                                         <span t-if="value_index != len(facet_value_ids)-1">,</span>
@@ -674,7 +674,7 @@
                                     <h2 class="dn_uppercase" t-field="facet.name" />
                                     <t t-set="facet_value_ids" t-value="product.facet_line_ids.mapped('value_ids') &amp; facet.value_ids" />
                                     <t t-foreach="facet_value_ids" t-as="value">
-                                        <a t-att-href="'/dn_shop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, ('&amp;category_%s=%s' %(product.public_categ_ids[0].id, product.public_categ_ids[0].id) if len(product.public_categ_ids) &gt; 0 else ''))" class="text-muted">
+                                        <a t-att-href="'/dn_shop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, ('&amp;%s' %'&amp;'.join(['category_%s=%s' %(c.id, c.id) for c in product.public_categ_ids]) if len(product.public_categ_ids) &gt; 0 else ''))" class="text-muted">
                                             <span t-field="value.name" />
                                         </a>
                                         <span t-if="value_index != len(facet_value_ids)-1">,</span>
@@ -770,7 +770,7 @@
                 <attribute name="t-foreach">accessable_value_ids</attribute>
             </xpath>
         </template>
-        
+
         <template id="product_price" inherit_id="website_sale.product_price">
             <xpath expr="//h4" position="replace">
                 <p class="oe_price_h4 css_editable_mode_hidden decimal_precision" t-att-data-precision="user_id.partner_id.property_product_pricelist.currency_id.rounding">

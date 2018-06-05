@@ -272,14 +272,14 @@ class product_product(models.Model):
     price_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     price_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    
+
     price_en = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     recommended_price_en = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    
+
     price_eu = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     recommended_price_eu = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
     # ==============
-    
+
     #~ so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')  # performance hog, do we need it?
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
@@ -299,17 +299,17 @@ class product_product(models.Model):
         pl_rec_us = pricelist_us.rec_pricelist_id or self.env.ref('product.list0')
         pricelist_eu = self.env.ref('webshop_dermanord.pricelist_eu')
         pl_rec_eu = pricelist_eu.rec_pricelist_id or self.env.ref('product.list0')
-        
+
         # Swedish prices
         self.price_45 = pricelist_45.price_get(self.id, 1)[pricelist_45.id]
         self.price_20 = pricelist_20.price_get(self.id, 1)[pricelist_20.id]
         price = pl_rec_se.price_get(self.id, 1)[pl_rec_se.id]
         self.recommended_price = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
-        
+
         # US prices
         self.price_en = pricelist_us.price_get(self.id, 1)[pricelist_us.id]
         self.recommended_price_en = pl_rec_us.price_get(self.id, 1)[pl_rec_us.id]
-        
+
         # EU prices
         self.price_eu = pricelist_eu.price_get(self.id, 1)[pricelist_eu.id]
         price = pl_rec_eu.price_get(self.id, 1)[pl_rec_eu.id]
@@ -1546,8 +1546,13 @@ class WebsiteSale(website_sale):
 
                 sale_ribbon = request.env.ref('website_sale.image_promo')
 
-                if len(product.product_tmpl_id.public_categ_ids) > 0:
-                    value['category'] = product.product_tmpl_id.public_categ_ids[0].id
+                if len(product.product_tmpl_id.public_categ_ids) > 0: # remove all previously category, facet and reset it according to the current product
+                    for_values = request.session.get('form_values')
+                    for k,v in for_values.items():
+                        if k.split('_')[0] == 'facet' or 'category':
+                            del for_values[k]
+                    request.session['form_values'] = for_values
+                    value['category'] = '&'.join(['category_%s=%s' %(c.id, c.id) for c in product.product_tmpl_id.public_categ_ids])
                 value['id'] = product.id
                 value['recommended_price'] = request.website.price_format(recommended_price)
                 value['price'] = request.website.price_format(price)
