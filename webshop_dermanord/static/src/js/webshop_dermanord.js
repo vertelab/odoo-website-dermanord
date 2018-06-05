@@ -125,11 +125,15 @@ $(document).ready(function(){
             }
             // update facets
             if (data['facets'] != null) {
-                var facet_html = '<div class="col-md-12 facet_div">'
+                var facet_html = '<div class="col-md-12 facet_div">';
+                var category_value = '';
+                if (data['category'] != null) {
+                    var category_value = '&category_' + data['category'] + '=' + data['category'];
+                }
                 $.each(data['facets'], function(index, value) {
                     facet_html += '<div class="col-md-6"><h2 class="dn_uppercase">' + index + '</h2>';
                     $.each(value, function(i) {
-                        facet_html += '<a href="/dn_shop/?facet_' + value[i][0] + '_' + value[i][2] + '=' + value[i][2] + '" class="text-muted"><span>' + value[i][1] + '</span></a>';
+                        facet_html += '<a href="/dn_shop/?facet_' + value[i][0] + '_' + value[i][2] + '=' + value[i][2] + category_value + '" class="text-muted"><span>' + value[i][1] + '</span></a>';
                         if (i != value.length-1) {
                             facet_html += '<span>, </span>';
                         }

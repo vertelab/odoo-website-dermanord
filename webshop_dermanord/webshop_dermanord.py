@@ -885,12 +885,12 @@ class WebsiteSale(website_sale):
 
     def get_attribute_value_ids(self, product):
         def get_sale_start(product):
-            if product.sale_ok:
-                if product.sale_start and not product.sale_end and product.sale_start > fields.Date.today():
-                    return int(product.sale_start.replace('-', ''))
-            else:
-                if product.sale_start and product.sale_start > fields.Date.today():
-                    return int(product.sale_start.replace('-', ''))
+            # ~ if product.sale_ok:
+                # ~ if product.sale_start and not product.sale_end and product.sale_start > fields.Date.today():
+                    # ~ return int(product.sale_start.replace('-', ''))
+            # ~ else:
+                # ~ if product.sale_start and product.sale_start > fields.Date.today():
+                    # ~ return int(product.sale_start.replace('-', ''))
             return 0
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
         currency_obj = pool['res.currency']
@@ -1130,7 +1130,7 @@ class WebsiteSale(website_sale):
                 domain[domain.index(d)] = ('product_tmpl_id', domain[domain.index(d)][1], domain[domain.index(d)][2])
         # relist which product templates the current user is allowed to see
         #~ products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'fullname', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'recommended_price_en', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'sale_start', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=current_order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'fullname', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'recommended_price', 'recommended_price_en', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=current_order)
 
         products_list = []
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
@@ -1213,7 +1213,6 @@ class WebsiteSale(website_sale):
                 'default_code': p['default_code'] or '',
                 'fullname': p['fullname'],
                 'sale_ok': p['sale_ok'],
-                'sale_start': p['sale_start'],
                 'load_time': timer() - p_start,
             })
 
@@ -1531,6 +1530,8 @@ class WebsiteSale(website_sale):
 
                 sale_ribbon = request.env.ref('website_sale.image_promo')
 
+                if len(product.product_tmpl_id.public_categ_ids) > 0:
+                    value['category'] = product.product_tmpl_id.public_categ_ids[0].id
                 value['id'] = product.id
                 value['recommended_price'] = request.website.price_format(recommended_price)
                 value['price'] = request.website.price_format(price)
