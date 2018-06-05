@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data noupdate="0">
+        <record id="pricelist_af" model="product.pricelist">
+            <field name="name">Återförsäljare 45</field>
+            <field name="type">sale</field>
+        </record>
+        <record id="pricelist_special" model="product.pricelist">
+            <field name="name">Special 20</field>
+            <field name="type">sale</field>
+        </record>
+        <record id="pricelist_us" model="product.pricelist">
+            <field name="name">USA Reseller 65%</field>
+            <field name="type">sale</field>
+        </record>
+        <record id="pricelist_eu" model="product.pricelist">
+            <field name="name">EURO ÅF 45%</field>
+            <field name="type">sale</field>
+        </record>
+    </data>
+    <data noupdate="0">
         <record id="img_ingredients_big" model="image.recipe">
             <field name="name">Ingredients Big</field>
             <field name="image_format">jpeg</field>
