@@ -201,6 +201,11 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
             <field name="function">update_sold_qty</field>
         </record>
 
+        <record id="image_limited" model="product.style">
+            <field name="name">Limited Edition</field>
+            <field name="html_class">oe_ribbon_limited</field>
+        </record>
+
     </data>
 
 </openerp>

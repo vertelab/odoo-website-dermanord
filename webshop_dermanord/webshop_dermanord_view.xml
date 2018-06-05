@@ -1,586 +1,674 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
-
-        <record id="product_template_tree_view" model="ir.ui.view">
-            <field name="name">product.template.empty.product.tree</field>
-            <field name="model">product.template</field>
-            <field name="arch" type="xml">
-                <tree string="Product">
-                    <field name="name"/>
-                    <field name="categ_id"/>
-                    <field name="type"/>
-                    <field name="state"/>
-                    <field name="uom_id" invisible="1"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="product_template_action" model="ir.actions.act_window">
-            <field name="name">Variantless Templates</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">product.template</field>
-            <field name="view_mode">kanban,tree,form</field>
-            <field name="view_type">form</field>
-            <field name="view_id" ref="product_template_tree_view"/>
-            <field name="context">{}</field>
-            <field name="domain">[('product_variant_count', '=', 0)]</field>
-        </record>
-
-        <menuitem action="product_template_action"
-            id="menu_product_template_action"
-            parent="base.menu_product" sequence="100" />
-        
-        <template id="cart_dermanord" name="Checkout Dermanord" inherit_id="website_sale.cart">
-            <!-- Navigation bar -->
-            <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
-                <li class="text-muted">Delivery details<span class="chevron"/></li>
-            </xpath>
-            
-            <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">
-                <li class="text-muted">Shipping &amp; payment<span class="chevron"/></li>
-            </xpath>
-            
-            <xpath expr="//ul[@class='wizard pull-right']/li[4]" position="replace">
-                <li class="text-muted">Order confirmation<span class="chevron"/></li>
-            </xpath>
-            <!-- //Navigation bar -->
-        </template>
-        
-        <template id="confirmation_dermanord" name="Checkout Dermanord" inherit_id="website_sale.confirmation">
-            <!-- Navigation bar -->
-            <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
-                <li>Delivery details<span class="chevron"/></li>
-            </xpath>
-            
-            <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">
-                <li>Shipping &amp; payment<span class="chevron"/></li>
-            </xpath>
-            
-            <xpath expr="//ul[@class='wizard pull-right']/li[4]" position="replace">
-                <li class="text-primary">Order confirmation<span class="chevron"/></li>
-            </xpath>
-            <!-- //Navigation bar -->
-        </template>
-        
-        <template id="checkout_dermanord" name="Checkout Dermanord" inherit_id="website_sale.checkout">
-            <xpath expr="//div[@class='col-md-8 oe_cart']/div/div" position="before">
-                <div class="oe_structure"/>
-            </xpath>
-            
-            <!-- Navigation bar -->
-            <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
-                <li class="text-primary">Delivery details<span class="chevron"/></li>
-            </xpath>
-            
-            <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">
-                <li class="text-muted">Shipping &amp; payment<span class="chevron"/></li>
-            </xpath>
-            
-            <xpath expr="//ul[@class='wizard pull-right']/li[4]" position="replace">
-                <li class="text-muted">Order confirmation<span class="chevron"/></li>
-            </xpath>
-            <!-- //Navigation bar -->
-
-            <xpath expr="//input[@name='name']/.." position="attributes">
-                <attribute name="t-attf-class">form-group #{error.get('name') and 'has-error' or ''} col-lg-6 hidden</attribute>
-            </xpath>
-            <xpath expr="//input[@name='street']/.." position="attributes">
-                <attribute name="t-attf-class">form-group #{error.get('street') and 'has-error' or ''} col-lg-6 hidden</attribute>
-            </xpath>
-            <xpath expr="//input[@name='vat']/.." position="attributes">
-                <attribute name="t-attf-class">form-group #{error.get('vat') and 'has-error' or ''} col-lg-6 hidden</attribute>
-            </xpath>
-            <xpath expr="//input[@name='email']/.." position="attributes">
-                <attribute name="t-attf-class">form-group #{error.get('email') and 'has-error' or ''} col-lg-6 hidden</attribute>
-            </xpath>
-            <xpath expr="//input[@name='phone']/.." position="attributes">
-                <attribute name="t-attf-class">form-group #{error.get('phone') and 'has-error' or ''} col-lg-6 hidden</attribute>
-            </xpath>
-            <xpath expr="//input[@name='street2']/.." position="attributes">
-                <attribute name="t-attf-class">form-group #{error.get('street2') and 'has-error' or ''} col-lg-6 hidden</attribute>
-            </xpath>
-            <xpath expr="//input[@name='city']/.." position="attributes">
-                <attribute name="t-attf-class">form-group #{error.get('city') and 'has-error' or ''} col-lg-6 hidden</attribute>
-            </xpath>
-            <xpath expr="//input[@name='zip']/.." position="attributes">
-                <attribute name="t-attf-class">form-group #{error.get('zip') and 'has-error' or ''} col-lg-6 hidden</attribute>
-            </xpath>
-            <xpath expr="//select[@name='country_id']/.." position="attributes">
-                <attribute name="t-attf-class">form-group #{error.get('country_id') and 'has-error' or ''} col-lg-6 hidden</attribute>
-            </xpath>
-            <xpath expr="//select[@name='state_id']/.." position="attributes">
-                <attribute name="t-attf-class">form-group #{error.get('state_id') and 'has-error' or ''} col-lg-6 hidden</attribute>
-            </xpath>
-
-            <xpath expr="//h3[@class='page-header mt16']" position="replace">
-
-            </xpath>
-
-            <xpath expr="//select[@name='shipping_id']/option[@value='-1']" position="replace">
-
-            </xpath>
-
-            <xpath expr="//select[@name='shipping_id']/../label" position="replace">
-                <h3 class="page-header mt16">Shipping Address</h3>
-            </xpath>
-
-            <xpath expr="//select[@name='shipping_id']/.." position="attributes">
-                <attribute name="t-if">user_id != website.env.ref('base.public_user')</attribute>
-            </xpath>
-
-            <xpath expr="//select[@name='shipping_id']" position="after">
-                <div id="shipping_addr_0" t-att-class="'shipping-address hidden' if shipping_id != 0 else 'shipping-address'">
-                    <div t-field="user_id.partner_id" t-field-options='{
+  <data>
+    <record id="product_template_tree_view" model="ir.ui.view">
+      <field name="name">product.template.empty.product.tree</field>
+      <field name="model">product.template</field>
+      <field name="arch" type="xml">
+        <tree string="Product">
+          <field name="name" />
+          <field name="categ_id" />
+          <field name="type" />
+          <field name="state" />
+          <field name="uom_id" invisible="1" />
+        </tree>
+      </field>
+    </record>
+    <record id="product_template_action" model="ir.actions.act_window">
+      <field name="name">Variantless Templates</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">product.template</field>
+      <field name="view_mode">kanban,tree,form</field>
+      <field name="view_type">form</field>
+      <field name="view_id" ref="product_template_tree_view" />
+      <field name="context">{}</field>
+      <field name="domain">[('product_variant_count', '=', 0)]</field>
+    </record>
+    <menuitem action="product_template_action" id="menu_product_template_action" parent="base.menu_product" sequence="100" />
+    <template id="cart_dermanord" name="Checkout Dermanord" inherit_id="website_sale.cart">
+      <!-- Navigation bar -->
+      <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
+        <li class="text-muted">
+          Delivery details
+          <span class="chevron" />
+        </li>
+      </xpath>
+      <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">
+        <li class="text-muted">
+          Shipping &amp; payment
+          <span class="chevron" />
+        </li>
+      </xpath>
+      <xpath expr="//ul[@class='wizard pull-right']/li[4]" position="replace">
+        <li class="text-muted">
+          Order confirmation
+          <span class="chevron" />
+        </li>
+      </xpath>
+      <!-- //Navigation bar -->
+    </template>
+    <template id="website_sale.confirmation">
+      <t t-call="website.layout">
+        <t t-set="additional_title">Shop - Confirmed</t>
+        <div id="wrap">
+          <div class="container oe_website_sale">
+            <ul class="wizard pull-right">
+              <li class="text-muted">
+                Review Order
+                <span class="chevron" />
+              </li>
+              <li class="text-muted">
+                Delivery Details
+                <span class="chevron" />
+              </li>
+              <li class="text-muted">
+                Shipping &amp; payment
+                <span class="chevron" />
+              </li>
+              <li class="text-primary">
+                Order confirmation
+                <span class="chevron" />
+              </li>
+            </ul>
+            <h4 class="mb32">
+              Thank you for your order!
+              <em t-field="order.name" />
+            </h4>
+            <div class="row">
+              <div class="col-md-8 oe_cart">
+                <h2 class="mb32">
+                  We have recieved your order
+                  <em t-field="order.name" />
+                </h2>
+                <div class="oe_website_sale_tx_status" t-att-data-order-id="order.id"><!-- betalväxelmeddelande --></div>
+                <div class="clearfix" />
+                <!--
+                     <div t-if='order.payment_acquiter_id == request.env.ref("payment_invoice.payment_acquirer_invoice").id'>  Faktura </div>
+                -->
+                <div t-if='order.payment_acquirer_id == 3'>
+                  <!-- förskott -->
+                  <div>
+                    <em>Enter invoice number:</em>
+                    <t t-field="order.name" />
+                    as a reference for payment
+                  </div>
+                  <div>
+                    <em>Enter customer number:</em>
+                    <t t-field="order.partner_id.commercial_partner_id.ref" />
+                    as a reference for payment
+                  </div>
+                  <div>
+                    <em>Amount to pay:</em>
+                    <t t-field="order.total_amount" t-field-options='{"widget": "monetary","display_currency": "website_sale_order.currency_id"}' />
+                    as a reference for payment
+                  </div>
+                  <div>
+                    <em>Account for payment:</em>
+                    <t t-esc="order.company_id.bank_ids.filtered(lambda b: b.state == 'bg').mapped('acc_number')" />
+                  </div>
+                  <p>When we have the payment your order will be sent. You can follow your order under "My account" in the menu. There you can see status for all orders and where the order are in the process.</p>
+                </div>
+                <div class="oe_structure" />
+              </div>
+              <div class="col-md-3 col-md-offset-1 text-muted" id="right_column">
+                <h4>Bill To:</h4>
+                <div t-field="order.partner_invoice_id" t-field-options='{
+                    "widget": "contact",
+                    "fields": ["address", "name", "phone", "email"]
+                    }' />
+                <t>
+                  <h4 class="mt32">Ship To:</h4>
+                  <t t-if="order.partner_shipping_id and order.partner_shipping_id.id != order.partner_invoice_id.id">
+                    <div t-field="order.partner_shipping_id" t-field-options='{
                         "widget": "contact",
-                        "fields": ["name", "address", "phone", "mobile", "email"]}'/>
-                </div>
-                <t t-foreach="shippings" t-as="shipping">
-                    <div t-att-id="'shipping_addr_%s' % shipping.id" t-att-class="'shipping-address hidden' if shipping.id != shipping_id else 'shipping-address'">
-                        <t t-raw='shipping.address_to_html({
-                            "widget": "contact",
-                            "fields": ["name", "address", "phone", "mobile", "email"]})'/>
-                    </div>
+                        "fields": ["address", "name", "phone"]
+                        }' />
+                  </t>
+                  <address t-if="order.partner_shipping_id.id == order.partner_invoice_id.id">Ship to the same address</address>
                 </t>
-            </xpath>
-
-            <xpath expr="//div[@class='js_shipping row mb16']" position="attributes">
-                <attribute name="t-att-style">'display:none'</attribute>
-            </xpath>
-
-            <xpath expr="//select[@name='shipping_id']/.." position="after">
-                <div class="form-group col-lg-12" t-if="user_id != website.env.ref('base.public_user')">
-                    <h3 class="page-header mt16">Invoice Address</h3>
-                    <select name="invoicing_id" class="form-control">
-                        <option value="0">Invoice to the same address</option>
-                        <t t-foreach="invoicings" t-as="invoicing">
-                            <option t-att-value="invoicing.id" t-att-selected="invoicing.id == invoicing_id"><t t-esc="', '.join('\n'.join(invoicing.name_get()[0][1].split(',')).split('\n')[1:])"/></option>
-                        </t>
-
-                    </select>
-                    <div id="invoicing_addr_0" t-att-class="'invoicing-address hidden' if invoicing_id != 0 else 'invoicing-address'">
-                        <div t-field="user_id.partner_id" t-field-options='{
+              </div>
+            </div>
+          </div>
+          <div class="oe_structure" />
+        </div>
+      </t>
+    </template>
+    <!--
+         <template id="confirmation_dermanord" name="Checkout Dermanord" inherit_id="website_sale.confirmation">
+         <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
+         <li>Delivery details<span class="chevron"/></li>
+         </xpath>
+         <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">
+         <li>Shipping &amp; payment<span class="chevron"/></li>
+         </xpath>
+         <xpath expr="//ul[@class='wizard pull-right']/li[4]" position="replace">
+         <li class="text-primary">Order confirmation<span class="chevron"/></li>
+         </xpath>
+         </template>
+    -->
+    <template id="checkout_dermanord" name="Checkout Dermanord" inherit_id="website_sale.checkout">
+      <xpath expr="//div[@class='col-md-8 oe_cart']/div/div" position="before">
+        <div class="oe_structure" />
+      </xpath>
+      <!-- Navigation bar -->
+      <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
+        <li class="text-primary">
+          Delivery details
+          <span class="chevron" />
+        </li>
+      </xpath>
+      <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">
+        <li class="text-muted">
+          Shipping &amp; payment
+          <span class="chevron" />
+        </li>
+      </xpath>
+      <xpath expr="//ul[@class='wizard pull-right']/li[4]" position="replace">
+        <li class="text-muted">
+          Order confirmation
+          <span class="chevron" />
+        </li>
+      </xpath>
+      <!-- //Navigation bar -->
+      <xpath expr="//input[@name='name']/.." position="attributes">
+        <attribute name="t-attf-class">form-group #{error.get('name') and 'has-error' or ''} col-lg-6 hidden</attribute>
+      </xpath>
+      <xpath expr="//input[@name='street']/.." position="attributes">
+        <attribute name="t-attf-class">form-group #{error.get('street') and 'has-error' or ''} col-lg-6 hidden</attribute>
+      </xpath>
+      <xpath expr="//input[@name='vat']/.." position="attributes">
+        <attribute name="t-attf-class">form-group #{error.get('vat') and 'has-error' or ''} col-lg-6 hidden</attribute>
+      </xpath>
+      <xpath expr="//input[@name='email']/.." position="attributes">
+        <attribute name="t-attf-class">form-group #{error.get('email') and 'has-error' or ''} col-lg-6 hidden</attribute>
+      </xpath>
+      <xpath expr="//input[@name='phone']/.." position="attributes">
+        <attribute name="t-attf-class">form-group #{error.get('phone') and 'has-error' or ''} col-lg-6 hidden</attribute>
+      </xpath>
+      <xpath expr="//input[@name='street2']/.." position="attributes">
+        <attribute name="t-attf-class">form-group #{error.get('street2') and 'has-error' or ''} col-lg-6 hidden</attribute>
+      </xpath>
+      <xpath expr="//input[@name='city']/.." position="attributes">
+        <attribute name="t-attf-class">form-group #{error.get('city') and 'has-error' or ''} col-lg-6 hidden</attribute>
+      </xpath>
+      <xpath expr="//input[@name='zip']/.." position="attributes">
+        <attribute name="t-attf-class">form-group #{error.get('zip') and 'has-error' or ''} col-lg-6 hidden</attribute>
+      </xpath>
+      <xpath expr="//select[@name='country_id']/.." position="attributes">
+        <attribute name="t-attf-class">form-group #{error.get('country_id') and 'has-error' or ''} col-lg-6 hidden</attribute>
+      </xpath>
+      <xpath expr="//select[@name='state_id']/.." position="attributes">
+        <attribute name="t-attf-class">form-group #{error.get('state_id') and 'has-error' or ''} col-lg-6 hidden</attribute>
+      </xpath>
+      <xpath expr="//h3[@class='page-header mt16']" position="replace" />
+      <xpath expr="//select[@name='shipping_id']/option[@value='-1']" position="replace" />
+      <xpath expr="//select[@name='shipping_id']/../label" position="replace">
+        <h3 class="page-header mt16">Shipping Address</h3>
+      </xpath>
+      <xpath expr="//select[@name='shipping_id']/.." position="attributes">
+        <attribute name="t-if">user_id != website.env.ref('base.public_user')</attribute>
+      </xpath>
+      <xpath expr="//select[@name='shipping_id']" position="after">
+        <div id="shipping_addr_0" t-att-class="'shipping-address hidden' if shipping_id != 0 else 'shipping-address'">
+          <div t-field="user_id.partner_id" t-field-options='{
+                        "widget": "contact",
+                        "fields": ["name", "address", "phone", "mobile", "email"]}' />
+        </div>
+        <t t-foreach="shippings" t-as="shipping">
+          <div t-att-id="'shipping_addr_%s' % shipping.id" t-att-class="'shipping-address hidden' if shipping.id != shipping_id else 'shipping-address'">
+            <t t-raw='shipping.address_to_html({
                             "widget": "contact",
-                            "fields": ["name", "address", "phone", "mobile", "email"]}'/>
-                    </div>
-                    <t t-foreach="invoicings" t-as="invoicing">
-                        <div t-att-id="'invoicing_addr_%s' % invoicing.id" t-att-class="'invoicing-address hidden' if invoicing.id != invoicing_id else 'invoicing-address'">
-                            <t t-raw='invoicing.address_to_html({
+                            "fields": ["name", "address", "phone", "mobile", "email"]})' />
+          </div>
+        </t>
+      </xpath>
+      <xpath expr="//div[@class='js_shipping row mb16']" position="attributes">
+        <attribute name="t-att-style">'display:none'</attribute>
+      </xpath>
+      <xpath expr="//select[@name='shipping_id']/.." position="after">
+        <div class="form-group col-lg-12" t-if="user_id != website.env.ref('base.public_user')">
+          <h3 class="page-header mt16">Invoice Address</h3>
+          <select name="invoicing_id" class="form-control">
+            <option value="0">Invoice to the same address</option>
+            <t t-foreach="invoicings" t-as="invoicing">
+              <option t-att-value="invoicing.id" t-att-selected="invoicing.id == invoicing_id">
+                <t t-esc="', '.join('\n'.join(invoicing.name_get()[0][1].split(',')).split('\n')[1:])" />
+              </option>
+            </t>
+          </select>
+          <div id="invoicing_addr_0" t-att-class="'invoicing-address hidden' if invoicing_id != 0 else 'invoicing-address'">
+            <div t-field="user_id.partner_id" t-field-options='{
+                            "widget": "contact",
+                            "fields": ["name", "address", "phone", "mobile", "email"]}' />
+          </div>
+          <t t-foreach="invoicings" t-as="invoicing">
+            <div t-att-id="'invoicing_addr_%s' % invoicing.id" t-att-class="'invoicing-address hidden' if invoicing.id != invoicing_id else 'invoicing-address'">
+              <t t-raw='invoicing.address_to_html({
                                 "widget": "contact",
-                                "fields": ["name", "address", "phone", "mobile", "email"]})'/>
-                        </div>
-                    </t>
-                </div>
-                <div class="oe_structure"/>
-            </xpath>
-
-<!--
-                  <div t-if="has_check_vat" class="clearfix"/>
-
-                  <div class="clearfix"/>
-
-                  <div class="clearfix"/>
--->
-            <xpath expr="//div[@class='col-lg-offset-1 col-lg-3 col-md-3 text-muted']" position="inside">
-                <t t-if="user_id != website.env.ref('base.public_user')">
-                    <h3 class="page-header mt16">Contact Information</h3>
-                    <div class="row">
-                        <div t-field="user_id.partner_id" t-field-options='{
+                                "fields": ["name", "address", "phone", "mobile", "email"]})' />
+            </div>
+          </t>
+        </div>
+        <div class="oe_structure" />
+      </xpath>
+      <!--
+           <div t-if="has_check_vat" class="clearfix"/>
+           
+           <div class="clearfix"/>
+           
+           <div class="clearfix"/>
+      -->
+      <xpath expr="//div[@class='col-lg-offset-1 col-lg-3 col-md-3 text-muted']" position="inside">
+        <t t-if="user_id != website.env.ref('base.public_user')">
+          <h3 class="page-header mt16">Contact Information</h3>
+          <div class="row">
+            <div t-field="user_id.partner_id" t-field-options='{
                             "widget": "contact",
-                            "fields": ["name", "address", "phone", "mobile", "email"]}'/>
-                    </div>
-                </t>
-
-
-            </xpath>
-
-        </template>
-
-        <template id="payment_dermanord" name="Payment Dermanord" inherit_id="website_sale.payment">
-            <!-- Navigation bar -->
-            <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
-                <li>Delivery details<span class="chevron"/></li>
-            </xpath>
-            
-            <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">
-                <li class="text-primary">Shipping &amp; payment<span class="chevron"/></li>
-            </xpath>
-            
-            <xpath expr="//ul[@class='wizard pull-right']/li[4]" position="replace">
-                <li class="text-muted">Order confirmation<span class="chevron"/></li>
-            </xpath>
-            <!-- //Navigation bar -->
-            
-            <xpath expr="//div[@class='col-lg-8 col-sm-9 oe_cart']" position="replace">
-                <div class="col-lg-8 col-sm-9">
-                  <t t-set="website_sale_order" t-value="website.sale_get_order()"/>
-                  <div class="oe_cart">
-                  <table class="table table-striped table-condensed" id="cart_products" t-if="website_sale_order and website_sale_order.website_order_line">
-                      <thead>
-                          <tr>
-                              <th colspan="2" width="80">Product</th>
-                              <th width="100">Price</th>
-                              <th width="120">Quantity</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          <tr t-foreach="website_sale_order.website_order_line" t-as="line">
-                              <td colspan="2" t-if="not line.product_id.product_tmpl_id"/>
-                              <td t-if="line.product_id.product_tmpl_id">
-                                  <a t-attf-href="/shop/product/#{ slug(line.product_id.product_tmpl_id) }">
-<!--
-                                      <span t-field="line.product_id.image_small" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}"/>
--->
-                                      <img class="img img-responsive img_payment" style="width: 64px;" t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id"/>
-                                  </a>
-                              </td>
-                              <td t-if="line.product_id.product_tmpl_id">
-                                 <strong t-field="line.product_id.with_context(display_default_code=False).display_name"/>
-                              </td>
-                              <td class="text-center">
-                                 <span t-field="line.price_unit" style="white-space: nowrap;" t-field-options="{                                  &quot;widget&quot;: &quot;monetary&quot;,                                  &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                                  &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                              }"/>
-                              </td>
-                              <td>
-                                 <div t-esc="line.product_uom_qty"/>
-                              </td>
-                          </tr>
-                      </tbody>
-                  </table>
-                  </div>
-                  <div class="col-lg-5 col-sm-6 col-lg-offset-7 col-sm-offset-6" style="padding-left: 3px; padding-right: 3px;">
-                      <t t-call="website_sale.total"/>
-                  </div>
-                  <div class="clearfix"/>
-                  <div class="oe_structure"/>
-                  <div class="row form-group" id="order_comment">
-                        <label for="note">Comment:</label>
-                        <textarea class="form-control" rows="5" name="note" />
-                    </div>
-                    <div class="row" id="terms_and_conditions">
-                        <div class="col-lg-5 col-sm-6">
-                            <h4>Terms and Conditions</h4>
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" id='terms_and_conditions' />
-                                    I Agree with the
-                                    <a href="#" onclick="window.open('/page/terms-and-conditions', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </xpath>
-
-            <xpath expr="//div[@t-if='acquirers and website_sale_order.amount_total']" position="attributes">
-                <attribute name="class">js_payment mb64 row col-lg-8 col-sm-9</attribute>
-            </xpath>
-
-            <xpath expr="//div[@t-if='acquirers and website_sale_order.amount_total']/div[@class='col-lg-5 col-sm-6']" position="attributes">
-                <attribute name="class">col-lg-7 col-sm-6</attribute>
-            </xpath>
-
-            <xpath expr="//div[@t-if='acquirers and website_sale_order.amount_total']/div[@class='col-lg-3 col-sm-3']" position="attributes">
-                <attribute name="class">col-lg-5 col-sm-6</attribute>
-            </xpath>
-
-            <xpath expr="//div[@t-if='not website_sale_order.amount_total']" position="attributes">
-                <attribute name="class">js_payment mb64 row col-lg-8 col-sm-9</attribute>
-            </xpath>
-
-            <xpath expr="//div[@t-if='not website_sale_order.amount_total']/div[@class='col-lg-8 col-sm-8']" position="attributes">
-                <attribute name="class">col-lg-5 col-sm-6 col-lg-offset-7 col-sm-offset-6</attribute>
-            </xpath>
-
-            <xpath expr="//div[@class='oe_sale_acquirer_button hidden pull-right']" position="attributes">
-                <attribute name="class">oe_sale_acquirer_button hidden</attribute>
-            </xpath>
-
-        </template>
-
-        <template id="total_dermanord" inherit_id="website_sale.total">
-            <xpath expr="//table" position="attributes">
-                <attribute name="class">pull-left mb16 oe_total_table_fix</attribute>
-            </xpath>
-        </template>
-
-        <template id="cart_delivery" inherit_id="website_sale_delivery.cart_delivery">
-            <xpath expr="//tr[@id='order_delivery']" position="replace"/>
-            <xpath expr="//tr[@id='order_total_taxes']" position="replace"/>
-            <xpath expr="//tr[@id='order_total']" position="before">
-                <tr class="text-muted" id="order_delivery">
-                    <td><abbr title="Delivery will be updated after choosing a new delivery method">Delivery:</abbr></td>
-                    <td class="text-right">
-                        <span t-field="website_sale_order.amount_delivery" t-field-options='{
+                            "fields": ["name", "address", "phone", "mobile", "email"]}' />
+          </div>
+        </t>
+      </xpath>
+    </template>
+    <template id="payment_dermanord" name="Payment Dermanord" inherit_id="website_sale.payment">
+      <!-- Navigation bar -->
+      <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
+        <li>
+          Delivery details
+          <span class="chevron" />
+        </li>
+      </xpath>
+      <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">
+        <li class="text-primary">
+          Shipping &amp; payment
+          <span class="chevron" />
+        </li>
+      </xpath>
+      <xpath expr="//ul[@class='wizard pull-right']/li[4]" position="replace">
+        <li class="text-muted">
+          Order confirmation
+          <span class="chevron" />
+        </li>
+      </xpath>
+      <!-- //Navigation bar -->
+      <xpath expr="//div[@class='col-lg-8 col-sm-9 oe_cart']" position="replace">
+        <div class="col-lg-8 col-sm-9">
+          <t t-set="website_sale_order" t-value="website.sale_get_order()" />
+          <div class="oe_cart">
+            <table class="table table-striped table-condensed" id="cart_products" t-if="website_sale_order and website_sale_order.website_order_line">
+              <thead>
+                <tr>
+                  <th colspan="2" width="80">Product</th>
+                  <th width="100">Price</th>
+                  <th width="120">Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr t-foreach="website_sale_order.website_order_line" t-as="line">
+                  <td colspan="2" t-if="not line.product_id.product_tmpl_id" />
+                  <td t-if="line.product_id.product_tmpl_id">
+                    <a t-attf-href="/shop/product/#{ slug(line.product_id.product_tmpl_id) }">
+                      <!--
+                           <span t-field="line.product_id.image_small" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}"/>
+                      -->
+                      <img class="img img-responsive img_payment" style="width: 64px;" t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id" />
+                    </a>
+                  </td>
+                  <td t-if="line.product_id.product_tmpl_id">
+                    <strong t-field="line.product_id.with_context(display_default_code=False).display_name" />
+                  </td>
+                  <td class="text-center">
+                    <span t-field="line.price_unit" style="white-space: nowrap;" t-field-options="{                                  &quot;widget&quot;: &quot;monetary&quot;,                                  &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                                  &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                              }" />
+                  </td>
+                  <td>
+                    <div t-esc="line.product_uom_qty" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-lg-5 col-sm-6 col-lg-offset-7 col-sm-offset-6" style="padding-left: 3px; padding-right: 3px;">
+            <t t-call="website_sale.total" />
+          </div>
+          <div class="clearfix" />
+          <div class="oe_structure" />
+          <div class="row form-group" id="order_comment">
+            <label for="note">Comment:</label>
+            <textarea class="form-control" rows="5" name="note" />
+          </div>
+          <div class="row" id="terms_and_conditions">
+            <div class="col-lg-5 col-sm-6">
+              <h4>Terms and Conditions</h4>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" id='terms_and_conditions' />
+                  I Agree with the
+                  <a href="#" onclick="window.open('/page/terms-and-conditions', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </xpath>
+      <xpath expr="//div[@t-if='acquirers and website_sale_order.amount_total']" position="attributes">
+        <attribute name="class">js_payment mb64 row col-lg-8 col-sm-9</attribute>
+      </xpath>
+      <xpath expr="//div[@t-if='acquirers and website_sale_order.amount_total']/div[@class='col-lg-5 col-sm-6']" position="attributes">
+        <attribute name="class">col-lg-7 col-sm-6</attribute>
+      </xpath>
+      <xpath expr="//div[@t-if='acquirers and website_sale_order.amount_total']/div[@class='col-lg-3 col-sm-3']" position="attributes">
+        <attribute name="class">col-lg-5 col-sm-6</attribute>
+      </xpath>
+      <xpath expr="//div[@t-if='not website_sale_order.amount_total']" position="attributes">
+        <attribute name="class">js_payment mb64 row col-lg-8 col-sm-9</attribute>
+      </xpath>
+      <xpath expr="//div[@t-if='not website_sale_order.amount_total']/div[@class='col-lg-8 col-sm-8']" position="attributes">
+        <attribute name="class">col-lg-5 col-sm-6 col-lg-offset-7 col-sm-offset-6</attribute>
+      </xpath>
+      <xpath expr="//div[@class='oe_sale_acquirer_button hidden pull-right']" position="attributes">
+        <attribute name="class">oe_sale_acquirer_button hidden</attribute>
+      </xpath>
+    </template>
+    <template id="total_dermanord" inherit_id="website_sale.total">
+      <xpath expr="//table" position="attributes">
+        <attribute name="class">pull-left mb16 oe_total_table_fix</attribute>
+      </xpath>
+    </template>
+    <template id="cart_delivery" inherit_id="website_sale_delivery.cart_delivery">
+      <xpath expr="//tr[@id='order_delivery']" position="replace" />
+      <xpath expr="//tr[@id='order_total_taxes']" position="replace" />
+      <xpath expr="//tr[@id='order_total']" position="before">
+        <tr class="text-muted" id="order_delivery">
+          <td>
+            <abbr title="Delivery will be updated after choosing a new delivery method">Delivery:</abbr>
+          </td>
+          <td class="text-right">
+            <span t-field="website_sale_order.amount_delivery" t-field-options='{
                             "widget": "monetary",
                             "display_currency": "website_sale_order.currency_id"
-                        }'/>
-                    </td>
-                </tr>
-                <tr width="120" class="text-muted" id="order_total_untaxed">
-                    <td>Amount (excl. tax):</td>
-                    <td class="text-right">
-                        <span t-field="website_sale_order.amount_untaxed" style="white-space: nowrap;" t-field-options="{                         &quot;widget&quot;: &quot;monetary&quot;,                         &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                         &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                     }"/>
-                    </td>
-                </tr>
-                <tr width="120" class="text-muted" id="order_total_taxes">
-                    <td><abbr title="Taxes may be updated after providing shipping address">Taxes:</abbr></td>
-                    <td class="text-right">
-                        <span t-field="website_sale_order.amount_tax" style="white-space: nowrap;" t-field-options="{                         &quot;widget&quot;: &quot;monetary&quot;,                         &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                         &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                     }"/>
-                    </td>
-                </tr>
-            </xpath>
-        </template>
-
-        <record id="website_sale_comment.payment" model="ir.ui.view">
-            <field name="active" eval="False"/>
-        </record>
-
-        <record id="website_sale_terms.payment_terms_and_conditions" model="ir.ui.view">
-            <field name="active" eval="False"/>
-        </record>
-
-        <template id="search_result" inherit_id="website_fts.search_result">
-            <xpath expr="//t[@t-foreach='terms']" position="replace">
-                <script>var dermanord_kw = "<t t-esc='kw'/>";</script>
-                <t t-foreach="terms" t-as="term">
-                    <t t-if="term['model'] == 'product.template'">
-                        <div class="col-md-12 col-sm-12 col-xs-12 mt16">
-                            <div class="col-md-3 col-sm-3 col-xs-3">
-                                <t t-if="term['object'].image">
-                                    <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/%s' %(term['id'], 'webshop_dermanord.img_search_result')"/>
-                                </t>
-                                <t t-if="not term['object'].image">
-                                    <img class="img img-responsive" src="/website_logo.png"/>
-                                </t>
-                            </div>
-                            <div class="col-md-9 col-sm-9 col-xs-9">
-                                <a t-att-href="'/dn_shop/product/%s' %term['id']">
-                                    <h4><t t-esc="term['object'].name"/> [Product]</h4>
-                                </a>
-                                <p class="text-muted result_desc"><t t-esc="term['object'].description_sale"/></p>
-                            </div>
-                        </div>
-                    </t>
-                    <t t-if="term['model'] == 'product.product'">
-                        <div class="col-md-12 col-sm-12 col-xs-12 mt16">
-                            <div class="col-md-3 col-sm-3 col-xs-3">
-                                <t t-if="term['object'].image">
-                                    <img class="img img-responsive" t-att-src="'/imagefield/product.product/image/%s/ref/%s' %(term['id'], 'webshop_dermanord.img_search_result')"/>
-                                </t>
-                                <t t-if="not term['object'].image">
-                                    <img class="img img-responsive" src="/website_logo.png"/>
-                                </t>
-                            </div>
-                            <div class="col-md-9 col-sm-9 col-xs-9">
-                                <a t-att-href="'/dn_shop/variant/%s' %term['id']">
-                                    <h4><t t-esc="term['object'].name"/> [Product]</h4>
-                                </a>
-                                <p class="text-muted"><t t-esc="term['object'].default_code"/></p>
-                                <t t-foreach="term['object'].attribute_value_ids" t-as="value">
-                                    <span class="dn_tags" t-esc="'%s ' %value.name"/>
-                                </t>
-                                <p class="text-muted result_desc"><t t-esc="term['object'].product_tmpl_id.description_sale"/></p>
-                            </div>
-                        </div>
-                    </t>
-                    <t t-if="term['model'] == 'product.public.category'">
-                        <div class="col-md-12 col-sm-12 col-xs-12 mt16">
-                            <div class="col-md-3 col-sm-3 col-xs-3">
-                                <t t-if="term['object'].image_medium">
-                                    <img class="img img-responsive" t-att-src="'/imagefield/product.public.category/image_medium/%s/ref/%s' %(term['id'], 'webshop_dermanord.img_search_result')"/>
-                                </t>
-                                <t t-if="not term['object'].image_medium">
-                                    <img class="img img-responsive" src="/website_logo.png"/>
-                                </t>
-                            </div>
-                            <div class="col-md-9 col-sm-9 col-xs-9">
-                                <a t-att-href="'/dn_shop/category/%s' %term['id']">
-                                    <h4><t t-esc="term['object'].name"/> [Category]</h4>
-                                </a>
-                            </div>
-                        </div>
-                    </t>
-                    <t t-if="term['model'] == 'blog.post'">
-                        <div class="col-md-12 col-sm-12 col-xs-12 mt16">
-                            <div class="col-md-3 col-sm-3 col-xs-3">
-                                <t t-if="term['object'].background_image">
-                                    <img class="img img-responsive" t-att-src="term['object'].background_image"/>
-                                </t>
-                                <t t-if="not term['object'].background_image">
-                                    <img class="img img-responsive" src="/website_logo.png"/>
-                                </t>
-                            </div>
-                            <div class="col-md-9 col-sm-9 col-xs-9">
-                                <a t-att-href="'/blog/%s/post/%s' %(request.env['blog.post'].browse(term['id']).blog_id.id, term['id'])">
-                                    <h4><t t-esc="term['object'].name"/> [Blog Post]</h4>
-                                </a>
-                                <p class="text-muted result_desc"><t t-esc="term['object'].subtitle"/></p>
-                            </div>
-                        </div>
-                    </t>
-                    <t t-if="term['model'] == 'product.facet.line'">
-                        <div class="col-md-12 col-sm-12 col-xs-12 mt16">
-                            <div class="col-md-3 col-sm-3 col-xs-3">
-                                <t t-if="term['object'].product_tmpl_id.image">
-                                    <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/%s' %(term['object'].product_tmpl_id.id, 'webshop_dermanord.img_search_result')"/>
-                                </t>
-                                <t t-if="not term['object'].product_tmpl_id.image">
-                                    <img class="img img-responsive" src="/website_logo.png"/>
-                                </t>
-                            </div>
-                            <div class="col-md-9 col-sm-9 col-xs-9">
-                                <a t-att-href="'/dn_shop/product/%s' %term['object'].product_tmpl_id">
-                                    <h4><t t-esc="term['object'].product_tmpl_id.name"/> [Facet]</h4>
-                                </a>
-                                <t t-foreach="term['object'].product_tmpl_id.facet_line_ids.with_context({'res_id': term['id']}).filtered(lambda f: f.id == f._context.get('res_id'))[0].value_ids" t-as="value">
-                                    <span class="dn_facets" t-esc="'%s ' %value.name"/>
-                                </t>
-                                <p class="text-muted result_desc"><t t-esc="term['object'].product_tmpl_id.description_sale"/></p>
-                            </div>
-                        </div>
-                    </t>
+                        }' />
+          </td>
+        </tr>
+        <tr width="120" class="text-muted" id="order_total_untaxed">
+          <td>Amount (excl. tax):</td>
+          <td class="text-right">
+            <span t-field="website_sale_order.amount_untaxed" style="white-space: nowrap;" t-field-options="{                         &quot;widget&quot;: &quot;monetary&quot;,                         &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                         &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                     }" />
+          </td>
+        </tr>
+        <tr width="120" class="text-muted" id="order_total_taxes">
+          <td>
+            <abbr title="Taxes may be updated after providing shipping address">Taxes:</abbr>
+          </td>
+          <td class="text-right">
+            <span t-field="website_sale_order.amount_tax" style="white-space: nowrap;" t-field-options="{                         &quot;widget&quot;: &quot;monetary&quot;,                         &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                         &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                     }" />
+          </td>
+        </tr>
+      </xpath>
+    </template>
+    <record id="website_sale_comment.payment" model="ir.ui.view">
+      <field name="active" eval="False" />
+    </record>
+    <record id="website_sale_terms.payment_terms_and_conditions" model="ir.ui.view">
+      <field name="active" eval="False" />
+    </record>
+    <template id="search_result" inherit_id="website_fts.search_result">
+      <xpath expr="//t[@t-foreach='terms']" position="replace">
+        <script>
+          var dermanord_kw = "
+          <t t-esc='kw' />
+          ";
+        </script>
+        <t t-foreach="terms" t-as="term">
+          <t t-if="term['model'] == 'product.template'">
+            <div class="col-md-12 col-sm-12 col-xs-12 mt16">
+              <div class="col-md-3 col-sm-3 col-xs-3">
+                <t t-if="term['object'].image">
+                  <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/%s' %(term['id'], 'webshop_dermanord.img_search_result')" />
                 </t>
-            </xpath>
-        </template>
-
-        <template id="webshop_dermanord" inherit_id="website.assets_frontend" name="Webshop Dermanord">
-            <!-- Customize css -->
-            <xpath expr="." position="inside">
-                <link href="/webshop_dermanord/static/src/css/webshop_dermanord.css" rel="stylesheet" />
-            </xpath>
-        </template>
-
-        <template id="assets_frontend_override" inherit_id="website_sale.assets_frontend">
-            <!-- Customize javascript -->
-            <xpath expr="//script[@src='/website_sale/static/src/js/website_sale.js']" position="replace">
-                <script type="text/javascript" src="/webshop_dermanord/static/src/js/webshop_dermanord.js" />
-            </xpath>
-            <xpath expr="//script[last()]" position="after">
-                <script type="text/javascript" src="/webshop_dermanord/static/src/js/webshop_search.js" />
-            </xpath>
-        </template>
-
-        <template id="assets_frontend_fts_override" inherit_id="website_fts.assets_frontend">
-            <!-- override fts javascript -->
-            <xpath expr="//script[@src='/website_fts/static/src/js/main.js']" position="replace">
-                <script type="text/javascript" src="/webshop_dermanord/static/src/js/fts_search.js" />
-            </xpath>
-        </template>
-
-        <record id="product_pricelist_item_tree_view" model="ir.ui.view">
-            <field name="name">product.pricelist.item.tree.surcharge</field>
-            <field name="model">product.pricelist.item</field>
-            <field name="inherit_id" ref="product.product_pricelist_item_tree_view" />
-            <field name="arch" type="xml">
-                <field name="min_quantity" position="after">
-                    <field name="price_surcharge"/>
-                </field>
-            </field>
-        </record>
-
-        <record id="view_blog_post_form" model="ir.ui.view">
-            <field name="name">blog.post.form.webshop</field>
-            <field name="model">blog.post</field>
-            <field name="inherit_id" ref="website_blog.view_blog_post_form" />
-            <field name="arch" type="xml">
-                <sheet position="inside">
-                    <group>
-                        <field name="product_tmpl_ids" widget="many2many_tags" />
-                        <field name="product_public_categ_ids" widget="many2many_tags" />
-                    </group>
-                </sheet>
-            </field>
-        </record>
-
-        <record id="product_public_category_form_view" model="ir.ui.view">
-            <field name="name">product.public.category.form.inherited.webshop_dermanord</field>
-            <field name="model">product.public.category</field>
-            <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
-            <field name="arch" type="xml">
-                <field name="sequence" position="attributes">
-                    <attribute name="widget">handle</attribute>
-                </field>
-            </field>
-        </record>
-
-        <record id="product_pricelist_view" model="ir.ui.view">
-            <field name="name">product.pricelist.form.inherited.webshop_dermanord</field>
-            <field name="model">product.pricelist</field>
-            <field name="inherit_id" ref="product.product_pricelist_view"/>
-            <field name="arch" type="xml">
-                <field name="active" position="after">
-                    <field name="for_reseller"/>
-                    <field name="rec_pricelist_id" attrs="{'invisible': [('for_reseller', '=', False)]}"/>
-                </field>
-            </field>
-        </record>
-
-        <record id="product_template_form_view" model="ir.ui.view">
-            <field name="name">product.template.common.form.inherited.webshop_dermanord</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_form_view"/>
-            <field name="arch" type="xml">
-                <field name="list_price" position="after">
-                    <field name="sold_qty"/>
-                </field>
-                <xpath expr="//field[@name='sale_ok']/.." position="after">
-                    <div>
-                        <field name="use_tmpl_name"/>
-                        <label for="use_tmpl_name"/>
-                    </div>
-                </xpath>
-            </field>
-        </record>
-
-        <record id="website_sale_add_style_in_variant" model="ir.ui.view">
-            <field name="name">product.template.product.website.form.add.style.in.variant</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_normal_form_view"/>
-            <field name="arch" type="xml">
-                <field name="website_style_ids" position="after">
-                    <field name="website_style_ids_variant" widget="many2many_tags"/>
-                </field>
-            </field>
-        </record>
-
-<!--
-        <record id="product_normal_form_view" model="ir.ui.view">
-            <field name="name">product.product.form.inherited.webshop_dermanord</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_normal_form_view"/>
-            <field name="arch" type="xml">
-                <field name="list_price" position="after">
-                    <field name="sold_qty"/>
-                </field>
-            </field>
-        </record>
--->
-        <record id="view_sales_order_filter" model="ir.ui.view">
-            <field name="name">sale.order.list.select.inherited.webshop_dermanord</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
-            <field name="arch" type="xml">
-                <field name="section_id" position="after">
-                    <field name="state"/>
-                </field>
-                <filter string="Done" position="after">
-                    <filter string="Web Orders" domain="[('section_id', '=', %(website.salesteam_website_sales)d)]" help="Ordered from webshop"/>
-                    <filter string="Not Web Orders" domain="[('section_id', '&lt;&gt;', %(website.salesteam_website_sales)d)]" help="Not ordered from webshop"/>
-                    <filter string="Confirmed Web Orders" domain="[('section_id', '=', %(website.salesteam_website_sales)d), ('state','=','sent')]" help="Order confirmed from Web"/>
-                </filter>
-            </field>
-        </record>
-
-        <record id="crm_tracking_campaign_form" model="ir.ui.view">
-            <field name="name">crm.tracking.campaign.form.inherited.webshop_dermanord</field>
-            <field name="model">crm.tracking.campaign</field>
-            <field name="inherit_id" ref="crm_campaign_addons.crm_tracking_campaign_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='object_ids']/tree" position="inside">
-                    <field name="product_price"/>
-                </xpath>
-            </field>
-        </record>
-
-    </data>
+                <t t-if="not term['object'].image">
+                  <img class="img img-responsive" src="/website_logo.png" />
+                </t>
+              </div>
+              <div class="col-md-9 col-sm-9 col-xs-9">
+                <a t-att-href="'/dn_shop/product/%s' %term['id']">
+                  <h4>
+                    <t t-esc="term['object'].name" />
+                    [Product]
+                  </h4>
+                </a>
+                <p class="text-muted result_desc">
+                  <t t-esc="term['object'].description_sale" />
+                </p>
+              </div>
+            </div>
+          </t>
+          <t t-if="term['model'] == 'product.product'">
+            <div class="col-md-12 col-sm-12 col-xs-12 mt16">
+              <div class="col-md-3 col-sm-3 col-xs-3">
+                <t t-if="term['object'].image">
+                  <img class="img img-responsive" t-att-src="'/imagefield/product.product/image/%s/ref/%s' %(term['id'], 'webshop_dermanord.img_search_result')" />
+                </t>
+                <t t-if="not term['object'].image">
+                  <img class="img img-responsive" src="/website_logo.png" />
+                </t>
+              </div>
+              <div class="col-md-9 col-sm-9 col-xs-9">
+                <a t-att-href="'/dn_shop/variant/%s' %term['id']">
+                  <h4>
+                    <t t-esc="term['object'].name" />
+                    [Product]
+                  </h4>
+                </a>
+                <p class="text-muted">
+                  <t t-esc="term['object'].default_code" />
+                </p>
+                <t t-foreach="term['object'].attribute_value_ids" t-as="value">
+                  <span class="dn_tags" t-esc="'%s ' %value.name" />
+                </t>
+                <p class="text-muted result_desc">
+                  <t t-esc="term['object'].product_tmpl_id.description_sale" />
+                </p>
+              </div>
+            </div>
+          </t>
+          <t t-if="term['model'] == 'product.public.category'">
+            <div class="col-md-12 col-sm-12 col-xs-12 mt16">
+              <div class="col-md-3 col-sm-3 col-xs-3">
+                <t t-if="term['object'].image_medium">
+                  <img class="img img-responsive" t-att-src="'/imagefield/product.public.category/image_medium/%s/ref/%s' %(term['id'], 'webshop_dermanord.img_search_result')" />
+                </t>
+                <t t-if="not term['object'].image_medium">
+                  <img class="img img-responsive" src="/website_logo.png" />
+                </t>
+              </div>
+              <div class="col-md-9 col-sm-9 col-xs-9">
+                <a t-att-href="'/dn_shop/category/%s' %term['id']">
+                  <h4>
+                    <t t-esc="term['object'].name" />
+                    [Category]
+                  </h4>
+                </a>
+              </div>
+            </div>
+          </t>
+          <t t-if="term['model'] == 'blog.post'">
+            <div class="col-md-12 col-sm-12 col-xs-12 mt16">
+              <div class="col-md-3 col-sm-3 col-xs-3">
+                <t t-if="term['object'].background_image">
+                  <img class="img img-responsive" t-att-src="term['object'].background_image" />
+                </t>
+                <t t-if="not term['object'].background_image">
+                  <img class="img img-responsive" src="/website_logo.png" />
+                </t>
+              </div>
+              <div class="col-md-9 col-sm-9 col-xs-9">
+                <a t-att-href="'/blog/%s/post/%s' %(request.env['blog.post'].browse(term['id']).blog_id.id, term['id'])">
+                  <h4>
+                    <t t-esc="term['object'].name" />
+                    [Blog Post]
+                  </h4>
+                </a>
+                <p class="text-muted result_desc">
+                  <t t-esc="term['object'].subtitle" />
+                </p>
+              </div>
+            </div>
+          </t>
+          <t t-if="term['model'] == 'product.facet.line'">
+            <div class="col-md-12 col-sm-12 col-xs-12 mt16">
+              <div class="col-md-3 col-sm-3 col-xs-3">
+                <t t-if="term['object'].product_tmpl_id.image">
+                  <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/%s' %(term['object'].product_tmpl_id.id, 'webshop_dermanord.img_search_result')" />
+                </t>
+                <t t-if="not term['object'].product_tmpl_id.image">
+                  <img class="img img-responsive" src="/website_logo.png" />
+                </t>
+              </div>
+              <div class="col-md-9 col-sm-9 col-xs-9">
+                <a t-att-href="'/dn_shop/product/%s' %term['object'].product_tmpl_id">
+                  <h4>
+                    <t t-esc="term['object'].product_tmpl_id.name" />
+                    [Facet]
+                  </h4>
+                </a>
+                <t t-foreach="term['object'].product_tmpl_id.facet_line_ids.with_context({'res_id': term['id']}).filtered(lambda f: f.id == f._context.get('res_id'))[0].value_ids" t-as="value">
+                  <span class="dn_facets" t-esc="'%s ' %value.name" />
+                </t>
+                <p class="text-muted result_desc">
+                  <t t-esc="term['object'].product_tmpl_id.description_sale" />
+                </p>
+              </div>
+            </div>
+          </t>
+        </t>
+      </xpath>
+    </template>
+    <template id="webshop_dermanord" inherit_id="website.assets_frontend" name="Webshop Dermanord">
+      <!-- Customize css -->
+      <xpath expr="." position="inside">
+        <link href="/webshop_dermanord/static/src/css/webshop_dermanord.css" rel="stylesheet" />
+      </xpath>
+    </template>
+    <template id="assets_frontend_override" inherit_id="website_sale.assets_frontend">
+      <!-- Customize javascript -->
+      <xpath expr="//script[@src='/website_sale/static/src/js/website_sale.js']" position="replace">
+        <script type="text/javascript" src="/webshop_dermanord/static/src/js/webshop_dermanord.js" />
+      </xpath>
+      <xpath expr="//script[last()]" position="after">
+        <script type="text/javascript" src="/webshop_dermanord/static/src/js/webshop_search.js" />
+      </xpath>
+    </template>
+    <template id="assets_frontend_fts_override" inherit_id="website_fts.assets_frontend">
+      <!-- override fts javascript -->
+      <xpath expr="//script[@src='/website_fts/static/src/js/main.js']" position="replace">
+        <script type="text/javascript" src="/webshop_dermanord/static/src/js/fts_search.js" />
+      </xpath>
+    </template>
+    <record id="product_pricelist_item_tree_view" model="ir.ui.view">
+      <field name="name">product.pricelist.item.tree.surcharge</field>
+      <field name="model">product.pricelist.item</field>
+      <field name="inherit_id" ref="product.product_pricelist_item_tree_view" />
+      <field name="arch" type="xml">
+        <field name="min_quantity" position="after">
+          <field name="price_surcharge" />
+        </field>
+      </field>
+    </record>
+    <record id="view_blog_post_form" model="ir.ui.view">
+      <field name="name">blog.post.form.webshop</field>
+      <field name="model">blog.post</field>
+      <field name="inherit_id" ref="website_blog.view_blog_post_form" />
+      <field name="arch" type="xml">
+        <sheet position="inside">
+          <group>
+            <field name="product_tmpl_ids" widget="many2many_tags" />
+            <field name="product_public_categ_ids" widget="many2many_tags" />
+          </group>
+        </sheet>
+      </field>
+    </record>
+    <record id="product_public_category_form_view" model="ir.ui.view">
+      <field name="name">product.public.category.form.inherited.webshop_dermanord</field>
+      <field name="model">product.public.category</field>
+      <field name="inherit_id" ref="website_sale.product_public_category_form_view" />
+      <field name="arch" type="xml">
+        <field name="sequence" position="attributes">
+          <attribute name="widget">handle</attribute>
+        </field>
+      </field>
+    </record>
+    <record id="product_pricelist_view" model="ir.ui.view">
+      <field name="name">product.pricelist.form.inherited.webshop_dermanord</field>
+      <field name="model">product.pricelist</field>
+      <field name="inherit_id" ref="product.product_pricelist_view" />
+      <field name="arch" type="xml">
+        <field name="active" position="after">
+          <field name="for_reseller" />
+          <field name="rec_pricelist_id" attrs="{'invisible': [('for_reseller', '=', False)]}"/>
+        </field>
+      </field>
+    </record>
+    <record id="product_template_form_view" model="ir.ui.view">
+      <field name="name">product.template.common.form.inherited.webshop_dermanord</field>
+      <field name="model">product.template</field>
+      <field name="inherit_id" ref="product.product_template_form_view" />
+      <field name="arch" type="xml">
+        <field name="list_price" position="after">
+          <field name="sold_qty" />
+        </field>
+        <xpath expr="//field[@name='sale_ok']/.." position="after">
+          <div>
+            <field name="use_tmpl_name" />
+            <label for="use_tmpl_name" />
+          </div>
+        </xpath>
+      </field>
+    </record>
+    <record id="website_sale_add_style_in_variant" model="ir.ui.view">
+      <field name="name">product.template.product.website.form.add.style.in.variant</field>
+      <field name="model">product.product</field>
+      <field name="inherit_id" ref="product.product_normal_form_view" />
+      <field name="arch" type="xml">
+        <field name="website_style_ids" position="after">
+          <field name="website_style_ids_variant" widget="many2many_tags" />
+        </field>
+      </field>
+    </record>
+    <!--
+         <record id="product_normal_form_view" model="ir.ui.view">
+         <field name="name">product.product.form.inherited.webshop_dermanord</field>
+         <field name="model">product.product</field>
+         <field name="inherit_id" ref="product.product_normal_form_view"/>
+         <field name="arch" type="xml">
+         <field name="list_price" position="after">
+         <field name="sold_qty"/>
+         </field>
+         </field>
+         </record>
+    -->
+    <record id="view_sales_order_filter" model="ir.ui.view">
+      <field name="name">sale.order.list.select.inherited.webshop_dermanord</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_sales_order_filter" />
+      <field name="arch" type="xml">
+        <field name="section_id" position="after">
+          <field name="state" />
+        </field>
+        <filter string="Done" position="after">
+          <filter string="Web Orders" domain="[('section_id', '=', %(website.salesteam_website_sales)d)]" help="Ordered from webshop" />
+          <filter string="Not Web Orders" domain="[('section_id', '&lt;&gt;', %(website.salesteam_website_sales)d)]" help="Not ordered from webshop" />
+          <filter string="Confirmed Web Orders" domain="[('section_id', '=', %(website.salesteam_website_sales)d), ('state','=','sent')]" help="Order confirmed from Web" />
+        </filter>
+      </field>
+    </record>
+    <record id="crm_tracking_campaign_form" model="ir.ui.view">
+      <field name="name">crm.tracking.campaign.form.inherited.webshop_dermanord</field>
+      <field name="model">crm.tracking.campaign</field>
+      <field name="inherit_id" ref="crm_campaign_addons.crm_tracking_campaign_form" />
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='object_ids']/tree" position="inside">
+          <field name="product_price" />
+        </xpath>
+      </field>
+    </record>
+  </data>
 </openerp>

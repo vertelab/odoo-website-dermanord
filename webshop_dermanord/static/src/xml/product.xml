@@ -22,13 +22,14 @@
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="grid_ribbon_style">
                     <div class="ribbon-wrapper">
-                        <div class="ribbon ribbon_news btn btn-primary">News</div>
+                        <div t-if="grid_ribbon_style == 'dn_product_div oe_ribbon_promo'" class="ribbon ribbon_news btn btn-primary">News</div>
+                        <div t-if="grid_ribbon_style == 'dn_product_div oe_ribbon_limited'" class="ribbon ribbon_limited btn btn-primary">Limited<br/>Edition</div>
                     </div>
                     <t t-if="is_offer_product">
                         <div class="offer-wrapper">
                             <div class="ribbon ribbon_offer btn btn-primary">Offer</div>
 <!--
-                            <i class="fa fa-star-o fa-3x" title="Offer"/>
+                            <i class="fa fa-gift fa-3x" title="Offer"/>
 -->
                         </div>
                     </t>
@@ -91,12 +92,12 @@
 <!--
                         <div class="lst_ribbon btn btn-primary">News</div>
 -->
-                        <i class="fa fa-tags fa-2x"/>
+                        <i class="fa fa-bullhorn fa-2x"/>
                     </div>
                 </t>
                 <t t-if="is_offer_product">
                     <div class="col-md-6 lst-offer-wrapper">
-                        <i class="fa fa-star-o fa-2x" title="Offer"/>
+                        <i class="fa fa-gift fa-2x" title="Offer"/>
                     </div>
                 </t>
             </td>
@@ -117,12 +118,12 @@
                 </h5>
             </td>
             <td>
-                <t t-if="purchase_phase">
+                <t t-if="campaign">
                     <h5>
                         <div class="text-center">
-                            <span t-esc="purchase_phase_start_date"/>
+                            <span t-esc="campaign_start_date"/>
                             <br/>
-                            <span t-esc="purchase_phase_end_date"/>
+                            <span t-esc="campaign_end_date"/>
                         </div>
                     </h5>
                 </t>

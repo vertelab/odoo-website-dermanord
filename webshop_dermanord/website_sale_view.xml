@@ -114,7 +114,8 @@
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="'dn_product_div %s' % product['dv_ribbon']">
                     <div class="ribbon-wrapper">
-                        <div class="ribbon ribbon_news btn btn-primary">News</div>
+                        <div t-if="product['dv_ribbon'] == 'oe_ribbon_promo'" class="ribbon ribbon_news btn btn-primary">News</div>
+                        <div t-if="product['dv_ribbon'] == 'oe_ribbon_limited'" class="ribbon ribbon_limited btn btn-primary">Limited<br/>Edition</div>
                     </div>
                     <t t-set="pricelist_af" t-value="request.env.ref('webshop_dermanord.pricelist_af')"/>
                     <t t-set="pricelist_special" t-value="request.env.ref('webshop_dermanord.pricelist_special')"/>
@@ -273,17 +274,17 @@
                                                 <td class="td_lst">
                                                     <div class="col-md-6 lst-ribbon-wrapper">
                                                         <t t-if="'oe_ribbon_promo' in product['get_this_variant_ribbon'].split(',')">
-                                                            <i class="fa fa-tags fa-2x" title="News" />
+                                                            <i class="fa fa-bullhorn fa-2x" title="News" />
                                                         </t>
                                                     </div>
                                                     <t t-if="product['is_offer_product_reseller'] and user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                                                         <div class="col-md-6 lst-offer-wrapper">
-                                                            <i class="fa fa-star-o fa-2x" title="Offer" />
+                                                            <i class="fa fa-gift fa-2x" title="Offer" />
                                                         </div>
                                                     </t>
-                                                    <t t-if="product['is_offer_product_consumer'] and not user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
+                                                    <t t-if="product['is_offer_product_consumer'] and user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                                                         <div class="col-md-6 lst-offer-wrapper">
-                                                            <i class="fa fa-star-o fa-2x" title="Offer" />
+                                                            <i class="fa fa-gift fa-2x" title="Offer" />
                                                         </div>
                                                     </t>
                                                 </td>
@@ -304,14 +305,14 @@
                                                     </h5>
                                                 </td>
                                                 <td>
-                                                    <t t-if="any(product.get('purchase_phase', {}))">
+                                                    <t t-if="any(product.get('campaign', {}))">
                                                         <h5>
                                                             <div class="text-center">
                                                                 <!-- campaign start date -->
-                                                                <span t-esc="product['purchase_phase']['start_date']" />
+                                                                <span t-esc="product['campaign']['start_date']" />
                                                                 <br />
                                                                 <!-- reseller phase end date -->
-                                                                <span t-esc="product['purchase_phase']['end_date']" />
+                                                                <span t-esc="product['campaign']['end_date']" />
                                                             </div>
                                                         </h5>
                                                     </t>
