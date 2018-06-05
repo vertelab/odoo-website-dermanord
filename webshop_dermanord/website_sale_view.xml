@@ -121,7 +121,7 @@
                     <t t-set="pricelist_special" t-value="request.env.ref('webshop_dermanord.pricelist_special')"/>
                     <t t-set="pricelist_us" t-value="request.env.ref('webshop_dermanord.pricelist_us')"/>
                     <t t-set="pricelist_eu" t-value="request.env.ref('webshop_dermanord.pricelist_eu')"/>
-                    <t t-if="user_id.partner_id.property_product_pricelist == 3 pricelist_af">
+                    <t t-if="user_id.partner_id.property_product_pricelist == pricelist_af">
                         <t t-if="product['is_offer_product_reseller']">
                             <div class="offer-wrapper">
                                 <div class="ribbon ribbon_offer btn btn-primary">Offer</div>

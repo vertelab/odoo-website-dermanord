@@ -303,7 +303,7 @@ class product_product(models.Model):
         # Swedish prices
         self.price_45 = pricelist_45.price_get(self.id, 1)[pricelist_45.id]
         self.price_20 = pricelist_20.price_get(self.id, 1)[pricelist_20.id]
-        price = pl_rec_se.price_get(self.id, 1)[pricelist.id]
+        price = pl_rec_se.price_get(self.id, 1)[pl_rec_se.id]
         self.recommended_price = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
         
         # US prices

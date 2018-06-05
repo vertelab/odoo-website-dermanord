@@ -2,19 +2,19 @@
 <openerp>
     <data noupdate="0">
         <record id="pricelist_af" model="product.pricelist">
-            <field name="name">Återförsäljare 45</field>
+            <field name="name">[tmp] Återförsäljare 45</field>
             <field name="type">sale</field>
         </record>
         <record id="pricelist_special" model="product.pricelist">
-            <field name="name">Special 20</field>
+            <field name="name">[tmp] Special 20</field>
             <field name="type">sale</field>
         </record>
         <record id="pricelist_us" model="product.pricelist">
-            <field name="name">USA Reseller 65%</field>
+            <field name="name">[tmp] USA Reseller 65%</field>
             <field name="type">sale</field>
         </record>
         <record id="pricelist_eu" model="product.pricelist">
-            <field name="name">EURO ÅF 45%</field>
+            <field name="name">[tmp] EURO ÅF 45%</field>
             <field name="type">sale</field>
         </record>
     </data>
