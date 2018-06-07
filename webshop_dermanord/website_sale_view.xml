@@ -282,7 +282,7 @@
                                                             <i class="fa fa-gift fa-2x" title="Offer" />
                                                         </div>
                                                     </t>
-                                                    <t t-if="product['is_offer_product_consumer'] and user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
+                                                    <t t-if="not product['is_offer_product_reseller'] and product['is_offer_product_consumer'] and user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                                                         <div class="col-md-6 lst-offer-wrapper">
                                                             <i class="fa fa-gift fa-2x" title="Offer" />
                                                         </div>
