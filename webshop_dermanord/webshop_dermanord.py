@@ -188,8 +188,8 @@ class product_template(models.Model):
     @api.multi
     @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'product_variant_ids.image_attachment_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
     def _get_all_variant_data(self):
-        pricelist_45 = self.env['product.pricelist'].search([('name', '=', u'Återförsäljare 45'), ('currency_id', '=', self.env['res.lang'].search([('code', '=', 'sv_SE')]).pricelist_id.currency_id.id)])
-        pricelist_20 = self.env['product.pricelist'].search([('name', '=', 'Special 20'), ('currency_id', '=', self.env['res.lang'].search([('code', '=', 'sv_SE')]).pricelist_id.currency_id.id)])
+        pricelist_45 = self.env.ref('webshop_dermanord.pricelist_af')
+        pricelist_20 = self.env.ref('webshop_dermanord.pricelist_special')
         placeholder = '/web/static/src/img/placeholder.png'
 
         for p in self:
