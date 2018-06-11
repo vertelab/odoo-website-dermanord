@@ -1333,10 +1333,6 @@ class WebsiteSale(website_sale):
 
         domain = request.session.get('current_domain')
         current_order = request.session.get('current_order')
-        # this for-loop replace ('id', 'in', []) to ('product_tmpl_id', 'in', [])
-        for d in domain:
-            if d[0] == 'id' and d[1] == 'in':
-                domain[domain.index(d)] = ('product_tmpl_id', domain[domain.index(d)][1], domain[domain.index(d)][2])
         products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'fullname', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id', 'sale_ok'], limit=PPG, order=current_order)
         request.session['product_count'] = 2000
 
