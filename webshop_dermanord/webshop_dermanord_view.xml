@@ -70,43 +70,41 @@
                 <span class="chevron" />
               </li>
             </ul>
-            <h4 class="mb32">
-              Thank you for your order!
-              <em t-field="order.name" />
-            </h4>
+            <div class="mt32">
+                <h6 class="">
+                  Thank you for your order!
+                </h6>
+            </div>
             <div class="row">
               <div class="col-md-8 oe_cart">
-                <h2 class="mb32">
+                <h3 class="">
                   We have recieved your order
                   <em t-field="order.name" />
-                </h2>
+                </h3>
                 <div class="oe_website_sale_tx_status" t-att-data-order-id="order.id"><!-- betalväxelmeddelande --></div>
                 <div class="clearfix" />
                 <!--
                      <div t-if='order.payment_acquiter_id == request.env.ref("payment_invoice.payment_acquirer_invoice").id'>  Faktura </div>
                 -->
-                <div t-if='order.payment_acquirer_id == 3'>
+                <div t-if="order.payment_acquirer_id.id == 3">
                   <!-- förskott -->
+                  <p><strong>Important payment information</strong></p>
                   <div>
-                    <em>Enter invoice number:</em>
-                    <t t-field="order.name" />
-                    as a reference for payment
+                    <p><strong>Enter invoice number: </strong><span t-field="order.name" />
+                    as a reference for payment.</p>
                   </div>
                   <div>
-                    <em>Enter customer number:</em>
-                    <t t-field="order.partner_id.commercial_partner_id.ref" />
-                    as a reference for payment
+                    <p><strong>Enter customer number: </strong><span t-field="order.partner_id.commercial_partner_id.ref" />
+                    as a reference for payment.</p>
                   </div>
                   <div>
-                    <em>Amount to pay:</em>
-                    <t t-field="order.total_amount" t-field-options='{"widget": "monetary","display_currency": "website_sale_order.currency_id"}' />
-                    as a reference for payment
+                    <p><strong>Amount to pay: </strong><span t-field="order.amount_total" t-field-options='{"widget": "monetary","display_currency": "order.currency_id"}' /></p>
                   </div>
                   <div>
-                    <em>Account for payment:</em>
-                    <t t-esc="order.company_id.bank_ids.filtered(lambda b: b.state == 'bg').mapped('acc_number')" />
+                    <p><strong>Account for payment: </strong><span t-esc="order.company_id.bank_ids.filtered(lambda b: b.state == 'bg').mapped('acc_number')[0] if len(order.company_id.bank_ids.filtered(lambda b: b.state == 'bg').mapped('acc_number')) &gt; 0 else ''" /></p>
                   </div>
-                  <p>When we have the payment your order will be sent. You can follow your order under "My account" in the menu. There you can see status for all orders and where the order are in the process.</p>
+                  <p>When we have the payment your order will be sent. You can follow your order under My account in the menu. There you can see status for all orders and where the order are in the process.</p>
+                  <p>Have a nice day!</p>
                 </div>
                 <div class="oe_structure" />
               </div>
@@ -253,9 +251,9 @@
       </xpath>
       <!--
            <div t-if="has_check_vat" class="clearfix"/>
-           
+
            <div class="clearfix"/>
-           
+
            <div class="clearfix"/>
       -->
       <xpath expr="//div[@class='col-lg-offset-1 col-lg-3 col-md-3 text-muted']" position="inside">
