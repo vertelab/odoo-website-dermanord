@@ -794,7 +794,7 @@
                             <t t-if="user_id.partner_id.property_product_pricelist == pricelist_af">
                                 <b class="oe_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_price_20)"/>
                             </t>
-                            <t t-if="user_id.partner_id.property_product_pricelist.id not in [pricelist_af, pricelist_special] and user_id.partner_id.property_product_pricelist.for_reseller">
+                            <t t-if="user_id.partner_id.property_product_pricelist not in [pricelist_af, pricelist_special] and user_id.partner_id.property_product_pricelist.for_reseller">
                                 <b class="oe_price" t-esc="website.price_format(user_id.partner_id.property_product_pricelist.price_get(product.dv_id, 1)[user_id.partner_id.property_product_pricelist.id] if product.dv_id else 0.0)" style="white-space: nowrap;"/>
                             </t>
                             <span style="display: inline;">(your excl. tax)</span>
