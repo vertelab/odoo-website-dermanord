@@ -133,6 +133,7 @@ class Main(http.Controller):
         if word:
             context['resellers'] = request.env['res.partner'].sudo().search([
                 ('is_reseller', '=', True),
+                ('child_ids.type', '=', 'visit'),
                 ('child_competence_ids', '=', competence.id),
                 '|', ('name', 'ilike', word),
                 '|', ('brand_name', 'ilike', word),
@@ -143,6 +144,7 @@ class Main(http.Controller):
         else:
             context['resellers'] = request.env['res.partner'].sudo().search([
                 ('is_reseller', '=', True),
+                ('child_ids.type', '=', 'visit'),
                 ('child_competence_ids', '=', competence.id)])
         return request.website.render('reseller_dermanord.resellers', context)
 
@@ -164,6 +166,7 @@ class Main(http.Controller):
                 # Find (partners that have a matching visit address OR brand name OR child category) OR (partners whose address match the search and DON'T have a visit address)
                 resellers = request.env['res.partner'].sudo().search([
                     ('is_reseller', '=', True),
+                    ('child_ids.type', '=', 'visit'),
                     '|',
                         '|', '|',
                             ('id', 'in', matching_visit_ids),
@@ -181,10 +184,10 @@ class Main(http.Controller):
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
             else:
                 closest_ids = request.env['res.partner'].geoip_search('position', request.httprequest.remote_addr, 10)
-                resellers = request.env['res.partner'].sudo().search(['&', ('is_reseller', '=', True), ('id', 'in', closest_ids)])
+                resellers = request.env['res.partner'].sudo().search([('is_reseller', '=', True), ('child_ids.type', '=', 'visit'), ('id', 'in', closest_ids)])
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
         else:
-            partner = request.env['res.partner'].sudo().search([('id', '=', int(partner)), ('is_reseller', '=', True)])
+            partner = request.env['res.partner'].sudo().search([('id', '=', int(partner)), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')])
             return request.website.render('reseller_dermanord.reseller', {
                 'reseller': partner,
             })
