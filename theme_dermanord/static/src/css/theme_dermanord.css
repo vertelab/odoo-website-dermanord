@@ -698,6 +698,12 @@ address span {
     }
 }
 
+@media (max-width: 1200px) and (min-width: 992px) {
+    .dn-social-button {
+        margin: 10px 5px;
+    }
+}
+
 /* lighter placeholder text */
 .form-control::-moz-placeholder {
   color: #999;
