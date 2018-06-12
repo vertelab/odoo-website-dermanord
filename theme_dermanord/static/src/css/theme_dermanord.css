@@ -723,8 +723,6 @@ address span {
     font-family: kepler-std-display, serif;
     font-style: italic;
     font-size: 60px;
-    padding-top: 20px;
-    word-wrap: break-word;
 }
 
 #policy_title, #policy_subtitle {
