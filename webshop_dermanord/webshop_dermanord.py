@@ -265,10 +265,10 @@ class product_template(models.Model):
     def _is_offer_product(self):
         self.is_offer_product_reseller = self in self.get_campaign_tmpl(for_reseller=True)
         if not self.is_offer_product_reseller:
-            self.is_offer_product_reseller = self.product_variant_ids & self.get_campaign_variants(for_reseller=True)
+            self.is_offer_product_reseller = bool(self.product_variant_ids & self.get_campaign_variants(for_reseller=True))
         self.is_offer_product_consumer = self in self.get_campaign_tmpl(for_reseller=False)
         if not self.is_offer_product_consumer:
-            self.is_offer_product_consumer = self.product_variant_ids & self.get_campaign_variants(for_reseller=False)
+            self.is_offer_product_consumer = bool(self.product_variant_ids & self.get_campaign_variants(for_reseller=False))
     is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
     is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
 
@@ -741,6 +741,15 @@ class Website(models.Model):
 class WebsiteSale(website_sale):
 
     dn_cart_lock = Lock()
+
+    @http.route([
+        '/shop',
+        '/shop/page/<int:page>',
+        '/shop/category/<model("product.public.category"):category>',
+        '/shop/category/<model("product.public.category"):category>/page/<int:page>'
+    ], type='http', auth="public", website=True)
+    def shop(self, page=0, category=None, search='', **post):
+        return request.redirect(request.session.get('url') or '/dn_shp')
 
     @http.route(['/shop/confirm_order'], type='http', auth="public", website=True)
     def confirm_order(self, **post):
@@ -1423,10 +1432,6 @@ class WebsiteSale(website_sale):
 
         domain = request.session.get('current_domain')
         current_order = request.session.get('current_order')
-        # this for-loop replace ('id', 'in', []) to ('product_tmpl_id', 'in', [])
-        for d in domain:
-            if d[0] == 'id' and d[1] == 'in':
-                domain[domain.index(d)] = ('product_tmpl_id', domain[domain.index(d)][1], domain[domain.index(d)][2])
         products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'fullname', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id', 'sale_ok'], limit=PPG, order=current_order)
         request.session['product_count'] = 2000
 

@@ -698,6 +698,12 @@ address span {
     }
 }
 
+@media (max-width: 1200px) and (min-width: 992px) {
+    .dn-social-button {
+        margin: 10px 5px;
+    }
+}
+
 /* lighter placeholder text */
 .form-control::-moz-placeholder {
   color: #999;
@@ -710,4 +716,28 @@ address span {
 
 .form-control::-webkit-input-placeholder {
   color: #999;
+}
+
+/* css for GDPR */
+#policy_title {
+    font-family: kepler-std-display, serif;
+    font-style: italic;
+    font-size: 60px;
+}
+
+#policy_title, #policy_subtitle {
+    text-align: left;
+}
+
+#policy_description p {
+    font-family: kepler-std-display, serif;
+    font-style: italic;
+    font-size: 45px;
+}
+
+.category_title {
+    font-family: kepler-std-display, serif;
+    font-style: italic;
+    font-size: 30px;
+    text-transform: unset;
 }

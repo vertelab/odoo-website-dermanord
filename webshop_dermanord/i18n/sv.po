@@ -521,3 +521,53 @@ msgstr "Exempel på produkter som innehåller denna ingrediens"
 #, python-format
 msgid "Your filtering did not match any results. Please choose something else and try again."
 msgstr "Din filtering gav inga träffar. Vänligen välj något annat och försök igen."
+
+#. module: webshop_dermanord
+#: view:website:website_sale.confirmation
+msgid "Thank you for your order!"
+msgstr "Tack för din beställning!"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.confirmation
+msgid "We have recieved your order"
+msgstr "Vi har mottagit din order"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.confirmation
+msgid "Important payment information"
+msgstr "Viktig betalningsinformation"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.confirmation
+msgid "Enter invoice number: "
+msgstr "Ange kundnummer: "
+
+#. module: webshop_dermanord
+#: view:website:website_sale.confirmation
+msgid "Enter invoice number: "
+msgstr "Ange kundnummer: "
+
+#. module: webshop_dermanord
+#: view:website:website_sale.confirmation
+msgid "Amount to pay: "
+msgstr "Summa att betala: "
+
+#. module: webshop_dermanord
+#: view:website:website_sale.confirmation
+msgid "Account for payment: "
+msgstr "Betalningskonto: "
+
+#. module: webshop_dermanord
+#: view:website:website_sale.confirmation
+msgid "as a reference for payment."
+msgstr "som referens vid betalning."
+
+#. module: webshop_dermanord
+#: view:website:website_sale.confirmation
+msgid "When we have the payment your order will be sent. You can follow your order under My account in the menu. There you can see status for all orders and where the order are in the process."
+msgstr "När pengarna är oss tillhanda kommer vi skicka din order. Du kan förlja din order under Mitt konto i menyn ovan. Där kan du under Order-fliken se när vi godkänner och behandlar din order för att slutligen skicka den till dig."
+
+#. module: webshop_dermanord
+#: view:website:website_sale.confirmation
+msgid "Have a nice day!"
+msgstr "Ha en fortsatt bra dag!"

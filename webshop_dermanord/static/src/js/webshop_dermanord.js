@@ -8,7 +8,8 @@ function langPriceFormat(nStr) {
     nStr += '';
     var ts = ' ';
     var dec = ',';
-    if (lang == 'en-US') { var ts = ','; var dec = '.'; }
+    var langProfix = 'SEK';
+    if (lang == 'en-US') { var ts = ','; var dec = '.';}
     var x = nStr.split('.');
     var x1 = x[0];
     var x2 = x.length > 1 ? dec + x[1] : '';
@@ -16,7 +17,7 @@ function langPriceFormat(nStr) {
     while (rgx.test(x1)) {
         x1 = x1.replace(rgx, '$1' + ts + '$2');
     }
-    return x1 + x2;
+    return '<span style="white-space: nowrap;">&nbsp;' + langProfix + '</span>' + '<span class="oe_currency_value">' + x1 + x2 + '</span>';
 }
 
 $(document).ready(function(){
@@ -338,7 +339,7 @@ $(document).ready(function(){
                     $('.js_quantity[data-line-id='+line_id+']').val(data.quantity).html(data.quantity);
                     $("#cart_total").replaceWith(data['website_sale.total']);
                     //~ $(".my_cart_total").replaceWith(data['website_sale.total'].match(/<span class=\"oe_currency_value\">(.*?)</i)[1].replace(".", "").replace(",", "."));
-                    $(".my_cart_total").load(location.href + " .my_cart_total");
+                    $(".my_cart_total").load(location.href + " .my_cart_total span");
                 });
             });
         });
@@ -354,7 +355,7 @@ $(document).ready(function(){
             $input.val(quantity > min ? (quantity < max ? quantity : max) : min);
             //~ $('input[name="'+$input.attr("name")+'"]').val(quantity > min ? (quantity < max ? quantity : max) : min);
             $input.change();
-            $("#top_menu").find("a[href='/shop/cart']").closest("li").css({"display": "none"});
+            $("#top_menu").find("a[href*='/shop/cart']").closest("li").css({"display": "none"});
             return false;
         });
 
