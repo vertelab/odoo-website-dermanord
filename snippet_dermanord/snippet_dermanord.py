@@ -35,7 +35,7 @@ class product_action(models.Model):
     @api.one
     def _action_str(self):
         if self.action_type == 'show_on_startpage':
-            self.action_str = _('Show on Start Page') if self.show_on_startpage else _('Not on Start Page')
+            self.action_str = _('Show on Start Page') if self.onoff_show_on_startpage else _('Not on Start Page')
         else:
             super(product_action,self)._action_str()
 
