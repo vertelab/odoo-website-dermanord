@@ -26,6 +26,30 @@ import werkzeug
 import logging
 _logger = logging.getLogger(__name__)
 
+    
+class product_action(models.Model):
+    _inherit = 'product.action'
+    action_type = fields.Selection(selection_add=[('show_on_startpage','Show on Startpage')])
+    onoff_show_on_startpage = fields.Boolean(string="New state")
+
+    @api.one
+    def _action_str(self):
+        if self.action_type == 'show_on_startpage':
+            self.action_str = _('Show on Start Page') if self.show_on_startpage else _('Not on Start Page')
+        else:
+            super(product_action,self)._action_str()
+
+    @api.one
+    def do_action(self):
+        if self.action_type == 'show_on_startpage':
+            self.product_id.show_on_startpage = self.action.onoff_show_on_startpage
+        else:
+            super(product_action,self)._do_action()
+
+class product_product(models.Model):
+    _inherit = 'product.product'
+    show_on_startpage = fields.Boolean(string="Show on Start Page")
+
 
 class snippet(http.Controller):
 
@@ -124,4 +148,15 @@ class snippet(http.Controller):
                                 'url': url,
                             }
                         )
+        for product in self.env['product.product'].search([('show_on_startpage','=',True)]):
+            object_list.append(
+                {
+                    'id': None,
+                    'name': product.name,
+                    'image': '/imagefield/product.product/image/%s/ref/%s' %(product.id, 'snippet_dermanord.img_product') if product.image else '/web/static/src/img/placeholder.png',
+                    'description': product.description_sale,
+                    'url': '/dn_shop/variant/%s' % product.id,
+                }
+            )
+
         return object_list

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+    <!-- product product -->
+    <record id="product_normal_form_view" model="ir.ui.view">
+      <field name="name">product.product.form.show_on_startpage</field>
+      <field name="model">product.product</field>
+      <field name="inherit_id" ref="product.product_normal_form_view" />
+      <field name="arch" type="xml">
+        <field name="default_code" position="after">
+          <field name="show_on_startpage" />
+        </field>
+      </field>
+    </record>
+  </data>
+</openerp>

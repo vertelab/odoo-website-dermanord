@@ -21,7 +21,7 @@
 
 {
     'name': 'Snippet Dermanord',
-    'version': '1.0',
+    'version': '1.1',
     'category': 'Theme',
     'summary': 'A Snippet Library',
     'description': """
@@ -40,9 +40,11 @@ Extra snippets for Dermanord.
         'crm_campaign_phase',
         'product_private',
         'website_blog_private',
+        'product_action',
     ],
     'data': [
         'snippets_css_js.xml',
+        'product_view.xml',
         'snippets.xml',
         'snippets_data.xml',
     ],
