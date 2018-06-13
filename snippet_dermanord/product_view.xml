@@ -12,5 +12,18 @@
         </field>
       </field>
     </record>
+    
+        <!-- action -->
+    <record id="product_action_form_view" model="ir.ui.view">
+      <field name="name">product.action.form</field>
+      <field name="model">product.action</field>
+      <field name="inherit_id" ref="product_action.product_action_form_view"/>
+      <field name="arch" type="xml">
+         <field name='action_type' position='after'>
+              <field name="onoff_show_on_startpage" attrs="{'invisible': [('action_type', '!=', 'show_on_startpage')]}" />
+        </field>
+      </field>
+    </record>
+
   </data>
 </openerp>
