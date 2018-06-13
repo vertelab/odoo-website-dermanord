@@ -76,6 +76,10 @@
                     <t t-if="no_product_message != ''">
                         <h2 class="text-center mt128" t-esc="no_product_message"/>
                     </t>
+                    <t t-set="pricelist_af" t-value="request.env.ref('webshop_dermanord.pricelist_af')"/>
+                    <t t-set="pricelist_special" t-value="request.env.ref('webshop_dermanord.pricelist_special')"/>
+                    <t t-set="pricelist_us" t-value="request.env.ref('webshop_dermanord.pricelist_us')"/>
+                    <t t-set="pricelist_eu" t-value="request.env.ref('webshop_dermanord.pricelist_eu')"/>
                     <t t-foreach="products" t-as="product">
                         <div class="dn_oe_product col-md-4 col-sm-6 col-xs-12">
                             <!--
@@ -117,10 +121,6 @@
                         <div t-if="product['dv_ribbon'] == 'oe_ribbon_promo'" class="ribbon ribbon_news btn btn-primary">News</div>
                         <div t-if="product['dv_ribbon'] == 'oe_ribbon_limited'" class="ribbon ribbon_limited btn btn-primary">Limited<br/>Edition</div>
                     </div>
-                    <t t-set="pricelist_af" t-value="request.env.ref('webshop_dermanord.pricelist_af')"/>
-                    <t t-set="pricelist_special" t-value="request.env.ref('webshop_dermanord.pricelist_special')"/>
-                    <t t-set="pricelist_us" t-value="request.env.ref('webshop_dermanord.pricelist_us')"/>
-                    <t t-set="pricelist_eu" t-value="request.env.ref('webshop_dermanord.pricelist_eu')"/>
                     <t t-if="user_id.partner_id.property_product_pricelist == pricelist_af">
                         <t t-if="product['is_offer_product_reseller']">
                             <div class="offer-wrapper">
@@ -210,7 +210,7 @@
                                             <span style="display: inline;">(your excl. tax)</span>
                                         </div>
                                     </t>
-                                    <t t-if="user_id.partner_id.property_product_pricelist not in [pricelist_af, pricelist_special] and user_id.partner_id.property_product_pricelist.for_reseller">
+                                    <t t-if="user_id.partner_id.property_product_pricelist not in [pricelist_af, pricelist_special, pricelist_us, pricelist_eu] and user_id.partner_id.property_product_pricelist.for_reseller">
                                         <!-- Övriga ÅF-prislistor -->
                                         <div>
                                             <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
@@ -268,6 +268,10 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <t t-set="pricelist_af" t-value="request.env.ref('webshop_dermanord.pricelist_af')"/>
+                                        <t t-set="pricelist_special" t-value="request.env.ref('webshop_dermanord.pricelist_special')"/>
+                                        <t t-set="pricelist_us" t-value="request.env.ref('webshop_dermanord.pricelist_us')"/>
+                                        <t t-set="pricelist_eu" t-value="request.env.ref('webshop_dermanord.pricelist_eu')"/>
                                         <t t-foreach="products" t-as="product">
                                             <t t-set="start_time" t-value="time.time()" />
                                             <tr t-att-class="'tr_lst %s' % product['get_this_variant_ribbon']">
@@ -320,23 +324,31 @@
                                                 <td>
                                                     <h5>
                                                         <b>
-                                                            <t t-set="pricelist_af" t-value="request.env.ref('webshop_dermanord.pricelist_af')"/>
-                                                            <t t-set="pricelist_special" t-value="request.env.ref('webshop_dermanord.pricelist_special')"/>
-<!--
-                                                            <t t-set="pricelist_us" t-value="request.env.ref('webshop_dermanord.pricelist_us')"/>
-                                                            <t t-set="pricelist_eu" t-value="request.env.ref('webshop_dermanord.pricelist_eu')"/>
--->
                                                             <t t-if="user_id.partner_id.property_product_pricelist == pricelist_af">
+                                                                <!-- ÅF 45% -->
                                                                 <span t-esc="str('%.2f' %product['price_45']).replace('.', ',')" style="white-space: nowrap;" class="your_price" t-att-data-price="product['price_45']"/>
                                                                 <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
                                                             <t t-if="user_id.partner_id.property_product_pricelist == pricelist_special">
+                                                                <!-- Special 20 -->
                                                                 <span t-esc="str('%.2f' %product['price_20']).replace('.', ',')" style="white-space: nowrap;" class="your_price" t-att-data-price="product['price_20']"/>
                                                                 <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
-                                                            <t t-if="user_id.partner_id.property_product_pricelist not in [pricelist_af, pricelist_special] and user_id.partner_id.property_product_pricelist.for_reseller">
+                                                            <t t-if="user_id.partner_id.property_product_pricelist == pricelist_us">
+                                                                <!-- USA ÅF 65% -->
+                                                                <span t-esc="str('%.2f' %product['price_en']).replace('.', ',')" style="white-space: nowrap;" class="your_price" t-att-data-price="product['price_en']"/>
+                                                                <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
+                                                                <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
+                                                            </t>
+                                                            <t t-if="user_id.partner_id.property_product_pricelist == pricelist_eu">
+                                                                <!-- EURO ÅF 45% -->
+                                                                <span t-esc="str('%.2f' %product['price_eu']).replace('.', ',')" style="white-space: nowrap;" class="your_price" t-att-data-price="product['price_eu']"/>
+                                                                <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
+                                                                <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
+                                                            </t>
+                                                            <t t-if="user_id.partner_id.property_product_pricelist not in [pricelist_af, pricelist_special, pricelist_us, pricelist_eu] and user_id.partner_id.property_product_pricelist.for_reseller">
                                                                 <span t-field="request.env['product.product'].browse(product['id']).with_context(pricelist=user_id.partner_id.commercial_partner_id.property_product_pricelist.id).price" style="white-space: nowrap;" class="your_price" t-field-options="{
                                                                 &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }" t-att-data-price="request.env['product.product'].browse(product['id']).with_context(pricelist=user_id.partner_id.commercial_partner_id.property_product_pricelist.id).price"/>
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
@@ -351,9 +363,17 @@
                                                     </h5>
                                                     <!-- recommended price -->
                                                     <h5>
-                                                        (<span t-esc="str('%.2f' %product['recommended_price']).replace('.', ',') if user_id.lang == 'sv_SE' else str('%.2f' %product['recommended_price_en'])" style="white-space: nowrap;"/>
-                                                        <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
-                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class="decimal_precision" t-att-data-precision="website.pricelist_id.currency_id.rounding" />)
+                                                        (
+                                                        <t t-if="user_id.partner_id.property_product_pricelist in (pricelist_af, pricelist_special)">
+                                                            <span t-esc="str('%.2f' %product['recommended_price']).replace('.', ',')" style="white-space: nowrap;"/>
+                                                        </t>
+                                                        <t t-if="user_id.partner_id.property_product_pricelist == pricelist_us">
+                                                            <span t-esc="str('%.2f' %product['recommended_price_en'])" style="white-space: nowrap;"/>
+                                                        </t>
+                                                        <t t-if="user_id.partner_id.property_product_pricelist == pricelist_eu">
+                                                            <span t-esc="str('%.2f' %product['recommended_price_eu'])" style="white-space: nowrap;"/>
+                                                        </t>
+                                                        <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />)
                                                     </h5>
                                                 </td>
                                                 <td t-if="product['sale_ok']">
@@ -773,28 +793,42 @@
 
         <template id="product_price" inherit_id="website_sale.product_price">
             <xpath expr="//h4" position="replace">
+                <t t-set="pricelist_af" t-value="request.env.ref('webshop_dermanord.pricelist_af')"/>
+                <t t-set="pricelist_special" t-value="request.env.ref('webshop_dermanord.pricelist_special')"/>
+                <t t-set="pricelist_us" t-value="request.env.ref('webshop_dermanord.pricelist_us')"/>
+                <t t-set="pricelist_eu" t-value="request.env.ref('webshop_dermanord.pricelist_eu')"/>
                 <p class="oe_price_h4 css_editable_mode_hidden decimal_precision" t-att-data-precision="user_id.partner_id.property_product_pricelist.currency_id.rounding">
                     <t t-if="is_reseller">
                         <div>
                             <span t-field="user_id.partner_id.property_product_pricelist.currency_id.name" style="white-space: nowrap;" />
-                            <span class="oe_recommended_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_recommended_price) if user_id.lang == 'sv_SE' else website.price_format(product.dv_recommended_price_en)"/>
-                            <span style="display: inline;">(rec incl. tax)</span>
+                            <t t-if="user_id.partner_id.property_product_pricelist in (pricelist_af, pricelist_special)">
+                                <span class="oe_recommended_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_recommended_price)"/>
+                                <span style="display: inline;">(rec incl. tax)</span>
+                            </t>
+                            <t t-if="user_id.partner_id.property_product_pricelist == pricelist_us">
+                                <span class="oe_recommended_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_recommended_price_en)"/>
+                                <span style="display: inline;">(rec excl. tax)</span>
+                            </t>
+                            <t t-if="user_id.partner_id.property_product_pricelist == pricelist_eu">
+                                <span class="oe_recommended_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_recommended_price_eu)"/>
+                                <span style="display: inline;">(rec incl. tax)</span>
+                            </t>
                         </div>
                         <div>
-                            <t t-set="pricelist_af" t-value="request.env.ref('webshop_dermanord.pricelist_af')"/>
-                            <t t-set="pricelist_special" t-value="request.env.ref('webshop_dermanord.pricelist_special')"/>
-<!--
-                            <t t-set="pricelist_us" t-value="request.env.ref('webshop_dermanord.pricelist_us')"/>
-                            <t t-set="pricelist_eu" t-value="request.env.ref('webshop_dermanord.pricelist_eu')"/>
--->
                             <b t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
-                            <t t-if="user_id.partner_id.property_product_pricelist == pricelist_special">
+                            <t t-if="user_id.partner_id.property_product_pricelist == pricelist_af">
                                 <b class="oe_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_price_45)"/>
                             </t>
-                            <t t-if="user_id.partner_id.property_product_pricelist == pricelist_af">
+                            <t t-if="user_id.partner_id.property_product_pricelist == pricelist_special">
                                 <b class="oe_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_price_20)"/>
                             </t>
-                            <t t-if="user_id.partner_id.property_product_pricelist.id not in [pricelist_af, pricelist_special] and user_id.partner_id.property_product_pricelist.for_reseller">
+                            <t t-if="user_id.partner_id.property_product_pricelist == pricelist_us">
+                                <b class="oe_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_price_en)"/>
+                            </t>
+                            <t t-if="user_id.partner_id.property_product_pricelist == pricelist_eu">
+                                <b class="oe_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_price_eu)"/>
+                            </t>
+                            <t t-if="user_id.partner_id.property_product_pricelist not in [pricelist_af, pricelist_special, pricelist_us, pricelist_eu] and user_id.partner_id.property_product_pricelist.for_reseller">
                                 <b class="oe_price" t-esc="website.price_format(user_id.partner_id.property_product_pricelist.price_get(product.dv_id, 1)[user_id.partner_id.property_product_pricelist.id] if product.dv_id else 0.0)" style="white-space: nowrap;"/>
                             </t>
                             <span style="display: inline;">(your excl. tax)</span>
@@ -802,7 +836,7 @@
                     </t>
                     <t t-if="not is_reseller">
                         <span t-field="user_id.partner_id.property_product_pricelist.currency_id.name" style="white-space: nowrap;" />
-                        <b class="oe_recommended_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_recommended_price) if user_id.lang == 'sv_SE' else website.price_format(product.dv_recommended_price_en)"/>
+                        <b class="oe_recommended_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_recommended_price)"/>
                     </t>
                 </p>
             </xpath>
