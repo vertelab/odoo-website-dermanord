@@ -148,13 +148,13 @@ class snippet(http.Controller):
                                 'url': url,
                             }
                         )
-        for product in self.env['product.product'].search([('show_on_startpage','=',True)]):
+        for product in request.env['product.product'].search([('show_on_startpage','=',True)]):
             object_list.append(
                 {
                     'id': None,
                     'name': product.name,
                     'image': '/imagefield/product.product/image/%s/ref/%s' %(product.id, 'snippet_dermanord.img_product') if product.image else '/web/static/src/img/placeholder.png',
-                    'description': product.description_sale,
+                    'description': product.public_desc,
                     'url': '/dn_shop/variant/%s' % product.id,
                 }
             )
