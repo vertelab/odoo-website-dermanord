@@ -917,6 +917,7 @@ class WebsiteSale(website_sale):
         # ~ _logger.warn('checkout_form_save:%s' % (timer() - start))
 
     def get_attribute_value_ids(self, product):
+        _logger.warn('\n\nget_attribute_value_ids\n')
         def get_sale_start(product):
             # ~ if product.sale_ok:
                 # ~ if product.sale_start and not product.sale_end and product.sale_start > fields.Date.today():
@@ -931,15 +932,45 @@ class WebsiteSale(website_sale):
         visible_attrs = set(l.attribute_id.id
                                 for l in product.attribute_line_ids
                                     if len(l.value_ids) > 1)
-        if request.website.pricelist_id.id != context['pricelist']:
-            website_currency_id = request.website.currency_id.id
-            currency_id = self.get_pricelist().currency_id.id
+        
+        _logger.warn(request.env.user.partner_id.property_product_pricelist)
+        
+        if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
+            # Återförsäljare 45%
             for p in product.product_variant_ids:
-                price = currency_obj.compute(cr, uid, website_currency_id, currency_id, p.lst_price)
+                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.price_45, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
+        elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_special'):
+            # Special 20
+            for p in product.product_variant_ids:
+                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.price_20, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
+        elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_us'):
+            # USA ÅF 65%
+            _logger.warn('\n\nUS\n\n')
+            for p in product.product_variant_ids:
+                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.price_en, p.recommended_price_en, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
+        elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_eu'):
+            # EURO ÅF 45%
+            for p in product.product_variant_ids:
+                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.price_eu, p.recommended_price_eu, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
+        elif request.env.user.partner_id.property_product_pricelist.for_reseller:
+            # Övriga ÅF-prislistor
+            
+            for p in product.product_variant_ids:
+                price = self.env['product.pricelist']._price_rule_get_multi(pricelist, [(p, 1, self.env.user.partner_id)])[p.id][0]
                 attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
         else:
-            attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)] for p in product.sudo().product_variant_ids]
-
+            for p in product.product_variant_ids:
+                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.recommended_price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
+        
+        # ~ if request.website.pricelist_id.id != context['pricelist']:
+            # ~ website_currency_id = request.website.currency_id.id
+            # ~ currency_id = self.get_pricelist().currency_id.id
+            # ~ for p in product.product_variant_ids:
+                # ~ price = currency_obj.compute(cr, uid, website_currency_id, currency_id, p.lst_price)
+                # ~ attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
+        # ~ else:
+            # ~ attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)] for p in product.sudo().product_variant_ids]
+        _logger.warn(attribute_value_ids)
         return attribute_value_ids
 
     def in_stock(self, product_id):
@@ -1104,17 +1135,52 @@ class WebsiteSale(website_sale):
                 style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style.id in product['website_style_ids'] else '', style.id, style.html_class, style.name)
 
             two_price = False
-            if request.env.user.partner_id.property_product_pricelist.id == 3:
+            # ~ if request.env.user.partner_id.property_product_pricelist.id == 3:
+                # ~ price = product['dv_price_45']
+                # ~ two_price = True
+            # ~ elif request.env.user.partner_id.property_product_pricelist.id == 6:
+                # ~ price = product['dv_price_20']
+                # ~ two_price = True
+            # ~ elif request.env.user.partner_id.property_product_pricelist.id not in [3, 6] and request.env.user.partner_id.property_product_pricelist.for_reseller:
+                # ~ price = request.env['product.product'].browse(product['dv_id']).with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
+                # ~ two_price = True
+            # ~ else:
+                # ~ price = product['dv_recommended_price'] if request.env.user.lang == 'sv_SE' else product['dv_recommended_price_en']
+            
+            if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
+                # Återförsäljare 45%
                 price = product['dv_price_45']
+                rec_price = product['dv_recommended_price']
+                tax_included = True
                 two_price = True
-            elif request.env.user.partner_id.property_product_pricelist.id == 6:
+            elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_special'):
+                # Special 20
                 price = product['dv_price_20']
+                rec_price = product['dv_recommended_price']
+                tax_included = True
                 two_price = True
-            elif request.env.user.partner_id.property_product_pricelist.id not in [3, 6] and request.env.user.partner_id.property_product_pricelist.for_reseller:
-                price = request.env['product.product'].browse(product['dv_id']).with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
+            elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_us'):
+                # USA ÅF 65%
+                price = product['dv_price_en']
+                rec_price = product['dv_recommended_price_en']
+                tax_included = False
+                two_price = True
+            elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_eu'):
+                # EURO ÅF 45%
+                price = product['dv_price_eu']
+                rec_price = product['dv_recommended_price_eu']
+                tax_included = True
+                two_price = True
+            elif request.env.user.partner_id.property_product_pricelist.for_reseller:
+                # Övriga ÅF-prislistor
+                price = request.env.user.partner_id.property_product_pricelist.price_get(product['id'], 1)[request.env.user.partner_id.property_product_pricelist.id]
+                rec_price = product['dv_recommended_price'] if request.env.user.lang == 'sv_SE' else product['dv_recommended_price_en']
+                tax_included = True
                 two_price = True
             else:
-                price = product['dv_recommended_price'] if request.env.user.lang == 'sv_SE' else product['dv_recommended_price_en']
+                price = product['dv_recommended_price']
+                rec_price = product['dv_recommended_price']
+                tax_included = True
 
             products_list.append({
                 'product_href': '/dn_shop/product/%s' %product['id'],
@@ -1126,7 +1192,8 @@ class WebsiteSale(website_sale):
                 'product_img_src': product['dv_image_src'],
                 #~ 'price': request.website.price_format(partner_pricelist.price_get(product['dv_id'], 1)[partner_pricelist.id] if product['dv_id'] else 0.0),
                 'price': request.website.price_format(price),
-                'list_price_tax': request.website.price_format(product['dv_recommended_price']) if request.env.user.lang == 'sv_SE' else request.website.price_format(product['dv_recommended_price_en']),
+                'list_price_tax': request.website.price_format(rec_price),
+                'tax_included': tax_included,
                 'two_price': two_price,
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
@@ -1213,17 +1280,39 @@ class WebsiteSale(website_sale):
             p['get_this_variant_ribbon'] = product_ribbon
             p['sale_ok'] = True if (p['sale_ok'] and self.in_stock(p['id'])[0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
 
-            if request.env.user.partner_id.property_product_pricelist.id == 3:
+            # ~ pricelist_af = request.env.ref('webshop_dermanord.pricelist_af')
+            # ~ pricelist_special = request.env.ref('webshop_dermanord.pricelist_special')
+            # ~ pricelist_us = request.env.ref('webshop_dermanord.pricelist_us')
+            # ~ pricelist_eu = request.env.ref('webshop_dermanord.pricelist_eu')
+            if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
+                # Återförsäljare 45%
                 price = p['price_45']
-                #~ tax = p['tax_45']
-            elif request.env.user.partner_id.property_product_pricelist.id == 6:
+                rec_price = p['recommended_price']
+                tax_included = True
+            elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_special'):
+                # Special 20
                 price = p['price_20']
-                #~ tax = p['tax_20']
-            elif request.env.user.partner_id.property_product_pricelist.id not in [3, 6] and request.env.user.partner_id.property_product_pricelist.for_reseller:
-                price = request.env['product.product'].browse(p['id']).with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
+                rec_price = p['recommended_price']
+                tax_included = True
+            elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_us'):
+                # USA ÅF 65%
+                price = p['price_en']
+                rec_price = p['recommended_price_en']
+                tax_included = False
+            elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_eu'):
+                # EURO ÅF 45%
+                price = p['price_eu']
+                rec_price = p['recommended_price_eu']
+                tax_included = True
+            elif request.env.user.partner_id.property_product_pricelist.for_reseller:
+                # Övriga ÅF-prislistor
+                price = request.env.user.partner_id.property_product_pricelist.price_get(p['id'], 1)[request.env.user.partner_id.property_product_pricelist.id]
+                rec_price = p['recommended_price'] if request.env.user.lang == 'sv_SE' else p['recommended_price_en']
+                tax_included = True
             else:
-                price = p['recommended_price'] if request.env.user.lang == 'sv_SE' else p['recommended_price_en']
-                #tax = sum(map(lambda x: x.get('amount', 0.0), request.env['product.product'].browse(p['id']).taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
+                price = p['recommended_price']
+                rec_price = p['recommended_price']
+                tax_included = True
 
             products_list.append({
                 'lst_ribbon_style': 'tr_lst %s' %p['get_this_variant_ribbon'],
@@ -1238,7 +1327,8 @@ class WebsiteSale(website_sale):
                 'campaign_start_date': p['campaign']['start_date'],
                 'campaign_end_date': p['campaign']['end_date'],
                 'price': request.website.price_format(price),
-                'recommended_price': request.website.price_format(p['recommended_price']) if request.env.user.lang == 'sv_SE' else request.website.price_format(p['recommended_price_en']),
+                'recommended_price': request.website.price_format(rec_price),
+                'tax_included': tax_included,
                 #~ 'tax': "%.2f" %request.website.price_format(tax),
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
@@ -1546,16 +1636,47 @@ class WebsiteSale(website_sale):
                     offer = True
                 elif product.product_tmpl_id in product.product_tmpl_id.get_campaign_tmpl(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
                     offer = True
-
-                recommended_price = product.recommended_price if request.env.lang == 'sv_SE' else product.recommended_price_en
-                if request.env.user.partner_id.property_product_pricelist.id == 3:
+                
+                if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
+                    # Återförsäljare 45%
                     price = product.price_45
-                elif request.env.user.partner_id.property_product_pricelist.id == 6:
+                    recommended_price = product.recommended_price
+                    tax_included = True
+                elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_special'):
+                    # Special 20
                     price = product.price_20
-                elif request.env.user.partner_id.property_product_pricelist.for_reseller and request.env.user.partner_id.property_product_pricelist.id not in [3, 6]:
-                    price = product.with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
+                    recommended_price = product.recommended_price
+                    tax_included = True
+                elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_us'):
+                    # USA ÅF 65%
+                    price = product.price_en
+                    recommended_price = product.recommended_price_en
+                    tax_included = False
+                elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_eu'):
+                    # EURO ÅF 45%
+                    price = product.price_eu
+                    recommended_price = product.recommended_price_eu
+                    tax_included = True
+                elif request.env.user.partner_id.property_product_pricelist.for_reseller:
+                    # Övriga ÅF-prislistor
+                    price = request.env.user.partner_id.property_product_pricelist.price_get(product.id, 1)[request.env.user.partner_id.property_product_pricelist.id]
+                    recommended_price = product.recommended_price if request.env.user.lang == 'sv_SE' else product.recommended_price_en
+                    tax_included = True
                 else:
-                    price = recommended_price
+                    price = product.recommended_price
+                    recommended_price = product.recommended_price
+                    tax_included = True
+                    
+                    
+                #~ recommended_price = product.recommended_price if request.env.lang == 'sv_SE' else product.recommended_price_en
+                #~ if request.env.user.partner_id.property_product_pricelist.id == 3:
+                    #~ price = product.price_45
+                #~ elif request.env.user.partner_id.property_product_pricelist.id == 6:
+                    #~ price = product.price_20
+                #~ elif request.env.user.partner_id.property_product_pricelist.for_reseller and request.env.user.partner_id.property_product_pricelist.id not in [3, 6]:
+                    #~ price = product.with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
+                #~ else:
+                    #~ price = recommended_price
 
                 sale_ribbon = request.env.ref('website_sale.image_promo')
 
@@ -1644,3 +1765,13 @@ class WebsiteSale(website_sale):
                 #~ pass
             #~ i += 1
         #~ return rl
+
+class ir_attachment(models.Model):
+    _inherit = 'ir.attachment'
+    
+    @api.cr_uid
+    def _file_read(self, cr, uid, fname, bin_size=False):
+        try:
+            super(ir_attachment, self)._file_read(cr, uid, fname, bin_size=False)
+        except IOError:
+            open('/usr/share/odoo-addons/addons/web/static/src/img/placeholder.png','rb').read().encode('base64')

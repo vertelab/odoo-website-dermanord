@@ -675,26 +675,8 @@ function load_products_grid(page){
         if (data['products'].length > 0) {
             var products_content = '';
             $.each(data['products'], function(key, info) {
-                var content = openerp.qweb.render('products_item_grid', {
-                    'url': data['url'],
-                    'data_id': data['products'][key]['product_id'],
-                    'dopprod_id': 'dopprod-' + data['products'][key]['product_id'],
-                    'style_options': data['products'][key]['style_options'],
-                    'grid_ribbon_style': data['products'][key]['grid_ribbon_style'],
-                    'product_href': data['products'][key]['product_href'],
-                    'product_name': data['products'][key]['product_name'],
-                    'is_offer_product': data['products'][key]['is_offer_product'],
-                    'product_img_src': data['products'][key]['product_img_src'],
-                    'price': data['products'][key]['price'],
-                    'list_price_tax': data['products'][key]['list_price_tax'],
-                    'two_price': data['products'][key]['two_price'],
-                    'currency': data['products'][key]['currency'],
-                    'rounding': data['products'][key]['rounding'],
-                    'is_reseller': data['products'][key]['is_reseller'],
-                    'default_code': data['products'][key]['default_code'],
-                    //~ 'description_sale': data['products'][key]['description_sale'],
-                    'product_variant_ids': data['products'][key]['product_variant_ids']
-                });
+                data['products'][key]['url'] = data['url']
+                var content = openerp.qweb.render('products_item_grid', data['products'][key]);
                 products_content += content;
                 console.log('Product:', data['products'][key]['product_id'], 'load in', data['products'][key]['load_time']*1000, 'ms');
                 product_count ++;

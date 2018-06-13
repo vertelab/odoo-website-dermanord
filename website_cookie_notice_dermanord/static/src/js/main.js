@@ -5,6 +5,6 @@ $(document).ready(function() {
 });
 
 function cookie_notification_accept() {
-        Cookies.set("cookie_notification_accept",  "1");
+        Cookies.set("cookie_notification_accept",  "1", { expires: 365 });
         $("#website_cookie_notice").hide();
     }

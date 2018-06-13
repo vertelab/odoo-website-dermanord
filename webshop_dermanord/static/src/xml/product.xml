@@ -6,8 +6,8 @@
         <div class="dn_oe_product col-md-4 col-sm-6 col-xs-12">
 <!--
             <div class="dn_css_options" t-ignore="true" groups="base.group_website_publisher">
-                <div class="dropdown dn_js_options" t-att-data-id="data_id">
-                    <button class="btn btn-default" t-att-id="dopprod_id" role="button" data-toggle="dropdown">Options <span class="caret"></span></button>
+                <div class="dropdown dn_js_options" t-att-data-id="product_id">
+                    <button class="btn btn-default" t-att-id="'dopprod-' + product_id" role="button" data-toggle="dropdown">Options <span class="caret"></span></button>
                         <ul class="dropdown-menu" role="menu" t-att-aria-labelledby="dopprod_id">
                             <li class="dropdown-submenu">
                                 <a tabindex="-1" href="#">Styles</a>
@@ -65,7 +65,7 @@
                                     <t t-if="is_reseller == 'yes'">
                                         <t t-if="two_price">
                                             <div>
-                                                <span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_recommended_price" t-esc="list_price_tax" style="display: inline;"/> <span style="display: inline;">(rec incl. tax)</span>
+                                                <span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_recommended_price" t-esc="list_price_tax" style="display: inline;"/> <span t-if="tax_included" style="display: inline;">(rec incl. tax)</span><span t-if="! tax_included" style="display: inline;">(rec excl. tax)</span>
                                             </div>
                                             <div>
                                                 <b><span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_price" t-esc="price"/></b> <span style="display: inline;">(your excl. tax)</span>
