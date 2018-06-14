@@ -109,36 +109,44 @@ class snippet(http.Controller):
 
     @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="public", website=True)
     def get_highlighted_products(self, campaign_date, **kw):
+        def check_access(object):
+            return request.env[object._name].sudo(request.env.ref('base.public_user').id).search([('id', '=', object.id)])
         date = fields.Date.today() if campaign_date == '' else campaign_date
-        campaigns = request.env['crm.tracking.campaign'].sudo().search([('state', '=', 'open'), ('website_published', '=', True), ('date_start', '<=', date), '|', ('date_stop', '>=', date), '&', ('date_stop', '=', False), '|', ('country_id', '=', request.env.ref('base.se').id), ('country_id', '=', False)])
+        campaigns = request.env['crm.tracking.campaign'].sudo().search([
+            ('state', '=', 'open'),
+            ('website_published', '=', True),
+            ('date_start', '<=', date),
+            '|',
+                ('date_stop', '>=', date),
+                '&',
+                    ('date_stop', '=', False),
+                    '|',
+                        ('country_id', '=', request.env.ref('base.se').id),
+                        ('country_id', '=', False)
+        ])
         object_list = []
-        if len(campaigns) > 0:
+        if campaigns:
             occs = request.env['crm.campaign.object'].browse([])
             for c in campaigns:
-                if len(c.object_ids) > 0:
-                    for occ in c.object_ids:
-                        occs |= occ
-            if len(occs) > 0:
+                if c.object_ids:
+                    occs |= c.object_ids
+            if occs:
                 occs = occs.sorted(key=lambda o: o.sequence)
                 for occ in occs:
                     url = ''
-                    access = False
                     if occ.object_id._name == 'product.template':
-                        if occ.object_id.check_access_group(request.env.user):
-                            access = True
+                        if check_access(occ.object_id):
                             url = '/dn_shop/product/%s' %occ.object_id.id
                     elif occ.object_id._name == 'product.product':
-                        if occ.object_id.check_access_group(request.env.user):
-                            access = True
+                        if check_access(occ.object_id):
                             url = '/dn_shop/variant/%s' %(occ.object_id.id)
                     elif occ.object_id._name == 'product.public.category':
-                        access = True
-                        url = '/dn_shop/category/%s' %occ.object_id.id
+                        if check_access(occ.object_id):
+                            url = '/dn_shop/category/%s' %occ.object_id.id
                     elif occ.object_id._name == 'blog.post':
-                        if occ.object_id.check_access_group(request.env.user):
-                            access = True
+                        if check_access(occ.object_id):
                             url = '/blog/%s/post/%s' %(occ.object_id.blog_id.id, occ.object_id.id)
-                    if access:
+                    if url:
                         object_list.append(
                             {
                                 'id': occ.id,
@@ -158,5 +166,4 @@ class snippet(http.Controller):
                     'url': '/dn_shop/variant/%s' % product.id,
                 }
             )
-
         return object_list
