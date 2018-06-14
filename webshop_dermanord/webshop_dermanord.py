@@ -502,6 +502,15 @@ dn_cart_update = {}
 
 class Website(models.Model):
     _inherit = 'website'
+    
+    def handle_error_403(self, path):
+        """Emergency actions to perform if we run into an unexpected access error."""
+        if path == '/dn_shop':
+            # Reset domain so customer is hopefully not endlessly stuck.
+            self.dn_shop_set_session('product.template', {'post_form': 'ok'}, '/dn_shop')
+        elif path == '/dn_list':
+            # Reset domain so customer is hopefully not endlessly stuck.
+            self.dn_shop_set_session('product.product', {'post_form': 'ok'}, '/dn_list')
 
     # TODO: Move these functions from WebsiteSale
     def get_form_values(self):
@@ -632,7 +641,7 @@ class Website(models.Model):
                 request.session['form_values']['order'] = default_order
         request.session['current_order'] = default_order
 
-        if post.get('post_form') and post.get('post_form') == 'ok':
+        if post.get('post_form') == 'ok':
             request.session['form_values'] = post
 
         request.session['url'] = url
