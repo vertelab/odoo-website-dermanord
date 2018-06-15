@@ -502,7 +502,7 @@ dn_cart_update = {}
 
 class Website(models.Model):
     _inherit = 'website'
-    
+
     def handle_error_403(self, path):
         """Emergency actions to perform if we run into an unexpected access error."""
         if path == '/dn_shop':
@@ -625,7 +625,7 @@ class Website(models.Model):
                 if model == 'product.product':
                     campaign_product_ids = list(set(
                         request.env[model].get_campaign_variants(for_reseller=reseller).mapped('id') +
-                        request.env['product.template'].get_campaign_tmpl(for_reseller=reseller).mapped('id')))
+                        request.env['product.product'].search([('product_tmpl_id.id', 'in', request.env['product.template'].get_campaign_tmpl(for_reseller=reseller).mapped('id'))]).mapped('id')))
                 if campaign_product_ids:
                     append_domain(domain_current, [('id', 'in', campaign_product_ids)])
                 else:
@@ -941,9 +941,9 @@ class WebsiteSale(website_sale):
         visible_attrs = set(l.attribute_id.id
                                 for l in product.attribute_line_ids
                                     if len(l.value_ids) > 1)
-        
+
         _logger.warn(request.env.user.partner_id.property_product_pricelist)
-        
+
         if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
             # Återförsäljare 45%
             for p in product.product_variant_ids:
@@ -963,14 +963,14 @@ class WebsiteSale(website_sale):
                 attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.price_eu, p.recommended_price_eu, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
         elif request.env.user.partner_id.property_product_pricelist.for_reseller:
             # Övriga ÅF-prislistor
-            
+
             for p in product.product_variant_ids:
                 price = self.env['product.pricelist']._price_rule_get_multi(pricelist, [(p, 1, self.env.user.partner_id)])[p.id][0]
                 attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
         else:
             for p in product.product_variant_ids:
                 attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.recommended_price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
-        
+
         # ~ if request.website.pricelist_id.id != context['pricelist']:
             # ~ website_currency_id = request.website.currency_id.id
             # ~ currency_id = self.get_pricelist().currency_id.id
@@ -1155,7 +1155,7 @@ class WebsiteSale(website_sale):
                 # ~ two_price = True
             # ~ else:
                 # ~ price = product['dv_recommended_price'] if request.env.user.lang == 'sv_SE' else product['dv_recommended_price_en']
-            
+
             if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
                 # Återförsäljare 45%
                 price = product['dv_price_45']
@@ -1645,7 +1645,7 @@ class WebsiteSale(website_sale):
                     offer = True
                 elif product.product_tmpl_id in product.product_tmpl_id.get_campaign_tmpl(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
                     offer = True
-                
+
                 if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
                     # Återförsäljare 45%
                     price = product.price_45
@@ -1675,8 +1675,8 @@ class WebsiteSale(website_sale):
                     price = product.recommended_price
                     recommended_price = product.recommended_price
                     tax_included = True
-                    
-                    
+
+
                 #~ recommended_price = product.recommended_price if request.env.lang == 'sv_SE' else product.recommended_price_en
                 #~ if request.env.user.partner_id.property_product_pricelist.id == 3:
                     #~ price = product.price_45
@@ -1774,13 +1774,3 @@ class WebsiteSale(website_sale):
                 #~ pass
             #~ i += 1
         #~ return rl
-
-class ir_attachment(models.Model):
-    _inherit = 'ir.attachment'
-    
-    @api.cr_uid
-    def _file_read(self, cr, uid, fname, bin_size=False):
-        try:
-            super(ir_attachment, self)._file_read(cr, uid, fname, bin_size=False)
-        except IOError:
-            open('/usr/share/odoo-addons/addons/web/static/src/img/placeholder.png','rb').read().encode('base64')
