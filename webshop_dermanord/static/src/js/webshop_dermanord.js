@@ -340,6 +340,19 @@ $(document).ready(function(){
                     $("#cart_total").replaceWith(data['website_sale.total']);
                     //~ $(".my_cart_total").replaceWith(data['website_sale.total'].match(/<span class=\"oe_currency_value\">(.*?)</i)[1].replace(".", "").replace(",", "."));
                     $(".my_cart_total").load(location.href + " .my_cart_total span");
+                    $.ajax({
+                        url: '/shop/allowed_order/?order=' + $("a#process_checkout").data("order"),
+                        type: 'post',
+                        data: {},
+                        success: function(data) {
+                            if (data == '1') {
+                                $("a#process_checkout").attr("disabled", false);
+                            }
+                            if (data == '0') {
+                                $("a#process_checkout").attr("disabled", true);
+                            }
+                        }
+                    });
                 });
             });
         });
