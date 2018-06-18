@@ -164,7 +164,7 @@ class snippet(http.Controller):
                     'id': None,
                     'name': product.name,
                     'image': '/imagefield/product.product/show_on_startpage_image/%s/ref/%s' %(product.id, 'snippet_dermanord.img_product') if product.show_on_startpage_image else '/web/static/src/img/placeholder.png',
-                    'description': product.show_on_startpage_desc or product.public_desc,
+                    'description': product.show_on_startpage_desc or product.public_desc or '',
                     'url': '/dn_shop/variant/%s' % product.id,
                 }
             )
