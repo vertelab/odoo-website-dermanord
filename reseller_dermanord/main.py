@@ -384,11 +384,41 @@ class website_sale_home(website_sale_home):
 
     def update_info(self, home_user, post):
         res = super(website_sale_home, self).update_info(home_user, post)
-
+        # create a visit partner if doesn't exist
+        self.update_visit(home_user, post)
         categories = request.env['product.public.category'].search([('id', 'in', [int(i) for i in request.httprequest.form.getlist('webshop_category_ids')]), ('website_published', '=', True)])
         if categories and (categories != home_user.partner_id.commercial_partner_id.webshop_category_ids):
             home_user.partner_id.commercial_partner_id.webshop_category_ids = categories
         return res
+
+    def update_visit(self, home_user, post):
+        if post.get('visit_street') or post.get('visit_street2') or post.get('visit_email') or post.get('visit_city') or post.get('visit_phone') or post.get('visit_zip'):
+            visit = home_user.partner_id.commercial_partner_id.child_ids.filtered(lambda c: c.type == 'visit')
+            if not visit:
+                request.env['res.partner'].sudo().create({
+                    'name': _('visit'),
+                    'parent_id': home_user.partner_id.commercial_partner_id.id,
+                    'type': 'visit',
+                    'street': post.get('visit_street', ''),
+                    'street2': post.get('visit_street2', ''),
+                    'zip': post.get('visit_zip', ''),
+                    'city': post.get('visit_city', ''),
+                    'country_id': int(post.get('visit_city_id')) if post.get('visit_city_id') else 0,
+                    'email': post.get('visit_email', ''),
+                    'phone': post.get('visit_phone', ''),
+                })
+            else:
+                visit[0].sudo().write({
+                    'name': _('visit'),
+                    'type': 'visit',
+                    'street': post.get('visit_street', ''),
+                    'street2': post.get('visit_street2', ''),
+                    'zip': post.get('visit_zip', ''),
+                    'city': post.get('visit_city', ''),
+                    'country_id': int(post.get('visit_city_id')) if post.get('visit_city_id') else 0,
+                    'email': post.get('visit_email', ''),
+                    'phone': post.get('visit_phone', ''),
+                })
 
     def get_time_float(self, time):
         return (math.floor(float(time)) + (float(time)%1)/0.6) if time else 0.0
