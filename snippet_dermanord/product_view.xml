@@ -8,7 +8,21 @@
       <field name="inherit_id" ref="product.product_normal_form_view" />
       <field name="arch" type="xml">
         <field name="default_code" position="after">
-          <field name="show_on_startpage" />
+          <field name="show_on_startpage" />                            
+          <field name="show_on_startpage_image" widget="image" class="oe_avatar oe_right"  attrs="{'invisible': [('show_on_startpage', '!=', True)]}"/>
+        </field>
+      </field>
+    </record>
+
+    <record id="product_normal_form_view" model="ir.ui.view">
+      <field name="name">product.product.form.show_on_startpage_desc</field>
+      <field name="model">product.product</field>
+      <field name="inherit_id" ref="product_dermanord.product_normal_form_view" />
+      <field name="arch" type="xml">
+        <field name="public_desc" position="before">    
+            <hr/>
+          <label for="show_on_startpage_desc">Start Page Description</label>
+          <field name="show_on_startpage_desc" nolabel="1"  attrs="{'invisible': [('show_on_startpage', '!=', True)]}"/>
         </field>
       </field>
     </record>

@@ -49,6 +49,8 @@ class product_action(models.Model):
 class product_product(models.Model):
     _inherit = 'product.product'
     show_on_startpage = fields.Boolean(string="Show on Start Page")
+    show_on_startpage_image = fields.Binary(string='Image on startpage')
+    show_on_startpage_desc = fields.Html(string="Description on startpage",translate=True)
 
 
 class snippet(http.Controller):
@@ -161,8 +163,8 @@ class snippet(http.Controller):
                 {
                     'id': None,
                     'name': product.name,
-                    'image': '/imagefield/product.product/image/%s/ref/%s' %(product.id, 'snippet_dermanord.img_product') if product.image else '/web/static/src/img/placeholder.png',
-                    'description': product.public_desc,
+                    'image': '/imagefield/product.product/image/%s/ref/%s' %(product.id, 'snippet_dermanord.img_product') if product.show_on_startpage_image else '/web/static/src/img/placeholder.png',
+                    'description': product.show_on_startpage or product.public_,
                     'url': '/dn_shop/variant/%s' % product.id,
                 }
             )
