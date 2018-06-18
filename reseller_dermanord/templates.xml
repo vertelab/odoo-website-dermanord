@@ -179,15 +179,17 @@
                                     </t>
                                 </div>
                                 <!-- Google maps -->
-                                <t t-call="website_partner_google_maps.google_maps">
-                                    <t t-set="div_class" t-value="'mt16'"/>
-                                    <t t-set="width" t-value="'100%'"/>
-                                    <t t-set="height" t-value="'400px'"/>
-                                    <t t-set="zoom" t-value="12"/>
-                                    <t t-set="center" t-value="visit"/>
-                                    <t t-set="partners" t-value="visit"/>
-                                    <t t-set="icon" t-value="'/reseller_dermanord/static/src/img/dn_maps_marker.png'"/>
-                                    <t t-set="api_key" t-value="request.env['ir.config_parameter'].get_param('google_maps_api')"/>
+                                <t t-if="visit and visit.partner_latitude &gt; 0.0">
+                                    <t t-call="website_partner_google_maps.google_maps">
+                                        <t t-set="div_class" t-value="'mt16'"/>
+                                        <t t-set="width" t-value="'100%'"/>
+                                        <t t-set="height" t-value="'400px'"/>
+                                        <t t-set="zoom" t-value="12"/>
+                                        <t t-set="center" t-value="visit"/>
+                                        <t t-set="partners" t-value="visit"/>
+                                        <t t-set="icon" t-value="'/reseller_dermanord/static/src/img/dn_maps_marker.png'"/>
+                                        <t t-set="api_key" t-value="request.env['ir.config_parameter'].get_param('google_maps_api')"/>
+                                    </t>
                                 </t>
                                 <hr/>
                                 <h4 class="dn_uppercase">Address</h4>
