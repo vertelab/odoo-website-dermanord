@@ -81,7 +81,11 @@
                   We have recieved your order
                   <em t-field="order.name" />
                 </h3>
-                <div class="oe_website_sale_tx_status_x" t-att-data-order-id="order.id"><!-- betalväxelmeddelande --><span t-field="order.payment_acquirer_id.post_msg"/></div>
+                <div class="oe_website_sale_tx_status_x" t-att-data-order-id="order.id">
+                    <p>Your transaction is waiting confirmation.</p>
+                    <!-- betalväxelmeddelande -->
+                    <span t-field="order.payment_acquirer_id.post_msg"/>
+                </div>
                 <div class="clearfix" />
                 <!--
                      <div t-if='order.payment_acquiter_id == request.env.ref("payment_invoice.payment_acquirer_invoice").id'>  Faktura </div>
