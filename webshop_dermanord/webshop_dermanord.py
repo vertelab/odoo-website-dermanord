@@ -690,7 +690,7 @@ class Website(models.Model):
                 'section_id': env.ref('website.salesteam_website_sales').id,
             }
             sale_order = env['sale.order'].sudo().create(values)
-            sale_order.write(env['sale.order'].onchange_partner_id(env.user.partner_id.id)['value'])
+            sale_order.write(env['sale.order'].sudo().onchange_partner_id(env.user.partner_id.id)['value'])
             request.session['sale_order_id'] = sale_order.id
 
         #~ sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
@@ -776,6 +776,7 @@ class WebsiteSale(website_sale):
         self.checkout_form_save(values["checkout"])
         request.session['sale_last_order_id'] = order.id
         request.website.sale_get_order(update_pricelist=True)
+        _logger.warn('Partner_id (confirm) %s shipping %s invoice %s' % (order.partner_id,order.partner_shipping_id,order.partner_invoice_id))
         return request.redirect("/shop/payment")
 
     @http.route(['/shop/payment'], type='http', auth="public", website=True)
@@ -793,6 +794,7 @@ class WebsiteSale(website_sale):
         sale_order_obj = request.env['sale.order']
 
         order = request.website.sale_get_order()
+        _logger.warn('Partner_id (before payment) %s shipping %s invoice %s' % (order.partner_id,order.partner_shipping_id,order.partner_invoice_id))        
         redirection = self.checkout_redirection(order)
         if redirection:
             return redirection
@@ -821,6 +823,8 @@ class WebsiteSale(website_sale):
                     tx_values={
                         'return_url': '/shop/payment/validate',
                     })[0]
+        _logger.warn('Partner_id (payment) %s shipping %s invoice %s res %s' % (order.partner_id,order.partner_shipping_id,order.partner_invoice_id,values))
+        return None
         return request.website.render("website_sale.payment", values)
 
     mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
@@ -881,14 +885,15 @@ class WebsiteSale(website_sale):
         partner_lang = request.lang if request.lang in [lang.code for lang in request.website.language_ids] else None
 
         # set partner_id
-        partner_id = None
-        if request.env.user != request.website.user_id:
-            partner_id = request.env.user.partner_id
-        elif order.partner_id:
-            user_ids = request.env['res.users'].sudo().search(
-                [("partner_id", "=", order.partner_id.id)], active_test=False)
-            if not user_ids or request.website.user_id not in user_ids:
-                partner_id = order.partner_id
+        partner_id = order.partner_id
+        # ~ partner_id = None
+        # ~ if request.env.user != request.website.user_id:
+            # ~ partner_id = request.env.user.partner_id
+        # ~ elif order.partner_id:
+            # ~ user_ids = request.env['res.users'].sudo().search(
+                # ~ [("partner_id", "=", order.partner_id.id)], active_test=False)
+            # ~ if not user_ids or request.website.user_id not in user_ids:
+                # ~ partner_id = order.partner_id
 
         order_info = {
             'partner_id': partner_id.id,

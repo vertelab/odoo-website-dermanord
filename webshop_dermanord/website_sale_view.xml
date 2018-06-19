@@ -482,15 +482,6 @@
                 </td>
             </xpath>
         </template>
-        <template id="checkout" inherit_id="website_sale.checkout">
-            <xpath expr="//div[@class='js_shipping row mb16']" position="after">
-                <t t-if="error">
-                    <t t-foreach="error.items()" t-as="e">
-                        <div class="alert alert-warning" t-esc="'%s %s' %(e[0], e[1])" />
-                    </t>
-                </t>
-            </xpath>
-        </template>
         <template id="suggested_products_list" inherit_id="website_sale.suggested_products_list">
             <xpath expr="//tr[@t-foreach='suggested_products']" position="replace">
                 <tr t-foreach="suggested_products" t-as="product">
