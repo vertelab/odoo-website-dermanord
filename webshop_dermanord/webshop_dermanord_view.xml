@@ -113,15 +113,15 @@
                         </t>
                         <!-- Euro -->
                         <t t-if="order.pricelist_id.currency_id.name == 'EUR'">
-                            IBAN <span t-esc="order.company_id.bank_ids.filtered(lambda b: b.state == 'iban').filtered(lambda l: l.currency_id.name == 'EUR').mapped('acc_number')" />
+                            IBAN <span t-esc="order.company_id.bank_ids.filtered(lambda b: b.state == 'iban').filtered(lambda l: l.currency_id.name == 'EUR').mapped('acc_number')[0]" />
                             <br/>
-                            BIC <span t-esc="order.company_id.bank_ids.filtered(lambda b: b.state == 'iban').filtered(lambda l: l.currency_id.name == 'EUR').mapped('bank_bic')" />
+                            BIC <span t-esc="order.company_id.bank_ids.filtered(lambda b: b.state == 'iban').filtered(lambda l: l.currency_id.name == 'EUR').mapped('bank_bic')[0]" />
                         </t>
                         <!-- US Dollar -->
                         <t t-if="order.pricelist_id.currency_id.name == 'USD'">
-                            IBAN <span t-esc="order.company_id.bank_ids.filtered(lambda b: b.state == 'iban').filtered(lambda l: l.currency_id.name == 'USD').mapped('acc_number')" />
+                            IBAN <span t-esc="order.company_id.bank_ids.filtered(lambda b: b.state == 'iban').filtered(lambda l: l.currency_id.name == 'USD').mapped('acc_number')[0]" />
                             <br/>
-                            BIC <span t-esc="order.company_id.bank_ids.filtered(lambda b: b.state == 'iban').filtered(lambda l: l.currency_id.name == 'USD').mapped('bank_bic')" />
+                            BIC <span t-esc="order.company_id.bank_ids.filtered(lambda b: b.state == 'iban').filtered(lambda l: l.currency_id.name == 'USD').mapped('bank_bic')[0]" />
                         </t>
                     </p>
                   </div>
