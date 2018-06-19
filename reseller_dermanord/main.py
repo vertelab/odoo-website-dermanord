@@ -314,73 +314,22 @@ class website_sale_home(website_sale_home):
             if post.get('remove_img') and post.get('remove_img') == '1':
                 commercial_partner.top_image = None
             if post.get('monday_open_time'):
-
-                monday = commercial_partner.opening_hours_ids.filtered(lambda o: o.dayofweek == 'monday')
-                if not monday:
-                    monday = request.env['opening.hours'].create({'partner_id': commercial_partner.id, 'dayofweek': 'monday'})
-                monday.open_time = self.get_time_float(post.get('monday_open_time') or '0.0')
-                monday.close_time = self.get_time_float(post.get('monday_close_time') or '0.0')
-                monday.break_start = self.get_time_float(post.get('monday_break_start') or '0.0')
-                monday.break_stop = self.get_time_float(post.get('monday_break_stop') or '0.0')
-                monday.close = True if post.get('monday_close') == '1' else False
-
-                tuesday = commercial_partner.opening_hours_ids.filtered(lambda o: o.dayofweek == 'tuesday')
-                if not tuesday:
-                    tuesday = request.env['opening.hours'].create({'partner_id': commercial_partner.id, 'dayofweek': 'tuesday'})
-                tuesday.open_time = self.get_time_float(post.get('tuesday_open_time') or '0.0')
-                tuesday.close_time = self.get_time_float(post.get('tuesday_close_time') or '0.0')
-                tuesday.break_start = self.get_time_float(post.get('tuesday_break_start') or '0.0')
-                tuesday.break_stop = self.get_time_float(post.get('tuesday_break_stop') or '0.0')
-                tuesday.close = True if post.get('tuesday_close') == '1' else False
-
-                wednesday = commercial_partner.opening_hours_ids.filtered(lambda o: o.dayofweek == 'wednesday')
-                if not wednesday:
-                    wednesday = request.env['opening.hours'].create({'partner_id': commercial_partner.id, 'dayofweek': 'wednesday'})
-                wednesday.open_time = self.get_time_float(post.get('wednesday_open_time') or '0.0')
-                wednesday.close_time = self.get_time_float(post.get('wednesday_close_time') or '0.0')
-                wednesday.break_start = self.get_time_float(post.get('wednesday_break_start') or '0.0')
-                wednesday.break_stop = self.get_time_float(post.get('wednesday_break_stop') or '0.0')
-                wednesday.close = True if post.get('wednesday_close') == '1' else False
-
-                thursday = commercial_partner.opening_hours_ids.filtered(lambda o: o.dayofweek == 'thursday')
-                if not thursday:
-                    thursday = request.env['opening.hours'].create({'partner_id': commercial_partner.id, 'dayofweek': 'thursday'})
-                thursday.open_time = self.get_time_float(post.get('thursday_open_time') or '0.0')
-                thursday.close_time = self.get_time_float(post.get('thursday_close_time') or '0.0')
-                thursday.break_start = self.get_time_float(post.get('thursday_break_start') or '0.0')
-                thursday.break_stop = self.get_time_float(post.get('thursday_break_stop') or '0.0')
-                thursday.close = True if post.get('thursday_close') == '1' else False
-
-                friday = commercial_partner.opening_hours_ids.filtered(lambda o: o.dayofweek == 'friday')
-                if not friday:
-                    friday = request.env['opening.hours'].create({'partner_id': commercial_partner.id, 'dayofweek': 'friday'})
-                friday.open_time = self.get_time_float(post.get('friday_open_time') or '0.0')
-                friday.close_time = self.get_time_float(post.get('friday_close_time') or '0.0')
-                friday.break_start = self.get_time_float(post.get('friday_break_start') or '0.0')
-                friday.break_stop = self.get_time_float(post.get('friday_break_stop') or '0.0')
-                friday.close = True if post.get('friday_close') == '1' else False
-
-                saturday = commercial_partner.opening_hours_ids.filtered(lambda o: o.dayofweek == 'saturday')
-                if not saturday:
-                    saturday = request.env['opening.hours'].create({'partner_id': commercial_partner.id, 'dayofweek': 'saturday'})
-                saturday.open_time = self.get_time_float(post.get('saturday_open_time') or '0.0')
-                saturday.close_time = self.get_time_float(post.get('saturday_close_time') or '0.0')
-                saturday.break_start = self.get_time_float(post.get('saturday_break_start') or '0.0')
-                saturday.break_stop = self.get_time_float(post.get('saturday_break_stop') or '0.0')
-                saturday.close = True if post.get('saturday_close') == '1' else False
-
-                sunday = commercial_partner.opening_hours_ids.filtered(lambda o: o.dayofweek == 'sunday')
-                if not sunday:
-                    sunday = request.env['opening.hours'].create({'partner_id': commercial_partner.id, 'dayofweek': 'sunday'})
-                sunday.open_time = self.get_time_float(post.get('sunday_open_time') or '0.0')
-                sunday.close_time = self.get_time_float(post.get('sunday_close_time') or '0.0')
-                sunday.break_start = self.get_time_float(post.get('sunday_break_start') or '0.0')
-                sunday.break_stop = self.get_time_float(post.get('sunday_break_stop') or '0.0')
-                sunday.close = True if post.get('sunday_close') == '1' else False
+                for weekday in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']:
+                    self.update_opening_weekday(commercial_partner, weekday, post)
             if post.get('opening_hours_exceptions') != None and post.get('opening_hours_exceptions') != commercial_partner.opening_hours_exceptions:
                 commercial_partner.opening_hours_exceptions = post.get('opening_hours_exceptions')
         self.update_info(home_user, post)
         return werkzeug.utils.redirect("/home/%s" % home_user.id)
+
+    def update_opening_weekday(self, partner, weekday, post):
+        day = partner.opening_hours_ids.filtered(lambda o: o.dayofweek == weekday)
+        if not day:
+            day = request.env['opening.hours'].sudo().create({'partner_id': partner.id, 'dayofweek': weekday})
+        day.open_time = self.get_time_float(post.get('%s_open_time' %weekday) or '0.0')
+        day.close_time = self.get_time_float(post.get('%s_close_time' %weekday) or '0.0')
+        day.break_start = self.get_time_float(post.get('%s_break_start' %weekday) or '0.0')
+        day.break_stop = self.get_time_float(post.get('%s_break_stop' %weekday) or '0.0')
+        day.close = True if post.get('%s_close' %weekday) == '1' else False
 
     def update_info(self, home_user, post):
         res = super(website_sale_home, self).update_info(home_user, post)
@@ -403,7 +352,7 @@ class website_sale_home(website_sale_home):
                     'street2': post.get('visit_street2', ''),
                     'zip': post.get('visit_zip', ''),
                     'city': post.get('visit_city', ''),
-                    'country_id': int(post.get('visit_city_id')) if post.get('visit_city_id') else 0,
+                    'country_id': int(post.get('visit_country_id')) if post.get('visit_country_id') else 0,
                     'email': post.get('visit_email', ''),
                     'phone': post.get('visit_phone', ''),
                 })
@@ -415,7 +364,7 @@ class website_sale_home(website_sale_home):
                     'street2': post.get('visit_street2', ''),
                     'zip': post.get('visit_zip', ''),
                     'city': post.get('visit_city', ''),
-                    'country_id': int(post.get('visit_city_id')) if post.get('visit_city_id') else 0,
+                    'country_id': int(post.get('visit_country_id')) if post.get('visit_country_id') else 0,
                     'email': post.get('visit_email', ''),
                     'phone': post.get('visit_phone', ''),
                 })
