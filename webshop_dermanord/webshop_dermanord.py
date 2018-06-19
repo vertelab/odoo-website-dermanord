@@ -823,7 +823,6 @@ class WebsiteSale(website_sale):
                         'return_url': '/shop/payment/validate',
                     })[0]
         _logger.warn('Partner_id (payment) %s shipping %s invoice %s res %s' % (order.partner_id,order.partner_shipping_id,order.partner_invoice_id,values))
-        return None
         return request.website.render("website_sale.payment", values)
 
     mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
@@ -906,6 +905,7 @@ class WebsiteSale(website_sale):
             'partner_invoice_id': checkout.get('invoicing_id') or partner_id.id,
             'partner_shipping_id': checkout.get('shipping_id') or partner_id.id,
         })
+        _logger.warn('Partner_id (order_info) %s shipping %s' % (order_info['partner_invoice_id'],order_info['partner_shipping_id']))
         if order_info['partner_id'] != order.partner_id or order_info['shipping_id'] != order.partner_shipping_id.id:
             address_change = order.onchange_delivery_id(
                 order.company_id.id, partner_id.id, checkout.get('shipping_id'), None)['value']
