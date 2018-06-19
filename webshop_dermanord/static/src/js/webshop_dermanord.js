@@ -171,10 +171,16 @@ $(document).ready(function(){
 
             //update stock status
             if (data['instock'] != null) {
-                $stock_status.html(data['instock']);
-                if (data['instock'] == 'Shortage') {
-                    $('#add_to_cart').addClass('hidden');
-                    $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
+                if (!data['public_user']){
+                    $stock_status.removeClass("hidden");
+                    $stock_status.html(data['instock']);
+                    if (data['instock'] == 'Shortage') {
+                        $('#add_to_cart').addClass('hidden');
+                        $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
+                    }
+                }
+                else {
+                    $stock_status.addClass("hidden");
                 }
             }
             // descpitions
@@ -549,7 +555,7 @@ $(document).ready(function(){
                     // sale_ok / sale_start hide add-button and maybe view information about sale start
                     if (variant_ids[k][5] == 0) {
                         $('#add_to_cart').addClass('hidden');
-                        $('#stock_status').addClass('hidden');
+                        $('.stock_status').addClass('hidden');
                         $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
                         if (variant_ids[k][6] != 0) {
                             var start_date = variant_ids[k][6].toString();
@@ -561,7 +567,7 @@ $(document).ready(function(){
                         }
                     } else if (variant_ids[k][5] == 1) {
                         $('#add_to_cart').removeClass('hidden');
-                        $('#stock_status').removeClass('hidden');
+                        $('.stock_status').removeClass('hidden');
                         $('div.css_quantity.input-group.oe_website_spinner').removeClass('hidden');
                         if (variant_ids[k][6] != 0) {
                             $('#sale_start_info').removeClass('hidden');

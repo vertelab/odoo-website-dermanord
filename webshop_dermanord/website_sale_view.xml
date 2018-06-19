@@ -912,5 +912,10 @@
                 </div>
             </t>
         </template>
+        <template id="stock_status" inherit_id="website_sale_instock.product">
+            <xpath expr="//div[@class='stock_status']" position="attributes">
+                <attribute name="t-if">user_id != request.env.ref('base.public_user')</attribute>
+            </xpath>
+        </template>
     </data>
 </openerp>
