@@ -67,11 +67,13 @@ dermanord_resize_for_menu = function() {
             $(".container.dn_header").css({"margin-top": height});
         }
         $(".oe_website_login_container").css({"margin-top": height});
+        $("div.scroll ul").addClass("nav-justified");
     }
     else {
         $(".container.dn_header").css({"margin-top": ""});
         $(".oe_website_login_container").css({"margin-top": ""});
         $("ol.dn_breadcrumb").css({"margin-top": ""});
+        $("div.scroll ul").removeClass("nav-justified");
     }
 }
 
