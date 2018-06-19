@@ -793,7 +793,7 @@ class WebsiteSale(website_sale):
         sale_order_obj = request.env['sale.order']
 
         order = request.website.sale_get_order()
-        _logger.warn('Partner_id (before payment) %s shipping %s invoice %s' % (order.partner_id,order.partner_shipping_id,order.partner_invoice_id))        
+        _logger.warn('Partner_id (before payment) %s shipping %s invoice %s' % (order.partner_id,order.partner_shipping_id,order.partner_invoice_id))
         redirection = self.checkout_redirection(order)
         if redirection:
             return redirection
@@ -967,9 +967,8 @@ class WebsiteSale(website_sale):
                 attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.price_eu, p.recommended_price_eu, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
         elif request.env.user.partner_id.property_product_pricelist.for_reseller:
             # Övriga ÅF-prislistor
-
             for p in product.product_variant_ids:
-                price = self.env['product.pricelist']._price_rule_get_multi(pricelist, [(p, 1, self.env.user.partner_id)])[p.id][0]
+                price = request.env['product.pricelist']._price_rule_get_multi(request.env.user.partner_id.property_product_pricelist, [(p, 1, request.env.user.partner_id)])[p.id][0]
                 attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
         else:
             for p in product.product_variant_ids:
@@ -989,6 +988,8 @@ class WebsiteSale(website_sale):
     def in_stock(self, product_id):
         instock = ''
         in_stock = True
+        if request.env.user == request.env.ref('base.public_user'):
+            return [False, instock]
         product = request.env['product.product'].search_read([('id', '=', product_id)], fields=['is_mto_route', 'sale_ok', 'instock_percent'])[0]
         if not product['is_mto_route']:
             if product['sale_ok']:
@@ -1704,6 +1705,7 @@ class WebsiteSale(website_sale):
                 value['recommended_price'] = request.website.price_format(recommended_price)
                 value['price'] = request.website.price_format(price)
                 value['instock'] = self.in_stock(product.id)[1]
+                value['public_user'] = True if (not self.in_stock(product.id)[0] and self.in_stock(product.id)[1] == '') else False
                 value['images'] = images
                 value['facets'] = facets
                 value['ingredients_description'] = ingredients_description
