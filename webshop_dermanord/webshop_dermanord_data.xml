@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
         <record id="pricelist_af" model="product.pricelist">
             <field name="name">[tmp] Återförsäljare 45</field>
             <field name="type">sale</field>

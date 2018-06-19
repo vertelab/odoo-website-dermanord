@@ -741,10 +741,9 @@ class Website(models.Model):
         return sale_order
 
     def price_format(self, price):
-        if request.env.lang == 'sv_SE':
-            return ('%.2f' %price).replace('.', ',')
-        else:
-            return '%.2f' %price
+        dp = request.env['res.lang'].search_read([('code', '=', request.env.lang)], ['decimal_point'])
+        dp = dp and dp[0]['decimal_point'] or '.'
+        return ('%.2f' %price).replace('.', dp)
 
 
 class WebsiteSale(website_sale):

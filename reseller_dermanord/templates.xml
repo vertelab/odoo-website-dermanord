@@ -461,8 +461,15 @@
                         <label class="col-md-3 col-sm-4 control-label" for="visit_country_id">Country</label>
                         <div class="col-md-7 col-sm-8">
                             <select class="form-control" name="visit_country_id" t-att="input_attrs">
-                                <t t-foreach="country_selection" t-as="country">
-                                    <option t-att-value="country[0]" t-att="{'selected': '1'} if country[0] == (visit and visit.country_id and visit.country_id.id) else {}"><t t-esc="country[1]"/></option>
+                                <t t-if="visit">
+                                    <t t-foreach="country_selection" t-as="country">
+                                        <option t-att-value="country[0]" t-att="{'selected': '1'} if country[0] == visit.country_id.id else {}"><t t-esc="country[1]"/></option>
+                                    </t>
+                                </t>
+                                <t t-if="not visit">
+                                    <t t-foreach="country_selection" t-as="country">
+                                        <option t-att-value="country[0]" t-att="{'selected': '1'} if country[0] == request.env['res.country'].search([('code', '=', 'se')]).id else {}"><t t-esc="country[1]"/></option>
+                                    </t>
                                 </t>
                             </select>
                             <small t-esc="help.get('help_visit_country')" />
