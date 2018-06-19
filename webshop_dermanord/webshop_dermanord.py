@@ -885,7 +885,7 @@ class WebsiteSale(website_sale):
         # set partner_id
         partner_id = order.partner_id
         # ~ partner_id = None
-        # ~ if request.env.user != request.website.user_id:
+        # ~ if request.env.user != request.website.user_id: # Check if we are not public user
             # ~ partner_id = request.env.user.partner_id
         # ~ elif order.partner_id:
             # ~ user_ids = request.env['res.users'].sudo().search(
