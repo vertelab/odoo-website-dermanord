@@ -571,3 +571,8 @@ msgstr "När pengarna är oss tillhanda kommer vi skicka din order. Du kan förl
 #: view:website:website_sale.confirmation
 msgid "Have a nice day!"
 msgstr "Ha en fortsatt bra dag!"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.confirmation
+msgid "Your transaction is waiting confirmation."
+msgstr "Din transaktion väntar på bekräftelse."
