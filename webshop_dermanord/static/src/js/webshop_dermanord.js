@@ -23,7 +23,6 @@ $(document).ready(function(){
 
     openerp.jsonRpc("/website_sale_update_cart", "call", {
     }).done(function(data){
-        console.log('website_sale_update_cart');
         $(".my_cart_total").data('thousands_sep', data['thousands_sep']);
         $(".my_cart_total").data('decimal_point', data['decimal_point']);
         $(".my_cart_currency").text('' + data['currency']);

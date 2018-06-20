@@ -1619,7 +1619,7 @@ class WebsiteSale(website_sale):
             res['cart_quantity'] = order.cart_quantity
             res['currency'] = order.pricelist_id.currency_id.name
         else:
-            res['currency'] = request.user.partner_id.property_product_pricelist.currency_id.name
+            res['currency'] = request.env.user.partner_id.property_product_pricelist.currency_id.name
         return res
 
     @http.route(['/dn_shop/search'], type='json', auth="public", website=True)
