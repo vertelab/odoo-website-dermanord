@@ -690,7 +690,7 @@ class Website(models.Model):
                 'section_id': env.ref('website.salesteam_website_sales').id,
             }
             sale_order = env['sale.order'].sudo().create(values)
-            sale_order.write(env['sale.order'].onchange_partner_id(env.user.partner_id.id)['value'])
+            sale_order.write(env['sale.order'].sudo().onchange_partner_id(env.user.partner_id.id)['value'])
             request.session['sale_order_id'] = sale_order.id
 
         #~ sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
@@ -775,6 +775,7 @@ class WebsiteSale(website_sale):
         self.checkout_form_save(values["checkout"])
         request.session['sale_last_order_id'] = order.id
         request.website.sale_get_order(update_pricelist=True)
+        _logger.warn('Partner_id (confirm) %s shipping %s invoice %s' % (order.partner_id,order.partner_shipping_id,order.partner_invoice_id))
         return request.redirect("/shop/payment")
 
     @http.route(['/shop/payment'], type='http', auth="public", website=True)
@@ -792,6 +793,7 @@ class WebsiteSale(website_sale):
         sale_order_obj = request.env['sale.order']
 
         order = request.website.sale_get_order()
+        _logger.warn('Partner_id (before payment) %s shipping %s invoice %s' % (order.partner_id,order.partner_shipping_id,order.partner_invoice_id))
         redirection = self.checkout_redirection(order)
         if redirection:
             return redirection
@@ -820,6 +822,7 @@ class WebsiteSale(website_sale):
                     tx_values={
                         'return_url': '/shop/payment/validate',
                     })[0]
+        _logger.warn('Partner_id (payment) %s shipping %s invoice %s res %s' % (order.partner_id,order.partner_shipping_id,order.partner_invoice_id,values))
         return request.website.render("website_sale.payment", values)
 
     mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
@@ -880,14 +883,15 @@ class WebsiteSale(website_sale):
         partner_lang = request.lang if request.lang in [lang.code for lang in request.website.language_ids] else None
 
         # set partner_id
-        partner_id = None
-        if request.env.user != request.website.user_id:
-            partner_id = request.env.user.partner_id
-        elif order.partner_id:
-            user_ids = request.env['res.users'].sudo().search(
-                [("partner_id", "=", order.partner_id.id)], active_test=False)
-            if not user_ids or request.website.user_id not in user_ids:
-                partner_id = order.partner_id
+        partner_id = order.partner_id
+        # ~ partner_id = None
+        # ~ if request.env.user != request.website.user_id: # Check if we are not public user
+            # ~ partner_id = request.env.user.partner_id
+        # ~ elif order.partner_id:
+            # ~ user_ids = request.env['res.users'].sudo().search(
+                # ~ [("partner_id", "=", order.partner_id.id)], active_test=False)
+            # ~ if not user_ids or request.website.user_id not in user_ids:
+                # ~ partner_id = order.partner_id
 
         order_info = {
             'partner_id': partner_id.id,
@@ -901,6 +905,7 @@ class WebsiteSale(website_sale):
             'partner_invoice_id': checkout.get('invoicing_id') or partner_id.id,
             'partner_shipping_id': checkout.get('shipping_id') or partner_id.id,
         })
+        _logger.warn('Partner_id (order_info) %s shipping %s' % (order_info['partner_invoice_id'],order_info['partner_shipping_id']))
         if order_info['partner_id'] != order.partner_id or order_info['shipping_id'] != order.partner_shipping_id.id:
             address_change = order.onchange_delivery_id(
                 order.company_id.id, partner_id.id, checkout.get('shipping_id'), None)['value']
@@ -962,9 +967,8 @@ class WebsiteSale(website_sale):
                 attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.price_eu, p.recommended_price_eu, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
         elif request.env.user.partner_id.property_product_pricelist.for_reseller:
             # Övriga ÅF-prislistor
-
             for p in product.product_variant_ids:
-                price = self.env['product.pricelist']._price_rule_get_multi(pricelist, [(p, 1, self.env.user.partner_id)])[p.id][0]
+                price = request.env['product.pricelist']._price_rule_get_multi(request.env.user.partner_id.property_product_pricelist, [(p, 1, request.env.user.partner_id)])[p.id][0]
                 attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
         else:
             for p in product.product_variant_ids:
@@ -984,6 +988,8 @@ class WebsiteSale(website_sale):
     def in_stock(self, product_id):
         instock = ''
         in_stock = True
+        if request.env.user == request.env.ref('base.public_user'):
+            return [False, instock]
         product = request.env['product.product'].search_read([('id', '=', product_id)], fields=['is_mto_route', 'sale_ok', 'instock_percent'])[0]
         if not product['is_mto_route']:
             if product['sale_ok']:
@@ -1705,6 +1711,7 @@ class WebsiteSale(website_sale):
                 value['recommended_price'] = request.website.price_format(recommended_price)
                 value['price'] = request.website.price_format(price)
                 value['instock'] = self.in_stock(product.id)[1]
+                value['public_user'] = True if (not self.in_stock(product.id)[0] and self.in_stock(product.id)[1] == '') else False
                 value['images'] = images
                 value['facets'] = facets
                 value['ingredients_description'] = ingredients_description
