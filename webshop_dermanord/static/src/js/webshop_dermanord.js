@@ -4,28 +4,30 @@ var current_page = 0;
 var page_count = 0;
 var lang = $("html").attr("lang");
 
-function langPriceFormat(nStr) {
-    nStr += '';
-    var ts = ' ';
-    var dec = ',';
-    var langProfix = 'SEK';
-    if (lang == 'en-US') { var ts = ','; var dec = '.';}
-    var x = nStr.split('.');
+
+function setCartPriceQuantity(price, quantity) {
+    var ts = $(".my_cart_total").data('thousands_sep');
+    var dp = $(".my_cart_total").data('decimal_point');
+    var x = price.split('.');
     var x1 = x[0];
-    var x2 = x.length > 1 ? dec + x[1] : '';
+    var x2 = x.length > 1 ? dp + x[1] : '';
     var rgx = /(\d+)(\d{3})/;
     while (rgx.test(x1)) {
         x1 = x1.replace(rgx, '$1' + ts + '$2');
     }
-    return '<span style="white-space: nowrap;">&nbsp;' + langProfix + '</span>' + '<span class="oe_currency_value">' + x1 + x2 + '</span>';
+    $(".my_cart_total > .oe_currency_value").text(x1 + x2);
+    $(".my_cart_quantity").text('(' + quantity + ')');
 }
 
 $(document).ready(function(){
 
     openerp.jsonRpc("/website_sale_update_cart", "call", {
     }).done(function(data){
-        $(".my_cart_total").html(langPriceFormat(data['amount_untaxed']));
-        $(".my_cart_quantity").html('(' + data['cart_quantity'] + ')');
+        console.log('website_sale_update_cart');
+        $(".my_cart_total").data('thousands_sep', data['thousands_sep']);
+        $(".my_cart_total").data('decimal_point', data['decimal_point']);
+        $(".my_cart_currency").text('' + data['currency']);
+        setCartPriceQuantity(data['amount_untaxed'], data['cart_quantity']);
     });
 
     $("input[data-toggle='tooltip']").click(function() {
@@ -324,13 +326,16 @@ $(document).ready(function(){
                         return;
                     }
                     var cart_quantity = data.cart_quantity === undefined ? 0 : data.cart_quantity;
+                    
+                    
+                    
+                    setCartPriceQuantity('' + data['amount_untaxed'], '' + data['cart_quantity']);
+
+                    
                     if (!data.quantity) { // update table and all prices on page
                         //~ location.reload(true);
                         $("#cart_products").load(location.href + " #cart_products");
                         $("#cart_total").load(location.href + " #cart_total");
-                        $(".my_cart_total").load(location.href + " .my_cart_total");
-                        //~ $q.parent().parent().removeClass("hidden", !data.quantity);
-                        $q.html("(" + cart_quantity + ")");
                         return;
                     }
                     $q.parent().parent().removeClass("hidden", !data.quantity);
@@ -338,8 +343,6 @@ $(document).ready(function(){
                     $input.val(data.quantity);
                     $('.js_quantity[data-line-id='+line_id+']').val(data.quantity).html(data.quantity);
                     $("#cart_total").replaceWith(data['website_sale.total']);
-                    //~ $(".my_cart_total").replaceWith(data['website_sale.total'].match(/<span class=\"oe_currency_value\">(.*?)</i)[1].replace(".", "").replace(",", "."));
-                    $(".my_cart_total").load(location.href + " .my_cart_total span");
                     $.ajax({
                         url: '/shop/allowed_order/?order=' + $("a#process_checkout").data("order"),
                         type: 'post',
@@ -847,8 +850,7 @@ $(document).on('click', '.dn_list_add_to_cart, #add_to_cart.a-submit', function 
     var cart_html = $(".my_cart_quantity").html();
     var cart_qty = cart_html.substring(cart_html.lastIndexOf("(")+1,cart_html.lastIndexOf(")"));
     var current_total = cart_total + unit_price * parseFloat(add_qty);
-    my_cart_total.html(langPriceFormat(parseFloat(current_total).toFixed(2)));
-    $(".my_cart_quantity").html('(' + (parseInt(add_qty) + parseInt(cart_qty)) + ')');
+    setCartPriceQuantity(parseFloat(current_total).toFixed(2), '' + (parseInt(add_qty) + parseInt(cart_qty)));
 
     openerp.jsonRpc("/shop/cart/update", "call", {
         'product_id': product_id,
@@ -857,8 +859,7 @@ $(document).on('click', '.dn_list_add_to_cart, #add_to_cart.a-submit', function 
         if($.isArray(data)){
             self.attr("data-finished", "done");
             if ($(".dn_list_add_to_cart[data-finished='']").length == 0) {
-                my_cart_total.html(langPriceFormat(data[0]));
-                $(".my_cart_quantity").html('(' + data[1] + ')');
+                setCartPriceQuantity(data[0], data[1]);
                 my_cart_total.closest("a").css({"pointer-events": "", "cursor": ""});
                 my_cart_total.closest("a").attr("id", "cart_updated");
             }

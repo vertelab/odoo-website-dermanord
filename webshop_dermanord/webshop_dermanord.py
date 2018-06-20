@@ -1604,10 +1604,16 @@ class WebsiteSale(website_sale):
     @http.route(['/website_sale_update_cart'], type='json', auth="public", website=True)
     def website_sale_update_cart(self):
         order = request.website.sale_get_order()
-        res = {'amount_untaxed': '0.00', 'cart_quantity': '0'}
+        dp = request.env['res.lang'].search_read([('code', '=', request.env.lang)], ['decimal_point', 'thousands_sep'])
+        ts = dp and dp[0]['thousands_sep'] or ' '
+        dp = dp and dp[0]['decimal_point'] or '.'
+        res = {'amount_untaxed': '0.00', 'cart_quantity': '0', 'currency': 'SEK', 'decimal_point': dp, 'thousands_sep': ts}
         if order:
             res['amount_untaxed'] = request.website.price_format(order.amount_untaxed)
             res['cart_quantity'] = order.cart_quantity
+            res['currency'] = order.pricelist_id.currency_id.name
+        else:
+            res['currency'] = request.user.partner_id.property_product_pricelist.currency_id.name
         return res
 
     @http.route(['/dn_shop/search'], type='json', auth="public", website=True)
