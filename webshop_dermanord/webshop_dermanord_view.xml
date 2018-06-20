@@ -76,7 +76,7 @@
                 </h6>
             </div>
             <div class="row">
-              <div class="col-md-8 oe_cart">
+              <div class="col-md-8 oe_cart mb32">
                 <h3 class="">
                   We have recieved your order
                   <em t-field="order.name" />
