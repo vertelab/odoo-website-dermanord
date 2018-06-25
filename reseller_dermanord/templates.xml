@@ -231,9 +231,7 @@
                                 <p>
                                     <t t-if="reseller.phone">Telephone: <a t-att-href="'tel:%s' %reseller.phone"><span t-esc="reseller.phone"/></a><br/></t>
                                     <t t-if="reseller.email">Email: <a t-att-href="'mailto:%s' %reseller.email"><span t-esc="reseller.email"/></a><br/></t>
-<!--
                                     <t t-if="reseller.website">Website: <a t-att-href="reseller.website"><span t-esc="reseller.website.replace('http://', '')"/></a></t>
--->
                                 </p>
                             </div>
                         </div>
