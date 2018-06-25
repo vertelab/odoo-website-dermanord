@@ -8,8 +8,8 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <h1 position="after">
-                    <field name="lock_is_reseller"/><label for="lock_is_reseller"/><br/>
-                    <field name="is_reseller" attrs="{'readonly': [('lock_is_reseller', '=', True)]}"/><label for="is_reseller"/>
+                    <field name="always_searchable"/><label for="always_searchable"/><br/>
+                    <field name="is_reseller" attrs="{'readonly': [('always_searchable', '=', True)]}"/><label for="is_reseller"/>
                     <h2><field name="brand_name" placeholder="Brand Name" attrs="{'invisible': [('is_reseller', '=', False)]}"/></h2>
                 </h1>
                 <field name="comment" position="after">
