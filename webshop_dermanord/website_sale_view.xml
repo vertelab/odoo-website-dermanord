@@ -602,6 +602,7 @@
             </xpath>
         </template>
         <template id="dermanord_product_detail" inherit_id="website_sale.product">
+<!--
             <a id="add_to_cart" position="after">
                 <input id="sale_ok" name="sale_ok" type="hidden" t-att-value="product.sale_ok" />
                 <p id="sale_start_info" class="hidden">
@@ -609,6 +610,7 @@
                     <span id="sale_start" />
                 </p>
             </a>
+-->
             <xpath expr="//form[@class='js_add_cart_variants']" position="inside">
                 <input name="return_url" type="hidden" t-att-value="request.httprequest.url" />
             </xpath>
