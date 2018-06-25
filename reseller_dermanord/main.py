@@ -42,6 +42,7 @@ class res_partner(models.Model):
     top_image = fields.Binary(string='Top Image')
     type = fields.Selection(selection_add=[('visit', 'Visit')])
     webshop_category_ids = fields.Many2many(comodel_name='product.public.category', string='Product Categories', domain=[('website_published', '=', True)])
+    website_short_description = fields.Text(string='Website Partner Short Description', translate=True)
 
     #~ @api.one
     #~ def _is_reseller(self):
