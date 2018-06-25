@@ -39,6 +39,7 @@ class res_partner(models.Model):
 
     brand_name = fields.Char(string='Brand Name')
     is_reseller = fields.Boolean(string='Show Reseller in websearch')
+    lock_is_reseller = fields.Boolean(string='Lock show reseller in websearch', help='When checked. Show reseller in websearch will be locked.')
     top_image = fields.Binary(string='Top Image')
     type = fields.Selection(selection_add=[('visit', 'Visit')])
     webshop_category_ids = fields.Many2many(comodel_name='product.public.category', string='Product Categories', domain=[('website_published', '=', True)])
@@ -55,18 +56,31 @@ class res_partner(models.Model):
 
     @api.multi
     def searchable_reseller(self):
+        self.ensure_one()
         # is company and customer
         # has tag Hudterapeut eller SPA-terapeut, and has purchased more than 10000SEK(ex.moms) in last 12 months.
         # has other tags and purchase more than 2000SEK(ex.moms) once in last 12 months.
-        self.is_reseller = False
-        if (self.env['res.partner.category'].search([('name', '=', 'Hudterapeut')])[0] in self.category_id) or (self.env['res.partner.category'].search([('name', '=', 'SPA-Terapeut')])[0] in self.category_id):
-            if sum(self.env['account.invoice'].search(['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_invoice', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]).mapped('amount_untaxed')) >= 10000.0:
-                self.is_reseller = True
-        else:
-            if sum(self.env['account.invoice'].search(
-                    ['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_invoice', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]
-                    ).mapped('amount_untaxed')) > 2000.0:
-                self.is_reseller = True
+        if not self.is_reseller:
+            previous_is_reseller = self.is_reseller
+            self.is_reseller = False
+            if (self.env['res.partner.category'].search([('name', '=', 'Hudterapeut')])[0] in self.category_id) or (self.env['res.partner.category'].search([('name', '=', 'SPA-Terapeut')])[0] in self.category_id):
+                if sum(self.env['account.invoice'].search(['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_invoice', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]).mapped('amount_untaxed')) >= 10000.0:
+                    self.is_reseller = True
+            else:
+                if sum(self.env['account.invoice'].search(
+                        ['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_invoice', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]
+                        ).mapped('amount_untaxed')) > 2000.0:
+                    self.is_reseller = True
+            if self.is_reseller != previous_is_reseller:
+                # send message to responsible
+                self.env['mail.message'].create({
+                    'model': 'res.partner',
+                    'res_id': self.id,
+                    'author_id': self.env.ref('base.partner_root').id,
+                    'subject': _('Partner show reseller in websearch updated'),
+                    'type': 'notification',
+                    'body': """<p>Show in Websearch: %s → %s</p>""" %(previous_is_reseller, self.is_reseller)
+                })
 
 class Main(http.Controller):
 
