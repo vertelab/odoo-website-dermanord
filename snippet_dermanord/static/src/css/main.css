@@ -221,7 +221,9 @@ a {
 
 @media screen and (max-width: 991px) and (min-width: 768px) {
     .ph_block {
-        width: 240px;
+        width: 100%;
+        height: 600px;
+        border: 3px solid #fafafa;
     }
     .image_text_narrow {
         padding-left: 15px !important;
@@ -237,6 +239,12 @@ a {
 }
 
 @media screen and (max-width: 767px) {
+.ph_block {
+    width: 95%; 
+    height: 600px;
+    border: 3px solid #fafafa;
+    margin: auto;
+}
     .image_text_narrow {
         padding-left: 15px !important;
     }
@@ -251,4 +259,14 @@ a {
     .di_desktop_content {
         top: 0%;
     }
+}
+
+@media screen and (min-width: 1200px)  {
+    .ph_block {
+        width: 100%;
+        height: 525px;
+        border: 3px solid #fcfcfc;
+        margin: auto;
+    }
+
 }
