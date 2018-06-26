@@ -717,13 +717,14 @@ function load_products_grid(page){
 function load_products_list(page){
     var start_render = new Date();
     openerp.jsonRpc("/dn_shop_json_list", "call", {
-        'page': current_page.toString(),
+        'page': current_page,
     }).done(function(data){
         var product_count = 0;
         page_count = data['page_count'];
         if (page_count >= current_page) {
             var products_content = '';
             $.each(data['products'], function(key, info) {
+                //~ console.log(data['products'][key]);
                 var content = openerp.qweb.render('products_item_list', {
                     'url': data['url'],
                     'lst_ribbon_style': data['products'][key]['lst_ribbon_style'],
@@ -731,6 +732,7 @@ function load_products_list(page){
                     'product_href': data['products'][key]['product_href'],
                     'product_name': data['products'][key]['product_name'],
                     'is_news_product': data['products'][key]['is_news_product'],
+                    'is_limited_product': data['products'][key]['is_limited_product'],
                     'is_offer_product': data['products'][key]['is_offer_product'],
                     'sale_ok': data['products'][key]['sale_ok'],
                     'product_name_col': data['products'][key]['product_name_col'],
