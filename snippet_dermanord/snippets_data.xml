@@ -20,28 +20,28 @@ res = bg
 
         <record id="img_product_param_canvas_xs" model="image.recipe.param">
             <field name="name">canvas_size</field>
-            <field name="value">275</field>
+            <field name="value">335</field>
             <field name="device_type">xs</field>
             <field name="recipe_id" ref="snippet_dermanord.img_product"/>
         </record>
 
         <record id="img_product_param_canvas_sm" model="image.recipe.param">
             <field name="name">canvas_size</field>
-            <field name="value">185</field>
+            <field name="value">339</field>
             <field name="device_type">sm</field>
             <field name="recipe_id" ref="snippet_dermanord.img_product"/>
         </record>
 
         <record id="img_product_param_canvas_md" model="image.recipe.param">
             <field name="name">canvas_size</field>
-            <field name="value">235</field>
+            <field name="value">234</field>
             <field name="device_type">md</field>
             <field name="recipe_id" ref="snippet_dermanord.img_product"/>
         </record>
 
         <record id="img_product_param_canvas_lg" model="image.recipe.param">
             <field name="name">canvas_size</field>
-            <field name="value">235</field>
+            <field name="value">257</field>
             <field name="device_type">lg</field>
             <field name="recipe_id" ref="snippet_dermanord.img_product"/>
         </record>
