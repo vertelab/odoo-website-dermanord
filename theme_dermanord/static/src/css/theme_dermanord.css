@@ -693,7 +693,7 @@ address span {
         border-bottom: 1px solid #e7e7e7;
     }
 
-    #jobs_grid {
+    #jobs_grid, .readable, section#forms {
         padding: 0px 15px;
     }
 }
