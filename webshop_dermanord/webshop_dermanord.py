@@ -204,22 +204,23 @@ class product_template(models.Model):
             if not p.product_variant_ids:
                 continue
             try:
-                variant = p.get_default_variant().read(['name', 'fullname', 'price', 'price_45', 'price_20', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu', 'default_code', 'description_sale', 'image_main_id', 'website_style_ids_variant'])[0]
+                variant = p.get_default_variant().read(['name', 'fullname', 'price', 'price_45', 'price_20', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu', 'default_code', 'description_sale', 'image_main_id', 'website_style_ids_variant', 'sale_ok'])[0]
+                if not variant['sale_ok']:
+                    raise Warning(_('Default variant on %s can not be sold' % p.name))
                 website_style_ids_variant = ' '.join([s['html_class'] for s in self.env['product.style'].browse(variant['website_style_ids_variant']).read(['html_class'])])
-                if variant:
-                    p.dv_id = variant['id']
-                    p.dv_price_45 = variant['price_45']
-                    p.dv_price_20 = variant['price_20']
-                    p.dv_recommended_price = variant['recommended_price']
-                    p.dv_price_en = variant['price_en']
-                    p.dv_recommended_price_en = variant['recommended_price_en']
-                    p.dv_price_eu = variant['price_eu']
-                    p.dv_recommended_price_eu = variant['recommended_price_eu']
-                    p.dv_default_code = variant['default_code'] or ''
-                    p.dv_description_sale = variant['description_sale'] or ''
-                    p.dv_name = p.name if p.use_tmpl_name else variant['fullname']
-                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['image_main_id'][0], 'snippet_dermanord.img_product') if variant['image_main_id'] else placeholder
-                    p.dv_ribbon = website_style_ids_variant if website_style_ids_variant else ' '.join([c for c in p.website_style_ids.mapped('html_class') if c])
+                p.dv_id = variant['id']
+                p.dv_price_45 = variant['price_45']
+                p.dv_price_20 = variant['price_20']
+                p.dv_recommended_price = variant['recommended_price']
+                p.dv_price_en = variant['price_en']
+                p.dv_recommended_price_en = variant['recommended_price_en']
+                p.dv_price_eu = variant['price_eu']
+                p.dv_recommended_price_eu = variant['recommended_price_eu']
+                p.dv_default_code = variant['default_code'] or ''
+                p.dv_description_sale = variant['description_sale'] or ''
+                p.dv_name = p.name if p.use_tmpl_name else variant['fullname']
+                p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['image_main_id'][0], 'snippet_dermanord.img_product') if variant['image_main_id'] else placeholder
+                p.dv_ribbon = website_style_ids_variant if website_style_ids_variant else ' '.join([c for c in p.website_style_ids.mapped('html_class') if c])
             except:
                 e = sys.exc_info()
                 tb = ''.join(traceback.format_exception(e[0], e[1], e[2]))
