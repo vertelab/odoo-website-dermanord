@@ -114,19 +114,14 @@ msgstr "Fortsätt att handla"
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.desktop_product_filter
 #: view:website:webshop_dermanord.dn_filter_navigator
-msgid "News & Offers"
+msgid "New products & Offers"
 msgstr "Nyheter & Erbjudanden"
-
-#. module: webshop_dermanord
-#: view:website:webshop_dermanord.products_item
-msgid "News"
-msgstr "Nyhet"
 
 #. module: webshop_dermanord
 #. openerp-web
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:25
-#, python-format
-msgid "News"
+#: view:website:webshop_dermanord.products_item
+msgid "New"
 msgstr "Nyhet"
 
 #. module: webshop_dermanord

@@ -347,12 +347,16 @@ msgid "Name Descending"
 msgstr ""
 
 #. module: webshop_dermanord
-#. openerp-web
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:25
+#: view:website:webshop_dermanord.products_item
+msgid "New"
+msgstr ""
+
+#. module: webshop_dermanord
+#. openerp-web
 #: code:addons/webshop_dermanord/webshop_dermanord.py:1529
 #: view:website:webshop_dermanord.desktop_product_filter
 #: view:website:webshop_dermanord.dn_filter_content
-#: view:website:webshop_dermanord.products_item
 #: view:website:webshop_dermanord.products_list_reseller_view
 #, python-format
 msgid "News"

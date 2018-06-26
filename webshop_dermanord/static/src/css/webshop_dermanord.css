@@ -111,7 +111,7 @@ div.shipping-address, div.invoicing-address {
 }
 
 #image_big > div > .ribbon-wrapper > .ribbon_news {
-    font: bold 15px Sans-Serif;
+    font: bold 12px Sans-Serif;
     color: white;
     text-align: center;
     -webkit-transform: rotate(45deg);
@@ -143,7 +143,7 @@ div.shipping-address, div.invoicing-address {
 }
 
 #image_big .ribbon_offer {
-    font: bold 15px Sans-Serif;
+    font: bold 12px Sans-Serif;
     color: white;
     text-align: center;
     -webkit-transform: rotate(-45deg);
@@ -583,7 +583,7 @@ select.dn_selection_dropdown + i.fa {
 }
 
 .dn_product_div .ribbon_news {
-    font: bold 15px Sans-Serif;
+    font: bold 12px Sans-Serif;
     color: white;
     text-align: center;
     -webkit-transform: rotate(45deg);
@@ -615,7 +615,7 @@ select.dn_selection_dropdown + i.fa {
 }
 
 .dn_product_div .ribbon_offer {
-    font: bold 15px Sans-Serif;
+    font: bold 12px Sans-Serif;
     color: white;
     text-align: center;
     -webkit-transform: rotate(-45deg);
