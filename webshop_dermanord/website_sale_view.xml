@@ -118,7 +118,7 @@
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="'dn_product_div %s' % product['dv_ribbon']">
                     <div class="ribbon-wrapper">
-                        <div t-if="product['dv_ribbon'] == 'oe_ribbon_promo'" class="ribbon ribbon_news btn btn-primary">News</div>
+                        <div t-if="product['dv_ribbon'] == 'oe_ribbon_promo'" class="ribbon ribbon_news btn btn-primary">New</div>
                         <div t-if="product['dv_ribbon'] == 'oe_ribbon_limited'" class="ribbon ribbon_limited btn btn-primary">Limited<br/>Edition</div>
                     </div>
                     <t t-if="user_id.partner_id.property_product_pricelist == pricelist_af">
@@ -276,21 +276,12 @@
                                             <t t-set="start_time" t-value="time.time()" />
                                             <tr t-att-class="'tr_lst %s' % product['get_this_variant_ribbon']">
                                                 <td class="td_lst">
-                                                    <div class="col-md-6 lst-ribbon-wrapper">
-                                                        <t t-if="'oe_ribbon_promo' in product['get_this_variant_ribbon'].split(',')">
-                                                            <i class="fa fa-bullhorn fa-2x" title="News" />
-                                                        </t>
+                                                    <div class="lst-ribbon-wrapper">
+                                                        <span t-if="'oe_ribbon_promo' in product['get_this_variant_ribbon'].split(',')">New</span>
+                                                        <span t-if="product['is_offer_product_reseller'] and user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">Offer</span>
+                                                        <span t-if="not product['is_offer_product_reseller'] and product['is_offer_product_consumer'] and user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">Offer</span>
+                                                        <span t-if="'oe_ribbon_limited' in product['get_this_variant_ribbon'].split(',')">Limited&amp;nbsp;Ed.</span>
                                                     </div>
-                                                    <t t-if="product['is_offer_product_reseller'] and user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
-                                                        <div class="col-md-6 lst-offer-wrapper">
-                                                            <i class="fa fa-gift fa-2x" title="Offer" />
-                                                        </div>
-                                                    </t>
-                                                    <t t-if="not product['is_offer_product_reseller'] and product['is_offer_product_consumer'] and user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
-                                                        <div class="col-md-6 lst-offer-wrapper">
-                                                            <i class="fa fa-gift fa-2x" title="Offer" />
-                                                        </div>
-                                                    </t>
                                                 </td>
                                                 <td>
                                                     <h5 class="list_product_name">
@@ -326,25 +317,25 @@
                                                         <b>
                                                             <t t-if="user_id.partner_id.property_product_pricelist == pricelist_af">
                                                                 <!-- Återförsäljare 45% -->
-                                                                <span t-esc="str('%.2f' %product['price_45']).replace('.', ',')" style="white-space: nowrap;" class="your_price" t-att-data-price="product['price_45']"/>
+                                                                <span t-esc="website.price_format(product['price_45'])" style="white-space: nowrap;" class="your_price" t-att-data-price="product['price_45']"/>
                                                                 <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
                                                             <t t-if="user_id.partner_id.property_product_pricelist == pricelist_special">
                                                                 <!-- Special 20 -->
-                                                                <span t-esc="str('%.2f' %product['price_20']).replace('.', ',')" style="white-space: nowrap;" class="your_price" t-att-data-price="product['price_20']"/>
+                                                                <span t-esc="website.price_format(product['price_20'])" style="white-space: nowrap;" class="your_price" t-att-data-price="product['price_20']"/>
                                                                 <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
                                                             <t t-if="user_id.partner_id.property_product_pricelist == pricelist_us">
                                                                 <!-- USA ÅF 65% -->
-                                                                <span t-esc="str('%.2f' %product['price_en']).replace('.', ',')" style="white-space: nowrap;" class="your_price" t-att-data-price="product['price_en']"/>
+                                                                <span t-esc="website.price_format(product['price_en'])" style="white-space: nowrap;" class="your_price" t-att-data-price="product['price_en']"/>
                                                                 <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
                                                             <t t-if="user_id.partner_id.property_product_pricelist == pricelist_eu">
                                                                 <!-- EURO ÅF 45% -->
-                                                                <span t-esc="str('%.2f' %product['price_eu']).replace('.', ',')" style="white-space: nowrap;" class="your_price" t-att-data-price="product['price_eu']"/>
+                                                                <span t-esc="website.price_format(product['price_eu'])" style="white-space: nowrap;" class="your_price" t-att-data-price="product['price_eu']"/>
                                                                 <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>

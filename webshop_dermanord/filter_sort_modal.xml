@@ -94,7 +94,7 @@
             <ul class="nav nav-stacked">
                 <li class="active">
                     <a data-toggle="tab" href="#current">
-                        <h5>News &amp; Offers
+                        <h5>New products &amp; Offers
                             <t t-set="current_count" t-value="0"/>
                             <t t-if="'current_news' in request.session.get('form_values').keys() or 'current_offer' in request.session.get('form_values').keys()">
                                 <t t-if="request.session.get('form_values').get('current_news') == 'current_news'">
@@ -411,7 +411,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                News &amp; Offers <a data-toggle="collapse" href="#desktop_current" class="pull-right"><i class="desktop_angle fa fa-angle-down"/></a>
+                                New products &amp; Offers <a data-toggle="collapse" href="#desktop_current" class="pull-right"><i class="desktop_angle fa fa-angle-down"/></a>
                                 <t t-if="request.session.get('form_values')">
                                     <t t-set="current_count" t-value="0"/>
                                     <t t-if="'current_news' in request.session.get('form_values', {}) or 'current_offer' in request.session.get('form_values', {})">

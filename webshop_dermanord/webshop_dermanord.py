@@ -204,22 +204,23 @@ class product_template(models.Model):
             if not p.product_variant_ids:
                 continue
             try:
-                variant = p.get_default_variant().read(['name', 'fullname', 'price', 'price_45', 'price_20', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu', 'default_code', 'description_sale', 'image_main_id', 'website_style_ids_variant'])[0]
+                variant = p.get_default_variant().read(['name', 'fullname', 'price', 'price_45', 'price_20', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu', 'default_code', 'description_sale', 'image_main_id', 'website_style_ids_variant', 'sale_ok'])[0]
+                if not variant['sale_ok']:
+                    raise Warning(_('Default variant on %s can not be sold' % p.name))
                 website_style_ids_variant = ' '.join([s['html_class'] for s in self.env['product.style'].browse(variant['website_style_ids_variant']).read(['html_class'])])
-                if variant:
-                    p.dv_id = variant['id']
-                    p.dv_price_45 = variant['price_45']
-                    p.dv_price_20 = variant['price_20']
-                    p.dv_recommended_price = variant['recommended_price']
-                    p.dv_price_en = variant['price_en']
-                    p.dv_recommended_price_en = variant['recommended_price_en']
-                    p.dv_price_eu = variant['price_eu']
-                    p.dv_recommended_price_eu = variant['recommended_price_eu']
-                    p.dv_default_code = variant['default_code'] or ''
-                    p.dv_description_sale = variant['description_sale'] or ''
-                    p.dv_name = p.name if p.use_tmpl_name else variant['fullname']
-                    p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['image_main_id'][0], 'snippet_dermanord.img_product') if variant['image_main_id'] else placeholder
-                    p.dv_ribbon = website_style_ids_variant if website_style_ids_variant else ' '.join([c for c in p.website_style_ids.mapped('html_class') if c])
+                p.dv_id = variant['id']
+                p.dv_price_45 = variant['price_45']
+                p.dv_price_20 = variant['price_20']
+                p.dv_recommended_price = variant['recommended_price']
+                p.dv_price_en = variant['price_en']
+                p.dv_recommended_price_en = variant['recommended_price_en']
+                p.dv_price_eu = variant['price_eu']
+                p.dv_recommended_price_eu = variant['recommended_price_eu']
+                p.dv_default_code = variant['default_code'] or ''
+                p.dv_description_sale = variant['description_sale'] or ''
+                p.dv_name = p.name if p.use_tmpl_name else variant['fullname']
+                p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['image_main_id'][0], 'snippet_dermanord.img_product') if variant['image_main_id'] else placeholder
+                p.dv_ribbon = website_style_ids_variant if website_style_ids_variant else ' '.join([c for c in p.website_style_ids.mapped('html_class') if c])
             except:
                 e = sys.exc_info()
                 tb = ''.join(traceback.format_exception(e[0], e[1], e[2]))
@@ -740,9 +741,10 @@ class Website(models.Model):
 
         return sale_order
 
-    def price_format(self, price):
-        dp = request.env['res.lang'].search_read([('code', '=', request.env.lang)], ['decimal_point'])
-        dp = dp and dp[0]['decimal_point'] or '.'
+    def price_format(self, price, dp=None):
+        if not dp:
+            dp = request.env['res.lang'].search_read([('code', '=', request.env.lang)], ['decimal_point'])
+            dp = dp and dp[0]['decimal_point'] or '.'
         return ('%.2f' %price).replace('.', dp)
 
 
@@ -990,7 +992,10 @@ class WebsiteSale(website_sale):
         in_stock = True
         if request.env.user == request.env.ref('base.public_user'):
             return [False, instock]
-        product = request.env['product.product'].search_read([('id', '=', product_id)], fields=['is_mto_route', 'sale_ok', 'instock_percent'])[0]
+        if type(product_id) == dict:
+            product = product_id
+        else:
+            product = request.env['product.product'].search_read([('id', '=', product_id)], fields=['is_mto_route', 'sale_ok', 'instock_percent'])[0]
         if not product['is_mto_route']:
             if product['sale_ok']:
                 if product['instock_percent'] > 100.0:
@@ -1229,6 +1234,7 @@ class WebsiteSale(website_sale):
     def dn_shop_json_list(self, page=0, **kw):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
         sale_ribbon = request.env.ref('website_sale.image_promo')
+        limited_ribbon = request.env.ref('webshop_dermanord.image_limited')
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
             context['pricelist'] = int(pricelist)
@@ -1244,7 +1250,7 @@ class WebsiteSale(website_sale):
                 domain[domain.index(d)] = ('product_tmpl_id', domain[domain.index(d)][1], domain[domain.index(d)][2])
         # relist which product templates the current user is allowed to see
         #~ products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'fullname', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'sale_ok', 'product_tmpl_id'], limit=10, offset=(PPG+1) if page == 1 else (int(page)+1)*10, order=current_order)
+        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'fullname', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids', 'website_style_ids_variant', 'sale_ok', 'product_tmpl_id', 'is_mto_route', 'instock_percent'], limit=10, offset=PPG + page * 10, order=current_order)
 
         products_list = []
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
@@ -1254,7 +1260,12 @@ class WebsiteSale(website_sale):
             currency = partner_pricelist.currency_id.name
             if partner_pricelist.for_reseller:
                 is_reseller = True
-
+        pricelist_af = request.env.ref('webshop_dermanord.pricelist_af')
+        pricelist_special = request.env.ref('webshop_dermanord.pricelist_special')
+        pricelist_us = request.env.ref('webshop_dermanord.pricelist_us')
+        pricelist_eu = request.env.ref('webshop_dermanord.pricelist_eu')
+        dp = request.env['res.lang'].search_read([('code', '=', request.env.lang)], ['decimal_point'])
+        dp = dp and dp[0]['decimal_point'] or '.'
         for p in products:
             p_start = timer()
             if len(p['campaign_ids']) > 0:
@@ -1284,36 +1295,24 @@ class WebsiteSale(website_sale):
                         'end_date': '',
                     }
 
-            product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', p.get('website_style_ids_variant', []))], ['html_class'])])
-            if product_ribbon == '':
-                tmpl = request.env['product.template'].search_read([('id', 'in', [t[0] for t in [p.get('product_tmpl_id', [])]])], ['website_style_ids'])
-                if tmpl:
-                    for pro in request.env['product.style'].search_read([('id', 'in', tmpl[0].get('website_style_ids', []))], ['html_class']):
-                        if pro.get('html_class'):
-                            product_ribbon += ' %s' %pro['html_class']
-            p['get_this_variant_ribbon'] = product_ribbon
-            p['sale_ok'] = True if (p['sale_ok'] and self.in_stock(p['id'])[0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
+            p['sale_ok'] = True if (p['sale_ok'] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller and self.in_stock(p)[0]) else False
 
-            # ~ pricelist_af = request.env.ref('webshop_dermanord.pricelist_af')
-            # ~ pricelist_special = request.env.ref('webshop_dermanord.pricelist_special')
-            # ~ pricelist_us = request.env.ref('webshop_dermanord.pricelist_us')
-            # ~ pricelist_eu = request.env.ref('webshop_dermanord.pricelist_eu')
-            if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
+            if request.env.user.partner_id.property_product_pricelist == pricelist_af:
                 # Återförsäljare 45%
                 price = p['price_45']
                 rec_price = p['recommended_price']
                 tax_included = True
-            elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_special'):
+            elif request.env.user.partner_id.property_product_pricelist == pricelist_special:
                 # Special 20
                 price = p['price_20']
                 rec_price = p['recommended_price']
                 tax_included = True
-            elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_us'):
+            elif request.env.user.partner_id.property_product_pricelist == pricelist_us:
                 # USA ÅF 65%
                 price = p['price_en']
                 rec_price = p['recommended_price_en']
                 tax_included = False
-            elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_eu'):
+            elif request.env.user.partner_id.property_product_pricelist == pricelist_eu:
                 # EURO ÅF 45%
                 price = p['price_eu']
                 rec_price = p['recommended_price_eu']
@@ -1322,26 +1321,27 @@ class WebsiteSale(website_sale):
                 # Övriga ÅF-prislistor
                 price = request.env.user.partner_id.property_product_pricelist.price_get(p['id'], 1)[request.env.user.partner_id.property_product_pricelist.id]
                 rec_price = p['recommended_price'] if request.env.user.lang == 'sv_SE' else p['recommended_price_en']
-                tax_included = True
+                tax_included = False
             else:
                 price = p['recommended_price']
                 rec_price = p['recommended_price']
                 tax_included = True
-
+            
             products_list.append({
-                'lst_ribbon_style': 'tr_lst %s' %p['get_this_variant_ribbon'],
+                'lst_ribbon_style': 'tr_lst',
                 'variant_id': p['id'],
                 'product_href': '/dn_shop/variant/%s' %p['id'],
                 'product_name': p['name'],
-                'is_news_product': True if sale_ribbon in p['website_style_ids_variant'] else False,
+                'is_news_product': (sale_ribbon.id in p['website_style_ids']) or (sale_ribbon.id in p['website_style_ids_variant']),
+                'is_limited_product': (limited_ribbon.id in p['website_style_ids']) or (limited_ribbon.id in p['website_style_ids_variant']),
                 'is_offer_product': p['is_offer_product_reseller'] if request.env.user.partner_id.property_product_pricelist.for_reseller else p['is_offer_product_consumer'],
                 'campaign': True if p['campaign'] else False,
                 #~ 'product_name_col': 'product_price col-md-6 col-sm-6 col-xs-12' if p['purchase_phase']['phase'] else 'product_price col-md-8 col-sm-8 col-xs-12',
                 'product_name_col': 'product_name',
                 'campaign_start_date': p['campaign']['start_date'],
                 'campaign_end_date': p['campaign']['end_date'],
-                'price': request.website.price_format(price),
-                'recommended_price': request.website.price_format(rec_price),
+                'price': request.website.price_format(price, dp),
+                'recommended_price': request.website.price_format(rec_price, dp),
                 'tax_included': tax_included,
                 #~ 'tax': "%.2f" %request.website.price_format(tax),
                 'currency': currency,

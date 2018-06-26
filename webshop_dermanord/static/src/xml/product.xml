@@ -22,7 +22,7 @@
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="grid_ribbon_style">
                     <div class="ribbon-wrapper">
-                        <div t-if="grid_ribbon_style == 'dn_product_div oe_ribbon_promo'" class="ribbon ribbon_news btn btn-primary">News</div>
+                        <div t-if="grid_ribbon_style == 'dn_product_div oe_ribbon_promo'" class="ribbon ribbon_news btn btn-primary">New</div>
                         <div t-if="grid_ribbon_style == 'dn_product_div oe_ribbon_limited'" class="ribbon ribbon_limited btn btn-primary">Limited<br/>Edition</div>
                     </div>
                     <t t-if="is_offer_product">
@@ -87,19 +87,11 @@
     <t t-name="products_item_list">
         <tr t-att-class="lst_ribbon_style">
             <td class="td_lst">
-                <t t-if="is_news_product">
-                    <div class="col-md-6 lst-ribbon-wrapper">
-<!--
-                        <div class="lst_ribbon btn btn-primary">News</div>
--->
-                        <i class="fa fa-bullhorn fa-2x"/>
-                    </div>
-                </t>
-                <t t-if="is_offer_product">
-                    <div class="col-md-6 lst-offer-wrapper">
-                        <i class="fa fa-gift fa-2x" title="Offer"/>
-                    </div>
-                </t>
+                <div class="lst-ribbon-wrapper">
+                    <span t-if="is_news_product">New</span>
+                    <span t-if="is_offer_product">Offer</span>
+                    <span t-if="is_limited_product">Limited&amp;nbsp;Ed.</span>
+                </div>
             </td>
             <td>
                 <h5 class="list_product_name">
