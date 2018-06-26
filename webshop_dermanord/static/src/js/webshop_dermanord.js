@@ -3,6 +3,7 @@ website.add_template_file('/webshop_dermanord/static/src/xml/product.xml');
 var current_page = 0;
 var page_count = 0;
 var lang = $("html").attr("lang");
+var dn_loading_products = false;
 
 
 function setCartPriceQuantity(price, quantity) {
@@ -331,12 +332,12 @@ $(document).ready(function(){
                         return;
                     }
                     var cart_quantity = data.cart_quantity === undefined ? 0 : data.cart_quantity;
-                    
-                    
-                    
+
+
+
                     setCartPriceQuantity('' + data['amount_untaxed'], '' + data['cart_quantity']);
 
-                    
+
                     if (!data.quantity) { // update table and all prices on page
                         //~ location.reload(true);
                         $("#cart_products").load(location.href + " #cart_products");
@@ -559,24 +560,24 @@ $(document).ready(function(){
                         $('#add_to_cart').addClass('hidden');
                         $('.stock_status').addClass('hidden');
                         $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
-                        if (variant_ids[k][6] != 0) {
-                            var start_date = variant_ids[k][6].toString();
-                            $('p#sale_start_info').removeClass('hidden');
-                            $('#sale_start').html(start_date.substr(0, 4) + '-' + start_date.substr(4, 2) + '-' + start_date.substr(6, 2));
-                        } else if (variant_ids[k][6] == 0){
-                            $('p#sale_start_info').addClass('hidden');
-                            $('#sale_start').html('');
-                        }
+                        //~ if (variant_ids[k][6] != 0) {
+                            //~ var start_date = variant_ids[k][6].toString();
+                            //~ $('p#sale_start_info').removeClass('hidden');
+                            //~ $('#sale_start').html(start_date.substr(0, 4) + '-' + start_date.substr(4, 2) + '-' + start_date.substr(6, 2));
+                        //~ } else if (variant_ids[k][6] == 0){
+                            //~ $('p#sale_start_info').addClass('hidden');
+                            //~ $('#sale_start').html('');
+                        //~ }
                     } else if (variant_ids[k][5] == 1) {
                         $('#add_to_cart').removeClass('hidden');
                         $('.stock_status').removeClass('hidden');
                         $('div.css_quantity.input-group.oe_website_spinner').removeClass('hidden');
-                        if (variant_ids[k][6] != 0) {
-                            $('#sale_start_info').removeClass('hidden');
-                        } else if (variant_ids[k][6] == 0){
-                            $('p#sale_start_info').addClass('hidden');
-                            $('#sale_start').html('');
-                        }
+                        //~ if (variant_ids[k][6] != 0) {
+                            //~ $('#sale_start_info').removeClass('hidden');
+                        //~ } else if (variant_ids[k][6] == 0){
+                            //~ $('p#sale_start_info').addClass('hidden');
+                            //~ $('#sale_start').html('');
+                        //~ }
                     }
                     product_id = variant_ids[k][0];
                     break;
@@ -664,7 +665,8 @@ $(document).ready(function(){
     });
 
     $(window).scroll(function() {
-        if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+        if (dn_loading_products === false && ($(document).height() - $(window).scrollTop() - $(window).height() < 1000)) {
+            dn_loading_products = true;
             if ($("#wrap").hasClass("autoload_grid")) {
                 load_products_grid(current_page);
             }
@@ -704,6 +706,7 @@ function load_products_grid(page){
             });
             $("#desktop_product_grid").append(products_content);
             current_page ++;
+            dn_loading_products = false;
         }
         var end_render  = new Date();
         var time_render = end_render.getTime() - start_render.getTime();
@@ -749,6 +752,7 @@ function load_products_list(page){
             });
             $(".oe_website_sale").find('tbody').append(products_content);
             current_page ++;
+            dn_loading_products = false;
         }
         var end_render  = new Date();
         var time_render = end_render.getTime() - start_render.getTime();

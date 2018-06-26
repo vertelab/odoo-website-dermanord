@@ -22,6 +22,17 @@
             <field name="value" eval="'ir.actions.server,%s' %ref('reseller_dermanord.searchable_reseller')"/>
         </record>
 
+        <record id="weekly_searchable_reseller_cron" model="ir.cron">
+            <field name="name">Set Reseller (weekly)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="nextcall" eval="time.strftime('%s-%0d-%0d 00:00:00' %(DateTime.today().year, DateTime.today().month, DateTime.today().day))"/>
+            <field name="docall" eval="True"/>
+            <field name="numbercall">-1</field>
+            <field name="model">res.partner</field>
+            <field name="function">searchable_reseller_cron</field>
+        </record>
+
         <record id="reseller_top_image" model="image.recipe">
             <field name="name">Reseller Header Image</field>
             <field name="image_format">jpeg</field>

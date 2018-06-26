@@ -131,6 +131,7 @@
                             <div class="col-md-8 col-sm-8 mt32 mb16 hidden-xs">
                                 <div id="reseller_description_div">
                                     <t t-if="reseller.website_short_description">
+                                        <h3 style="margin-top: 12px;">Welcome</h3>
                                         <t t-foreach="reseller.website_short_description.split('\n')" t-as="r">
                                             <p><t t-esc="r"/></p>
                                         </t>
@@ -144,10 +145,14 @@
                                     </ul>
                                 </t>
                                 <t t-if="reseller.webshop_category_ids">
-                                    <h3>Product Categories</h3>
+                                    <h3>Our Product Categories</h3>
                                     <ul t-foreach="reseller.webshop_category_ids" t-as="wcateg">
                                         <li><span t-esc="wcateg.name"/></li>
                                     </ul>
+                                </t>
+                                <t t-if="reseller.website">
+                                    <h3>Our Webshop</h3>
+                                    <a t-att-href="reseller.website"><span t-esc="reseller.website.replace('http://', '')"/></a>
                                 </t>
                             </div>
                             <div class="reseller_cell col-md-4 col-sm-4 col-xs-12 mt16 mb16">
@@ -156,8 +161,9 @@
                                 <t t-if="not visit">
                                     <t t-set="visit" t-value="reseller.commercial_partner_id"/>
                                 </t>
-                                <div class="col-xs-12 mb16 hidden-lg hidden-md hidden-sm">
+                                <div class="col-xs-12 mb16 hidden-lg hidden-md hidden-sm" style="padding: 0px;">
                                     <div id="reseller_description_div">
+                                        <h3 style="margin-top: 12px;">Welcome</h3>
                                         <t t-if="reseller.website_short_description">
                                             <t t-foreach="reseller.website_short_description.split('\n')" t-as="r">
                                                 <p><t t-esc="r"/></p>
@@ -172,10 +178,14 @@
                                         </ul>
                                     </t>
                                     <t t-if="reseller.webshop_category_ids">
-                                        <h3>Product Categories</h3>
+                                        <h3>Our Product Categories</h3>
                                         <ul t-foreach="reseller.webshop_category_ids" t-as="wcateg">
                                             <li><span t-esc="wcateg.name"/></li>
                                         </ul>
+                                    </t>
+                                    <t t-if="reseller.website">
+                                        <h3>Our Webshop</h3>
+                                        <a t-att-href="reseller.website"><span t-esc="reseller.website.replace('http://', '')"/></a>
                                     </t>
                                 </div>
                                 <!-- Google maps -->

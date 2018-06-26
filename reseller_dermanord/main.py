@@ -39,9 +39,11 @@ class res_partner(models.Model):
 
     brand_name = fields.Char(string='Brand Name')
     is_reseller = fields.Boolean(string='Show Reseller in websearch')
+    always_searchable = fields.Boolean(string='Always searchable', help='When checked. Reseller is always searchable.')
     top_image = fields.Binary(string='Top Image')
     type = fields.Selection(selection_add=[('visit', 'Visit')])
     webshop_category_ids = fields.Many2many(comodel_name='product.public.category', string='Product Categories', domain=[('website_published', '=', True)])
+    website_short_description = fields.Text(string='Website Partner Short Description', translate=True)
 
     #~ @api.one
     #~ def _is_reseller(self):
@@ -52,20 +54,52 @@ class res_partner(models.Model):
         #~ resellers = self.env.search([('category_id', '=', self.env['ir.model.data'].xmlid_to_object('reseller_dermanord.reseller_tag').id)])
         #~ return [('id', 'in', [r.id for r in resellers])]
 
+    @api.one
+    @api.onchange('always_searchable')
+    def always_searchable_onchange(self):
+        if self.always_searchable:
+            self.is_reseller = True
+
+    @api.multi
+    def write(self, vals):
+        if 'always_searchable' in vals:
+            if vals.get('always_searchable'):
+                vals['is_reseller'] = True
+        res = super(res_partner, self).write(vals)
+        return res
+
     @api.multi
     def searchable_reseller(self):
+        self.ensure_one()
         # is company and customer
         # has tag Hudterapeut eller SPA-terapeut, and has purchased more than 10000SEK(ex.moms) in last 12 months.
         # has other tags and purchase more than 2000SEK(ex.moms) once in last 12 months.
-        self.is_reseller = False
-        if (self.env['res.partner.category'].search([('name', '=', 'Hudterapeut')])[0] in self.category_id) or (self.env['res.partner.category'].search([('name', '=', 'SPA-Terapeut')])[0] in self.category_id):
-            if sum(self.env['account.invoice'].search(['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_invoice', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]).mapped('amount_untaxed')) >= 10000.0:
-                self.is_reseller = True
-        else:
-            if sum(self.env['account.invoice'].search(
-                    ['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_invoice', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]
-                    ).mapped('amount_untaxed')) > 2000.0:
-                self.is_reseller = True
+        if not self.always_searchable:
+            previous_is_reseller = self.is_reseller
+            self.is_reseller = False
+            if (self.env['res.partner.category'].search([('name', '=', 'Hudterapeut')])[0] in self.category_id) or (self.env['res.partner.category'].search([('name', '=', 'SPA-Terapeut')])[0] in self.category_id):
+                if sum(self.env['account.invoice'].search(['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_invoice', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]).mapped('amount_untaxed')) >= 10000.0:
+                    self.is_reseller = True
+            else:
+                if sum(self.env['account.invoice'].search(
+                        ['|', ('partner_id', '=', self.id), ('partner_id.child_ids', '=', self.id), ('date_invoice', '>=', fields.Date.to_string((date.today()-relativedelta(years=1))))]
+                        ).mapped('amount_untaxed')) > 2000.0:
+                    self.is_reseller = True
+            if self.is_reseller != previous_is_reseller:
+                # send message to responsible
+                self.env['mail.message'].create({
+                    'model': 'res.partner',
+                    'res_id': self.id,
+                    'author_id': self.env.ref('base.partner_root').id,
+                    'subject': _('Partner show reseller in websearch updated'),
+                    'type': 'notification',
+                    'body': """<p>Show in Websearch: %s → %s</p>""" %(previous_is_reseller, self.is_reseller)
+                })
+
+    @api.model
+    def searchable_reseller_cron(self):
+        for partner in self.env['res.partner'].search([('is_company', '=', True), ('customer', '=', True)]):
+            partner.searchable_reseller()
 
 class Main(http.Controller):
 

@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* reseller_dermanord
+#   * reseller_dermanord
 #
 msgid ""
 msgstr ""
@@ -166,6 +166,11 @@ msgstr "Telefon"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
+msgid "Welcome"
+msgstr "Välkommen"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
 msgid "Read More"
 msgstr "Läs mer"
 
@@ -186,8 +191,13 @@ msgstr "ÅFbeskrivning..."
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
-msgid "Product Categories"
-msgstr "Produktkategorier"
+msgid "Our Product Categories"
+msgstr "Vårt produktsortiment"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Our Webshop"
+msgstr "Vår webbutik"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.reseller
@@ -213,6 +223,16 @@ msgstr "Sätt Återförsäljare"
 #: field:res.partner,is_reseller:0
 msgid "Show Reseller in websearch"
 msgstr "Visa ÅF i webbsökningen"
+
+#. module: reseller_dermanord
+#: field:res.partner,always_searchable:0
+msgid "Always searchable"
+msgstr "Alltid sökbar på webbsidan"
+
+#. module: reseller_dermanord
+#: help:res.partner,always_searchable:0
+msgid "When checked. Reseller is always searchable."
+msgstr "När den är i kyssade, ÅF är alltid sökbar på webbsidan."
 
 #. module: reseller_dermanord
 #: view:website:website_sale_home.company_info_form
