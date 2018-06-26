@@ -539,13 +539,13 @@ msgstr "Viktig betalningsinformation"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.confirmation
-msgid "Enter invoice number: "
+msgid "Enter customer number: "
 msgstr "Ange kundnummer: "
 
 #. module: webshop_dermanord
 #: view:website:website_sale.confirmation
 msgid "Enter invoice number: "
-msgstr "Ange kundnummer: "
+msgstr "Ange fakturanummer: "
 
 #. module: webshop_dermanord
 #: view:website:website_sale.confirmation
