@@ -688,28 +688,11 @@ tr.tr_lst td {
 }
 
 .td_lst .lst-ribbon-wrapper {
+    color: #CB683F;
     display: block;
-    padding: 0px;
-    width: 40px;
     z-index: 5;
     overflow: hidden;
     position: relative;
-}
-
-.td_lst .lst-ribbon-wrapper i {
-    color: #CB683F;
-}
-
-.td_lst .lst-offer-wrapper {
-    width: 40px;
-    z-index: 5;
-    overflow: hidden;
-    position: relative;
-    padding: 0px;
-}
-
-.td_lst .lst-offer-wrapper i {
-    color: #CB683F;
 }
 
 @media screen and (min-width: 992px) {

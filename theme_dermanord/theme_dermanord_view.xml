@@ -31,18 +31,11 @@
 
     <data>
 
-<!--
     <template id="contactus" name="Dermanord Contact" inherit_id="website.contactus">
-        <xpath expr="//div[@groups='base.group_website_publisher']" position="replace">
-        </xpath>
-        <xpath expr="//div[@class='col-md-4 mb32']" position="attributes">
-            <attribute name="class">col-md-4 mt8 mb32 dn_contactus</attribute>
-        </xpath>
         <xpath expr="//div[@name='mail_button']" position="attributes">
-            <attribute name="class">text-center mt64 mb64</attribute>
+            <attribute name="class">text-center mt64 mb64 hidden</attribute>
         </xpath>
     </template>
--->
 
     <template id="company_description" name="Dermanord Company Description" inherit_id="website.company_description">
         <xpath expr="//address" position="replace"></xpath>
