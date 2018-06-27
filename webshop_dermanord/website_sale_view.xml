@@ -367,8 +367,8 @@
                                                         <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />)
                                                     </h5>
                                                 </td>
-                                                <td t-if="product['sale_ok']">
-                                                    <div>
+                                                <td>
+                                                    <div t-if="product['sale_ok']">
                                                         <form action="/shop/cart/update" class="oe_dn_list" t-att-data-attribute_value_ids="product['id']" method="POST">
                                                             <div class="product_shop" style="margin: 0px;">
                                                                 <input type="hidden" class="product_id" name="product_id" t-att-value="product['id']" />
@@ -397,6 +397,7 @@
                                                             </div>
                                                         </form>
                                                     </div>
+                                                    <span class="dn_list_instock"><t t-esc="(product['instock'][2] != 'in') and product['instock'][1] or ''"/></span>
                                                 </td>
                                                 <td t-if="not product['sale_ok']"/>
                                             </tr>
@@ -670,7 +671,10 @@
                         <t t-if="product_product and product_product.facet_line_ids">
                             <div class="col-md-6">
                                 <t t-foreach="product_product.facet_line_ids.mapped('facet_id')" t-as="facet">
+                                    
                                     <h2 class="dn_uppercase" t-field="facet.name" />
+                                    <t t-raw="product_product.format_facets(facet)"/>
+                                    <!--
                                     <t t-set="facet_value_ids" t-value="product_product.facet_line_ids.mapped('value_ids') &amp; facet.value_ids" />
                                     <t t-foreach="facet_value_ids" t-as="value">
                                         <a t-att-href="'/dn_shop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, ('&amp;%s' %'&amp;'.join(['category_%s=%s' %(c.id, c.id) for c in product.public_categ_ids]) if len(product.public_categ_ids) &gt; 0 else ''))" class="text-muted">
@@ -678,6 +682,7 @@
                                         </a>
                                         <span t-if="value_index != len(facet_value_ids)-1">,</span>
                                     </t>
+                                    -->
                                 </t>
                             </div>
                         </t>

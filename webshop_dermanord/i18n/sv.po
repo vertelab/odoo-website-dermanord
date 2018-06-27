@@ -120,7 +120,10 @@ msgstr "Nyheter & Erbjudanden"
 #. module: webshop_dermanord
 #. openerp-web
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:25
+#: code:addons/webshop_dermanord/static/src/xml/product.xml:91
 #: view:website:webshop_dermanord.products_item
+#: view:website:webshop_dermanord.products_list_reseller_view
+#, python-format
 msgid "New"
 msgstr "Nyhet"
 

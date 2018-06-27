@@ -646,6 +646,10 @@ select.dn_selection_dropdown + i.fa {
     color: #CB683F;
 }
 
+.dn_list_instock {
+    color: #CB683F;
+}
+
 /*
 .dn_product_div.oe_offer_ribbon_promo .offer-ribbon-wrapper {
    display: block;
@@ -690,6 +694,7 @@ tr.tr_lst td {
 .td_lst .lst-ribbon-wrapper {
     color: #CB683F;
     display: block;
+    padding-left: 5px;
     z-index: 5;
     overflow: hidden;
     position: relative;
