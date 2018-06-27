@@ -679,7 +679,10 @@
                         <t t-if="product_product and product_product.facet_line_ids">
                             <div class="col-md-6">
                                 <t t-foreach="product_product.facet_line_ids.mapped('facet_id')" t-as="facet">
+                                    
                                     <h2 class="dn_uppercase" t-field="facet.name" />
+                                    <t t-raw="product_product.format_facets(facet)"/>
+                                    <!--
                                     <t t-set="facet_value_ids" t-value="product_product.facet_line_ids.mapped('value_ids') &amp; facet.value_ids" />
                                     <t t-foreach="facet_value_ids" t-as="value">
                                         <a t-att-href="'/dn_shop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, ('&amp;%s' %'&amp;'.join(['category_%s=%s' %(c.id, c.id) for c in product.public_categ_ids]) if len(product.public_categ_ids) &gt; 0 else ''))" class="text-muted">
@@ -687,6 +690,7 @@
                                         </a>
                                         <span t-if="value_index != len(facet_value_ids)-1">,</span>
                                     </t>
+                                    -->
                                 </t>
                             </div>
                         </t>

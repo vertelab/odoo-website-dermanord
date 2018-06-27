@@ -361,6 +361,16 @@ class product_product(models.Model):
             self.is_offer_product_consumer = self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False)
     is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
     is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
+    
+    @api.multi
+    def format_facets(self,facet):
+        self.ensure_one()
+        values = []
+        for value in self.facet_line_ids.mapped('value_ids') & facet.value_ids:
+            values.append(u'<a t-att-href="{href}" class="text-muted"><span>{value_name}</span></a>'.format(
+                href='/dn_shop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, (u'&amp;%s' %'&amp;'.join([u'category_%s=%s' %(c.id, c.id) for c in self.public_categ_ids]) if len(self.public_categ_ids) > 0 else '')),
+                value_name=value.name))
+        return ', '.join(values)
 
 class product_facet(models.Model):
     _inherit = 'product.facet'
