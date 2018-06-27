@@ -725,31 +725,12 @@ function load_products_list(page){
             var products_content = '';
             $.each(data['products'], function(key, info) {
                 //~ console.log(data['products'][key]);
-                var content = openerp.qweb.render('products_item_list', {
-                    'url': data['url'],
-                    'lst_ribbon_style': data['products'][key]['lst_ribbon_style'],
-                    'product_id': data['products'][key]['variant_id'],
-                    'product_href': data['products'][key]['product_href'],
-                    'product_name': data['products'][key]['product_name'],
-                    'is_news_product': data['products'][key]['is_news_product'],
-                    'is_limited_product': data['products'][key]['is_limited_product'],
-                    'is_offer_product': data['products'][key]['is_offer_product'],
-                    'sale_ok': data['products'][key]['sale_ok'],
-                    'product_name_col': data['products'][key]['product_name_col'],
-                    'campaign': data['products'][key]['campaign'],
-                    'campaign_start_date': data['products'][key]['campaign_start_date'],
-                    'campaign_end_date': data['products'][key]['campaign_end_date'],
-                    'fullname': data['products'][key]['fullname'],
-                    'recommended_price': data['products'][key]['recommended_price'],
-                    'price': data['products'][key]['price'],
-                    //~ 'tax': data['products'][key]['tax'],
-                    'currency': data['products'][key]['currency'],
-                    'rounding': data['products'][key]['rounding'],
-                    'is_reseller': data['products'][key]['is_reseller'],
-                    'default_code': data['products'][key]['default_code']
-                });
+                data['products'][key]['url'] = data['url']
+                var content = openerp.qweb.render(
+                    'products_item_list',
+                    data['products'][key]);
                 products_content += content;
-                console.log('Product:', data['products'][key]['variant_id'], 'load in', data['products'][key]['load_time']*1000, 'ms');
+                console.log('Product:', data['products'][key]['product_id'], 'load in', data['products'][key]['load_time']*1000, 'ms');
                 product_count ++;
             });
             $(".oe_website_sale").find('tbody').append(products_content);

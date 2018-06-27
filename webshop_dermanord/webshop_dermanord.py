@@ -990,6 +990,7 @@ class WebsiteSale(website_sale):
     def in_stock(self, product_id):
         instock = ''
         in_stock = True
+        state = 'in'
         if request.env.user == request.env.ref('base.public_user'):
             return [False, instock]
         if type(product_id) == dict:
@@ -1002,10 +1003,12 @@ class WebsiteSale(website_sale):
                     instock = _('In stock')
                 elif product['instock_percent'] >= 50.0 and product['instock_percent'] <= 100.0:
                     instock = _('Few in stock')
+                    state = 'few'
                 elif product['instock_percent'] < 50.0:
                     instock = _('Shortage')
                     in_stock = False
-        return [in_stock, instock]
+                    state = 'short'
+        return [in_stock, instock, state]
 
     @http.route([
         '/dn_shop',
@@ -1294,8 +1297,8 @@ class WebsiteSale(website_sale):
                         'start_date': '',
                         'end_date': '',
                     }
-
-            p['sale_ok'] = True if (p['sale_ok'] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller and self.in_stock(p)[0]) else False
+            instock = self.in_stock(p)
+            p['sale_ok'] = True if (p['sale_ok'] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller and instock[0]) else False
 
             if request.env.user.partner_id.property_product_pricelist == pricelist_af:
                 # Återförsäljare 45%
@@ -1329,7 +1332,7 @@ class WebsiteSale(website_sale):
             
             products_list.append({
                 'lst_ribbon_style': 'tr_lst',
-                'variant_id': p['id'],
+                'product_id': p['id'],
                 'product_href': '/dn_shop/variant/%s' %p['id'],
                 'product_name': p['name'],
                 'is_news_product': (sale_ribbon.id in p['website_style_ids']) or (sale_ribbon.id in p['website_style_ids_variant']),
@@ -1351,6 +1354,7 @@ class WebsiteSale(website_sale):
                 'fullname': p['fullname'],
                 'sale_ok': p['sale_ok'],
                 'load_time': timer() - p_start,
+                'instock': instock,
             })
 
         values = {
@@ -1480,7 +1484,8 @@ class WebsiteSale(website_sale):
                 if tmpl:
                     product_ribbon = ' '.join([pro['html_class'] for pro in request.env['product.style'].search_read([('id', 'in', tmpl[0].get('website_style_ids', []))], ['html_class']) if pro['html_class']])
             p['get_this_variant_ribbon'] = product_ribbon
-            p['sale_ok'] = True if (p['sale_ok'] and self.in_stock(p['id'])[0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
+            p['instock'] = self.in_stock(p['id'])
+            p['sale_ok'] = True if (p['sale_ok'] and p['instock'][0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
 
         no_product_message = ''
         if len(products) == 0:
