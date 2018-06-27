@@ -31,7 +31,7 @@ Reposition cookie layout
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['theme_dermanord'],
+    'depends': ['theme_dermanord', 'website_gdpr'],
     'data': [
         'website.xml',
 ],

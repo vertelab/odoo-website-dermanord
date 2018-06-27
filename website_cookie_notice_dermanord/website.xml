@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        
+
         <template id="message" name="Cookies notice">
             <div id="website_cookie_notice" class="container-fluid bg-warning cc-cookies" style="display: none; position: fixed !important; bottom: 0px; width: 100%; z-index: 1003;">
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-10 col-sm-10 col-xs-10">We use cookies in this website. Read about them in our <a href="/page/privacy">privacy policy</a>. To disable them, configure your browser properly. If you keep using this website, you are accepting those.</div>
+                        <div class="col-md-10 col-sm-10 col-xs-10" style="padding: 10px 0px;">This website stores cookies on your computer to improve your experience and provide you with personalised information. By continuing to visit and use our website, you agree to the use of cookies for the purpose described in our <a href="/gdpr/inventories">Privacy Policy</a>. To disable them, configure your browser properly.</div>
                         <div class="col-md-2 col-sm-2 col-xs-2 text-center">
                             <button class="btn btn-primary" onclick="cookie_notification_accept()">OK</button>
                         </div>
@@ -20,7 +20,7 @@
                 <t t-call="website_cookie_notice_dermanord.message"/>
             </xpath>
         </template>
-        
+
         <template id="assets_frontend" inherit_id="website.assets_frontend">
             <xpath expr="." position="inside">
                 <link href="/website_cookie_notice_dermanord/static/src/css/main.css" rel="stylesheet" />
@@ -28,7 +28,7 @@
                 <script type="text/javascript" src="/website_cookie_notice_dermanord/static/src/js/js.cookie.js" />
             </xpath>
         </template>
-        
+
         <template id="website.privacy" name="Privacy policy" page="True">
             <t t-call="website.layout">
               <div id="wrap">
@@ -159,7 +159,7 @@
                           <p>We may update this Privacy Policy from time to time. We will notify
                             you of any changes by posting the new Privacy Policy on the Site. You are advised to review this
                             Privacy Policy periodically for any changes.
-            
+
                           </p>
                         </div>
                       </div>
