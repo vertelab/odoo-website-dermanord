@@ -680,7 +680,7 @@ class Website(models.Model):
                 #~ sale_order_id = None
 
         # Test validity of the sale_order_id
-        sale_order = env['sale.order'].sudo().search([('id', '=', sale_order_id)])
+        sale_order = env['sale.order'].sudo().search([('id', '=', sale_order_id),('state', '=', 'draft')])  # Don't find closed order
 
         # Find old sale order that is a webshop cart.
         if env.user != env.ref('base.public_user') and not sale_order:
@@ -841,7 +841,7 @@ class WebsiteSale(website_sale):
 
     def show_purchase_button(self, product):
         sale_ok = False
-        if product.sudo().sale_ok and product.sudo().instock_percent >= 50.0 and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller:
+        if product and product.sudo().sale_ok and product.sudo().instock_percent >= 50.0 and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller:
             sale_ok = True
         return sale_ok
 
