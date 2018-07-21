@@ -1067,6 +1067,19 @@ class WebsiteSale(website_sale):
         current_order = request.session.get('current_order')
         products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
 
+        # TODO: We should probably move all the pricelist logic from the view (webshop_dermanord.products_item) to this code.
+        pricelist_af = request.env.ref('webshop_dermanord.pricelist_af')
+        pricelist_special = request.env.ref('webshop_dermanord.pricelist_special')
+        pricelist_us = request.env.ref('webshop_dermanord.pricelist_us')
+        pricelist_eu = request.env.ref('webshop_dermanord.pricelist_eu')
+        
+        # Övriga ÅF-prislistor
+        if request.env.user.partner_id.property_product_pricelist not in [pricelist_af, pricelist_special, pricelist_us, pricelist_eu] and request.env.user.partner_id.property_product_pricelist.for_reseller:
+            pl = request.env.user.partner_id.property_product_pricelist.rec_pricelist_id
+            if pl:
+                for product in products:
+                    product['dv_recommended_price'] = pl.price_get(product['dv_id'], 1)[pl.id]
+
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
         #~ request.env['product.template'].get_all_variant_data(products)   2 sek

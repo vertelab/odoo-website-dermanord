@@ -214,7 +214,7 @@
                                         <!-- Övriga ÅF-prislistor -->
                                         <div>
                                             <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
-                                            <span t-esc="website.price_format(product['dv_recommended_price']) if user_id.lang == 'sv_SE' else website.price_format(product['dv_recommended_price_en'])" style="white-space: nowrap;" />
+                                            <span t-esc="website.price_format(product['dv_recommended_price'])" style="white-space: nowrap;" />
                                             <span style="display: inline;">(rec incl. tax)</span>
                                         </div>
                                         <div>
