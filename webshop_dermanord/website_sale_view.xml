@@ -141,7 +141,7 @@
 <!--
                                 <t t-call="webshop_dermanord.form_values" />
 -->
-                                <img itemprop="image" class="img img-responsive" t-att-src="product['dv_image_src']" t-att-alt="product['dv_name']" />
+                                <img itemprop="image" class="img img-responsive" t-att-src="product['dv_image_src']" t-att-alt="product['name']" />
                                 <div class="dn_product_image_hover_btn text-center hidden-xs">
                                     <p class="dn_btn dn_primary">DETAILS</p>
                                 </div>
@@ -151,15 +151,33 @@
                     <div class="dn_product_info text-center">
                         <h4 class="p_name">
                             <strong>
-                                <a itemprop="name" t-att-href="'/dn_shop/product/%s' % product['id']" t-esc="product['dv_name']" />
+                                <a itemprop="name" t-att-href="'/dn_shop/product/%s' % product['id']" t-esc="product['name']" />
                             </strong>
                         </h4>
-                        <h5 class="text-muted" style="height: 15px;" t-esc="product['dv_default_code']" />
                         <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price">
                             <b class="text-muted">
+                                <h5>Price from</h5>
                                 <h4>
+                                    <t t-if="show_rec_price">
+                                        <div>
+                                            <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
+                                            <span t-esc="website.price_format(product['recommended_price'])" style="white-space: nowrap;" />
+                                            <span style="display: inline;"><t t-if="rec_tax_included">(rec incl. tax)</t><t t-if="not rec_tax_included">(rec excl. tax)</t></span>
+                                        </div>
+                                    </t>
+                                    <div>
+                                        <b t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
+                                        <b t-esc="website.price_format(product['price'])" style="white-space: nowrap;" />
+                                        <t t-if="is_reseller">
+                                            <span style="display: inline;"><t t-if="tax_included">(your incl. tax)</t><t t-if="not tax_included">(your excl. tax)</t></span>
+                                        </t>
+                                    </div>
+                                    
+<!--
                                     <t t-if="user_id.partner_id.property_product_pricelist == pricelist_af">
+-->
                                         <!-- Återförsäljare 45% -->
+<!--
                                         <div>
                                             <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                             <span t-esc="website.price_format(product['dv_recommended_price'])" style="white-space: nowrap;" />
@@ -172,7 +190,9 @@
                                         </div>
                                     </t>
                                     <t t-if="user_id.partner_id.property_product_pricelist == pricelist_special">
+-->
                                         <!-- Special 20 -->
+<!--
                                         <div>
                                             <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                             <span t-esc="website.price_format(product['dv_recommended_price'])" style="white-space: nowrap;" />
@@ -185,7 +205,9 @@
                                         </div>
                                     </t>
                                     <t t-if="user_id.partner_id.property_product_pricelist == pricelist_us">
+-->
                                         <!-- USA ÅF 65% -->
+<!--
                                         <div>
                                             <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                             <span t-esc="website.price_format(product['dv_recommended_price_en'])" style="white-space: nowrap;" />
@@ -198,7 +220,9 @@
                                         </div>
                                     </t>
                                     <t t-if="user_id.partner_id.property_product_pricelist == pricelist_eu">
+-->
                                         <!-- EURO ÅF 45% -->
+<!--
                                         <div>
                                             <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                             <span t-esc="website.price_format(product['dv_recommended_price_eu'])" style="white-space: nowrap;" />
@@ -211,7 +235,9 @@
                                         </div>
                                     </t>
                                     <t t-if="user_id.partner_id.property_product_pricelist not in [pricelist_af, pricelist_special, pricelist_us, pricelist_eu] and user_id.partner_id.property_product_pricelist.for_reseller">
+-->
                                         <!-- Övriga ÅF-prislistor -->
+<!--
                                         <div>
                                             <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                             <span t-esc="website.price_format(product['dv_recommended_price'])" style="white-space: nowrap;" />
@@ -224,12 +250,15 @@
                                         </div>
                                     </t>
                                     <t t-if="user_id.partner_id.property_product_pricelist not in [pricelist_af, pricelist_special] and not user_id.partner_id.property_product_pricelist.for_reseller">
+-->
                                         <!-- Övriga -->
+<!--
                                         <div>
                                             <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                             <span t-esc="website.price_format(product['dv_recommended_price'])" style="white-space: nowrap;" />
                                         </div>
                                     </t>
+-->
                                 </h4>
                             </b>
                         </div>

@@ -250,10 +250,10 @@ class product_template(models.Model):
     dv_id = fields.Integer(compute='_get_all_variant_data', store=True)
     dv_price_45 = fields.Float(compute='_get_all_variant_data', store=True)
     dv_price_20 = fields.Float(compute='_get_all_variant_data', store=True)
-    dv_recommended_price = fields.Float(compute='_get_all_variant_data', store=True)
     dv_price_en = fields.Float(compute='_get_all_variant_data', store=True)
-    dv_recommended_price_en = fields.Float(compute='_get_all_variant_data', store=True)
     dv_price_eu = fields.Float(compute='_get_all_variant_data', store=True)
+    dv_recommended_price = fields.Float(compute='_get_all_variant_data', store=True)
+    dv_recommended_price_en = fields.Float(compute='_get_all_variant_data', store=True)
     dv_recommended_price_eu = fields.Float(compute='_get_all_variant_data', store=True)
     dv_default_code = fields.Char(compute='_get_all_variant_data', store=True)
     dv_description_sale = fields.Text(compute='_get_all_variant_data', store=True)
@@ -513,6 +513,49 @@ dn_cart_update = {}
 
 class Website(models.Model):
     _inherit = 'website'
+    
+    def get_price_fields(self, pricelist):
+        """Return fields and other pricing data for the specified pricelist."""
+        price_field = None
+        rec_price_field = None
+        show_rec_price = True
+        tax_included = False
+        rec_tax_included = True
+        
+        # Återförsäljare 45%
+        if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
+            price_field = 'price_45'
+            rec_price_field = 'recommended_price'
+        # Special 20
+        elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_special'):
+            price_field = 'price_20'
+            rec_price_field = 'recommended_price'
+        # USA ÅF 65%
+        elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_us'):
+            price_field = 'price_en'
+            rec_price_field = 'recommended_price_en'
+            rec_tax_included = False
+        # EURO ÅF 45%
+        elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_eu'):
+            price_field = 'price_eu'
+            rec_price_field = 'recommended_price_eu'
+            rec_tax_included = False
+        # Övriga ÅF-prislistor
+        elif request.env.user.partner_id.property_product_pricelist.for_reseller:
+            pass
+        # Övriga
+        else:
+            price_field = 'recommended_price'
+            tax_included = True
+            show_rec_price = False
+        
+        return {
+            'price_field': price_field,
+            'rec_price_field': rec_price_field,
+            'show_rec_price': show_rec_price,
+            'tax_included': tax_included,
+            'rec_tax_included': rec_tax_included,
+        }
 
     def handle_error_403(self, path):
         """Emergency actions to perform if we run into an unexpected access error."""
@@ -1065,21 +1108,34 @@ class WebsiteSale(website_sale):
         search_start = timer()
         domain = request.session.get('current_domain')
         current_order = request.session.get('current_order')
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
+        # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
 
-        # TODO: We should probably move all the pricelist logic from the view (webshop_dermanord.products_item) to this code.
-        pricelist_af = request.env.ref('webshop_dermanord.pricelist_af')
-        pricelist_special = request.env.ref('webshop_dermanord.pricelist_special')
-        pricelist_us = request.env.ref('webshop_dermanord.pricelist_us')
-        pricelist_eu = request.env.ref('webshop_dermanord.pricelist_eu')
+        partner_pricelist = request.env.user.partner_id.property_product_pricelist
+        price_data = request.website.get_price_fields(partner_pricelist)
         
-        # Övriga ÅF-prislistor
-        if request.env.user.partner_id.property_product_pricelist not in [pricelist_af, pricelist_special, pricelist_us, pricelist_eu] and request.env.user.partner_id.property_product_pricelist.for_reseller:
-            pl = request.env.user.partner_id.property_product_pricelist.rec_pricelist_id
-            if pl:
-                for product in products:
-                    product['dv_recommended_price'] = pl.price_get(product['dv_id'], 1)[pl.id]
+        if price_data['price_field']:
+            for product in products:
+                cheapest = request.env['product.product'].with_context(pricelist=partner_pricelist.id).search_read([('product_tmpl_id', '=', product['id'])], [price_data['price_field'], price_data['rec_price_field']] if price_data['rec_price_field'] else [price_data['price_field']], limit=1, order=price_data['price_field'])[0]
+                product['price'] = cheapest[price_data['price_field']]
+                if price_data['rec_price_field']:
+                    product['recommended_price'] = cheapest[price_data['rec_price_field']]
+        else:
+            rec_pl = partner_pricelist.rec_pricelist_id
+            for product in products:
+                cheapest = None
+                for variant in request.env['product.product'].search_read([('product_tmpl_id', '=', product['id'])], ['id']):
+                    price = partner_pricelist.price_get(variant['id'], 1)[partner_pricelist.id]
+                    if not cheapest or price < product['price']:
+                        cheapest = variant['id']
+                        product['price'] = price
+                if rec_pl:
+                    product['recommended_price'] = rec_pl.price_get(cheapest, 1)[rec_pl.id]
+                else:
+                    product['recommended_price'] = 0.0
 
+        
+        
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
         #~ request.env['product.template'].get_all_variant_data(products)   2 sek
@@ -1126,6 +1182,9 @@ class WebsiteSale(website_sale):
             'shop_footer': True,
             'page_lang': request.env.lang,
             'no_product_message': no_product_message,
+            'show_rec_price': price_data['show_rec_price'],
+            'tax_included': price_data['tax_included'],
+            'rec_tax_included': price_data['rec_tax_included'],
         }
         # ~ _logger.error('to continue to qweb timer %s\ndomain: %s\npricelist: %s\nsearch: %s\nvalues: %s' % (timer() - start_all, domain_finished - start_all, search_start - domain_finished, search_end - search_start, timer() - search_end))
         render_start = timer()
@@ -1155,11 +1214,12 @@ class WebsiteSale(website_sale):
         # relist which product templates the current user is allowed to see
         # TODO: always get same product in the last?? why?
 
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids', 'dv_description_sale', 'product_variant_ids', 'dv_id'], order=order)
+        # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids', 'dv_description_sale', 'product_variant_ids', 'dv_id'], order=order)
+        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, limit=6, offset=21+int(page)*6, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'website_style_ids', 'dv_description_sale', 'product_variant_ids', 'dv_id'], order=order)
 
         search_end = timer()
         # ~ _logger.warn('search end: %s' %(timer() - start_time))
-
+        
         products_list = []
         is_reseller = False
         currency = ''
@@ -1169,7 +1229,9 @@ class WebsiteSale(website_sale):
             currency = partner_pricelist.currency_id.name
             if partner_pricelist.for_reseller:
                 is_reseller = True
-
+        price_data = request.website.get_price_fields(partner_pricelist)
+        if not price_data['price_field']:
+            rec_pl = partner_pricelist.rec_pricelist_id
         for product in products:
             p_start = timer()
             #~ image_src = ''
@@ -1179,71 +1241,41 @@ class WebsiteSale(website_sale):
             for style in request.env['product.style'].search([]):
                 style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style.id in product['website_style_ids'] else '', style.id, style.html_class, style.name)
 
-            two_price = False
-            # ~ if request.env.user.partner_id.property_product_pricelist.id == 3:
-                # ~ price = product['dv_price_45']
-                # ~ two_price = True
-            # ~ elif request.env.user.partner_id.property_product_pricelist.id == 6:
-                # ~ price = product['dv_price_20']
-                # ~ two_price = True
-            # ~ elif request.env.user.partner_id.property_product_pricelist.id not in [3, 6] and request.env.user.partner_id.property_product_pricelist.for_reseller:
-                # ~ price = request.env['product.product'].browse(product['dv_id']).with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
-                # ~ two_price = True
-            # ~ else:
-                # ~ price = product['dv_recommended_price'] if request.env.user.lang == 'sv_SE' else product['dv_recommended_price_en']
-
-            if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
-                # Återförsäljare 45%
-                price = product['dv_price_45']
-                rec_price = product['dv_recommended_price']
-                tax_included = True
-                two_price = True
-            elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_special'):
-                # Special 20
-                price = product['dv_price_20']
-                rec_price = product['dv_recommended_price']
-                tax_included = True
-                two_price = True
-            elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_us'):
-                # USA ÅF 65%
-                price = product['dv_price_en']
-                rec_price = product['dv_recommended_price_en']
-                tax_included = False
-                two_price = True
-            elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_eu'):
-                # EURO ÅF 45%
-                price = product['dv_price_eu']
-                rec_price = product['dv_recommended_price_eu']
-                tax_included = True
-                two_price = True
-            elif request.env.user.partner_id.property_product_pricelist.for_reseller:
-                # Övriga ÅF-prislistor
-                price = request.env.user.partner_id.property_product_pricelist.price_get(product['id'], 1)[request.env.user.partner_id.property_product_pricelist.id]
-                rec_price = product['dv_recommended_price'] if request.env.user.lang == 'sv_SE' else product['dv_recommended_price_en']
-                tax_included = True
-                two_price = True
+            if price_data['price_field']:
+                cheapest = request.env['product.product'].with_context(pricelist=partner_pricelist.id).search_read([('product_tmpl_id', '=', product['id'])], [price_data['price_field'], price_data['rec_price_field']] if price_data['rec_price_field'] else [price_data['price_field']], limit=1, order=price_data['price_field'])[0]
+                product['price'] = cheapest[price_data['price_field']]
+                if price_data['rec_price_field']:
+                    product['recommended_price'] = cheapest[price_data['rec_price_field']]
+                else:
+                    product['recommended_price'] = 0.0
             else:
-                price = product['dv_recommended_price']
-                rec_price = product['dv_recommended_price']
-                tax_included = True
+                cheapest = None
+                for variant in request.env['product.product'].search_read([('product_tmpl_id', '=', product['id'])], ['id']):
+                    price = partner_pricelist.price_get(variant['id'], 1)[partner_pricelist.id]
+                    if not cheapest or price < product['price']:
+                        cheapest = variant['id']
+                        product['price'] = price
+                if rec_pl:
+                    product['recommended_price'] = rec_pl.price_get(cheapest, 1)[rec_pl.id]
+                else:
+                    product['recommended_price'] = 0.0
 
             products_list.append({
                 'product_href': '/dn_shop/product/%s' %product['id'],
                 'product_id': product['id'],
-                'product_name': product['dv_name'],
+                'product_name': product['name'],
                 'is_offer_product': product['is_offer_product_reseller'] if request.env.user.partner_id.property_product_pricelist.for_reseller else product['is_offer_product_consumer'],
                 'style_options': style_options,
                 'grid_ribbon_style': 'dn_product_div %s' %product['dv_ribbon'],
                 'product_img_src': product['dv_image_src'],
-                #~ 'price': request.website.price_format(partner_pricelist.price_get(product['dv_id'], 1)[partner_pricelist.id] if product['dv_id'] else 0.0),
-                'price': request.website.price_format(price),
-                'list_price_tax': request.website.price_format(rec_price),
-                'tax_included': tax_included,
-                'two_price': two_price,
+                'price': request.website.price_format(product['price']),
+                'recommended_price': request.website.price_format(product['recommended_price']),
+                'tax_included': price_data['tax_included'],
+                'rec_tax_included': price_data['rec_tax_included'],
+                'show_rec_price': price_data['show_rec_price'],
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
-                'is_reseller': 'yes' if is_reseller else 'no',
-                'default_code': product['dv_default_code'],
+                'is_reseller': is_reseller,
                 'description_sale': product['dv_description_sale'],
                 'product_variant_ids': True if product['product_variant_ids'] else False,
                 'load_time': timer() - p_start,
@@ -1276,106 +1308,94 @@ class WebsiteSale(website_sale):
                 domain[domain.index(d)] = ('product_tmpl_id', domain[domain.index(d)][1], domain[domain.index(d)][2])
         # relist which product templates the current user is allowed to see
         #~ products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
-        products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'fullname', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids', 'website_style_ids_variant', 'sale_ok', 'product_tmpl_id', 'is_mto_route', 'instock_percent'], limit=10, offset=PPG + page * 10, order=current_order)
+        partner_pricelist = request.env.user.partner_id.property_product_pricelist
+        price_data = request.website.get_price_fields(partner_pricelist)
+        p_fields = ['id', 'name', 'fullname', 'campaign_ids', 'attribute_value_ids', 'default_code', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids', 'website_style_ids_variant', 'sale_ok', 'product_tmpl_id', 'is_mto_route', 'instock_percent']
+        if price_data['price_field']:
+            p_fields.append(price_data['price_field'])
+        else:
+            rec_pl = partner_pricelist.rec_pricelist_id
+        if price_data['rec_price_field']:
+            p_fields.append(price_data['rec_price_field'])
+        products = request.env['product.product'].with_context(pricelist=partner_pricelist.id).search_read(domain, fields=p_fields, limit=10, offset=PPG + page * 10, order=current_order)
 
         products_list = []
-        partner_pricelist = request.env.user.partner_id.property_product_pricelist
         currency = ''
         is_reseller = False
         if partner_pricelist:
             currency = partner_pricelist.currency_id.name
             if partner_pricelist.for_reseller:
                 is_reseller = True
-        pricelist_af = request.env.ref('webshop_dermanord.pricelist_af')
-        pricelist_special = request.env.ref('webshop_dermanord.pricelist_special')
-        pricelist_us = request.env.ref('webshop_dermanord.pricelist_us')
-        pricelist_eu = request.env.ref('webshop_dermanord.pricelist_eu')
+
         dp = request.env['res.lang'].search_read([('code', '=', request.env.lang)], ['decimal_point'])
         dp = dp and dp[0]['decimal_point'] or '.'
-        for p in products:
+        for product in products:
             p_start = timer()
-            if len(p['campaign_ids']) > 0:
-                campaign = request.env['crm.tracking.campaign'].browse(p['campaign_ids'][0])
+            if len(product['campaign_ids']) > 0:
+                campaign = request.env['crm.tracking.campaign'].browse(product['campaign_ids'][0])
                 if len(campaign) > 0:
-                    p['campaign'] = {
+                    product['campaign'] = {
                         'start_date': campaign.date_start,
                         'end_date': campaign.date_stop or '',
                     }
                 else:
-                    p['campaign'] = {
+                    product['campaign'] = {
                         'start_date': '',
                         'end_date': '',
                     }
             else:
-                tmpl = request.env['product.template'].search_read([('id', '=', p.get('product_tmpl_id', [0])[0])], ['campaign_ids'])
+                tmpl = request.env['product.template'].search_read([('id', '=', product.get('product_tmpl_id', [0])[0])], ['campaign_ids'])
                 if len(tmpl[0]['campaign_ids']) > 0:
                     campaign = request.env['crm.tracking.campaign'].browse(tmpl[0]['campaign_ids'][0][0])
                     if len(campaign) > 0:
-                        p['campaign'] = {
+                        product['campaign'] = {
                             'start_date': campaign.date_start,
                             'end_date': campaign.date_stop or '',
                         }
                 else:
-                    p['campaign'] = {
+                    product['campaign'] = {
                         'start_date': '',
                         'end_date': '',
                     }
-            instock = self.in_stock(p)
-            p['sale_ok'] = True if (p['sale_ok'] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller and instock[0]) else False
+            instock = self.in_stock(product)
+            product['sale_ok'] = True if (product['sale_ok'] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller and instock[0]) else False
 
-            if request.env.user.partner_id.property_product_pricelist == pricelist_af:
-                # Återförsäljare 45%
-                price = p['price_45']
-                rec_price = p['recommended_price']
-                tax_included = True
-            elif request.env.user.partner_id.property_product_pricelist == pricelist_special:
-                # Special 20
-                price = p['price_20']
-                rec_price = p['recommended_price']
-                tax_included = True
-            elif request.env.user.partner_id.property_product_pricelist == pricelist_us:
-                # USA ÅF 65%
-                price = p['price_en']
-                rec_price = p['recommended_price_en']
-                tax_included = False
-            elif request.env.user.partner_id.property_product_pricelist == pricelist_eu:
-                # EURO ÅF 45%
-                price = p['price_eu']
-                rec_price = p['recommended_price_eu']
-                tax_included = True
-            elif request.env.user.partner_id.property_product_pricelist.for_reseller:
-                # Övriga ÅF-prislistor
-                price = request.env.user.partner_id.property_product_pricelist.price_get(p['id'], 1)[request.env.user.partner_id.property_product_pricelist.id]
-                rec_price = p['recommended_price'] if request.env.user.lang == 'sv_SE' else p['recommended_price_en']
-                tax_included = False
+            if price_data['price_field']:
+                product['price'] = product[price_data['price_field']]
+                if price_data['rec_price_field']:
+                    product['recommended_price'] = product[price_data['rec_price_field']]
+                else:
+                    product['recommended_price'] = 0.0
             else:
-                price = p['recommended_price']
-                rec_price = p['recommended_price']
-                tax_included = True
+                product['price'] = partner_pricelist.price_get(product['id'], 1)[partner_pricelist.id]
+                if rec_pl:
+                    product['recommended_price'] = rec_pl.price_get(product['id'], 1)[rec_pl.id]
+                else:
+                    product['recommended_price'] = 0.0
             
             products_list.append({
                 'lst_ribbon_style': 'tr_lst',
-                'product_id': p['id'],
-                'product_href': '/dn_shop/variant/%s' %p['id'],
-                'product_name': p['name'],
-                'is_news_product': (sale_ribbon.id in p['website_style_ids']) or (sale_ribbon.id in p['website_style_ids_variant']),
-                'is_limited_product': (limited_ribbon.id in p['website_style_ids']) or (limited_ribbon.id in p['website_style_ids_variant']),
-                'is_offer_product': p['is_offer_product_reseller'] if request.env.user.partner_id.property_product_pricelist.for_reseller else p['is_offer_product_consumer'],
-                'campaign': True if p['campaign'] else False,
-                #~ 'product_name_col': 'product_price col-md-6 col-sm-6 col-xs-12' if p['purchase_phase']['phase'] else 'product_price col-md-8 col-sm-8 col-xs-12',
+                'product_id': product['id'],
+                'product_href': '/dn_shop/variant/%s' %product['id'],
+                'product_name': product['name'],
+                'is_news_product': (sale_ribbon.id in product['website_style_ids']) or (sale_ribbon.id in product['website_style_ids_variant']),
+                'is_limited_product': (limited_ribbon.id in product['website_style_ids']) or (limited_ribbon.id in product['website_style_ids_variant']),
+                'is_offer_product': product['is_offer_product_reseller'] if request.env.user.partner_id.property_product_pricelist.for_reseller else product['is_offer_product_consumer'],
+                'campaign': True if product['campaign'] else False,
+                #~ 'product_name_col': 'product_price col-md-6 col-sm-6 col-xs-12' if product['purchase_phase']['phase'] else 'product_price col-md-8 col-sm-8 col-xs-12',
                 'product_name_col': 'product_name',
-                'campaign_start_date': p['campaign']['start_date'],
-                'campaign_end_date': p['campaign']['end_date'],
-                'price': request.website.price_format(price, dp),
-                'recommended_price': request.website.price_format(rec_price, dp),
-                'tax_included': tax_included,
+                'campaign_start_date': product['campaign']['start_date'],
+                'campaign_end_date': product['campaign']['end_date'],
+                'price': request.website.price_format(product['price'], dp),
+                'recommended_price': request.website.price_format(product['recommended_price'], dp),
+                'tax_included': price_data['rec_tax_included'],
                 #~ 'tax': "%.2f" %request.website.price_format(tax),
                 'currency': currency,
                 'rounding': request.website.pricelist_id.currency_id.rounding,
                 'is_reseller': 'yes' if is_reseller else 'no',
-                'default_code': p['default_code'] or '',
-                'fullname': p['fullname'],
-                'sale_ok': p['sale_ok'],
+                'default_code': product['default_code'] or '',
+                'fullname': product['fullname'],
+                'sale_ok': product['sale_ok'],
                 'load_time': timer() - p_start,
                 'instock': instock,
             })

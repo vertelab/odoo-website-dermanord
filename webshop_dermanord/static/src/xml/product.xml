@@ -51,30 +51,21 @@
                                 <a itemprop="name" t-att-href="product_href"><t t-esc="product_name"/></a>
                             </strong>
                         </h4>
-                        <h5 class="text-muted" style="height: 15px;"><t t-esc="default_code"/></h5>
 <!--
                         <h5 class="p_desc"><t t-esc="description_sale"/></h5>
 -->
                         <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price" t-if="product_variant_ids">
                             <b class="text-muted">
+                                <h5>Price from</h5>
                                 <h4>
-                                    <t t-if="is_reseller == 'no'">
-                                        <span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_price" t-esc="price" style="white-space: nowrap;" />
+                                    <t t-if="show_rec_price">
+                                        <div>
+                                            <span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_recommended_price" t-esc="recommended_price" style="display: inline;"/> <span t-if="rec_tax_included" style="display: inline;">(rec incl. tax)</span><span t-if="! rec_tax_included" style="display: inline;">(rec excl. tax)</span>
+                                        </div>
                                     </t>
-
-                                    <t t-if="is_reseller == 'yes'">
-                                        <t t-if="two_price">
-                                            <div>
-                                                <span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_recommended_price" t-esc="list_price_tax" style="display: inline;"/> <span t-if="tax_included" style="display: inline;">(rec incl. tax)</span><span t-if="! tax_included" style="display: inline;">(rec excl. tax)</span>
-                                            </div>
-                                            <div>
-                                                <b><span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_price" t-esc="price"/></b> <span style="display: inline;">(your excl. tax)</span>
-                                            </div>
-                                        </t>
-                                        <t t-if="!two_price">
-                                            <span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_price" t-esc="price" style="white-space: nowrap;" />
-                                        </t>
-                                    </t>
+                                    <div>
+                                        <b><span itemprop="priceCurrency" t-esc="currency" /> <span class="oe_price" t-esc="price"/></b> <span t-if="is_reseller" style="display: inline;">(your excl. tax)</span>
+                                    </div>
                                 </h4>
                             </b>
                         </div>
