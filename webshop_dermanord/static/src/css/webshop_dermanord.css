@@ -650,6 +650,14 @@ select.dn_selection_dropdown + i.fa {
     color: #CB683F;
 }
 
+#order_comment {
+	padding: 0px 15px;
+}
+
+address.mb0 {
+	padding: 0px 15px 15px 15px;
+}
+
 /*
 .dn_product_div.oe_offer_ribbon_promo .offer-ribbon-wrapper {
    display: block;
