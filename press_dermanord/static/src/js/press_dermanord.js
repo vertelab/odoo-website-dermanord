@@ -1,6 +1,6 @@
 $(".img_press_block").each(function () {
     var img_url = $(this).find(".img_2_change").attr("src");
-    if(img_url.indexOf("imagemagick") == -1) {
+    if(img_url.indexOf("imagefield") == -1) {
         var id = img_url.substring(img_url.lastIndexOf("ir.attachment/")+14, img_url.lastIndexOf("_"));
         $(this).find(".img_press_website").attr("href", "/imagefield/ir.attachment/datas/" + id + "/ref/press_dermanord.image_website");
         $(this).find(".img_press_original").attr("href", "/imagefield/ir.attachment/datas/" + id + "/ref/press_dermanord.image_original");
