@@ -708,6 +708,34 @@ tr.tr_lst td {
     position: relative;
 }
 
+/* Override original css when max-width equals 500px */
+@media (max-width: 500px) {
+	.oe_cart table thead, #modal_optional_products table thead {
+		display: unset;
+	}
+	.oe_cart table td:first-child, #modal_optional_products table td:first-child {
+		display: unset;
+	}
+	.oe_cart table td:last-child, #modal_optional_products table td:last-child {
+		margin-bottom: 0px;
+	}
+	.oe_cart table td:last-child, .oe_cart table td:nth-last-child(2), #modal_optional_products table td:last-child, #modal_optional_products table td:nth-last-child(2) {
+		width: 50% !important;
+		height: unset;
+		text-align: left;
+	}
+	.oe_cart table td:nth-child(2), #modal_optional_products table td:nth-child(2) {
+		border-top-style: unset;
+		border-top-width: unset;
+	}
+	#order_total th:first-child {
+		width: 50%;
+	}
+	a.js_remove_cart_json {
+		float: right;
+	}
+}
+
 @media screen and (min-width: 992px) {
     #image_nav > li {
         width: 24.7% !important;
