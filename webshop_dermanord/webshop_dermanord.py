@@ -1285,6 +1285,7 @@ class WebsiteSale(website_sale):
                 'is_reseller': is_reseller,
                 'description_sale': product['dv_description_sale'],
                 'product_variant_ids': True if product['product_variant_ids'] else False,
+                'lang': request.env.lang,
                 'load_time': timer() - p_start,
             })
 

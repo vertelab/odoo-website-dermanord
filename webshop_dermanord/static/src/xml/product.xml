@@ -22,12 +22,26 @@
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="grid_ribbon_style">
                     <div class="ribbon-wrapper">
-                        <div t-if="grid_ribbon_style == 'dn_product_div oe_ribbon_promo'" class="ribbon ribbon_news btn btn-primary">New</div>
+                        <div t-if="grid_ribbon_style == 'dn_product_div oe_ribbon_promo'" class="ribbon ribbon_news btn btn-primary">
+                            <t t-if="lang == 'sv_SE'">
+                                Nyhet
+                            </t>
+                            <t t-if="lang != 'sv_SE'">
+                                New
+                            </t>
+                        </div>
                         <div t-if="grid_ribbon_style == 'dn_product_div oe_ribbon_limited'" class="ribbon ribbon_limited btn btn-primary">Limited<br/>Edition</div>
                     </div>
                     <t t-if="is_offer_product">
                         <div class="offer-wrapper">
-                            <div class="ribbon ribbon_offer btn btn-primary">Offer</div>
+                            <div class="ribbon ribbon_offer btn btn-primary">
+                                <t t-if="lang == 'sv_SE'">
+                                    Erbjudande
+                                </t>
+                                <t t-if="lang != 'sv_SE'">
+                                    Offer
+                                </t>
+                            </div>
 <!--
                             <i class="fa fa-gift fa-3x" title="Offer"/>
 -->
@@ -39,7 +53,12 @@
                                 <img itemprop="image" class="img img-responsive" t-att-src="product_img_src" t-att-alt="product_name" />
                                 <div class="dn_product_image_hover_btn text-center hidden-xs">
                                     <p class="dn_btn dn_primary">
-                                        DETAILS
+                                        <t t-if="lang == 'sv_SE'">
+                                            DETALJER
+                                        </t>
+                                        <t t-if="lang != 'sv_SE'">
+                                            DETAILS
+                                        </t>
                                     </p>
                                 </div>
                             </a>
