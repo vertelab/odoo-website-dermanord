@@ -60,7 +60,12 @@
                     <h6 class="text-center">
                         <span t-field="current_ingredient.name" />
                     </h6>
-                    <img t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(current_ingredient.id, 'webshop_dermanord.img_ingredients_big')" />
+                    <t t-if="current_ingredient.image">
+                        <img t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(current_ingredient.id, 'webshop_dermanord.img_ingredients_big')" />
+                    </t>
+                    <t t-if="not current_ingredient.image">
+                        <img src="/web/static/src/img/placeholder.png" />
+                    </t>
                     <p class="mt16">
                         <span t-field="current_ingredient.description" />
                     </p>
