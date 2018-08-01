@@ -361,7 +361,7 @@ class product_product(models.Model):
             self.is_offer_product_consumer = self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False)
     is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
     is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
-    
+
     @api.multi
     def format_facets(self,facet):
         self.ensure_one()
@@ -513,7 +513,7 @@ dn_cart_update = {}
 
 class Website(models.Model):
     _inherit = 'website'
-    
+
     def get_price_fields(self, pricelist):
         """Return fields and other pricing data for the specified pricelist."""
         price_field = None
@@ -521,7 +521,7 @@ class Website(models.Model):
         show_rec_price = True
         tax_included = False
         rec_tax_included = True
-        
+
         # Återförsäljare 45%
         if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
             price_field = 'price_45'
@@ -548,7 +548,7 @@ class Website(models.Model):
             price_field = 'recommended_price'
             tax_included = True
             show_rec_price = False
-        
+
         return {
             'price_field': price_field,
             'rec_price_field': rec_price_field,
@@ -712,7 +712,7 @@ class Website(models.Model):
         request.session['current_domain'] = domain
 
     # API handling broken for unknown reasons. Decorators not working properly with this method.
-    def sale_get_order(self, cr, uid, ids, force_create=False, code=None, update_pricelist=None, context=None):
+    def sale_get_order(self, cr, uid, ids, force_create=False, code=None, update_pricelist=None, check_draft=True, context=None):
         env = api.Environment(cr, uid, context)
         sale_order_obj = env['sale.order']
         sale_order_id = request.session.get('sale_order_id')
@@ -723,7 +723,7 @@ class Website(models.Model):
                 #~ sale_order_id = None
 
         # Test validity of the sale_order_id
-        sale_order = env['sale.order'].sudo().search([('id', '=', sale_order_id),('state', '=', 'draft')])  # Don't find closed order
+        sale_order = env['sale.order'].sudo().search([('id', '=', sale_order_id)] + ([('state', '=', 'draft')] if check_draft else []))  # Don't find closed order
 
         # Find old sale order that is a webshop cart.
         if env.user != env.ref('base.public_user') and not sale_order:
@@ -804,6 +804,13 @@ class Website(models.Model):
 class WebsiteSale(website_sale):
 
     dn_cart_lock = Lock()
+
+    @http.route('/shop/payment/validate', type='http', auth="public", website=True)
+    def payment_validate(self, transaction_id=None, sale_order_id=None, **post):
+        if sale_order_id is None:
+            order = request.website.sale_get_order(check_draft=False, context=request.context)
+            return super(WebsiteSale, self).payment_validate(transaction_id, order.id, **post)
+        return super(WebsiteSale, self).payment_validate(transaction_id, sale_order_id, **post)
 
     @http.route([
         '/shop',
@@ -1113,7 +1120,7 @@ class WebsiteSale(website_sale):
 
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
         price_data = request.website.get_price_fields(partner_pricelist)
-        
+
         if price_data['price_field']:
             for product in products:
                 cheapest = request.env['product.product'].with_context(pricelist=partner_pricelist.id).search_read([('product_tmpl_id', '=', product['id'])], [price_data['price_field'], price_data['rec_price_field']] if price_data['rec_price_field'] else [price_data['price_field']], limit=1, order=price_data['price_field'])[0]
@@ -1134,8 +1141,8 @@ class WebsiteSale(website_sale):
                 else:
                     product['recommended_price'] = 0.0
 
-        
-        
+
+
         #~ _logger.error('timer %s' % (timer() - start))  0.05 sek
         search_end = timer()
         #~ request.env['product.template'].get_all_variant_data(products)   2 sek
@@ -1219,7 +1226,7 @@ class WebsiteSale(website_sale):
 
         search_end = timer()
         # ~ _logger.warn('search end: %s' %(timer() - start_time))
-        
+
         products_list = []
         is_reseller = False
         currency = ''
@@ -1372,7 +1379,7 @@ class WebsiteSale(website_sale):
                     product['recommended_price'] = rec_pl.price_get(product['id'], 1)[rec_pl.id]
                 else:
                     product['recommended_price'] = 0.0
-            
+
             products_list.append({
                 'lst_ribbon_style': 'tr_lst',
                 'product_id': product['id'],
