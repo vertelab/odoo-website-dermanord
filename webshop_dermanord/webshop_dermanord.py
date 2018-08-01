@@ -205,7 +205,7 @@ class product_template(models.Model):
                 continue
             try:
                 variant = p.get_default_variant().read(['name', 'fullname', 'price', 'price_45', 'price_20', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu', 'default_code', 'description_sale', 'image_main_id', 'website_style_ids_variant', 'sale_ok'])[0]
-                if not variant['sale_ok']:
+                if p.sale_ok and not variant['sale_ok']:
                     raise Warning(_('Default variant on %s can not be sold' % p.name))
                 website_style_ids_variant = ' '.join([s['html_class'] for s in self.env['product.style'].browse(variant['website_style_ids_variant']).read(['html_class'])])
                 p.dv_id = variant['id']
