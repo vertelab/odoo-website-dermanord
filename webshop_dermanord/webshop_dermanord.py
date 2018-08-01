@@ -242,7 +242,7 @@ class product_template(models.Model):
                 p.dv_price_eu = 0.0
                 p.dv_recommended_price_eu = 0.0
                 p.dv_default_code = '%s' % 'error'
-                p.dv_description_sale = '%s' % e[1]
+                p.dv_description_sale = u'%s' % e[1]
                 p.dv_name = 'Error'
                 p.dv_image_src = placeholder
                 p.dv_ribbon = ''
