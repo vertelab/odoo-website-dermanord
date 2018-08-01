@@ -172,7 +172,7 @@
                                             <span style="display: inline;"><t t-if="tax_included">(your incl. tax)</t><t t-if="not tax_included">(your excl. tax)</t></span>
                                         </t>
                                     </div>
-                                    
+
 <!--
                                     <t t-if="user_id.partner_id.property_product_pricelist == pricelist_af">
 -->
@@ -700,7 +700,7 @@
                         <t t-if="product_product and product_product.facet_line_ids">
                             <div class="col-md-6">
                                 <t t-foreach="product_product.facet_line_ids.mapped('facet_id')" t-as="facet">
-                                    
+
                                     <h2 class="dn_uppercase" t-field="facet.name" />
                                     <t t-raw="product_product.format_facets(facet)"/>
                                     <!--

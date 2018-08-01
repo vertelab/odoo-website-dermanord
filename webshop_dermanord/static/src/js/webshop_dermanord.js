@@ -356,9 +356,11 @@ $(document).ready(function(){
                         success: function(data) {
                             if (data == '1') {
                                 $("a#process_checkout").attr("disabled", false);
+                                $("tr#value_not_met").addClass("hidden");
                             }
                             if (data == '0') {
                                 $("a#process_checkout").attr("disabled", true);
+                                $("tr#value_not_met").removeClass("hidden");
                             }
                         }
                     });

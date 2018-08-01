@@ -574,3 +574,8 @@ msgstr "Ha en fortsatt bra dag!"
 #: view:website:website_sale.confirmation
 msgid "Your transaction is waiting confirmation."
 msgstr "Din transaktion väntar på bekräftelse."
+
+#. module: webshop_dermanord
+#: view:website:website_sale.total
+msgid "Minimum order value is not met"
+msgstr "Uppfyller inte lägsta ordervärde"
