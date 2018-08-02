@@ -81,7 +81,7 @@
                                     <p><a href="/reseller_register/new">Läs mer om hur vi samarbetar och anmäl ditt intresse här.</a></p>
                                 </div>
                                 <div class="col-md-12 col-sm-12 col-xs-12 mb16">
-                                    <div class="grid">
+                                    <div class="grid readable">
                                         <t t-if="resellers">
                                             <t t-foreach="resellers" t-as="reseller">
                                                 <div class="reseller_cell grid-item" style="width: 33.333%;">
