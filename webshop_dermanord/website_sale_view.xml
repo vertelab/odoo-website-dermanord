@@ -814,13 +814,13 @@
                 </t>
             </xpath>
             <xpath expr="//select[@class='form-control js_variant_change']/t[@t-foreach='variant_id.value_ids']" position="attributes">
-                <attribute name="t-foreach">accessable_value_ids</attribute>
+                <attribute name="t-foreach">accessable_value_ids.sorted(key=lambda r: r.sequence)</attribute>
             </xpath>
             <xpath expr="//ul[@class='list-unstyled']/t[@t-foreach='variant_id.value_ids']" position="attributes">
-                <attribute name="t-foreach">accessable_value_ids</attribute>
+                <attribute name="t-foreach">accessable_value_ids.sorted(key=lambda r: r.sequence)</attribute>
             </xpath>
             <xpath expr="//ul[@class='list-inline']/li[@t-foreach='variant_id.value_ids']" position="attributes">
-                <attribute name="t-foreach">accessable_value_ids</attribute>
+                <attribute name="t-foreach">accessable_value_ids.sorted(key=lambda r: r.sequence)</attribute>
             </xpath>
         </template>
 
