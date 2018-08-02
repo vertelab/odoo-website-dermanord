@@ -205,7 +205,7 @@ class product_template(models.Model):
                 continue
             try:
                 variant = p.get_default_variant().read(['name', 'fullname', 'price', 'price_45', 'price_20', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu', 'default_code', 'description_sale', 'image_main_id', 'website_style_ids_variant', 'sale_ok'])[0]
-                if not variant['sale_ok']:
+                if p.sale_ok and not variant['sale_ok']:
                     raise Warning(_('Default variant on %s can not be sold' % p.name))
                 website_style_ids_variant = ' '.join([s['html_class'] for s in self.env['product.style'].browse(variant['website_style_ids_variant']).read(['html_class'])])
                 p.dv_id = variant['id']
@@ -242,7 +242,7 @@ class product_template(models.Model):
                 p.dv_price_eu = 0.0
                 p.dv_recommended_price_eu = 0.0
                 p.dv_default_code = '%s' % 'error'
-                p.dv_description_sale = '%s' % e[1]
+                p.dv_description_sale = u'%s' % e[1]
                 p.dv_name = 'Error'
                 p.dv_image_src = placeholder
                 p.dv_ribbon = ''
@@ -1286,6 +1286,7 @@ class WebsiteSale(website_sale):
                 'is_reseller': is_reseller,
                 'description_sale': product['dv_description_sale'],
                 'product_variant_ids': True if product['product_variant_ids'] else False,
+                'lang': request.env.lang,
                 'load_time': timer() - p_start,
             })
 
