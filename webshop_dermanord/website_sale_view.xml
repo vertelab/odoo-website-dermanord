@@ -294,11 +294,12 @@
                                 <table t-if="no_product_message == ''" class="product_list_table table table-striped" style="width: 100%;">
                                     <thead>
                                         <tr>
-                                            <td />
-                                            <td>Art. nr</td>
-                                            <td>Produkt</td>
-                                            <td>Säljstart kund</td>
-                                            <td style="min-width: 100px;">Ditt pris</td>
+                                            <th />
+                                            <th>Art. nr</th>
+                                            <th>Produkt</th>
+                                            <th>Säljstart kund</th>
+                                            <th style="min-width: 100px;">Ditt pris</th>
+                                            <th />
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -307,8 +308,8 @@
                                         <t t-set="pricelist_us" t-value="request.env.ref('webshop_dermanord.pricelist_us')"/>
                                         <t t-set="pricelist_eu" t-value="request.env.ref('webshop_dermanord.pricelist_eu')"/>
                                         <t t-foreach="products" t-as="product">
-                                            <t t-set="start_time" t-value="time.time()" />
                                             <tr t-att-class="'tr_lst %s' % product['get_this_variant_ribbon']">
+                                                <t t-set="start_time" t-value="time.time()" />
                                                 <td class="td_lst">
                                                     <div class="lst-ribbon-wrapper">
                                                         <span t-if="'oe_ribbon_promo' in product['get_this_variant_ribbon'].split(',')">New</span>
@@ -434,10 +435,10 @@
                                                     <span class="dn_list_instock"><t t-esc="(product['instock'][2] != 'in') and product['instock'][1] or ''"/></span>
                                                 </td>
                                                 <td t-if="not product['sale_ok']"/>
+                                                <script>
+                                                    console.log('<t t-esc="'product: %s, load time: %s' %(product['id'], time.time() - start_time)" />');
+                                                </script>
                                             </tr>
-                                            <script>
-                                                console.log('<t t-esc="'product: %s, load time: %s' %(product['id'], time.time() - start_time)" />');
-                                            </script>
                                         </t>
                                     </tbody>
                                 </table>
