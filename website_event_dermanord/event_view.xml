@@ -70,6 +70,14 @@
                 </t>
                 <t t-if="not event.event_ticket_ids.filtered(lambda t: not t.is_expired)">No bookable activities</t>
             </xpath>
+            <xpath expr="//span[@t-if='not ticket.seats_available and ticket.seats_max']/.." position="replace">
+                <td>
+                    <select t-if="(ticket.seats_available or not ticket.seats_max) and (event.seats_available or not event.seats_max)" t-attf-name="ticket-#{ ticket.id }" class="form-control">
+                        <t t-foreach="range(0, min((ticket.seats_available or 9) + 1, 10))" t-as="nb"><option t-esc="nb"/></t>
+                    </select>
+                    <span t-if="not ticket.seats_available and ticket.seats_max or not event.seats_available and event.seats_max">Sold Out</span>
+                </td>
+            </xpath>
         </template>
 
         <record id="view_event_form" model="ir.ui.view">
