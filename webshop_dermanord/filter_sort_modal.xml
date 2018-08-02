@@ -271,18 +271,18 @@
                         </label></div></li>
                         <li><div class="radio"><label>
                             <t t-if="request.session.get('form_values')">
-                                <input type="radio" name="order" value="name asc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'name asc' else {}"/> Name Ascending
+                                <input type="radio" name="order" value="name asc, default_code asc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'name asc, default_code asc' else {}"/> Name Ascending
                             </t>
                             <t t-if="not request.session.get('form_values')">
-                                <input type="radio" name="order" value="name asc"/> Name Ascending
+                                <input type="radio" name="order" value="name asc, default_code asc"/> Name Ascending
                             </t>
                         </label></div></li>
                         <li><div class="radio"><label>
                             <t t-if="request.session.get('form_values')">
-                                <input type="radio" name="order" value="name desc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'name desc' else {}"/> Name Descending
+                                <input type="radio" name="order" value="name desc, default_code desc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'name desc, default_code desc' else {}"/> Name Descending
                             </t>
                             <t t-if="not request.session.get('form_values')">
-                                <input type="radio" name="order" value="name desc"/> Name Descending
+                                <input type="radio" name="order" value="name desc, default_code desc"/> Name Descending
                             </t>
                         </label></div></li>
                         <li><div class="radio"><label>
@@ -586,8 +586,8 @@
                 <select id="descktop_sort_selector" name="order" class="form-control selectpicker dropdown dn_selection_dropdown" onchange="this.form.submit();">
                     <t t-if="request.session.get('form_values')">
                         <option value="sold_qty desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'sold_qty desc' else {}">Most Sold</option>
-                        <option value="name asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'name asc' else {}">Name Ascending</option>
-                        <option value="name desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'name desc' else {}">Name Descending</option>
+                        <option value="name asc, default_code asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'name asc, default_code asc' else {}">Name Ascending</option>
+                        <option value="name desc, default_code desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'name desc, default_code desc' else {}">Name Descending</option>
                         <option value="list_price asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'list_price asc' else {}">Price Ascending</option>
                         <option value="list_price desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'list_price desc' else {}">Price Descending</option>
 <!--
@@ -599,8 +599,8 @@
                     </t>
                     <t t-if="not request.session.get('form_values')">
                         <option value="sold_qty desc" select="1">Most Sold</option>
-                        <option value="name asc">Name Ascending</option>
-                        <option value="name desc">Name Descending</option>
+                        <option value="name asc, default_code asc">Name Ascending</option>
+                        <option value="name desc, default_code desc">Name Descending</option>
                         <option value="list_price asc">Price Ascending</option>
                         <option value="list_price desc">Price Descending</option>
 <!--
