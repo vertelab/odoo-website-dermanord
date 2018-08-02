@@ -1131,12 +1131,13 @@ class WebsiteSale(website_sale):
             rec_pl = partner_pricelist.rec_pricelist_id
             for product in products:
                 cheapest = None
+                product['price'] = 0.0
                 for variant in request.env['product.product'].search_read([('product_tmpl_id', '=', product['id'])], ['id']):
                     price = partner_pricelist.price_get(variant['id'], 1)[partner_pricelist.id]
                     if not cheapest or price < product['price']:
                         cheapest = variant['id']
                         product['price'] = price
-                if rec_pl:
+                if rec_pl and cheapest:
                     product['recommended_price'] = rec_pl.price_get(cheapest, 1)[rec_pl.id]
                 else:
                     product['recommended_price'] = 0.0

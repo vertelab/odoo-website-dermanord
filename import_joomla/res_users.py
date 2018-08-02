@@ -95,12 +95,14 @@ class DermanordImport(models.TransientModel):
                 if row[4] == '0':
                     # Check for contact
                     contact = None
-                    for partner in self.env['res.partner'].search([('customer_no', '=', customer_no), ('email', '=ilike', email), ('type', '=', 'contact')]):
+                    for partner in self.env['res.partner'].search([('customer_no', '=', customer_no), ('email', '=ilike', email), ('type', '=', 'contact'), ('is_company', '=', False)]):
+                        _logger.warn('matching partner %s (%s)' % (partner.name, partner.id))
                         if not contact:
                             contact = partner
                         else:
                             # Multiple hits. Compare names and find best match
                             if SequenceMatcher(None, name, partner.name).ratio() > SequenceMatcher(None, name, contact.name).ratio():
+                                _logger.warn('replaced %s with %s' % (contact.id, partner.id))
                                 contact = partner
                     
                     # Check for parent and create new contact
@@ -109,6 +111,7 @@ class DermanordImport(models.TransientModel):
                         if parent:
                             contact = self.env['res.partner'].create({
                                 'name': name,
+                                'use_parent_address': True,
                                 'email': email,
                                 'parent_id': parent.id,
                                 'type': 'contact',
@@ -139,7 +142,7 @@ class DermanordImport(models.TransientModel):
                             #~ 'category_id': [(6, 0, [unmatched.id])],
                         #~ })
                 elif row[4] == '1':
-                    _logger.warn('\n\n%s\n%s\n%s\n' % (name, customer_no, email))
+                    # ~ _logger.warn('\n\n%s\n%s\n%s\n' % (name, customer_no, email))
                     info.append(u"Hoppade över %s (%s, %s). Joomla-användaren inaktiverad." % (name, customer_no, email))
 
         messages = ''
