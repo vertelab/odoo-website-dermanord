@@ -313,10 +313,8 @@
                         <span class="oe_snippet_thumbnail_title">Product Highlights</span>
                     </div>
                     <section class="oe_snippet_body product_highlights">
-                        <div class="container">
-                            <div class="row mt32 mb32">
-                                <div class="product_div"/>
-                            </div>
+                        <div class="container mt32 mb32" style="padding: 0px;">
+                            <div class="product_div"/>
                         </div>
                     </section>
                 </div><!-- End of product block -->
