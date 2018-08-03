@@ -727,8 +727,14 @@ class Website(models.Model):
 
         # Find old sale order that is a webshop cart.
         if env.user != env.ref('base.public_user') and not sale_order:
+            # Check for staff purchases
+            employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
+            if employee and employee.address_home_id:
+                partner = employee.address_home_id
+            else:
+                partner = env.user.partner_id.id
             sale_order = env['sale.order'].sudo().search([
-                ('partner_id', '=', env.user.partner_id.id),
+                ('partner_id', '=', partner.id),
                 ('section_id', '=', env.ref('website.salesteam_website_sales').id),
                 ('state', '=', 'draft'),
             ], limit=1)
