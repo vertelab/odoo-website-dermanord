@@ -32,10 +32,11 @@
 
         <template id="website_event.event_left_column" inherit_id="website_event.index" name="Dermanord Filters">
             <xpath expr="//div[@id='middle_column']" position="attributes">
-            <attribute name="class">col-md-6</attribute>
+                <attribute name="class">col-md-12 col-sm-12 mt32</attribute>
+                <attribute name="style">padding: 0px;</attribute>
             </xpath>
             <xpath expr="//div[@id='middle_column']" position="before">
-                <div class="col-md-3 css_noprint" id="left_column">
+                <div class="col-md-6 css_noprint mb16" id="left_column">
                     <ul class="nav nav-pills nav-stacked">
                         <t t-foreach="dates" t-as="date">
                             <li t-att-class="searches.get('date') == date[0] and 'active' or ''" t-if="date[0] != 'old' and (date[3] or (date[0] in ('old','all')))">
@@ -45,6 +46,11 @@
                             </li>
                         </t>
                     </ul>
+                </div>
+                <div class="col-md-6">
+                    <t t-call="website.pager">
+                        <t t-set="classname">pull-right</t>
+                    </t>
                 </div>
             </xpath>
         </template>
@@ -60,6 +66,17 @@
             </xpath>
             <xpath expr="//small[@t-if='not event.address_id']" position="attributes">
                 <attribute name="class">label label-info hidden</attribute>
+            </xpath>
+            <xpath expr="//div[@class='row mt8']/.." position="attributes">
+                <attribute name="class">readable</attribute>
+            </xpath>
+            <xpath expr="//div[@class='row mt8']" position="attributes">
+                <attribute name="class"></attribute>
+            </xpath>
+            <xpath expr="//div[@class='col-sm-5']" position="replace"/>
+            <xpath expr="//div[@class='col-sm-7']" position="replace"/>
+            <xpath expr="//div[@class='row mt32 mb32']" position="attributes">
+                <attribute name="class">mt32 mb32</attribute>
             </xpath>
         </template>
 
@@ -77,6 +94,12 @@
                     </select>
                     <span t-if="not ticket.seats_available and ticket.seats_max or not event.seats_available and event.seats_max">Sold Out</span>
                 </td>
+            </xpath>
+        </template>
+
+        <template id="assets_frontend_website_event_dermanord" inherit_id="website.assets_frontend" name="Website Event Dermanord Assets Frontend">
+            <xpath expr="." position="inside">
+                <link href="/website_event_dermanord/static/src/css/main.css" rel="stylesheet" />
             </xpath>
         </template>
 
