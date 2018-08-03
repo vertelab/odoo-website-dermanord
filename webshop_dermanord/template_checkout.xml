@@ -4,15 +4,14 @@
 
     <template id="checkout_dermanord" name="Checkout Dermanord" inherit_id="website_sale.checkout">
       <!-- Move t-set for website_sale_order to the start of the view -->
+<!--
       <xpath expr="//t[@t-set='website_sale_order']" position="replace"/>
       <xpath expr="//t[@t-set='additional_title']" position="after">
         <t t-set="website_sale_order" t-value="website.sale_get_order()"/>
       </xpath>
-      
-      
-      <xpath expr="//select[@name='shipping_id']/option[@value='0']" position="attributes">
-         <attribute name="t-esc">', '.join('\n'.join(website_sale_order.partner_id.with_context(show_address=True).name_get()[0][1].split(',')).split('\n')[1:])</attribute>
-      </xpath>
+-->
+
+      <xpath expr="//select[@name='shipping_id']/option[@value='0']" position="replace"/>
       
       <xpath expr="//div[@class='js_shipping row mb16']" position="after">
         <t t-if="error">
@@ -84,11 +83,6 @@
         <attribute name="t-if">user_id != website.env.ref('base.public_user')</attribute>
       </xpath>
       <xpath expr="//select[@name='shipping_id']" position="after">
-        <div id="shipping_addr_0" t-att-class="'shipping-address hidden' if shipping_id != 0 else 'shipping-address'">
-          <div t-field="website_sale_order.partner_id" t-field-options='{
-                        "widget": "contact",
-                        "fields": ["name", "address", "phone", "mobile", "email"]}' />
-        </div>
         <t t-foreach="shippings" t-as="shipping">
           <div t-att-id="'shipping_addr_%s' % shipping.id" t-att-class="'shipping-address hidden' if shipping.id != shipping_id else 'shipping-address'">
             <t t-raw='shipping.address_to_html({
@@ -105,18 +99,12 @@
         <div class="form-group col-lg-12" t-if="user_id != website.env.ref('base.public_user')">
           <h3 class="page-header mt16">Invoice Address</h3>
           <select name="invoicing_id" class="form-control">
-            <option value="0" t-esc="', '.join('\n'.join(website_sale_order.partner_id.with_context(show_address=True).name_get()[0][1].split(',')).split('\n')[1:])"/>
             <t t-foreach="invoicings" t-as="invoicing">
               <option t-att-value="invoicing.id" t-att-selected="invoicing.id == invoicing_id">
                 <t t-esc="', '.join('\n'.join(invoicing.name_get()[0][1].split(',')).split('\n')[1:])" />
               </option>
             </t>
           </select>
-          <div id="invoicing_addr_0" t-att-class="'invoicing-address hidden' if invoicing_id != 0 else 'invoicing-address'">
-            <div t-field="website_sale_order.partner_id" t-field-options='{
-                            "widget": "contact",
-                            "fields": ["name", "address", "phone", "mobile", "email"]}' />
-          </div>
           <t t-foreach="invoicings" t-as="invoicing">
             <div t-att-id="'invoicing_addr_%s' % invoicing.id" t-att-class="'invoicing-address hidden' if invoicing.id != invoicing_id else 'invoicing-address'">
               <t t-raw='invoicing.address_to_html({

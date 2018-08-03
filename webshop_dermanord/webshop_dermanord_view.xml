@@ -130,8 +130,7 @@
       <!-- Navigation bar -->
       <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
         <li>
-          Delivery details
-          <span class="chevron" />
+          <a href="/shop/checkout" class="text-success">Delivery details<span class="chevron"></span></a>
         </li>
       </xpath>
       <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">

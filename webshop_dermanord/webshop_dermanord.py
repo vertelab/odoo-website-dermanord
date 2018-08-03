@@ -911,25 +911,58 @@ class WebsiteSale(website_sale):
         if not data:
             data = {}
         res = super(WebsiteSale, self).checkout_values(data)
-        # ~ _logger.warn('checkout_values super: %s' % (timer() - start))
         if request.env.user != request.website.user_id:
-            partner = request.env.user.partner_id
-            invoicing_id = int(data.get("invoicing_id", '-2'))
-            if invoicing_id == -2:
-                order = request.website.sale_get_order(force_create=1)
-                invoicing_id = order.partner_invoice_id.id
-                if invoicing_id == partner.id:
-                    invoicing_id = 0
-            invoicings = request.env['res.partner'].sudo().with_context(show_address=1).search([("parent_id", "=", partner.commercial_partner_id.id), '|', ('type', "=", 'invoice'), ('type', "=", 'default')])
-            if partner != partner.commercial_partner_id:
-                shippings = set(res.get('shippings', []))
-                shippings |= set([r for r in request.env['res.partner'].with_context(show_address=True).search([("parent_id", "=", partner.commercial_partner_id.id), '|', ('type', "=", 'delivery'), ('type', "=", 'standard')])])
-                shippings |= set([partner.with_context(show_address=True).commercial_partner_id])
-                invoicings |= partner.sudo().commercial_partner_id
-                res['shippings'] = shippings
+            # Check for staff purchase
+            employee_id = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
+            if employee_id and employee_id.address_home_id:
+                partner = employee_id.address_home_id
+            else:
+                partner = request.env.user.partner_id
+            
+            order = request.website.sale_get_order(force_create=1)
+            invoicings = request.env['res.partner'].sudo().with_context(show_address=True).search([
+                '|',
+                    ('id', '=', order.partner_invoice_id.id),
+                    '&',
+                        ("parent_id", "=", partner.commercial_partner_id.id),
+                        '|',
+                            ('type', "=", 'invoice'),
+                            ('type', "=", 'default')
+            ]) | partner.commercial_partner_id
+            shippings = request.env['res.partner'].sudo().with_context(show_address=True).search([
+                '|',
+                    ('id', '=', order.partner_shipping_id.id),
+                    '&',
+                        ("parent_id", "=", partner.commercial_partner_id.id),
+                        '|',
+                            ('type', "=", 'delivery'),
+                            ('type', "=", 'default')
+            ]) | partner.commercial_partner_id
+            
+            # Update to selected addresses, if they are valid
+            invoicing_id = shipping_id = None
+            try: 
+                invoicing_id = int(data.get("invoicing_id", '0'))
+                if invoicing_id not in invoicings._ids:
+                    invoicing_id = order.partner_invoice_id.id
+            except ValueError:
+                pass
+            try: 
+                shipping_id = int(data.get("shipping_id", '0'))
+                if shipping_id not in shippings._ids:
+                    shipping_id = order.partner_shipping_id.id
+            except ValueError:
+                pass
+            invoicing_id = invoicing_id or order.partner_invoice_id.id
+            shipping_id = shipping_id or order.partner_shipping_id.id
+            
+            res['shippings'] = shippings
             res['invoicings'] = invoicings.sudo()
             res['invoicing_id'] = invoicing_id
+            res['shipping_id'] = shipping_id
+            # the checkout dict updates the addresses on the order
             res['checkout']['invoicing_id'] = invoicing_id
+            res['checkout']['shipping_id'] = shipping_id
         # ~ _logger.warn('checkout_values: %s' % (timer() - start))
         return res
 
@@ -1123,10 +1156,16 @@ class WebsiteSale(website_sale):
 
         if price_data['price_field']:
             for product in products:
-                cheapest = request.env['product.product'].with_context(pricelist=partner_pricelist.id).search_read([('product_tmpl_id', '=', product['id'])], [price_data['price_field'], price_data['rec_price_field']] if price_data['rec_price_field'] else [price_data['price_field']], limit=1, order=price_data['price_field'])[0]
-                product['price'] = cheapest[price_data['price_field']]
-                if price_data['rec_price_field']:
-                    product['recommended_price'] = cheapest[price_data['rec_price_field']]
+                cheapest = request.env['product.product'].with_context(pricelist=partner_pricelist.id).search_read([('product_tmpl_id', '=', product['id'])], [price_data['price_field'], price_data['rec_price_field']] if price_data['rec_price_field'] else [price_data['price_field']], limit=1, order=price_data['price_field'])
+                if cheapest:
+                    cheapest = cheapest[0]
+                    product['price'] = cheapest[price_data['price_field']]
+                    if price_data['rec_price_field']:
+                        product['recommended_price'] = cheapest[price_data['rec_price_field']]
+                else:
+                    product['price'] = 0.0
+                    if price_data['rec_price_field']:
+                        product['recommended_price'] = 0.0
         else:
             rec_pl = partner_pricelist.rec_pricelist_id
             for product in products:
@@ -1250,20 +1289,25 @@ class WebsiteSale(website_sale):
                 style_options += '<li class="%s"><a href="#" data-id="%s" data-class="%s">%s</a></li>' %('active' if style.id in product['website_style_ids'] else '', style.id, style.html_class, style.name)
 
             if price_data['price_field']:
-                cheapest = request.env['product.product'].with_context(pricelist=partner_pricelist.id).search_read([('product_tmpl_id', '=', product['id'])], [price_data['price_field'], price_data['rec_price_field']] if price_data['rec_price_field'] else [price_data['price_field']], limit=1, order=price_data['price_field'])[0]
-                product['price'] = cheapest[price_data['price_field']]
-                if price_data['rec_price_field']:
-                    product['recommended_price'] = cheapest[price_data['rec_price_field']]
+                cheapest = request.env['product.product'].with_context(pricelist=partner_pricelist.id).search_read([('product_tmpl_id', '=', product['id'])], [price_data['price_field'], price_data['rec_price_field']] if price_data['rec_price_field'] else [price_data['price_field']], limit=1, order=price_data['price_field'])
+                if cheapest:
+                    cheapest = cheapest[0]
+                    product['price'] = cheapest[price_data['price_field']]
+                    if price_data['rec_price_field']:
+                        product['recommended_price'] = cheapest[price_data['rec_price_field']]
                 else:
-                    product['recommended_price'] = 0.0
+                    product['price'] = 0.0
+                    if price_data['rec_price_field']:
+                        product['recommended_price'] = 0.0
             else:
                 cheapest = None
+                product['price'] = 0.0
                 for variant in request.env['product.product'].search_read([('product_tmpl_id', '=', product['id'])], ['id']):
                     price = partner_pricelist.price_get(variant['id'], 1)[partner_pricelist.id]
                     if not cheapest or price < product['price']:
                         cheapest = variant['id']
                         product['price'] = price
-                if rec_pl:
+                if rec_pl and cheapest:
                     product['recommended_price'] = rec_pl.price_get(cheapest, 1)[rec_pl.id]
                 else:
                     product['recommended_price'] = 0.0
