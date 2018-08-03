@@ -924,7 +924,7 @@ class WebsiteSale(website_sale):
                 partner = employee_id.address_home_id
             else:
                 partner = request.env.user.partner_id
-            
+
             order = request.website.sale_get_order(force_create=1)
             invoicings = request.env['res.partner'].sudo().with_context(show_address=True).search([
                 '|',
@@ -944,16 +944,16 @@ class WebsiteSale(website_sale):
                             ('type', "=", 'delivery'),
                             ('type', "=", 'default')
             ]) | partner.commercial_partner_id
-            
+
             # Update to selected addresses, if they are valid
             invoicing_id = shipping_id = None
-            try: 
+            try:
                 invoicing_id = int(data.get("invoicing_id", '0'))
                 if invoicing_id not in invoicings._ids:
                     invoicing_id = order.partner_invoice_id.id
             except ValueError:
                 pass
-            try: 
+            try:
                 shipping_id = int(data.get("shipping_id", '0'))
                 if shipping_id not in shippings._ids:
                     shipping_id = order.partner_shipping_id.id
@@ -961,7 +961,7 @@ class WebsiteSale(website_sale):
                 pass
             invoicing_id = invoicing_id or order.partner_invoice_id.id
             shipping_id = shipping_id or order.partner_shipping_id.id
-            
+
             res['shippings'] = shippings
             res['invoicings'] = invoicings.sudo()
             res['invoicing_id'] = invoicing_id
@@ -1712,7 +1712,7 @@ class WebsiteSale(website_sale):
         res = request.website.sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
         if locked:
             self.dn_cart_lock.release()
-        return [request.website.price_format(res['amount_untaxed']), res['cart_quantity']]
+        return [request.website.price_format(res['amount_untaxed']), res['cart_quantity'], res['amount_untaxed']]
 
     @http.route(['/website_sale_update_cart'], type='json', auth="public", website=True)
     def website_sale_update_cart(self):
@@ -1725,8 +1725,10 @@ class WebsiteSale(website_sale):
             res['amount_untaxed'] = request.website.price_format(order.amount_untaxed)
             res['cart_quantity'] = order.cart_quantity
             res['currency'] = order.pricelist_id.currency_id.name
+            res['amount_float'] = order.amount_untaxed
         else:
             res['currency'] = request.env.user.partner_id.property_product_pricelist.currency_id.name
+            res['amount_float'] = 0.0
         return res
 
     @http.route(['/dn_shop/search'], type='json', auth="public", website=True)
