@@ -732,7 +732,7 @@ class Website(models.Model):
             if employee and employee.address_home_id:
                 partner = employee.address_home_id
             else:
-                partner = env.user.partner_id.id
+                partner = env.user.partner_id
             sale_order = env['sale.order'].sudo().search([
                 ('partner_id', '=', partner.id),
                 ('section_id', '=', env.ref('website.salesteam_website_sales').id),
