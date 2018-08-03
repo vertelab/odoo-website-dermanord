@@ -24,6 +24,7 @@ from openerp.addons.web.http import request
 from openerp.addons.website_memcached import memcached
 
 from openerp.addons.webshop_dermanord.webshop_dermanord import WebsiteSale
+from openerp.addons.website_sale_home.website_sale import website_sale_home
 from openerp.addons.website_sale.controllers.main import get_pricelist
 
 import logging
@@ -108,3 +109,13 @@ class WebsiteSale(WebsiteSale):
     #~ @memcached.route()
     #~ def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
         #~ return super(WebsiteSale, self).cart_update(product_id, add_qty, set_qty, **kw)
+
+class WebsiteSaleHome(website_sale_home):
+    
+    @http.route(['/home/<model("res.users"):home_user>/contact/new', '/home/<model("res.users"):home_user>/contact/<model("res.partner"):partner>'], type='http', auth='user', website=True)
+    def contact_page(self, home_user=None, partner=None, **post):
+        res = super(WebsiteSaleHome, self).contact_page(home_user=home_user, partner=partner, **post)
+        if partner and post:
+            for key in memcached.get_keys(path='/imagefield/res.partner/image/%s/ref/reseller_dermanord.reseller_contact_img' % partner.id):
+                memcached.mc_delete(key)
+        return res
