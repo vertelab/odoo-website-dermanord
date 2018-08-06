@@ -743,3 +743,48 @@ address span {
     text-transform: unset;
 }
 */
+
+/* Tooltip container */
+.dn-tooltip {
+    position: relative;
+}
+
+/* Tooltip text */
+.dn-tooltip .dn-tooltiptext {
+    visibility: hidden;
+    width: 300px;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 5px;
+
+    /* Position the tooltip text */
+    position: absolute;
+    z-index: 10;
+    top: 100%;
+    left: 50%;
+    margin-left: -150px;
+
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.dn-tooltip .dn-tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    margin-left: -8px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent transparent #000 transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.dn-tooltip:hover .dn-tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
