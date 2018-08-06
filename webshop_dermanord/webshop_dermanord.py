@@ -30,7 +30,6 @@ from openerp.addons.website_sale.controllers.main import website_sale, QueryURL,
 from openerp.addons.website.models.website import slug
 from openerp.addons.website_fts.website_fts import WebsiteFullTextSearch
 from openerp.addons.base.ir.ir_qweb import HTMLSafe
-from openerp.addons.portal.wizard.portal_wizard import extract_email
 import werkzeug
 from heapq import nlargest
 import math
@@ -55,23 +54,6 @@ def get_price_fields(default_variant=False):
         for i in range(len(l)):
             l[i] = 'dv_%s' % l[i]
     return l
-
-class wizard_user(models.TransientModel):
-    _inherit = 'portal.wizard.user'
-
-    @api.model
-    def _create_user(self, wizard_user):
-        """ create a new user for wizard_user.partner_id
-            @param wizard_user: browse record of model portal.wizard.user
-            @return: browse record of model res.users
-        """
-        create_context = dict(self._context or {}, noshortcut=True, no_reset_password=True)       # to prevent shortcut creation
-        values = {
-            'email': extract_email(wizard_user.email),
-            'login': extract_email(wizard_user.email),
-            'partner_id': wizard_user.partner_id.id,
-        }
-        return self.env['res.users'].browse(self.env['res.users'].with_context(create_context)._signup_create_user(values))
 
 class blog_post(models.Model):
     _inherit = 'blog.post'
