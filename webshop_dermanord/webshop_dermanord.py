@@ -24,6 +24,7 @@ from openerp import http
 from openerp.http import request
 from openerp.tools.translate import _
 from openerp.tools import html_escape as escape
+from openerp.tools import float_compare
 from datetime import datetime, date, timedelta
 from lxml import html
 from openerp.addons.website_sale.controllers.main import website_sale, QueryURL, table_compute
@@ -787,6 +788,52 @@ class Website(models.Model):
             dp = request.env['res.lang'].search_read([('code', '=', request.env.lang)], ['decimal_point'])
             dp = dp and dp[0]['decimal_point'] or '.'
         return ('%.2f' %price).replace('.', dp)
+
+
+class PaymentTransaction(models.Model):
+    _inherit = 'payment.transaction'
+
+    def form_feedback(self, cr, uid, data, acquirer_name, context=None):
+        invalid_parameters, tx = None, None
+
+        tx_find_method_name = '_%s_form_get_tx_from_data' % acquirer_name
+        if hasattr(self, tx_find_method_name):
+            tx = getattr(self, tx_find_method_name)(cr, uid, data, context=context)
+
+        invalid_param_method_name = '_%s_form_get_invalid_parameters' % acquirer_name
+        if hasattr(self, invalid_param_method_name):
+            invalid_parameters = getattr(self, invalid_param_method_name)(cr, uid, tx, data, context=context)
+
+        if invalid_parameters:
+            _error_message = '%s: incorrect tx data:\n' % (acquirer_name)
+            for item in invalid_parameters:
+                _error_message += '\t%s: received %s instead of %s\n' % (item[0], item[1], item[2])
+            _logger.error(_error_message)
+            return False
+
+        feedback_method_name = '_%s_form_validate' % acquirer_name
+        if hasattr(self, feedback_method_name):
+            getattr(self, feedback_method_name)(cr, uid, tx, data, context=context)
+
+        # fetch the tx, check its state, confirm the potential SO
+        try:
+            if tx and tx.sale_order_id:
+                # verify SO/TX match, excluding tx.fees which are currently not included in SO
+                amount_matches = (tx.sale_order_id.state in ['draft', 'sent'] and float_compare(tx.amount, tx.sale_order_id.amount_total, 2) == 0)
+                if amount_matches:
+                    if tx.state == 'done':
+                        _logger.info('<%s> transaction completed, confirming order %s (ID %s)', acquirer_name, tx.sale_order_id.name, tx.sale_order_id.id)
+                        self.pool['sale.order'].action_button_confirm(cr, SUPERUSER_ID, [tx.sale_order_id.id], context=dict(context, send_email=False))
+                    elif tx.state != 'cancel' and tx.sale_order_id.state == 'draft':
+                        _logger.info('<%s> transaction pending, sending quote email for order %s (ID %s)', acquirer_name, tx.sale_order_id.name, tx.sale_order_id.id)
+                        # ~ self.pool['sale.order'].force_quotation_send(cr, SUPERUSER_ID, [tx.sale_order_id.id], context=context)
+                        self.pool['sale.order'].write(cr, SUPERUSER_ID, [tx.sale_order_id.id], {'state': 'sent'}, context=context)
+                else:
+                    _logger.warning('<%s> transaction MISMATCH for order %s (ID %s)', acquirer_name, tx.sale_order_id.name, tx.sale_order_id.id)
+        except Exception:
+            _logger.exception('Fail to confirm the order or send the confirmation email%s', tx and ' for the transaction %s' % tx.reference or '')
+
+        return True
 
 
 class WebsiteSale(website_sale):
