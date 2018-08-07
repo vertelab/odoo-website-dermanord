@@ -95,6 +95,9 @@
 
         <!-- Theme Dermanord -->
         <template id="theme_dermanord" inherit_id="website.layout" customize_show="True" active="False" name="Theme Dermanord" priority="99">
+            <xpath expr="//meta[@name='viewport']" position="attributes">
+                <attribute name="content">initial-scale=1, width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no</attribute>
+            </xpath>
             <xpath expr="//div[@id='wrapwrap']/header/div[@class='navbar navbar-default navbar-static-top']/div[@class='container']/div[@class='navbar-header']" position="replace">
                 <div class="container">
                     <div id="header_left_menu" class="col-md-2 col-sm-2 hidden-xs">
