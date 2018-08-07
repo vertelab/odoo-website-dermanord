@@ -733,7 +733,7 @@ class Website(models.Model):
                 'section_id': env.ref('website.salesteam_website_sales').id,
             }
             sale_order = env['sale.order'].sudo().create(values)
-            sale_order.write(env['sale.order'].sudo().onchange_partner_id(env.user.partner_id.id)['value'])
+            sale_order.write(env['sale.order'].sudo().onchange_partner_id(env.user.partner_id.commercial_partner_id.id)['value'])
             request.session['sale_order_id'] = sale_order.id
 
         #~ sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
@@ -956,22 +956,16 @@ class WebsiteSale(website_sale):
 
             order = request.website.sale_get_order(force_create=1)
             invoicings = request.env['res.partner'].sudo().with_context(show_address=True).search([
+                ("parent_id", "=", partner.commercial_partner_id.id),
                 '|',
-                    ('id', '=', order.partner_invoice_id.id),
-                    '&',
-                        ("parent_id", "=", partner.commercial_partner_id.id),
-                        '|',
-                            ('type', "=", 'invoice'),
-                            ('type', "=", 'default')
+                    ('type', "=", 'invoice'),
+                    ('type', "=", 'default')
             ]) | partner.commercial_partner_id
             shippings = request.env['res.partner'].sudo().with_context(show_address=True).search([
+                ("parent_id", "=", partner.commercial_partner_id.id),
                 '|',
-                    ('id', '=', order.partner_shipping_id.id),
-                    '&',
-                        ("parent_id", "=", partner.commercial_partner_id.id),
-                        '|',
-                            ('type', "=", 'delivery'),
-                            ('type', "=", 'default')
+                    ('type', "=", 'delivery'),
+                    ('type', "=", 'default')
             ]) | partner.commercial_partner_id
 
             # Update to selected addresses, if they are valid

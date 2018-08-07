@@ -1,7 +1,9 @@
 $(document).ready(function(){
     'use strict';
-    $("input[name=search]").keyup(function(){
-        if ($(this).val().trim().length > 2) {
+    $("input[name=search]").keyup(function(event){
+        if (event.which == 13) {
+            $(this).parents('form').submit()
+        } else if ($(this).val().trim().length > 2) {
             openerp.jsonRpc("/search_suggestion", "call", {
                 search: $(this).val(),
                 res_model: ['product.template', 'product.product', 'product.public.category'], //, 'product.facet.line'],
