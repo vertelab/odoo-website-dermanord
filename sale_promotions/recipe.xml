@@ -24,28 +24,28 @@ else:
 
         <record id="sp_one_one_param_height_xs" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">231</field>
+            <field name="value">343</field>
             <field name="device_type">xs</field>
             <field name="recipe_id" ref="sale_promotions.sp_one_one"/>
         </record>
 
         <record id="sp_one_one_param_height_sm" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">231</field>
+            <field name="value">232</field>
             <field name="device_type">sm</field>
             <field name="recipe_id" ref="sale_promotions.sp_one_one"/>
         </record>
 
         <record id="sp_one_one_param_height_md" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">295</field>
+            <field name="value">300</field>
             <field name="device_type">md</field>
             <field name="recipe_id" ref="sale_promotions.sp_one_one"/>
         </record>
 
         <record id="sp_one_one_param_height_lg" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">361</field>
+            <field name="value">366</field>
             <field name="device_type">lg</field>
             <field name="recipe_id" ref="sale_promotions.sp_one_one"/>
         </record>
@@ -84,28 +84,28 @@ else:
 
         <record id="sp_one_two_param_height_xs" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">486</field>
+            <field name="value">720</field>
             <field name="device_type">xs</field>
             <field name="recipe_id" ref="sale_promotions.sp_one_two"/>
         </record>
 
         <record id="sp_one_two_param_height_sm" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">486</field>
+            <field name="value">487</field>
             <field name="device_type">sm</field>
             <field name="recipe_id" ref="sale_promotions.sp_one_two"/>
         </record>
 
         <record id="sp_one_two_param_height_md" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">633</field>
+            <field name="value">630</field>
             <field name="device_type">md</field>
             <field name="recipe_id" ref="sale_promotions.sp_one_two"/>
         </record>
 
         <record id="sp_one_two_param_height_lg" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">766</field>
+            <field name="value">768</field>
             <field name="device_type">lg</field>
             <field name="recipe_id" ref="sale_promotions.sp_one_two"/>
         </record>
@@ -118,7 +118,7 @@ else:
 
         <record id="sp_one_two_param_vertical" model="image.recipe.param">
             <field name="name">vertical</field>
-            <field name="value">2.07</field>
+            <field name="value">2.1</field>
             <field name="recipe_id" ref="sale_promotions.sp_one_two"/>
         </record>
 
@@ -144,7 +144,7 @@ else:
 
         <record id="sp_two_one_param_height_xs" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">240</field>
+            <field name="value">340</field>
             <field name="device_type">xs</field>
             <field name="recipe_id" ref="sale_promotions.sp_two_one"/>
         </record>

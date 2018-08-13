@@ -225,6 +225,9 @@ a {
     .desc_div {
         padding: 10px !important;
     }
+    .categ_p_section .categ_block{
+        padding: 24px;
+    }
 }
 
 /* sm */

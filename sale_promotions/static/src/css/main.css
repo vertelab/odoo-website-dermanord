@@ -27,16 +27,29 @@
     background-size: cover;
 }
 
-.sp_one_one {
-    padding-left: 25px;
-    padding-bottom: 30px;
+.sp_div .col-lg-4.col-md-4.col-sm-4 {
+    width: 363px;
 }
+
+.sp_div .col-lg-8.col-md-8.col-sm-8 {
+    width: 777px;
+}
+
+.sp_one_two, .sp_one_one {
+    width: 366px;
+}
+
+.sp_div .col-lg-8.col-md-8.col-sm-8 .col-lg-6.col-md-6.col-sm-6 {
+    padding-left: 25px;
+    padding-bottom: 18px;
+}
+
 .sp_two_one {
     padding: 1px 0px 0px 25px;
 }
 
 .sp_one_two .sale_promotions_img {
-    padding-top: 200%; /* 1:2 Aspect Ratio */
+    padding-top: 210%; /* 1:2.1 Aspect Ratio */
     border: 3px solid #FFF;
 }
 
@@ -73,14 +86,63 @@
     background-repeat: no-repeat;
 }
 
-@media screen and (max-width: 992px) and (min-width: 768px) {
+@media screen and (max-width: 767px) {
+    .sp_div .col-lg-4.col-md-4.col-sm-4.col-xs-6, .sp_div .col-lg-8.col-md-8.col-sm-8.col-xs-6 {
+        width: 50%;
+    }
+
+    .sp_one_two, .sp_one_one {
+        width: auto;
+    }
+
+    .sp_div .col-lg-8.col-md-8.col-sm-8 .col-lg-6.col-md-6.col-sm-6 {
+        padding-left: 0px;
+        padding-bottom: 15px;
+    }
+
+    .sp_one_two { padding: 0px 3px 10px 10px; }
+    .sp_one_one { padding: 0px 10px 14px 10px; }
+    .sp_two_one { padding: 2px 10px 0px 10px; }
+}
+
+@media screen and (max-width: 991px) and (min-width: 768px) {
+    .sp_div .col-lg-4.col-md-4.col-sm-4 {
+        width: 232px;
+    }
+
+    .sp_div .col-lg-8.col-md-8.col-sm-8 {
+        width: 488px;
+    }
+
+    .sp_one_two, .sp_one_one {
+        width: 238px;
+    }
+
+    .sp_div .col-lg-8.col-md-8.col-sm-8 .col-lg-6.col-md-6.col-sm-6 {
+        padding-left: 10px;
+        padding-bottom: 19px;
+    }
+
     .sp_one_two { padding: 0px; }
     .sp_one_one { padding: 0px 0px 15px 15px; }
     .sp_two_one { padding: 0px 0px 0px 15px; }
 }
 
-@media screen and (max-width: 767px) {
-    .sp_one_two { padding: 0px 3px 10px 10px; }
-    .sp_one_one { padding: 0px 10px 14px 10px; }
-    .sp_two_one { padding: 2px 10px 0px 10px; }
+@media screen and (max-width: 1199px) and (min-width: 990px) {
+    .sp_div .col-lg-4.col-md-4.col-sm-4 {
+        width: 294px;
+    }
+
+    .sp_div .col-lg-8.col-md-8.col-sm-8 {
+        width: 646px;
+    }
+
+    .sp_one_two, .sp_one_one {
+        width: 300px;
+    }
+
+    .sp_div .col-lg-8.col-md-8.col-sm-8 .col-lg-6.col-md-6.col-sm-6 {
+        padding-left: 25px;
+        padding-bottom: 11px;
+    }
 }
