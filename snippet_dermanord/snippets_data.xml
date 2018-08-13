@@ -20,7 +20,7 @@ res = bg
 
         <record id="img_product_param_canvas_xs" model="image.recipe.param">
             <field name="name">canvas_size</field>
-            <field name="value">694</field>
+            <field name="value">281</field>
             <field name="device_type">xs</field>
             <field name="recipe_id" ref="snippet_dermanord.img_product"/>
         </record>
