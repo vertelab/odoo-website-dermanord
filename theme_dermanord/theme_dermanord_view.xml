@@ -332,7 +332,7 @@
 
         <template id="user_navbar" inherit_id="website.user_navbar">
             <xpath expr="//nav[@id='oe_main_menu_navbar']" position="attributes">
-                <attribute name="groups">base.group_erp_manager</attribute>
+                <attribute name="groups">base.group_erp_manager,base.group_user</attribute>
             </xpath>
         </template>
 
