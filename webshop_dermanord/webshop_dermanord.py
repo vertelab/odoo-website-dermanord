@@ -256,6 +256,12 @@ class product_template(models.Model):
     is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
     is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
 
+    @api.multi
+    def write(self, vals):
+        res = super(product_template, self).write(vals)
+        if 'list_price' in vals:
+            self.product_variant_ids.get_product_tax()
+        return res
 
 class product_product(models.Model):
     _inherit = 'product.product'
@@ -282,7 +288,7 @@ class product_product(models.Model):
     fullname = fields.Char(compute='_fullname')
 
     @api.one
-    @api.depends('lst_price', 'product_tmpl_id.list_price')
+    @api.depends('lst_price')
     def get_product_tax(self):
         pricelist_45 = self.env.ref('webshop_dermanord.pricelist_af')
         pricelist_20 = self.env.ref('webshop_dermanord.pricelist_special')
@@ -354,6 +360,7 @@ class product_product(models.Model):
                 href='/dn_shop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, (u'&amp;%s' %'&amp;'.join([u'category_%s=%s' %(c.id, c.id) for c in self.public_categ_ids]) if len(self.public_categ_ids) > 0 else '')),
                 value_name=value.name))
         return ', '.join(values)
+
 
 class product_facet(models.Model):
     _inherit = 'product.facet'
