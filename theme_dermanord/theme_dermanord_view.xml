@@ -495,225 +495,40 @@
             </t>
         </template>
 
-        <template id="website.500" name="Dermanord Internal Server Error">
-            <html>
-                <head>
-                    <title t-esc="status_message">Internal Server Error</title>
-                    <link rel='stylesheet' href='/web/static/lib/fontawesome/css/font-awesome.css'/>
-                    <link rel='stylesheet' href='/web/static/lib/bootstrap/css/bootstrap.css'/>
-                    <link rel='stylesheet' href='/website/static/src/css/website.css'/>
-                    <script type="text/javascript" src="/web/static/lib/jquery/jquery.js"></script>
-                    <script type="text/javascript" src="/web/static/lib/bootstrap/js/bootstrap.js"></script>
-                    <style>
-                        h1, .futura_pt_h {
-                            font-family: futura-pt-medium, sans-serif;
-                            font-size: 39px;
-                        }
-
-                        h2 {
-                            font-family: futura-pt-medium, sans-serif;
-                            font-size: 23px;
-                        }
-
-                        h3 {
-                            font-family: kepler-std-display, serif;
-                            font-style: italic;
-                            font-size: 30px;
-                        }
-
-                        h4 {
-                            font-family: futura-pt-medium, sans-serif;
-                            font-size: 18px;
-                        }
-
-                        h5 {
-                            font-family: futura-pt-medium, sans-serif;
-                            font-size: 14px;
-                        }
-
-                        h6 {
-                            font-family: kepler-std-display, serif;
-                            font-style: italic;
-                            font-size: 60px;
-                            padding-top: 40px;
-                            word-wrap: break-word;
-                        }
-
-                        i, .kepler_std_i {
-                            font-family: kepler-std-display, serif;
-                            font-style: italic;
-                        }
-
-                        p {
-                            font-size: 18px;
-                            line-height: 1.2;
-                        }
-
-                        tbody h5 {
-                            font-family: futura-pt-light, sans-serif;
-                            font-size: 14px;
-                        }
-
-                        body li, body ul, body a {
-                            font-family: futura-pt-light, sans-serif;
-                            font-size: 18px;
-                        }
-
-                        body a {
-                            font-family: futura-pt-light, sans-serif;
-                            color: #000;
-                        }
-
-                        body a:hover {
-                            color: #BB602F;
-                        }
-                        .dn_footer_col h4 {
-                            font-family: futura-pt-heavy, sans-serif;
-                        }
-                        footer {
-                            background-color: #000 !important;
-                            color: #fff;
-                        }
-                        @media (min-width: 992px) {
-                            .dn_footer_row {
-                                display: flex;
-                            }
-                            .dn-social-button {
-                                width: 50px;
-                                height: 50px;
-                                border-radius: 25px;
-                                background-color: white;
-                                color: black;
-                                text-align: center;
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-                                margin: 10px;
-                                float:left;
-                            }
-                            .dn-social-button > a {
-                                color: black;
-                            }
-                            .dn_footer_col > :last-child {
-                                position: absolute;
-                                bottom: 0px;
-                            }
-                        }
-                        @media (max-width: 1200px) and (min-width: 992px) {
-                            .dn-social-button {
-                                margin: 10px 5px;
-                            }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div id="wrapwrap">
-                        <div class="navbar navbar-default navbar-static-top">
+        <template id="website.500" name="Dermanord 500">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <t t-raw="0"/>
+                    <div class="oe_structure oe_empty">
+                        <section class="para_large" style="height: 304px; overflow: hidden;">
                             <div class="container">
-                                <div class="collapse navbar-collapse navbar-top-collapse">
-                                    <ul class="nav navbar-nav pull-right">
-                                        <li><a href="/">Home</a></li>
-                                        <li><a href="javascript: window.history.back()">Back</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb32">
-                            <div class="oe_structure oe_empty">
-                                <section class="para_large" style="overflow: hidden;">
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="mt16 col-md-12" style="padding-left: 40px;">
-                                                <img alt="Odoo image and text block" class="img img-responsive mb16 pull-right img-rounded" src="/theme_dermanord/static/src/img/500error.jpeg"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
-                                <section class="mt16 mb16 readable">
-                                    <div class="container">
-                                        <div class="col-md-12 text-center mt16 mb32">
-                                            <h6>Oh dear. It seems to be an error!</h6>
-                                        </div>
-                                        <div class="col-md-12 mb16 mt16">
-                                            <p>
-                                                <a href="javascript:history.back()">Gå tillbaka till föregående sida.</a>
-                                            </p>
-                                            <p>
-                                                <a href="/sv_SE/page/homepage">Gå till startsidan.</a>
-                                            </p>
-                                            <p>
-                                                <a href="/sv_SE/dn_shop">Gå till webshopen.</a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </section>
-                            </div>
-                        </div>
-                        <footer>
-                            <div class="container hidden-print text-center">
-                                <div class="row dn_footer_row">
-                                    <div class="dn_footer_col col-xs-12 col-md-4 col-lg-4 mt32" style="text-align: left;">
-                                        <address class="mb0" itemscope="itemscope" itemtype="http://schema.org/Organization">
-                                            <div>
-                                                <span itemprop="name">Dermanord – Svensk Hudvård AB</span>
-                                            </div>
-                                            <div itemprop="address" itemscope="itemscope" itemtype="http://schema.org/PostalAddress">
-                                                <div class="css_editable_mode_hidden">
-                                                    <span itemprop="streetAddress">Rya Industriväg 33<br/>SE-439 62 Frillesås<br/>Sweden</span>
-                                                </div>
-                                                <div class="css_editable_mode_hidden"> <span itemprop="telephone">+46 340 - 27 00 00</span></div>
-                                                <div class="css_editable_mode_hidden"> <span itemprop="email">info@dermanord.se</span></div>
-                                            </div>
-                                        </address>
-                                    </div>
-                                    <div class="dn_footer_col col-xs-12 col-md-4 col-lg-4 mt32 mb32">
-                                        <img class="mb32" src="/theme_dermanord/static/src/img/maria_white.png" style="height: 120px;"/>
-                                        <div class="col-xs-12 col-md-12 col-lg-12" style="left: 0px; right: 0px;">
-                                            <center>
-                                                <h4 style="margin-top: 0px; margin-bottom: 0px;">MADE IN SWEDEN</h4>
-                                            </center>
-                                        </div>
-                                    </div>
-                                    <div class="dn_footer_col col-xs-12 col-md-4 col-lg-4 mt32 text-center">
-                                        <div class="container hidden-print mt16 mb16">
-                                            <div class="row">
-                                                <div class="dn-social-button">
-                                                    <a href="https://www.facebook.com/mariaakerberg.se" target="_blank">
-                                                        <i class="fa fa-facebook fa-2x"></i>
-                                                    </a>
-                                                </div>
-                                                <div class="dn-social-button">
-                                                    <a href="https://www.instagram.com/mariaakerbergofficial" target="_blank">
-                                                        <i class="fa fa-instagram fa-2x"></i>
-                                                    </a>
-                                                </div>
-                                                <div class="dn-social-button">
-                                                    <a href="https://twitter.com/mariaakerberg" target="_blank">
-                                                        <i class="fa fa-twitter fa-2x"></i>
-                                                    </a>
-                                                </div>
-                                                <div class="dn-social-button">
-                                                    <a href="https://www.youtube.com/channel/UC1zn1rmoxknshhPL2xLuMsQ" target="_blank" rel="publisher">
-                                                        <i class="fa fa-youtube fa-2x"></i>
-                                                    </a>
-                                                </div>
-                                                <div class="dn-social-button">
-                                                    <a href="https://www.snapchat.com/download" target="_blank">
-                                                        <i class="fa fa-snapchat-ghost fa-2x"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class="row">
+                                    <div class="mt16 col-md-12" style="padding-left: 40px;">
+                                        <img alt="Odoo image and text block" class="img img-responsive mb16 pull-right img-rounded" src="/theme_dermanord/static/src/img/500error.jpeg"  style="animation-play-state: paused; transition: none;-webkit-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);-moz-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);-ms-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);-o-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8)"/>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: left;">
-                                © 2018 MARIA ÅKERBERG
+                        </section>
+                        <section class="mt16 mb16 readable">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12 text-center mt16 mb32">
+                                        <h6>Oh dear. It seems to be an error!</h6>
+                                    </div>
+                                    <div class="col-md-12 mb16 mt16">
+                                        <p><a href="javascript:history.back()">Gå tillbaka till föregående sida.</a></p>
+                                        <p><a href="/page/homepage">Gå till startsidan.</a></p>
+                                        <p><a href="/dn_shop">Gå till webshopen.</a></p>
+                                    </div>
+                                </div>
                             </div>
-                        </footer>
+                        </section>
                     </div>
-                </body>
-            </html>
+                    <t t-if="request.debug">
+                        <t t-call="website.http_error_debug"/>
+                    </t>
+                </div>
+            </t>
         </template>
 
         <template id="website_theme_demo_page" inherit_id="website_theme_demo_page.website_theme_demo_page" name="Website Theme Demo Page Inherited Theme Dermanord">
