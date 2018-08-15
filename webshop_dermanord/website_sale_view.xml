@@ -350,6 +350,12 @@
                                                 <td>
                                                     <h5>
                                                         <b>
+                                                            <t t-if="user_id.partner_id.property_product_pricelist.id == 11">
+                                                                <!-- Återförsäljare 45% -->
+                                                                <span t-esc="website.price_format(product[price_fields['rec_price_field']])" style="white-space: nowrap;" class="your_price" t-att-data-price="product[price_fields['rec_price_field']]"/>
+                                                                <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
+                                                                <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
+                                                            </t>
                                                             <t t-if="user_id.partner_id.property_product_pricelist == pricelist_af">
                                                                 <!-- Återförsäljare 45% -->
                                                                 <span t-esc="website.price_format(product['price_45'])" style="white-space: nowrap;" class="your_price" t-att-data-price="product['price_45']"/>
@@ -374,7 +380,7 @@
                                                                 <span t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
                                                             </t>
-                                                            <t t-if="user_id.partner_id.property_product_pricelist not in [pricelist_af, pricelist_special, pricelist_us, pricelist_eu] and user_id.partner_id.property_product_pricelist.for_reseller">
+                                                            <t t-if="user_id.partner_id.property_product_pricelist.id != 11 and user_id.partner_id.property_product_pricelist not in [pricelist_af, pricelist_special, pricelist_us, pricelist_eu] and user_id.partner_id.property_product_pricelist.for_reseller">
                                                                 <span t-field="request.env['product.product'].browse(product['id']).with_context(pricelist=user_id.partner_id.commercial_partner_id.property_product_pricelist.id).price" style="white-space: nowrap;" class="your_price" t-field-options="{
                                                                 &quot;widget&quot;: &quot;monetary&quot;,                                                                        &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                                                                     }" t-att-data-price="request.env['product.product'].browse(product['id']).with_context(pricelist=user_id.partner_id.commercial_partner_id.property_product_pricelist.id).price"/>
                                                                 <span style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.name" />
@@ -390,6 +396,9 @@
                                                     <!-- recommended price -->
                                                     <h5>
                                                         (
+                                                        <t t-if="user_id.partner_id.property_product_pricelist.id == 11">
+                                                            <span t-esc="str('%.2f' %product['recommended_price']).replace('.', ',')" style="white-space: nowrap;"/>
+                                                        </t>
                                                         <t t-if="user_id.partner_id.property_product_pricelist in (pricelist_af, pricelist_special)">
                                                             <span t-esc="str('%.2f' %product['recommended_price']).replace('.', ',')" style="white-space: nowrap;"/>
                                                         </t>
