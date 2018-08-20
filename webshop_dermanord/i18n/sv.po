@@ -290,6 +290,12 @@ msgid "Partner"
 msgstr "Företag"
 
 #. module: webshop_dermanord
+#: code:addons/webshop_dermanord/webshop_dermanord.py:767
+#, python-format
+msgid "Place Order"
+msgstr "Lägg order"
+
+#. module: webshop_dermanord
 #: field:product.product,blog_post_ids:0
 #: field:product.template,blog_post_ids:0
 msgid "Posts"

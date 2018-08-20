@@ -583,7 +583,7 @@ class Website(models.Model):
         return [sort_name, sort_order]
 
     def get_domain_append(self, model, dic):
-        facet_ids = []
+        facet_ids = {}
         category_ids = []
         ingredient_ids = []
         not_ingredient_ids = []
@@ -595,8 +595,11 @@ class Website(models.Model):
         for k, v in dic.iteritems():
             if k.split('_')[0] == 'facet':
                 if v:
-                    facet_ids.append(int(v))
-                    request.session.get('form_values')['facet_%s_%s' %(k.split('_')[1], k.split('_')[2])] = k.split('_')[2]
+                    group, id = k.split('_')[1:]
+                    if not group in facet_ids:
+                        facet_ids[group] = []
+                    facet_ids[group].append(int(v))
+                    request.session.get('form_values')['facet_%s_%s' %(group, id)] = id
             if k.split('_')[0] == 'category':
                 if v:
                      category_ids.append(int(v))
@@ -631,13 +634,15 @@ class Website(models.Model):
         if category_ids:
             domain_append += [('public_categ_ids', 'in', [id for id in category_ids])]
         if facet_ids:
-            if model == 'product.product':
-                domain_append += [('facet_line_ids.value_ids', '=', id) for id in facet_ids]
-            if model == 'product.template':
-                domain_append += [('product_variant_ids.facet_line_ids.value_ids', '=', id) for id in facet_ids]
+            for group in facet_ids:
+                ids = facet_ids[group]
+                if model == 'product.product':
+                    domain_append += ['|' for i in range(len(ids) - 1)] + [('facet_line_ids.value_ids', '=', id) for id in ids]
+                if model == 'product.template':
+                    domain_append += ['|' for i in range(len(ids) - 1)] + [('product_variant_ids.facet_line_ids.value_ids', '=', id) for id in ids]
         if ingredient_ids or not_ingredient_ids:
             product_ids = request.env['product.product'].sudo().search_read(
-                [('ingredient_ids', '=', id) for id in ingredient_ids] + [('ingredient_ids', '!=', id) for id in not_ingredient_ids], ['id'])
+                ['|' for i in range(len(ingredient_ids) - 1)] + [('ingredient_ids', '=', id) for id in ingredient_ids] + [('ingredient_ids', '!=', id) for id in not_ingredient_ids], ['id'])
             domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
         if request.session.get('form_values'):
             if request.session.get('form_values').get('current_news') or request.session.get('form_values').get('current_offer'):
@@ -919,7 +924,7 @@ class WebsiteSale(website_sale):
         if not values['errors']:
             acquirer_ids = payment_obj.sudo().search([('website_published', '=', True), ('company_id', '=', order.company_id.id)])
             values['acquirers'] = list(acquirer_ids)
-            render_ctx = dict(request.env.context, submit_class='btn btn-primary', submit_txt=_('Pay Now'))
+            render_ctx = dict(request.env.context, submit_class='btn btn-primary', submit_txt=_('Place Order'))
             for acquirer in values['acquirers']:
                 acquirer.button = acquirer.with_context(render_ctx).render(
                     '/',

@@ -423,7 +423,7 @@ msgstr ""
 #. module: webshop_dermanord
 #: code:addons/webshop_dermanord/webshop_dermanord.py:767
 #, python-format
-msgid "Pay Now"
+msgid "Place Order"
 msgstr ""
 
 #. module: webshop_dermanord
