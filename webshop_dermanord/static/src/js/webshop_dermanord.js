@@ -693,6 +693,7 @@ $(document).ready(function(){
 function load_products_grid(page){
     var start_render = new Date();
     $("div#loading").removeClass("hidden");
+    $('html,body').css('cursor', 'wait');
     openerp.jsonRpc("/dn_shop_json_grid", "call", {
         'page': current_page.toString(),
     }).done(function(data){
@@ -700,6 +701,7 @@ function load_products_grid(page){
         //~ page_count = data['page_count'];
         if (data['products'].length > 0) {
             $("div#loading").addClass("hidden");
+            $('html,body').css('cursor', 'default');
             var products_content = '';
             $.each(data['products'], function(key, info) {
                 data['products'][key]['url'] = data['url']
@@ -713,6 +715,7 @@ function load_products_grid(page){
             dn_loading_products = false;
         }
         else {
+            $('html,body').css('cursor', 'default');
             $("div#loading").addClass("hidden");
             $("div#loaded").removeClass("hidden");
         }
