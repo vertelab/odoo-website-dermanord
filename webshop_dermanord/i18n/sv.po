@@ -28,6 +28,13 @@ msgstr "&times;"
 
 #. module: webshop_dermanord
 #. openerp-web
+#: code:addons/webshop_dermanord/static/src/xml/product.xml:78
+#: view:website:webshop_dermanord.products_item
+msgid "Price from"
+msgstr "Pris från"
+
+#. module: webshop_dermanord
+#. openerp-web
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:51
 #: view:website:webshop_dermanord.products_item
 #: view:website:website_sale.cart

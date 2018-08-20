@@ -75,7 +75,12 @@
 -->
                         <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price" t-if="product_variant_ids">
                             <b class="text-muted">
-                                <h5>Price from</h5>
+                                <t t-if="lang == 'sv_SE'">
+                                    <h5>Pris från</h5>
+                                </t>
+                                <t t-if="lang != 'sv_SE'">
+                                    <h5>Price from</h5>
+                                </t>
                                 <h4>
                                     <t t-if="show_rec_price">
                                         <div>
