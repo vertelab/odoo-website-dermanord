@@ -295,7 +295,7 @@ class WebsiteBlog(WebsiteBlog):
             domain += [('tag_ids', '=', tag.id)]
         if date_begin and date_end:
             domain += [("create_date", ">=", date_begin), ("create_date", "<=", date_end)]
-        order = 'create_date desc'
+        order = 'write_date desc'
         blog_url = QueryURL('', ['blog', 'tag'], blog=blog, tag=tag, date_begin=date_begin, date_end=date_end)
         post_url = QueryURL('', ['blogpost'], tag_id=tag and tag.id or None, date_begin=date_begin, date_end=date_end)
         blog_post_ids = blog_post_obj.search(cr, uid, domain, order=order, limit=BPG, context=context)
