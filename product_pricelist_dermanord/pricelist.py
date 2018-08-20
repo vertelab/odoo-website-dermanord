@@ -55,7 +55,7 @@ class product_pricelist_dermanord(models.TransientModel):
         domain = [('sale_ok', '=', True)]
         if self._context.get('active_ids'):
             domain.append(('id', 'in', self._context.get('active_ids')))
-        all_products = self.env['product.product'].search(domain, order='default_code')
+        all_products = self.env['product.product'].with_context(lang=self.lang.code).search(domain, order='default_code')
         for c in self.env['product.category'].with_context(lang=self.lang.code).search([('id', 'in', all_products.mapped('categ_id').mapped('id'))], order='parent_id, name'):
             show_categ = False
             d = {
