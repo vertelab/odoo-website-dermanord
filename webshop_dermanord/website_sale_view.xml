@@ -115,6 +115,12 @@
                         </div>
                     </t>
                 </div>
+                <div id="loading" class="col-md-offset-3 col-md-9 col-xs-12 text-center">
+                    <img src="/web/static/src/img/throbber-large.gif"/> <h3 style="color: #BB602F;">Loading more products...</h3>
+                </div>
+                <div id="loaded" class="col-md-offset-3 col-md-9 col-xs-12 text-center hidden">
+                    <h3 style="color: #BB602F;">Good job! All products are completely loaded!</h3>
+                </div>
             </div>
         </template>
         <!-- fastest -->
@@ -470,11 +476,11 @@
             <xpath expr="//span[@t-field='line.product_id.image_small']" position="replace">
                 <img t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id" class="img_payment"/>
             </xpath>
-            
+
             <xpath expr="//th[@t-att-data-precision='website_sale_order.pricelist_id.currency_id.rounding']" position="after">
                 <th/>
             </xpath>
-            
+
             <xpath expr="//td[@name='price']" position="after">
                 <td>
                     <t t-foreach="line.product_id.packaging_ids" t-as="packaging">
@@ -507,7 +513,7 @@
                     </t>
                 </td>
             </xpath>
-            
+
             <xpath expr="//td[@name='price']" position="replace">
                 <td class="text-center" name="price" style="width: 200px;">
                     <t t-set="pricelist_af" t-value="request.env.ref('webshop_dermanord.pricelist_af')"/>

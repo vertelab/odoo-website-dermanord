@@ -692,12 +692,14 @@ $(document).ready(function(){
 
 function load_products_grid(page){
     var start_render = new Date();
+    $("div#loading").removeClass("hidden");
     openerp.jsonRpc("/dn_shop_json_grid", "call", {
         'page': current_page.toString(),
     }).done(function(data){
         var product_count = 0;
         //~ page_count = data['page_count'];
         if (data['products'].length > 0) {
+            $("div#loading").addClass("hidden");
             var products_content = '';
             $.each(data['products'], function(key, info) {
                 data['products'][key]['url'] = data['url']
@@ -709,6 +711,10 @@ function load_products_grid(page){
             $("#desktop_product_grid").append(products_content);
             current_page ++;
             dn_loading_products = false;
+        }
+        else {
+            $("div#loading").addClass("hidden");
+            $("div#loaded").removeClass("hidden");
         }
         var end_render  = new Date();
         var time_render = end_render.getTime() - start_render.getTime();
