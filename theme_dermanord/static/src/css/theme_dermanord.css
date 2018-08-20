@@ -789,6 +789,12 @@ address span {
     opacity: 1;
 }
 
+.oe_website_login_container {
+    width: unset;
+    max-width: 400px;
+    padding: 0px 15px;
+}
+
 .delivery_website_description {
     font-family: futura-pt-light, sans-serif;
     font-weight: normal;
