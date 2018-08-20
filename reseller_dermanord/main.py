@@ -215,8 +215,8 @@ class Main(http.Controller):
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
             else:
                 # ~ closest_ids = request.env['res.partner'].geoip_search('position', request.httprequest.remote_addr, 10)
-                resellers = request.env['res.partner'].sudo().search([('is_reseller', '=', True), ('child_ids.type', '=', 'visit')])
-                return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
+                # ~ resellers = request.env['res.partner'].sudo().search([('is_reseller', '=', True), ('child_ids.type', '=', 'visit')])
+                return request.website.render('reseller_dermanord.resellers', {'resellers': []})
         else:
             partner = request.env['res.partner'].sudo().search([('id', '=', int(partner)), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')])
             return request.website.render('reseller_dermanord.reseller', {
