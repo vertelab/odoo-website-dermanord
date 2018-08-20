@@ -98,8 +98,22 @@
         <tr t-att-class="lst_ribbon_style">
             <td class="td_lst">
                 <div class="lst-ribbon-wrapper">
-                    <span t-if="is_news_product">New</span>
-                    <span t-if="is_offer_product">Offer</span>
+                    <span t-if="is_news_product">
+                        <t t-if="lang == 'sv_SE'">
+                            Nyhet
+                        </t>
+                        <t t-if="lang != 'sv_SE'">
+                            New
+                        </t>
+                    </span>
+                    <span t-if="is_offer_product">
+                        <t t-if="lang == 'sv_SE'">
+                            Erbjudande
+                        </t>
+                        <t t-if="lang != 'sv_SE'">
+                            Offer
+                        </t>
+                    </span>
                     <span t-if="is_limited_product">Limited&amp;nbsp;Ed.</span>
                 </div>
             </td>

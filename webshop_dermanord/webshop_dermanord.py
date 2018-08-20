@@ -1333,7 +1333,7 @@ class WebsiteSale(website_sale):
                     cheapest = cheapest[0]
                     product['price'] = cheapest[price_data['price_field']]
                     if price_data['rec_price_field']:
-                        product['recommended_price'] = cheapest[price_data['rec_price_field']] 
+                        product['recommended_price'] = cheapest[price_data['rec_price_field']]
             else:
                 cheapest = None
                 for variant in request.env['product.product'].search_read([('product_tmpl_id', '=', product['id'])], ['id', price_data['rec_price_field']] if price_data['rec_price_field'] else ['id']):
@@ -1485,8 +1485,9 @@ class WebsiteSale(website_sale):
                 'default_code': product['default_code'] or '',
                 'fullname': product['fullname'],
                 'sale_ok': product['sale_ok'],
-                'load_time': timer() - p_start,
+                'lang': request.env.lang,
                 'instock': instock,
+                'load_time': timer() - p_start,
             })
 
         values = {
@@ -1583,7 +1584,7 @@ class WebsiteSale(website_sale):
         domain = request.session.get('current_domain')
         current_order = request.session.get('current_order')
         price_fields = request.website.get_price_fields(pricelist)
-        
+
         product_fields = ['id', 'name', 'fullname', 'campaign_ids', 'attribute_value_ids', 'default_code', 'price_45', 'price_20', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id', 'sale_ok']
         if price_fields['price_field'] not in product_fields:
             product_fields.append(price_fields['price_field'])
