@@ -1498,7 +1498,7 @@ class WebsiteSale(website_sale):
         values = {
             'products': products_list,
             'url': url,
-            'page_count': int(math.ceil(float(request.session.get('product_count', 2000)) / float(PPG))),
+            'page_count': int(math.ceil(float(request.session.get('product_count', 5000)) / float(PPG))),
         }
 
         return values
@@ -1596,7 +1596,7 @@ class WebsiteSale(website_sale):
         if price_fields['rec_price_field'] and price_fields['rec_price_field'] not in product_fields:
             product_fields.append(price_fields['rec_price_field'])
         products = request.env['product.product'].with_context(pricelist=pricelist.id).search_read(domain, product_fields, limit=PPG, order=current_order)
-        request.session['product_count'] = 2000
+        request.session['product_count'] = 5000
 
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id

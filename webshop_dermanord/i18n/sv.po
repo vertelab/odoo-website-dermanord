@@ -521,11 +521,13 @@ msgstr "Exempel på produkter som innehåller denna ingrediens"
 
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.dn_shop
+#: view:website:webshop_dermanord.products_list_reseller_view
 msgid "Loading more products..."
 msgstr "Laddar fler produkter..."
 
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.dn_shop
+#: view:website:webshop_dermanord.products_list_reseller_view
 msgid "Good job! All products are completely loaded!"
 msgstr "Bra jobbat! Alla produkter är färdiga laddade!"
 

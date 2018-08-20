@@ -458,6 +458,12 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div id="loading" class="col-md-offset-3 col-md-9 col-xs-12 text-center">
+                                <img src="/web/static/src/img/throbber-large.gif"/> <h3 style="color: #BB602F;">Loading more products...</h3>
+                            </div>
+                            <div id="loaded" class="col-md-offset-3 col-md-9 col-xs-12 text-center hidden">
+                                <h3 style="color: #BB602F;">Good job! All products are completely loaded!</h3>
+                            </div>
                         </div>
                     </t>
                     <div class="oe_structure mb32" />

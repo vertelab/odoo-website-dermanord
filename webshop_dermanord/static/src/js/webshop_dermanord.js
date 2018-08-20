@@ -727,12 +727,17 @@ function load_products_grid(page){
 
 function load_products_list(page){
     var start_render = new Date();
+    $("div#loading").removeClass("hidden");
+    $('html,body').css('cursor', 'wait');
     openerp.jsonRpc("/dn_shop_json_list", "call", {
         'page': current_page,
     }).done(function(data){
         var product_count = 0;
         page_count = data['page_count'];
-        if (page_count >= current_page) {
+        product_length = data['products'].length;
+        if (page_count >= current_page && product_length != 0) {
+            $("div#loading").addClass("hidden");
+            $('html,body').css('cursor', 'default');
             var products_content = '';
             $.each(data['products'], function(key, info) {
                 data['products'][key]['url'] = data['url']
@@ -746,6 +751,11 @@ function load_products_list(page){
             $(".oe_website_sale").find('tbody').append(products_content);
             current_page ++;
             dn_loading_products = false;
+        }
+        if (product_length == 0) {
+            $('html,body').css('cursor', 'default');
+            $("div#loading").addClass("hidden");
+            $("div#loaded").removeClass("hidden");
         }
         var end_render  = new Date();
         var time_render = end_render.getTime() - start_render.getTime();
