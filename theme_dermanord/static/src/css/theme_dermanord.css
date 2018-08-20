@@ -788,3 +788,8 @@ address span {
     visibility: visible;
     opacity: 1;
 }
+
+.delivery_website_description {
+    font-family: futura-pt-light, sans-serif;
+    font-weight: normal;
+}
