@@ -609,9 +609,9 @@
                                     </div>
                                 </div>
                                 <t t-foreach="line.product_id.packaging_ids" t-as="packaging">
-                                    <div class="dn-tooltip">
-                                        <i class="fa fa-cube"/>
-                                        <div class="dn-tooltiptext" style="font-family: futura-pt-medium;">
+                                    <div class="text-center">
+                                        <i class="fa fa-cube" rel="popover" data-placement="bottom" t-att-data-popover-content="'#packaging_popover_%s' %packaging.id"/>
+                                        <div t-att-id="'packaging_popover_%s' %packaging.id" class="hide" style="font-family: futura-pt-medium;">
                                             <b t-esc="packaging.ul.name"/><br/>
                                             <t t-if="packaging.qty">
                                                 <b>Quantity:</b> <t t-esc="packaging.qty"/> pcs / box<br/>

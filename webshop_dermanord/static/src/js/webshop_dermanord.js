@@ -5,6 +5,18 @@ var page_count = 0;
 var lang = $("html").attr("lang");
 var dn_loading_products = false;
 
+$(function(){
+    $('[rel="popover"]').popover({
+        container: 'body',
+        html: true,
+        content: function () {
+            var clone = $($(this).data('popover-content')).clone(true).removeClass('hide');
+            return clone;
+        }
+    }).click(function(e) {
+        e.preventDefault();
+    });
+});
 
 function setCartPriceQuantity(price, quantity, price_float) {
     var ts = $(".my_cart_total").data('thousands_sep');
