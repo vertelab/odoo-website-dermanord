@@ -576,6 +576,131 @@
                     </a>
                 </td>
             </xpath>
+
+            <!-- in mobile -->
+            <xpath expr="//table[@id='cart_products']" position="attributes">
+                <attribute name="class">table table-striped table-condensed hidden-xs</attribute>
+            </xpath>
+            <xpath expr="//table[@id='cart_products']" position="after">
+                <div class="container hidden-lg hidden-md hidden-sm mb32" id="cart_products">
+                    <t t-foreach="website_sale_order.website_order_line" t-as="line">
+                        <div class="col-xs-12" t-att-style="'padding: 10px 0px; border-top: 1px solid #ddd; background-color: %s;' %('#f9f9f9' if line_index % 2 == 0 else 'none')">
+                            <div align="center" t-if="line.product_id.product_tmpl_id" class="col-xs-2" style="padding: 0px;" data-toggle="collapse" t-att-data-target="'#collapse_%s' %line.id" t-att-aria-controls="'collapse_%s' %line.id">
+                                <img t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id" class="img_payment" style="margin: auto; display: block;"/>
+                            </div>
+                            <div class="col-xs-4" style="padding: 0px 5px;">
+                                <div class="text-center" name="price">
+                                    <t t-set="pricelist_af" t-value="request.env.ref('webshop_dermanord.pricelist_af')"/>
+                                    <t t-set="pricelist_special" t-value="request.env.ref('webshop_dermanord.pricelist_special')"/>
+                                    <t t-set="pricelist_us" t-value="request.env.ref('webshop_dermanord.pricelist_us')"/>
+                                    <t t-set="pricelist_eu" t-value="request.env.ref('webshop_dermanord.pricelist_eu')"/>
+                                    <div style="font-family: futura-pt-medium;">
+                                        <!-- Recommended price -->
+                                        <t t-if="user_id.partner_id.property_product_pricelist in (pricelist_af, pricelist_special)">
+                                            <!-- Återförsäljare 45% -->
+                                            <span t-field="line.product_id.recommended_price" style="white-space: nowrap;" t-field-options='{
+                                                "widget": "monetary",
+                                                "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                            }' />
+                                            <br/>
+                                            <span style="display: inline;">(rec incl. tax)</span>
+                                        </t>
+                                        <t t-if="user_id.partner_id.property_product_pricelist == pricelist_us">
+                                            <!-- USA ÅF 65% -->
+                                            <span t-field="line.product_id.recommended_price_en" style="white-space: nowrap;" t-field-options='{
+                                                "widget": "monetary",
+                                                "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                            }' />
+                                            <br/>
+                                            <span style="display: inline;">(rec excl. tax)</span>
+                                        </t>
+                                        <t t-if="user_id.partner_id.property_product_pricelist == pricelist_eu">
+                                            <!-- EURO ÅF 45% -->
+                                            <span t-field="line.product_id.recommended_price_eu" style="white-space: nowrap;" t-field-options='{
+                                                "widget": "monetary",
+                                                "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                            }' />
+                                            <br/>
+                                            <span style="display: inline;">(rec incl. tax)</span>
+                                        </t>
+                                    </div>
+                                    <div style="font-family: futura-pt-medium;">
+                                        <!-- Actual price -->
+                                        <span style="white-space: nowrap;" t-field="line.discounted_price" t-field-options='{
+                                           "widget": "monetary",
+                                           "from_currency": "website_sale_order.pricelist_id.currency_id",
+                                           "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                       }' />
+                                       <br/>
+                                        <span t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller" style="display: inline;">
+                                            (your excl. tax)
+                                        </span>
+                                    </div>
+                                </div>
+                                <t t-foreach="line.product_id.packaging_ids" t-as="packaging">
+                                    <div class="dn-tooltip">
+                                        <i class="fa fa-cube"/>
+                                        <div class="dn-tooltiptext" style="font-family: futura-pt-medium;">
+                                            <b t-esc="packaging.ul.name"/><br/>
+                                            <t t-if="packaging.qty">
+                                                <b>Quantity:</b> <t t-esc="packaging.qty"/> pcs / box<br/>
+                                            </t>
+                                            <t t-if="packaging.ean">
+                                                <b>EAN:</b> <t t-esc="packaging.ean"/><br/>
+                                            </t>
+                                            <t t-if="packaging.ul.width">
+                                                <b>Width:</b> <t t-esc="packaging.ul.width"/> mm<br/>
+                                            </t>
+                                            <t t-if="packaging.ul.length">
+                                                <b>Length:</b> <t t-esc="packaging.ul.length"/> mm<br/>
+                                            </t>
+                                            <t t-if="packaging.ul.height">
+                                                <b>Height:</b> <t t-esc="packaging.ul.height"/> mm<br/>
+                                            </t>
+                                            <t t-if="packaging.ul_container">
+                                                <b t-esc="packaging.ul_container.name"/><br/>
+                                                <b>Quantity (DFP):</b> <t t-esc="packaging.ul_qty * packaging.rows"/> boxes / pallet<br/>
+                                                <b>Quantity (KFP):</b> <t t-esc="packaging.qty * packaging.ul_qty * packaging.rows"/> pcs / pallet<br/>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                            <div class="col-xs-5" style="padding: 0px;">
+                                <div class="input-group oe_website_spinner">
+                                    <span class="input-group-addon">
+                                        <a t-attf-href="#" class="mb8 js_add_cart_json" data-no-instant="">
+                                            <i class="fa fa-minus text-primary"/>
+                                        </a>
+                                    </span>
+                                    <input type="text" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty)"/>
+                                    <span class="input-group-addon">
+                                        <a t-attf-href="#" class="mb8 float_left js_add_cart_json" data-no-instant="">
+                                            <i class="fa fa-plus text-primary"/>
+                                        </a>
+                                    </span>
+                                    <span>
+                                        <a class="js_remove_cart_json" href="#">
+                                            <i class="fa fa-trash-o text-primary mt8" style="margin-left: 15px;"/>
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div t-att-id="'collapse_%s' %line.id" class="collapse mb16" t-att-aria-labelledby="'heading_%s' %line.id">
+                            <div t-if="line.product_id.product_tmpl_id" class="col-xs-12"  t-att-style="'padding-bottom: 10px; border-bottom: 1px solid #ddd; background-color: %s;' %('#f9f9f9' if line_index % 2 == 0 else 'none')">
+                                <a t-attf-href="/dn_shop/variant/#{ slug(line.product_id) }" class="text-primary">
+                                    <strong t-if="line.product_id.default_code">
+                                        [<t t-esc="line.product_id.default_code" />]
+                                    </strong>
+                                    <strong t-esc="line.product_id.with_context(display_default_code=False).display_name" />
+                                </a>
+                                <div class="text-muted" t-esc="'\n'.join(line.name.splitlines()[1:])"/>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </xpath>
         </template>
         <template id="suggested_products_list" inherit_id="website_sale.suggested_products_list">
             <xpath expr="//tr[@t-foreach='suggested_products']" position="replace">
