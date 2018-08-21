@@ -163,14 +163,24 @@ $(document).ready(function(){
             if (data['ingredients'] != null) {
                 var ingredient_html = '<div id="ingredients_div"><div class="container mb16 hidden-xs"><h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>';
                 $.each(data['ingredients'], function(index, value) {
-                    ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/product_ingredients.img_ingredients"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</h6></div></a>';
+                    if(value[0] != 0) {
+                        ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/product_ingredients.img_ingredients"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</h6></div></a>';
+                    }
+                    else {
+                        ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc"><img class="img img-responsive" style="margin: auto;" src="/web/static/src/img/placeholder.png"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</h6></div></a>';
+                    }
                 });
                 ingredient_html += '</div></div>';
                 $ingredient_div.replaceWith(ingredient_html);
 
                 var ingredient_mobile_html = '<div id="ingredients_div_mobile"><div class="container mb16 hidden-lg hidden-md hidden-sm"><h4 class="text-center dn_uppercase">made from all-natural ingredients</h4><div class="col-md-12"><div class="carousel slide" id="ingredient_carousel" data-ride="carousel"><div class="carousel-inner" style="width: 100%;">';
                 $.each(data['ingredients'], function(index, value) {
-                    ingredient_mobile_html += '<div class="item ingredient_desc' + ((index == 0) ? ' active' : '') + '"><a href="/dn_shop/?current_ingredient=' + value[0] + '"><img class="img img-responsive" style="margin: auto; display: block;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/product_ingredients.img_ingredients"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</i></h6></a></div>';
+                    if(value[0] != 0) {
+                        ingredient_mobile_html += '<div class="item ingredient_desc' + ((index == 0) ? ' active' : '') + '"><a href="/dn_shop/?current_ingredient=' + value[0] + '"><img class="img img-responsive" style="margin: auto; display: block;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/product_ingredients.img_ingredients"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</i></h6></a></div>';
+                    }
+                    else {
+                        ingredient_mobile_html += '<div class="item ingredient_desc' + ((index == 0) ? ' active' : '') + '"><a href="/dn_shop/?current_ingredient=' + value[0] + '"><img class="img img-responsive" style="margin: auto; display: block;" src="/web/static/src/img/placeholder.png"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</i></h6></a></div>';
+                    }
                 });
                 ingredient_mobile_html += '</div><div class="carousel-control left" data-slide="prev" data-target="#ingredient_carousel" href="#ingredient_carousel" style="width: 10%; left: 0px;"><i class="fa fa-chevron-left" style="right: 20%; color: #000;"/></div><div class="carousel-control right" data-slide="next" data-target="#ingredient_carousel" href="#ingredient_carousel" style="width: 10%; right: 0px;"><i class="fa fa-chevron-right" style="left: 20%; color: #000;"/></div><ol class="carousel-indicators" style="bottom: -10px;">';
                 $.each(data['ingredients'], function(index, value) {
