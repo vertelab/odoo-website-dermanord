@@ -1789,7 +1789,7 @@ class WebsiteSale(website_sale):
                 product_ingredients = request.env['product.ingredient'].search([('product_ids', 'in', product_id)], order='sequence')
                 if len(product_ingredients) > 0:
                     for i in product_ingredients:
-                        ingredients.append([i.id, i.name])
+                        ingredients.append([i.id if i.image else 0, i.name])
 
                 offer = False
                 if product in product.get_campaign_variants(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
