@@ -359,10 +359,10 @@ $(document).ready(function(){
                     if (data.amount_untaxed === undefined) {data.amount_untaxed='0.00'};
 
                     setCartPriceQuantity('' + data['amount_untaxed'], '' + data['cart_quantity'], data['amount_untaxed']);
-
                     if (!data.quantity) { // update table and all prices on page
                         //~ location.reload(true);
-                        $("#cart_products").load(location.href + " #cart_products");
+                        $("table#cart_products").load(location.href + " table#cart_products");
+                        $("div#cart_products").load(location.href + " div#cart_products");
                         $("#cart_total").load(location.href + " #cart_total");
                         return;
                     }
@@ -454,7 +454,8 @@ $(document).ready(function(){
                     }
                     var cart_quantity = data.cart_quantity === undefined ? 0 : data.cart_quantity;
                     if (!data.quantity) {
-                        $("#cart_products").load(location.href + " #cart_products");
+                        $("table#cart_products").load(location.href + " table#cart_products");
+                        $("div#cart_products").load(location.href + " div#cart_products");
                         $("#cart_total").load(location.href + " #cart_total");
                         $(".my_cart_total").load(location.href + " .my_cart_total");
                         $q.html("(" + cart_quantity + ")");
