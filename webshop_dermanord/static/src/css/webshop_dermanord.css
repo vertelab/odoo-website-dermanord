@@ -337,6 +337,10 @@ div.shipping-address, div.invoicing-address {
     color: #bbb;
 }
 
+.category_title.dn_uppercase, .facet_div h2 {
+    font-size: 1.3em;
+}
+
 .facet_div ::after {
     content: "";
     position: absolute;

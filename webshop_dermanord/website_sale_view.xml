@@ -883,7 +883,7 @@
                         <h2 class="category_title dn_uppercase">Categories</h2>
                         <t t-foreach="product.public_categ_ids" t-as="pc">
                             <a t-att-href="'/dn_shop/category/%s' %pc.id">
-                                <p style="color: #777;" t-field="pc.name" />
+                                <span style="color: #bbb;" t-field="pc.name" />
                             </a>
                         </t>
                     </div>
