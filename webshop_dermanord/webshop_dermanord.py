@@ -1376,6 +1376,19 @@ class WebsiteSale(website_sale):
 
         dp = request.env['res.lang'].search_read([('code', '=', request.env.lang)], ['decimal_point'])
         dp = dp and dp[0]['decimal_point'] or '.'
+        
+        prod_packs = request.env['product.product'].sudo().search_read([('id', 'in', [p['id'] for p in products])], ['packaging_ids'], order=current_order)
+        packagings = request.env['product.packaging'].sudo().search_read([('id', 'in', sum([p['packaging_ids'] for p in prod_packs], []))], ['ul', 'name', 'ean', 'qty', 'ul_container', 'ul_qty', 'rows'])
+        for ul in request.env['product.ul'].sudo().search_read(
+            [('id', 'in', [p['ul_container'][0] for p in packagings if p['ul_container']] + [p['ul'][0] for p in packagings if p['ul']])],
+            ['width', 'length', 'height', 'name']):
+            for p in packagings:
+                if type(p['ul']) == tuple and p['ul'][0] == ul['id']:
+                    p['ul'] = ul
+                if type(p['ul_container']) == tuple and p['ul_container'][0] == ul['id']:
+                    p['ul_container'] = ul
+        packagings = {d['id']: d for d in packagings}
+        
         for product in products:
             p_start = timer()
             if len(product['campaign_ids']) > 0:
@@ -1420,6 +1433,10 @@ class WebsiteSale(website_sale):
                 else:
                     product['recommended_price'] = 0.0
 
+            product['packaging_ids'] = filter(lambda d: d['id'] == product['id'], prod_packs)[0]['packaging_ids']
+            for i in range(len(product['packaging_ids'])):
+                product['packaging_ids'][i] = packagings[product['packaging_ids'][i]]
+
             products_list.append({
                 'lst_ribbon_style': 'tr_lst',
                 'product_id': product['id'],
@@ -1446,6 +1463,7 @@ class WebsiteSale(website_sale):
                 'lang': request.env.lang,
                 'instock': instock,
                 'load_time': timer() - p_start,
+                'packaging_ids': product['packaging_ids'],
             })
 
         values = {
@@ -1562,6 +1580,18 @@ class WebsiteSale(website_sale):
         request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
         request.session['sort_name'], request.session['sort_order'] = request.website.get_chosen_order(request.website.get_form_values())
         value_start = timer()
+        
+        prod_packs = request.env['product.product'].sudo().search_read([('id', 'in', [p['id'] for p in products])], ['packaging_ids'], order=current_order)
+        packagings = request.env['product.packaging'].sudo().search_read([('id', 'in', sum([p['packaging_ids'] for p in prod_packs], []))], ['ul', 'name', 'ean', 'qty', 'ul_container', 'ul_qty', 'rows'])
+        for ul in request.env['product.ul'].sudo().search_read(
+            [('id', 'in', [p['ul_container'][0] for p in packagings if p['ul_container']] + [p['ul'][0] for p in packagings if p['ul']])],
+            ['width', 'length', 'height', 'name']):
+            for p in packagings:
+                if type(p['ul']) == tuple and p['ul'][0] == ul['id']:
+                    p['ul'] = ul
+                if type(p['ul_container']) == tuple and p['ul_container'][0] == ul['id']:
+                    p['ul_container'] = ul
+        packagings = {d['id']: d for d in packagings}
 
         for p in products:
             if len(p['campaign_ids']) > 0:
@@ -1584,6 +1614,10 @@ class WebsiteSale(website_sale):
             p['get_this_variant_ribbon'] = product_ribbon
             p['instock'] = self.in_stock(p['id'])
             p['sale_ok'] = True if (p['sale_ok'] and p['instock'][0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
+
+            p['packaging_ids'] = filter(lambda d: d['id'] == p['id'], prod_packs)[0]['packaging_ids']
+            for i in range(len(p['packaging_ids'])):
+                p['packaging_ids'][i] = packagings[p['packaging_ids'][i]]
 
         no_product_message = ''
         if len(products) == 0:
