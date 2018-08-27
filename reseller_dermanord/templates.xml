@@ -254,6 +254,9 @@
         </template>
 
         <template id="home_page" inherit_id="website_sale_home.home_page" name="Home Page Inherited Reseller Dermanord">
+            <xpath expr="//label[@for='website_short_description']/.." position="attributes">
+                <attribute name="t-if">not home_user.partner_id.commercial_partner_id.is_reseller</attribute>
+            </xpath>
             <xpath expr="//t[@t-call='website_sale_home.company_info_form']" position="before">
                 <t t-if="home_user.partner_id.commercial_partner_id.is_reseller">
                     <div class="form-group">
