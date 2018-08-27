@@ -171,7 +171,7 @@
                                     <a href="/home" role="menuitem" style="color: #000;"><i class="fa fa-user fa-2x"/></a>
                                 </div>
                             </div>
-                            <div id="shop_cart_div" class="col-xs-2">
+                            <div id="shop_cart_div" class="col-xs-2" groups="base.group_user,__export__.res_groups_283">
                                 <div class="hidden-lg hidden-md hidden-sm">
                                     <a href="/shop/cart" style="color: #000;"><i class="fa fa-shopping-cart fa-2x"/>
                                         <t t-if="website_sale_order">
@@ -191,7 +191,7 @@
                         <div class="col-md-12 col-sm-12 hidden-xs">
                             <a href="#" id="search-btn-modal" data-toggle="modal" data-target="#search_modal" style="color: #000;" class="pull-right"><h5 class="dn_uppercase">Search <i class="fa fa-search"/></h5></a>
                         </div>
-                        <div class="col-md-12 col-sm-12 hidden-xs">
+                        <div class="col-md-12 col-sm-12 hidden-xs" groups="base.group_user,__export__.res_groups_283">
                             <t t-set="website_sale_order" t-value="website_sale_order or website.sale_get_order()"/>
                             <a href="/shop/cart" class="pull-right kepler_std_i" style="color: #000;">
                                 <i class="fa fa-shopping-cart"/>

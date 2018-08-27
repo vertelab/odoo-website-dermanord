@@ -87,7 +87,6 @@ $(document).ready(function() {
                 $("section.product_highlights").removeClass("hidden");
                 var ph_content = '';
                 $.each(data, function(key, info) {
-                    console.log(data[key]);
                     var ribbon_html = '';
                     if (data[key]['oe_ribbon_promo'] || data[key]['oe_ribbon_promo']) {
                         ribbon_html += '<div class="ribbon-wrapper">';
