@@ -126,9 +126,9 @@ a {
 }
 
 .ph_block h4 {
-    height: 3em;
+    height: 2.4em;
     padding: 0px;
-    line-height: 1.5em;
+    line-height: 1.2em;
     overflow: hidden;
     position: relative;
 /*
@@ -168,6 +168,78 @@ a {
     width: 10%;
     height: 1.25em;
     background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 50%);
+}
+
+.ph_block.oe_ribbon_promo .ribbon-wrapper, .ph_block.oe_ribbon_limited .ribbon-wrapper {
+    display: block;
+}
+.ph_block .ribbon-wrapper {
+    width: 85px;
+    height: 88px;
+    z-index: 5;
+    overflow: hidden;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.ph_block .ribbon_news {
+    font: bold 12px Sans-Serif;
+    color: white;
+    text-align: center;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    position: relative;
+    padding: 7px 0;
+    left: -5px;
+    top: 13px;
+    width: 120px;
+    cursor: default;
+}
+
+.ph_block .ribbon_limited {
+    font: bold 12px Sans-Serif;
+    color: white;
+    text-align: center;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    position: relative;
+    padding: 1px 0;
+    left: -5px;
+    top: 13px;
+    width: 120px;
+    cursor: default;
+}
+
+.ph_block .ribbon_offer {
+    font: bold 12px Sans-Serif;
+    color: white;
+    text-align: center;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    position: relative;
+    padding: 7px 0;
+    left: -28px;
+    top: 15px;
+    width: 120px;
+    cursor: default;
+    font-size: 0.7em;
+}
+
+.ph_block .offer-wrapper {
+    width: 85px;
+    height: 88px;
+    z-index: 5;
+    overflow: hidden;
+    position: absolute;
+    top: 20px;
+    left: 20px;
 }
 
 .double_image {

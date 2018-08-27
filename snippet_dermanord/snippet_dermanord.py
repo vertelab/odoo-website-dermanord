@@ -26,7 +26,7 @@ import werkzeug
 import logging
 _logger = logging.getLogger(__name__)
 
-    
+
 class product_action(models.Model):
     _inherit = 'product.action'
     action_type = fields.Selection(selection_add=[('show_on_startpage','Show on Startpage')])
@@ -136,10 +136,16 @@ class snippet(http.Controller):
                 occs = occs.sorted(key=lambda o: o.sequence)
                 for occ in occs:
                     url = ''
+                    oe_ribbon_promo = False
+                    oe_ribbon_limited = False
                     if occ.object_id._name == 'product.template':
+                        oe_ribbon_promo = True if request.env.ref('website_sale.image_promo') in occ.object_id.website_style_ids else False
+                        oe_ribbon_limited = True if request.env.ref('webshop_dermanord.image_limited') in occ.object_id.website_style_ids else False
                         if check_access(occ.object_id):
                             url = '/dn_shop/product/%s' %occ.object_id.id
                     elif occ.object_id._name == 'product.product':
+                        oe_ribbon_promo = True if request.env.ref('website_sale.image_promo') in occ.object_id.website_style_ids_variant else False
+                        oe_ribbon_limited = True if request.env.ref('webshop_dermanord.image_limited') in occ.object_id.website_style_ids_variant else False
                         if check_access(occ.object_id):
                             url = '/dn_shop/variant/%s' %(occ.object_id.id)
                     elif occ.object_id._name == 'product.public.category':
@@ -156,6 +162,11 @@ class snippet(http.Controller):
                                 'image': '/imagefield/crm.campaign.object/image/%s/ref/%s' %(occ.id, 'snippet_dermanord.img_product') if occ.image else '/web/static/src/img/placeholder.png',
                                 'description': occ.description if occ.description else '',
                                 'url': url,
+                                'oe_ribbon_promo': oe_ribbon_promo,
+                                'oe_ribbon_promo_text': 'Nyhet' if request.env.lang == 'sv_SE' else 'New',
+                                'oe_ribbon_limited': oe_ribbon_limited,
+                                'oe_ribbon_offer': True if (request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af') and occ.object_id.is_offer_product_reseller) or (request.env.user.partner_id.property_product_pricelist in [request.env.ref('webshop_dermanord.pricelist_af'), request.env.ref('webshop_dermanord.pricelist_special')] and occ.object_id.is_offer_product_consumer) else False,
+                                'oe_ribbon_offer_text': 'Erbjudande' if request.env.lang == 'sv_SE' else 'Offer',
                             }
                         )
         for product in request.env['product.product'].search([('show_on_startpage','=',True)]):
@@ -166,6 +177,9 @@ class snippet(http.Controller):
                     'image': '/imagefield/product.product/show_on_startpage_image/%s/ref/%s' %(product.id, 'snippet_dermanord.img_product') if product.show_on_startpage_image else '/web/static/src/img/placeholder.png',
                     'description': product.show_on_startpage_desc or product.public_desc or '',
                     'url': '/dn_shop/variant/%s' % product.id,
+                    'oe_ribbon_promo': True if request.env.ref('website_sale.image_promo') in product.website_style_ids_variant else False,
+                    'oe_ribbon_limited': True if request.env.ref('webshop_dermanord.image_limited') in product.website_style_ids_variant else False,
+                    'oe_ribbon_offer': True if (request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af') and product.is_offer_product_reseller) or (request.env.user.partner_id.property_product_pricelist in [request.env.ref('webshop_dermanord.pricelist_af'), request.env.ref('webshop_dermanord.pricelist_special')] and product.is_offer_product_consumer) else False,
                 }
             )
         return object_list
