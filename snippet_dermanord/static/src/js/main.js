@@ -1,4 +1,5 @@
 var categ_block_hidden_indicator = 1;
+var ph_block_height = 0;
 
 $(document).ready(function() {
 
@@ -129,7 +130,6 @@ $(document).ready(function() {
           //~ $(this).parent().carousel('next');
    //~ })
 
-
 });
 
 resizing_ph_blocks = function() {
@@ -137,7 +137,17 @@ resizing_ph_blocks = function() {
         var $self = $(this);
         var height = $self.find(".ph_img").height() + $self.find(".desc_div").height() + 50;
         $(".desc_div").css("width" , $self.width().toString());
-        $self.css("height" , parseInt(height).toString());
+        if (parseInt(height) >= ph_block_height) {
+            ph_block_height = parseInt(height);
+        }
+    });
+    reset_ph_block();
+}
+
+reset_ph_block = function() {
+    $(".ph_block").each(function() {
+        var $self = $(this);
+        $self.css("height" , ph_block_height.toString());
     });
 }
 
