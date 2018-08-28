@@ -139,13 +139,13 @@ class snippet(http.Controller):
                     oe_ribbon_promo = False
                     oe_ribbon_limited = False
                     if occ.object_id._name == 'product.template':
-                        oe_ribbon_promo = True if request.env.ref('website_sale.image_promo') in occ.object_id.website_style_ids else False
-                        oe_ribbon_limited = True if request.env.ref('webshop_dermanord.image_limited') in occ.object_id.website_style_ids else False
+                        oe_ribbon_promo = True if request.env.ref('website_sale.image_promo') in occ.sudo().object_id.website_style_ids else False
+                        oe_ribbon_limited = True if request.env.ref('webshop_dermanord.image_limited') in occ.sudo().object_id.website_style_ids else False
                         if check_access(occ.object_id):
                             url = '/dn_shop/product/%s' %occ.object_id.id
                     elif occ.object_id._name == 'product.product':
-                        oe_ribbon_promo = True if request.env.ref('website_sale.image_promo') in occ.object_id.website_style_ids_variant else False
-                        oe_ribbon_limited = True if request.env.ref('webshop_dermanord.image_limited') in occ.object_id.website_style_ids_variant else False
+                        oe_ribbon_promo = True if request.env.ref('website_sale.image_promo') in occ.sudo().object_id.website_style_ids_variant else False
+                        oe_ribbon_limited = True if request.env.ref('webshop_dermanord.image_limited') in occ.sudo().object_id.website_style_ids_variant else False
                         if check_access(occ.object_id):
                             url = '/dn_shop/variant/%s' %(occ.object_id.id)
                     elif occ.object_id._name == 'product.public.category':
@@ -153,7 +153,7 @@ class snippet(http.Controller):
                             url = '/dn_shop/category/%s' %occ.object_id.id
                     elif occ.object_id._name == 'blog.post':
                         if check_access(occ.object_id):
-                            url = '/blog/%s/post/%s' %(occ.object_id.blog_id.id, occ.object_id.id)
+                            url = '/blog/%s/post/%s' %(occ.sudo().object_id.blog_id.id, occ.object_id.id)
                     if url:
                         object_list.append(
                             {
@@ -165,7 +165,7 @@ class snippet(http.Controller):
                                 'oe_ribbon_promo': oe_ribbon_promo,
                                 'oe_ribbon_promo_text': 'Nyhet' if request.env.lang == 'sv_SE' else 'New',
                                 'oe_ribbon_limited': oe_ribbon_limited,
-                                'oe_ribbon_offer': True if (request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af') and occ.object_id.is_offer_product_reseller) or (request.env.user.partner_id.property_product_pricelist in [request.env.ref('webshop_dermanord.pricelist_af'), request.env.ref('webshop_dermanord.pricelist_special')] and occ.object_id.is_offer_product_consumer) else False,
+                                'oe_ribbon_offer': True if (request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af') and occ.sudo().object_id.is_offer_product_reseller) or (request.env.user.partner_id.property_product_pricelist in [request.env.ref('webshop_dermanord.pricelist_af'), request.env.ref('webshop_dermanord.pricelist_special')] and occ.sudo().object_id.is_offer_product_consumer) else False,
                                 'oe_ribbon_offer_text': 'Erbjudande' if request.env.lang == 'sv_SE' else 'Offer',
                             }
                         )
@@ -179,7 +179,7 @@ class snippet(http.Controller):
                     'url': '/dn_shop/variant/%s' % product.id,
                     'oe_ribbon_promo': True if request.env.ref('website_sale.image_promo') in product.website_style_ids_variant else False,
                     'oe_ribbon_limited': True if request.env.ref('webshop_dermanord.image_limited') in product.website_style_ids_variant else False,
-                    'oe_ribbon_offer': True if (request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af') and product.is_offer_product_reseller) or (request.env.user.partner_id.property_product_pricelist in [request.env.ref('webshop_dermanord.pricelist_af'), request.env.ref('webshop_dermanord.pricelist_special')] and product.is_offer_product_consumer) else False,
+                    'oe_ribbon_offer': True if (request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af') and product.sudo().is_offer_product_reseller) or (request.env.user.partner_id.property_product_pricelist in [request.env.ref('webshop_dermanord.pricelist_af'), request.env.ref('webshop_dermanord.pricelist_special')] and product.sudo().is_offer_product_consumer) else False,
                 }
             )
         return object_list
