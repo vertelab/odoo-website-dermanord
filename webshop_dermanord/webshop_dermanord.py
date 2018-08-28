@@ -1230,6 +1230,7 @@ class WebsiteSale(website_sale):
             'show_rec_price': price_data['show_rec_price'],
             'tax_included': price_data['tax_included'],
             'rec_tax_included': price_data['rec_tax_included'],
+            'all_products_loaded': True if len(products) < PPG else False,
         }
         # ~ _logger.error('to continue to qweb timer %s\ndomain: %s\npricelist: %s\nsearch: %s\nvalues: %s' % (timer() - start_all, domain_finished - start_all, search_start - domain_finished, search_end - search_start, timer() - search_end))
         render_start = timer()
@@ -1634,6 +1635,7 @@ class WebsiteSale(website_sale):
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
             'shop_footer': True,
             'no_product_message': no_product_message,
+            'all_products_loaded': True if len(products) < PPG else False,
         }
         # ~ _logger.warn('after value: %s' %(timer()-value_start))
         start_render = timer()
