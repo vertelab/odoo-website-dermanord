@@ -135,9 +135,9 @@ $(document).ready(function() {
 resizing_ph_blocks = function() {
     $(".ph_block").each(function() {
         var $self = $(this);
-        var height = $self.find(".ph_img").height() + $(this).find(".desc_div").height() + 50;
+        var height = $self.find(".ph_img").height() + $self.find(".desc_div").height() + 50;
         $(".desc_div").css("width" , $self.width().toString());
-        $(this).css("height" , parseInt(height).toString());
+        $self.css("height" , parseInt(height).toString());
     });
 }
 

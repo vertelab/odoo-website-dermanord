@@ -87,6 +87,7 @@ a {
     width: 100%;
     border: 3px solid #fff;
     margin: auto;
+    position: relative;
 }
 
 .ph_block:hover {
@@ -173,14 +174,15 @@ a {
 .ph_block.oe_ribbon_promo .ribbon-wrapper, .ph_block.oe_ribbon_limited .ribbon-wrapper {
     display: block;
 }
+
 .ph_block .ribbon-wrapper {
     width: 85px;
     height: 88px;
     z-index: 5;
     overflow: hidden;
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 0px;
+    right: 0px;
 }
 
 .ph_block .ribbon_news {
@@ -238,8 +240,8 @@ a {
     z-index: 5;
     overflow: hidden;
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: 0px;
+    left: 0px;
 }
 
 .double_image {
@@ -274,9 +276,6 @@ a {
 
 /* xs */
 @media screen and (max-width: 767px) {
-    .ph_block {
-        height: 600px;
-    }
     .product_div > a > .col-md-3.col-sm-6.col-xs-12 {
         padding: 0px 30px;
     }
