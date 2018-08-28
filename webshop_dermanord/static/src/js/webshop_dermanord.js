@@ -716,7 +716,6 @@ $(document).ready(function(){
 
 function load_products_grid(page){
     var start_render = new Date();
-    $("div#loading").removeClass("hidden");
     $('html,body').css('cursor', 'wait');
     openerp.jsonRpc("/dn_shop_json_grid", "call", {
         'page': current_page.toString(),
@@ -724,8 +723,9 @@ function load_products_grid(page){
         var product_count = 0;
         //~ page_count = data['page_count'];
         if (data['products'].length > 0) {
-            $("div#loading").addClass("hidden");
-            $('html,body').css('cursor', 'default');
+            $("div#loading").removeClass("hidden");
+            //~ $("div#loading").addClass("hidden");
+            //~ $('html,body').css('cursor', 'default');
             var products_content = '';
             $.each(data['products'], function(key, info) {
                 data['products'][key]['url'] = data['url']
@@ -737,6 +737,7 @@ function load_products_grid(page){
             $("#desktop_product_grid").append(products_content);
             current_page ++;
             dn_loading_products = false;
+            $('html,body').css('cursor', 'default');
         }
         else {
             $('html,body').css('cursor', 'default');
@@ -751,7 +752,6 @@ function load_products_grid(page){
 
 function load_products_list(page){
     var start_render = new Date();
-    $("div#loading").removeClass("hidden");
     $('html,body').css('cursor', 'wait');
     openerp.jsonRpc("/dn_shop_json_list", "call", {
         'page': current_page,
@@ -760,8 +760,7 @@ function load_products_list(page){
         page_count = data['page_count'];
         product_length = data['products'].length;
         if (page_count >= current_page && product_length != 0) {
-            $("div#loading").addClass("hidden");
-            $('html,body').css('cursor', 'default');
+            $("div#loading").removeClass("hidden");
             var products_content = '';
             $.each(data['products'], function(key, info) {
                 data['products'][key]['url'] = data['url']
@@ -775,6 +774,7 @@ function load_products_list(page){
             $(".oe_website_sale").find('tbody').append(products_content);
             current_page ++;
             dn_loading_products = false;
+            $('html,body').css('cursor', 'default');
         }
         if (product_length == 0) {
             $('html,body').css('cursor', 'default');

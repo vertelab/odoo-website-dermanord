@@ -115,7 +115,7 @@
                         </div>
                     </t>
                 </div>
-                <div id="loading" class="col-md-offset-3 col-md-9 col-xs-12 text-center">
+                <div id="loading" class="col-md-offset-3 col-md-9 col-xs-12 text-center hidden">
                     <img src="/web/static/src/img/throbber-large.gif"/> <h3 style="color: #BB602F;">Loading more products...</h3>
                 </div>
                 <div id="loaded" class="col-md-offset-3 col-md-9 col-xs-12 text-center hidden">
@@ -488,7 +488,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div id="loading" class="col-md-offset-3 col-md-9 col-xs-12 text-center">
+                            <div id="loading" class="col-md-offset-3 col-md-9 col-xs-12 text-center hidden">
                                 <img src="/web/static/src/img/throbber-large.gif"/> <h3 style="color: #BB602F;">Loading more products...</h3>
                             </div>
                             <div id="loaded" class="col-md-offset-3 col-md-9 col-xs-12 text-center hidden">
