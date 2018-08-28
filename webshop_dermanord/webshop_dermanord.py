@@ -177,7 +177,7 @@ class product_template(models.Model):
         self.recommended_price = 0.0
 
     @api.multi
-    @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'product_variant_ids.image_attachment_ids', 'website_style_ids', 'attribute_line_ids.value_ids')
+    @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids')
     def _get_all_variant_data(self):
         pricelist_45 = self.env.ref('webshop_dermanord.pricelist_af')
         pricelist_20 = self.env.ref('webshop_dermanord.pricelist_special')
@@ -1376,7 +1376,7 @@ class WebsiteSale(website_sale):
 
         dp = request.env['res.lang'].search_read([('code', '=', request.env.lang)], ['decimal_point'])
         dp = dp and dp[0]['decimal_point'] or '.'
-        
+
         prod_packs = request.env['product.product'].sudo().search_read([('id', 'in', [p['id'] for p in products])], ['packaging_ids'], order=current_order)
         packagings = request.env['product.packaging'].sudo().search_read([('id', 'in', sum([p['packaging_ids'] for p in prod_packs], []))], ['ul', 'name', 'ean', 'qty', 'ul_container', 'ul_qty', 'rows'])
         for ul in request.env['product.ul'].sudo().search_read(
@@ -1388,7 +1388,7 @@ class WebsiteSale(website_sale):
                 if type(p['ul_container']) == tuple and p['ul_container'][0] == ul['id']:
                     p['ul_container'] = ul
         packagings = {d['id']: d for d in packagings}
-        
+
         for product in products:
             p_start = timer()
             if len(product['campaign_ids']) > 0:
@@ -1580,7 +1580,7 @@ class WebsiteSale(website_sale):
         request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
         request.session['sort_name'], request.session['sort_order'] = request.website.get_chosen_order(request.website.get_form_values())
         value_start = timer()
-        
+
         prod_packs = request.env['product.product'].sudo().search_read([('id', 'in', [p['id'] for p in products])], ['packaging_ids'], order=current_order)
         packagings = request.env['product.packaging'].sudo().search_read([('id', 'in', sum([p['packaging_ids'] for p in prod_packs], []))], ['ul', 'name', 'ean', 'qty', 'ul_container', 'ul_qty', 'rows'])
         for ul in request.env['product.ul'].sudo().search_read(
