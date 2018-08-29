@@ -165,10 +165,10 @@ $(document).ready(function(){
                 var ingredient_html = '<div id="ingredients_div"><div class="container mb16 hidden-xs"><h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>';
                 $.each(data['ingredients'], function(index, value) {
                     if(value[0] != 0) {
-                        ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/product_ingredients.img_ingredients"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</h6></div></a>';
+                        ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/product_ingredients.img_ingredients"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</h6></div></a>';
                     }
                     else {
-                        ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc"><img class="img img-responsive" style="margin: auto;" src="/web/static/src/img/placeholder.png"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</h6></div></a>';
+                        ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="/web/static/src/img/placeholder.png"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</h6></div></a>';
                     }
                 });
                 ingredient_html += '</div></div>';

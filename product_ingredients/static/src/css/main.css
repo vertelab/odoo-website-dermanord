@@ -4,31 +4,40 @@
 
 .ingredient_desc h6, .ingredient_desc i {
     color: #D27153;
-    font-size: 0.4em;
+    font-size: 0.35em;
     overflow-wrap: normal;
 }
 
-.ingredient_desc h5 {
-    line-height: 1.2em;
+.ingredient_desc h6 {
+    line-height: 0.4em;
     max-height: 12em;
     overflow: hidden;
     position: relative;
+    white-space: nowrap;
 }
 
-.ingredient_desc h5::after {
+.ingredient_desc h6::after {
     content: "";
     position: absolute;
     bottom: 0;
     right: 0;
-    width: 25%;
+    width: 10%;
     height: 1em;
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
 .ingredient_desc img {
     width: 100%;
+    padding: 0px 15px;
 }
 
 #ingredients_description {
     max-width: 500px;
+}
+
+/* xs */
+@media screen and (max-width: 767px) {
+    .ingredient_desc h6 {
+        line-height: 1.2em;
+    }
 }

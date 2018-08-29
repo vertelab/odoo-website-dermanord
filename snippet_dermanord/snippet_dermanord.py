@@ -165,7 +165,7 @@ class snippet(http.Controller):
                                 'oe_ribbon_promo': oe_ribbon_promo,
                                 'oe_ribbon_promo_text': 'Nyhet' if request.env.lang == 'sv_SE' else 'New',
                                 'oe_ribbon_limited': oe_ribbon_limited,
-                                'oe_ribbon_offer': True if (request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af') and occ.sudo().object_id.is_offer_product_reseller) or (request.env.user.partner_id.property_product_pricelist in [request.env.ref('webshop_dermanord.pricelist_af'), request.env.ref('webshop_dermanord.pricelist_special')] and occ.sudo().object_id.is_offer_product_consumer) else False,
+                                'oe_ribbon_offer': True if (request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af') and occ.sudo().object_id.is_offer_product_reseller) or (request.env.user.partner_id.property_product_pricelist not in [request.env.ref('webshop_dermanord.pricelist_af'), request.env.ref('webshop_dermanord.pricelist_special')] and occ.sudo().object_id.is_offer_product_consumer) else False,
                                 'oe_ribbon_offer_text': 'Erbjudande' if request.env.lang == 'sv_SE' else 'Offer',
                             }
                         )
@@ -178,8 +178,10 @@ class snippet(http.Controller):
                     'description': product.show_on_startpage_desc or product.public_desc or '',
                     'url': '/dn_shop/variant/%s' % product.id,
                     'oe_ribbon_promo': True if request.env.ref('website_sale.image_promo') in product.website_style_ids_variant else False,
+                    'oe_ribbon_promo_text': 'Nyhet' if request.env.lang == 'sv_SE' else 'New',
                     'oe_ribbon_limited': True if request.env.ref('webshop_dermanord.image_limited') in product.website_style_ids_variant else False,
-                    'oe_ribbon_offer': True if (request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af') and product.sudo().is_offer_product_reseller) or (request.env.user.partner_id.property_product_pricelist in [request.env.ref('webshop_dermanord.pricelist_af'), request.env.ref('webshop_dermanord.pricelist_special')] and product.sudo().is_offer_product_consumer) else False,
+                    'oe_ribbon_offer': True if (request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af') and product.sudo().is_offer_product_reseller) or (request.env.user.partner_id.property_product_pricelist not in [request.env.ref('webshop_dermanord.pricelist_af'), request.env.ref('webshop_dermanord.pricelist_special')] and product.sudo().is_offer_product_consumer) else False,
+                    'oe_ribbon_offer_text': 'Erbjudande' if request.env.lang == 'sv_SE' else 'Offer',
                 }
             )
         return object_list
