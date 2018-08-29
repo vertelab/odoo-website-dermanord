@@ -32,7 +32,6 @@ class Event(models.Model):
 
     @api.multi
     def google_map_img(self, zoom=8, width=298, height=298):
-        _logger.warn('google_map_img')
         if self.sudo().address_id:
             return self.sudo().address_id.google_map_img(
                 zoom=zoom, width=width, height=height, marker={

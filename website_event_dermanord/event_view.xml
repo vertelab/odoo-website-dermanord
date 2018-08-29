@@ -18,8 +18,7 @@
                     <t t-set="width" t-value="'100%'"/>
                     <t t-set="height" t-value="'400px'"/>
                     <t t-set="zoom" t-value="12"/>
-                    <t t-set="center" t-value="event.address_id"/>
-                    <t t-set="partners" t-value="event.address_id"/>
+                    <t t-set="partners" t-value="event.sudo().address_id"/>
                     <t t-set="icon" t-value="'/website_event_dermanord/static/src/img/dn_maps_marker.png'"/>
                     <t t-set="api_key" t-value="request.env['ir.config_parameter'].get_param('google_maps_api')"/>
                 </t>
