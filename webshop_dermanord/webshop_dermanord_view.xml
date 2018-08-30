@@ -538,6 +538,14 @@
                 <field name="website_style_ids" position="after">
                     <field name="website_style_ids_variant" widget="many2many_tags" />
                 </field>
+                <field name="company_id" position="after">
+                    <field name="price_20" />
+                    <field name="price_en" />
+                    <field name="price_eu" />
+                    <field name="recommended_price" />
+                    <field name="recommended_price_en" />
+                    <field name="recommended_price_eu" />
+                </field>
             </field>
         </record>
         <!--
@@ -577,5 +585,26 @@
                 </xpath>
             </field>
         </record>
+        
+        
+    <record model="ir.actions.server" id="product_calc_prices">
+      <field name="name">Calc Prices</field>
+      <field name="state">code</field>
+      <field name="condition" eval="True" />
+      <field name="model_id" ref="product.model_product_product" />
+      <field name="code">
+obj = object.browse(context.get('active_ids', []))
+for o in obj:
+    o.get_product_tax()
+      </field>
+    </record>
+    <record model="ir.values" id="product_instock_percent_action_menu">
+      <field name="name">Calc Prices</field>
+      <field name="model">product.product</field>
+      <field name="model_id" ref="product.model_product_product" />
+      <field name="key2">client_action_multi</field>
+      <field name="value" eval="'ir.actions.server,%d' % product_calc_prices" />
+    </record>
+        
     </data>
 </openerp>
