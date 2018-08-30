@@ -443,25 +443,33 @@ class sale_order(models.Model):
             request.session['sale_order_id'] = None
             raise Warning(_('It is forbidden to modify a sale order which is not in draft status'))
 
-        line = self.order_line.filtered(lambda l: True if not line_id and l.product_id.id == product_id else line_id == l.id)
-        if len(line) > 1:
-            line = line_id[0]
+        ticket_id = self.env.context.get("event_ticket_id")
+        line = self.order_line.filtered(lambda l: ((line_id == l.id) if line_id else (l.product_id.id == product_id)) and (not ticket_id or l.event_ticket_id.id == ticket_id))
+        line = line and line[0]
 
         # Create line if no line with product_id can be located
         if not line:
-            product = self.env['product.product'].browse(product_id)
+            if ticket_id:
+                ticket = self.env['event.event.ticket'].with_context(pricelist=self.pricelist_id.id).browse(ticket_id)
+                product = ticket.product_id
+            else:
+                product = self.env['product.product'].browse(product_id)
             values = self.env['sale.order.line'].sudo().product_id_change(
                         pricelist=self.pricelist_id.id,
                         product=product.id,
                         partner_id=self.partner_id.id,
                         fiscal_position=self.fiscal_position.id,
                         qty=set_qty or add_qty,
-                        #~ company_id=self.company_id.id
                     )['value']
             values['name'] = product.description_sale and "%s\n%s" % (product.display_name, product.description_sale) or product.display_name
             values['product_id'] = product.id
             values['order_id'] = self.id
             values['product_uom_qty'] = set_qty or add_qty
+            if ticket_id:
+                values['event_id'] = ticket.event_id.id
+                values['event_ticket_id'] = ticket.id
+                values['price_unit'] = ticket.price_reduce or ticket.price
+                values['name'] = "%s\n%s" % (ticket.event_id.display_name, ticket.name)
             if values.get('tax_id') != None:
                 values['tax_id'] = [(6, 0, values['tax_id'])]
             line = self.env['sale.order.line'].create(values)
