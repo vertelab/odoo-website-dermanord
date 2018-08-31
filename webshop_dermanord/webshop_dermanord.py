@@ -443,25 +443,33 @@ class sale_order(models.Model):
             request.session['sale_order_id'] = None
             raise Warning(_('It is forbidden to modify a sale order which is not in draft status'))
 
-        line = self.order_line.filtered(lambda l: True if not line_id and l.product_id.id == product_id else line_id == l.id)
-        if len(line) > 1:
-            line = line_id[0]
+        ticket_id = self.env.context.get("event_ticket_id")
+        line = self.order_line.filtered(lambda l: ((line_id == l.id) if line_id else (l.product_id.id == product_id)) and (not ticket_id or l.event_ticket_id.id == ticket_id))
+        line = line and line[0]
 
         # Create line if no line with product_id can be located
         if not line:
-            product = self.env['product.product'].browse(product_id)
+            if ticket_id:
+                ticket = self.env['event.event.ticket'].with_context(pricelist=self.pricelist_id.id).browse(ticket_id)
+                product = ticket.product_id
+            else:
+                product = self.env['product.product'].browse(product_id)
             values = self.env['sale.order.line'].sudo().product_id_change(
                         pricelist=self.pricelist_id.id,
                         product=product.id,
                         partner_id=self.partner_id.id,
                         fiscal_position=self.fiscal_position.id,
                         qty=set_qty or add_qty,
-                        #~ company_id=self.company_id.id
                     )['value']
             values['name'] = product.description_sale and "%s\n%s" % (product.display_name, product.description_sale) or product.display_name
             values['product_id'] = product.id
             values['order_id'] = self.id
             values['product_uom_qty'] = set_qty or add_qty
+            if ticket_id:
+                values['event_id'] = ticket.event_id.id
+                values['event_ticket_id'] = ticket.id
+                values['price_unit'] = ticket.price_reduce or ticket.price
+                values['name'] = "%s\n%s" % (ticket.event_id.display_name, ticket.name)
             if values.get('tax_id') != None:
                 values['tax_id'] = [(6, 0, values['tax_id'])]
             line = self.env['sale.order.line'].create(values)
@@ -720,11 +728,11 @@ class Website(models.Model):
             #~ if sale_order and sale_order.order_line.filtered(lambda l: l.state not in ['draft']):
                 #~ sale_order_id = None
 
-        # Test validity of the sale_order_id
-        sale_order = env['sale.order'].sudo().search([('id', '=', sale_order_id)] + ([('state', '=', 'draft')] if check_draft else []))  # Don't find closed order
+        # Test validity of the sale_order_id. Match user and check state.
+        sale_order = sale_order_id and env['sale.order'].sudo().search([('id', '=', sale_order_id), ('partner_id.user_ids', '=', uid)] + ([('state', '=', 'draft')] if check_draft else []))
 
         # Find old sale order that is a webshop cart.
-        if env.user != env.ref('base.public_user') and not sale_order:
+        if not sale_order and env.user != env.ref('base.public_user'):
             # Check for staff purchases
             employee = request.env['hr.employee'].sudo().search([('user_id', '=', request.env.user.id)])
             if employee and employee.address_home_id:
@@ -740,15 +748,15 @@ class Website(models.Model):
                 request.session['sale_order_id'] = sale_order.id
 
         # create so if needed
-        if not sale_order and (force_create or code):
+        if not sale_order and (force_create or code) and env.user != env.ref('base.public_user'):
             values = {
-                'user_id': env.user.id,
+                'user_id': env.ref('base.user_admin').id,
                 'partner_id': env.user.partner_id.id,
                 'pricelist_id': env.user.partner_id.property_product_pricelist.id,
                 'section_id': env.ref('website.salesteam_website_sales').id,
             }
+            values.update(env['sale.order'].sudo().onchange_partner_id(env.user.partner_id.commercial_partner_id.id)['value'])
             sale_order = env['sale.order'].sudo().create(values)
-            sale_order.write(env['sale.order'].sudo().onchange_partner_id(env.user.partner_id.commercial_partner_id.id)['value'])
             request.session['sale_order_id'] = sale_order.id
 
         #~ sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)

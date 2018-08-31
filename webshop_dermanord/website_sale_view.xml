@@ -494,7 +494,28 @@
                 </div>
             </t>
         </template>
-        <template id="cart" inherit_id="website_sale.cart">
+        
+        <template id="cart" name="Cart Dermanord" inherit_id="website_sale.cart">
+            <!-- Navigation bar -->
+            <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
+                <li class="text-muted">
+                    Delivery details
+                    <span class="chevron" />
+                </li>
+            </xpath>
+            <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">
+                <li class="text-muted">
+                    Shipping &amp; payment
+                    <span class="chevron" />
+                </li>
+            </xpath>
+            <xpath expr="//ul[@class='wizard pull-right']/li[4]" position="replace">
+                <li class="text-muted">
+                    Order confirmation
+                    <span class="chevron" />
+                </li>
+            </xpath>
+            <!-- //Navigation bar -->
             <xpath expr="//th[@t-att-data-precision='website_sale_order.pricelist_id.currency_id.rounding']" position="after">
                 <th/>
             </xpath>
@@ -502,7 +523,7 @@
                 <img t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id" class="img_payment"/>
             </xpath>
             <xpath expr="//a[@t-attf-href='/shop/product/#{ slug(line.product_id.product_tmpl_id) }']" position="replace">
-                <a t-attf-href="/dn_shop/variant/#{ slug(line.product_id) }">
+                <a t-att-href="('/event/%s' % slug(line.event_id)) if line.event_id else ('/dn_shop/variant/%s' % slug(line.product_id))">
                     <strong t-if="line.product_id.default_code">
                         [<t t-esc="line.product_id.default_code" />]
                     </strong>
