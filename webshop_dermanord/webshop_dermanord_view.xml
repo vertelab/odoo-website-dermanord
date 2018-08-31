@@ -147,7 +147,7 @@
                                     </td>
                                     <td t-if="line.product_id.product_tmpl_id">
                                         <div>
-                                            <a t-attf-href="('/event/%s' % slug(line.event_id)) if line.event_id else ('/dn_shop/variant/%s' % slug(line.product_id))">
+                                            <a t-attf-href="/event/#{slug(line.event_id)} if line.event_id else /dn_shop/variant/#{slug(line.product_id)}">
                                                 <strong t-if="line.product_id.default_code">
                                                     [<t t-esc="line.product_id.default_code" />]
                                                 </strong>
