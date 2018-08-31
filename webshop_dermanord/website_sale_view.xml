@@ -494,7 +494,7 @@
                 </div>
             </t>
         </template>
-        
+
         <template id="cart" name="Cart Dermanord" inherit_id="website_sale.cart">
             <!-- Navigation bar -->
             <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">
@@ -528,7 +528,14 @@
                         [<t t-esc="line.product_id.default_code" />]
                     </strong>
                     <strong t-esc="line.product_id.with_context(display_default_code=False).display_name" />
+                    <t t-if="line.event_id">
+                        <br/><p>Begin: <t t-esc="line.event_id.date_begin"/></p>
+                        <p>End: <t t-esc="line.event_id.date_end"/></p>
+                    </t>
                 </a>
+            </xpath>
+            <xpath expr="//div[@class='input-group oe_website_spinner']" position="attributes">
+                <attribute name="t-if">not line.event_id</attribute>
             </xpath>
             <xpath expr="//th[@width='100']" position="attributes">
                 <attribute name="class">decimal_precision text-center</attribute>
@@ -684,13 +691,13 @@
                             </div>
                             <div class="col-xs-6" style="padding: 0px;">
                                 <div class="input-group oe_website_spinner">
-                                    <span class="input-group-addon">
+                                    <span t-if="not line.event_id" class="input-group-addon">
                                         <a t-attf-href="#" class="mb8 js_add_cart_json" data-no-instant="">
                                             <i class="fa fa-minus text-primary"/>
                                         </a>
                                     </span>
-                                    <input type="text" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty)"/>
-                                    <span class="input-group-addon">
+                                    <input t-if="not line.event_id" type="text" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty)" t-att="{'disabled': 'disabled'} if line.event_id else {}"/>
+                                    <span t-if="not line.event_id" class="input-group-addon">
                                         <a t-attf-href="#" class="mb8 float_left js_add_cart_json" data-no-instant="">
                                             <i class="fa fa-plus text-primary"/>
                                         </a>
@@ -705,11 +712,15 @@
                         </div>
                         <div t-att-id="'collapse_%s' %line.id" class="collapse mb16" t-att-aria-labelledby="'heading_%s' %line.id">
                             <div t-if="line.product_id.product_tmpl_id" class="col-xs-12"  t-att-style="'padding-bottom: 10px; border-bottom: 1px solid #ddd; background-color: %s;' %('#f9f9f9' if line_index % 2 == 0 else 'none')">
-                                <a t-attf-href="/dn_shop/variant/#{ slug(line.product_id) }" class="text-primary">
+                                <a t-attf-href="(/event/#{slug(line.event_id)}) if line.event_id else (/dn_shop/variant/#{slug(line.product_id)})" class="text-primary">
                                     <strong t-if="line.product_id.default_code">
                                         [<t t-esc="line.product_id.default_code" />]
                                     </strong>
                                     <strong t-esc="line.product_id.with_context(display_default_code=False).display_name" />
+                                    <t t-if="line.event_id">
+                                        <br/><p>Begin: <t t-esc="line.event_id.date_begin"/></p>
+                                        <p>End: <t t-esc="line.event_id.date_end"/></p>
+                                    </t>
                                 </a>
                                 <div class="text-muted" t-esc="'\n'.join(line.name.splitlines()[1:])"/>
                             </div>
