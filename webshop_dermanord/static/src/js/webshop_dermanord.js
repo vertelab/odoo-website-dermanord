@@ -742,7 +742,6 @@ function load_products_grid(page){
         else {
             $('html,body').css('cursor', 'default');
             $("div#loading").addClass("hidden");
-            $("div#loaded").removeClass("hidden");
         }
         var end_render  = new Date();
         var time_render = end_render.getTime() - start_render.getTime();
@@ -779,7 +778,6 @@ function load_products_list(page){
         if (product_length == 0) {
             $('html,body').css('cursor', 'default');
             $("div#loading").addClass("hidden");
-            $("div#loaded").removeClass("hidden");
         }
         var end_render  = new Date();
         var time_render = end_render.getTime() - start_render.getTime();
