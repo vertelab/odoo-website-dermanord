@@ -537,6 +537,11 @@
             <xpath expr="//div[@class='input-group oe_website_spinner']" position="attributes">
                 <attribute name="t-if">not line.event_id</attribute>
             </xpath>
+            <xpath expr="//div[@class='input-group oe_website_spinner']" position="after">
+                <div t-if="line.event_id" class="input-group oe_website_spinner">
+                    <span t-esc="int(line.product_uom_qty)"/>
+                </div>
+            </xpath>
             <xpath expr="//th[@width='100']" position="attributes">
                 <attribute name="class">decimal_precision text-center</attribute>
             </xpath>
@@ -690,13 +695,16 @@
                                 </t>
                             </div>
                             <div class="col-xs-6" style="padding: 0px;">
-                                <div class="input-group oe_website_spinner">
+                                <div class="input-group oe_website_spinner" style="text-align: center;">
                                     <span t-if="not line.event_id" class="input-group-addon">
                                         <a t-attf-href="#" class="mb8 js_add_cart_json" data-no-instant="">
                                             <i class="fa fa-minus text-primary"/>
                                         </a>
                                     </span>
                                     <input t-if="not line.event_id" type="text" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty)" t-att="{'disabled': 'disabled'} if line.event_id else {}"/>
+                                    <t t-if="line.event_id">
+                                        <span t-esc="int(line.product_uom_qty)" class="text-center"/>
+                                    </t>
                                     <span t-if="not line.event_id" class="input-group-addon">
                                         <a t-attf-href="#" class="mb8 float_left js_add_cart_json" data-no-instant="">
                                             <i class="fa fa-plus text-primary"/>
