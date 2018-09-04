@@ -259,7 +259,7 @@
                 <attribute name="class">col-lg-5 col-sm-5 col-md-5 pull-left mb16 oe_total_table_fix</attribute>
             </xpath>
             <xpath expr="//tr[@id='order_total']" position="after">
-                <tr id="value_not_met" t-att-class="'hidden' if website_sale_order and website_sale_order.check_min_allowed_web_order() else ''">
+                <tr id="value_not_met" t-att-class="'hidden' if website_sale_order and website_sale_order.minimum_order_get_allowed() else ''">
                     <th colspan="2">
                         <h4 style="color: #BB602F;">Minimum order value is not met</h4>
                     </th>
