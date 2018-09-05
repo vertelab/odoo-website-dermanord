@@ -361,10 +361,7 @@ $(document).ready(function(){
 
                     setCartPriceQuantity('' + data['amount_untaxed'], '' + data['cart_quantity'], data['amount_untaxed']);
                     if (!data.quantity) { // update table and all prices on page
-                        //~ location.reload(true);
-                        $("table#cart_products").load(location.href + " table#cart_products");
-                        $("div#cart_products").load(location.href + " div#cart_products");
-                        $("#cart_total").load(location.href + " #cart_total");
+                        $(".oe_website_sale").find("div.row").load(location.href + " .oe_cart");
                         return;
                     }
                     $q.parent().parent().removeClass("hidden", !data.quantity);
@@ -455,9 +452,7 @@ $(document).ready(function(){
                     }
                     var cart_quantity = data.cart_quantity === undefined ? 0 : data.cart_quantity;
                     if (!data.quantity) {
-                        $("table#cart_products").load(location.href + " table#cart_products");
-                        $("div#cart_products").load(location.href + " div#cart_products");
-                        $("#cart_total").load(location.href + " #cart_total");
+                        $(".oe_website_sale").find("div.row").load(location.href + " .oe_cart");
                         $(".my_cart_total").load(location.href + " .my_cart_total");
                         $q.html("(" + cart_quantity + ")");
                         return;
