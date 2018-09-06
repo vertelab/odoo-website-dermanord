@@ -529,8 +529,8 @@
                     </strong>
                     <strong t-esc="line.product_id.with_context(display_default_code=False).display_name" />
                     <t t-if="line.event_id">
-                        <br/><p>Begin: <t t-esc="line.event_id.date_begin"/></p>
-                        <p>End: <t t-esc="line.event_id.date_end"/></p>
+                        <br/><strong>Begin: <span t-field="line.event_id.with_context(tz=line.event_id.date_tz).date_begin" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong><br/>
+                        <strong>End: <span t-field="line.event_id.with_context(tz=line.event_id.date_tz).date_end" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong>
                     </t>
                 </a>
             </xpath>
@@ -726,8 +726,8 @@
                                     </strong>
                                     <strong t-esc="line.product_id.with_context(display_default_code=False).display_name" />
                                     <t t-if="line.event_id">
-                                        <br/><p>Begin: <t t-esc="line.event_id.date_begin"/></p>
-                                        <p>End: <t t-esc="line.event_id.date_end"/></p>
+                                        <br/><strong>Begin: <span t-field="line.event_id.with_context(tz=line.event_id.date_tz).date_begin" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong><br/>
+                                        <strong>End: <span t-field="line.event_id.with_context(tz=line.event_id.date_tz).date_end" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong>
                                     </t>
                                 </a>
                                 <div class="text-muted" t-esc="'\n'.join(line.name.splitlines()[1:])"/>
