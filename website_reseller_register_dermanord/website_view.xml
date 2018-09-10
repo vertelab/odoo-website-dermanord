@@ -186,7 +186,7 @@
                     <div t-att-class="'form-group %s' %validation.get('visit_street')">
                         <label class="col-md-3 col-sm-4 control-label" for="visit_street">Street</label>
                         <div class="col-md-7 col-sm-8">
-                            <input type="text" class="form-control" name="visit_street" t-att-value="visit.street if visit else ''" placeholder=""/>
+                            <input type="text" class="form-control" name="visit_street" t-att-value="visit.street if visit else ''" placeholder="" required="1"/>
                             <small t-esc="help.get('help_visit_street')" />
                         </div>
                     </div>

@@ -344,9 +344,8 @@ class website_sale_home(website_sale_home):
                 commercial_partner.top_image = base64.encodestring(post.get('top_image').read())
             if post.get('remove_img') and post.get('remove_img') == '1':
                 commercial_partner.top_image = None
-            if post.get('monday_open_time'):
-                for weekday in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']:
-                    self.update_opening_weekday(commercial_partner, weekday, post)
+            for weekday in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']:
+                self.update_opening_weekday(commercial_partner, weekday, post)
             if post.get('opening_hours_exceptions') != None and post.get('opening_hours_exceptions') != commercial_partner.opening_hours_exceptions:
                 commercial_partner.opening_hours_exceptions = post.get('opening_hours_exceptions')
         self.update_info(home_user, post)
