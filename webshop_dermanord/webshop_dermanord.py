@@ -1087,28 +1087,35 @@ class WebsiteSale(website_sale):
         _logger.warn(attribute_value_ids)
         return attribute_value_ids
 
+    IN_STOCK = {}
+
     def in_stock(self, product_id):
-        instock = ''
-        in_stock = True
-        state = 'in'
         if request.env.user == request.env.ref('base.public_user'):
-            return [False, instock]
+            return [False, '']
+
+        key = '%s%s' % (product_id['id'] if type(product_id) == dict else product_id, fields.Datetime.now())
+        if IN_STOCK.get(key):
+            return IN_STOCK[key]
+        
         if type(product_id) == dict:
             product = product_id
         else:
-            product = request.env['product.product'].sudo().search_read([('id', '=', product_id)], fields=['is_mto_route', 'sale_ok', 'instock_percent'])[0]
+            product = request.env['product.product'].sudo().search_read([('id', '=', product_id)], fields=['is_mto_route', 'sale_ok', 'consumtion_per_day','virtual_available'])[0]
+        IN_STOCK[key] = [True,'','in']
         if not product['is_mto_route']:
             if product['sale_ok']:
-                if product['instock_percent'] > 100.0:
-                    instock = _('In stock')
-                elif product['instock_percent'] >= 50.0 and product['instock_percent'] <= 100.0:
-                    instock = _('Few in stock')
+                if product['consumtion_per_day'] > 0.0:
+                    nbr_days = product['virtual_available'] / product['consumtion_per_day']
+                else:
+                    nbr_days = 6.0
+                if nbr_days >= 5.0:
+                    state = 'in'
+                elif nbr_days >= 1.0 and nbr_days < 5.0:
                     state = 'few'
-                elif product['instock_percent'] < 50.0:
-                    instock = _('Shortage')
-                    in_stock = False
+                else:
                     state = 'short'
-        return [in_stock, instock, state]
+                IN_STOCK[key] = [True if state == 'in' else False,{'in': _('In stock'),'few': _('Few in stock'),'short': _('Shortage')}[state], state]
+        return IN_STOCK[key]
 
     @http.route([
         '/dn_shop',
