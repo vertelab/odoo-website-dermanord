@@ -108,6 +108,7 @@ class DermanordImport(models.TransientModel):
                     # Check for parent and create new contact
                     if not contact:
                         parent = self.env['res.partner'].search([('customer_no', '=', customer_no), ('parent_id', '=', False)])
+                        _logger.warn('creating new contact for %s' % parent)
                         if parent:
                             contact = self.env['res.partner'].create({
                                 'name': name,

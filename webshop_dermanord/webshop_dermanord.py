@@ -177,7 +177,7 @@ class product_template(models.Model):
         self.recommended_price = 0.0
 
     @api.multi
-    @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids')
+    @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_medium', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids')
     def _get_all_variant_data(self):
         pricelist_45 = self.env.ref('webshop_dermanord.pricelist_af')
         pricelist_20 = self.env.ref('webshop_dermanord.pricelist_special')
@@ -812,8 +812,10 @@ class Website(models.Model):
             dp = dp and dp[0]['decimal_point'] or '.'
         return ('%.2f' %price).replace('.', dp)
 
+
 class WebsiteSale(website_sale):
 
+    FACETS = {}  # Static variable
     dn_cart_lock = Lock()
 
     @http.route('/shop/payment/validate', type='http', auth="public", website=True)
@@ -1085,28 +1087,35 @@ class WebsiteSale(website_sale):
         _logger.warn(attribute_value_ids)
         return attribute_value_ids
 
+    IN_STOCK = {}
+
     def in_stock(self, product_id):
-        instock = ''
-        in_stock = True
-        state = 'in'
         if request.env.user == request.env.ref('base.public_user'):
-            return [False, instock]
+            return [False, '']
+
+        key = '%s%s' % (product_id['id'] if type(product_id) == dict else product_id, fields.Datetime.now())
+        if self.IN_STOCK.get(key):
+            return self.IN_STOCK[key]
+        
         if type(product_id) == dict:
             product = product_id
         else:
-            product = request.env['product.product'].search_read([('id', '=', product_id)], fields=['is_mto_route', 'sale_ok', 'instock_percent'])[0]
+            product = request.env['product.product'].sudo().search_read([('id', '=', product_id)], fields=['is_mto_route', 'sale_ok', 'consumption_per_day','virtual_available'])[0]
+        self.IN_STOCK[key] = [True,'','in']
         if not product['is_mto_route']:
             if product['sale_ok']:
-                if product['instock_percent'] > 100.0:
-                    instock = _('In stock')
-                elif product['instock_percent'] >= 50.0 and product['instock_percent'] <= 100.0:
-                    instock = _('Few in stock')
+                if product['consumption_per_day'] > 0.0:
+                    nbr_days = product['virtual_available'] / product['consumption_per_day']
+                else:
+                    nbr_days = 6.0
+                if nbr_days >= 5.0:
+                    state = 'in'
+                elif nbr_days >= 1.0 and nbr_days < 5.0:
                     state = 'few'
-                elif product['instock_percent'] < 50.0:
-                    instock = _('Shortage')
-                    in_stock = False
+                else:
                     state = 'short'
-        return [in_stock, instock, state]
+                self.IN_STOCK[key] = [True if state == 'in' else False,{'in': _('In stock'),'few': _('Few in stock'),'short': _('Shortage')}[state], state]
+        return self.IN_STOCK[key]
 
     @http.route([
         '/dn_shop',
@@ -1777,6 +1786,8 @@ class WebsiteSale(website_sale):
         raise Warning(kw)
         return value
 
+    
+    
     @http.route(['/get/product_variant_data'], type='json', auth="public", website=True)
     def product_variant_data(self, product_id=None, **kw):
         is_reseller = False
@@ -1784,16 +1795,15 @@ class WebsiteSale(website_sale):
             is_reseller = True
         value = {}
         if product_id:
-            product = request.env['product.product'].browse(int(product_id))
+            product = request.env['product.product'].sudo().browse(int(product_id))
             if product:
-                images = product.get_image_attachment_ids()
-                facets = {}
-                if len(product.facet_line_ids) > 0:
-                    for line in product.facet_line_ids:
-                        facets[line.facet_id.name] = []
-                        for v in line.value_ids:
-                            facets.get(line.facet_id.name).append([line.facet_id.id, v.name, v.id])
-
+                if not self.FACETS.get(product.id,False):
+                    self.FACETS[product.id] = {}
+                    if len(product.facet_line_ids) > 0:
+                        for line in product.sudo().facet_line_ids:
+                            self.FACETS[product.id][line.facet_id.name] = []
+                            for v in line.value_ids:
+                                self.FACETS[product.id].get(line.facet_id.name,[]).append([line.facet_id.id, v.name, v.id])
                 ingredients_description = product.ingredients or ''
                 ingredients = []
                 product_ingredients = request.env['product.ingredient'].search([('product_ids', 'in', product_id)], order='sequence')
@@ -1806,7 +1816,6 @@ class WebsiteSale(website_sale):
                     offer = True
                 elif product.product_tmpl_id in product.product_tmpl_id.get_campaign_tmpl(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
                     offer = True
-
                 if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
                     # Återförsäljare 45%
                     price = product.price_45
@@ -1817,21 +1826,25 @@ class WebsiteSale(website_sale):
                     price = product.price_20
                     recommended_price = product.recommended_price
                     tax_included = True
+
                 elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_us'):
                     # USA ÅF 65%
                     price = product.price_en
                     recommended_price = product.recommended_price_en
                     tax_included = False
+
                 elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_eu'):
                     # EURO ÅF 45%
                     price = product.price_eu
                     recommended_price = product.recommended_price_eu
                     tax_included = True
+
                 elif request.env.user.partner_id.property_product_pricelist.for_reseller:
                     # Övriga ÅF-prislistor
                     price = request.env.user.partner_id.property_product_pricelist.price_get(product.id, 1)[request.env.user.partner_id.property_product_pricelist.id]
                     recommended_price = product.recommended_price if request.env.user.lang == 'sv_SE' else product.recommended_price_en
                     tax_included = True
+
                 else:
                     price = product.recommended_price
                     recommended_price = product.recommended_price
@@ -1857,13 +1870,14 @@ class WebsiteSale(website_sale):
                             del for_values[k]
                     request.session['form_values'] = for_values
                     value['category'] = '&'.join(['category_%s=%s' %(c.id, c.id) for c in product.product_tmpl_id.public_categ_ids])
+                
                 value['id'] = product.id
                 value['recommended_price'] = request.website.price_format(recommended_price)
                 value['price'] = request.website.price_format(price)
                 value['instock'] = self.in_stock(product.id)[1]
                 value['public_user'] = True if (not self.in_stock(product.id)[0] and self.in_stock(product.id)[1] == '') else False
-                value['images'] = images
-                value['facets'] = facets
+                value['images'] = product.get_image_attachment_ids()
+                value['facets'] = self.FACETS[product.id]
                 value['ingredients_description'] = ingredients_description
                 value['ingredients'] = ingredients
                 value['default_code'] = product.default_code or ''

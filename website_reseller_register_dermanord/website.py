@@ -45,8 +45,6 @@ class reseller_register(reseller_register):
         issue = request.env['project.issue'].sudo().browse(int(issue))
         if post.get('top_image'):
             issue.partner_id.top_image = base64.encodestring(post.get('top_image').read())
-        if post.get('remove_img') and post.get('remove_img') == '1':
-            issue.partner_id.top_image = None
         if post.get('monday_open_time'):
             monday = issue.partner_id.sudo().opening_hours_ids.filtered(lambda o: o.dayofweek == 'monday')
             if not monday:

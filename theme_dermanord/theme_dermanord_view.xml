@@ -95,6 +95,14 @@
 
         <!-- Theme Dermanord -->
         <template id="theme_dermanord" inherit_id="website.layout" customize_show="True" active="False" name="Theme Dermanord" priority="99">
+            <xpath expr="//head" position="inside">  // Favicon
+                    <link rel="apple-touch-icon" sizes="180x180" href="/theme_dermanord/static/ico/apple-touch-icon.png"/>
+                    <link rel="icon" type="image/png" sizes="32x32" href="/theme_dermanord/static/ico/favicon-32x32.png"/>
+                    <link rel="icon" type="image/png" sizes="16x16" href="/theme_dermanord/static/ico/favicon-16x16.png"/>
+                    <link rel="manifest" href="/theme_dermanord/static/ico/site.webmanifest"/>
+                    <meta name="msapplication-TileColor" content="#da532c"/>
+                    <meta name="theme-color" content="#ffffff"/>
+            </xpath>
             <xpath expr="//meta[@name='viewport']" position="attributes">
                 <attribute name="content">initial-scale=1, width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no</attribute>
             </xpath>
@@ -306,12 +314,6 @@
                         </div>
                     </div>
                 </t>
-            </xpath>
-        </template>
-
-        <template id="website_theme_overlay_menu" inherit_id="website_theme_overlay_menu.website_theme_overlay_menu">
-            <xpath expr="//li/a[@href='/web']" position="replace">
-                <a href="/home" role="menuitem">My Account</a>
             </xpath>
         </template>
 
@@ -531,13 +533,13 @@
             </t>
         </template>
 
-        <template id="website_theme_demo_page" inherit_id="website_theme_demo_page.website_theme_demo_page" name="Website Theme Demo Page Inherited Theme Dermanord">
-            <xpath expr="//a[@href='/page/demo']/.." position="attributes">
-                <attribute name="groups">base.group_website_publisher,base.group_hr_user,base.user_root</attribute>
-            </xpath>
-        </template>
-
         <template id="website_theme_overlay_menu" inherit_id="website_theme_overlay_menu.website_theme_overlay_menu" name="Website Theme Overlay Menu Inherited Theme Dermanord">
+            <xpath expr="//span[@t-esc='user_id.name']" position="replace">
+                <span>My Account</span>
+            </xpath>
+            <xpath expr="//a[@href='/web']/.." position="replace">
+                <li><a href="/home" role="menuitem">My Account</a></li>
+            </xpath>
             <xpath expr="//div[@class='overlay-content']/ul/li[@class='dropdown']/ul[@class='dropdown-menu']/li[last()]" position="before">
                 <li><a href="/page/demo" groups="base.group_website_publisher,base.group_hr_user,base.user_root">Demo Page</a></li>
             </xpath>

@@ -779,7 +779,6 @@ tr.tr_lst td {
     }
 }
 
-
 @media (max-width: 768px) {
     .list_product_name {
         text-align: center;
@@ -804,5 +803,10 @@ tr.tr_lst td {
 
     .dn_product_image_div {
         min-height: 260px;
+    }
+
+    .oe_website_spinner {
+        min-width: 156px;
+        text-align: right;
     }
 }
