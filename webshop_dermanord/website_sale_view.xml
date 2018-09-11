@@ -1070,7 +1070,7 @@
                             </t>
                         </div>
                         <div>
-                            <!--  New price --->
+                            <!--  New price -->
                             <t t-set="price_line" t-value="product.get_pricelist_chart_line(pricelist)"/>
                             <b t-field="price_line.price_txt" />
                             
