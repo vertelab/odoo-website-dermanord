@@ -303,7 +303,7 @@
         <record id="website_sale_terms.payment_terms_and_conditions" model="ir.ui.view">
             <field name="active" eval="False" />
         </record>
-        <template id="search_result" inherit_id="website_fts.search_result">
+        <template id="search_result" name="DN Search Results" inherit_id="website_fts.search_result">
             <xpath expr="//t[@t-foreach='terms']" position="replace">
                 <script>
                     var dermanord_kw = "
@@ -322,10 +322,10 @@
                                 </t>
                             </div>
                             <div class="col-md-9 col-sm-9 col-xs-9">
-                                <a t-att-href="'/dn_shop/product/%s' %term['id']">
+                                <a t-att-href="('/event/type/%s' % term['object'].event_type_id.id) if term['object'].event_type_id else ('/dn_shop/variant/%s' %term['id'])">
                                     <h4>
                                         <t t-esc="term['object'].name" />
-                                        [Product]
+                                        <t t-esc="'[Event]' if term['object'].event_type_id else '[Product]'"/>
                                     </h4>
                                 </a>
                                 <p class="text-muted result_desc">
@@ -345,10 +345,10 @@
                                 </t>
                             </div>
                             <div class="col-md-9 col-sm-9 col-xs-9">
-                                <a t-att-href="'/dn_shop/variant/%s' %term['id']">
+                                <a t-att-href="('/event/type/%s' % term['object'].event_type_id.id) if term['object'].event_type_id else ('/dn_shop/variant/%s' %term['id'])">
                                     <h4>
                                         <t t-esc="term['object'].name" />
-                                        [Product]
+                                        <t t-esc="'[Event]' if term['object'].event_type_id else '[Product]'"/>
                                     </h4>
                                 </a>
                                 <p class="text-muted">

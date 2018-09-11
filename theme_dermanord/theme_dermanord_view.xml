@@ -106,6 +106,11 @@
             <xpath expr="//meta[@name='viewport']" position="attributes">
                 <attribute name="content">initial-scale=1, width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no</attribute>
             </xpath>
+            <xpath expr="//t[@t-if='not title']" position="replace">
+                <t t-if="not title">
+                    <t t-set="title"><t t-if="additional_title"><t t-raw="additional_title"/> | </t>Maria Åkerberg</t>
+                </t>
+            </xpath>
             <xpath expr="//div[@id='wrapwrap']/header/div[@class='navbar navbar-default navbar-static-top']/div[@class='container']/div[@class='navbar-header']" position="replace">
                 <div class="container">
                     <div id="header_left_menu" class="col-md-2 col-sm-2 hidden-xs">
