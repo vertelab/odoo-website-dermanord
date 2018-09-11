@@ -15,11 +15,19 @@ $(document).ready(function(){
                 var content = '';
                 $.each(data, function(key, info) {
                     if (data[key]['model_record'] == 'product.template'){
-                        var c = '<li><a href="/dn_shop/product/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
+                        if (data[key]['event_type_id']){
+                            var c = '<li><a href="/event/type/' + data[key]['event_type_id'] + '">' + data[key]['name'] + '</a></li>';
+                        } else {
+                            var c = '<li><a href="/dn_shop/product/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
+                        }
                         content += c;
                     }
                     else if (data[key]['model_record'] == 'product.product'){
-                        var c = '<li><a href="/dn_shop/variant/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
+                        if (data[key]['event_type_id']){
+                            var c = '<li><a href="/event/type/' + data[key]['event_type_id'] + '">' + data[key]['name'] + '</a></li>';
+                        } else {
+                            var c = '<li><a href="/dn_shop/variant/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
+                        }
                         content += c;
                     }
                     else if (data[key]['model_record'] == 'product.public.category'){

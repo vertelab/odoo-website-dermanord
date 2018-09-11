@@ -59,7 +59,6 @@ class website(models.Model):
             return menu
 
     def get_breadcrumb(self, path, **params):
-        #~ _logger.warn('\n\npath: %s\nparams: %s\n\n' % (path, params))
         try:
             breadcrumb = []
             if path.startswith('/dn_shop/product/'): # url is a product
@@ -75,17 +74,23 @@ class website(models.Model):
                 home_menu = self.env.ref('website.menu_homepage')
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %('/event/', self.env.ref('website_event.menu_events').name))
-                if len(path.split('/'))>2:
-                    event_id = path.split('/')[2].split('?')[0].split('-')[-1]
-                    event = self.env['event.event'].browse(int(event_id))
-                    if event:
-                        breadcrumb.append('<li><a href="/event/%s">%s</a></li>' %(event.id, event.name))
-                #~ menu = self.env.ref('webshop_dermanord.menu_dn_shop')
-                #~ home_menu = self.env.ref('website.menu_homepage')
-                #~ breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
-                #~ breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
+                path = path.split('/')
+                if len(path)>2:
+                    if path[2] == 'type':
+                        if len(path) > 3:
+                            event_type_id = path[3].split('?')[0].split('-')[-1]
+                            event_type = self.env['event.type'].search_read([('id', '=', int(event_type_id))], ['name'])
+                            event_type = event_type and event_type[0]
+                            if event_type:
+                                breadcrumb.append('<li><a href="/event/type/%s">%s</a></li>' %(event_type['id'], event_type['name']))
+                    else:
+                        event_id = path[2].split('?')[0].split('-')[-1]
+                        event = self.env['event.event'].search_read([('id', '=', int(event_id))], ['name'])
+                        event = event and event[0]
+                        if event:
+                            breadcrumb.append('<li><a href="/event/%s">%s</a></li>' %(event['id'], event['name']))
                 return ''.join(breadcrumb)
-            elif path.startswith('/jobs/detail'): # url is a jobs
+            elif path.startswith('/jobs/detail'): # url is a job
                 home_menu = self.env.ref('website.menu_homepage')
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %('/jobs/start/', self.env.ref('website_hr_recruitment_dermanord.jobs_start_menu').name))
@@ -144,7 +149,7 @@ class website(models.Model):
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
                 return ''.join(reversed(breadcrumb))
         except:
-            return ['<li><a href="/">Home</a></li>']
+            return '<li><a href="/">Home</a></li>'
 
     def enumerate_pages(self, cr, uid, ids, query_string=None, context=None):
         """ Available pages in the website/CMS. This is mostly used for links

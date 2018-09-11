@@ -1093,11 +1093,13 @@
                 </p>
             </xpath>
         </template>
+        
         <template id="product_quantity" inherit_id="website_sale.product_quantity" name="Select Quantity Override">
             <xpath expr="//div[@class='css_quantity input-group oe_website_spinner']" position="attributes">
                 <attribute name="t-if">user_id.partner_id.property_product_pricelist.for_reseller</attribute>
             </xpath>
         </template>
+        
         <!-- Produktvisning enskild produkt -->
         <template id="product_view" name="Product View">
             <div t-att-class="'col-md-2 %s col-sm-3 col-xs-4   thumbnail' % ('col-md-offset-2 col-sm-offset-1 col-xs-offset-2' if p_index == 0 else '')" style="webkit-justify-content: center;
@@ -1129,6 +1131,7 @@
                 </div>
             </div>
         </template>
+        
         <template id="product_experiences" name="Product Experiences">
             <t t-set="blog_posts" t-value="product.blog_post_ids.filtered(lambda p: p.blog_id == p.env.ref('webshop_dermanord.blog_experiences'))" />
             <t t-set="offset_value" t-value="0" />
@@ -1148,6 +1151,7 @@
                 </div>
             </t>
         </template>
+        
         <template id="product_experiences_wide" name="Product Experiences Wide">
             <t t-set="blog_posts" t-value="product.blog_post_ids.filtered(lambda p: p.blog_id == p.env.ref('webshop_dermanord.blog_experiences'))" />
             <t t-set="offset_value" t-value="0" />
@@ -1164,10 +1168,66 @@
                 </div>
             </t>
         </template>
+        
         <template id="stock_status" inherit_id="website_sale_instock.product">
             <xpath expr="//div[@class='stock_status']" position="attributes">
                 <attribute name="t-if">user_id != request.env.ref('base.public_user')</attribute>
             </xpath>
         </template>
+        
+        <template id="event_type_info" name="Event Type Info">
+            <t t-call="website.layout">
+                <t t-set="additional_title">Events</t>
+                <div id="wrap" class="readable">
+                    <div class="container">
+                        <h1 t-esc="event_type.name" class="text-center"/>
+                        <div t-raw="event_type.description" class="text-center"/>
+                        <h2 class="text-center">Upcoming Events</h2>
+                        <ul class="media-list">
+                            <li t-foreach="events" t-as="event" class="media">
+                                <div itemscope="itemscope" itemtype="http://schema.org/Event" class="media-body">
+                                    <h4 class="media-heading">
+                                        <a itemprop="url" t-att-class="event.state == 'done' and 'text-success'" t-attf-href="/event/#{ slug(event) }/#{(not event.menu_id) and 'register' or ''}">
+                                          <span itemprop="name" t-field="event.name"> </span>
+                                        </a>
+                                        <small t-if="not event.address_id" class="label label-info">Online</small>
+                                        <small t-if="not event.website_published" class="label label-danger">not published</small>
+                                    </h4>
+                                    <div>
+                                        <t t-if="event.organizer_id">
+                                                            Organized by: <span t-field="event.organizer_id"> </span>
+                                                        </t>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-clock-o"/>
+                                        <span itemprop="startDate" t-field="event.with_context(tz=event.date_tz).date_begin" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"> </span>
+                                        <i>to</i>
+                                        <span itemprop="endDate" t-field="event.with_context(tz=event.date_tz).date_end" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"> </span>
+                                    </div>
+                                    <div itemprop="location" t-field="event.address_id" t-field-options="{                                     &quot;widget&quot;: &quot;contact&quot;,                                     &quot;fields&quot;: [&quot;city&quot;]                                     }"/>
+                                    <div class="text-muted" t-if="event.type">
+                                        <i class="fa fa-tag"/>
+                                        <span t-field="event.type"/>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+            </t>
+        </template>
+        
+        <template id="main_search_layout" name="DN Search Layout" inherit_id="website_sale_previous_products.main_search_layout">
+            <xpath expr="//a" position="replace">
+                <t t-if="p.event_type_id">
+                    <a t-att-href="'/event/type/%s' %p.event_type_id.id"><t t-esc="p.name"/></a>
+                </t>
+                <t t-if="not p.event_type_id">
+                    <a t-att-href="'/shop/product/%s' %p.id"><t t-esc="p.name"/></a>
+                </t>
+            </xpath>
+        </template>
+        
     </data>
 </openerp>

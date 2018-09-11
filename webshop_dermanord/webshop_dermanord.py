@@ -263,6 +263,15 @@ class product_template(models.Model):
             self.product_variant_ids.get_product_tax()
         return res
 
+    @api.multi
+    def fts_search_suggestion(self):
+        """
+        Return a search result for search_suggestion.
+        """
+        res = super(product_template, self).fts_search_suggestion()
+        res['event_type_id'] = self.event_type_id and self.event_type_id.id
+        return res
+
 class product_product(models.Model):
     _inherit = 'product.product'
 
@@ -361,6 +370,14 @@ class product_product(models.Model):
                 value_name=value.name))
         return ', '.join(values)
 
+    @api.multi
+    def fts_search_suggestion(self):
+        """
+        Return a search result for search_suggestion.
+        """
+        res = super(product_product, self).fts_search_suggestion()
+        res['event_type_id'] = self.event_type_id and self.event_type_id.id
+        return res
 
 class product_facet(models.Model):
     _inherit = 'product.facet'
@@ -1898,6 +1915,18 @@ class WebsiteSale(website_sale):
             if product:
                 variants = product.product_variant_ids.filtered(lambda v: int(value_id) in v.attribute_value_ids.mapped("id"))
                 return variants[0].ingredients if len(variants) > 0 else ''
+
+    @http.route(['/event/type/<model("event.type"):event_type>'], type='http', auth="public", website=True)
+    def event_type_info(self, event_type=None, **kw):
+        values = {
+            'event_type': event_type,
+            'events': request.env['event.event'].search([
+                ('state', "in", ['draft','confirm','done']),
+                ('type', '=', event_type.id),
+                ('date_begin', '<', fields.Datetime.now()),
+            ]),
+        }
+        return request.website.render("webshop_dermanord.event_type_info", values)
 
 
 #~ class WebsiteFullTextSearch(WebsiteFullTextSearch):
