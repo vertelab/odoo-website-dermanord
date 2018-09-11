@@ -1923,7 +1923,7 @@ class WebsiteSale(website_sale):
             'events': request.env['event.event'].search([
                 ('state', "in", ['draft','confirm','done']),
                 ('type', '=', event_type.id),
-                ('date_begin', '<', fields.Datetime.now()),
+                ('date_begin', '>', fields.Datetime.now()),
             ]),
         }
         return request.website.render("webshop_dermanord.event_type_info", values)
