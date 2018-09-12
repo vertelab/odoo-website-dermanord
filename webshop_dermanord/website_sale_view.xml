@@ -353,6 +353,9 @@
                                                 <td>
                                                     <h5>
                                                         <b>
+                                                            
+                                                            
+                                                            
                                                             <t t-if="user_id.partner_id.property_product_pricelist.id == 11">
                                                                 <!-- Återförsäljare 45% -->
                                                                 <span t-esc="website.price_format(product[price_fields['rec_price_field']])" style="white-space: nowrap;" class="your_price" t-att-data-price="product[price_fields['rec_price_field']]"/>
@@ -1067,6 +1070,10 @@
                             </t>
                         </div>
                         <div>
+                            <!--  New price -->
+                            <t t-set="price_line" t-value="product.get_pricelist_chart_line(pricelist)"/>
+                            <b t-field="price_line.price_txt" />
+                            
                             <b t-field="pricelist.currency_id.name" style="white-space: nowrap;" />
                             <t t-if="user_id.partner_id.property_product_pricelist == pricelist_af">
                                 <b class="oe_price" style="white-space: nowrap;" t-esc="website.price_format(product.dv_price_45)"/>
