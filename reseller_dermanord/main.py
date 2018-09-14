@@ -402,9 +402,9 @@ class website_sale_home(website_sale_home):
     def get_time_float(self, time):
         return (math.floor(float(time)) + (float(time)%1)/0.6) if time else 0.0
 
-    @http.route(['/remove_img',], type='json', auth="user", website=True)
-    def remove_img(self, partner_id='0', **post):
-        partner = request.env['res.partner'].browse(int(partner_id))
+    @http.route(['/remove_img',], type='json', auth="public", website=True)
+    def remove_img(self, partner_id='0', **kw):
+        partner = request.env['res.partner'].sudo().browse(int(partner_id))
         if partner:
             partner.write({'top_image': None})
             return True
