@@ -43,7 +43,7 @@ class reseller_register(reseller_register):
     def update_partner_info(self, issue, post):
         super(reseller_register, self).update_partner_info(issue, post)
         issue = request.env['project.issue'].sudo().browse(int(issue))
-        commercial_partner = issue.partner_id.commercial_partner
+        commercial_partner = issue.partner_id.commercial_partner_id
         if post.get('top_image'):
             commercial_partner.top_image = base64.encodestring(post.get('top_image').read())
         for weekday in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']:
