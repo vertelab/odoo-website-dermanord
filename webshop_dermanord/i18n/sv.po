@@ -615,3 +615,12 @@ msgstr "Börjar:"
 #: view:website:website_sale.payment
 msgid "End:"
 msgstr "Slutar:"
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1244
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1664
+#: view:website:webshop_dermanord.products
+#: view:website:webshop_dermanord.products_list_reseller_view
+#, python-format
+msgid "Shop"
+msgstr "Butik"

@@ -1241,6 +1241,7 @@ class WebsiteSale(website_sale):
             no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
 
         values = {
+            'title': _('Shop'),
             'search': search,
             'category': category,
             #~ 'attrib_values': attrib_values,
@@ -1660,6 +1661,7 @@ class WebsiteSale(website_sale):
             no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
 
         values = {
+            'title': _('Shop'),
             'search': search,
             'pricelist': pricelist,
             'price_fields': price_fields,
