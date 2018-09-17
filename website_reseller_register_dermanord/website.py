@@ -89,7 +89,7 @@ class reseller_register(reseller_register):
         value['help_company_street2'] = _('')
         value['help_company_zip'] = _('')
         value['help_company_city'] = _('')
-        value['help_visit_street'] = _('')
+        value['help_visit_street'] = _("If the street is not filled in, your salon will not appear in reseller searching.")
         value['help_visit_street2'] = _('')
         value['help_visit_zip'] = _('')
         value['help_visit_city'] = _('')

@@ -340,3 +340,8 @@ msgstr "Veckodag"
 msgid "Zip"
 msgstr "Postkod"
 
+#. module: reseller_dermanord
+#: code:addons/reseller_dermanord/main.py:318
+#, python-format
+msgid "If the street is not filled in, your salon will not appear in reseller searching."
+msgstr "Om gatan inte är ifylld visas din salong inte i återförsäljaresökning."

@@ -313,6 +313,11 @@ class Main(http.Controller):
 
 class website_sale_home(website_sale_home):
 
+    def get_help(self):
+        res = super(website_sale_home, self).get_help()
+        res['help_visit_street'] = _("If the street is not filled in, your salon will not appear in reseller searching.")
+        return res
+
     def get_address_type(self):
         res = super(website_sale_home, self).get_address_type()
         res.append('visit')

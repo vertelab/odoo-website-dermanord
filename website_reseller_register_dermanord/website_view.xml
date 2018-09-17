@@ -121,7 +121,7 @@
                 <div t-att-class="'form-group %s' %validation.get('company_country_id', '')">
                     <label class="col-md-3 col-sm-4 control-label" for="company_country_id">Country</label>
                     <div class="col-md-7 col-sm-8">
-                        <select class="form-control" name="company_country_id" required="">
+                        <select class="form-control" name="company_country_id">
                             <option value="" t-att="{'selected': '1'} if (not delivery or not delivery.country_id) else {}" disabled="1">Choose country</option>
                             <t t-foreach="country_selection" t-as="country">
                                 <option t-att-value="country[0]" t-att="{'selected': '1'} if country[0] == (issue.partner_id.country_id and issue.partner_id.country_id.id) else {}"><t t-esc="country[1]"/></option>
@@ -186,7 +186,7 @@
                     <div t-att-class="'form-group %s' %validation.get('visit_street', '')">
                         <label class="col-md-3 col-sm-4 control-label" for="visit_street">Street</label>
                         <div class="col-md-7 col-sm-8">
-                            <input type="text" class="form-control" name="visit_street" t-att-value="visit.street if visit else ''" placeholder="" required="1"/>
+                            <input type="text" class="form-control" name="visit_street" t-att-value="visit.street if visit else ''" placeholder=""/>
                             <small t-esc="help.get('help_visit_street', '')" />
                         </div>
                     </div>
