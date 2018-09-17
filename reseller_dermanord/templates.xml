@@ -85,7 +85,7 @@
                                         <t t-if="resellers">
                                             <t t-foreach="resellers" t-as="reseller">
                                                 <div class="reseller_cell grid-item" style="width: 33.333%;">
-                                                    <t t-set="visit" t-value="reseller.child_ids.filtered(lambda c: c.type == 'visit') if reseller.is_company else None"/>
+                                                    <t t-set="visit" t-value="reseller.child_ids.filtered(lambda c: c.type == 'visit')"/>
                                                     <t t-if="not visit">
                                                         <t t-set="visit" t-value="reseller.commercial_partner_id"/>
                                                     </t>

@@ -160,6 +160,12 @@ class Main(http.Controller):
                 break
         return [sort_name, sort_order]
 
+    def sort_reseller(self, resellers):
+        _logger.warn(len(resellers))
+        res = resellers.sorted(key=lambda p: p.child_ids.filtered(lambda c: c.type == 'visit').city)
+        _logger.warn(len(res))
+        return res
+
     @http.route(['/resellers/competence/<model("res.partner.category"):competence>',], type='http', auth="public", website=True)
     def reseller_competence(self, competence, **post):
         context = {'competence': competence}
@@ -168,6 +174,7 @@ class Main(http.Controller):
             # Find all matching visit addresses
             matching_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
             context['resellers'] = request.env['res.partner'].sudo().search([
+                ('is_company', '=', True),
                 ('is_reseller', '=', True),
                 ('child_ids.type', '=', 'visit'),
                 ('child_ids.street', '!=', ''),
@@ -180,12 +187,14 @@ class Main(http.Controller):
                     '&',
                         ('name', 'ilike', word),
                         ('brand_name', '=', False),
-                    ])
+                    ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
         else:
             context['resellers'] = request.env['res.partner'].sudo().search([
+                ('is_company', '=', True),
                 ('is_reseller', '=', True),
+                ('child_ids.street', '!=', ''),
                 ('child_ids.type', '=', 'visit'),
-                ('child_competence_ids', '=', competence.id)])
+                ('child_competence_ids', '=', competence.id)]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
         return request.website.render('reseller_dermanord.resellers', context)
 
     @http.route([
@@ -203,6 +212,7 @@ class Main(http.Controller):
                 matching_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
                 # Find (partners that have a matching visit address OR brand name OR child category)
                 resellers = request.env['res.partner'].sudo().search([
+                    ('is_company', '=', True),
                     ('is_reseller', '=', True),
                     ('child_ids.type', '=', 'visit'),
                     ('child_ids.street', '!=', ''),
@@ -213,7 +223,7 @@ class Main(http.Controller):
                         '&',
                             ('name', 'ilike', word),
                             ('brand_name', '=', False),
-                        ])
+                        ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
             else:
                 # ~ closest_ids = request.env['res.partner'].geoip_search('position', request.httprequest.remote_addr, 10)
