@@ -1188,8 +1188,6 @@
                 <div id="wrap" class="readable">
                     <div class="container">
                         <h1 t-esc="event_type.name" class="text-center"/>
-                        <div t-raw="event_type.description" class="text-center"/>
-                        <h2 class="text-center">Upcoming Events</h2>
                         <ul class="media-list">
                             <li t-foreach="events" t-as="event" class="media">
                                 <div itemscope="itemscope" itemtype="http://schema.org/Event" class="media-body">
