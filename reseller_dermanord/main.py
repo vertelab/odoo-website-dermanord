@@ -166,13 +166,14 @@ class Main(http.Controller):
         word = post.get('search_resellers')
         if word and word != '':
             # Find all matching visit addresses
-            matching_visit_ids = [p['parent_id'][0] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['parent_id'])]
+            matching_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
             context['resellers'] = request.env['res.partner'].sudo().search([
                 ('is_reseller', '=', True),
                 ('child_ids.type', '=', 'visit'),
+                ('child_ids.street', '!=', ''),
                 ('child_competence_ids', '=', competence.id),
                 '|', '|', '|', '|',
-                    ('id', 'in', matching_visit_ids),
+                    ('child_ids', 'in', matching_visit_ids),
                     ('child_category_ids.name', 'ilike', word),
                     ('child_competence_ids.name', 'ilike', word),
                     ('brand_name', 'ilike', word),
@@ -204,6 +205,7 @@ class Main(http.Controller):
                 resellers = request.env['res.partner'].sudo().search([
                     ('is_reseller', '=', True),
                     ('child_ids.type', '=', 'visit'),
+                    ('child_ids.street', '!=', ''),
                     '|', '|', '|',
                         ('child_ids', 'in', matching_visit_ids),
                         ('child_category_ids.name', 'ilike', word),
