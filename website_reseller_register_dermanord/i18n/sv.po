@@ -148,10 +148,16 @@ msgid "This field is used to print dates when the salon is closed and that are e
 msgstr "Detta fält används för att skriva ut dagar då salongen inte har öppet och som är undantag från öppettiderna ovan. Om detta fält är ifyllt kommer det att visas i anslutning till salongens öppettider."
 
 #. module: website_reseller_register_dermanord
-#: code:addons/website_reseller_register_dermanord/website.py:150
+#: code:addons/website_reseller_register_dermanord/website.py:98
 #, python-format
 msgid "This image will be shown for end consumers on our list of resellers"
 msgstr "Denna bild kommer att synas för slutkonsument på vår lista över återförsäljare"
+
+#. module: website_reseller_register_dermanord
+#: code:addons/website_reseller_register_dermanord/website.py:99
+#, python-format
+msgid "Notice: This image will be cut to 1366x450 px."
+msgstr "OBS. Den här bilden kommer att skäras till 1366x450 px."
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form

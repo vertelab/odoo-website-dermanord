@@ -96,6 +96,7 @@ class reseller_register(reseller_register):
         value['help_visit_phone'] = _('')
         value['help_visit_email'] = _('')
         value['help_top_image'] = _('This image will be shown for end consumers on our list of resellers')
+        value['help_top_image_size'] = _('Notice: This image will be cut to 1366x450 px.')
         return value
 
     @http.route(['/reseller_register/information'], type='http', auth='public', website=True)
