@@ -27,6 +27,8 @@ import base64
 from openerp import http
 from openerp.http import request
 
+from timeit import default_timer as timer
+
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -44,7 +46,7 @@ _logger = logging.getLogger(__name__)
                 
 
 
-THUMBNAIL = """
+THUMBNAIL = u"""
 <div class="dn_oe_product col-md-4 col-sm-6 col-xs-12">
             <form action="/shop/cart/update" method="post">
                 <div class="dn_product_div {product_ribbon}">
@@ -52,7 +54,6 @@ THUMBNAIL = """
                     <div class="ribbon-wrapper">
                         {product_ribbon_promo}
                         {product_ribbon_limited}
-
                     </div>
                     <div class="offer-wrapper">
                         {product_ribbon_offer}
@@ -95,32 +96,33 @@ class product_template(models.Model):
     def get_thumbnail_default_variant(self,domain,limit,order,pricelist):
         thumbnail = []
         flush_type = 'thumbnaile_product'
-        _logger.warn('get_thumbnail_default_variant ------> %s %s %s %s' % (domain,limit,order,pricelist))
+        # ~ _logger.warn('get_thumbnail_default_variant ------> %s %s %s %s' % (domain,limit,order,pricelist))
         for pid in self.env['product.template'].search_read(domain, fields=['id'], limit=limit, order=order):
-            key_raw = 'dn_shop %s %s %s %s %s' % (self.env.cr.dbname,flush_type,pid['id'],pricelist_id,self.env.lang)  # db flush_type produkt prislista språk
+            key_raw = 'dn_shop %s %s %s %s %s' % (self.env.cr.dbname,flush_type,pid['id'],pricelist.id,self.env.lang)  # db flush_type produkt prislista språk
             key,page_dict = self.env['website'].get_page_dict(key_raw) 
-            _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
+            # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
             if not page_dict:
                 render_start = timer()
                 product = self.env['product.template'].browse(pid['id'])
                 if not product.product_variant_ids:
                     continue
-                variant = product.product_variant_ids[0]
-                # ~ variant = product.get_default_variant()
+                # ~ variant = product.product_variant_ids[0]
+                variant = product.get_default_variant()
                 if not variant:
                     continue
                 ribbon = ' '.join([c for c in variant.website_style_ids.mapped('html_class') if c]) or ' '.join([c for c in product.website_style_ids.mapped('html_class') if c])
                 
                 if (product.is_offer_product_consumer and pricelist.for_reseller == False) or (product.is_offer_product_reseller and pricelist.for_reseller == True):
-                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div' % _('Offer')
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer')
                 else:
                     product_ribbon_offer = ''
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
                     product_id=product.id,
-                    # ~ product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0], 'snippet_dermanord.img_product'),
+                    product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0].id, 'snippet_dermanord.img_product') if variant.image_main_id else '',
+                    # ~ product_image='',
                     product_name=product.name,
-                    # ~ product_price=variant.get_html_price_long(pricelist_id),
+                    product_price=variant.get_html_price_long(pricelist),
                     product_ribbon=ribbon,
                     product_ribbon_offer  = product_ribbon_offer,
                     product_ribbon_promo  ='<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if 'oe_ribbon_promo' in ribbon else '',
@@ -128,24 +130,30 @@ class product_template(models.Model):
                     key_raw=key_raw,
                     key=key,
                     view_type='product',
-                    render_time=timer() - render_start,
-                )
-                _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
+                    # ~ render_time='%s' % (timer() - render_start),
+                ).encode('utf-8')
+                # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
                 self.env['website'].put_page_dict(key,flush_type,page)
-            thumbnail.append(page_dict.get('page','empty').decode('base64'))
+                page_dict['page'] = base64.b64encode(page)
+            thumbnail.append(page_dict.get('page','').decode('base64'))
         return thumbnail
         
     @api.model
     def get_thumbnail_default_variant2(self,domain,limit,order,pricelist):
         thumbnail = []
         flush_type = 'thumbnaile_product'
-        _logger.warn('------> %s %s %s %s' % (domain,limit,order,pricelist))
-        for pid in self.env['product.template'].search_read(domain, fields=['id'], limit=limit, order=order):
-            product = self.env['product.template'].browse(pid['id'])
-            variant = product.get_default_variant()
-            _logger.warn('------> %s %s ' % (product,variant))
-
+        # ~ _logger.warn('------> %s %s %s %s' % (domain,limit,order,pricelist))
+        for pid in self.env['product.template'].search_read(domain,['name'], limit=limit, order=order):
+        # ~ for product in self.env['product.template'].search(domain,limit=limit,order=order):
+            # ~ product = self.env['product.template'].browse(pid['id'])
+            # ~ variant = product.product_variant_ids[0]
+            # ~ variant = product.get_default_variant()
+            _logger.warn('------> %s %s ' % (pid,pid))
+            key_raw = 'dn_shop %s %s %s %s %s' % (self.env.cr.dbname,flush_type,pid['id'],pricelist,self.env.lang)  # db flush_type produkt prislista språk
+            key,page_dict = self.env['website'].get_page_dict(key_raw) 
+            _logger.warn('------> %s %s ' % (key,page_dict))
         return thumbnail
+        
         
 class product_product(models.Model):
     _inherit = 'product.product'
@@ -164,8 +172,10 @@ class Website(models.Model):
 
     @api.model
     def get_page_dict(self,key_raw):
-        key = str(memcached.MEMCACHED_HASH(key_raw))
-        page_dict = None
+        # ~ _logger.warn('get_page_dict %s' % key_raw)
+        key = str(memcached.MEMCACHED_HASH(key_raw.encode('latin-1')))
+        # ~ page_dict = None
+        # ~ return key,page_dict
         try:
             page_dict = memcached.mc_load(key)
         except MemcacheClientError as e:
@@ -213,7 +223,8 @@ class Website(models.Model):
             'flush_type': flush_type,
             # ~ 'headers': [],
             }
-        MEMCACHED.mc_save(key, page_dict,24 * 60 * 60 * 7)  # One week
+        # ~ MEMCACHED.mc_save(key, page_dict,24 * 60 * 60 * 7)  # One week
+        memcached.mc_save(key, page_dict,60*60)  # One minute
 
 
 

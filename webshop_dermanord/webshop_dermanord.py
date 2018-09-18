@@ -1202,21 +1202,20 @@ class WebsiteSale(website_sale):
         attributes = attributes_obj.browse(cr, uid, attributes_ids, context=context)
         
         no_product_message = ''
-        products=[]
+        products=request.env['product.template'].get_thumbnail_default_variant(domain, PPG, current_order,pricelist)
         if len(products) == 0:
             no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
         # ~ price_data = request.website.get_price_fields(partner_pricelist)
         
         _logger.warn('----------------_> %s '  % request.env['product.template'].get_thumbnail_default_variant(domain, PPG, current_order,pricelist))
         
-        
         return request.website.render("webshop_dermanord.products", {
             'search': search,
             'category': category,
             'pricelist': pricelist,
-            'products':  request.env['product.template'].get_thumbnail_default_variant(domain, PPG, current_order,pricelist),
+            'products':  products,
             'rows': PPR,
-            'styles': styles,
+            # ~ 'styles': styles,
             'categories': categs,
             'attributes': attributes,
             'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
