@@ -160,31 +160,41 @@ class Main(http.Controller):
                 break
         return [sort_name, sort_order]
 
+    def sort_reseller(self, resellers):
+        _logger.warn(len(resellers))
+        res = resellers.sorted(key=lambda p: p.child_ids.filtered(lambda c: c.type == 'visit').city)
+        _logger.warn(len(res))
+        return res
+
     @http.route(['/resellers/competence/<model("res.partner.category"):competence>',], type='http', auth="public", website=True)
     def reseller_competence(self, competence, **post):
         context = {'competence': competence}
         word = post.get('search_resellers')
         if word and word != '':
             # Find all matching visit addresses
-            matching_visit_ids = [p['parent_id'][0] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['parent_id'])]
+            matching_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
             context['resellers'] = request.env['res.partner'].sudo().search([
+                ('is_company', '=', True),
                 ('is_reseller', '=', True),
                 ('child_ids.type', '=', 'visit'),
+                ('child_ids.street', '!=', ''),
                 ('child_competence_ids', '=', competence.id),
                 '|', '|', '|', '|',
-                    ('id', 'in', matching_visit_ids),
+                    ('child_ids', 'in', matching_visit_ids),
                     ('child_category_ids.name', 'ilike', word),
                     ('child_competence_ids.name', 'ilike', word),
                     ('brand_name', 'ilike', word),
                     '&',
                         ('name', 'ilike', word),
                         ('brand_name', '=', False),
-                    ])
+                    ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
         else:
             context['resellers'] = request.env['res.partner'].sudo().search([
+                ('is_company', '=', True),
                 ('is_reseller', '=', True),
+                ('child_ids.street', '!=', ''),
                 ('child_ids.type', '=', 'visit'),
-                ('child_competence_ids', '=', competence.id)])
+                ('child_competence_ids', '=', competence.id)]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
         return request.website.render('reseller_dermanord.resellers', context)
 
     @http.route([
@@ -202,8 +212,10 @@ class Main(http.Controller):
                 matching_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
                 # Find (partners that have a matching visit address OR brand name OR child category)
                 resellers = request.env['res.partner'].sudo().search([
+                    ('is_company', '=', True),
                     ('is_reseller', '=', True),
                     ('child_ids.type', '=', 'visit'),
+                    ('child_ids.street', '!=', ''),
                     '|', '|', '|',
                         ('child_ids', 'in', matching_visit_ids),
                         ('child_category_ids.name', 'ilike', word),
@@ -211,7 +223,7 @@ class Main(http.Controller):
                         '&',
                             ('name', 'ilike', word),
                             ('brand_name', '=', False),
-                        ])
+                        ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
             else:
                 # ~ closest_ids = request.env['res.partner'].geoip_search('position', request.httprequest.remote_addr, 10)
@@ -313,6 +325,11 @@ class Main(http.Controller):
 
 class website_sale_home(website_sale_home):
 
+    def get_help(self):
+        res = super(website_sale_home, self).get_help()
+        res['help_visit_street'] = _("If the street is not filled in, your salon will not appear in reseller searching.")
+        return res
+
     def get_address_type(self):
         res = super(website_sale_home, self).get_address_type()
         res.append('visit')
@@ -402,9 +419,9 @@ class website_sale_home(website_sale_home):
     def get_time_float(self, time):
         return (math.floor(float(time)) + (float(time)%1)/0.6) if time else 0.0
 
-    @http.route(['/remove_img',], type='json', auth="user", website=True)
-    def remove_img(self, partner_id='0', **post):
-        partner = request.env['res.partner'].browse(int(partner_id))
+    @http.route(['/remove_img',], type='json', auth="public", website=True)
+    def remove_img(self, partner_id='0', **kw):
+        partner = request.env['res.partner'].sudo().browse(int(partner_id))
         if partner:
             partner.write({'top_image': None})
             return True

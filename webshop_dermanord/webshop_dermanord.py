@@ -1114,7 +1114,7 @@ class WebsiteSale(website_sale):
         key = '%s%s' % (product_id['id'] if type(product_id) == dict else product_id, fields.Datetime.now())
         if self.IN_STOCK.get(key):
             return self.IN_STOCK[key]
-        
+
         if type(product_id) == dict:
             product = product_id
         else:
@@ -1279,6 +1279,7 @@ class WebsiteSale(website_sale):
             no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
 
         values = {
+            'title': _('Shop'),
             'search': search,
             'category': category,
             #~ 'attrib_values': attrib_values,
@@ -1431,7 +1432,7 @@ class WebsiteSale(website_sale):
         #~ products = request.env['product.product'].with_context(pricelist=pricelist.id).search(domain, limit=PPG, offset=(int(page)+1)*PPG, order=order) #order gives strange result
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
         price_data = request.website.get_price_fields(partner_pricelist)
-        p_fields = ['id', 'name', 'fullname', 'campaign_ids', 'attribute_value_ids', 'default_code', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids', 'website_style_ids_variant', 'sale_ok', 'product_tmpl_id', 'is_mto_route', 'instock_percent']
+        p_fields = ['id', 'name', 'fullname', 'campaign_ids', 'attribute_value_ids', 'default_code', 'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids', 'website_style_ids_variant', 'sale_ok', 'product_tmpl_id', 'is_mto_route', 'instock_percent', 'consumption_per_day', 'virtual_available']
         if price_data['price_field']:
             p_fields.append(price_data['price_field'])
         else:
@@ -1700,6 +1701,7 @@ class WebsiteSale(website_sale):
             no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
 
         values = {
+            'title': _('Shop'),
             'search': search,
             'pricelist': pricelist,
             'price_fields': price_fields,
@@ -1844,8 +1846,8 @@ class WebsiteSale(website_sale):
         raise Warning(kw)
         return value
 
-    
-    
+
+
     @http.route(['/get/product_variant_data'], type='json', auth="public", website=True)
     def product_variant_data(self, product_id=None, **kw):
         is_reseller = False
@@ -1928,7 +1930,7 @@ class WebsiteSale(website_sale):
                             del for_values[k]
                     request.session['form_values'] = for_values
                     value['category'] = '&'.join(['category_%s=%s' %(c.id, c.id) for c in product.product_tmpl_id.public_categ_ids])
-                
+
                 value['id'] = product.id
                 value['recommended_price'] = request.website.price_format(recommended_price)
                 value['price'] = request.website.price_format(price)

@@ -108,7 +108,12 @@
             </xpath>
             <xpath expr="//t[@t-if='not title']" position="replace">
                 <t t-if="not title">
-                    <t t-set="title"><t t-if="additional_title"><t t-raw="additional_title"/> | </t>Maria Åkerberg</t>
+                    <t t-if="additional_title in ['Butik', 'Shop']">
+                        <t t-set="title"><t t-if="additional_title"><t t-raw="additional_title"/></t></t>
+                    </t>
+                    <t t-if="additional_title not in ['Butik', 'Shop']">
+                        <t t-set="title"><t t-if="additional_title"><t t-raw="additional_title"/> | </t>MARIA ÅKERBERG</t>
+                    </t>
                 </t>
             </xpath>
             <xpath expr="//div[@id='wrapwrap']/header/div[@class='navbar navbar-default navbar-static-top']/div[@class='container']/div[@class='navbar-header']" position="replace">

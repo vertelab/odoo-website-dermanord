@@ -85,7 +85,7 @@
                                         <t t-if="resellers">
                                             <t t-foreach="resellers" t-as="reseller">
                                                 <div class="reseller_cell grid-item" style="width: 33.333%;">
-                                                    <t t-set="visit" t-value="reseller.child_ids.filtered(lambda c: c.type == 'visit') if reseller.is_company else None"/>
+                                                    <t t-set="visit" t-value="reseller.child_ids.filtered(lambda c: c.type == 'visit')"/>
                                                     <t t-if="not visit">
                                                         <t t-set="visit" t-value="reseller.commercial_partner_id"/>
                                                     </t>
@@ -442,35 +442,35 @@
                 <div id="visit" class="tab-pane fade">
                     <p id="instruction_visit" />
                     <t t-set="input_attrs" t-value="{'readonly': '1'} if 'visit' in address_types_readonly else {}"/>
-                    <div t-att-class="'form-group %s' %validation.get('visit_street')">
+                    <div t-att-class="'form-group %s' %validation.get('visit_street', '')">
                         <label class="col-md-3 col-sm-4 control-label" for="visit_street">Street</label>
                         <div class="col-md-7 col-sm-8">
-                            <input type="text" class="form-control" name="visit_street" t-att-value="visit.street if visit else ''" placeholder="" t-att="input_attrs" required="1"/>
-                            <small t-esc="help.get('help_visit_street')" />
+                            <input type="text" class="form-control" name="visit_street" t-att-value="visit.street if visit else ''" placeholder="" t-att="input_attrs"/>
+                            <small t-esc="help.get('help_visit_street', '')" />
                         </div>
                     </div>
-                    <div t-att-class="'form-group %s' %validation.get('visit_street2')">
+                    <div t-att-class="'form-group %s' %validation.get('visit_street2', '')">
                         <label class="col-md-3 col-sm-4 control-label" for="visit_street2">Street row 2</label>
                         <div class="col-md-7 col-sm-8">
                             <input type="text" class="form-control" name="visit_street2" t-att-value="visit.street2 if visit else ''" placeholder="" t-att="input_attrs"/>
-                            <small t-esc="help.get('help_visit_street2')" />
+                            <small t-esc="help.get('help_visit_street2', '')" />
                         </div>
                     </div>
-                    <div t-att-class="'form-group %s' %validation.get('visit_zip')">
+                    <div t-att-class="'form-group %s' %validation.get('visit_zip', '')">
                         <label class="col-md-3 col-sm-4 control-label" for="visit_zip">Zip</label>
                         <div class="col-md-7 col-sm-8">
                             <input type="text" class="form-control" name="visit_zip" t-att-value="visit.zip if visit else ''" placeholder="" t-att="input_attrs"/>
-                            <small t-esc="help.get('help_visit_zip')" />
+                            <small t-esc="help.get('help_visit_zip', '')" />
                         </div>
                     </div>
-                    <div t-att-class="'form-group %s' %validation.get('visit_city')">
+                    <div t-att-class="'form-group %s' %validation.get('visit_city', '')">
                         <label class="col-md-3 col-sm-4 control-label" for="visit_city">City</label>
                         <div class="col-md-7 col-sm-8">
                             <input type="text" class="form-control" name="visit_city" t-att-value="visit.city if visit else ''" placeholder="" t-att="input_attrs"/>
-                            <small t-esc="help.get('help_visit_city')" />
+                            <small t-esc="help.get('help_visit_city', '')" />
                         </div>
                     </div>
-                    <div t-att-class="'form-group %s' %validation.get('visit_country_id')">
+                    <div t-att-class="'form-group %s' %validation.get('visit_country_id', '')">
                         <label class="col-md-3 col-sm-4 control-label" for="visit_country_id">Country</label>
                         <div class="col-md-7 col-sm-8">
                             <select class="form-control" name="visit_country_id" t-att="input_attrs">
@@ -485,21 +485,21 @@
                                     </t>
                                 </t>
                             </select>
-                            <small t-esc="help.get('help_visit_country')" />
+                            <small t-esc="help.get('help_visit_country', '')" />
                         </div>
                     </div>
-                    <div t-att-class="'form-group %s' %validation.get('visit_phone')">
+                    <div t-att-class="'form-group %s' %validation.get('visit_phone', '')">
                         <label class="col-md-3 col-sm-4 control-label" for="visit_phone">Phone</label>
                         <div class="col-md-7 col-sm-8">
                             <input type="text" class="form-control" name="visit_phone" t-att-value="visit.phone if visit else ''" placeholder="" t-att="input_attrs"/>
-                            <small t-esc="help.get('help_visit_phone')" />
+                            <small t-esc="help.get('help_visit_phone', '')" />
                         </div>
                     </div>
-                    <div t-att-class="'form-group %s' %validation.get('visit_email')">
+                    <div t-att-class="'form-group %s' %validation.get('visit_email', '')">
                         <label class="col-md-3 col-sm-4 control-label" for="visit_email">Email</label>
                         <div class="col-md-7 col-sm-8">
                             <input type="email" class="form-control" name="visit_email" t-att-value="visit.email if visit else ''" placeholder="" t-att="input_attrs"/>
-                            <small t-esc="help.get('help_visit_wmail')" />
+                            <small t-esc="help.get('help_visit_wmail', '')" />
                         </div>
                     </div>
                 </div>

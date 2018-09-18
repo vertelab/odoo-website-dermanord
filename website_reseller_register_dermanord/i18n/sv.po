@@ -202,3 +202,9 @@ msgstr "Postnummer"
 #: view:website:website_reseller_register.contact_form
 msgid "theme_dermanord.submenu_dermanord"
 msgstr "theme_dermanord.submenu_dermanord"
+
+#. module: website_reseller_register_dermanord
+#: code:addons/website_reseller_register_dermanord/website.py:92
+#, python-format
+msgid "If the street is not filled in, your salon will not appear in reseller searching."
+msgstr "Om gatan inte är ifylld visas din salong inte i återförsäljaresökning."
