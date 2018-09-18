@@ -1132,7 +1132,7 @@ class WebsiteSale(website_sale):
                     state = 'few'
                 else:
                     state = 'short'
-                self.IN_STOCK[key] = [True if state == 'in' else False,{'in': _('In stock'),'few': _('Few in stock'),'short': _('Shortage')}[state], state]
+                self.IN_STOCK[key] = [True if state in ['in', 'few'] else False,{'in': _('In stock'),'few': _('Few in stock'),'short': _('Shortage')}[state], state]
         return self.IN_STOCK[key]
 
     @http.route([
@@ -1191,25 +1191,25 @@ class WebsiteSale(website_sale):
         current_order = request.session.get('current_order')
         # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
         # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
-        
-        
+
+
         category_obj = pool['product.public.category']
         category_ids = category_obj.search(cr, uid, [('parent_id', '=', False)], context=context)
         categs = category_obj.browse(cr, uid, category_ids, context=context)
-        
+
         attributes_obj = request.registry['product.attribute']
         attributes_ids = attributes_obj.search(cr, uid, [], context=context)
         attributes = attributes_obj.browse(cr, uid, attributes_ids, context=context)
-        
+
         no_product_message = ''
         products=[]
         if len(products) == 0:
             no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
         # ~ price_data = request.website.get_price_fields(partner_pricelist)
-        
+
         _logger.warn('----------------_> %s '  % request.env['product.template'].get_thumbnail_default_variant(domain, PPG, current_order,pricelist))
-        
-        
+
+
         return request.website.render("webshop_dermanord.products", {
             'search': search,
             'category': category,
@@ -1227,17 +1227,6 @@ class WebsiteSale(website_sale):
             'no_product_message': no_product_message,
             'all_products_loaded': True if len(products) < PPG else False,
         })
-        
-        
-        
-        
-
-
-
-
-
-
-
 
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
         price_data = request.website.get_price_fields(partner_pricelist)
@@ -1952,7 +1941,7 @@ class WebsiteSale(website_sale):
                 value['id'] = product.id
                 value['recommended_price'] = request.website.price_format(recommended_price)
                 value['price'] = request.website.price_format(price)
-                value['instock'] = self.in_stock(product.id)[1]
+                value['instock'] = self.in_stock(product.id)[0]
                 value['public_user'] = True if (not self.in_stock(product.id)[0] and self.in_stock(product.id)[1] == '') else False
                 value['images'] = product.get_image_attachment_ids()
                 value['facets'] = self.FACETS[product.id]

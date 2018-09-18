@@ -200,7 +200,7 @@ $(document).ready(function(){
                 if (!data['public_user']){
                     $stock_status.removeClass("hidden");
                     $stock_status.html(data['instock']);
-                    if (data['instock'] == 'Shortage') {
+                    if (data == false) {
                         $('#add_to_cart').addClass('hidden');
                         $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
                     }
