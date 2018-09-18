@@ -1181,7 +1181,45 @@ class WebsiteSale(website_sale):
         domain = request.session.get('current_domain')
         current_order = request.session.get('current_order')
         # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
-        products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
+        # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
+        return request.website.render("webshop_dermanord.products", {
+            'search': search,
+            'category': category,
+            #~ 'attrib_values': attrib_values,
+            #~ 'attrib_set': attrib_set,
+            'pricelist': pricelist,
+            'products':  request.env['product.template'].get_thumbnail_default_variant(domain, PPG, current_order,pricelist),
+            #~ 'bins': table_compute().process(products),
+            'rows': PPR,
+            'styles': styles,
+            'categories': categs,
+            'attributes': attributes,
+            #~ 'compute_currency': compute_currency,
+            'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
+            #~ 'keep': keep,
+            'url': url,
+            #~ 'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
+            #~ 'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
+            'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
+            'shop_footer': True,
+            'page_lang': request.env.lang,
+            'no_product_message': no_product_message,
+            'show_rec_price': price_data['show_rec_price'],
+            'tax_included': price_data['tax_included'],
+            'rec_tax_included': price_data['rec_tax_included'],
+            'all_products_loaded': True if len(products) < PPG else False,
+        })
+        
+        
+        
+        
+
+
+
+
+
+
+
 
         partner_pricelist = request.env.user.partner_id.property_product_pricelist
         price_data = request.website.get_price_fields(partner_pricelist)
@@ -1455,6 +1493,7 @@ class WebsiteSale(website_sale):
                     }
             instock = self.in_stock(product)
             product['sale_ok'] = True if (product['sale_ok'] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller and instock[0]) else False
+            product['new_price'] = self.env['product.product'].get_pricelist_chart_rec(product['id'],partner_pricelist.id)
 
             if price_data['price_field']:
                 product['price'] = product[price_data['price_field']]
@@ -1500,6 +1539,7 @@ class WebsiteSale(website_sale):
                 'instock': instock,
                 'load_time': timer() - p_start,
                 'packaging_ids': product['packaging_ids'],
+                'new_price': product['new_price'],
             })
 
         values = {
