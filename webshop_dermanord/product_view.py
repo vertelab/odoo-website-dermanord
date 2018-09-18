@@ -80,6 +80,8 @@ THUMBNAIL = u"""
                         {product_price}
                     </div>
                     <!-- Product info end -->
+                    <!-- key {key} key_raw {key_raw} render_time {render_time} -->
+                    <!-- http:/mcpage/{key} http:/mcpage/{key}/delete  http:/mcmeta/{key} -->
                 </div>
             </form>
 </div>
@@ -98,7 +100,7 @@ class product_template(models.Model):
         flush_type = 'thumbnaile_product'
         # ~ _logger.warn('get_thumbnail_default_variant ------> %s %s %s %s' % (domain,limit,order,pricelist))
         for pid in self.env['product.template'].search_read(domain, fields=['id'], limit=limit, order=order):
-            key_raw = 'dn_shop %s %s %s %s %s' % (self.env.cr.dbname,flush_type,pid['id'],pricelist.id,self.env.lang)  # db flush_type produkt prislista språk
+            key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,pid['id'],pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
             key,page_dict = self.env['website'].get_page_dict(key_raw) 
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
             if not page_dict:
@@ -130,7 +132,7 @@ class product_template(models.Model):
                     key_raw=key_raw,
                     key=key,
                     view_type='product',
-                    # ~ render_time='%s' % (timer() - render_start),
+                    render_time='%s' % (timer() - render_start),
                 ).encode('utf-8')
                 # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
                 self.env['website'].put_page_dict(key,flush_type,page)
@@ -225,6 +227,4 @@ class Website(models.Model):
             }
         # ~ MEMCACHED.mc_save(key, page_dict,24 * 60 * 60 * 7)  # One week
         memcached.mc_save(key, page_dict,60*60)  # One minute
-
-
 
