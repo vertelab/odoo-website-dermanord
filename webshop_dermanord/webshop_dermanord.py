@@ -1136,6 +1136,15 @@ class WebsiteSale(website_sale):
         return self.IN_STOCK[key]
 
     @http.route([
+        '/aw_test',
+    ], type='http', auth="public", website=True)
+    def aw_shop(self,**post):
+        _logger.warn('--> Here we come')
+        _logger.warn('----------------> %s '  % request.env['product.template'].get_thumbnail_default_variant([], 20, 'name',request.env.ref('webshop_dermanord.pricelist_af')))
+        return 'Hello World'
+
+
+    @http.route([
         '/dn_shop',
         '/dn_shop/page/<int:page>',
         '/dn_shop/category/<model("product.public.category"):category>',
@@ -1182,31 +1191,40 @@ class WebsiteSale(website_sale):
         current_order = request.session.get('current_order')
         # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
         # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
+        
+        
+        category_obj = pool['product.public.category']
+        category_ids = category_obj.search(cr, uid, [('parent_id', '=', False)], context=context)
+        categs = category_obj.browse(cr, uid, category_ids, context=context)
+        
+        attributes_obj = request.registry['product.attribute']
+        attributes_ids = attributes_obj.search(cr, uid, [], context=context)
+        attributes = attributes_obj.browse(cr, uid, attributes_ids, context=context)
+        
+        no_product_message = ''
+        products=[]
+        if len(products) == 0:
+            no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
+        # ~ price_data = request.website.get_price_fields(partner_pricelist)
+        
+        _logger.warn('----------------_> %s '  % request.env['product.template'].get_thumbnail_default_variant(domain, PPG, current_order,pricelist))
+        
+        
         return request.website.render("webshop_dermanord.products", {
             'search': search,
             'category': category,
-            #~ 'attrib_values': attrib_values,
-            #~ 'attrib_set': attrib_set,
             'pricelist': pricelist,
             'products':  request.env['product.template'].get_thumbnail_default_variant(domain, PPG, current_order,pricelist),
-            #~ 'bins': table_compute().process(products),
             'rows': PPR,
             'styles': styles,
             'categories': categs,
             'attributes': attributes,
-            #~ 'compute_currency': compute_currency,
             'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
-            #~ 'keep': keep,
             'url': url,
-            #~ 'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
-            #~ 'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
             'shop_footer': True,
             'page_lang': request.env.lang,
             'no_product_message': no_product_message,
-            'show_rec_price': price_data['show_rec_price'],
-            'tax_included': price_data['tax_included'],
-            'rec_tax_included': price_data['rec_tax_included'],
             'all_products_loaded': True if len(products) < PPG else False,
         })
         

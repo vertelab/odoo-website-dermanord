@@ -53,6 +53,7 @@ Special layout for Dermanord AB webshop
         'crm_campaign_phase_default_variant',
         'website_sale_delivery',
         'website_sale_minimum_order_value',
+        'website_sale_price_chart',
         # ~ 'calc_orderpoint',
         ],
     'data': [

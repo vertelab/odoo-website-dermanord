@@ -95,29 +95,32 @@ class product_template(models.Model):
     def get_thumbnail_default_variant(self,domain,limit,order,pricelist):
         thumbnail = []
         flush_type = 'thumbnaile_product'
+        _logger.warn('get_thumbnail_default_variant ------> %s %s %s %s' % (domain,limit,order,pricelist))
         for pid in self.env['product.template'].search_read(domain, fields=['id'], limit=limit, order=order):
             key_raw = 'dn_shop %s %s %s %s %s' % (self.env.cr.dbname,flush_type,pid['id'],pricelist_id,self.env.lang)  # db flush_type produkt prislista språk
             key,page_dict = self.env['website'].get_page_dict(key_raw) 
+            _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
             if not page_dict:
                 render_start = timer()
                 product = self.env['product.template'].browse(pid['id'])
                 if not product.product_variant_ids:
                     continue
-                variant = p.get_default_variant()
+                variant = product.product_variant_ids[0]
+                # ~ variant = product.get_default_variant()
                 if not variant:
                     continue
                 ribbon = ' '.join([c for c in variant.website_style_ids.mapped('html_class') if c]) or ' '.join([c for c in product.website_style_ids.mapped('html_class') if c])
                 
-                if (product.is_offer_product_consumer and pricelist.reseller == False) or (product.is_offer_product_reseller and pricelist.reseller == True):
+                if (product.is_offer_product_consumer and pricelist.for_reseller == False) or (product.is_offer_product_reseller and pricelist.for_reseller == True):
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div' % _('Offer')
                 else:
                     product_ribbon_offer = ''
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
                     product_id=product.id,
-                    product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0], 'snippet_dermanord.img_product'),
+                    # ~ product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0], 'snippet_dermanord.img_product'),
                     product_name=product.name,
-                    product_price=variant.get_html_price_long(pricelist_id),
+                    # ~ product_price=variant.get_html_price_long(pricelist_id),
                     product_ribbon=ribbon,
                     product_ribbon_offer  = product_ribbon_offer,
                     product_ribbon_promo  ='<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if 'oe_ribbon_promo' in ribbon else '',
@@ -127,8 +130,21 @@ class product_template(models.Model):
                     view_type='product',
                     render_time=timer() - render_start,
                 )
+                _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
                 self.env['website'].put_page_dict(key,flush_type,page)
             thumbnail.append(page_dict.get('page','empty').decode('base64'))
+        return thumbnail
+        
+    @api.model
+    def get_thumbnail_default_variant2(self,domain,limit,order,pricelist):
+        thumbnail = []
+        flush_type = 'thumbnaile_product'
+        _logger.warn('------> %s %s %s %s' % (domain,limit,order,pricelist))
+        for pid in self.env['product.template'].search_read(domain, fields=['id'], limit=limit, order=order):
+            product = self.env['product.template'].browse(pid['id'])
+            variant = product.get_default_variant()
+            _logger.warn('------> %s %s ' % (product,variant))
+
         return thumbnail
         
 class product_product(models.Model):
