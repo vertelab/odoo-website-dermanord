@@ -96,7 +96,7 @@
         <!-- fastest -->
         <template id="products_item" name="Product item">
             <t t-set="start_time" t-value="time.time()" />
-            <t-raw='product'/>
+            <t t-raw='product'/>
 <!--
             <form action="/shop/cart/update" method="post">
                 <div itemscope="itemscope" itemtype="http://schema.org/Product" t-att-class="'dn_product_div %s' % product['dv_ribbon']">

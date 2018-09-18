@@ -52,7 +52,7 @@ class WebsiteBlog(WebsiteBlog):
                 for p in blog_posts:
                     background_image_css = ''
                     if p.background_image and '/ir.attachment/' in p.background_image:
-                        background_image_css = "background-image: url('/imagefield/ir.attachment/datas/%s/ref/theme_dermanord.dn_header_img');" %p.background_image[(p.background_image.index('ir.attachment/')+len('ir.attachment/')):p.background_image.index('/datas')].split('_')[0]
+                        background_image_css = "background-image: url('%s');" % env['website'].imagefield_hash('ir.attachment', 'datas', p.background_image[(p.background_image.index('ir.attachment/')+len('ir.attachment/')):p.background_image.index('/datas')].split('_')[0], 'theme_dermanord.dn_header_img')
                     tags_html = ''
                     if len(p.tag_ids) > 0:
                         for t in p.tag_ids:
