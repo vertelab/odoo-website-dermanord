@@ -335,6 +335,9 @@
             <xpath expr="//t[@t-call='website.layout']" position="attributes">
                 <attribute name="t-call">theme_dermanord.submenu_dermanord</attribute>
             </xpath>
+            <xpath expr="//img[@id='contact_img']" position="replace">
+                <img id="contact_img" t-att-src="'/imagefield/res.partner/image/%s/ref/reseller_dermanord.reseller_contact_img' %contact.id" style="max-width: 200px;"/>
+            </xpath>
         </template>
     </data>
 </openerp>

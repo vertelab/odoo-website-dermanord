@@ -103,14 +103,6 @@ class reseller_register(reseller_register):
     def reseller_register_info(self, **post):
         return request.website.render('website_reseller_register_dermanord.reseller_register_info', {})
 
-    @http.route(['/reseller_register/remove_img',], type='json', auth="public", website=True)
-    def reseller_register_remove_img(self, partner_id='0', **post):
-        partner = request.env['res.partner'].browse(int(partner_id))
-        if partner:
-            partner.write({'top_image': None})
-            return True
-        return False
-
     #~ @http.route(['/reseller_register/contact/pw_reset'], type='json', auth='public', website=True)
     #~ def reseller_register_contact_pw_reset(self, user_id=0, partner_id=0, **kw):
         #~ _user = request.env['res.users'].sudo().browse(user_id)

@@ -125,6 +125,17 @@
     border-radius: 12px !important;
 }
 
+img#top_image_show {
+    position: relative;
+}
+
+i#remove_img {
+    position: absolute;
+    top: 5px;
+    left: 20px;
+    text-shadow: 0px 0px 2px #fff;
+}
+
 @media (max-width: 768px) {
     input[type="checkbox"] {
         margin-left: -25px !important;

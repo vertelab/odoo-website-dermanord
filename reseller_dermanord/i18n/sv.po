@@ -341,7 +341,13 @@ msgid "Zip"
 msgstr "Postkod"
 
 #. module: reseller_dermanord
-#: code:addons/reseller_dermanord/main.py:318
+#: code:addons/reseller_dermanord/main.py:330
 #, python-format
 msgid "If the street is not filled in, your salon will not appear in reseller searching."
 msgstr "Om gatan inte är ifylld visas din salong inte i återförsäljaresökning."
+
+#. module: reseller_dermanord
+#: code:addons/reseller_dermanord/main.py:331
+#, python-format
+msgid "Notice: This image will be cut to 1366x450 px."
+msgstr "OBS. Den här bilden kommer att skäras till 1366x450 px."

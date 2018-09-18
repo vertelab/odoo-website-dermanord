@@ -328,6 +328,7 @@ class website_sale_home(website_sale_home):
     def get_help(self):
         res = super(website_sale_home, self).get_help()
         res['help_visit_street'] = _("If the street is not filled in, your salon will not appear in reseller searching.")
+        res['help_top_image_size'] = _("Notice: This image will be cut to 1366x450 px.")
         return res
 
     def get_address_type(self):
@@ -359,8 +360,6 @@ class website_sale_home(website_sale_home):
             commercial_partner.website_short_description = post.get('website_short_description')
             if post.get('top_image'):
                 commercial_partner.top_image = base64.encodestring(post.get('top_image').read())
-            if post.get('remove_img') and post.get('remove_img') == '1':
-                commercial_partner.top_image = None
             for weekday in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']:
                 self.update_opening_weekday(commercial_partner, weekday, post)
             if post.get('opening_hours_exceptions') != None and post.get('opening_hours_exceptions') != commercial_partner.opening_hours_exceptions:

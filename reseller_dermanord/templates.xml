@@ -299,6 +299,7 @@
                                 <i id="remove_img" class="fa fa-trash-o fa-2x" t-att-data-partner_id="home_user.partner_id.commercial_partner_id.id"><input name="remove_img" class="hidden" value="0"/></i>
                             </t>
                             <input id="top_image" type="file" name="top_image" accept="image/*" capture="camera"/>
+                            <small t-esc="help.get('help_top_image_size', '')" />
                         </div>
                     </div>
                 </t>
