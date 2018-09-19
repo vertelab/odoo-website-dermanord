@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
+
+    <data>
+        <record id="view_partner_form" model="ir.ui.view">
+            <field name="name">res.partner.form.inherited.reseller_dermanord</field>
+            <field name="model">res.partner</field>
+            <field name="inherite_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Top Image">
+                        <field name="top_image" widget="image"/>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    </data>
+
     <data>
 
 <!--
