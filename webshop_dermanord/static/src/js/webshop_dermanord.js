@@ -199,7 +199,7 @@ $(document).ready(function(){
             if (data['instock'] != null) {
                 if (!data['public_user']){
                     $stock_status.removeClass("hidden");
-                    $stock_status.html(data['instock']);
+                    $stock_status.html(data['stock_status']);
                     if (data == false) {
                         $('#add_to_cart').addClass('hidden');
                         $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');

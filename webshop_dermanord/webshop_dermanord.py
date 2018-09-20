@@ -1941,6 +1941,7 @@ class WebsiteSale(website_sale):
                 value['recommended_price'] = request.website.price_format(recommended_price)
                 value['price'] = request.website.price_format(price)
                 value['instock'] = self.in_stock(product.id)[0]
+                value['stock_status'] = self.in_stock(product.id)[1]
                 value['public_user'] = True if (not self.in_stock(product.id)[0] and self.in_stock(product.id)[1] == '') else False
                 value['images'] = product.get_image_attachment_ids()
                 value['facets'] = self.FACETS[product.id]
