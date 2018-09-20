@@ -99,36 +99,43 @@ class product_template(models.Model):
         thumbnail = []
         flush_type = 'thumbnaile_product'
         # ~ _logger.warn('get_thumbnail_default_variant ------> %s %s %s %s' % (domain,limit,order,pricelist))
-        for pid in self.env['product.template'].search_read(domain, fields=['id'], limit=limit, order=order):
-            key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,pid['id'],pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
+        # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
+        for product in self.env['product.template'].search_read(domain, fields=['id','name', 'use_tmpl_name','dv_ribbon','dv_id' ,'is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src','website_style_ids_variant'], limit=limit, order=order):
+            key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,product['id'],pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
             key,page_dict = self.env['website'].get_page_dict(key_raw) 
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
+            ribbon_promo = None
+            ribbon_limited = None
             if not page_dict:
                 render_start = timer()
-                product = self.env['product.template'].browse(pid['id'])
-                if not product.product_variant_ids:
-                    continue
-                # ~ variant = product.product_variant_ids[0]
-                variant = product.get_default_variant()
-                if not variant:
-                    continue
-                ribbon = ' '.join([c for c in variant.website_style_ids.mapped('html_class') if c]) or ' '.join([c for c in product.website_style_ids.mapped('html_class') if c])
+                if not ribbon_limited:
+                    ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
+                    ribbon_promo   = request.env.ref('website_sale.image_promo')
                 
-                if (product.is_offer_product_consumer and pricelist.for_reseller == False) or (product.is_offer_product_reseller and pricelist.for_reseller == True):
-                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer')
-                else:
-                    product_ribbon_offer = ''
+                #
+                # TODO: get_html_price_long(pricelist) and variant.image_main_id[0].id  dv_ribbon
+                #
+                
+                # ~ product = self.env['product.template'].browse(pid['id'])
+                # ~ if not product.product_variant_ids:
+                    # ~ continue
+                # ~ variant = product.product_variant_ids[0]
+                # ~ variant = product.get_default_variant()
+                # ~ if not variant:
+                    # ~ continue
+                    
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
-                    product_id=product.id,
-                    product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0].id, 'snippet_dermanord.img_product') if variant.image_main_id else '',
-                    # ~ product_image='',
-                    product_name=product.name,
-                    product_price=variant.get_html_price_long(pricelist),
-                    product_ribbon=ribbon,
-                    product_ribbon_offer  = product_ribbon_offer,
-                    product_ribbon_promo  ='<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if 'oe_ribbon_promo' in ribbon else '',
-                    product_ribbon_limited='<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if 'oe_ribbon_limited' in ribbon else '',
+                    product_id=product['id'],
+                    # ~ product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0].id, 'snippet_dermanord.img_product') if variant.image_main_id else '',
+                    product_image=product['dv_image_src'],
+                    product_name=product['name'],
+                    product_price=self.env['product.product'].browse(product['dv_id']).get_html_price_long(pricelist),
+                    product_ribbon=product['dv_ribbon'],
+                    # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '', 
+                    product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.html_class in product['dv_ribbon'] else '',
+                    product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.html_class in product['dv_ribbon'] else '',
                     key_raw=key_raw,
                     key=key,
                     view_type='product',

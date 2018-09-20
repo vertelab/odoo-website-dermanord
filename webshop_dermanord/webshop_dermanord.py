@@ -270,7 +270,7 @@ class product_template(models.Model):
         Return a search result for search_suggestion.
         """
         res = super(product_template, self).fts_search_suggestion()
-        res['event_type_id'] = self.event_type_id and self.event_type_id.id
+        res['event_type_id'] = self.event_type_id and self.event_type_id.id or False
         return res
 
 class product_product(models.Model):
@@ -377,7 +377,7 @@ class product_product(models.Model):
         Return a search result for search_suggestion.
         """
         res = super(product_product, self).fts_search_suggestion()
-        res['event_type_id'] = self.event_type_id and self.event_type_id.id
+        res['event_type_id'] = self.event_type_id and self.event_type_id.id or False
         return res
 
 class product_facet(models.Model):
