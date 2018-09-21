@@ -20,6 +20,11 @@
                     <label for="webshop_category_ids"/>
                     <field name="webshop_category_ids" widget="many2many_tags"/>
                 </div>
+                <notebook position="inside">
+                    <page string="Top Image">
+                        <field name="top_image" widget="image"/>
+                    </page>
+                </notebook>
             </field>
         </record>
 
