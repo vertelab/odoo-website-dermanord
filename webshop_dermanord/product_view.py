@@ -152,7 +152,7 @@ class product_product(models.Model):
     _inherit = 'product.product'
 
     @api.model
-    def get_thumbnail_variant(self,domain,limit,order,pricelist):
+    def get_thumbnail_variant(self,domain,pricelist,limit=21,offset=0,order=''):
         thumbnail = []
         flush_type = 'thumbnail_variant'
         # ~ _logger.warn('get_thumbnail_default_variant ------> %s %s %s %s' % (domain,limit,order,pricelist))
