@@ -97,7 +97,7 @@ class product_template(models.Model):
     @api.model
     def get_thumbnail_default_variant(self,domain,limit,order,pricelist):
         thumbnail = []
-        flush_type = 'thumbnaile_product'
+        flush_type = 'thumbnail_product'
         # ~ _logger.warn('get_thumbnail_default_variant ------> %s %s %s %s' % (domain,limit,order,pricelist))
         # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
         for product in self.env['product.template'].search_read(domain, fields=['id','name', 'use_tmpl_name','dv_ribbon','dv_id' ,'is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src','website_style_ids_variant'], limit=limit, order=order):
@@ -148,33 +148,216 @@ class product_template(models.Model):
             thumbnail.append(page_dict.get('page','').decode('base64'))
         return thumbnail
 
-    @api.model
-    def get_thumbnail_default_variant2(self,domain,limit,order,pricelist):
-        thumbnail = []
-        flush_type = 'thumbnaile_product'
-        # ~ _logger.warn('------> %s %s %s %s' % (domain,limit,order,pricelist))
-        for pid in self.env['product.template'].search_read(domain,['name'], limit=limit, order=order):
-        # ~ for product in self.env['product.template'].search(domain,limit=limit,order=order):
-            # ~ product = self.env['product.template'].browse(pid['id'])
-            # ~ variant = product.product_variant_ids[0]
-            # ~ variant = product.get_default_variant()
-            _logger.warn('------> %s %s ' % (pid,pid))
-            key_raw = 'dn_shop %s %s %s %s %s' % (self.env.cr.dbname,flush_type,pid['id'],pricelist,self.env.lang)  # db flush_type produkt prislista språk
-            key,page_dict = self.env['website'].get_page_dict(key_raw)
-            _logger.warn('------> %s %s ' % (key,page_dict))
-        return thumbnail
-
-
 class product_product(models.Model):
     _inherit = 'product.product'
 
     @api.model
-    def get_thumbnail_variant(self,domain,limit,order,pricelist_id):
+    def get_thumbnail_variant(self,domain,limit,order,pricelist):
         thumbnail = []
+        flush_type = 'thumbnail_variant'
+        # ~ _logger.warn('get_thumbnail_default_variant ------> %s %s %s %s' % (domain,limit,order,pricelist))
+        # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
+        for product in self.env['product.template'].search_read(domain, fields=['id','name', 'use_tmpl_name','dv_ribbon','dv_id' ,'is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src','website_style_ids_variant'], limit=limit, order=order):
+            key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,product['id'],pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
+            key,page_dict = self.env['website'].get_page_dict(key_raw)
+            # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
+            ribbon_promo = None
+            ribbon_limited = None
+            if not page_dict:
+                render_start = timer()
+                if not ribbon_limited:
+                    ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
+                    ribbon_promo   = request.env.ref('website_sale.image_promo')
+
+                #
+                # TODO: get_html_price_long(pricelist) and variant.image_main_id[0].id  dv_ribbon
+                #
+
+                # ~ product = self.env['product.template'].browse(pid['id'])
+                # ~ if not product.product_variant_ids:
+                    # ~ continue
+                # ~ variant = product.product_variant_ids[0]
+                # ~ variant = product.get_default_variant()
+                # ~ if not variant:
+                    # ~ continue
+
+                page = THUMBNAIL.format(
+                    details=_('DETAILS'),
+                    product_id=product['id'],
+                    # ~ product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0].id, 'snippet_dermanord.img_product') if variant.image_main_id else '',
+                    product_image=product['dv_image_src'],
+                    product_name=product['name'],
+                    # ~ product_price=self.env['product.product'].browse(product['dv_id']).get_html_price_long(pricelist),
+                    product_price=self.env['product.template'].browse(product['id']).get_html_price_long(product['id'], pricelist),
+                    product_ribbon=product['dv_ribbon'],
+                    # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
+                    product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.html_class in product['dv_ribbon'] else '',
+                    product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.html_class in product['dv_ribbon'] else '',
+                    key_raw=key_raw,
+                    key=key,
+                    view_type='variant',
+                    render_time='%s' % (timer() - render_start),
+                ).encode('utf-8')
+                # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
+                self.env['website'].put_page_dict(key,flush_type,page)
+                page_dict['page'] = base64.b64encode(page)
+            thumbnail.append(page_dict.get('page','').decode('base64'))
+        return thumbnail
 
     @api.model
-    def get_list_row(self,domain,limit,order,pricelist_id):
-        thumbnail = []
+    def get_packaging_info(self,packaging):
+        # ~ prod_packs = request.env['product.product'].sudo().search_read([('id', 'in', [p['id'] for p in products])], ['packaging_ids'], order=current_order)
+        # ~ packagings = request.env['product.packaging'].sudo().search_read([('id', 'in', sum([p['packaging_ids'] for p in prod_packs], []))], ['ul', 'name', 'ean', 'qty', 'ul_container', 'ul_qty', 'rows'])
+        # ~ for ul in request.env['product.ul'].sudo().search_read(
+            # ~ [('id', 'in', [p['ul_container'][0] for p in packagings if p['ul_container']] + [p['ul'][0] for p in packagings if p['ul']])],
+            # ~ ['width', 'length', 'height', 'name']):
+            # ~ for p in packagings:
+                # ~ if type(p['ul']) == tuple and p['ul'][0] == ul['id']:
+                    # ~ p['ul'] = ul
+                # ~ if type(p['ul_container']) == tuple and p['ul_container'][0] == ul['id']:
+                    # ~ p['ul_container'] = ul
+        # ~ packagings = {d['id']: d for d in packagings}
+        
+        return u"""<div class="dn-tooltip text-centered"><i class="fa fa-cube"></i>
+                    <div class="dn-tooltiptext">
+                        <b>{ul_name}</b><br>
+                        {qty}
+                        {ean}
+                        {width}
+                        {length}
+                        {height}
+                        {ul_container_name}
+                        {ul_qty}
+                        {kfp}
+                    </div>
+                </div>""".format(
+                            ul_name=packaging['ul']['name'],
+                            qty="""<b>%s</b> %s %s<br/>""" % (_('Quantity:') ,packaging['qty'],_('pcs / box')) if packaging['qty'] else '',
+                            ean="""<b>%s</b> %s %s<br/>""" % (_('EAN:') ,packaging['ean'],_('pcs / box')) if packaging['ean'] else '',
+                            width="""<b>%s</b> %s mm<br/>""" % (_('Width:') ,packaging['width']) if packaging['width'] else '',
+                            length="""<b>%s</b> %s mm<br/>""" % (_('Length:') ,packaging['length']) if packaging['length'] else '',
+                            height="""<b>%s</b> %s mm<br/>""" % (_('Height:') ,packaging['height']) if packaging['height'] else '',
+                            ul_container_name="""<b>%s<br/>""" % packaging['ul_container']['name'] if packaging['ul_container'] else '',
+                            ul_qty="""<b>Quantity (DFP):</b> %s %s<br/>""" % (_('Quantity (DFP):') ,packaging['ul_qty'] * packaging['rows'],_('boxes / pallet')) if packaging['ul_container'] else '',
+                            kfp="""<b>Quantity (KFP):</b> <t %s %s<br/>""" % (_('Quantity (KFP):') ,packaging['qty'] * packaging['ul_qty'] * packaging['rows'],_('pcs / pallet')) if packaging['ul_container'] else '',
+                        )
+    @api.model
+    def get_stock_info(self,type,variant_available_days):
+        if type != 'product' or product['virtual_available_days'] > 5:
+            state = 'in'
+        elif product['virtual_available_days'] >= 1.0:
+            state = 'few'
+        else:
+            state ='short'
+        return {'in': _('In stock'),'few': _('Few in stock'),'short': _('Shortage')}[state]
+                    
+    
+    @api.model
+    def get_list_row(self,domain,limit,order,pricelist):
+        rows = []
+        flush_type = 'product_list_row'
+        # ~ _logger.warn('get_thumbnail_default_variant ------> %s %s %s %s' % (domain,limit,order,pricelist))
+        # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
+        for product in self.env['product.template'].search_read(domain, fields=['id','name', 'use_tmpl_name','dv_ribbon','dv_id' ,       'default_code','virtual_available_days','type', 'packaging_ids',                'is_offer_product_reseller', 'is_offer_product_consumer', 'website_style_ids_variant', 'product_tmpl_id', 'sale_ok'], limit=limit, order=order):
+            key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,product['id'],pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
+            key,page_dict = self.env['website'].get_page_dict(key_raw)
+            # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
+            ribbon_promo = None
+            ribbon_limited = None
+            if not page_dict:
+                render_start = timer()
+                if not ribbon_limited:
+                    ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
+                    ribbon_promo   = request.env.ref('website_sale.image_promo')
+                campaign = request.env['crm.tracking.campaign'].browse(product['campaign_ids'][0])
+                page = """<tr class="tr_lst ">
+                                <td class="td_lst">
+                                    <div class="lst-ribbon-wrapper">{product_ribbon_offer}{product_ribbon_promo}{product_ribbon_limited}</div>
+                                </td>
+                                <td>
+                                    <h5 class="list_product_name">
+                                        <span>{product_default_code}</span>
+                                    </h5>
+                                </td>
+                                <td style="max-width: 250px;">
+                                    <h5 class="list_product_name">
+                                        <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_name">
+                                            <strong>
+                                                <a href="/sv_SE/dn_shop/variant/{product_id}" title="{product_name}">
+                                                    <span itemprop="name">{product_name}</span>
+                                                </a>
+                                            </strong>
+                                        </div>
+                                    </h5>
+                                </td>
+                                <td>
+                                    <h5>
+                                        <div class="text-center">
+                                            <span>{product_startdate}</span>
+                                            <br>
+                                            <span>{product_stopdate}</span>
+                                        </div>
+                                    </h5>
+                                </td>
+                                <td>
+                                    {product_price}
+                                </td>
+                                <td>
+                                    <div class="dn-tooltip text-centered">
+                                    {product_dfp}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <form action="/shop/cart/update" class="oe_dn_list" data-attribute_value_ids="{product_id}" method="POST">
+                                            <div class="product_shop" style="margin: 0px;">
+                                                <input class="product_id" name="product_id" value="{product_id}" type="hidden">
+                                                <input name="return_url" value="{return_url}" type="hidden">
+                                                <div class="css_quantity input-group oe_website_spinner">
+                                                    <span class="input-group-addon">
+                                                        <a href="#" class="mb8 js_add_cart_json">
+                                                            <i class="fa fa-minus"></i>
+                                                        </a>
+                                                    </span>
+                                                    <input class="js_quantity form-control" data-min="1" name="add_qty" value="1" type="text">
+                                                    <span class="input-group-addon">
+                                                        <a href="#" class="mb8 float_left js_add_cart_json">
+                                                            <i class="fa fa-plus"></i>
+                                                        </a>
+                                                    </span>
+                                                </div>
+                                                <a id="add_to_cart" class="btn btn-default dn_list_add_to_cart" href="javascript:void(0);">
+                                                    <i class="fa fa-shopping-cart" style="color: #CB683F;"></i>
+                                                </a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <span class="dn_list_instock">{product_stock}</span>
+                                    <!-- key {key} key_raw {key_raw} render_time {render_time} -->
+                                    <!-- http:/mcpage/{key} http:/mcpage/{key}/delete  http:/mcmeta/{key} -->
+                                </td>
+                        </tr>""".format(
+                    product_default_code=product['default_code'],
+                    return_url='%s/dn_list' % 'https://mariaakerberg.com',
+                    product_id=product['id'],
+                    product_startdate=campaign.date_start if campaign and campaign.date_start else '',
+                    product_stopdate =campaign.date_stop  if campaign and campaign.date_stop else '',
+                    product_dfp=self.get_packaging_info(product['packaging_ids']) or '',
+                    product_stock=self.get_stock_info(product['type'],product['virtual_available_days']),
+                    product_name=product['name'],
+                    product_price=self.env['product.product'].get_html_price_short(product['id'], pricelist),
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
+                    product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.html_class in product['dv_ribbon'] else '',
+                    product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.html_class in product['dv_ribbon'] else '',
+                    key_raw=key_raw,
+                    key=key,
+                    render_time='%s' % (timer() - render_start),
+                ).encode('utf-8')
+                self.env['website'].put_page_dict(key,flush_type,page)
+                page_dict['page'] = base64.b64encode(page)
+            rows.append(page_dict.get('page','').decode('base64'))
+        return rows
 
     # right side product.description, directly after stock_status
     @api.model
@@ -450,5 +633,5 @@ class Website(models.Model):
             # ~ 'headers': [],
             }
         # ~ MEMCACHED.mc_save(key, page_dict,24 * 60 * 60 * 7)  # One week
-        memcached.mc_save(key, page_dict,60*60)  # One minute
+        memcached.mc_save(key, page_dict,60*60*24*7)  # One week
 
