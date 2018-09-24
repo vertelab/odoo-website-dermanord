@@ -176,6 +176,122 @@ class product_product(models.Model):
     def get_list_row(self,domain,limit,order,pricelist_id):
         thumbnail = []
 
+    @api.model
+    def product_detail_desc(self,product):
+        thumbnail = []
+        flush_type = 'product_detail_desc'
+        # ~ _logger.warn('get_thumbnail_default_variant ------> %s %s %s %s' % (domain,limit,order,pricelist))
+        # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
+        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,product.id,pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
+        key,page_dict = self.env['website'].get_page_dict(key_raw)
+        # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
+        ribbon_promo = None
+        ribbon_limited = None
+        if not page_dict:
+            render_start = timer()
+            if not ribbon_limited:
+                ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
+                ribbon_promo   = request.env.ref('website_sale.image_promo')
+
+            #
+            # TODO: get_html_price_long(pricelist) and variant.image_main_id[0].id  dv_ribbon
+            #
+
+            # ~ product = self.env['product.template'].browse(pid['id'])
+            # ~ if not product.product_variant_ids:
+                # ~ continue
+            # ~ variant = product.product_variant_ids[0]
+            # ~ variant = product.get_default_variant()
+            # ~ if not variant:
+                # ~ continue
+
+            page = """<div>
+            <p class="text-muted hidden" data-oe-model="product.template" data-oe-id="3900" data-oe-field="description_sale" data-oe-type="text" data-oe-expression="product.description_sale" data-oe-translate="1"></p>
+            
+<p class="text-muted">
+  
+    
+  
+</p>
+<p class="text-muted public_desc" data-oe-id="5922" data-oe-source-id="5442" data-oe-xpath="/data/xpath[7]/p[2]" data-oe-model="ir.ui.view" data-oe-field="arch">Body Lotion Energy är en uppmjukande och välgörande lotion med en uppiggande doft som passar både honom och henne.<br><br>Kombinationen av växtoljor, vitaminer och Mjölksyra (AHA) hjälper huden att hålla en bra fukt- och fettbalans. Vi använder Mjölksyra från sockerbetor och Sheasmör från vildväxande sheaträd.<br><br>Eteriska oljor av Rosmarin, Lavendel, Citrongräs och Enbär adderar både uppfriskande doft och andra välgörande egenskaper. Rosmarin verkar uppfriskande. Lavendel är milt och lugnande. Citrongräs stärker bindväven och verkar uppiggande. Enbär är utrensande och stärkande.<br><br>Självkonserverande system.</p>
+            <h4 class="show_more_facet text-center hidden-lg hidden-md hidden-sm" style="text-decoration: underline;" data-oe-id="5922" data-oe-source-id="5442" data-oe-xpath="/data/xpath[7]/h4[1]" data-oe-model="ir.ui.view" data-oe-field="arch">
+                Mer information
+                <i class="fa fa-angle-down"></i>
+            </h4>
+            <div class="container facet_container hidden-xs">
+                <div class="col-md-12 no_padding_div">
+                    <h2 class="use_desc_title dn_uppercase" data-oe-source-id="5442" data-oe-id="5922" data-oe-model="ir.ui.view" data-oe-field="arch" data-oe-xpath="/data/xpath[7]/div/div[1]/h2[1]">Användning</h2>
+                    <p class="text-muted use_desc" data-oe-source-id="5442" data-oe-id="5922" data-oe-model="ir.ui.view" data-oe-field="arch" data-oe-xpath="/data/xpath[7]/div/div[1]/p[1]">Använd gärna Body Lotion Energy varje dag, speciellt under vintern eller efter solbad. Kombinera gärna med Body &amp; Massage Oil Energy, för bästa resultat.</p>
+                    
+                </div>
+                <div class="col-md-12 no_padding_div">
+                    <h2 class="category_title dn_uppercase" data-oe-source-id="5442" data-oe-id="5922" data-oe-model="ir.ui.view" data-oe-field="arch" data-oe-xpath="/data/xpath[7]/div/div[2]/h2[1]">Kategorier</h2>
+                    
+                        <a href="/sv_SE/dn_shop/category/9" data-oe-source-id="5442" data-oe-id="5922" data-oe-model="ir.ui.view" data-oe-field="arch" data-oe-xpath="/data/xpath[7]/div/div[2]/t[1]/a[1]">
+                            <span style="color: #bbb;" data-oe-model="product.public.category" data-oe-id="9" data-oe-field="name" data-oe-type="char" data-oe-expression="pc.name" data-oe-translate="1">Kropp</span>
+                        </a>
+                    
+                </div>
+                <div class="col-md-12 facet_div"><div class="col-md-6"><h2 class="dn_uppercase">Formula</h2><a href="/dn_shop/?facet_6_67=67&amp;category_9=9" class="text-muted"><span>Creme</span></a></div><div class="col-md-6"><h2 class="dn_uppercase">Produkttyp</h2><a href="/dn_shop/?facet_8_78=78&amp;category_9=9" class="text-muted"><span>Creme</span></a><span>, </span><a href="/dn_shop/?facet_8_164=164&amp;category_9=9" class="text-muted"><span>Massage</span></a></div><div class="col-md-6"><h2 class="dn_uppercase">Hudtillstånd</h2><a href="/dn_shop/?facet_7_61=61&amp;category_9=9" class="text-muted"><span>Normal</span></a><span>, </span><a href="/dn_shop/?facet_7_63=63&amp;category_9=9" class="text-muted"><span>Torr</span></a></div><div class="col-md-6"><h2 class="dn_uppercase">Egenskaper</h2><a href="/dn_shop/?facet_5_74=74&amp;category_9=9" class="text-muted"><span>Återfuktande</span></a><span>, </span><a href="/dn_shop/?facet_5_75=75&amp;category_9=9" class="text-muted"><span>Mjukgörande</span></a><span>, </span><a href="/dn_shop/?facet_5_98=98&amp;category_9=9" class="text-muted"><span>Skyddande</span></a><span>, </span><a href="/dn_shop/?facet_5_103=103&amp;category_9=9" class="text-muted"><span>Veganvänlig</span></a><span>, </span><a href="/dn_shop/?facet_5_197=197&amp;category_9=9" class="text-muted"><span>Energigivande</span></a></div></div>
+            </div>
+            <h4 class="hide_more_facet text-center hidden-lg hidden-md hidden-sm hidden" style="text-decoration: underline;" data-oe-id="5922" data-oe-source-id="5442" data-oe-xpath="/data/xpath[7]/h4[2]" data-oe-model="ir.ui.view" data-oe-field="arch">
+                Mindre info
+                <i class="fa fa-angle-up"></i>
+            </h4>
+        </div>""".format(public_descr='',category=''.formula='',).encode('utf-8')
+            # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
+            self.env['website'].put_page_dict(key,flush_type,page)
+            page_dict['page'] = base64.b64encode(page)
+        return page_dict.get('page','').decode('base64')
+
+    @api.model
+    def product_detail_image(self,product):
+        thumbnail = []
+        flush_type = 'product_detail_image'
+        # ~ _logger.warn('get_thumbnail_default_variant ------> %s %s %s %s' % (domain,limit,order,pricelist))
+        # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
+        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,product.id,pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
+        key,page_dict = self.env['website'].get_page_dict(key_raw)
+        # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
+        ribbon_promo = None
+        ribbon_limited = None
+        if not page_dict:
+            render_start = timer()
+            if not ribbon_limited:
+                ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
+                ribbon_promo   = request.env.ref('website_sale.image_promo')
+
+            #
+            # TODO: get_html_price_long(pricelist) and variant.image_main_id[0].id  dv_ribbon
+            #
+
+            # ~ product = self.env['product.template'].browse(pid['id'])
+            # ~ if not product.product_variant_ids:
+                # ~ continue
+            # ~ variant = product.product_variant_ids[0]
+            # ~ variant = product.get_default_variant()
+            # ~ if not variant:
+                # ~ continue
+
+            page = """<div class="col-sm-7 col-md-7 col-lg-7">
+                    <div class="image_zoom" data-oe-source-id="5442" data-oe-id="5894" data-oe-model="ir.ui.view" data-oe-field="arch" data-oe-xpath="/data/xpath/div/div[1]"></div>
+                    <div id="image_big" class="tab-content"><div id="104531" class="tab-pane fade active in"><img class="img img-responsive product_detail_img" style="margin: auto;" src="/imagefield/ir.attachment/datas/104531/ref/website_sale_product_gallery.img_product_detail"></div></div>
+                    <ul id="image_nav" class="nav nav-pills"><li class="active "><a data-toggle="tab" href="#104531"><img class="img img-responsive" src="/imagefield/ir.attachment/datas/104531/ref/website_sale_product_gallery.img_product_thumbnail"></a></li></ul>
+                <div id="ingredients_div"><div class="container mb16 hidden-xs"><h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2><a href="/dn_shop/?current_ingredient=61"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/61/ref/product_ingredients.img_ingredients"><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>Lemongrass</i></h6></div></a><i><a href="/dn_shop/?current_ingredient=32"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/32/ref/product_ingredients.img_ingredients"><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>Juniper</i></h6></div></a><i><a href="/dn_shop/?current_ingredient=12"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/12/ref/product_ingredients.img_ingredients"><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>Lavender</i></h6></div></a><i><a href="/dn_shop/?current_ingredient=62"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/62/ref/product_ingredients.img_ingredients"><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>Rosemary</i></h6></div></a></i></i></i></div></div>
+            <p id="current_product_id" data-value="3900" class="hidden" data-oe-id="6100" data-oe-source-id="5442" data-oe-xpath="/data/xpath[2]/p" data-oe-model="ir.ui.view" data-oe-field="arch"></p>
+            <div id="ingredients_description" class="container hidden-xs">
+                <div class="mt16">
+                    
+                        <p data-oe-source-id="5442" data-oe-id="6100" data-oe-model="ir.ui.view" data-oe-field="arch" data-oe-xpath="/data/xpath[2]/div[2]/div[1]/t[1]/p[1]"><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" data-oe-model="product.product" data-oe-id="3900" data-oe-field="ingredients" data-oe-type="text" data-oe-expression="product_product.ingredients" data-oe-translate="1">Aqua Purificata/Water, Simondsia Chinensis (Jojoba) Seed Oil, Caprylic/Capric Triglyceride, Squalane (Vegetable), Glycerin (Vegetable), Butyrospermum Parkii (Shea) Butter, Glyceryl Stearate Citrate, Cetearyl Alcohol, Glyceryl Caprylate,  Sodium Levulinate, Sodium Anisate, Sodium Lactate, Lactic Acid, Xanthan Gum, Rosmarinus Officinalis (Rosemary) Leaf Oil, Cymbopogon Citratus (Lemongrass) Oil, Juniperus Communis (Juniper) Oil, Lavandula Angustifolia (Lavender) Oil, Helianthus Annuus (Sunflower) Seed Oli, Rosmarinus Officinalis (Rosemary) Leaf Extract, Limonene*, Linalool*, Geraniol*, Citronellol*, Citral*. *Components naturally present in essential oils.</span></p>
+                    
+                </div>
+            </div>
+        </div>""".format(public_descr='',category=''.formula='',).encode('utf-8')
+            # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
+            self.env['website'].put_page_dict(key,flush_type,page)
+            page_dict['page'] = base64.b64encode(page)
+        return page_dict.get('page','').decode('base64')
+
 
 class Website(models.Model):
     _inherit = 'website'
