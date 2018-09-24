@@ -176,25 +176,18 @@ class product_product(models.Model):
     def get_list_row(self,domain,limit,order,pricelist_id):
         thumbnail = []
 
+    # right side product.description, directly after stock_status
     @api.model
-    def product_detail_desc(self, product):
+    def html_product_detail_desc(self, product):
         is_reseller = False
         if self.env.user.partner_id.property_product_pricelist and self.env.user.partner_id.property_product_pricelist.for_reseller:
             is_reseller = True
-        thumbnail = []
         flush_type = 'product_detail_desc'
         # ~ _logger.warn('get_thumbnail_default_variant ------> %s %s %s %s' % (domain,limit,order,pricelist))
         # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
         key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type, product.id, pricelist.id, self.env.lang, self.session.get('device_type','md'))
         key, page_dict = self.env['website'].get_page_dict(key_raw)
-        # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
-        ribbon_promo = None
-        ribbon_limited = None
         if not page_dict:
-            render_start = timer()
-            if not ribbon_limited:
-                ribbon_limited = self.env.ref('webshop_dermanord.image_limited')
-                ribbon_promo   = self.env.ref('website_sale.image_promo')
 
             #
             # TODO: get_html_price_long(pricelist) and variant.image_main_id[0].id  dv_ribbon
@@ -238,7 +231,8 @@ class product_product(models.Model):
         </div>
         {facets}
         <h4 class="hide_more_facet text-center hidden-lg hidden-md hidden-sm hidden" style="text-decoration: underline;">{less_info}<i class="fa fa-angle-up"></i></h4>
-    </div>""".format(
+    </div>
+</div>""".format(
                 public_desc = u'<p class="text-muted public_desc%s">%s</p>' %(' hidden' if not product.public_desc else '', product.public_desc if not product.public_desc else ''),
                 use_desc_title = u'<h2 class="use_desc_title dn_uppercase%s">%s</h2>' %(' hidden' if not product.use_desc else '', _('Directions')),
                 use_desc = u'<p class="text-muted use_desc%s">%s</p>' %(' hidden' if not product.use_desc else '', product.use_desc if not product.use_desc else ''),
@@ -253,21 +247,17 @@ class product_product(models.Model):
             page_dict['page'] = base64.b64encode(page)
         return page_dict.get('page','').decode('base64')
 
+    # left side product image with image nav bar, product ingredients with nav bar
     @api.model
-    def product_detail_image(self, product):
-        thumbnail = []
+    def html_product_detail_image(self, product):
         flush_type = 'product_detail_image'
-        # ~ products = request.env['product.template'].with_context(pricelist=pricelist.id).search_read(domain, fields=['id', 'name', 'use_tmpl_name', 'default_code', 'access_group_ids', 'dv_ribbon', 'is_offer_product_reseller', 'is_offer_product_consumer', 'dv_id', 'dv_image_src', 'dv_name', 'dv_default_code', 'dv_price_45', 'dv_price_20', 'dv_price_en', 'dv_price_eu', 'dv_recommended_price', 'dv_recommended_price_en', 'dv_recommended_price_eu', 'website_style_ids_variant', 'dv_description_sale'], limit=PPG, order=current_order)
-        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,product.id,pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
+        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type,product.id, pricelist.id, self.env.lang, request.session.get('device_type','md'))
         key,page_dict = self.env['website'].get_page_dict(key_raw)
-        # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
         ribbon_promo = None
         ribbon_limited = None
         if not page_dict:
-            render_start = timer()
-            if not ribbon_limited:
-                ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
-                ribbon_promo   = request.env.ref('website_sale.image_promo')
+            ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
+            ribbon_promo   = request.env.ref('website_sale.image_promo')
 
             #
             # TODO: get_html_price_long(pricelist) and variant.image_main_id[0].id  dv_ribbon
@@ -281,44 +271,126 @@ class product_product(models.Model):
             # ~ if not variant:
                 # ~ continue
 
-            # ~ page = """<div class="col-sm-7 col-md-7 col-lg-7">
-    # ~ <div class="image_zoom" data-oe-source-id="5442" data-oe-id="5894" data-oe-model="ir.ui.view" data-oe-field="arch" data-oe-xpath="/data/xpath/div/div[1]"></div>
-    # ~ <div id="image_big" class="tab-content">
-        # ~ <div id="114367" class="tab-pane fade active in">
-            # ~ <div class="offer-wrapper">
-                # ~ <div class="ribbon ribbon_offer btn btn-primary">Erbjudande</div>
-            # ~ </div>
-            # ~ <div class="ribbon-wrapper">
-                # ~ <div class="ribbon_news btn btn-primary">Nyheter</div>
-            # ~ </div>
-            # ~ <img class="img img-responsive product_detail_img" style="margin: auto;" src="/imagefield/ir.attachment/datas/114367/ref/website_sale_product_gallery.img_product_detail"/>
-        # ~ </div>
-    # ~ </div>
-    # ~ <ul id="image_nav" class="nav nav-pills">
-        # ~ <li class="active">
-            # ~ <a data-toggle="tab" href="#104531">
-                # ~ <img class="img img-responsive" src="/imagefield/ir.attachment/datas/104531/ref/website_sale_product_gallery.img_product_thumbnail">
-            # ~ </a>
-        # ~ </li>
-    # ~ </ul>
-                # ~ <div id="ingredients_div"><div class="container mb16 hidden-xs"><h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2><a href="/dn_shop/?current_ingredient=61"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/61/ref/product_ingredients.img_ingredients"><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>Lemongrass</i></h6></div></a><i><a href="/dn_shop/?current_ingredient=32"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/32/ref/product_ingredients.img_ingredients"><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>Juniper</i></h6></div></a><i><a href="/dn_shop/?current_ingredient=12"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/12/ref/product_ingredients.img_ingredients"><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>Lavender</i></h6></div></a><i><a href="/dn_shop/?current_ingredient=62"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/62/ref/product_ingredients.img_ingredients"><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>Rosemary</i></h6></div></a></i></i></i></div></div>
-            # ~ <p id="current_product_id" data-value="3900" class="hidden" data-oe-id="6100" data-oe-source-id="5442" data-oe-xpath="/data/xpath[2]/p" data-oe-model="ir.ui.view" data-oe-field="arch"></p>
-            # ~ <div id="ingredients_description" class="container hidden-xs">
-                # ~ <div class="mt16">
+            ribbon_wrapper = ''
+            if len(product.website_style_ids_variant) > 0:
+                if product.website_style_ids_variant[0] == ribbon_promo.id:
+                    ribbon_wrapper = u'<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('News')
+                elif product.website_style_ids_variant[0] == ribbon_limited.id:
+                    ribbon_wrapper = u'<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('Limited Edition')
+            elif len(product.product_tmpl_id.website_style_ids) > 0:
+                if product.product_tmpl_id.website_style_ids[0] == ribbon_promo.id:
+                    ribbon_wrapper = u'<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('News')
+                elif product.product_tmpl_id.website_style_ids[0] == ribbon_limited.id:
+                    ribbon_wrapper = u'<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('Limited Edition')
 
-                        # ~ <p data-oe-source-id="5442" data-oe-id="6100" data-oe-model="ir.ui.view" data-oe-field="arch" data-oe-xpath="/data/xpath[2]/div[2]/div[1]/t[1]/p[1]"><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" data-oe-model="product.product" data-oe-id="3900" data-oe-field="ingredients" data-oe-type="text" data-oe-expression="product_product.ingredients" data-oe-translate="1">Aqua Purificata/Water, Simondsia Chinensis (Jojoba) Seed Oil, Caprylic/Capric Triglyceride, Squalane (Vegetable), Glycerin (Vegetable), Butyrospermum Parkii (Shea) Butter, Glyceryl Stearate Citrate, Cetearyl Alcohol, Glyceryl Caprylate,  Sodium Levulinate, Sodium Anisate, Sodium Lactate, Lactic Acid, Xanthan Gum, Rosmarinus Officinalis (Rosemary) Leaf Oil, Cymbopogon Citratus (Lemongrass) Oil, Juniperus Communis (Juniper) Oil, Lavandula Angustifolia (Lavender) Oil, Helianthus Annuus (Sunflower) Seed Oli, Rosmarinus Officinalis (Rosemary) Leaf Extract, Limonene*, Linalool*, Geraniol*, Citronellol*, Citral*. *Components naturally present in essential oils.</span></p>
+            product_images_nav_html = ''
+            product_images = product.image_attachment_ids.sorted(key=lambda a: a.sequence)
+            if len(product_images) > 0:
+                for idx, image in product_images:
+                    product_images_nav_html += u'<li class="%s"><a data-toggle="tab" href="#%s"><img class="img img-responsive" src="%s"/></a></li>' %('active' if idx == 0 else '', self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_detail'))
+            else:
+                product_images_nav_html = u'<li class="active"><a data-toggle="tab" href="#%s"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></a></li>' %'0'
 
-                # ~ </div>
-            # ~ </div>
-        # ~ </div>""".format(
-                # ~ public_descr='',
-                # ~ category='',
-                # ~ formula=''
-            # ~ ).encode('utf-8')
-            # ~ self.env['website'].put_page_dict(key,flush_type,page)
-            # ~ page_dict['page'] = base64.b64encode(page)
-        # ~ return page_dict.get('page','').decode('base64')
-        return None
+            ingredients_images_nav_html = ''
+            product_ingredients = self.env['product.ingredient'].search([('product_ids', 'in', product.id)], order='sequence')
+            if len(product_ingredients) > 0:
+                for i in product_ingredients:
+                    ingredients_images_nav_html += u'<a href="/dn_shop/?current_ingredient=%s"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></div></a>' %(i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
+
+            page = u"""<div class="col-sm-7 col-md-7 col-lg-7">
+    <div id="image_big" class="tab-content">
+        <div id="{image_first}" class="tab-pane fade active in">
+            {offer_wrapper}
+            {ribbon_wrapper}
+            <img class="img img-responsive product_detail_img" style="margin: auto;" src="{image_src}"/>
+        </div>
+    </div>
+    <ul id="image_nav" class="nav nav-pills">
+        {product_images_nav_html}
+    </ul>
+    <div id="ingredients_div">
+        <div class="container mb16 hidden-xs">
+            <h2 class="mt64 mb32 text-center dn_uppercase">{ingredients_title}</h2>
+            {ingredients_images_nav_html}
+        </div>
+    </div>
+    <p id="current_product_id" data-value="{current_product_id}" class="hidden"/>
+    <div id="ingredients_description" class="container hidden-xs">
+        <div class="mt16">
+            <p>
+                <strong class="dn_uppercase">ingredients: </strong>
+                <span class="text-muted">
+                    {ingredients_desc}
+                </span>
+            </p>
+        </div>
+    </div>
+</div>""".format(
+                image_first = product_images[0].id if len(product_images) > 0 else '',
+                offer_wrapper = u'<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">%s</div></div>' %_('Offer') if product.is_offer_product_reseller or product.is_offer_product_consumer else '0',
+                ribbon_wrapper = ribbon_wrapper,
+                image_src = self.env['website'].imagefield_hash('ir.attachment', 'datas', product_images[0].id, 'website_sale_product_gallery.img_product_detail') if len(product_images) > 0 else '/web/static/src/img/placeholder.png',
+                product_images_nav_html = product_images_nav_html,
+                ingredients_title = _('made from all-natural ingredients'),
+                ingredients_images_nav_html = ingredients_images_nav_html,
+                current_product_id = product.id,
+                ingredients_desc = product.ingredients
+            ).encode('utf-8')
+            self.env['website'].put_page_dict(key,flush_type,page)
+            page_dict['page'] = base64.b64encode(page)
+        return page_dict.get('page','').decode('base64')
+
+    # product ingredients in mobile, directly after <section id="product_detail"></section>
+    @api.model
+    def html_product_ingredients_mobile(self, product):
+        flush_type = 'product_ingredients_mobile'
+        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type,product.id, pricelist.id, self.env.lang, request.session.get('device_type','md'))
+        key,page_dict = self.env['website'].get_page_dict(key_raw)
+        if not page_dict:
+            ingredients_carousel_html = ''
+            ingredients_carousel_nav_html = ''
+            product_ingredients = self.env['product.ingredient'].search([('product_ids', 'in', product.id)], order='sequence')
+            if len(product_ingredients) > 0:
+                for idx, i in product_ingredients:
+                    ingredients_carousel_html += u'<div class="item ingredient_desc%s"><a href="/dn_shop/?current_ingredient=%s"><img class="img img-responsive" style="margin: auto; display: block;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></a></div>' %(' active' if idx == 0 else '', i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
+                    ingredients_carousel_nav_html += u'<li class="%s" data-slide-to="%s" data-target="#ingredient_carousel"></li>' %(' active' if idx == 0 else '', idx)
+
+            page = u"""<div id="ingredients_div_mobile">
+    <div class="container mb16 hidden-lg hidden-md hidden-sm">
+        <h4 class="text-center dn_uppercase">{ingredients_title}</h4>
+        <div class="col-md-12">
+            <div class="carousel slide" id="ingredient_carousel" data-ride="carousel">
+                <div class="carousel-inner" style="width: 100%;">
+                    {ingredients_carousel_html}
+                </div>
+                <ol class="carousel-indicators" style="bottom: -10px;">
+                    {ingredients_carousel_nav_html}
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>""".format(
+                ingredients_title = _('made from all-natural ingredients'),
+                ingredients_carousel_html = ingredients_carousel_html,
+                ingredients_carousel_nav_html = ingredients_carousel_nav_html
+            ).encode('utf-8')
+            self.env['website'].put_page_dict(key,flush_type,page)
+            page_dict['page'] = base64.b64encode(page)
+        return page_dict.get('page','').decode('base64')
+
+    # product full description
+    @api.model
+    def html_product_full_description(self, product):
+        flush_type = 'product_full_description'
+        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type,product.id, pricelist.id, self.env.lang, request.session.get('device_type','md'))
+        key,page_dict = self.env['website'].get_page_dict(key_raw)
+        if not page_dict:
+            page = u"""<div itemprop="description" class="oe_structure mt16" id="product_full_description"
+{description}
+</div>""".format(description = product.description).encode('utf-8')
+            self.env['website'].put_page_dict(key,flush_type,page)
+            page_dict['page'] = base64.b64encode(page)
+        return page_dict.get('page','').decode('base64')
 
 
 class Website(models.Model):
