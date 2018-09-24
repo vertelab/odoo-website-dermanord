@@ -100,7 +100,7 @@
                                     <div class="grid readable">
                                         <t t-if="resellers">
                                             <t t-foreach="resellers" t-as="reseller">
-                                                <div class="reseller_cell grid-item" style="width: 33.333%;">
+                                                <div class="reseller_cell col-md-4 col-sm-4 col-xs-12">
                                                     <t t-set="visit" t-value="reseller.child_ids.filtered(lambda c: c.type == 'visit')"/>
                                                     <t t-if="not visit">
                                                         <t t-set="visit" t-value="reseller.commercial_partner_id"/>
