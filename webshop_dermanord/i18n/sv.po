@@ -28,8 +28,8 @@ msgstr "&times;"
 
 #. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/static/src/xml/product.xml:78
-#: view:website:webshop_dermanord.products_item
+#: code:addons/webshop_dermanord/static/src/xml/product.xml:82
+#, python-format
 msgid "Price from"
 msgstr "Pris från"
 
@@ -126,9 +126,9 @@ msgstr "Nyheter & Erbjudanden"
 
 #. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/static/src/xml/product.xml:25
-#: code:addons/webshop_dermanord/static/src/xml/product.xml:91
-#: view:website:webshop_dermanord.products_item
+#: code:addons/webshop_dermanord/product_view.py:138
+#: code:addons/webshop_dermanord/static/src/xml/product.xml:29
+#: code:addons/webshop_dermanord/static/src/xml/product.xml:110
 #: view:website:webshop_dermanord.products_list_reseller_view
 #, python-format
 msgid "New"

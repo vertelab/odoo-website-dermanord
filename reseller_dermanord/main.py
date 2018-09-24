@@ -172,12 +172,13 @@ class Main(http.Controller):
         word = post.get('search_resellers')
         if word and word != '':
             # Find all matching visit addresses
-            matching_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
+            matching_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
+            all_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
             context['resellers'] = request.env['res.partner'].sudo().search([
                 ('is_company', '=', True),
                 ('is_reseller', '=', True),
                 ('child_ids.type', '=', 'visit'),
-                ('child_ids.street', '!=', ''),
+                ('child_ids', 'in', all_visit_ids),
                 ('child_competence_ids', '=', competence.id),
                 '|', '|', '|', '|',
                     ('child_ids', 'in', matching_visit_ids),
@@ -189,11 +190,11 @@ class Main(http.Controller):
                         ('brand_name', '=', False),
                     ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
         else:
+            matching_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
             context['resellers'] = request.env['res.partner'].sudo().search([
                 ('is_company', '=', True),
                 ('is_reseller', '=', True),
-                ('child_ids.street', '!=', ''),
-                ('child_ids.type', '=', 'visit'),
+                ('child_ids', 'in', matching_visit_ids),
                 ('child_competence_ids', '=', competence.id)]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
         return request.website.render('reseller_dermanord.resellers', context)
 
@@ -209,13 +210,14 @@ class Main(http.Controller):
             word = post.get('search_resellers')
             if word and word != '':
                 # Find all matching visit addresses
-                matching_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
+                matching_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
+                all_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
                 # Find (partners that have a matching visit address OR brand name OR child category)
                 resellers = request.env['res.partner'].sudo().search([
                     ('is_company', '=', True),
                     ('is_reseller', '=', True),
                     ('child_ids.type', '=', 'visit'),
-                    ('child_ids.street', '!=', ''),
+                    ('child_ids', 'in', all_visit_ids),
                     '|', '|', '|',
                         ('child_ids', 'in', matching_visit_ids),
                         ('child_category_ids.name', 'ilike', word),
