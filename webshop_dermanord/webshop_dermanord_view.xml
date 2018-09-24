@@ -527,14 +527,6 @@
                 <field name="website_style_ids" position="after">
                     <field name="website_style_ids_variant" widget="many2many_tags" />
                 </field>
-                <field name="company_id" position="after">
-                    <field name="price_20" />
-                    <field name="price_en" />
-                    <field name="price_eu" />
-                    <field name="recommended_price" />
-                    <field name="recommended_price_en" />
-                    <field name="recommended_price_eu" />
-                </field>
             </field>
         </record>
         <!--

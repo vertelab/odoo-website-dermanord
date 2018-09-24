@@ -48,14 +48,6 @@ _logger = logging.getLogger(__name__)
 PPG = 21 # Products Per Page
 PPR = 3  # Products Per Row
 
-def get_price_fields(default_variant=False):
-    # TODO: Make use of this function
-    l = ['price_45', 'price_20', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu']
-    if default_variant:
-        for i in range(len(l)):
-            l[i] = 'dv_%s' % l[i]
-    return l
-
 class blog_post(models.Model):
     _inherit = 'blog.post'
 
@@ -120,13 +112,6 @@ class crm_campaign_object(models.Model):
 class product_template(models.Model):
     _inherit = 'product.template'
 
-    product_variant_count = fields.Integer(string='# of Product Variants', compute='_compute_product_variant_count', store=True)
-
-    @api.one
-    @api.depends('product_variant_ids.active')
-    def _compute_product_variant_count(self):
-        self.product_variant_count = len(self.product_variant_ids.filtered('active'))
-
     @api.one
     def _blog_post_ids(self):
         if type(self.id) is int:
@@ -177,85 +162,15 @@ class product_template(models.Model):
         self.recommended_price = 0.0
 
     @api.multi
-    @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_medium', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids')
-    def _get_all_variant_data(self):
-        pricelist_45 = self.env.ref('webshop_dermanord.pricelist_af')
-        pricelist_20 = self.env.ref('webshop_dermanord.pricelist_special')
-        placeholder = '/web/static/src/img/placeholder.png'
+    def format_facets(self,facet):
+        self.ensure_one()
+        values = []
+        for value in self.facet_line_ids.mapped('value_ids') & facet.value_ids:
+            values.append(u'<a t-att-href="{href}" class="text-muted"><span>{value_name}</span></a>'.format(
+                href='/dn_shop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, (u'&amp;%s' %'&amp;'.join([u'category_%s=%s' %(c.id, c.id) for c in self.public_categ_ids]) if len(self.public_categ_ids) > 0 else '')),
+                value_name=value.name))
+        return ', '.join(values)
 
-        for p in self:
-            if not p.product_variant_ids:
-                continue
-            try:
-                variant = p.get_default_variant().read(['name', 'fullname', 'price', 'price_45', 'price_20', 'price_en', 'price_eu', 'recommended_price', 'recommended_price_en', 'recommended_price_eu', 'default_code', 'description_sale', 'image_main_id', 'website_style_ids_variant', 'sale_ok'])[0]
-                if p.sale_ok and not variant['sale_ok']:
-                    raise Warning(_('Default variant on %s can not be sold' % p.name))
-                website_style_ids_variant = ' '.join([s['html_class'] for s in self.env['product.style'].browse(variant['website_style_ids_variant']).read(['html_class'])])
-                p.dv_id = variant['id']
-                p.dv_price_45 = variant['price_45']
-                p.dv_price_20 = variant['price_20']
-                p.dv_recommended_price = variant['recommended_price']
-                p.dv_price_en = variant['price_en']
-                p.dv_recommended_price_en = variant['recommended_price_en']
-                p.dv_price_eu = variant['price_eu']
-                p.dv_recommended_price_eu = variant['recommended_price_eu']
-                p.dv_default_code = variant['default_code'] or ''
-                p.dv_description_sale = variant['description_sale'] or ''
-                p.dv_name = p.name if p.use_tmpl_name else variant['fullname']
-                # ~ p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['image_main_id'][0], 'snippet_dermanord.img_product') if variant['image_main_id'] else placeholder
-                p.dv_image_src = self.env['website'].imagefield_hash('ir.attachment', 'datas', variant['image_main_id'][0], 'snippet_dermanord.img_product')
-                p.dv_ribbon = website_style_ids_variant if website_style_ids_variant else ' '.join([c for c in p.website_style_ids.mapped('html_class') if c])
-            except:
-                e = sys.exc_info()
-                tb = ''.join(traceback.format_exception(e[0], e[1], e[2]))
-                _logger.error(tb)
-                self.env['mail.message'].create({
-                    'body': tb.replace('\n', '<br/>'),
-                    'subject': 'Default variant recompute failed on %s' % p.name,
-                    'author_id': self.env.ref('base.partner_root').id,
-                    'res_id': p.id,
-                    'model': p._name,
-                    'type': 'notification',
-                    'partner_ids': [(4, pid) for pid in p.message_follower_ids.mapped('id')],
-                })
-                p.dv_price_45 = 0.0
-                p.dv_price_20 = 0.0
-                p.dv_recommended_price = 0.0
-                p.dv_price_en = 0.0
-                p.dv_recommended_price_en = 0.0
-                p.dv_price_eu = 0.0
-                p.dv_recommended_price_eu = 0.0
-                p.dv_default_code = '%s' % 'error'
-                p.dv_description_sale = u'%s' % e[1]
-                p.dv_name = 'Error'
-                p.dv_image_src = placeholder
-                p.dv_ribbon = ''
-
-    dv_id = fields.Integer(compute='_get_all_variant_data', store=True)
-    dv_price_45 = fields.Float(compute='_get_all_variant_data', store=True)
-    dv_price_20 = fields.Float(compute='_get_all_variant_data', store=True)
-    dv_price_en = fields.Float(compute='_get_all_variant_data', store=True)
-    dv_price_eu = fields.Float(compute='_get_all_variant_data', store=True)
-    dv_recommended_price = fields.Float(compute='_get_all_variant_data', store=True)
-    dv_recommended_price_en = fields.Float(compute='_get_all_variant_data', store=True)
-    dv_recommended_price_eu = fields.Float(compute='_get_all_variant_data', store=True)
-    dv_default_code = fields.Char(compute='_get_all_variant_data', store=True)
-    dv_description_sale = fields.Text(compute='_get_all_variant_data', store=True)
-    dv_image_src = fields.Char(compute='_get_all_variant_data', store=True)
-    dv_name = fields.Char(compute='_get_all_variant_data', store=True)
-    dv_ribbon = fields.Char(compute='_get_all_variant_data', store=True)
-
-    @api.one
-    @api.depends('campaign_changed', 'product_variant_ids.campaign_changed')
-    def _is_offer_product(self):
-        self.is_offer_product_reseller = self in self.get_campaign_tmpl(for_reseller=True)
-        if not self.is_offer_product_reseller:
-            self.is_offer_product_reseller = bool(self.product_variant_ids & self.get_campaign_variants(for_reseller=True))
-        self.is_offer_product_consumer = self in self.get_campaign_tmpl(for_reseller=False)
-        if not self.is_offer_product_consumer:
-            self.is_offer_product_consumer = bool(self.product_variant_ids & self.get_campaign_variants(for_reseller=False))
-    is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
-    is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
 
     @api.multi
     def write(self, vals):
@@ -276,17 +191,6 @@ class product_template(models.Model):
 class product_product(models.Model):
     _inherit = 'product.product'
 
-    # === Prices ===
-    price_45 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    price_20 = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    recommended_price = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-
-    price_en = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    recommended_price_en = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-
-    price_eu = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    recommended_price_eu = fields.Float(compute='get_product_tax', compute_sudo=True, store=True)
-    # ==============
 
     #~ so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')  # performance hog, do we need it?
     sold_qty = fields.Integer(string='Sold', default=0)
@@ -296,32 +200,6 @@ class product_product(models.Model):
     def _fullname(self):
         self.fullname = '%s %s' % (self.name, ', '.join(self.attribute_value_ids.mapped('name')))
     fullname = fields.Char(compute='_fullname')
-
-    @api.one
-    @api.depends('lst_price')
-    def get_product_tax(self):
-        pricelist_45 = self.env.ref('webshop_dermanord.pricelist_af')
-        pricelist_20 = self.env.ref('webshop_dermanord.pricelist_special')
-        pl_rec_se = pricelist_45.rec_pricelist_id or self.env.ref('product.list0')
-        pricelist_us = self.env.ref('webshop_dermanord.pricelist_us')
-        pl_rec_us = pricelist_us.rec_pricelist_id or self.env.ref('product.list0')
-        pricelist_eu = self.env.ref('webshop_dermanord.pricelist_eu')
-        pl_rec_eu = pricelist_eu.rec_pricelist_id or self.env.ref('product.list0')
-
-        # Swedish prices
-        self.price_45 = pricelist_45.price_get(self.id, 1)[pricelist_45.id]
-        self.price_20 = pricelist_20.price_get(self.id, 1)[pricelist_20.id]
-        price = pl_rec_se.price_get(self.id, 1)[pl_rec_se.id]
-        self.recommended_price = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
-
-        # US prices
-        self.price_en = pricelist_us.price_get(self.id, 1)[pricelist_us.id]
-        self.recommended_price_en = pl_rec_us.price_get(self.id, 1)[pl_rec_us.id]
-
-        # EU prices
-        self.price_eu = pricelist_eu.price_get(self.id, 1)[pricelist_eu.id]
-        price = pl_rec_eu.price_get(self.id, 1)[pl_rec_eu.id]
-        self.recommended_price_eu = price + sum(map(lambda x: x.get('amount', 0.0), self.taxes_id.compute_all(price, 1, None, self.env.user.partner_id)['taxes']))
 
     @api.model
     def update_sold_qty(self):
@@ -344,32 +222,6 @@ class product_product(models.Model):
                 template.sold_qty = sum(template.product_variant_ids.mapped('sold_qty'))
         return None
 
-    # get this variant ribbon. if there's not one, get the template's ribbon
-    @api.multi
-    def get_this_variant_ribbon(self):
-        return ' '.join([s.html_class for s in self.website_style_ids_variant] + [s.html_class for s in self.product_tmpl_id.website_style_ids])
-
-    @api.one
-    @api.depends('product_tmpl_id.campaign_changed')
-    def _is_offer_product(self):
-        self.is_offer_product_reseller = self in self.get_campaign_variants(for_reseller=True)
-        if not self.is_offer_product_reseller:
-            self.is_offer_product_reseller = self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=True)
-        self.is_offer_product_consumer = self in self.get_campaign_variants(for_reseller=False)
-        if not self.is_offer_product_consumer:
-            self.is_offer_product_consumer = self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False)
-    is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
-    is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
-
-    @api.multi
-    def format_facets(self,facet):
-        self.ensure_one()
-        values = []
-        for value in self.facet_line_ids.mapped('value_ids') & facet.value_ids:
-            values.append(u'<a t-att-href="{href}" class="text-muted"><span>{value_name}</span></a>'.format(
-                href='/dn_shop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, (u'&amp;%s' %'&amp;'.join([u'category_%s=%s' %(c.id, c.id) for c in self.public_categ_ids]) if len(self.public_categ_ids) > 0 else '')),
-                value_name=value.name))
-        return ', '.join(values)
 
     @api.multi
     def fts_search_suggestion(self):
@@ -461,7 +313,7 @@ class sale_order(models.Model):
             request.session['sale_order_id'] = None
             raise Warning(_('It is forbidden to modify a sale order which is not in draft status'))
 
-        ticket_id = self.env.context.get("event_ticket_id")
+        ticket_id = request.context.get("event_ticket_id")
         line = self.order_line.filtered(lambda l: ((line_id == l.id) if line_id else (l.product_id.id == product_id)) and (not ticket_id or l.event_ticket_id.id == ticket_id))
         line = line and line[0]
 
@@ -529,52 +381,6 @@ dn_cart_update = {}
 
 class Website(models.Model):
     _inherit = 'website'
-
-    def get_price_fields(self, pricelist):
-        """Return fields and other pricing data for the specified pricelist."""
-        price_field = None
-        rec_price_field = None
-        show_rec_price = True
-        tax_included = False
-        rec_tax_included = True
-
-        # Återförsäljare 45%
-        if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
-            price_field = 'price_45'
-            rec_price_field = 'recommended_price'
-        # Special 20
-        elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_special'):
-            price_field = 'price_20'
-            rec_price_field = 'recommended_price'
-        # USA ÅF 65%
-        elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_us'):
-            price_field = 'price_en'
-            rec_price_field = 'recommended_price_en'
-            rec_tax_included = False
-        # EURO ÅF 45%
-        elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_eu'):
-            price_field = 'price_eu'
-            rec_price_field = 'recommended_price_eu'
-            rec_tax_included = False
-        # Export EU 55%
-        elif request.env.user.partner_id.property_product_pricelist.id == 11:
-            rec_price_field = 'recommended_price'
-        # Övriga ÅF-prislistor
-        elif request.env.user.partner_id.property_product_pricelist.for_reseller:
-            pass
-        # Övriga
-        else:
-            price_field = 'recommended_price'
-            tax_included = True
-            show_rec_price = False
-
-        return {
-            'price_field': price_field,
-            'rec_price_field': rec_price_field,
-            'show_rec_price': show_rec_price,
-            'tax_included': tax_included,
-            'rec_tax_included': rec_tax_included,
-        }
 
     def handle_error_403(self, path):
         """Emergency actions to perform if we run into an unexpected access error."""
@@ -1049,64 +855,6 @@ class WebsiteSale(website_sale):
 
         # ~ _logger.warn('checkout_form_save:%s' % (timer() - start))
 
-    def get_attribute_value_ids(self, product):
-        _logger.warn('\n\nget_attribute_value_ids\n')
-        def get_sale_start(product):
-            # ~ if product.sale_ok:
-                # ~ if product.sale_start and not product.sale_end and product.sale_start > fields.Date.today():
-                    # ~ return int(product.sale_start.replace('-', ''))
-            # ~ else:
-                # ~ if product.sale_start and product.sale_start > fields.Date.today():
-                    # ~ return int(product.sale_start.replace('-', ''))
-            return 0
-        cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
-        currency_obj = pool['res.currency']
-        attribute_value_ids = []
-        visible_attrs = set(l.attribute_id.id
-                                for l in product.attribute_line_ids
-                                    if len(l.value_ids) > 1)
-
-        _logger.warn(request.env.user.partner_id.property_product_pricelist)
-
-        if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
-            # Återförsäljare 45%
-            for p in product.product_variant_ids:
-                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.price_45, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
-        elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_special'):
-            # Special 20
-            for p in product.product_variant_ids:
-                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.price_20, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
-        elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_us'):
-            # USA ÅF 65%
-            _logger.warn('\n\nUS\n\n')
-            for p in product.product_variant_ids:
-                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.price_en, p.recommended_price_en, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
-        elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_eu'):
-            # EURO ÅF 45%
-            for p in product.product_variant_ids:
-                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.price_eu, p.recommended_price_eu, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
-        elif request.env.user.partner_id.property_product_pricelist.for_reseller:
-            # Övriga ÅF-prislistor
-            for p in product.product_variant_ids:
-                price = request.env['product.pricelist']._price_rule_get_multi(request.env.user.partner_id.property_product_pricelist, [(p, 1, request.env.user.partner_id)])[p.id][0]
-                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
-        else:
-            for p in product.product_variant_ids:
-                attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.recommended_price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
-
-        # ~ if request.website.pricelist_id.id != context['pricelist']:
-            # ~ website_currency_id = request.website.currency_id.id
-            # ~ currency_id = self.get_pricelist().currency_id.id
-            # ~ for p in product.product_variant_ids:
-                # ~ price = currency_obj.compute(cr, uid, website_currency_id, currency_id, p.lst_price)
-                # ~ attribute_value_ids.append([p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)])
-        # ~ else:
-            # ~ attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], p.price, p.lst_price, p.recommended_price, p.recommended_price_en, 1 if (p.sale_ok and request.env.user != request.env.ref('base.public_user')) else 0, get_sale_start(p)] for p in product.sudo().product_variant_ids]
-        _logger.warn(attribute_value_ids)
-        return attribute_value_ids
-
-
-
     @http.route([
         '/dn_shop',
         '/dn_shop/page/<int:page>',
@@ -1114,6 +862,9 @@ class WebsiteSale(website_sale):
         '/dn_shop/category/<model("product.public.category"):category>/page/<int:page>',
     ], type='http', auth="public", website=True)
     def dn_shop(self, page=0, category=None, search='', **post):
+        _logger.warn('----------------_> %s '  % 'Start')
+
+        
         url = "/dn_shop"
         request.website.dn_shop_set_session('product.template', post, url)
 
@@ -1125,10 +876,12 @@ class WebsiteSale(website_sale):
             request.session['current_domain'] = [('public_categ_ids', 'in', [int(category)])]
             request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
 
-        if not context.get('pricelist'):
-            context['pricelist'] = int(self.get_pricelist())
+        _logger.warn('----------------_> %s '  % 'before pricelist')
+        if not request.context.get('pricelist'):
+            request.context['pricelist'] = int(self.get_pricelist())
         if search:
             post["search"] = search
+        _logger.warn('----------------_> %s '  % 'before pricelist')
 
         # ~ category_obj = pool['product.public.category']
         # ~ category_ids = category_obj.search(cr, uid, [('parent_id', '=', False)], context=context)
@@ -1139,7 +892,9 @@ class WebsiteSale(website_sale):
         # ~ attributes = attributes_obj.browse(cr, uid, attributes_ids, context=context)
 
         no_product_message = ''
-        products=request.env['product.template'].get_thumbnail_default_variant(request.session.get('current_domain'),context['pricelist'],limit=PPG, order=request.session.get('current_order'))
+        products=request.env['product.template'].get_thumbnail_default_variant(request.session.get('current_domain'),request.context['pricelist'],limit=PPG, order=request.session.get('current_order'))
+        _logger.warn('----------------_> %s '  % products)
+
         if len(products) == 0:
             no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
         # ~ price_data = request.website.get_price_fields(partner_pricelist)
@@ -1149,7 +904,7 @@ class WebsiteSale(website_sale):
         return request.website.render("webshop_dermanord.products", {
             'search': search,
             'category': category,
-            'pricelist': pricelist,
+            # ~ 'pricelist': pricelist,
             'products':  products,
             'rows': PPR,
             # ~ 'styles': styles,
@@ -1166,19 +921,19 @@ class WebsiteSale(website_sale):
 
     @http.route(['/dn_shop_json_grid'], type='json', auth='public', website=True)
     def dn_shop_json_grid(self, page=0, **kw):
-        if not self.context.get('pricelist'):
-            self.context['pricelist'] = int(self.get_pricelist())
+        if not request.context.get('pricelist'):
+            request.context['pricelist'] = int(self.get_pricelist())
         values = {
-            'products': request.env['product.template'].get_thumbnail_default_variant(session.get('current_domain'),self.context['pricelist'],order=request.session.get('current_order'),limit=6,offset=21+int(page)*6),
+            'products': request.env['product.template'].get_thumbnail_default_variant(session.get('current_domain'),request.context['pricelist'],order=request.session.get('current_order'),limit=6,offset=21+int(page)*6),
         }
         return values
 
     @http.route(['/dn_shop_json_list'], type='json', auth='public', website=True)
     def dn_shop_json_list(self, page=0, **kw):
-        if not self.context.get('pricelist'):
-            self.context['pricelist'] = int(self.get_pricelist())
+        if not request.context.get('pricelist'):
+            request.context['pricelist'] = int(self.get_pricelist())
         values = {
-            'products': request.env['product.product'].get_list_row(session.get('current_domain'),self.context['pricelist'],order=request.session.get('current_order'),limit=10, offset=PPG+page*10),
+            'products': request.env['product.product'].get_list_row(session.get('current_domain'),request.context['pricelist'],order=request.session.get('current_order'),limit=10, offset=PPG+page*10),
         }
         return values
 
@@ -1211,8 +966,8 @@ class WebsiteSale(website_sale):
         to_currency = pricelist.currency_id
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
-        if not context.get('pricelist'):
-            context['pricelist'] = int(self.get_pricelist())
+        if not request.context.get('pricelist'):
+            request.context['pricelist'] = int(self.get_pricelist())
             product = template_obj.browse(cr, uid, int(product), context=context)
 
         request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
@@ -1231,7 +986,6 @@ class WebsiteSale(website_sale):
             'main_object': product,
             'product': product,
             'show_purchase_button': self.show_purchase_button(product.get_default_variant()),
-            'get_attribute_value_ids': self.get_attribute_value_ids,
             'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
             'shop_footer': True,
         }
@@ -1245,10 +999,8 @@ class WebsiteSale(website_sale):
         '/dn_list/category/<model("product.public.category"):category>/page/<int:page>',
     ], type='http', auth="public", website=True)
     def dn_list(self, page=0, category=None, search='', **post):
-        url = "/dn_list"
+        url = '/dn_list'
         request.website.dn_shop_set_session('product.product', post, url)
-
-
         if category:
             if not request.session.get('form_values'):
                 request.session['form_values'] = {'category_%s' %int(category): int(category)}
@@ -1256,29 +1008,22 @@ class WebsiteSale(website_sale):
             request.website.get_form_values()['category_' + str(int(category))] = int(category)
             request.session['current_domain'] = [('public_categ_ids', 'in', [int(category)])]
             request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
-
-        if not context.get('pricelist'):
-            pricelist = self.get_pricelist()
-            context['pricelist'] = int(pricelist)
-        else:
-            pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
-
+        if not request.context.get('pricelist'):
+            request.context['pricelist'] = int(self.get_pricelist())
         if search:
             post["search"] = search
 
         no_product_message = ''
-        products=request.env['product.product'].get_list_row(request.session.get('current_domain'),pricelist,limit=PPG, order=request.session.get('current_order'))
+        products=request.env['product.product'].get_list_row(request.session.get('current_domain'),request.context['pricelist'],limit=PPG, order=request.session.get('current_order'))
         if len(products) == 0:
             no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
 
         return request.website.render("webshop_dermanord.products_list_reseller_view", {
             'title': _('Shop'),
             'search': search,
-            'pricelist': pricelist,
-            'price_fields': price_fields,
             'products': products,
             'rows': PPR,
-            'compute_currency': compute_currency,
+            # ~ 'compute_currency': compute_currency,
             'url': url,
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
             'shop_footer': True,
@@ -1337,7 +1082,6 @@ class WebsiteSale(website_sale):
             'product': product,
             'product_product': variant,
             'show_purchase_button': self.show_purchase_button(variant),
-            'get_attribute_value_ids': self.get_attribute_value_ids,
             'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
             'shop_footer': True,
         }
@@ -1442,50 +1186,6 @@ class WebsiteSale(website_sale):
                     offer = True
                 elif product.product_tmpl_id in product.product_tmpl_id.get_campaign_tmpl(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
                     offer = True
-                if request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af'):
-                    # Återförsäljare 45%
-                    price = product.price_45
-                    recommended_price = product.recommended_price
-                    tax_included = True
-                elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_special'):
-                    # Special 20
-                    price = product.price_20
-                    recommended_price = product.recommended_price
-                    tax_included = True
-
-                elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_us'):
-                    # USA ÅF 65%
-                    price = product.price_en
-                    recommended_price = product.recommended_price_en
-                    tax_included = False
-
-                elif request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_eu'):
-                    # EURO ÅF 45%
-                    price = product.price_eu
-                    recommended_price = product.recommended_price_eu
-                    tax_included = True
-
-                elif request.env.user.partner_id.property_product_pricelist.for_reseller:
-                    # Övriga ÅF-prislistor
-                    price = request.env.user.partner_id.property_product_pricelist.price_get(product.id, 1)[request.env.user.partner_id.property_product_pricelist.id]
-                    recommended_price = product.recommended_price if request.env.user.lang == 'sv_SE' else product.recommended_price_en
-                    tax_included = True
-
-                else:
-                    price = product.recommended_price
-                    recommended_price = product.recommended_price
-                    tax_included = True
-
-
-                #~ recommended_price = product.recommended_price if request.env.lang == 'sv_SE' else product.recommended_price_en
-                #~ if request.env.user.partner_id.property_product_pricelist.id == 3:
-                    #~ price = product.price_45
-                #~ elif request.env.user.partner_id.property_product_pricelist.id == 6:
-                    #~ price = product.price_20
-                #~ elif request.env.user.partner_id.property_product_pricelist.for_reseller and request.env.user.partner_id.property_product_pricelist.id not in [3, 6]:
-                    #~ price = product.with_context(pricelist=request.env.user.partner_id.property_product_pricelist.id).price
-                #~ else:
-                    #~ price = recommended_price
 
                 sale_ribbon = request.env.ref('website_sale.image_promo')
 
@@ -1498,9 +1198,7 @@ class WebsiteSale(website_sale):
                     value['category'] = '&'.join(['category_%s=%s' %(c.id, c.id) for c in product.product_tmpl_id.public_categ_ids])
 
                 value['id'] = product.id
-                value['recommended_price'] = request.website.price_format(recommended_price)
-                value['price'] = request.website.price_format(price)
-                value['instock'] = self.in_stock(product.id)[0]
+                # ~ value['instock'] = self.in_stock(product.id)[0]
                 value['stock_status'] = self.in_stock(product.id)[1]
                 value['public_user'] = True if (not self.in_stock(product.id)[0] and self.in_stock(product.id)[1] == '') else False
                 value['images'] = product.get_image_attachment_ids()
