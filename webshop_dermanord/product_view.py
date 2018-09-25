@@ -97,7 +97,7 @@ class product_template(models.Model):
     # ~ def _compute_product_variant_count(self):
         # ~ self.product_variant_count = len(self.product_variant_ids.filtered('active'))
     # ~ product_variant_count = fields.Integer(string='# of Product Variants', compute='_compute_product_variant_count', store=True)
-    
+
     @api.multi
     @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_medium', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids')
     def _get_all_variant_data(self):
@@ -144,7 +144,7 @@ class product_template(models.Model):
     dv_name = fields.Char(compute='_get_all_variant_data', store=True)
     dv_ribbon = fields.Char(compute='_get_all_variant_data', store=True)
 
-    
+
     @api.one
     @api.depends('campaign_changed', 'product_variant_ids.campaign_changed')
     def _is_offer_product(self):
@@ -324,7 +324,7 @@ class product_product(models.Model):
             state = 'few'
         else:
             state ='short'
-        return {'in': _('In stock'),'few': _('Few in stock'),'short': _('Shortage')}[state]
+        return {'in': _('In stock'),'few': _('Few in stock'),'short': _('Shortage')}[state].encode('utf-8')
 
 
     @api.model
@@ -383,7 +383,7 @@ class product_product(models.Model):
                                     </div>
                                 </td>
                                 <td>
-                                    <div>
+                                    <div class="{shop_widget}">
                                         <form action="/shop/cart/update" class="oe_dn_list" data-attribute_value_ids="{product_id}" method="POST">
                                             <div class="product_shop" style="margin: 0px;">
                                                 <input class="product_id" name="product_id" value="{product_id}" type="hidden">
@@ -418,7 +418,8 @@ class product_product(models.Model):
                     product_startdate=campaign.date_start if campaign and campaign.date_start else '',
                     product_stopdate =campaign.date_stop  if campaign and campaign.date_stop else '',
                     product_dfp=self.get_packaging_info(product['id']) or '',
-                    product_stock=self.get_stock_info(product['id']),
+                    shop_widget='{shop_widget}',
+                    product_stock='{product_stock}',
                     product_name=product['name'],
                     product_price=self.env['product.product'].get_html_price_short(product['id'], pricelist),
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
@@ -430,7 +431,7 @@ class product_product(models.Model):
                 ).encode('utf-8')
                 self.env['website'].put_page_dict(key,flush_type,page)
                 page_dict['page'] = base64.b64encode(page)
-            rows.append(page_dict.get('page','').decode('base64'))
+            rows.append(page_dict.get('page','').decode('base64').format(shop_widget='hidden' if self.get_stock_info(product['id']) == _('Shortage') else '', product_stock=self.get_stock_info(product['id'])))
         return rows
 
     # right side product.description, directly after stock_status
