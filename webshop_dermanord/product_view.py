@@ -452,10 +452,12 @@ class product_product(models.Model):
         key, page_dict = self.env['website'].get_page_dict(key_raw)
         if not page_dict:
             page = ''
-            attr_sel = '<select class="form-control js_variant_change attr_sel" name="attribute-%s-1">' %product.id
-            for v in product.product_variant_ids:
-                attr_sel += '<option class="css_not_available" value="%s"%s>%s</option>' %(v.attribute_value_ids[0].id, ' selected="selected"' if v.default_variant else '', v.attribute_value_ids[0].name)
-            attr_sel += '</select>'
+            attr_sel = ''
+            if len(product.attribute_line_ids) > 0:
+                attr_sel = '<select class="form-control js_variant_change attr_sel" name="attribute-%s-1">' %product.id
+                for v in product.product_variant_ids:
+                    attr_sel += '<option class="css_not_available" value="%s"%s>%s</option>' %(v.attribute_value_ids[0].id, ' selected="selected"' if v.default_variant else '', v.attribute_value_ids[0].name)
+                attr_sel += '</select>'
             for variant in product.product_variant_ids:
                 page += u"""<section id="{attribute_value}" class="container mt8 oe_website_sale discount{hide_variant}">
     <div class="row">
@@ -521,7 +523,7 @@ class product_product(models.Model):
     {html_product_ingredients_mobile}
 </section>
 {website_description}""".format(
-                    attribute_value = variant.attribute_value_ids[0].id,
+                    attribute_value = variant.attribute_value_ids[0].id if len(product.attribute_line_ids) > 0 else '',
                     variant_id = 'variant_%s' %variant.id,
                     hide_variant = '' if variant.id == variant_id else ' hidden',
                     website_published = variant.website_published and 'css_published' or 'css_unpublished',
