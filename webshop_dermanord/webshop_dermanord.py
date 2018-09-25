@@ -864,7 +864,7 @@ class WebsiteSale(website_sale):
     def dn_shop(self, page=0, category=None, search='', **post):
         _logger.warn('----------------_> %s '  % 'Start')
 
-        
+
         url = "/dn_shop"
         request.website.dn_shop_set_session('product.template', post, url)
 
@@ -933,7 +933,7 @@ class WebsiteSale(website_sale):
         if not request.context.get('pricelist'):
             request.context['pricelist'] = int(self.get_pricelist())
         values = {
-            'products': request.env['product.product'].get_list_row(session.get('current_domain'),request.context['pricelist'],order=request.session.get('current_order'),limit=10, offset=PPG+page*10),
+            'products': request.env['product.product'].get_list_row(request.session.get('current_domain'),request.context['pricelist'],order=request.session.get('current_order'),limit=10, offset=PPG+page*10),
         }
         return values
 
