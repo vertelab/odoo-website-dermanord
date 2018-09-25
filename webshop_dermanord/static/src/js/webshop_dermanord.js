@@ -104,177 +104,170 @@ $(document).ready(function(){
     });
 
     // This method updates product images, prices, ingredients, descriptions and facets when a variant has been chosen.
-    function update_product_info(event_source, product_id) {
-        var $recommended_price = $('.js_add_cart_variants').find(".oe_recommended_price");
-        var $price = $('.js_add_cart_variants').find(".oe_price");
-        var $img = $(event_source).closest('tr.js_product, .oe_website_sale').find('span[data-oe-model^="product."][data-oe-type="image"] img:first, img.product_detail_img');
-        var $img_big = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_big");
-        var $img_thumb = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_nav");
-        var $facet_div = $(event_source).closest('tr.js_product, .oe_website_sale').find("div.col-md-12.facet_div");
-        var $ingredients_desc = $(event_source).closest('tr.js_product, .oe_website_sale').find("div#ingredients_description").find("span.text-muted");
-        var $ingredients_desc_mobile = $("div#ingredients_description_mobile").find("span.text-muted");
-        var $ingredient_div = $(event_source).closest('tr.js_product, .oe_website_sale').find("div#ingredients_div");
-        var $ingredients_div_mobile = $("div#ingredients_div_mobile");
-        var $stock_status = $(event_source).closest('tr.js_product, .oe_website_sale').find("div.stock_status").find("span");
-        var $default_code = $(".default_code");
-        var $public_desc_title = $(".public_desc_title");
-        var $use_desc_title = $(".use_desc_title");
-        var $reseller_desc_title = $(".reseller_desc_title");
-        var $public_desc = $(".public_desc");
-        var $use_desc = $(".use_desc");
-        var $reseller_desc = $(".reseller_desc");
+    //~ function update_product_info(event_source, product_id) {
+        //~ var $recommended_price = $('.js_add_cart_variants').find(".oe_recommended_price");
+        //~ var $price = $('.js_add_cart_variants').find(".oe_price");
+        //~ var $img = $(event_source).closest('tr.js_product, .oe_website_sale').find('span[data-oe-model^="product."][data-oe-type="image"] img:first, img.product_detail_img');
+        //~ var $img_big = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_big");
+        //~ var $img_thumb = $(event_source).closest('tr.js_product, .oe_website_sale').find("#image_nav");
+        //~ var $facet_div = $(event_source).closest('tr.js_product, .oe_website_sale').find("div.col-md-12.facet_div");
+        //~ var $ingredients_desc = $(event_source).closest('tr.js_product, .oe_website_sale').find("div#ingredients_description").find("span.text-muted");
+        //~ var $ingredients_desc_mobile = $("div#ingredients_description_mobile").find("span.text-muted");
+        //~ var $ingredient_div = $(event_source).closest('tr.js_product, .oe_website_sale').find("div#ingredients_div");
+        //~ var $ingredients_div_mobile = $("div#ingredients_div_mobile");
+        //~ var $stock_status = $(event_source).closest('tr.js_product, .oe_website_sale').find("div.stock_status").find("span");
+        //~ var $default_code = $(".default_code");
+        //~ var $public_desc_title = $(".public_desc_title");
+        //~ var $use_desc_title = $(".use_desc_title");
+        //~ var $reseller_desc_title = $(".reseller_desc_title");
+        //~ var $public_desc = $(".public_desc");
+        //~ var $use_desc = $(".use_desc");
+        //~ var $reseller_desc = $(".reseller_desc");
 
-        openerp.jsonRpc("/get/product_variant_data", "call", {
-            'product_id': product_id,
-        }).done(function(data){
-            // update price
-            if (data['recommended_price'] && data['price']) {
-                $recommended_price.html(data['recommended_price']);
-                $price.html(data['price']);
-            }
-            // update images
-            offer_html = '';
-            ribbon_html = '';
-            if (data['offer']) {
-                offer_html = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">' + data['offer_text'] + '</div></div>';
-            }
-            if (data['ribbon']) {
-                ribbon_html = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">' + data['news_text'] + '</div></div>';
-            }
-            if (data['images'] != null) {
-                var big_html = '<div id="image_big" class="tab-content">';
-                $.each(data['images'], function(index, value) {
-                    big_html += '<div id="' + value + '" class="tab-pane fade ' + ((index == 0) ? 'active in' : '') + '">' + offer_html + ribbon_html + '<img class="img img-responsive product_detail_img" style="margin: auto;" src="/imagefield/ir.attachment/datas/' + value + '/ref/website_sale_product_gallery.img_product_detail"/></div>';
-                });
-                big_html += '</div>';
-                var tumb_html = '<ul id="image_nav" class="nav nav-pills">';
-                $.each(data['images'], function(index, value) {
-                    tumb_html += '<li class="' + ((index == 0) ? 'active' : '') + ' ' + ((index > 1) ? 'hidden-xs' : '') + '"><a data-toggle="tab" href="#' + value + '"><img class="img img-responsive" src="/imagefield/ir.attachment/datas/' + value + '/ref/website_sale_product_gallery.img_product_thumbnail"/>';
-                });
-                tumb_html += '</ul>';
-                $img_big.replaceWith(big_html);
-                $img_thumb.replaceWith(tumb_html);
-            }
-            // update facets
-            if (data['facets'] != null) {
-                var facet_html = '<div class="col-md-12 facet_div">';
-                var category_value = '';
-                if (data['category'] != null) {
-                    var category_value = '&' + data['category'];
-                }
-                $.each(data['facets'], function(index, value) {
-                    facet_html += '<div class="col-md-6"><h2 class="dn_uppercase">' + index + '</h2>';
-                    $.each(value, function(i) {
-                        facet_html += '<a href="/dn_shop/?facet_' + value[i][0] + '_' + value[i][2] + '=' + value[i][2] + category_value + '" class="text-muted"><span>' + value[i][1] + '</span></a>';
-                        if (i != value.length-1) {
-                            facet_html += '<span>, </span>';
-                        }
-                    });
-                    facet_html += '</div>';
-                });
-                facet_html += '</div>';
-                $facet_div.replaceWith(facet_html);
-            }
-            //update ingredients
-            if (data['ingredients'] != null) {
-                var ingredient_html = '<div id="ingredients_div"><div class="container mb16 hidden-xs"><h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>';
-                $.each(data['ingredients'], function(index, value) {
-                    if(value[0] != 0) {
-                        ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/product_ingredients.img_ingredients"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</h6></div></a>';
-                    }
-                    else {
-                        ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="/web/static/src/img/placeholder.png"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</h6></div></a>';
-                    }
-                });
-                ingredient_html += '</div></div>';
-                $ingredient_div.replaceWith(ingredient_html);
+        //~ openerp.jsonRpc("/get/product_variant_data", "call", {
+            //~ 'product_id': product_id,
+        //~ }).done(function(data){
+            //~ if (data['recommended_price'] && data['price']) {
+                //~ $recommended_price.html(data['recommended_price']);
+                //~ $price.html(data['price']);
+            //~ }
+            //~ offer_html = '';
+            //~ ribbon_html = '';
+            //~ if (data['offer']) {
+                //~ offer_html = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">' + data['offer_text'] + '</div></div>';
+            //~ }
+            //~ if (data['ribbon']) {
+                //~ ribbon_html = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">' + data['news_text'] + '</div></div>';
+            //~ }
+            //~ if (data['images'] != null) {
+                //~ var big_html = '<div id="image_big" class="tab-content">';
+                //~ $.each(data['images'], function(index, value) {
+                    //~ big_html += '<div id="' + value + '" class="tab-pane fade ' + ((index == 0) ? 'active in' : '') + '">' + offer_html + ribbon_html + '<img class="img img-responsive product_detail_img" style="margin: auto;" src="/imagefield/ir.attachment/datas/' + value + '/ref/website_sale_product_gallery.img_product_detail"/></div>';
+                //~ });
+                //~ big_html += '</div>';
+                //~ var tumb_html = '<ul id="image_nav" class="nav nav-pills">';
+                //~ $.each(data['images'], function(index, value) {
+                    //~ tumb_html += '<li class="' + ((index == 0) ? 'active' : '') + ' ' + ((index > 1) ? 'hidden-xs' : '') + '"><a data-toggle="tab" href="#' + value + '"><img class="img img-responsive" src="/imagefield/ir.attachment/datas/' + value + '/ref/website_sale_product_gallery.img_product_thumbnail"/>';
+                //~ });
+                //~ tumb_html += '</ul>';
+                //~ $img_big.replaceWith(big_html);
+                //~ $img_thumb.replaceWith(tumb_html);
+            //~ }
+            //~ if (data['facets'] != null) {
+                //~ var facet_html = '<div class="col-md-12 facet_div">';
+                //~ var category_value = '';
+                //~ if (data['category'] != null) {
+                    //~ var category_value = '&' + data['category'];
+                //~ }
+                //~ $.each(data['facets'], function(index, value) {
+                    //~ facet_html += '<div class="col-md-6"><h2 class="dn_uppercase">' + index + '</h2>';
+                    //~ $.each(value, function(i) {
+                        //~ facet_html += '<a href="/dn_shop/?facet_' + value[i][0] + '_' + value[i][2] + '=' + value[i][2] + category_value + '" class="text-muted"><span>' + value[i][1] + '</span></a>';
+                        //~ if (i != value.length-1) {
+                            //~ facet_html += '<span>, </span>';
+                        //~ }
+                    //~ });
+                    //~ facet_html += '</div>';
+                //~ });
+                //~ facet_html += '</div>';
+                //~ $facet_div.replaceWith(facet_html);
+            //~ }
+            //~ if (data['ingredients'] != null) {
+                //~ var ingredient_html = '<div id="ingredients_div"><div class="container mb16 hidden-xs"><h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>';
+                //~ $.each(data['ingredients'], function(index, value) {
+                    //~ if(value[0] != 0) {
+                        //~ ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/product_ingredients.img_ingredients"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</h6></div></a>';
+                    //~ }
+                    //~ else {
+                        //~ ingredient_html += '<a href="/dn_shop/?current_ingredient=' + value[0] + '"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="/web/static/src/img/placeholder.png"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</h6></div></a>';
+                    //~ }
+                //~ });
+                //~ ingredient_html += '</div></div>';
+                //~ $ingredient_div.replaceWith(ingredient_html);
 
-                var ingredient_mobile_html = '<div id="ingredients_div_mobile"><div class="container mb16 hidden-lg hidden-md hidden-sm"><h4 class="text-center dn_uppercase">made from all-natural ingredients</h4><div class="col-md-12"><div class="carousel slide" id="ingredient_carousel" data-ride="carousel"><div class="carousel-inner" style="width: 100%;">';
-                $.each(data['ingredients'], function(index, value) {
-                    if(value[0] != 0) {
-                        ingredient_mobile_html += '<div class="item ingredient_desc' + ((index == 0) ? ' active' : '') + '"><a href="/dn_shop/?current_ingredient=' + value[0] + '"><img class="img img-responsive" style="margin: auto; display: block;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/product_ingredients.img_ingredients"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</i></h6></a></div>';
-                    }
-                    else {
-                        ingredient_mobile_html += '<div class="item ingredient_desc' + ((index == 0) ? ' active' : '') + '"><a href="/dn_shop/?current_ingredient=' + value[0] + '"><img class="img img-responsive" style="margin: auto; display: block;" src="/web/static/src/img/placeholder.png"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</i></h6></a></div>';
-                    }
-                });
-                ingredient_mobile_html += '</div><div class="carousel-control left" data-slide="prev" data-target="#ingredient_carousel" href="#ingredient_carousel" style="width: 10%; left: 0px;"><i class="fa fa-chevron-left" style="right: 20%; color: #000;"/></div><div class="carousel-control right" data-slide="next" data-target="#ingredient_carousel" href="#ingredient_carousel" style="width: 10%; right: 0px;"><i class="fa fa-chevron-right" style="left: 20%; color: #000;"/></div><ol class="carousel-indicators" style="bottom: -10px;">';
-                $.each(data['ingredients'], function(index, value) {
-                    ingredient_mobile_html += '<li class="' + ((index == 0) ? ' active' : '') + '" data-slide-to="' + index + '" data-target="#ingredient_carousel"/>';
-                });
-                //~ ingredient_mobile_html += '</ol></div><img src="/snippet_dermanord/static/src/img/finger.png" class="touch_finger hidden-lg hidden-md hidden-sm" style="margin: auto; display: block;"/></div></div>';
-                $ingredients_div_mobile.replaceWith(ingredient_mobile_html);
-            }
-            else{
-                $ingredient_div.replaceWith('<div id="ingredients_div"></div></div>');
-                $ingredients_div_mobile.replaceWith('<div id="ingredients_div_mobile"></div></div>');
-            }
+                //~ var ingredient_mobile_html = '<div id="ingredients_div_mobile"><div class="container mb16 hidden-lg hidden-md hidden-sm"><h4 class="text-center dn_uppercase">made from all-natural ingredients</h4><div class="col-md-12"><div class="carousel slide" id="ingredient_carousel" data-ride="carousel"><div class="carousel-inner" style="width: 100%;">';
+                //~ $.each(data['ingredients'], function(index, value) {
+                    //~ if(value[0] != 0) {
+                        //~ ingredient_mobile_html += '<div class="item ingredient_desc' + ((index == 0) ? ' active' : '') + '"><a href="/dn_shop/?current_ingredient=' + value[0] + '"><img class="img img-responsive" style="margin: auto; display: block;" src="/imagefield/product.ingredient/image/' + value[0] + '/ref/product_ingredients.img_ingredients"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</i></h6></a></div>';
+                    //~ }
+                    //~ else {
+                        //~ ingredient_mobile_html += '<div class="item ingredient_desc' + ((index == 0) ? ' active' : '') + '"><a href="/dn_shop/?current_ingredient=' + value[0] + '"><img class="img img-responsive" style="margin: auto; display: block;" src="/web/static/src/img/placeholder.png"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>' + value[1] + '</i></h6></a></div>';
+                    //~ }
+                //~ });
+                //~ ingredient_mobile_html += '</div><div class="carousel-control left" data-slide="prev" data-target="#ingredient_carousel" href="#ingredient_carousel" style="width: 10%; left: 0px;"><i class="fa fa-chevron-left" style="right: 20%; color: #000;"/></div><div class="carousel-control right" data-slide="next" data-target="#ingredient_carousel" href="#ingredient_carousel" style="width: 10%; right: 0px;"><i class="fa fa-chevron-right" style="left: 20%; color: #000;"/></div><ol class="carousel-indicators" style="bottom: -10px;">';
+                //~ $.each(data['ingredients'], function(index, value) {
+                    //~ ingredient_mobile_html += '<li class="' + ((index == 0) ? ' active' : '') + '" data-slide-to="' + index + '" data-target="#ingredient_carousel"/>';
+                //~ });
+                //~ $ingredients_div_mobile.replaceWith(ingredient_mobile_html);
+            //~ }
+            //~ else{
+                //~ $ingredient_div.replaceWith('<div id="ingredients_div"></div></div>');
+                //~ $ingredients_div_mobile.replaceWith('<div id="ingredients_div_mobile"></div></div>');
+            //~ }
 
-            //update stock status
-            if (data['instock'] != null) {
-                if (!data['public_user']){
-                    $stock_status.removeClass("hidden");
-                    $stock_status.html(data['stock_status']);
-                    if (data == false) {
-                        $('#add_to_cart').addClass('hidden');
-                        $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
-                    }
-                }
-                else {
-                    $stock_status.addClass("hidden");
-                }
-            }
-            // descpitions
-            if (data['public_desc'] != null) {
-                if (data['public_desc'] != '') {
-                    $public_desc_title.removeClass("hidden");
-                    $public_desc.html(data['public_desc'].replace(/\n/g, "<br/>"));
-                    $public_desc.removeClass("hidden");
-                } else {
-                    $public_desc_title.addClass("hidden");
-                    $public_desc.html('');
-                    $public_desc.addClass("hidden");
-                }
-            }
-            if (data['use_desc'] != null) {
-                if (data['use_desc'] != '') {
-                    $use_desc_title.removeClass("hidden");
-                    $use_desc.html(data['use_desc'].replace(/\n/g, "<br/>"));
-                    $use_desc.removeClass("hidden");
-                } else {
-                    $use_desc_title.addClass("hidden");
-                    $use_desc.addClass("hidden");
-                    $use_desc.html('');
-                }
-            }
-            if (data['reseller_desc'] != null) {
-                if (data['reseller_desc'] != '') {
-                    $reseller_desc_title.removeClass("hidden");
-                    $reseller_desc.html(data['reseller_desc'].replace(/\n/g, "<br/>"));
-                    $reseller_desc.removeClass("hidden");
-                } else {
-                    $reseller_desc_title.addClass("hidden");
-                    $reseller_desc.addClass("hidden");
-                    $reseller_desc.html('');
-                }
-            }
+            //~ if (data['instock'] != null) {
+                //~ if (!data['public_user']){
+                    //~ $stock_status.removeClass("hidden");
+                    //~ $stock_status.html(data['stock_status']);
+                    //~ if (data == false) {
+                        //~ $('#add_to_cart').addClass('hidden');
+                        //~ $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
+                    //~ }
+                //~ }
+                //~ else {
+                    //~ $stock_status.addClass("hidden");
+                //~ }
+            //~ }
+            //~ if (data['public_desc'] != null) {
+                //~ if (data['public_desc'] != '') {
+                    //~ $public_desc_title.removeClass("hidden");
+                    //~ $public_desc.html(data['public_desc'].replace(/\n/g, "<br/>"));
+                    //~ $public_desc.removeClass("hidden");
+                //~ } else {
+                    //~ $public_desc_title.addClass("hidden");
+                    //~ $public_desc.html('');
+                    //~ $public_desc.addClass("hidden");
+                //~ }
+            //~ }
+            //~ if (data['use_desc'] != null) {
+                //~ if (data['use_desc'] != '') {
+                    //~ $use_desc_title.removeClass("hidden");
+                    //~ $use_desc.html(data['use_desc'].replace(/\n/g, "<br/>"));
+                    //~ $use_desc.removeClass("hidden");
+                //~ } else {
+                    //~ $use_desc_title.addClass("hidden");
+                    //~ $use_desc.addClass("hidden");
+                    //~ $use_desc.html('');
+                //~ }
+            //~ }
+            //~ if (data['reseller_desc'] != null) {
+                //~ if (data['reseller_desc'] != '') {
+                    //~ $reseller_desc_title.removeClass("hidden");
+                    //~ $reseller_desc.html(data['reseller_desc'].replace(/\n/g, "<br/>"));
+                    //~ $reseller_desc.removeClass("hidden");
+                //~ } else {
+                    //~ $reseller_desc_title.addClass("hidden");
+                    //~ $reseller_desc.addClass("hidden");
+                    //~ $reseller_desc.html('');
+                //~ }
+            //~ }
 
-            if (!data['sale_ok']) {
-                $('#add_to_cart').addClass('hidden');
-                $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
-            }
-            if (data['sale_ok']) {
-                $('#add_to_cart').removeClass('hidden');
-                $('div.css_quantity.input-group.oe_website_spinner').removeClass('hidden');
-            }
+            //~ if (!data['sale_ok']) {
+                //~ $('#add_to_cart').addClass('hidden');
+                //~ $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
+            //~ }
+            //~ if (data['sale_ok']) {
+                //~ $('#add_to_cart').removeClass('hidden');
+                //~ $('div.css_quantity.input-group.oe_website_spinner').removeClass('hidden');
+            //~ }
 
-            $ingredients_desc.html(data['ingredients_description']);
-            $ingredients_desc_mobile.html(data['ingredients_description']);
-            $default_code.html(data['default_code']);
-        });
+            //~ $ingredients_desc.html(data['ingredients_description']);
+            //~ $ingredients_desc_mobile.html(data['ingredients_description']);
+            //~ $default_code.html(data['default_code']);
+        //~ });
 
-        $img.parent().attr('data-oe-model', 'product.product').attr('data-oe-id', product_id).data('oe-model', 'product.product').data('oe-id', product_id);
-    }
+        //~ $img.parent().attr('data-oe-model', 'product.product').attr('data-oe-id', product_id).data('oe-model', 'product.product').data('oe-id', product_id);
+    //~ }
 
     // There was probably some reason we disabled this. Write it down next time.
     var product_price_form = $('form.js_add_cart_variants');

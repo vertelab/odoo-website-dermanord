@@ -454,20 +454,20 @@ class product_product(models.Model):
             page = ''
             attr_sel = '<select class="form-control js_variant_change attr_sel" name="attribute-%s-1">' %product.id
             for v in product.product_variant_ids:
-                attr_sel += '<option class="css_not_available" value="variant_%s"%s>%s</option>' %(v.id, ' selected="selected"' if v.default_variant else '', v.attribute_value_ids[0].name)
+                attr_sel += '<option class="css_not_available" value="%s"%s>%s</option>' %(v.attribute_value_ids[0].id, ' selected="selected"' if v.default_variant else '', v.attribute_value_ids[0].name)
             attr_sel += '</select>'
             for variant in product.product_variant_ids:
-                page += u"""<section id="{variant_id}" class="container mt8 oe_website_sale discount{hide_variant}">
+                page += u"""<section id="{attribute_value}" class="container mt8 oe_website_sale discount{hide_variant}">
     <div class="row">
         <div class="col-sm-4" groups="base.group_sale_manager">
             <div groups="base.group_website_publisher" t-ignore="true" class="pull-right css_editable_mode_hidden" style="">
-                <div class="btn-group js_publish_management {website_published}" data-id="{object_id}" data-object="product.product" t-att-data-controller="publish_controller">
+                <div class="btn-group js_publish_management {website_published}" data-id="{variant_id}" data-object="product.product" t-att-data-controller="publish_controller">
                     <button class="btn btn-danger js_publish_btn">{not_published}</button>
                     <button class="btn btn-success js_publish_btn">{published}</button>
-                    <button type="button" t-attf-class="btn btn-default dropdown-toggle" id="dopprod-{obj_id}" data-toggle="dropdown">
+                    <button type="button" t-attf-class="btn btn-default dropdown-toggle" id="dopprod-{variant_id}" data-toggle="dropdown">
                         <span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu" role="menu" t-att-aria-labelledby="'dopprod-%s' % object.id">
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="'dopprod-{variant_id}">
                         <li>
                             <a href="#" class="js_publish_btn">
                                 <span class="css_unpublish">Unpublish</span>
@@ -512,7 +512,7 @@ class product_product(models.Model):
                             </a>
                         </span>
                     </div>
-                    <a id="add_to_cart" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center" groups="base.group_user,base.group_portal" disable="1">{add_to_cart}</a>
+                    <a id="add_to_cart" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center{hide_add_to_cart}" groups="base.group_user,base.group_portal" disable="1">{add_to_cart}</a>
                 </div>
             </form>
             {html_product_detail_desc}
@@ -521,13 +521,12 @@ class product_product(models.Model):
     {html_product_ingredients_mobile}
 </section>
 {website_description}""".format(
+                    attribute_value = variant.attribute_value_ids[0].id,
                     variant_id = 'variant_%s' %variant.id,
                     hide_variant = '' if variant.id == variant_id else ' hidden',
                     website_published = variant.website_published and 'css_published' or 'css_unpublished',
-                    object_id = variant.id,
                     not_published = _('Not Published'),
                     published = _('Published'),
-                    obj_id = variant.id,
                     unpublish = _('Unpublish'),
                     publish = _('Publish'),
                     action = '<a t-attf-href="/web#return_label=Website&amp;view_type=form&amp;model=product.product&amp;id=%s&amp;action=%s" title="%s">Edit</a>' %(variant.id, 'product.product_template_action', _('Edit in backend')),
@@ -539,7 +538,7 @@ class product_product(models.Model):
                     attributes = product.attribute_line_ids[0].attribute_id.name if len(product.attribute_line_ids) > 0 else '',
                     attr_sel = attr_sel,
                     product_price = variant.get_html_price_short(variant.id, partner.property_product_pricelist.id),
-                    hide_add_to_cart = '' if (variant.sale_ok and self.get_stock_info(variant.id) != _('Shortage') and partner.property_product_pricelist.for_reseller) else ' hidden',
+                    hide_add_to_cart = '' if ((variant.sale_ok and self.get_stock_info(variant.id) != _('Shortage') and partner.property_product_pricelist.for_reseller)) else ' hidden',
                     add_to_cart = _('Add to cart'),
                     html_product_detail_desc = variant.html_product_detail_desc(variant),
                     html_product_ingredients_mobile = variant.html_product_ingredients_mobile(variant),
