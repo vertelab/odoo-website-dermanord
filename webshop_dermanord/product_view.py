@@ -434,10 +434,100 @@ class product_product(models.Model):
             rows.append(page_dict.get('page','').decode('base64').format(shop_widget='hidden' if self.get_stock_info(product['id']) == _('Shortage') else '', product_stock=self.get_stock_info(product['id'])))
         return rows
 
+    # Product name, default code
+    @api.model
+    def html_product_name_code(self, product):
+        partner = self.env.user.partner_id.commercial_partner_id
+        flush_type = 'html_product_name_code'
+        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type, product.id, partner.property_product_pricelist.id, self.env.lang, request.session.get('device_type','md'))
+        key, page_dict = self.env['website'].get_page_dict(key_raw)
+        if not page_dict:
+            page = """<h1 itemprop="name">{product_name}</h1><h4 class="text-muted default_code">{default_code}</h4>""".format(
+                product_name = product.name,
+                default_code = product.default_code
+            ).encode('utf-8')
+            self.env['website'].put_page_dict(key,flush_type,page)
+            page_dict['page'] = base64.b64encode(page)
+        return page_dict.get('page','').decode('base64')
+
+    @api.model
+    def html_product_price(self, product):
+        def price_format(price, dp=None):
+            if not dp:
+                dp = self.env['res.lang'].search_read([('code', '=', self.env.lang)], ['decimal_point'])
+                dp = dp and dp[0]['decimal_point'] or '.'
+            return ('%.2f' %price).replace('.', dp)
+        partner = self.env.user.partner_id.commercial_partner_id
+        is_reseller = False
+        if partner.property_product_pricelist and partner.property_product_pricelist.for_reseller:
+            is_reseller = True
+        flush_type = 'html_product_price'
+        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type, product.id, partner.property_product_pricelist.id, self.env.lang, request.session.get('device_type','md'))
+        key, page_dict = self.env['website'].get_page_dict(key_raw)
+        if not page_dict:
+            rec_price = price_format(product.price)
+            your_price = price_format(product.price)
+            rec_price_line = product.pricelist_chart_ids.filtered(lambda l: l.rec_price != 0.0)
+            if len(rec_price_line) > 0:
+                rec_price = price_format(rec_price_line.rec_price)
+                your_price = price_format(rec_price_line.rec_price)
+            if is_reseller:
+                reseller_price_line = product.pricelist_chart_ids.filtered(lambda l: l.pricelist_chart_id.pricelist == partner.property_product_pricelist)
+                if len(reseller_price_line) > 0:
+                    your_price = price_format(reseller_price_line[0].price)
+                page = """<p class="oe_price_h4 css_editable_mode_hidden decimal_precision dn_uppercase"/>
+<div>
+    {rec_currency}
+    {rec_price} ({rec_price_text})
+</div>
+<div>
+    {your_currency}
+    {your_price} ({your_price_text})
+</div>""".format(
+                rec_currency = '<span style="white-space: nowrap;">%s</span>' %partner.property_product_pricelist.currency_id.symbol,
+                rec_price = ('<span class="oe_recommended_price" style="white-space: nowrap;">%s</span>' %rec_price),
+                rec_price_text = _('rec incl. tax'),
+                your_currency = '<b style="white-space: nowrap;">%s</b>' %partner.property_product_pricelist.currency_id.symbol,
+                your_price = '<b class="oe_price" style="white-space: nowrap;">%s</b>' %your_price,
+                your_price_text = _('your excl. tax')
+            ).encode('utf-8')
+            else:
+                page = """<p class="oe_price_h4 css_editable_mode_hidden decimal_precision dn_uppercase">
+    {rec_currency}
+    {rec_price}
+</p>""".format(
+                rec_currency = '<span style="white-space: nowrap;">%s</span>' %partner.property_product_pricelist.currency_id.symbol,
+                rec_price = ('<b class="oe_recommended_price" style="white-space: nowrap;">%s</b>' %rec_price)
+            ).encode('utf-8')
+            self.env['website'].put_page_dict(key,flush_type,page)
+            page_dict['page'] = base64.b64encode(page)
+        return page_dict.get('page','').decode('base64')
+
+    # Product publisher
+    @api.model
+    def html_product_publisher(self, product):
+        partner = self.env.user.partner_id.commercial_partner_id
+        flush_type = 'html_product_name_code'
+        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type, product.id, partner.property_product_pricelist.id, self.env.lang, request.session.get('device_type','md'))
+        key, page_dict = self.env['website'].get_page_dict(key_raw)
+        if not page_dict:
+            page = """<div class="col-sm-4" groups="base.group_sale_manager">
+    <t t-call="website.publish_management">
+        <t t-set="object" t-value="{product}"/>
+        <t t-set="publish_edit" t-value="True"/>
+        <t t-set="action" t-value="'product.product_template_action'"/>
+    </t>
+</div>""".format(
+                product = product
+            ).encode('utf-8')
+            self.env['website'].put_page_dict(key,flush_type,page)
+            page_dict['page'] = base64.b64encode(page)
+        return page_dict.get('page','').decode('base64')
+
     # right side product.description, directly after stock_status
     @api.model
     def html_product_detail_desc(self, product):
-        partner = self.env.user.partner_id
+        partner = self.env.user.partner_id.commercial_partner_id
         is_reseller = False
         if partner.property_product_pricelist and partner.property_product_pricelist.for_reseller:
             is_reseller = True
@@ -498,10 +588,7 @@ class product_product(models.Model):
     # left side product image with image nav bar, product ingredients with nav bar
     @api.model
     def html_product_detail_image(self, product):
-        partner = self.env.user.partner_id
-        is_reseller = False
-        if partner.property_product_pricelist and partner.property_product_pricelist.for_reseller:
-            is_reseller = True
+        partner = self.env.user.partner_id.commercial_partner_id
         flush_type = 'product_detail_image'
         key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type,product.id, partner.property_product_pricelist.id, self.env.lang, request.session.get('device_type','md'))
         key,page_dict = self.env['website'].get_page_dict(key_raw)
@@ -521,27 +608,26 @@ class product_product(models.Model):
                     ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('News')
                 elif product.product_tmpl_id.website_style_ids[0] == ribbon_limited:
                     ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('Limited Edition')
+            offer_wrapper = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">%s</div></div>' %_('Offer') if product.is_offer_product_reseller or product.is_offer_product_consumer else ''
 
-            product_images_nav_html = ''
             product_images = product.image_attachment_ids.sorted(key=lambda a: a.sequence)
+            product_images_html = ''
+            product_images_nav_html = ''
             if len(product_images) > 0:
                 for idx, image in enumerate(product_images):
-                    product_images_nav_html += u'<li class="%s"><a data-toggle="tab" href="#%s"><img class="img img-responsive" src="%s"/></a></li>' %('active' if idx == 0 else '', image.id, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_detail'))
+                    product_images_html += '<div id="%s" class="tab-pane fade%s">%s%s<img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' %(image.id, ' active in' if idx == 0 else '', offer_wrapper, ribbon_wrapper, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_detail'))
+                    product_images_nav_html += '<li class="%s"><a data-toggle="tab" href="#%s"><img class="img img-responsive" src="%s"/></a></li>' %('active' if idx == 0 else '', image.id, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_thumbnail'))
             else:
-                product_images_nav_html = u'<li class="active"><a data-toggle="tab" href="#%s"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></a></li>' %'0'
+                product_images_nav_html = '<li class="active"><a data-toggle="tab" href="#%s"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></a></li>' %'0'
 
             ingredients_images_nav_html = ''
             product_ingredients = self.env['product.ingredient'].search([('product_ids', 'in', product.id)], order='sequence')
             if len(product_ingredients) > 0:
                 for i in product_ingredients:
-                    ingredients_images_nav_html += u'<a href="/dn_shop/?current_ingredient=%s"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></div></a>' %(i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
+                    ingredients_images_nav_html += '<a href="/dn_shop/?current_ingredient=%s"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></div></a>' %(i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
 
             page = """<div id="image_big" class="tab-content">
-    <div id="{image_first}" class="tab-pane fade active in">
-        {offer_wrapper}
-        {ribbon_wrapper}
-        <img class="img img-responsive product_detail_img" style="margin: auto;" src="{image_src}"/>
-    </div>
+    {product_images_html}
 </div>
 <ul id="image_nav" class="nav nav-pills">
     {product_images_nav_html}
@@ -556,21 +642,19 @@ class product_product(models.Model):
 <div id="ingredients_description" class="container hidden-xs">
     <div class="mt16">
         <p>
-            <strong class="dn_uppercase">ingredients: </strong>
+            <strong class="dn_uppercase">{ingredients} </strong>
             <span class="text-muted">
                 {ingredients_desc}
             </span>
         </p>
     </div>
 </div>""".format(
-                image_first = product_images[0].id if len(product_images) > 0 else '',
-                offer_wrapper = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">%s</div></div>' %_('Offer') if product.is_offer_product_reseller or product.is_offer_product_consumer else '0',
-                ribbon_wrapper = ribbon_wrapper,
-                image_src = self.env['website'].imagefield_hash('ir.attachment', 'datas', product_images[0].id, 'website_sale_product_gallery.img_product_detail') if len(product_images) > 0 else '/web/static/src/img/placeholder.png',
+                product_images_html = product_images_html,
                 product_images_nav_html = product_images_nav_html,
                 ingredients_title = _('made from all-natural ingredients'),
                 ingredients_images_nav_html = ingredients_images_nav_html,
                 current_product_id = product.id,
+                ingredients = _('ingredients:'),
                 ingredients_desc = product.ingredients
             ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
@@ -580,10 +664,7 @@ class product_product(models.Model):
     # product ingredients in mobile, directly after <section id="product_detail"></section>
     @api.model
     def html_product_ingredients_mobile(self, product):
-        partner = self.env.user.partner_id
-        is_reseller = False
-        if partner.property_product_pricelist and partner.property_product_pricelist.for_reseller:
-            is_reseller = True
+        partner = self.env.user.partner_id.commercial_partner_id
         flush_type = 'product_ingredients_mobile'
         key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type,product.id, partner.property_product_pricelist.id, self.env.lang, request.session.get('device_type','md'))
         key,page_dict = self.env['website'].get_page_dict(key_raw)
@@ -604,16 +685,23 @@ class product_product(models.Model):
                 <div class="carousel-inner" style="width: 100%;">
                     {ingredients_carousel_html}
                 </div>
+                <div class="carousel-control left" data-slide="prev" data-target="#ingredient_carousel" href="#ingredient_carousel" style="width: 10%; left: 0px;"><i class="fa fa-chevron-left" style="right: 20%; color: #000;"></i></div>
+                <div class="carousel-control right" data-slide="next" data-target="#ingredient_carousel" href="#ingredient_carousel" style="width: 10%; right: 0px;"><i class="fa fa-chevron-right" style="left: 20%; color: #000;"></i></div>
                 <ol class="carousel-indicators" style="bottom: -10px;">
                     {ingredients_carousel_nav_html}
                 </ol>
             </div>
         </div>
     </div>
+</div>
+<div id="ingredients_description_mobile" class="container hidden-lg hidden-md hidden-sm">
+    <p><strong class="dn_uppercase">{ingredients} </strong><span class="text-muted">{ingredients_desc}</span></p>
 </div>""".format(
                 ingredients_title = _('made from all-natural ingredients'),
                 ingredients_carousel_html = ingredients_carousel_html,
-                ingredients_carousel_nav_html = ingredients_carousel_nav_html
+                ingredients_carousel_nav_html = ingredients_carousel_nav_html,
+                ingredients = _('ingredients:'),
+                ingredients_desc = product.ingredients
             ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
             page_dict['page'] = base64.b64encode(page)
@@ -622,10 +710,7 @@ class product_product(models.Model):
     # product full description
     @api.model
     def html_product_full_description(self, product):
-        partner = self.env.user.partner_id
-        is_reseller = False
-        if partner.property_product_pricelist and partner.property_product_pricelist.for_reseller:
-            is_reseller = True
+        partner = self.env.user.partner_id.commercial_partner_id
         flush_type = 'product_full_description'
         key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type,product.id, partner.property_product_pricelist.id, self.env.lang, request.session.get('device_type','md'))
         key,page_dict = self.env['website'].get_page_dict(key_raw)
