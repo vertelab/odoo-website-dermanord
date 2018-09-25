@@ -1207,8 +1207,8 @@ class WebsiteSale(website_sale):
 
                 value['id'] = product.id
                 # ~ value['instock'] = self.in_stock(product.id)[0]
-                value['stock_status'] = self.in_stock(product.id)[1]
-                value['public_user'] = True if (not self.in_stock(product.id)[0] and self.in_stock(product.id)[1] == '') else False
+                # ~ value['stock_status'] = self.in_stock(product.id)[1]
+                # ~ value['public_user'] = True if (not self.in_stock(product.id)[0] and self.in_stock(product.id)[1] == '') else False
                 value['images'] = product.get_image_attachment_ids()
                 value['facets'] = self.FACETS[product.id]
                 value['ingredients_description'] = ingredients_description
@@ -1221,7 +1221,7 @@ class WebsiteSale(website_sale):
                 value['offer_text'] = _('Offer')
                 value['news_text'] = _('News')
                 value['ribbon'] = sale_ribbon in product.website_style_ids_variant if product.website_style_ids_variant else (sale_ribbon in product.product_tmpl_id.website_style_ids)
-                value['sale_ok'] = True if (product.sale_ok and self.in_stock(product.id)[0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
+                # ~ value['sale_ok'] = True if (product.sale_ok and self.in_stock(product.id)[0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
         return value
 
     @http.route(['/get/product_variant_value'], type='json', auth="public", website=True)

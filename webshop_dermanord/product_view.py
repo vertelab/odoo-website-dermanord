@@ -454,7 +454,7 @@ class product_product(models.Model):
             page = ''
             attr_sel = '<select class="form-control js_variant_change attr_sel" name="attribute-%s-1">' %product.id
             for v in product.product_variant_ids:
-                attr_sel += '<option class="css_not_available" value="%s"%s>%s</option>' %(v.attribute_value_ids[0].id, ' selected="selected"' if v.default_variant else '', v.attribute_value_ids[0].name)
+                attr_sel += '<option class="css_not_available" value="variant_%s"%s>%s</option>' %(v.id, ' selected="selected"' if v.default_variant else '', v.attribute_value_ids[0].name)
             attr_sel += '</select>'
             for variant in product.product_variant_ids:
                 page += u"""<section id="{variant_id}" class="container mt8 oe_website_sale discount{hide_variant}">
@@ -520,8 +520,8 @@ class product_product(models.Model):
     </div>
     {html_product_ingredients_mobile}
 </section>
-<div itemprop="description" class="oe_structure mt16" id="product_full_description">{website_description}</div>""".format(
-                    variant_id = variant.id,
+{website_description}""".format(
+                    variant_id = 'variant_%s' %variant.id,
                     hide_variant = '' if variant.id == variant_id else ' hidden',
                     website_published = variant.website_published and 'css_published' or 'css_unpublished',
                     object_id = variant.id,
@@ -543,7 +543,7 @@ class product_product(models.Model):
                     add_to_cart = _('Add to cart'),
                     html_product_detail_desc = variant.html_product_detail_desc(variant),
                     html_product_ingredients_mobile = variant.html_product_ingredients_mobile(variant),
-                    website_description = variant.website_description
+                    website_description = '<div itemprop="description" class="oe_structure mt16" id="product_full_description">%s</div>' %variant.website_description if variant.website_description else ''
                 ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
             page_dict['page'] = base64.b64encode(page)
