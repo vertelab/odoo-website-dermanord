@@ -5,6 +5,20 @@ var page_count = 0;
 var lang = $("html").attr("lang");
 var dn_loading_products = false;
 
+$("select.attr_sel").on('change', function() {
+    var variant_id = $(this).val();
+    $.each($("section.oe_website_sale"), function() {
+        console.log($(this));
+        if ($(this).attr("id") == variant_id) {
+            $(this).removeClass("hidden");
+            $("select.attr_sel").find("option[value='" + variant_id + "']").attr("selected", "selected");
+        }
+        else {
+            $(this).addClass("hidden");
+        }
+    });
+});
+
 function show_popover(trigger){
     trigger.popover({
         container: 'body',

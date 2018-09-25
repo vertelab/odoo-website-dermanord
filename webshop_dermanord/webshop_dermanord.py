@@ -940,56 +940,64 @@ class WebsiteSale(website_sale):
 
     @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
     def dn_product(self, product, category='', search='', **kwargs):
-        cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
-        category_obj = pool['product.public.category']
-        template_obj = pool['product.template']
+        # ~ cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
+        # ~ category_obj = pool['product.public.category']
+        # ~ template_obj = pool['product.template']
 
-        context.update(active_id=product.id)
+        # ~ context.update(active_id=product.id)
 
-        if category:
-            category = category_obj.browse(cr, uid, int(category), context=context)
-            category = category if category.exists() else False
+        # ~ if category:
+            # ~ category = category_obj.browse(cr, uid, int(category), context=context)
+            # ~ category = category if category.exists() else False
 
-        attrib_list = request.httprequest.args.getlist('attrib')
-        attrib_values = [map(int,v.split("-")) for v in attrib_list if v]
-        attrib_set = set([v[1] for v in attrib_values])
+        # ~ attrib_list = request.httprequest.args.getlist('attrib')
+        # ~ attrib_values = [map(int,v.split("-")) for v in attrib_list if v]
+        # ~ attrib_set = set([v[1] for v in attrib_values])
 
-        keep = QueryURL('/dn_shop', category=category and category.id, search=search, attrib=attrib_list)
+        # ~ keep = QueryURL('/dn_shop', category=category and category.id, search=search, attrib=attrib_list)
 
-        category_ids = category_obj.search(cr, uid, [], context=context)
-        category_list = category_obj.name_get(cr, uid, category_ids, context=context)
-        category_list = sorted(category_list, key=lambda category: category[1])
+        # ~ category_ids = category_obj.search(cr, uid, [], context=context)
+        # ~ category_list = category_obj.name_get(cr, uid, category_ids, context=context)
+        # ~ category_list = sorted(category_list, key=lambda category: category[1])
 
-        pricelist = self.get_pricelist()
+        # ~ pricelist = self.get_pricelist()
 
-        from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
-        to_currency = pricelist.currency_id
-        compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
+        # ~ from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
+        # ~ to_currency = pricelist.currency_id
+        # ~ compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
 
-        if not request.context.get('pricelist'):
-            request.context['pricelist'] = int(self.get_pricelist())
-            product = template_obj.browse(cr, uid, int(product), context=context)
+        # ~ if not request.context.get('pricelist'):
+            # ~ request.context['pricelist'] = int(self.get_pricelist())
+            # ~ product = template_obj.browse(cr, uid, int(product), context=context)
 
-        request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
-        request.session['sort_name'], request.session['sort_order'] = request.website.get_chosen_order(request.website.get_form_values())
+        # ~ request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
+        # ~ request.session['sort_name'], request.session['sort_order'] = request.website.get_chosen_order(request.website.get_form_values())
 
+        # ~ values = {
+            # ~ 'search': search,
+            # ~ 'category': category,
+            # ~ 'pricelist': pricelist,
+            # ~ 'attrib_values': attrib_values,
+            # ~ 'compute_currency': compute_currency,
+            # ~ 'attrib_set': attrib_set,
+            # ~ 'keep': keep,
+            # ~ 'url': request.session.get('url'),
+            # ~ 'category_list': category_list,
+            # ~ 'main_object': product,
+            # ~ 'product': product,
+            # ~ 'show_purchase_button': self.show_purchase_button(product.get_default_variant()),
+            # ~ 'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
+            # ~ 'shop_footer': True,
+        # ~ }
+        # ~ return request.website.render("website_sale.product", values)
+
+        product = request.env['product.template'].browse(int(product))
         values = {
-            'search': search,
-            'category': category,
-            'pricelist': pricelist,
-            'attrib_values': attrib_values,
-            'compute_currency': compute_currency,
-            'attrib_set': attrib_set,
-            'keep': keep,
             'url': request.session.get('url'),
-            'category_list': category_list,
-            'main_object': product,
-            'product': product,
-            'show_purchase_button': self.show_purchase_button(product.get_default_variant()),
-            'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
+            'detail': request.env['product.product'].get_product_detail(product, product.get_default_variant().id or product.product_variant_ids[0].id),
             'shop_footer': True,
         }
-        return request.website.render("website_sale.product", values)
+        return request.website.render("webshop_dermanord.product_detail_view", values)
 
     #controller only for reseller
     @http.route([

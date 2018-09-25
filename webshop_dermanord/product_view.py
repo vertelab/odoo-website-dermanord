@@ -434,22 +434,113 @@ class product_product(models.Model):
             rows.append(page_dict.get('page','').decode('base64').format(shop_widget='hidden' if self.get_stock_info(product['id']) == _('Shortage') else '', product_stock=self.get_stock_info(product['id'])))
         return rows
 
-    # Product name, default code
+    # Product detail view with all variants
     @api.model
-    def html_product_name_code(self, product):
+    def get_product_detail(self, product, variant_id):
         partner = self.env.user.partner_id.commercial_partner_id
-        flush_type = 'html_product_name_code'
+        flush_type = 'get_product_detail'
         key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type, product.id, partner.property_product_pricelist.id, self.env.lang, request.session.get('device_type','md'))
         key, page_dict = self.env['website'].get_page_dict(key_raw)
         if not page_dict:
-            page = """<h1 itemprop="name">{product_name}</h1><h4 class="text-muted default_code">{default_code}</h4>""".format(
-                product_name = product.name,
-                default_code = product.default_code
-            ).encode('utf-8')
+            page = ''
+            attr_sel = '<select class="form-control js_variant_change attr_sel" name="attribute-%s-1">' %product.id
+            for v in product.product_variant_ids:
+                attr_sel += '<option class="css_not_available" value="%s"%s>%s</option>' %(v.attribute_value_ids[0].id, ' selected="selected"' if v.default_variant else '', v.attribute_value_ids[0].name)
+            attr_sel += '</select>'
+            for variant in product.product_variant_ids:
+                page += u"""<section id="{variant_id}" class="container mt8 oe_website_sale discount{hide_variant}">
+    <div class="row">
+        <div class="col-sm-4" groups="base.group_sale_manager">
+            <div groups="base.group_website_publisher" t-ignore="true" class="pull-right css_editable_mode_hidden" style="">
+                <div class="btn-group js_publish_management {website_published}" data-id="{object_id}" data-object="product.product" t-att-data-controller="publish_controller">
+                    <button class="btn btn-danger js_publish_btn">{not_published}</button>
+                    <button class="btn btn-success js_publish_btn">{published}</button>
+                    <button type="button" t-attf-class="btn btn-default dropdown-toggle" id="dopprod-{obj_id}" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" t-att-aria-labelledby="'dopprod-%s' % object.id">
+                        <li>
+                            <a href="#" class="js_publish_btn">
+                                <span class="css_unpublish">Unpublish</span>
+                                <span class="css_publish">Publish</span>
+                            </a>
+                        </li>
+                        <t t-raw="0"/>
+                        {action}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-7 col-md-7 col-lg-7">
+            {html_product_detail_image}
+        </div>
+        <div class="col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
+            <h1 itemprop="name">{product_name}</h1><h4 class="text-muted default_code">{default_code}</h4>
+            <form action="/shop/cart/update" class="js_add_cart_variants" data-attribute_value_ids="{variant_ids}" method="POST">
+                <div class="js_product">
+                    <input class="product_id" name="product_id" value="{product_id}" type="hidden">
+                    <ul class="list-unstyled js_add_cart_variants nav-stacked">
+                        <li>
+                            <strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">{attributes}</strong>
+                            {attr_sel}
+                        </li>
+                    </ul>
+                    <div itemprop="offers" itemscope="itemscope" class="product_price mt16">
+                        {product_price}
+                    </div>
+                    <div class="css_quantity input-group oe_website_spinner{hide_add_to_cart}">
+                        <span class="input-group-addon">
+                            <a href="#" class="mb8 js_add_cart_json">
+                                <i class="fa fa-minus"></i>
+                            </a>
+                        </span>
+                        <input class="js_quantity form-control" data-min="1" name="add_qty" value="1" type="text"/>
+                        <span class="input-group-addon">
+                            <a href="#" class="mb8 float_left js_add_cart_json">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </span>
+                    </div>
+                    <a id="add_to_cart" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center" groups="base.group_user,base.group_portal" disable="1">{add_to_cart}</a>
+                </div>
+            </form>
+            {html_product_detail_desc}
+        </div>
+    </div>
+    {html_product_ingredients_mobile}
+</section>
+<div itemprop="description" class="oe_structure mt16" id="product_full_description">{website_description}</div>""".format(
+                    variant_id = variant.id,
+                    hide_variant = '' if variant.id == variant_id else ' hidden',
+                    website_published = variant.website_published and 'css_published' or 'css_unpublished',
+                    object_id = variant.id,
+                    not_published = _('Not Published'),
+                    published = _('Published'),
+                    obj_id = variant.id,
+                    unpublish = _('Unpublish'),
+                    publish = _('Publish'),
+                    action = '<a t-attf-href="/web#return_label=Website&amp;view_type=form&amp;model=product.product&amp;id=%s&amp;action=%s" title="%s">Edit</a>' %(variant.id, 'product.product_template_action', _('Edit in backend')),
+                    html_product_detail_image = variant.html_product_detail_image(variant),
+                    product_name = variant.name,
+                    default_code = variant.default_code,
+                    variant_ids = product.product_variant_ids.mapped('id'),
+                    product_id = product.id,
+                    attributes = product.attribute_line_ids[0].attribute_id.name if len(product.attribute_line_ids) > 0 else '',
+                    attr_sel = attr_sel,
+                    product_price = variant.get_html_price_short(variant.id, partner.property_product_pricelist.id),
+                    hide_add_to_cart = '' if (variant.sale_ok and self.get_stock_info(variant.id) != _('Shortage') and partner.property_product_pricelist.for_reseller) else ' hidden',
+                    add_to_cart = _('Add to cart'),
+                    html_product_detail_desc = variant.html_product_detail_desc(variant),
+                    html_product_ingredients_mobile = variant.html_product_ingredients_mobile(variant),
+                    website_description = variant.website_description
+                ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
             page_dict['page'] = base64.b64encode(page)
         return page_dict.get('page','').decode('base64')
 
+    # prices
     @api.model
     def html_product_price(self, product):
         def price_format(price, dp=None):
@@ -703,21 +794,6 @@ class product_product(models.Model):
                 ingredients = _('ingredients:'),
                 ingredients_desc = product.ingredients
             ).encode('utf-8')
-            self.env['website'].put_page_dict(key,flush_type,page)
-            page_dict['page'] = base64.b64encode(page)
-        return page_dict.get('page','').decode('base64')
-
-    # product full description
-    @api.model
-    def html_product_full_description(self, product):
-        partner = self.env.user.partner_id.commercial_partner_id
-        flush_type = 'product_full_description'
-        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type,product.id, partner.property_product_pricelist.id, self.env.lang, request.session.get('device_type','md'))
-        key,page_dict = self.env['website'].get_page_dict(key_raw)
-        if not page_dict:
-            page = """<div itemprop="description" class="oe_structure mt16" id="product_full_description"
-{description}
-</div>""".format(description = product.description).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
             page_dict['page'] = base64.b64encode(page)
         return page_dict.get('page','').decode('base64')

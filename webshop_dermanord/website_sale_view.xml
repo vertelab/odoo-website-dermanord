@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <template id="product_detail_view" name="Product Detail View">
+            <t t-call="website.layout">
+                <t t-raw="detail"/>
+            </t>
+        </template>
         <template id="ingredients" inherit_id="product_ingredients.ingredients" name="Inherit ingredients">
             <!-- if there's a variant in page, show ingredients for this variant. Otherwise, show ingredients for template -->
             <xpath expr="//t[@t-set='ingredients']" position="replace">
@@ -75,7 +80,7 @@
             <div class="container oe_website_sale">
                 <div id="desktop_product_navigator" class="col-md-3 hidden-xs">
                     <!-- navigator -->
-                    <t t-call="webshop_dermanord.desktop_product_navigator" /> 
+                    <t t-call="webshop_dermanord.desktop_product_navigator" />
                 </div>
                 <div id="desktop_product_grid" class="col-md-9 col-xs-12">
                     <t t-if="no_product_message != ''">
@@ -300,7 +305,7 @@
                 </td>
             </xpath>
 
-            
+
 
             <!-- in mobile -->
             <xpath expr="//table[@id='cart_products']" position="attributes">
@@ -707,7 +712,7 @@
             </xpath>
         </template>
 
-       
+
 
         <template id="product_quantity" inherit_id="website_sale.product_quantity" name="Select Quantity Override">
             <xpath expr="//div[@class='css_quantity input-group oe_website_spinner']" position="attributes">
