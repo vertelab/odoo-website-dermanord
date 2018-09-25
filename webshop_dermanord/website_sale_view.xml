@@ -222,25 +222,30 @@
                     <span class="chevron" />
                 </li>
             </xpath>
+            
             <xpath expr="//ul[@class='wizard pull-right']/li[3]" position="replace">
                 <li class="text-muted">
                     Shipping &amp; payment
                     <span class="chevron" />
                 </li>
             </xpath>
+            
             <xpath expr="//ul[@class='wizard pull-right']/li[4]" position="replace">
                 <li class="text-muted">
                     Order confirmation
                     <span class="chevron" />
                 </li>
             </xpath>
+            
             <!-- //Navigation bar -->
             <xpath expr="//th[@t-att-data-precision='website_sale_order.pricelist_id.currency_id.rounding']" position="after">
                 <th/>
             </xpath>
+            
             <xpath expr="//span[@t-field='line.product_id.image_small']" position="replace">
                 <img t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id" class="img_payment"/>
             </xpath>
+            
             <xpath expr="//a[@t-attf-href='/shop/product/#{ slug(line.product_id.product_tmpl_id) }']" position="replace">
                 <a t-att-href="('/event/%s' % slug(line.event_id)) if line.event_id else ('/dn_shop/variant/%s' % slug(line.product_id))">
                     <strong t-if="line.product_id.default_code">
@@ -253,20 +258,31 @@
                     </t>
                 </a>
             </xpath>
+            
             <xpath expr="//div[@class='input-group oe_website_spinner']" position="attributes">
                 <attribute name="t-if">not line.event_id</attribute>
             </xpath>
+            
             <xpath expr="//div[@class='input-group oe_website_spinner']" position="after">
                 <div t-if="line.event_id" class="input-group oe_website_spinner">
                     <input type="text" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty)" disabled="disabled"/>
                 </div>
             </xpath>
+            
             <xpath expr="//th[@width='100']" position="attributes">
                 <attribute name="class">decimal_precision text-center</attribute>
             </xpath>
+            
             <xpath expr="//th[@width='120']" position="attributes">
                 <attribute name="class">text-center</attribute>
             </xpath>
+            
+            <xpath expr="//td[@name='price']" position="replace">
+                <td name="price">
+                    <t t-raw="line.product_id.get_html_price_long(line.order_id.pricelist_id)"/>
+                </td>
+            </xpath>
+            
             <xpath expr="//td[@name='price']" position="after">
                 <td>
                     <t t-foreach="line.product_id.packaging_ids" t-as="packaging">

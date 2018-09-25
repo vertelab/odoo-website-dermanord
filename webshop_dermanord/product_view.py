@@ -77,7 +77,14 @@ THUMBNAIL = u"""
                                 <a itemprop="name" href="dn_shop/{view_type}/{product_id}">{product_name}</a>
                             </strong>
                         </h4>
-                        {product_price}
+                        <div class="product_price">
+                            <b class="text-muted">
+                                <h5>{price_from}</h5>
+                                <h4>
+                                    {product_price}
+                                </h4>
+                            </b>
+                        </div>
                     </div>
                     <!-- Product info end -->
                     <!-- key {key} key_raw {key_raw} render_time {render_time} -->
@@ -209,6 +216,7 @@ class product_template(models.Model):
                     key=key,
                     view_type='product',
                     render_time='%s' % (timer() - render_start),
+                    price_from=_('Price From'),
                 ).encode('utf-8')
                 # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
                 self.env['website'].put_page_dict(key,flush_type,page)
@@ -277,6 +285,7 @@ class product_product(models.Model):
                     key=key,
                     view_type='variant',
                     render_time='%s' % (timer() - render_start),
+                    price_from=_('Price From'),
                 ).encode('utf-8')
                 _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
                 self.env['website'].put_page_dict(key,flush_type,page)
