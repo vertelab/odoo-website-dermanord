@@ -446,27 +446,26 @@ class product_product(models.Model):
                     ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('News')
                 elif product.product_tmpl_id.website_style_ids[0] == ribbon_limited:
                     ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('Limited Edition')
+            offer_wrapper = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">%s</div></div>' %_('Offer') if product.is_offer_product_reseller or product.is_offer_product_consumer else ''
 
-            product_images_nav_html = ''
             product_images = product.image_attachment_ids.sorted(key=lambda a: a.sequence)
+            product_images_html = ''
+            product_images_nav_html = ''
             if len(product_images) > 0:
                 for idx, image in enumerate(product_images):
-                    product_images_nav_html += u'<li class="%s"><a data-toggle="tab" href="#%s"><img class="img img-responsive" src="%s"/></a></li>' %('active' if idx == 0 else '', image.id, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_detail'))
+                    product_images_html += '<div id="%s" class="tab-pane fade%s">%s%s<img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' %(image.id, ' active in' if idx == 0 else '', offer_wrapper, ribbon_wrapper, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_detail'))
+                    product_images_nav_html += '<li class="%s"><a data-toggle="tab" href="#%s"><img class="img img-responsive" src="%s"/></a></li>' %('active' if idx == 0 else '', image.id, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_thumbnail'))
             else:
-                product_images_nav_html = u'<li class="active"><a data-toggle="tab" href="#%s"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></a></li>' %'0'
+                product_images_nav_html = '<li class="active"><a data-toggle="tab" href="#%s"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></a></li>' %'0'
 
             ingredients_images_nav_html = ''
             product_ingredients = self.env['product.ingredient'].search([('product_ids', 'in', product.id)], order='sequence')
             if len(product_ingredients) > 0:
                 for i in product_ingredients:
-                    ingredients_images_nav_html += u'<a href="/dn_shop/?current_ingredient=%s"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></div></a>' %(i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
+                    ingredients_images_nav_html += '<a href="/dn_shop/?current_ingredient=%s"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></div></a>' %(i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
 
             page = """<div id="image_big" class="tab-content">
-    <div id="{image_first}" class="tab-pane fade active in">
-        {offer_wrapper}
-        {ribbon_wrapper}
-        <img class="img img-responsive product_detail_img" style="margin: auto;" src="{image_src}"/>
-    </div>
+    {product_images_html}
 </div>
 <ul id="image_nav" class="nav nav-pills">
     {product_images_nav_html}
@@ -488,10 +487,7 @@ class product_product(models.Model):
         </p>
     </div>
 </div>""".format(
-                image_first = product_images[0].id if len(product_images) > 0 else '',
-                offer_wrapper = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">%s</div></div>' %_('Offer') if product.is_offer_product_reseller or product.is_offer_product_consumer else '0',
-                ribbon_wrapper = ribbon_wrapper,
-                image_src = self.env['website'].imagefield_hash('ir.attachment', 'datas', product_images[0].id, 'website_sale_product_gallery.img_product_detail') if len(product_images) > 0 else '/web/static/src/img/placeholder.png',
+                product_images_html = product_images_html,
                 product_images_nav_html = product_images_nav_html,
                 ingredients_title = _('made from all-natural ingredients'),
                 ingredients_images_nav_html = ingredients_images_nav_html,
