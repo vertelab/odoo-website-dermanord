@@ -79,6 +79,7 @@ THUMBNAIL = u"""
                         </h4>
                         <div class="product_price">
                             <b class="text-muted">
+                            <h5>{price_from}</h5>
                                 <h4>
                                     {product_price}
                                 </h4>
@@ -697,7 +698,7 @@ class product_product(models.Model):
                     attributes = product.attribute_line_ids[0].attribute_id.name if len(product.attribute_line_ids) > 0 else '',
                     data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, '%s_in_stock' % p.id] for p in product.product_variant_ids],
                     attr_sel = attr_sel,
-                    product_price = variant.get_html_price_short(variant.id, partner.property_product_pricelist.id),
+                    product_price = variant.get_html_price_long(partner.property_product_pricelist),
                     # ~ hide_add_to_cart = '{%s_hide_add_to_cart}',
                     hide_add_to_cart = '' if ((variant.sale_ok and self.get_stock_info(variant.id) != _('Shortage') and partner.property_product_pricelist.for_reseller)) else ' hidden',
                     add_to_cart = _('Add to cart'),
