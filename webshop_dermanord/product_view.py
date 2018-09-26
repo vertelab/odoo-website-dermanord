@@ -546,8 +546,7 @@ class product_product(models.Model):
                     data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, '%s_in_stock' % p.id] for p in product.product_variant_ids],
                     attr_sel = attr_sel,
                     product_price = variant.get_html_price_short(variant.id, partner.property_product_pricelist.id),
-                    hide_add_to_cart = '{%s_hide_add_to_cart}'
-                     if ((variant.sale_ok and self.get_stock_info(variant.id) != _('Shortage') and partner.property_product_pricelist.for_reseller)) else ' hidden',
+                    hide_add_to_cart = '{%s_hide_add_to_cart}',
                     add_to_cart = _('Add to cart'),
                     stock_status = '{%s_stock_status}' % variant.id,
                     html_product_detail_desc = variant.html_product_detail_desc(variant),
