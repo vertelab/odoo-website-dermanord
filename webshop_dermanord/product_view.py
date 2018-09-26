@@ -333,7 +333,7 @@ class product_product(models.Model):
             state = 'few'
         else:
             state ='short'
-        return {'in': _('In stock'),'few': _('Few in stock'),'short': _('Shortage')}[state].encode('utf-8')
+        return (state in ['in','few'],state,{'in': _('In stock'),'few': _('Few in stock'),'short': _('Shortage')}[state].encode('utf-8'))  # in_stock,state,info
 
 
     @api.model
@@ -440,7 +440,7 @@ class product_product(models.Model):
                 ).encode('utf-8')
                 self.env['website'].put_page_dict(key,flush_type,page)
                 page_dict['page'] = base64.b64encode(page)
-            rows.append(page_dict.get('page','').decode('base64').format(shop_widget='hidden' if self.get_stock_info(product['id']) == _('Shortage') else '', product_stock=self.get_stock_info(product['id'])))
+            rows.append(page_dict.get('page','').decode('base64').format(shop_widget='hidden' if self.get_stock_info(product['id'])[0] else '', product_stock=self.get_stock_info(product['id']))[2])
         return rows
 
     # Product detail view with all variants
@@ -543,19 +543,28 @@ class product_product(models.Model):
                     default_code = variant.default_code,
                     variant_ids = product.product_variant_ids.mapped('id'),
                     attributes = product.attribute_line_ids[0].attribute_id.name if len(product.attribute_line_ids) > 0 else '',
-                    data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, 1] for p in product.product_variant_ids],
+                    data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, '%s_in_stock' % p.id] for p in product.product_variant_ids],
                     attr_sel = attr_sel,
                     product_price = variant.get_html_price_short(variant.id, partner.property_product_pricelist.id),
-                    hide_add_to_cart = '' if ((variant.sale_ok and self.get_stock_info(variant.id) != _('Shortage') and partner.property_product_pricelist.for_reseller)) else ' hidden',
+                    hide_add_to_cart = '{%s_hide_add_to_cart}'
+                     if ((variant.sale_ok and self.get_stock_info(variant.id) != _('Shortage') and partner.property_product_pricelist.for_reseller)) else ' hidden',
                     add_to_cart = _('Add to cart'),
-                    stock_status = '',
+                    stock_status = '{%s_stock_status}' % variant.id,
                     html_product_detail_desc = variant.html_product_detail_desc(variant),
                     html_product_ingredients_mobile = variant.html_product_ingredients_mobile(variant),
                     website_description = '<div itemprop="description" class="oe_structure mt16" id="product_full_description">%s</div>' %variant.website_description if variant.website_description else ''
                 ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
             page_dict['page'] = base64.b64encode(page)
-        return page_dict.get('page','').decode('base64')
+        stock = {}
+        for variant in product.product_variant_ids:
+            if not partner.property_product_pricelist.for_reseller:
+                stock['%s_stock_status' % variant.id] = ''
+                stock['%s_hide_add_to_cart' % variant.id] = 'hidden'
+            else:
+                in_stock,in_stock_state,stock['%s_stock_status' % variant.id] = self.get_stock_info(variant.id)
+                stock['%s_hide_add_to_cart' % variant.id] = 'hidden' if not in_stock else ''
+        return page_dict.get('page','').decode('base64').format(**stock)
 
 
     # Product publisher
