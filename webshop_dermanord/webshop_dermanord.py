@@ -263,9 +263,9 @@ class product_pricelist(models.Model):
     rec_pricelist_id = fields.Many2one(comodel_name='product.pricelist', string='Recommended Pricelist')
     for_reseller = fields.Boolean(string='For Reseller')
 
-    @api.multi
-    def price_get(self, prod_id, qty, partner=None):
-        return super(product_pricelist, self).price_get(prod_id, qty, partner)
+    # ~ @api.multi
+    # ~ def price_get(self, prod_id, qty, partner=None):
+        # ~ return super(product_pricelist, self).price_get(prod_id, qty, partner)
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'

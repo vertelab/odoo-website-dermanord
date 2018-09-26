@@ -654,10 +654,10 @@ class product_product(models.Model):
                             {attr_sel}
                         </li>
                     </ul>
-                    <div itemprop="offers" itemscope="itemscope" class="product_price mt16">
+                    <div itemprop="offers" itemscope="itemscope" class="product_price mt16 mb16">
                         {product_price}
                     </div>
-                    <div class="css_quantity input-group oe_website_spinner{hide_add_to_cart}">
+                    <div class="css_quantity input-group oe_website_spinner {hide_add_to_cart}">
                         <span class="input-group-addon">
                             <a href="#" class="mb8 js_add_cart_json">
                                 <i class="fa fa-minus"></i>
@@ -673,7 +673,7 @@ class product_product(models.Model):
                     <a id="add_to_cart" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center{hide_add_to_cart}" groups="base.group_user,base.group_portal" disable="1">{add_to_cart}</a>
                 </div>
             </form>
-            <div class="stock_status">
+            <div class="stock_status mb16">
                 <span>{stock_status}</span>
             </div>
             {html_product_detail_desc}
@@ -696,14 +696,12 @@ class product_product(models.Model):
                     default_code = variant.default_code,
                     variant_ids = product.product_variant_ids.mapped('id'),
                     attributes = product.attribute_line_ids[0].attribute_id.name if len(product.attribute_line_ids) > 0 else '',
-                    data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, '%s_in_stock' % p.id] for p in product.product_variant_ids],
+                    data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, '{%s_in_stock}' % p.id] for p in product.product_variant_ids],
                     attr_sel = attr_sel,
                     product_price = variant.get_html_price_long(partner.property_product_pricelist),
-                    # ~ hide_add_to_cart = '{%s_hide_add_to_cart}',
-                    hide_add_to_cart = '' if ((variant.sale_ok and self.get_stock_info(variant.id) != _('Shortage') and partner.property_product_pricelist.for_reseller)) else ' hidden',
+                    hide_add_to_cart = '{%s_hide_add_to_cart}' % variant.id,
                     add_to_cart = _('Add to cart'),
-                    # ~ stock_status = '{%s_stock_status}' % variant.id,
-                    stock_status = '',
+                    stock_status = '{%s_stock_status}' % variant.id,
                     html_product_detail_desc = html_product_detail_desc(variant, partner),
                     html_product_detail_image = html_product_detail_image(variant, partner),
                     html_product_ingredients_mobile = html_product_ingredients_mobile(variant, partner),
@@ -711,16 +709,15 @@ class product_product(models.Model):
                 ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
             page_dict['page'] = base64.b64encode(page)
-        # ~ stock = {}
-        # ~ for variant in product.product_variant_ids:
-            # ~ if not partner.property_product_pricelist.for_reseller:
-                # ~ stock['%s_stock_status' % variant.id] = ''
-                # ~ stock['%s_hide_add_to_cart' % variant.id] = 'hidden'
-            # ~ else:
-                # ~ in_stock,in_stock_state,stock['%s_stock_status' % variant.id] = self.get_stock_info(variant.id)
-                # ~ stock['%s_hide_add_to_cart' % variant.id] = 'hidden' if not in_stock else ''
-        # ~ return page_dict.get('page','').decode('base64').format(**stock)
-        return page_dict.get('page','').decode('base64')
+        stock = {}
+        for variant in product.product_variant_ids:
+            stock['%s_in_stock' %variant.id],in_stock_state,stock['%s_stock_status' % variant.id] = self.get_stock_info(variant.id)
+            if not partner.property_product_pricelist.for_reseller:
+                stock['%s_stock_status' % variant.id] = ''
+                stock['%s_hide_add_to_cart' % variant.id] = 'hidden'
+            else:
+                stock['%s_hide_add_to_cart' % variant.id] = 'hidden' if not stock['%s_in_stock' %variant.id] else ''
+        return page_dict.get('page','').decode('base64').format(**stock)
 
 
 class Website(models.Model):
