@@ -353,7 +353,7 @@ class product_product(models.Model):
                 if not ribbon_limited:
                     ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
-                campaign = request.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else None)
+                campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else None)
                 page = u"""<tr class="tr_lst ">
                                 <td class="td_lst">
                                     <div class="lst-ribbon-wrapper">{product_ribbon_offer}{product_ribbon_promo}{product_ribbon_limited}</div>
@@ -448,9 +448,9 @@ class product_product(models.Model):
     def get_product_detail(self, product, variant_id):
 
         # right side product.description, directly after stock_status
-        def html_product_detail_desc( product, partner):
+        def html_product_detail_desc( product, partner, pricelist):
             is_reseller = False
-            if partner.property_product_pricelist and partner.property_product_pricelist.for_reseller:
+            if pricelist and pricelist.for_reseller:
                 is_reseller = True
             category_html = ''
             category_value = ''
@@ -600,8 +600,9 @@ class product_product(models.Model):
             return page
 
         partner = self.env.user.partner_id.commercial_partner_id
+        pricelist = partner.property_product_pricelist
         flush_type = 'get_product_detail'
-        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type, variant_id, partner.property_product_pricelist.id, self.env.lang, request.session.get('device_type','md'))
+        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type, variant_id, pricelist.id, self.env.lang, request.session.get('device_type','md'))
         key, page_dict = self.env['website'].get_page_dict(key_raw)
         if not page_dict:
             page = ''
@@ -612,8 +613,10 @@ class product_product(models.Model):
                     attr_sel += '<option class="css_not_available" value="%s"%s>%s</option>' %(v.attribute_value_ids[0].id, ' selected="selected"' if v.id == variant_id else '', v.attribute_value_ids[0].name)
                 attr_sel += '</select>'
             visible_attrs = set(l.attribute_id.id for l in product.attribute_line_ids if len(l.value_ids) > 1)
+            decimal_precision = pricelist.currency_id.rounding
             for variant in product.product_variant_ids:
-                pricelist_line = variant.get_pricelist_chart_line(partner.property_product_pricelist)
+                pricelist_line = variant.get_pricelist_chart_line(pricelist)
+                campaign = self.env['crm.tracking.campaign'].browse(variant.campaign_ids[0] if variant.campaign_ids else None)
                 page += u"""<section id="{attribute_value}" class="container mt8 oe_website_sale discount{hide_variant}">
     <div class="row">
         <div class="col-sm-4" groups="base.group_sale_manager">
@@ -655,7 +658,9 @@ class product_product(models.Model):
                         </li>
                     </ul>
                     <div itemprop="offers" itemscope="itemscope" class="product_price mt16 mb16">
-                        {product_price}
+                        <p class="oe_price_h4 css_editable_mode_hidden decimal_precision" data-precision="{decimal_precision}">
+                            {product_price}
+                        </p>
                     </div>
                     <div class="css_quantity input-group oe_website_spinner {hide_add_to_cart}">
                         <span class="input-group-addon">
@@ -671,6 +676,14 @@ class product_product(models.Model):
                         </span>
                     </div>
                     <a id="add_to_cart" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center {hide_add_to_cart}" groups="base.group_user,base.group_portal" disable="1">{add_to_cart}</a>
+                    <!-- <input id="sale_ok" name="sale_ok" type="hidden" t-att-value="product.sale_ok" /> -->
+                    <h5>
+                        <div class="text-center">
+                            <span>{product_startdate}</span>
+                            <br>
+                            <span>{product_stopdate}</span>
+                        </div>
+                    </h5>
                 </div>
             </form>
             <div class="stock_status mb16">
@@ -698,11 +711,14 @@ class product_product(models.Model):
                     attributes = product.attribute_line_ids[0].attribute_id.name if len(product.attribute_line_ids) > 0 else '',
                     data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, '{%s_in_stock}' % p.id] for p in product.product_variant_ids],
                     attr_sel = attr_sel,
-                    product_price = variant.get_html_price_long(partner.property_product_pricelist),
+                    decimal_precision = decimal_precision,
+                    product_price = variant.get_html_price_long(pricelist),
                     hide_add_to_cart = '{%s_hide_add_to_cart}' % variant.id,
                     add_to_cart = _('Add to cart'),
+                    product_startdate = campaign.date_start if campaign and campaign.date_start else '',
+                    product_stopdate = campaign.date_stop if campaign and campaign.date_stop else '',
                     stock_status = '{%s_stock_status}' % variant.id,
-                    html_product_detail_desc = html_product_detail_desc(variant, partner),
+                    html_product_detail_desc = html_product_detail_desc(variant, partner, pricelist),
                     html_product_detail_image = html_product_detail_image(variant, partner),
                     html_product_ingredients_mobile = html_product_ingredients_mobile(variant, partner),
                     website_description = u'<div itemprop="description" class="oe_structure mt16" id="product_full_description">%s</div>' %variant.website_description if variant.website_description else ''
@@ -712,7 +728,7 @@ class product_product(models.Model):
         stock = {}
         for variant in product.product_variant_ids:
             stock['%s_in_stock' %variant.id],in_stock_state,stock['%s_stock_status' % variant.id] = self.get_stock_info(variant.id)
-            if not partner.property_product_pricelist.for_reseller:
+            if not pricelist.for_reseller:
                 stock['%s_stock_status' % variant.id] = ''
                 stock['%s_hide_add_to_cart' % variant.id] = 'hidden'
             else:

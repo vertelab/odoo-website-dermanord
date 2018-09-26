@@ -269,11 +269,11 @@ $(document).ready(function(){
 
     // There was probably some reason we disabled this. Write it down next time.
     var product_price_form = $('form.js_add_cart_variants');
-    if (product_price_form.length > 0) {
-        if (product_price_form.data('attribute_value_ids').length == 1) {
-            update_product_info($('.oe_website_sale'), product_price_form.data('attribute_value_ids')[0]);
-        }
-    }
+    //~ if (product_price_form.length > 0) {
+        //~ if (product_price_form.data('attribute_value_ids').length == 1) {
+            //~ update_product_info($('.oe_website_sale'), product_price_form.data('attribute_value_ids')[0]);
+        //~ }
+    //~ }
 
     $('.oe_website_sale').each(function () {
         var oe_website_sale = this;
@@ -538,6 +538,8 @@ $(document).ready(function(){
                     precision = dec_precision;
                 }
             }
+            console.log(precision);
+            console.log(price);
             var formatted = _.str.sprintf('%.' + precision + 'f', price).split('.');
             formatted[0] = insert_thousand_seps(formatted[0]);
             return formatted.join(l10n.decimal_point);
@@ -547,46 +549,46 @@ $(document).ready(function(){
             var $parent = $(this).closest('.js_product');
             $parent.find(".oe_default_price:first .oe_currency_value").html( price_to_str(+$(this).data('lst_price')) );
             $parent.find(".oe_price:first .oe_currency_value").html(price_to_str(+$(this).data('price')) );
-            update_product_info(this, +$(this).val());
+            //~ update_product_info(this, +$(this).val());
         });
 
-        $(oe_website_sale).on('change', 'input.js_variant_change, select.js_variant_change', function (ev) {
-            var $ul = $(ev.target).closest('.js_add_cart_variants');
-            var $parent = $ul.closest('.js_product');
-            var $product_id = $parent.find('input.product_id').first();
-            var $price = $parent.find(".oe_price:first .oe_currency_value");
-            var $default_price = $parent.find(".oe_default_price:first .oe_currency_value");
-            var $recommended_price = $parent.find(".oe_recommended_price:first .oe_currency_value");
-            var $optional_price = $parent.find(".oe_optional:first .oe_currency_value");
-            var variant_ids = $ul.data("attribute_value_ids");
-            var values = [];
-            $parent.find('input.js_variant_change:checked, select.js_variant_change').each(function () {
-                values.push(+$(this).val());
-            });
+        //~ $(oe_website_sale).on('change', 'input.js_variant_change, select.js_variant_change', function (ev) {
+            //~ var $ul = $(ev.target).closest('.js_add_cart_variants');
+            //~ var $parent = $ul.closest('.js_product');
+            //~ var $product_id = $parent.find('input.product_id').first();
+            //~ var $price = $parent.find(".oe_price:first .oe_currency_value");
+            //~ var $default_price = $parent.find(".oe_default_price:first .oe_currency_value");
+            //~ var $recommended_price = $parent.find(".oe_recommended_price:first .oe_currency_value");
+            //~ var $optional_price = $parent.find(".oe_optional:first .oe_currency_value");
+            //~ var variant_ids = $ul.data("attribute_value_ids");
+            //~ var values = [];
+            //~ $parent.find('input.js_variant_change:checked, select.js_variant_change').each(function () {
+                //~ values.push(+$(this).val());
+            //~ });
 
-            $parent.find("label").removeClass("text-muted css_not_available");
+            //~ $parent.find("label").removeClass("text-muted css_not_available");
 
-            var product_id = false;
-            for (var k in variant_ids) {
-                if (_.isEmpty(_.difference(variant_ids[k][1], values))) {
-                    openerp.website.ready().then(function() {
-                        $price.html(price_to_str(variant_ids[k][2]));
-                        $default_price.html(price_to_str(variant_ids[k][3]));
-                        $recommended_price.html(price_to_str(variant_ids[k][4]));
-                    });
+            //~ var product_id = false;
+            //~ for (var k in variant_ids) {
+                //~ if (_.isEmpty(_.difference(variant_ids[k][1], values))) {
+                    //~ openerp.website.ready().then(function() {
+                        //~ $price.html(price_to_str(variant_ids[k][2]));
+                        //~ $default_price.html(price_to_str(variant_ids[k][3]));
+                        //~ $recommended_price.html(price_to_str(variant_ids[k][4]));
+                    //~ });
 
-                    if (variant_ids[k][3]-variant_ids[k][2]>0.2) {
-                        $default_price.closest('.oe_website_sale').addClass("discount");
-                        $optional_price.closest('.oe_optional').show().css('text-decoration', 'line-through');
-                    } else {
-                        $default_price.closest('.oe_website_sale').removeClass("discount");
-                        $optional_price.closest('.oe_optional').hide();
-                    }
+                    //~ if (variant_ids[k][3]-variant_ids[k][2]>0.2) {
+                        //~ $default_price.closest('.oe_website_sale').addClass("discount");
+                        //~ $optional_price.closest('.oe_optional').show().css('text-decoration', 'line-through');
+                    //~ } else {
+                        //~ $default_price.closest('.oe_website_sale').removeClass("discount");
+                        //~ $optional_price.closest('.oe_optional').hide();
+                    //~ }
                     // sale_ok / sale_start hide add-button and maybe view information about sale start
-                    if (variant_ids[k][5] == 0) {
-                        $('#add_to_cart').addClass('hidden');
-                        $('.stock_status').addClass('hidden');
-                        $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
+                    //~ if (variant_ids[k][5] == 0) {
+                        //~ $('#add_to_cart').addClass('hidden');
+                        //~ $('.stock_status').addClass('hidden');
+                        //~ $('div.css_quantity.input-group.oe_website_spinner').addClass('hidden');
                         //~ if (variant_ids[k][6] != 0) {
                             //~ var start_date = variant_ids[k][6].toString();
                             //~ $('p#sale_start_info').removeClass('hidden');
@@ -595,62 +597,62 @@ $(document).ready(function(){
                             //~ $('p#sale_start_info').addClass('hidden');
                             //~ $('#sale_start').html('');
                         //~ }
-                    } else if (variant_ids[k][5] == 1) {
-                        $('#add_to_cart').removeClass('hidden');
-                        $('.stock_status').removeClass('hidden');
-                        $('div.css_quantity.input-group.oe_website_spinner').removeClass('hidden');
+                    //~ } else if (variant_ids[k][5] == 1) {
+                        //~ $('#add_to_cart').removeClass('hidden');
+                        //~ $('.stock_status').removeClass('hidden');
+                        //~ $('div.css_quantity.input-group.oe_website_spinner').removeClass('hidden');
                         //~ if (variant_ids[k][6] != 0) {
                             //~ $('#sale_start_info').removeClass('hidden');
                         //~ } else if (variant_ids[k][6] == 0){
                             //~ $('p#sale_start_info').addClass('hidden');
                             //~ $('#sale_start').html('');
                         //~ }
-                    }
-                    product_id = variant_ids[k][0];
-                    break;
-                }
-            }
+                    //~ }
+                    //~ product_id = variant_ids[k][0];
+                    //~ break;
+                //~ }
+            //~ }
 
-            if (product_id) {
-                update_product_info(this, product_id);
-            }
+            //~ if (product_id) {
+                //~ update_product_info(this, product_id);
+            //~ }
 
-            $parent.find("input.js_variant_change:radio, select.js_variant_change").each(function () {
-                var $input = $(this);
-                var id = +$input.val();
-                var values = [id];
+            //~ $parent.find("input.js_variant_change:radio, select.js_variant_change").each(function () {
+                //~ var $input = $(this);
+                //~ var id = +$input.val();
+                //~ var values = [id];
 
-                $parent.find("ul:not(:has(input.js_variant_change[value='" + id + "'])) input.js_variant_change:checked, select").each(function () {
-                    values.push(+$(this).val());
-                });
+                //~ $parent.find("ul:not(:has(input.js_variant_change[value='" + id + "'])) input.js_variant_change:checked, select").each(function () {
+                    //~ values.push(+$(this).val());
+                //~ });
 
-                for (var k in variant_ids) {
-                    if (!_.difference(values, variant_ids[k][1]).length) {
-                        return;
-                    }
-                }
-                $input.closest("label").addClass("css_not_available");
-                $input.find("option[value='" + id + "']").addClass("css_not_available");
-            });
+                //~ for (var k in variant_ids) {
+                    //~ if (!_.difference(values, variant_ids[k][1]).length) {
+                        //~ return;
+                    //~ }
+                //~ }
+                //~ $input.closest("label").addClass("css_not_available");
+                //~ $input.find("option[value='" + id + "']").addClass("css_not_available");
+            //~ });
 
-            if (product_id) {
-                $parent.removeClass("css_not_available");
-                $product_id.val(product_id);
-                $parent.find(".js_check_product").removeAttr("disabled");
-            } else {
-                $parent.addClass("css_not_available");
-                $product_id.val(0);
-                $parent.find(".js_check_product").attr("disabled", "disabled");
-            }
-        });
+            //~ if (product_id) {
+                //~ $parent.removeClass("css_not_available");
+                //~ $product_id.val(product_id);
+                //~ $parent.find(".js_check_product").removeAttr("disabled");
+            //~ } else {
+                //~ $parent.addClass("css_not_available");
+                //~ $product_id.val(0);
+                //~ $parent.find(".js_check_product").attr("disabled", "disabled");
+            //~ }
+        //~ });
 
         $('div.js_product', oe_website_sale).each(function () {
             $('input.js_product_change', this).first().trigger('change');
         });
 
-        $('.js_add_cart_variants', oe_website_sale).each(function () {
-            $('input.js_variant_change, select.js_variant_change', this).first().trigger('change');
-        });
+        //~ $('.js_add_cart_variants', oe_website_sale).each(function () {
+            //~ $('input.js_variant_change, select.js_variant_change', this).first().trigger('change');
+        //~ });
 
         $(oe_website_sale).on('change', "select[name='country_id']", function () {
             var $select = $("select[name='state_id']");
