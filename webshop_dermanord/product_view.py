@@ -552,11 +552,11 @@ class product_product(models.Model):
                     stock_status = '',
                     html_product_detail_desc = variant.html_product_detail_desc(variant),
                     html_product_ingredients_mobile = variant.html_product_ingredients_mobile(variant),
-                    website_description = '<div itemprop="description" class="oe_structure mt16" id="product_full_description">%s</div>' %variant.website_description if variant.website_description else ''
+                    website_description = u'<div itemprop="description" class="oe_structure mt16" id="product_full_description">%s</div>' %variant.website_description if variant.website_description else ''
                 ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
-            page_dict['page'] = base64.b64encode(page)
-        return page_dict.get('page','').decode('base64')
+            page_dict['page'] = page
+        return page_dict.get('page','')
 
     # right side product.description, directly after stock_status
     @api.model
@@ -616,8 +616,8 @@ class product_product(models.Model):
                 less_info = _('Less info')
             ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
-            page_dict['page'] = base64.b64encode(page)
-        return page_dict.get('page','').decode('base64')
+            page_dict['page'] = page
+        return page_dict.get('page','')
 
     # left side product image with image nav bar, product ingredients with nav bar
     @api.model
@@ -692,8 +692,8 @@ class product_product(models.Model):
                 ingredients_desc = product.ingredients
             ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
-            page_dict['page'] = base64.b64encode(page)
-        return page_dict.get('page','').decode('base64')
+            page_dict['page'] = page
+        return page_dict.get('page','')
 
     # product ingredients in mobile, directly after <section id="product_detail"></section>
     @api.model
@@ -738,8 +738,8 @@ class product_product(models.Model):
                 ingredients_desc = product.ingredients
             ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
-            page_dict['page'] = base64.b64encode(page)
-        return page_dict.get('page','').decode('base64')
+            page_dict['page'] = page
+        return page_dict.get('page','')
 
 
 class Website(models.Model):
