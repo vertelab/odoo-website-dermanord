@@ -558,28 +558,6 @@ class product_product(models.Model):
             page_dict['page'] = base64.b64encode(page)
         return page_dict.get('page','').decode('base64')
 
-
-    # Product publisher
-    @api.model
-    def html_product_publisher(self, product):
-        partner = self.env.user.partner_id.commercial_partner_id
-        flush_type = 'html_product_name_code'
-        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type, product.id, partner.property_product_pricelist.id, self.env.lang, request.session.get('device_type','md'))
-        key, page_dict = self.env['website'].get_page_dict(key_raw)
-        if not page_dict:
-            page = """<div class="col-sm-4" groups="base.group_sale_manager">
-    <t t-call="website.publish_management">
-        <t t-set="object" t-value="{product}"/>
-        <t t-set="publish_edit" t-value="True"/>
-        <t t-set="action" t-value="'product.product_template_action'"/>
-    </t>
-</div>""".format(
-                product = product
-            ).encode('utf-8')
-            self.env['website'].put_page_dict(key,flush_type,page)
-            page_dict['page'] = base64.b64encode(page)
-        return page_dict.get('page','').decode('base64')
-
     # right side product.description, directly after stock_status
     @api.model
     def html_product_detail_desc(self, product):
@@ -606,7 +584,7 @@ class product_product(models.Model):
                         facet_html += '<span>, </span>'
                 facet_html += '</div>'
 
-            page = """<div>
+            page = u"""<div>
     {public_desc}
     <h4 class="show_more_facet text-center hidden-lg hidden-md hidden-sm" style="text-decoration: underline;">{more_info}<i class="fa fa-angle-down"></i></h4>
     <div class="container facet_container hidden-xs">
@@ -682,7 +660,7 @@ class product_product(models.Model):
                 for i in product_ingredients:
                     ingredients_images_nav_html += '<a href="/dn_shop/?current_ingredient=%s"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></div></a>' %(i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
 
-            page = """<div id="image_big" class="tab-content">
+            page = u"""<div id="image_big" class="tab-content">
     {product_images_html}
 </div>
 <ul id="image_nav" class="nav nav-pills">
@@ -733,7 +711,7 @@ class product_product(models.Model):
                     ingredients_carousel_html += '<div class="item ingredient_desc%s"><a href="/dn_shop/?current_ingredient=%s"><img class="img img-responsive" style="margin: auto; display: block;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></a></div>' %(' active' if idx == 0 else '', i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
                     ingredients_carousel_nav_html += '<li class="%s" data-slide-to="%s" data-target="#ingredient_carousel"></li>' %(' active' if idx == 0 else '', idx)
 
-            page = """<div id="ingredients_div_mobile">
+            page = u"""<div id="ingredients_div_mobile">
     <div class="container mb16 hidden-lg hidden-md hidden-sm">
         <h4 class="text-center dn_uppercase">{ingredients_title}</h4>
         <div class="col-md-12">
