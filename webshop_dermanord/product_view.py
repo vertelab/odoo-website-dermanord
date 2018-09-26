@@ -492,7 +492,7 @@ class product_product(models.Model):
             <form action="/shop/cart/update" class="js_add_cart_variants" data-attribute_value_ids="{variant_ids}" method="POST">
                 <div class="js_product">
                     <input class="product_id" name="product_id" value="{product_id}" type="hidden">
-                    <ul class="list-unstyled js_add_cart_variants nav-stacked">
+                    <ul class="list-unstyled js_add_cart_variants nav-stacked" data-attribute_value_ids="{data_attribute_value_ids}">
                         <li>
                             <strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">{attributes}</strong>
                             {attr_sel}
@@ -538,6 +538,7 @@ class product_product(models.Model):
                     variant_ids = product.product_variant_ids.mapped('id'),
                     product_id = product.id,
                     attributes = product.attribute_line_ids[0].attribute_id.name if len(product.attribute_line_ids) > 0 else '',
+                    data_attribute_value_ids = '',
                     attr_sel = attr_sel,
                     product_price = variant.get_html_price_short(variant.id, partner.property_product_pricelist.id),
                     hide_add_to_cart = '' if ((variant.sale_ok and self.get_stock_info(variant.id) != _('Shortage') and partner.property_product_pricelist.for_reseller)) else ' hidden',
