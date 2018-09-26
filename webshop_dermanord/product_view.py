@@ -670,7 +670,7 @@ class product_product(models.Model):
                             </a>
                         </span>
                     </div>
-                    <a id="add_to_cart" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center{hide_add_to_cart}" groups="base.group_user,base.group_portal" disable="1">{add_to_cart}</a>
+                    <a id="add_to_cart" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center {hide_add_to_cart}" groups="base.group_user,base.group_portal" disable="1">{add_to_cart}</a>
                 </div>
             </form>
             <div class="stock_status mb16">
