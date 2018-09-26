@@ -290,34 +290,7 @@
             
             <xpath expr="//td[@name='price']" position="after">
                 <td>
-                    <t t-foreach="line.product_id.packaging_ids" t-as="packaging">
-                        <div class="dn-tooltip text-centered">
-                            <i class="fa fa-cube"/>
-                            <div class="dn-tooltiptext">
-                                <b t-esc="packaging.ul.name"/><br/>
-                                <t t-if="packaging.qty">
-                                    <b>Quantity:</b> <t t-esc="packaging.qty"/> pcs / box<br/>
-                                </t>
-                                <t t-if="packaging.ean">
-                                    <b>EAN:</b> <t t-esc="packaging.ean"/><br/>
-                                </t>
-                                <t t-if="packaging.ul.width">
-                                    <b>Width:</b> <t t-esc="packaging.ul.width"/> mm<br/>
-                                </t>
-                                <t t-if="packaging.ul.length">
-                                    <b>Length:</b> <t t-esc="packaging.ul.length"/> mm<br/>
-                                </t>
-                                <t t-if="packaging.ul.height">
-                                    <b>Height:</b> <t t-esc="packaging.ul.height"/> mm<br/>
-                                </t>
-                                <t t-if="packaging.ul_container">
-                                    <b t-esc="packaging.ul_container.name"/><br/>
-                                    <b>Quantity (DFP):</b> <t t-esc="packaging.ul_qty * packaging.rows"/> boxes / pallet<br/>
-                                    <b>Quantity (KFP):</b> <t t-esc="packaging.qty * packaging.ul_qty * packaging.rows"/> pcs / pallet<br/>
-                                </t>
-                            </div>
-                        </div>
-                    </t>
+                    <t t-raw="request.env['product.product'].get_packaging_info(line.product_id.id)"/>
                 </td>
             </xpath>
 
