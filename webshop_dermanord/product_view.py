@@ -459,6 +459,8 @@ class product_product(models.Model):
                     attr_sel += '<option class="css_not_available" value="%s"%s>%s</option>' %(v.attribute_value_ids[0].id, ' selected="selected"' if v.default_variant else '', v.attribute_value_ids[0].name)
                 attr_sel += '</select>'
             for variant in product.product_variant_ids:
+                visible_attrs = set(l.attribute_id.id for l in variant.attribute_line_ids if len(l.value_ids) > 1)
+                pricelist_line = variant.get_pricelist_chart_line(partner.property_product_pricelist)
                 page += u"""<section id="{attribute_value}" class="container mt8 oe_website_sale discount{hide_variant}">
     <div class="row">
         <div class="col-sm-4" groups="base.group_sale_manager">
@@ -538,7 +540,7 @@ class product_product(models.Model):
                     variant_ids = product.product_variant_ids.mapped('id'),
                     product_id = product.id,
                     attributes = product.attribute_line_ids[0].attribute_id.name if len(product.attribute_line_ids) > 0 else '',
-                    data_attribute_value_ids = '',
+                    data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price] for p in variant.product_variant_ids],
                     attr_sel = attr_sel,
                     product_price = variant.get_html_price_short(variant.id, partner.property_product_pricelist.id),
                     hide_add_to_cart = '' if ((variant.sale_ok and self.get_stock_info(variant.id) != _('Shortage') and partner.property_product_pricelist.for_reseller)) else ' hidden',
@@ -551,60 +553,7 @@ class product_product(models.Model):
             page_dict['page'] = base64.b64encode(page)
         return page_dict.get('page','').decode('base64')
 
-    # prices
-    @api.model
-    def html_product_price(self, product):
-        def price_format(price, dp=None):
-            if not dp:
-                dp = self.env['res.lang'].search_read([('code', '=', self.env.lang)], ['decimal_point'])
-                dp = dp and dp[0]['decimal_point'] or '.'
-            return ('%.2f' %price).replace('.', dp)
-        partner = self.env.user.partner_id.commercial_partner_id
-        is_reseller = False
-        if partner.property_product_pricelist and partner.property_product_pricelist.for_reseller:
-            is_reseller = True
-        flush_type = 'html_product_price'
-        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type, product.id, partner.property_product_pricelist.id, self.env.lang, request.session.get('device_type','md'))
-        key, page_dict = self.env['website'].get_page_dict(key_raw)
-        if not page_dict:
-            rec_price = price_format(product.price)
-            your_price = price_format(product.price)
-            rec_price_line = product.pricelist_chart_ids.filtered(lambda l: l.rec_price != 0.0)
-            if len(rec_price_line) > 0:
-                rec_price = price_format(rec_price_line.rec_price)
-                your_price = price_format(rec_price_line.rec_price)
-            if is_reseller:
-                reseller_price_line = product.pricelist_chart_ids.filtered(lambda l: l.pricelist_chart_id.pricelist == partner.property_product_pricelist)
-                if len(reseller_price_line) > 0:
-                    your_price = price_format(reseller_price_line[0].price)
-                page = """<p class="oe_price_h4 css_editable_mode_hidden decimal_precision dn_uppercase"/>
-<div>
-    {rec_currency}
-    {rec_price} ({rec_price_text})
-</div>
-<div>
-    {your_currency}
-    {your_price} ({your_price_text})
-</div>""".format(
-                rec_currency = '<span style="white-space: nowrap;">%s</span>' %partner.property_product_pricelist.currency_id.symbol,
-                rec_price = ('<span class="oe_recommended_price" style="white-space: nowrap;">%s</span>' %rec_price),
-                rec_price_text = _('rec incl. tax'),
-                your_currency = '<b style="white-space: nowrap;">%s</b>' %partner.property_product_pricelist.currency_id.symbol,
-                your_price = '<b class="oe_price" style="white-space: nowrap;">%s</b>' %your_price,
-                your_price_text = _('your excl. tax')
-            ).encode('utf-8')
-            else:
-                page = """<p class="oe_price_h4 css_editable_mode_hidden decimal_precision dn_uppercase">
-    {rec_currency}
-    {rec_price}
-</p>""".format(
-                rec_currency = '<span style="white-space: nowrap;">%s</span>' %partner.property_product_pricelist.currency_id.symbol,
-                rec_price = ('<b class="oe_recommended_price" style="white-space: nowrap;">%s</b>' %rec_price)
-            ).encode('utf-8')
-            self.env['website'].put_page_dict(key,flush_type,page)
-            page_dict['page'] = base64.b64encode(page)
-        return page_dict.get('page','').decode('base64')
-
+ 
     # Product publisher
     @api.model
     def html_product_publisher(self, product):
