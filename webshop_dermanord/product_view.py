@@ -464,11 +464,11 @@ class product_product(models.Model):
                 page += u"""<section id="{attribute_value}" class="container mt8 oe_website_sale discount{hide_variant}">
     <div class="row">
         <div class="col-sm-4" groups="base.group_sale_manager">
-            <div groups="base.group_website_publisher" t-ignore="true" class="pull-right css_editable_mode_hidden" style="">
-                <div class="btn-group js_publish_management {website_published}" data-id="{product_id}" data-object="product.product" t-att-data-controller="publish_controller">
+            <div groups="base.group_website_publisher" class="pull-right css_editable_mode_hidden" style="">
+                <div class="btn-group js_publish_management {website_published}" data-id="{product_id}" data-object="product.template">
                     <button class="btn btn-danger js_publish_btn">{not_published}</button>
                     <button class="btn btn-success js_publish_btn">{published}</button>
-                    <button type="button" t-attf-class="btn btn-default dropdown-toggle" id="dopprod-{product_id}" data-toggle="dropdown">
+                    <button type="button" class="btn btn-default dropdown-toggle" id="dopprod-{product_id}" data-toggle="dropdown">
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="'dopprod-{product_id}">
@@ -478,8 +478,9 @@ class product_product(models.Model):
                                 <span class="css_publish">Publish</span>
                             </a>
                         </li>
-                        <t t-raw="0"/>
-                        {action}
+                        <li>
+                            {action}
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -537,7 +538,7 @@ class product_product(models.Model):
                     published = _('Published'),
                     unpublish = _('Unpublish'),
                     publish = _('Publish'),
-                    action = '<a t-attf-href="/web#return_label=Website&amp;view_type=form&amp;model=product.product&amp;id=%s&amp;action=%s" title="%s">Edit</a>' %(variant.id, 'product.product_template_action', _('Edit in backend')),
+                    action = '<a href="/web#return_label=Website&amp;view_type=form&amp;model=product.template&amp;id=%s&amp;action=%s" title="%s">Edit</a>' %(product.id, 'product.product_template_action', _('Edit in backend')),
                     html_product_detail_image = variant.html_product_detail_image(variant),
                     product_name = variant.name,
                     default_code = variant.default_code,
