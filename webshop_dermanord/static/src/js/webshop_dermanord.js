@@ -6,11 +6,11 @@ var lang = $("html").attr("lang");
 var dn_loading_products = false;
 
 $("select.attr_sel").on('change', function() {
-    var variant_id = $(this).val();
+    var attribute_id = $(this).val();
     $.each($("section.oe_website_sale"), function() {
-        if ($(this).attr("id") == variant_id) {
+        if ($(this).attr("id") == attribute_id) {
             $(this).removeClass("hidden");
-            $("select.attr_sel").find("option[value='" + variant_id + "']").attr("selected", "selected");
+            $("select.attr_sel").find("option[value='" + attribute_id + "']").attr("selected", "selected");
         }
         else {
             $(this).addClass("hidden");
