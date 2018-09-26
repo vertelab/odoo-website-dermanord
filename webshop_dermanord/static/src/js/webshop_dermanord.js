@@ -718,32 +718,24 @@ $(document).ready(function(){
 function load_products_grid(page){
     var start_render = new Date();
     $('html,body').css('cursor', 'wait');
+    $("div#loading").removeClass("hidden");
     openerp.jsonRpc("/dn_shop_json_grid", "call", {
         'page': current_page.toString(),
     }).done(function(data){
+        console.log(data);
         var product_count = 0;
-        //~ page_count = data['page_count'];
         if (data['products'].length > 0) {
-            $("div#loading").removeClass("hidden");
-            //~ $("div#loading").addClass("hidden");
-            //~ $('html,body').css('cursor', 'default');
-            var products_content = '';
-            $.each(data['products'], function(key, info) {
-                data['products'][key]['url'] = data['url']
-                var content = openerp.qweb.render('products_item_grid', data['products'][key]);
-                products_content += content;
-                console.log('Product:', data['products'][key]['product_id'], 'load in', data['products'][key]['load_time']*1000, 'ms');
+            var grid = $("#desktop_product_grid");
+            $.each(data['products'], function(i) {
+                //~ console.log(data['products'][i]);
+                grid.append(data['products'][i]);
                 product_count ++;
             });
-            $("#desktop_product_grid").append(products_content);
             current_page ++;
             dn_loading_products = false;
-            $('html,body').css('cursor', 'default');
         }
-        else {
-            $('html,body').css('cursor', 'default');
-            $("div#loading").addClass("hidden");
-        }
+        $('html,body').css('cursor', 'default');
+        $("div#loading").addClass("hidden");
         var end_render  = new Date();
         var time_render = end_render.getTime() - start_render.getTime();
         console.log('Total', product_count, 'products load to html takes:', time_render, 'ms');
@@ -752,34 +744,24 @@ function load_products_grid(page){
 
 function load_products_list(page){
     var start_render = new Date();
+    $("div#loading").removeClass("hidden");
     $('html,body').css('cursor', 'wait');
     openerp.jsonRpc("/dn_shop_json_list", "call", {
         'page': current_page,
     }).done(function(data){
         var product_count = 0;
-        page_count = data['page_count'];
         product_length = data['products'].length;
-        if (page_count >= current_page && product_length != 0) {
-            $("div#loading").removeClass("hidden");
-            var products_content = '';
-            $.each(data['products'], function(key, info) {
-                data['products'][key]['url'] = data['url']
-                var content = openerp.qweb.render(
-                    'products_item_list',
-                    data['products'][key]);
-                products_content += content;
-                console.log('Product:', data['products'][key]['product_id'], 'load in', data['products'][key]['load_time']*1000, 'ms');
+        if (data['products'].length > 0) {
+            var tbody = $(".oe_website_sale").find('tbody');
+            $.each(data['products'], function(i) {
+                tbody.append(data['products'][i]);
                 product_count ++;
             });
-            $(".oe_website_sale").find('tbody').append(products_content);
             current_page ++;
             dn_loading_products = false;
-            $('html,body').css('cursor', 'default');
         }
-        if (product_length == 0) {
-            $('html,body').css('cursor', 'default');
-            $("div#loading").addClass("hidden");
-        }
+        $('html,body').css('cursor', 'default');
+        $("div#loading").addClass("hidden");
         var end_render  = new Date();
         var time_render = end_render.getTime() - start_render.getTime();
         console.log('Total', product_count, 'products load to html takes:', time_render, 'ms');

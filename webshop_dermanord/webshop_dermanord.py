@@ -924,8 +924,13 @@ class WebsiteSale(website_sale):
         if not request.context.get('pricelist'):
             request.context['pricelist'] = int(self.get_pricelist())
         values = {
-            'products': request.env['product.template'].get_thumbnail_default_variant(session.get('current_domain'),request.context['pricelist'],order=request.session.get('current_order'),limit=6,offset=21+int(page)*6),
+            'products': request.env['product.template'].get_thumbnail_default_variant(
+                request.session.get('current_domain'),
+                request.context['pricelist'],
+                order=request.session.get('current_order'),
+                limit=6, offset=PPG+int(page)*6),
         }
+        _logger.warn(values)
         return values
 
     @http.route(['/dn_shop_json_list'], type='json', auth='public', website=True)

@@ -295,7 +295,7 @@ class product_product(models.Model):
         return thumbnail
 
     @api.model
-    def get_packaging_info(self,product_id):
+    def get_packaging_info(self, product_id):
         product = self.env['product.product'].sudo().search_read([('id','=',product_id)],['packaging_ids'])[0]
         packagings = self.env['product.packaging'].sudo().browse(product['packaging_ids'])
         html = ''
@@ -319,7 +319,7 @@ class product_product(models.Model):
                                 width="""<b>%s</b> %s mm<br/>""" % (_('Width:') ,packaging.ul.width) if packaging.ul.width else '',
                                 length="""<b>%s</b> %s mm<br/>""" % (_('Length:') ,packaging.ul.length) if packaging.ul.length else '',
                                 height="""<b>%s</b> %s mm<br/>""" % (_('Height:') ,packaging.ul.height) if packaging.ul.height else '',
-                                ul_container_name="""<b>%s<br/>""" % packaging.ul_container.name if packaging.ul_container else '',
+                                ul_container_name="""<b>%s</b><br/>""" % packaging.ul_container.name if packaging.ul_container else '',
                                 ul_qty="""<b>%s</b> %s %s<br/>""" % (_('Quantity (DFP):') ,packaging.ul_qty * packaging.rows,_('boxes / pallet')) if packaging.ul_container else '',
                                 kfp="""<b>%s</b> %s %s<br/>""" % (_('Quantity (KFP):') ,packaging.qty * packaging.ul_qty * packaging.rows,_('pcs / pallet')) if packaging.ul_container else '',
                             )
@@ -344,7 +344,7 @@ class product_product(models.Model):
         flush_type = 'product_list_row'
         ribbon_promo = None
         ribbon_limited = None
-        for product in self.env['product.product'].search_read(domain, fields=['id','name', 'default_code','type', 'is_offer_product_reseller', 'is_offer_product_consumer', 'product_tmpl_id', 'sale_ok','campaign_ids','website_style_ids_variant'], limit=limit, order=order,offset=offset):
+        for product in self.env['product.product'].search_read(domain, fields=['id','fullname', 'default_code','type', 'is_offer_product_reseller', 'is_offer_product_consumer', 'product_tmpl_id', 'sale_ok','campaign_ids','website_style_ids_variant'], limit=limit, order=order,offset=offset):
             key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,product['id'],pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
             key,page_dict = self.env['website'].get_page_dict(key_raw)
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
@@ -429,7 +429,7 @@ class product_product(models.Model):
                     product_dfp=self.get_packaging_info(product['id']) or '',
                     shop_widget='{shop_widget}',
                     product_stock='{product_stock}',
-                    product_name=product['name'],
+                    product_name=product['fullname'],
                     product_price=self.env['product.product'].get_html_price_short(product['id'], pricelist),
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.id in product['website_style_ids_variant'] else '',
@@ -464,11 +464,11 @@ class product_product(models.Model):
                 page += u"""<section id="{attribute_value}" class="container mt8 oe_website_sale discount{hide_variant}">
     <div class="row">
         <div class="col-sm-4" groups="base.group_sale_manager">
-            <div groups="base.group_website_publisher" t-ignore="true" class="pull-right css_editable_mode_hidden" style="">
-                <div class="btn-group js_publish_management {website_published}" data-id="{product_id}" data-object="product.product" t-att-data-controller="publish_controller">
+            <div groups="base.group_website_publisher" class="pull-right css_editable_mode_hidden" style="">
+                <div class="btn-group js_publish_management {website_published}" data-id="{product_id}" data-object="product.template">
                     <button class="btn btn-danger js_publish_btn">{not_published}</button>
                     <button class="btn btn-success js_publish_btn">{published}</button>
-                    <button type="button" t-attf-class="btn btn-default dropdown-toggle" id="dopprod-{product_id}" data-toggle="dropdown">
+                    <button type="button" class="btn btn-default dropdown-toggle" id="dopprod-{product_id}" data-toggle="dropdown">
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="'dopprod-{product_id}">
@@ -478,8 +478,9 @@ class product_product(models.Model):
                                 <span class="css_publish">Publish</span>
                             </a>
                         </li>
-                        <t t-raw="0"/>
-                        {action}
+                        <li>
+                            {action}
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -537,7 +538,7 @@ class product_product(models.Model):
                     published = _('Published'),
                     unpublish = _('Unpublish'),
                     publish = _('Publish'),
-                    action = '<a t-attf-href="/web#return_label=Website&amp;view_type=form&amp;model=product.product&amp;id=%s&amp;action=%s" title="%s">Edit</a>' %(variant.id, 'product.product_template_action', _('Edit in backend')),
+                    action = '<a href="/web#return_label=Website&amp;view_type=form&amp;model=product.template&amp;id=%s&amp;action=%s" title="%s">Edit</a>' %(product.id, 'product.product_template_action', _('Edit in backend')),
                     html_product_detail_image = variant.html_product_detail_image(variant),
                     product_name = variant.name,
                     default_code = variant.default_code,
@@ -565,28 +566,6 @@ class product_product(models.Model):
                 stock['%s_hide_add_to_cart' % variant.id] = 'hidden' if not in_stock else ''
         return page_dict.get('page','').decode('base64').format(**stock)
 
-
-    # Product publisher
-    @api.model
-    def html_product_publisher(self, product):
-        partner = self.env.user.partner_id.commercial_partner_id
-        flush_type = 'html_product_name_code'
-        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type, product.id, partner.property_product_pricelist.id, self.env.lang, request.session.get('device_type','md'))
-        key, page_dict = self.env['website'].get_page_dict(key_raw)
-        if not page_dict:
-            page = """<div class="col-sm-4" groups="base.group_sale_manager">
-    <t t-call="website.publish_management">
-        <t t-set="object" t-value="{product}"/>
-        <t t-set="publish_edit" t-value="True"/>
-        <t t-set="action" t-value="'product.product_template_action'"/>
-    </t>
-</div>""".format(
-                product = product
-            ).encode('utf-8')
-            self.env['website'].put_page_dict(key,flush_type,page)
-            page_dict['page'] = base64.b64encode(page)
-        return page_dict.get('page','').decode('base64')
-
     # right side product.description, directly after stock_status
     @api.model
     def html_product_detail_desc(self, product):
@@ -613,7 +592,7 @@ class product_product(models.Model):
                         facet_html += '<span>, </span>'
                 facet_html += '</div>'
 
-            page = """<div>
+            page = u"""<div>
     {public_desc}
     <h4 class="show_more_facet text-center hidden-lg hidden-md hidden-sm" style="text-decoration: underline;">{more_info}<i class="fa fa-angle-down"></i></h4>
     <div class="container facet_container hidden-xs">
@@ -689,7 +668,7 @@ class product_product(models.Model):
                 for i in product_ingredients:
                     ingredients_images_nav_html += '<a href="/dn_shop/?current_ingredient=%s"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></div></a>' %(i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
 
-            page = """<div id="image_big" class="tab-content">
+            page = u"""<div id="image_big" class="tab-content">
     {product_images_html}
 </div>
 <ul id="image_nav" class="nav nav-pills">
@@ -740,7 +719,7 @@ class product_product(models.Model):
                     ingredients_carousel_html += '<div class="item ingredient_desc%s"><a href="/dn_shop/?current_ingredient=%s"><img class="img img-responsive" style="margin: auto; display: block;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></a></div>' %(' active' if idx == 0 else '', i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
                     ingredients_carousel_nav_html += '<li class="%s" data-slide-to="%s" data-target="#ingredient_carousel"></li>' %(' active' if idx == 0 else '', idx)
 
-            page = """<div id="ingredients_div_mobile">
+            page = u"""<div id="ingredients_div_mobile">
     <div class="container mb16 hidden-lg hidden-md hidden-sm">
         <h4 class="text-center dn_uppercase">{ingredients_title}</h4>
         <div class="col-md-12">
