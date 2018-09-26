@@ -605,6 +605,7 @@ class product_product(models.Model):
         key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type, variant_id, pricelist.id, self.env.lang, request.session.get('device_type','md'))
         key, page_dict = self.env['website'].get_page_dict(key_raw)
         if not page_dict:
+            render_start = timer()
             page = ''
             attr_sel = ''
             if len(product.attribute_line_ids) > 0:
@@ -694,7 +695,9 @@ class product_product(models.Model):
     </div>
     {html_product_ingredients_mobile}
 </section>
-{website_description}""".format(
+{website_description}
+<!-- key {key} key_raw {key_raw} render_time {render_time} -->
+<!-- http:/mcpage/{key} http:/mcpage/{key}/delete  http:/mcmeta/{key} -->""".format(
                     attribute_value = variant.attribute_value_ids[0].id if len(product.attribute_line_ids) > 0 else '',
                     product_id = product.id,
                     variant_id = variant.id,
@@ -721,7 +724,10 @@ class product_product(models.Model):
                     html_product_detail_desc = html_product_detail_desc(variant, partner, pricelist),
                     html_product_detail_image = html_product_detail_image(variant, partner),
                     html_product_ingredients_mobile = html_product_ingredients_mobile(variant, partner),
-                    website_description = u'<div itemprop="description" class="oe_structure mt16" id="product_full_description">%s</div>' %variant.website_description if variant.website_description else ''
+                    website_description = u'<div itemprop="description" class="oe_structure mt16" id="product_full_description">%s</div>' %variant.website_description if variant.website_description else '',
+                    key_raw=key_raw,
+                    key=key,
+                    render_time='%s' % (timer() - render_start)
                 ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
             page_dict['page'] = base64.b64encode(page)
