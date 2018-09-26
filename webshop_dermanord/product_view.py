@@ -465,13 +465,13 @@ class product_product(models.Model):
     <div class="row">
         <div class="col-sm-4" groups="base.group_sale_manager">
             <div groups="base.group_website_publisher" t-ignore="true" class="pull-right css_editable_mode_hidden" style="">
-                <div class="btn-group js_publish_management {website_published}" data-id="{variant_id}" data-object="product.product" t-att-data-controller="publish_controller">
+                <div class="btn-group js_publish_management {website_published}" data-id="{product_id}" data-object="product.product" t-att-data-controller="publish_controller">
                     <button class="btn btn-danger js_publish_btn">{not_published}</button>
                     <button class="btn btn-success js_publish_btn">{published}</button>
-                    <button type="button" t-attf-class="btn btn-default dropdown-toggle" id="dopprod-{variant_id}" data-toggle="dropdown">
+                    <button type="button" t-attf-class="btn btn-default dropdown-toggle" id="dopprod-{product_id}" data-toggle="dropdown">
                         <span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="'dopprod-{variant_id}">
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="'dopprod-{product_id}">
                         <li>
                             <a href="#" class="js_publish_btn">
                                 <span class="css_unpublish">Unpublish</span>
@@ -493,7 +493,7 @@ class product_product(models.Model):
             <h1 itemprop="name">{product_name}</h1><h4 class="text-muted default_code">{default_code}</h4>
             <form action="/shop/cart/update" class="js_add_cart_variants" data-attribute_value_ids="{variant_ids}" method="POST">
                 <div class="js_product">
-                    <input class="product_id" name="product_id" value="{product_id}" type="hidden">
+                    <input class="product_id" name="product_id" value="{variant_id}" type="hidden">
                     <ul class="list-unstyled js_add_cart_variants nav-stacked" data-attribute_value_ids="{data_attribute_value_ids}">
                         <li>
                             <strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">{attributes}</strong>
@@ -519,6 +519,9 @@ class product_product(models.Model):
                     <a id="add_to_cart" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center{hide_add_to_cart}" groups="base.group_user,base.group_portal" disable="1">{add_to_cart}</a>
                 </div>
             </form>
+            <div class="stock_status">
+                <span>{stock_status}</span>
+            </div>
             {html_product_detail_desc}
         </div>
     </div>
@@ -526,7 +529,8 @@ class product_product(models.Model):
 </section>
 {website_description}""".format(
                     attribute_value = variant.attribute_value_ids[0].id if len(product.attribute_line_ids) > 0 else '',
-                    variant_id = 'variant_%s' %variant.id,
+                    product_id = product.id,
+                    variant_id = variant.id,
                     hide_variant = '' if variant.id == variant_id else ' hidden',
                     website_published = variant.website_published and 'css_published' or 'css_unpublished',
                     not_published = _('Not Published'),
@@ -538,13 +542,13 @@ class product_product(models.Model):
                     product_name = variant.name,
                     default_code = variant.default_code,
                     variant_ids = product.product_variant_ids.mapped('id'),
-                    product_id = product.id,
                     attributes = product.attribute_line_ids[0].attribute_id.name if len(product.attribute_line_ids) > 0 else '',
                     data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, 1] for p in product.product_variant_ids],
                     attr_sel = attr_sel,
                     product_price = variant.get_html_price_short(variant.id, partner.property_product_pricelist.id),
                     hide_add_to_cart = '' if ((variant.sale_ok and self.get_stock_info(variant.id) != _('Shortage') and partner.property_product_pricelist.for_reseller)) else ' hidden',
                     add_to_cart = _('Add to cart'),
+                    stock_status = '',
                     html_product_detail_desc = variant.html_product_detail_desc(variant),
                     html_product_ingredients_mobile = variant.html_product_ingredients_mobile(variant),
                     website_description = '<div itemprop="description" class="oe_structure mt16" id="product_full_description">%s</div>' %variant.website_description if variant.website_description else ''
