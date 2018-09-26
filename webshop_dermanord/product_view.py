@@ -79,7 +79,6 @@ THUMBNAIL = u"""
                         </h4>
                         <div class="product_price">
                             <b class="text-muted">
-                                <h5>{price_from}</h5>
                                 <h4>
                                     {product_price}
                                 </h4>
@@ -547,24 +546,27 @@ class product_product(models.Model):
                     data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, '%s_in_stock' % p.id] for p in product.product_variant_ids],
                     attr_sel = attr_sel,
                     product_price = variant.get_html_price_short(variant.id, partner.property_product_pricelist.id),
-                    hide_add_to_cart = '{%s_hide_add_to_cart}',
+                    # ~ hide_add_to_cart = '{%s_hide_add_to_cart}',
+                    hide_add_to_cart = '' if ((variant.sale_ok and self.get_stock_info(variant.id) != _('Shortage') and partner.property_product_pricelist.for_reseller)) else ' hidden',
                     add_to_cart = _('Add to cart'),
-                    stock_status = '{%s_stock_status}' % variant.id,
+                    # ~ stock_status = '{%s_stock_status}' % variant.id,
+                    stock_status = '',
                     html_product_detail_desc = variant.html_product_detail_desc(variant),
                     html_product_ingredients_mobile = variant.html_product_ingredients_mobile(variant),
                     website_description = u'<div itemprop="description" class="oe_structure mt16" id="product_full_description">%s</div>' %variant.website_description if variant.website_description else ''
                 ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
             page_dict['page'] = base64.b64encode(page)
-        stock = {}
-        for variant in product.product_variant_ids:
-            if not partner.property_product_pricelist.for_reseller:
-                stock['%s_stock_status' % variant.id] = ''
-                stock['%s_hide_add_to_cart' % variant.id] = 'hidden'
-            else:
-                in_stock,in_stock_state,stock['%s_stock_status' % variant.id] = self.get_stock_info(variant.id)
-                stock['%s_hide_add_to_cart' % variant.id] = 'hidden' if not in_stock else ''
-        return page_dict.get('page','').decode('base64').format(**stock)
+        # ~ stock = {}
+        # ~ for variant in product.product_variant_ids:
+            # ~ if not partner.property_product_pricelist.for_reseller:
+                # ~ stock['%s_stock_status' % variant.id] = ''
+                # ~ stock['%s_hide_add_to_cart' % variant.id] = 'hidden'
+            # ~ else:
+                # ~ in_stock,in_stock_state,stock['%s_stock_status' % variant.id] = self.get_stock_info(variant.id)
+                # ~ stock['%s_hide_add_to_cart' % variant.id] = 'hidden' if not in_stock else ''
+        # ~ return page_dict.get('page','').decode('base64').format(**stock)
+        return page_dict.get('page','').decode('base64')
 
     # right side product.description, directly after stock_status
     @api.model
@@ -624,8 +626,8 @@ class product_product(models.Model):
                 less_info = _('Less info')
             ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
-            page_dict['page'] = page
-        return page_dict.get('page','')
+            page_dict['page'] = base64.b64encode(page)
+        return page_dict.get('page','').decode('base64')
 
     # left side product image with image nav bar, product ingredients with nav bar
     @api.model
@@ -652,7 +654,7 @@ class product_product(models.Model):
                     ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('Limited Edition')
             offer_wrapper = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">%s</div></div>' %_('Offer') if product.is_offer_product_reseller or product.is_offer_product_consumer else ''
 
-            product_images = product.image_attachment_ids.sorted(key=lambda a: a.sequence)
+            product_images = product.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
             product_images_html = ''
             product_images_nav_html = ''
             if len(product_images) > 0:
@@ -700,8 +702,8 @@ class product_product(models.Model):
                 ingredients_desc = product.ingredients
             ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
-            page_dict['page'] = page
-        return page_dict.get('page','')
+            page_dict['page'] = base64.b64encode(page)
+        return page_dict.get('page','').decode('base64')
 
     # product ingredients in mobile, directly after <section id="product_detail"></section>
     @api.model
@@ -746,8 +748,8 @@ class product_product(models.Model):
                 ingredients_desc = product.ingredients
             ).encode('utf-8')
             self.env['website'].put_page_dict(key,flush_type,page)
-            page_dict['page'] = page
-        return page_dict.get('page','')
+            page_dict['page'] = base64.b64encode(page)
+        return page_dict.get('page','').decode('base64')
 
 
 class Website(models.Model):
@@ -808,4 +810,3 @@ class Website(models.Model):
             }
         # ~ MEMCACHED.mc_save(key, page_dict,24 * 60 * 60 * 7)  # One week
         memcached.mc_save(key, page_dict,60*60*24*7)  # One week
-
