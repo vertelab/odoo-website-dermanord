@@ -458,8 +458,8 @@ class product_product(models.Model):
                 for v in product.product_variant_ids:
                     attr_sel += '<option class="css_not_available" value="%s"%s>%s</option>' %(v.attribute_value_ids[0].id, ' selected="selected"' if v.default_variant else '', v.attribute_value_ids[0].name)
                 attr_sel += '</select>'
+            visible_attrs = set(l.attribute_id.id for l in product.attribute_line_ids if len(l.value_ids) > 1)
             for variant in product.product_variant_ids:
-                visible_attrs = set(l.attribute_id.id for l in variant.attribute_line_ids if len(l.value_ids) > 1)
                 pricelist_line = variant.get_pricelist_chart_line(partner.property_product_pricelist)
                 page += u"""<section id="{attribute_value}" class="container mt8 oe_website_sale discount{hide_variant}">
     <div class="row">
@@ -540,7 +540,7 @@ class product_product(models.Model):
                     variant_ids = product.product_variant_ids.mapped('id'),
                     product_id = product.id,
                     attributes = product.attribute_line_ids[0].attribute_id.name if len(product.attribute_line_ids) > 0 else '',
-                    data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price] for p in variant.product_variant_ids],
+                    data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, 1] for p in product.product_variant_ids],
                     attr_sel = attr_sel,
                     product_price = variant.get_html_price_short(variant.id, partner.property_product_pricelist.id),
                     hide_add_to_cart = '' if ((variant.sale_ok and self.get_stock_info(variant.id) != _('Shortage') and partner.property_product_pricelist.for_reseller)) else ' hidden',
@@ -553,7 +553,7 @@ class product_product(models.Model):
             page_dict['page'] = base64.b64encode(page)
         return page_dict.get('page','').decode('base64')
 
- 
+
     # Product publisher
     @api.model
     def html_product_publisher(self, product):
