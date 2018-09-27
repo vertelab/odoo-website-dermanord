@@ -557,7 +557,7 @@ class product_product(models.Model):
                 ingredients_images_nav_html = ingredients_images_nav_html,
                 current_product_id = product.id,
                 ingredients = _('ingredients:'),
-                ingredients_desc = product.ingredients
+                ingredients_desc = product.ingredients or ''
             )
             return page
 
