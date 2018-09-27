@@ -106,6 +106,11 @@ class product_template(models.Model):
     # ~ product_variant_count = fields.Integer(string='# of Product Variants', compute='_compute_product_variant_count', store=True)
 
     @api.multi
+    def dn_clear_cache(self):
+        for key in memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self]):
+            memcached.mc_delete(key)
+
+    @api.multi
     @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_medium', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids')
     def _get_all_variant_data(self):
         placeholder = '/web/static/src/img/placeholder.png'
@@ -178,7 +183,11 @@ class product_template(models.Model):
         ribbon_limited = None
         for product in self.env['product.template'].search_read(domain, fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=limit, order=order,offset=offset):
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
-            key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,product['id'],pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
+            key_raw = 'dn_shop %s %s %s %s %s %s %s %s' % (
+                self.env.cr.dbname, flush_type, product['id'], pricelist.id,
+                self.env.lang, request.session.get('device_type','md'),
+                self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
+                ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))  # db flush_type produkt prislista språk webeditor kundgrupper, 
             key,page_dict = self.env['website'].get_page_dict(key_raw)
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
             if not page_dict:
@@ -219,13 +228,18 @@ class product_template(models.Model):
                     price_from=_('Price From'),
                 ).encode('utf-8')
                 # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
-                self.env['website'].put_page_dict(key,flush_type,page)
+                self.env['website'].put_page_dict(key, flush_type, page, 'product.template,%s' % product['id'])
                 page_dict['page'] = base64.b64encode(page)
-            thumbnail.append(page_dict.get('page','').decode('base64'))
+            thumbnail.append(page_dict.get('page', '').decode('base64'))
         return thumbnail
 
 class product_product(models.Model):
     _inherit = 'product.product'
+
+    @api.multi
+    def dn_clear_cache(self):
+        for key in memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self]):
+            memcached.mc_delete(key)
 
     @api.one
     @api.depends('product_tmpl_id.campaign_changed')
@@ -288,9 +302,9 @@ class product_product(models.Model):
                     price_from=_('Price From'),
                 ).encode('utf-8')
                 _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
-                self.env['website'].put_page_dict(key,flush_type,page)
+                self.env['website'].put_page_dict(key, flush_type, page, 'product.template,%s' % product['id'])
                 page_dict['page'] = base64.b64encode(page)
-            thumbnail.append(page_dict.get('page','').decode('base64'))
+            thumbnail.append(page_dict.get('page', '').decode('base64'))
             _logger.warn('get_thumbnail_default_variant (thiumnails)--------> %s' % (thumbnail))
         return thumbnail
 
@@ -438,9 +452,10 @@ class product_product(models.Model):
                     key=key,
                     render_time='%s' % (timer() - render_start),
                 ).encode('utf-8')
-                self.env['website'].put_page_dict(key,flush_type,page)
+                self.env['website'].put_page_dict(key, flush_type, page, 'product.product,%s' % product['id'])
                 page_dict['page'] = base64.b64encode(page)
-            rows.append(page_dict.get('page','').decode('base64').format(shop_widget='hidden' if self.get_stock_info(product['id'])[0] else '', product_stock=self.get_stock_info(product['id']))[2])
+            stock_info = self.get_stock_info(product['id'])
+            rows.append(page_dict.get('page', '').decode('base64').format(shop_widget='hidden' if stock_info[0] else '', product_stock=stock_info[2]))
         return rows
 
     # Product detail view with all variants
@@ -602,7 +617,11 @@ class product_product(models.Model):
         partner = self.env.user.partner_id.commercial_partner_id
         pricelist = partner.property_product_pricelist
         flush_type = 'get_product_detail'
-        key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type, variant_id, pricelist.id, self.env.lang, request.session.get('device_type','md'))
+        key_raw = 'dn_shop %s %s %s %s %s %s %s %s' % (
+            self.env.cr.dbname, flush_type, variant_id, pricelist.id, self.env.lang,
+            request.session.get('device_type', 'md'),
+            self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
+            ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))
         key, page_dict = self.env['website'].get_page_dict(key_raw)
         if not page_dict:
             render_start_tot = timer()
@@ -732,7 +751,7 @@ class product_product(models.Model):
                     render_time='%s' % (timer() - render_start)
                 ).encode('utf-8')
             page += "\n<!-- render_time_total %s -->\n" % (timer() - render_start_tot)
-            self.env['website'].put_page_dict(key,flush_type,page)
+            self.env['website'].put_page_dict(key, flush_type, page, '%s,%s' % (product._model, product.id))
             page_dict['page'] = base64.b64encode(page)
         stock = {}
         for variant in product.product_variant_ids:
@@ -750,7 +769,7 @@ class Website(models.Model):
     _inherit = 'website'
 
     @api.model
-    def get_page_dict(self,key_raw):
+    def get_page_dict(self, key_raw):
         # ~ _logger.warn('get_page_dict %s' % key_raw)
         key = str(memcached.MEMCACHED_HASH(key_raw.encode('latin-1')))
         # ~ page_dict = None
@@ -784,7 +803,7 @@ class Website(models.Model):
         return key,page_dict
 
     @api.model
-    def put_page_dict(self,key,flush_type,page):
+    def put_page_dict(self, key, flush_type, page, path):
         page_dict = {
             # ~ 'ETag':     '%s' % MEMCACHED_HASH(page),
             # ~ 'max-age':  max_age,
@@ -793,7 +812,7 @@ class Website(models.Model):
             # ~ 'key_raw':  key_raw,
             # ~ 'render_time': '%.3f sec' % (timer()-render_start),
             # ~ 'controller_time': '%.3f sec' % (render_start-controller_start),
-            'path':     'none',
+            'path':     path,
             'db':       self.env.cr.dbname,
             'page':     base64.b64encode(page),
             # ~ 'date':     http_date(),
