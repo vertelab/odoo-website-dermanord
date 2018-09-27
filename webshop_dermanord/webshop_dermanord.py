@@ -921,6 +921,7 @@ class WebsiteSale(website_sale):
 
     @http.route(['/dn_shop_json_grid'], type='json', auth='public', website=True)
     def dn_shop_json_grid(self, page=0, **kw):
+        _logger.warn('<<<<<<<<<<<<<<< %s' %request.env.lang)
         if not request.context.get('pricelist'):
             request.context['pricelist'] = int(self.get_pricelist())
         values = {
