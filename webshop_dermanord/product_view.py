@@ -699,9 +699,7 @@ class product_product(models.Model):
                     <!-- <input id="sale_ok" name="sale_ok" type="hidden" t-att-value="product.sale_ok" /> -->
                     <h5>
                         <div>
-                            <span>{product_startdate}</span>
-                            <br>
-                            <span>{product_stopdate}</span>
+                            <span>{product_startdate}</span>&nbsp;<span>{product_stopdate}</span>
                         </div>
                     </h5>
                 </div>
@@ -738,8 +736,8 @@ class product_product(models.Model):
                     product_price = variant.get_html_price_long(pricelist),
                     hide_add_to_cart = '{%s_hide_add_to_cart}' % variant.id,
                     add_to_cart = _('Add to cart'),
-                    product_startdate = _('Start: %s') %campaign.date_start if campaign and campaign.date_start else '',
-                    product_stopdate = _('Stop: %s') %campaign.date_stop if campaign and campaign.date_stop else '',
+                    product_startdate = _('Available on %s') %campaign.date_start if campaign and campaign.date_start else '',
+                    product_stopdate = _('to %s') %campaign.date_stop if campaign and campaign.date_stop else '',
                     stock_status = '{%s_stock_status}' % variant.id,
                     html_product_detail_desc = html_product_detail_desc(variant, partner, pricelist),
                     html_product_detail_image = html_product_detail_image(variant, partner),

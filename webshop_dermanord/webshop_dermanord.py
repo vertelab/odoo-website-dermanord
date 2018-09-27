@@ -945,60 +945,21 @@ class WebsiteSale(website_sale):
 
     @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
     def dn_product(self, product, category='', search='', **kwargs):
-        # ~ cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
-        # ~ category_obj = pool['product.public.category']
-        # ~ template_obj = pool['product.template']
-
-        # ~ context.update(active_id=product.id)
-
-        # ~ if category:
-            # ~ category = category_obj.browse(cr, uid, int(category), context=context)
-            # ~ category = category if category.exists() else False
-
-        # ~ attrib_list = request.httprequest.args.getlist('attrib')
-        # ~ attrib_values = [map(int,v.split("-")) for v in attrib_list if v]
-        # ~ attrib_set = set([v[1] for v in attrib_values])
-
-        # ~ keep = QueryURL('/dn_shop', category=category and category.id, search=search, attrib=attrib_list)
-
-        # ~ category_ids = category_obj.search(cr, uid, [], context=context)
-        # ~ category_list = category_obj.name_get(cr, uid, category_ids, context=context)
-        # ~ category_list = sorted(category_list, key=lambda category: category[1])
-
-        # ~ pricelist = self.get_pricelist()
-
-        # ~ from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
-        # ~ to_currency = pricelist.currency_id
-        # ~ compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
-
-        # ~ if not request.context.get('pricelist'):
-            # ~ request.context['pricelist'] = int(self.get_pricelist())
-            # ~ product = template_obj.browse(cr, uid, int(product), context=context)
-
-        # ~ request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
-        # ~ request.session['sort_name'], request.session['sort_order'] = request.website.get_chosen_order(request.website.get_form_values())
-
-        # ~ values = {
-            # ~ 'search': search,
-            # ~ 'category': category,
-            # ~ 'pricelist': pricelist,
-            # ~ 'attrib_values': attrib_values,
-            # ~ 'compute_currency': compute_currency,
-            # ~ 'attrib_set': attrib_set,
-            # ~ 'keep': keep,
-            # ~ 'url': request.session.get('url'),
-            # ~ 'category_list': category_list,
-            # ~ 'main_object': product,
-            # ~ 'product': product,
-            # ~ 'show_purchase_button': self.show_purchase_button(product.get_default_variant()),
-            # ~ 'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
-            # ~ 'shop_footer': True,
-        # ~ }
-        # ~ return request.website.render("website_sale.product", values)
-
         values = {
             'url': request.session.get('url'),
             'detail': request.env['product.product'].get_product_detail(product, product.get_default_variant().id or product.product_variant_ids[0].id),
+            'shop_footer': True,
+        }
+        return request.website.render("webshop_dermanord.product_detail_view", values)
+
+    @http.route([
+        '/dn_shop/variant/<model("product.product"):variant>'
+    ], type='http', auth="public", website=True)
+    def dn_product_variant(self, variant, category='', search='', **kwargs):
+        product = variant.sudo().product_tmpl_id
+        values = {
+            'url': request.session.get('url'),
+            'detail': request.env['product.product'].get_product_detail(product, variant.id),
             'shop_footer': True,
         }
         return request.website.render("webshop_dermanord.product_detail_view", values)
@@ -1043,69 +1004,7 @@ class WebsiteSale(website_sale):
             'all_products_loaded': True if len(products) < PPG else False,
         })
 
-    @http.route([
-        '/dn_shop/variant/<model("product.product"):variant>'
-    ], type='http', auth="public", website=True)
-    def dn_product_variant(self, variant, category='', search='', **kwargs):
-        # ~ cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
-        # ~ category_obj = pool['product.public.category']
-        # ~ template_obj = pool['product.template']
 
-        # ~ context.update(active_id=variant.sudo().product_tmpl_id.id)
-
-        # ~ if category:
-            # ~ category = category_obj.browse(cr, uid, int(category), context=context)
-            # ~ category = category if category.exists() else False
-
-        # ~ attrib_list = request.httprequest.args.getlist('attrib')
-        # ~ attrib_values = [map(int,v.split("-")) for v in attrib_list if v]
-        # ~ attrib_set = set([v[1] for v in attrib_values])
-
-        # ~ keep = QueryURL('/dn_shop', category=category and category.id, search=search, attrib=attrib_list)
-
-        # ~ category_ids = category_obj.search(cr, uid, [], context=context)
-        # ~ category_list = category_obj.name_get(cr, uid, category_ids, context=context)
-        # ~ category_list = sorted(category_list, key=lambda category: category[1])
-
-        # ~ pricelist = self.get_pricelist()
-
-        # ~ from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
-        # ~ to_currency = pricelist.currency_id
-        # ~ compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
-
-        # ~ if not context.get('pricelist'):
-            # ~ context['pricelist'] = int(self.get_pricelist())
-            # ~ product = template_obj.browse(cr, uid, variant.sudo().product_tmpl_id.id, context=context)
-
-        # ~ request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
-        # ~ request.session['sort_name'], request.session['sort_order'] = request.website.get_chosen_order(request.website.get_form_values())
-
-        # ~ values = {
-            # ~ 'search': search,
-            # ~ 'category': category,
-            # ~ 'pricelist': pricelist,
-            # ~ 'attrib_values': attrib_values,
-            # ~ 'compute_currency': compute_currency,
-            # ~ 'attrib_set': attrib_set,
-            # ~ 'keep': keep,
-            # ~ 'url': request.session.get('url'),
-            # ~ 'category_list': category_list,
-            # ~ 'main_object': product,
-            # ~ 'product': product,
-            # ~ 'product_product': variant,
-            # ~ 'show_purchase_button': self.show_purchase_button(variant),
-            # ~ 'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
-            # ~ 'shop_footer': True,
-        # ~ }
-        # ~ return request.website.render("website_sale.product", values)
-
-        product = variant.sudo().product_tmpl_id
-        values = {
-            'url': request.session.get('url'),
-            'detail': request.env['product.product'].get_product_detail(product, variant.id),
-            'shop_footer': True,
-        }
-        return request.website.render("webshop_dermanord.product_detail_view", values)
 
     @http.route(['/shop/cart'], type='http', auth="public", website=True)
     def cart(self, **post):
@@ -1176,73 +1075,13 @@ class WebsiteSale(website_sale):
         raise Warning(kw)
         return value
 
-
-
-    @http.route(['/get/product_variant_data'], type='json', auth="public", website=True)
-    def product_variant_data(self, product_id=None, **kw):
-        is_reseller = False
-        if request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller:
-            is_reseller = True
-        value = {}
-        if product_id:
-            product = request.env['product.product'].sudo().browse(int(product_id))
-            if product:
-                if not self.FACETS.get(product.id,False):
-                    self.FACETS[product.id] = {}
-                    if len(product.facet_line_ids) > 0:
-                        for line in product.sudo().facet_line_ids:
-                            self.FACETS[product.id][line.facet_id.name] = []
-                            for v in line.value_ids:
-                                self.FACETS[product.id].get(line.facet_id.name,[]).append([line.facet_id.id, v.name, v.id])
-                ingredients_description = product.ingredients or ''
-                ingredients = []
-                product_ingredients = request.env['product.ingredient'].search([('product_ids', 'in', product_id)], order='sequence')
-                if len(product_ingredients) > 0:
-                    for i in product_ingredients:
-                        ingredients.append([i.id if i.image else 0, i.name])
-
-                offer = False
-                if product in product.get_campaign_variants(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
-                    offer = True
-                elif product.product_tmpl_id in product.product_tmpl_id.get_campaign_tmpl(for_reseller=request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller):
-                    offer = True
-
-                sale_ribbon = request.env.ref('website_sale.image_promo')
-
-                if len(product.product_tmpl_id.public_categ_ids) > 0: # remove all previously category, facet and reset it according to the current product
-                    for_values = request.session.get('form_values')
-                    for k,v in for_values.items():
-                        if k.split('_')[0] == 'facet' or 'category':
-                            del for_values[k]
-                    request.session['form_values'] = for_values
-                    value['category'] = '&'.join(['category_%s=%s' %(c.id, c.id) for c in product.product_tmpl_id.public_categ_ids])
-
-                value['id'] = product.id
-                # ~ value['instock'] = self.in_stock(product.id)[0]
-                # ~ value['stock_status'] = self.in_stock(product.id)[1]
-                # ~ value['public_user'] = True if (not self.in_stock(product.id)[0] and self.in_stock(product.id)[1] == '') else False
-                value['images'] = product.get_image_attachment_ids()
-                value['facets'] = self.FACETS[product.id]
-                value['ingredients_description'] = ingredients_description
-                value['ingredients'] = ingredients
-                value['default_code'] = product.default_code or ''
-                value['public_desc'] = product.public_desc or ''
-                value['use_desc'] = product.use_desc or ''
-                value['reseller_desc'] = (product.reseller_desc or '') if is_reseller else ''
-                value['offer'] = offer
-                value['offer_text'] = _('Offer')
-                value['news_text'] = _('News')
-                value['ribbon'] = sale_ribbon in product.website_style_ids_variant if product.website_style_ids_variant else (sale_ribbon in product.product_tmpl_id.website_style_ids)
-                # ~ value['sale_ok'] = True if (product.sale_ok and self.in_stock(product.id)[0] and request.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller) else False
-        return value
-
-    @http.route(['/get/product_variant_value'], type='json', auth="public", website=True)
-    def product_variant_value(self, product_id=None, value_id=None, **kw):
-        if product_id and value_id:
-            product = request.env['product.template'].browse(int(product_id))
-            if product:
-                variants = product.product_variant_ids.filtered(lambda v: int(value_id) in v.attribute_value_ids.mapped("id"))
-                return variants[0].ingredients if len(variants) > 0 else ''
+    # ~ @http.route(['/get/product_variant_value'], type='json', auth="public", website=True)
+    # ~ def product_variant_value(self, product_id=None, value_id=None, **kw):
+        # ~ if product_id and value_id:
+            # ~ product = request.env['product.template'].browse(int(product_id))
+            # ~ if product:
+                # ~ variants = product.product_variant_ids.filtered(lambda v: int(value_id) in v.attribute_value_ids.mapped("id"))
+                # ~ return variants[0].ingredients if len(variants) > 0 else ''
 
     @http.route(['/event/type/<model("event.type"):event_type>'], type='http', auth="public", website=True)
     def event_type_info(self, event_type=None, **kw):
@@ -1255,55 +1094,3 @@ class WebsiteSale(website_sale):
             ]),
         }
         return request.website.render("webshop_dermanord.event_type_info", values)
-
-
-#~ class WebsiteFullTextSearch(WebsiteFullTextSearch):
-
-    #~ @http.route(['/search_suggestion'], type='json', auth="public", website=True)
-    #~ def search_suggestion(self, search='', facet=None, res_model=None, limit=0, offset=0, **kw):
-        #~ result = request.env['fts.fts'].term_search(search.lower(), facet, res_model, limit, offset)
-        #~ result_list = result['terms']
-        #~ rl = []
-        #~ i = 0
-        #~ while i < len(result_list) and len(rl) < 5:
-            #~ r = result_list[i]
-            #~ try:
-                #~ if r.model_record._name == 'product.public.category':
-                    #~ rl.append({
-                        #~ 'res_id': r.res_id,
-                        #~ 'model_record': r.model_record._name,
-                        #~ 'name': r.model_record.name,
-                    #~ })
-                #~ elif r.model_record._name == 'product.template':
-                    #~ if len(r.model_record.sudo().access_group_ids) == 0 or (len(r.model_record.sudo().access_group_ids) > 0 and request.env.user in r.model_record.sudo().access_group_ids.mapped('users')):
-                        #~ rl.append({
-                            #~ 'res_id': r.res_id,
-                            #~ 'model_record': r.model_record._name,
-                            #~ 'name': r.model_record.name,
-                        #~ })
-                #~ elif r.model_record._name == 'product.product':
-                    #~ if len(r.model_record.sudo().access_group_ids) == 0 or (len(r.model_record.sudo().access_group_ids) > 0 and request.env.user in r.model_record.sudo().access_group_ids.mapped('users')):
-                        #~ rl.append({
-                            #~ 'res_id': r.res_id,
-                            #~ 'model_record': r.model_record._name,
-                            #~ 'name': r.model_record.name,
-                            #~ 'product_tmpl_id': r.model_record.product_tmpl_id.id,
-                        #~ })
-                #~ elif r.model_record._name == 'blog.post':
-                    #~ rl.append({
-                        #~ 'res_id': r.res_id,
-                        #~ 'model_record': r.model_record._name,
-                        #~ 'name': r.model_record.name,
-                        #~ 'blog_id': r.model_record.blog_id.id,
-                    #~ })
-                #~ elif r.model_record._name == 'product.facet.line':
-                    #~ rl.append({
-                        #~ 'res_id': r.res_id,
-                        #~ 'model_record': r.model_record._name,
-                        #~ 'product_tmpl_id': r.model_record.product_tmpl_id.id,
-                        #~ 'product_name': r.model_record.product_tmpl_id.name,
-                    #~ })
-            #~ except:
-                #~ pass
-            #~ i += 1
-        #~ return rl
