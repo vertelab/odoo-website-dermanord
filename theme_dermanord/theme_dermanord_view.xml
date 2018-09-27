@@ -119,7 +119,7 @@
             <xpath expr="//div[@id='wrapwrap']/header/div[@class='navbar navbar-default navbar-static-top']/div[@class='container']/div[@class='navbar-header']" position="replace">
                 <div class="container">
                     <div id="header_left_menu" class="col-md-2 col-sm-2 hidden-xs">
-                        <button class="btn dropdown-toggle futura_pt_m" type="button" data-toggle="dropdown" style="background: none;">
+                        <button id="site_lang" t-att-data-lang="lang" class="btn dropdown-toggle futura_pt_m" type="button" data-toggle="dropdown" style="background: none;">
                             <t t-foreach="languages" t-as="lg">
                                 <t t-if="lg[0] == lang">
                                     <t t-esc="lg[1]"/>

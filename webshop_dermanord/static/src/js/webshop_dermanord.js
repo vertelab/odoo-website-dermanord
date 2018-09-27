@@ -454,7 +454,8 @@ function load_products_grid(page){
     var start_render = new Date();
     $('html,body').css('cursor', 'wait');
     $("div#loading").removeClass("hidden");
-    openerp.jsonRpc("/dn_shop_json_grid", "call", {
+    var url = "/" + $("button#site_lang").data("lang") + "/dn_shop_json_grid";
+    openerp.jsonRpc(url, "call", {
         'page': current_page.toString(),
     }).done(function(data){
         console.log(data);
@@ -481,7 +482,8 @@ function load_products_list(page){
     var start_render = new Date();
     $("div#loading").removeClass("hidden");
     $('html,body').css('cursor', 'wait');
-    openerp.jsonRpc("/dn_shop_json_list", "call", {
+    var url = "/" + $("button#site_lang").data("lang") + "/dn_shop_json_list";
+    openerp.jsonRpc(url, "call", {
         'page': current_page,
     }).done(function(data){
         var product_count = 0;
