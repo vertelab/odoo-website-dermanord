@@ -555,7 +555,7 @@ class product_product(models.Model):
     </div>
 </div>
 <p id="current_product_id" data-value="{current_product_id}" class="hidden"/>
-<div id="ingredients_description {hide_ingredients_desc}" class="container hidden-xs">
+<div id="ingredients_description" class="container hidden-xs {hide_ingredients_desc}">
     <div class="mt16">
         <p>
             <strong class="dn_uppercase">{ingredients} </strong>
