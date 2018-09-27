@@ -353,7 +353,7 @@ class product_product(models.Model):
                 if not ribbon_limited:
                     ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
-                campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else None)
+                campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
                 page = u"""<tr class="tr_lst ">
                                 <td class="td_lst">
                                     <div class="lst-ribbon-wrapper">{product_ribbon_offer}{product_ribbon_promo}{product_ribbon_limited}</div>
@@ -618,7 +618,7 @@ class product_product(models.Model):
             for variant in product.product_variant_ids:
                 render_start = timer()
                 pricelist_line = variant.get_pricelist_chart_line(pricelist)
-                campaign = self.env['crm.tracking.campaign'].browse(variant.campaign_ids[0] if variant.campaign_ids else None)
+                campaign = variant.campaign_ids[0] if variant.campaign_ids else None
                 page += u"""<section id="{attribute_value}" class="container mt8 oe_website_sale discount{hide_variant}">
     <div class="row">
         <div class="col-sm-4" groups="base.group_sale_manager">
@@ -680,7 +680,7 @@ class product_product(models.Model):
                     <a id="add_to_cart" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center {hide_add_to_cart}" groups="base.group_user,base.group_portal" disable="1">{add_to_cart}</a>
                     <!-- <input id="sale_ok" name="sale_ok" type="hidden" t-att-value="product.sale_ok" /> -->
                     <h5>
-                        <div class="text-center">
+                        <div>
                             <span>{product_startdate}</span>
                             <br>
                             <span>{product_stopdate}</span>
@@ -719,8 +719,8 @@ class product_product(models.Model):
                     product_price = variant.get_html_price_long(pricelist),
                     hide_add_to_cart = '{%s_hide_add_to_cart}' % variant.id,
                     add_to_cart = _('Add to cart'),
-                    product_startdate = campaign.date_start if campaign and campaign.date_start else '',
-                    product_stopdate = campaign.date_stop if campaign and campaign.date_stop else '',
+                    product_startdate = _('Start: %s') %campaign.date_start if campaign and campaign.date_start else '',
+                    product_stopdate = _('Stop: %s') %campaign.date_stop if campaign and campaign.date_stop else '',
                     stock_status = '{%s_stock_status}' % variant.id,
                     html_product_detail_desc = html_product_detail_desc(variant, partner, pricelist),
                     html_product_detail_image = html_product_detail_image(variant, partner),
@@ -730,7 +730,7 @@ class product_product(models.Model):
                     key=key,
                     render_time='%s' % (timer() - render_start)
                 ).encode('utf-8')
-            page += "\n<!-- render_time_total %s -->\n" % timer() - render_time_tot
+            page += "\n<!-- render_time_total %s -->\n" % (timer() - render_start_tot)
             self.env['website'].put_page_dict(key,flush_type,page)
             page_dict['page'] = base64.b64encode(page)
         stock = {}
@@ -740,7 +740,7 @@ class product_product(models.Model):
                 stock['%s_stock_status' % variant.id] = ''
                 stock['%s_hide_add_to_cart' % variant.id] = 'hidden'
             else:
-                stock['%s_hide_add_to_cart' % variant.id] = 'hidden' if not stock['%s_in_stock' %variant.id] else ''
+                stock['%s_hide_add_to_cart' % variant.id] = '' if (stock['%s_in_stock' %variant.id] and variant.sale_ok) else 'hidden'
 
         return page_dict.get('page','').decode('base64').format(**stock)
 
