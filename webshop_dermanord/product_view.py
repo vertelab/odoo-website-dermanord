@@ -637,7 +637,7 @@ class product_product(models.Model):
                 render_start = timer()
                 pricelist_line = variant.get_pricelist_chart_line(pricelist)
                 campaign = variant.campaign_ids[0] if variant.campaign_ids else None
-                page += u"""<section id="{attribute_value}" class="container mt8 oe_website_sale discount {hide_variant}">
+                page += u"""<section id="{attribute_value}" class="product_detail container mt8 oe_website_sale discount {hide_variant}">
     <div class="row">
         <div class="col-sm-4 {publisher_manager}">
             <div groups="base.group_website_publisher" class="pull-right css_editable_mode_hidden" style="">

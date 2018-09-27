@@ -109,7 +109,7 @@ button {
 }
 
 /* webshop */
-#product_detail h1 {
+.product_detail h1 {
     font-family: futura-pt-heavy, sans-serif;
 }
 
