@@ -555,7 +555,7 @@ class product_product(models.Model):
     </div>
 </div>
 <p id="current_product_id" data-value="{current_product_id}" class="hidden"/>
-<div id="ingredients_description" class="container hidden-xs">
+<div id="ingredients_description {hide_ingredients_desc}" class="container hidden-xs">
     <div class="mt16">
         <p>
             <strong class="dn_uppercase">{ingredients} </strong>
@@ -570,8 +570,9 @@ class product_product(models.Model):
                 ingredients_title = _('made from all-natural ingredients'),
                 ingredients_images_nav_html = ingredients_images_nav_html,
                 current_product_id = product.id,
+                hide_ingredients_desc = '' if product.ingredients else 'hidden',
                 ingredients = _('ingredients:'),
-                ingredients_desc = product.ingredients or ''
+                ingredients_desc = product.ingredients if product.ingredients else ''
             )
             return page
 
