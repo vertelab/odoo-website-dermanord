@@ -671,8 +671,8 @@ $(document).ready(function(){
         //~ $(oe_website_sale).find("select[name='shipping_country_id']").change();
     });
 
-    if ($("#add_to_cart").is(":visible")) { $("div.css_quantity.input-group.oe_website_spinner").removeClass("hidden"); }
-    else { $("div.css_quantity.input-group.oe_website_spinner").addClass("hidden"); }
+    //~ if ($("#add_to_cart").is(":visible")) { $("div.css_quantity.input-group.oe_website_spinner").removeClass("hidden"); }
+    //~ else { $("div.css_quantity.input-group.oe_website_spinner").addClass("hidden"); }
 
     //blink ok button when filter form input changed
     $("#desktop_product_navigator_filter").find(".checkbox").each(function() {
