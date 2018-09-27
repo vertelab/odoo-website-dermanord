@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* webshop_dermanord
+#   * webshop_dermanord
 #
 msgid ""
 msgstr ""
@@ -833,14 +833,14 @@ msgstr "Special 20"
 #. module: webshop_dermanord
 #: code:addons/webshop_dermanord/product_view.py:742
 #, python-format
-msgid "Start: %s"
-msgstr "Start: %s"
+msgid "Available on %s"
+msgstr "Säljstart %s"
 
 #. module: webshop_dermanord
 #: code:addons/webshop_dermanord/product_view.py:743
 #, python-format
-msgid "Stop: %s"
-msgstr "Stop: %s"
+msgid "to %s"
+msgstr "till %s"
 
 #. module: webshop_dermanord
 #: field:product.product,website_style_ids_variant:0
