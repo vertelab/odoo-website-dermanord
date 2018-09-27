@@ -627,13 +627,15 @@ class product_product(models.Model):
             render_start_tot = timer()
             page = ''
             attr_sel = ''
-            product_variant = self.sudo().browse(variant_id)
+            product_variant = self.browse(variant_id)
+            variant_value_ids = product.product_variant_ids.mapped('attribute_value_ids')
             if len(product.attribute_line_ids) > 0:
                 for attr_line in product.attribute_line_ids:
                     if attr_line.attribute_id.type in ['select', 'hidden']:
                         attr_sel += '<li><strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">%s</strong><select class="form-control js_variant_change attr_sel" name="attribute-%s-%s">' %(attr_line.attribute_id.name, product.id, attr_line.attribute_id.id)
                         for value_id in attr_line.value_ids:
-                            attr_sel += '<option value="%s" %s><span>%s</span></option>' %(value_id.id, 'selected="selected"' if value_id in product_variant.attribute_value_ids else '', value_id.name)
+							if value_id in variant_value_ids:
+								attr_sel += '<option value="%s" %s><span>%s</span></option>' %(value_id.id, 'selected="selected"' if value_id in product_variant.attribute_value_ids else '', value_id.name)
                         attr_sel += '</select></li>'
 
         # ~ <t t-if="variant_id.attribute_id.type == 'radio'">

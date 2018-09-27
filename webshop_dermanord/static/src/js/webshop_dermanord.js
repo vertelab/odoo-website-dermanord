@@ -13,27 +13,25 @@ $("select.attr_sel").on('change', function() {
         sel_lst.push($(this).val());
     });
     var section_id = sel_lst.sort(function(a, b){return a - b}).join("_");
-    $.each($("section.oe_website_sale"), function() {
-        var $this_section = $(this);
-        if ($this_section.attr("id") == section_id) {
-            $this_section.removeClass("hidden");
-        }
-        else {
-            $this_section.addClass("hidden");
-        }
-        $.each(sel_lst, function() {
-            var sel_value = $(this);
-            $.each($this_section.find("option"), function() {
-                var $option = $(this);
-                if ($option.val() == sel_value) {
-                    $option.attr("selected", "selected");
-                }
-                else {
-                    $option.removeAttr("selected");
-                }
-            });
-        });
-    });
+    $.each($("option"), function() {
+		if ($.inArray($(this).attr("value"), sel_lst) !== -1) {
+			$(this).attr("selected", "selected");
+			activate_section(section_id);
+		}
+		else {
+			$(this).removeAttr("selected");
+		}
+	});
+	function activate_section(section_id) {
+		$.each($("section.oe_website_sale"), function() {
+			if ($(this).attr("id") == section_id) {
+				$(this).removeClass("hidden");
+			}
+			else {
+				$(this).addClass("hidden");
+			}
+		});
+	}
 });
 
 function show_popover(trigger){
