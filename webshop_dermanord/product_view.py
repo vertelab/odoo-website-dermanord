@@ -461,7 +461,7 @@ class product_product(models.Model):
             for line in product.facet_line_ids:
                 facet_html += '<div class="col-md-6"><h2 class="dn_uppercase">%s</h2>' %line.facet_id.name
                 for idx, value in enumerate(line.value_ids):
-                    facet_html += '<a href="/dn_shop/?facet_%s_%s=%s%s" class="text-muted"><span>%s</span></a>' %(line.facet_id, value.id, value.id, category_value, value.name)
+                    facet_html += '<a href="/dn_shop/?facet_%s_%s=%s%s" class="text-muted"><span>%s</span></a>' %(line.facet_id.id, value.id, value.id, category_value, value.name)
                     if idx != len(line.value_ids)-1:
                         facet_html += '<span>, </span>'
                 facet_html += '</div>'
