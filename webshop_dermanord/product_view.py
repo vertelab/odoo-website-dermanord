@@ -627,11 +627,57 @@ class product_product(models.Model):
             render_start_tot = timer()
             page = ''
             attr_sel = ''
+            product_variant = self.sudo().browse(variant_id)
             if len(product.attribute_line_ids) > 0:
-                attr_sel = '<select class="form-control js_variant_change attr_sel" name="attribute-%s-1">' %product.id
-                for v in product.product_variant_ids:
-                    attr_sel += '<option class="css_not_available" value="%s"%s>%s</option>' %(v.attribute_value_ids[0].id, ' selected="selected"' if v.id == variant_id else '', v.attribute_value_ids[0].name)
-                attr_sel += '</select>'
+                for attr_line in product.attribute_line_ids:
+                    if attr_line.attribute_id.type in ['select', 'hidden']:
+                        attr_sel += '<li><strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">%s</strong><select class="form-control js_variant_change attr_sel" name="attribute-%s-%s">' %(attr_line.attribute_id.name, product.id, attr_line.attribute_id.id)
+                        for value_id in attr_line.value_ids:
+                            attr_sel += '<option value="%s" %s><span>%s</span></option>' %(value_id.id, 'selected="selected"' if value_id in product_variant.attribute_value_ids else '', value_id.name)
+                        attr_sel += '</select></li>'
+
+        # ~ <t t-if="variant_id.attribute_id.type == 'radio'">
+          # ~ <ul class="list-unstyled">
+              # ~ <t t-set="inc" t-value="0"/>
+              # ~ <t t-foreach="variant_id.value_ids" t-as="value_id">
+                  # ~ <li class="form-group js_attribute_value" style="margin: 0;">
+                      # ~ <label class="control-label" style="margin: 0 20px;">
+                          # ~ <input type="radio" class="js_variant_change" t-att-checked="'checked' if not inc else ''" t-att-name="'attribute-%s-%s' % (product.id, variant_id.attribute_id.id)" t-att-value="value_id.id" style="vertical-align: top; margin-right: 10px;"/>
+                          # ~ <span t-field="value_id.name"/>
+                          # ~ <span class="badge" t-if="value_id.price_extra">
+                              # ~ <t t-esc="value_id.price_extra > 0 and '+' or ''"/><span t-field="value_id.price_extra" style="white-space: nowrap;" t-field-options='{
+                                      # ~ "widget": "monetary",
+                                      # ~ "from_currency": "product.company_id.currency_id",
+                                      # ~ "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                   # ~ }'/>
+                          # ~ </span>
+                      # ~ </label>
+                  # ~ </li>
+                  # ~ <t t-set="inc" t-value="inc+1"/>
+              # ~ </t>
+          # ~ </ul>
+        # ~ </t>
+
+        # ~ <t t-if="variant_id.attribute_id.type == 'color'">
+          # ~ <ul class="list-inline">
+              # ~ <t t-set="inc" t-value="0"/>
+              # ~ <li t-foreach="variant_id.value_ids" t-as="value_id">
+                  # ~ <label t-attf-style="background-color:#{value_id.color or value_id.name}"
+                      # ~ t-attf-class="css_attribute_color #{'active' if not inc else ''}">
+                    # ~ <input type="radio" class="js_variant_change"
+                      # ~ t-att-checked="'checked' if not inc else ''"
+                      # ~ t-att-name="'attribute-%s-%s' % (product.id, variant_id.attribute_id.id)"
+                      # ~ t-att-value="value_id.id"
+                      # ~ t-att-title="value_id.name"/>
+                  # ~ </label>
+                  # ~ <t t-set="inc" t-value="inc+1"/>
+              # ~ </li>
+          # ~ </ul>
+        # ~ </t>
+
+      # ~ </li>
+    # ~ </t>
+
             visible_attrs = set(l.attribute_id.id for l in product.attribute_line_ids if len(l.value_ids) > 1)
             decimal_precision = pricelist.currency_id.rounding
             for variant in product.product_variant_ids:
@@ -673,10 +719,7 @@ class product_product(models.Model):
                 <div class="js_product">
                     <input class="product_id" name="product_id" value="{variant_id}" type="hidden">
                     <ul class="list-unstyled js_add_cart_variants nav-stacked" data-attribute_value_ids="{data_attribute_value_ids}">
-                        <li>
-                            <strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">{attributes}</strong>
-                            {attr_sel}
-                        </li>
+                        {attr_sel}
                     </ul>
                     <div itemprop="offers" itemscope="itemscope" class="product_price mt16 mb16">
                         <p class="oe_price_h4 css_editable_mode_hidden decimal_precision" data-precision="{decimal_precision}">
@@ -716,7 +759,7 @@ class product_product(models.Model):
 {website_description}
 <!-- key {key} key_raw {key_raw} render_time {render_time} -->
 <!-- http:/mcpage/{key} http:/mcpage/{key}/delete  http:/mcmeta/{key} -->""".format(
-                    attribute_value = variant.attribute_value_ids[0].id if len(product.attribute_line_ids) > 0 else '',
+                    attribute_value = '_'.join([str(v.id) for v in variant.attribute_value_ids.sorted(lambda key: key.id)]),
                     product_id = product.id,
                     variant_id = variant.id,
                     hide_variant = '' if variant.id == variant_id else 'hidden',
@@ -730,7 +773,6 @@ class product_product(models.Model):
                     product_name = variant.name,
                     default_code = variant.default_code,
                     variant_ids = product.product_variant_ids.mapped('id'),
-                    attributes = product.attribute_line_ids[0].attribute_id.name if len(product.attribute_line_ids) > 0 else '',
                     data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, '{%s_in_stock}' % p.id] for p in product.product_variant_ids],
                     attr_sel = attr_sel,
                     decimal_precision = decimal_precision,

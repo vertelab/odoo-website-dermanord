@@ -6,15 +6,33 @@ var lang = $("html").attr("lang");
 var dn_loading_products = false;
 
 $("select.attr_sel").on('change', function() {
-    var attribute_id = $(this).val();
+    var $self = $(this);
+    var sel_lst = [];
+    var $these_sel = $self.closest("ul").find(("select.attr_sel"));
+    $.each($these_sel, function() {
+        sel_lst.push($(this).val());
+    });
+    var section_id = sel_lst.sort(function(a, b){return a - b}).join("_");
     $.each($("section.oe_website_sale"), function() {
-        if ($(this).attr("id") == attribute_id) {
-            $(this).removeClass("hidden");
-            $("select.attr_sel").find("option[value='" + attribute_id + "']").attr("selected", "selected");
+        var $this_section = $(this);
+        if ($this_section.attr("id") == section_id) {
+            $this_section.removeClass("hidden");
         }
         else {
-            $(this).addClass("hidden");
+            $this_section.addClass("hidden");
         }
+        $.each(sel_lst, function() {
+            var sel_value = $(this);
+            $.each($this_section.find("option"), function() {
+                var $option = $(this);
+                if ($option.val() == sel_value) {
+                    $option.attr("selected", "selected");
+                }
+                else {
+                    $option.removeAttr("selected");
+                }
+            });
+        });
     });
 });
 
