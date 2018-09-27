@@ -730,7 +730,7 @@ class product_product(models.Model):
                     key=key,
                     render_time='%s' % (timer() - render_start)
                 ).encode('utf-8')
-            page += "\n<!-- render_time_total %s -->\n" % render_time_tot
+            page += "\n<!-- render_time_total %s -->\n" % timer() - render_time_tot
             self.env['website'].put_page_dict(key,flush_type,page)
             page_dict['page'] = base64.b64encode(page)
         stock = {}
