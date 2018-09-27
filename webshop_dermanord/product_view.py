@@ -187,7 +187,7 @@ class product_template(models.Model):
                 self.env.cr.dbname, flush_type, product['id'], pricelist.id,
                 self.env.lang, request.session.get('device_type','md'),
                 self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
-                ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))  # db flush_type produkt prislista språk webeditor kundgrupper, 
+                ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))  # db flush_type produkt prislista språk webeditor kundgrupper,
             key,page_dict = self.env['website'].get_page_dict(key_raw)
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
             if not page_dict:
@@ -349,7 +349,6 @@ class product_product(models.Model):
             state ='short'
         return (state in ['in','few'],state,{'in': _('In stock'),'few': _('Few in stock'),'short': _('Shortage')}[state].encode('utf-8'))  # in_stock,state,info
 
-
     @api.model
     def get_list_row(self,domain,pricelist,limit=21,order='',offset=0):
         if isinstance(pricelist,int):
@@ -455,7 +454,7 @@ class product_product(models.Model):
                 self.env['website'].put_page_dict(key, flush_type, page, 'product.product,%s' % product['id'])
                 page_dict['page'] = base64.b64encode(page)
             stock_info = self.get_stock_info(product['id'])
-            rows.append(page_dict.get('page', '').decode('base64').format(shop_widget='hidden' if stock_info[0] else '', product_stock=stock_info[2]))
+            rows.append(page_dict.get('page', '').decode('base64').format(shop_widget='' if stock_info[0] else 'hidden', product_stock=stock_info[2]))
         return rows
 
     # Product detail view with all variants
@@ -761,7 +760,6 @@ class product_product(models.Model):
                 stock['%s_hide_add_to_cart' % variant.id] = 'hidden'
             else:
                 stock['%s_hide_add_to_cart' % variant.id] = '' if (stock['%s_in_stock' %variant.id] and variant.sale_ok) else 'hidden'
-
         return page_dict.get('page','').decode('base64').format(**stock)
 
 
