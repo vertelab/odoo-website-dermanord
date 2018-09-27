@@ -619,9 +619,9 @@ class product_product(models.Model):
                 render_start = timer()
                 pricelist_line = variant.get_pricelist_chart_line(pricelist)
                 campaign = variant.campaign_ids[0] if variant.campaign_ids else None
-                page += u"""<section id="{attribute_value}" class="container mt8 oe_website_sale discount{hide_variant}">
+                page += u"""<section id="{attribute_value}" class="container mt8 oe_website_sale discount {hide_variant}">
     <div class="row">
-        <div class="col-sm-4" groups="base.group_sale_manager">
+        <div class="col-sm-4 {publisher_manager}">
             <div groups="base.group_website_publisher" class="pull-right css_editable_mode_hidden" style="">
                 <div class="btn-group js_publish_management {website_published}" data-id="{product_id}" data-object="product.template">
                     <button class="btn btn-danger js_publish_btn">{not_published}</button>
@@ -702,8 +702,9 @@ class product_product(models.Model):
                     attribute_value = variant.attribute_value_ids[0].id if len(product.attribute_line_ids) > 0 else '',
                     product_id = product.id,
                     variant_id = variant.id,
-                    hide_variant = '' if variant.id == variant_id else ' hidden',
+                    hide_variant = '' if variant.id == variant_id else 'hidden',
                     website_published = variant.website_published and 'css_published' or 'css_unpublished',
+                    publisher_manager = '' if self.env.user in self.env.ref('base.group_website_publisher').sudo().users else 'hidden',
                     not_published = _('Not Published'),
                     published = _('Published'),
                     unpublish = _('Unpublish'),
