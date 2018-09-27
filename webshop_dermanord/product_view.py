@@ -605,7 +605,7 @@ class product_product(models.Model):
         key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname, flush_type, variant_id, pricelist.id, self.env.lang, request.session.get('device_type','md'))
         key, page_dict = self.env['website'].get_page_dict(key_raw)
         if not page_dict:
-            render_start = timer()
+            render_start_tot = timer()
             page = ''
             attr_sel = ''
             if len(product.attribute_line_ids) > 0:
@@ -616,6 +616,7 @@ class product_product(models.Model):
             visible_attrs = set(l.attribute_id.id for l in product.attribute_line_ids if len(l.value_ids) > 1)
             decimal_precision = pricelist.currency_id.rounding
             for variant in product.product_variant_ids:
+                render_start = timer()
                 pricelist_line = variant.get_pricelist_chart_line(pricelist)
                 campaign = self.env['crm.tracking.campaign'].browse(variant.campaign_ids[0] if variant.campaign_ids else None)
                 page += u"""<section id="{attribute_value}" class="container mt8 oe_website_sale discount{hide_variant}">
@@ -729,6 +730,7 @@ class product_product(models.Model):
                     key=key,
                     render_time='%s' % (timer() - render_start)
                 ).encode('utf-8')
+            page += "\n<!-- render_time_total %s -->\n" % render_time_tot
             self.env['website'].put_page_dict(key,flush_type,page)
             page_dict['page'] = base64.b64encode(page)
         stock = {}
@@ -739,6 +741,7 @@ class product_product(models.Model):
                 stock['%s_hide_add_to_cart' % variant.id] = 'hidden'
             else:
                 stock['%s_hide_add_to_cart' % variant.id] = 'hidden' if not stock['%s_in_stock' %variant.id] else ''
+
         return page_dict.get('page','').decode('base64').format(**stock)
 
 
