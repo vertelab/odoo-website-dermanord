@@ -147,7 +147,7 @@
                                     </td>
                                     <td t-if="line.product_id.product_tmpl_id">
                                         <div>
-                                            <a t-attf-href="/event/#{slug(line.event_id)} if line.event_id else /dn_shop/variant/#{slug(line.product_id)}">
+                                            <a t-att-href="('/event/%s' % slug(line.event_id)) if line.event_id else ('/dn_shop/variant/%s' % slug(line.product_id))">
                                                 <strong t-if="line.product_id.default_code">
                                                     [<t t-esc="line.product_id.default_code" />]
                                                 </strong>
@@ -195,7 +195,7 @@
                                 </div>
                                 <div t-att-id="'collapse_%s' %line.id" class="collapse mb16" t-att-aria-labelledby="'heading_%s' %line.id">
                                     <div t-if="line.product_id.product_tmpl_id" class="col-xs-12" t-att-style="'padding-bottom: 10px; border-bottom: 1px solid #ddd; background-color: %s;' %('#f9f9f9' if line_index % 2 == 0 else 'none')">
-                                        <a t-attf-href="/event/#{slug(line.event_id)} if line.event_id else /dn_shop/variant/#{slug(line.product_id)}" class="text-primary">
+                                        <a t-att-href="('/event/%s' % slug(line.event_id)) if line.event_id else ('/dn_shop/variant/%s' % slug(line.product_id))" class="text-primary">
                                             <strong t-if="line.product_id.default_code">
                                                 [<t t-esc="line.product_id.default_code" />]
                                             </strong>
