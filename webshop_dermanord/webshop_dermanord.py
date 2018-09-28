@@ -119,9 +119,6 @@ class product_template(models.Model):
             self.blog_post_ids = [(6, 0, [p['id'] for p in blog_posts])]
             #~ self.blog_post_ids = [(6, 0, blog_posts.filtered(lambda b: b.website_published == True).mapped('id'))]
     blog_post_ids = fields.Many2many(comodel_name='blog.post', string='Posts', compute='_blog_post_ids')
-    list_price_tax = fields.Float(compute='get_product_tax')
-    price_tax = fields.Float(compute='get_product_tax')
-    recommended_price = fields.Float(compute='get_product_tax')
     sold_qty = fields.Integer(string='Sold', default=0)
     use_tmpl_name = fields.Boolean(string='Use Template Name', help='When checked. The template name will be used in webshop')
     campaign_changed = fields.Boolean()
@@ -144,23 +141,6 @@ class product_template(models.Model):
         else:
             return ' '.join([s.html_class for s in self.website_style_ids])
 
-    @api.one
-    def get_product_tax(self):
-        res = 0
-        for c in self.sudo().taxes_id.compute_all(
-                self.list_price, 1, None,
-                self.env.user.partner_id)['taxes']:
-            res += c.get('amount', 0.0)
-        self.list_price_tax = self.list_price + res
-
-        res = 0
-        for c in self.sudo().taxes_id.compute_all(
-                self.price, 1, None,
-                self.env.user.partner_id)['taxes']:
-            res += c.get('amount', 0.0)
-        self.price_tax = self.price + res
-        self.recommended_price = 0.0
-
     @api.multi
     def format_facets(self,facet):
         self.ensure_one()
@@ -171,13 +151,6 @@ class product_template(models.Model):
                 value_name=value.name))
         return ', '.join(values)
 
-
-    @api.multi
-    def write(self, vals):
-        res = super(product_template, self).write(vals)
-        if 'list_price' in vals:
-            self.product_variant_ids.get_product_tax()
-        return res
 
     @api.multi
     def fts_search_suggestion(self):
