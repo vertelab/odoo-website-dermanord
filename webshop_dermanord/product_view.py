@@ -533,8 +533,8 @@ class product_product(models.Model):
             product_images_nav_html = ''
             if len(product_images) > 0:
                 for idx, image in enumerate(product_images):
-                    product_images_html += '<div id="%s" class="tab-pane fade%s">%s%s<img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' %(image.id, ' active in' if idx == 0 else '', offer_wrapper, ribbon_wrapper, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_detail'))
-                    product_images_nav_html += '<li class="%s"><a data-toggle="tab" href="#%s"><img class="img img-responsive" src="%s"/></a></li>' %('active' if idx == 0 else '', image.id, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_thumbnail'))
+                    product_images_html += '<div id="%s_%s" class="tab-pane fade%s">%s%s<img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' %(product.id, image.id, ' active in' if idx == 0 else '', offer_wrapper, ribbon_wrapper, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_detail'))
+                    product_images_nav_html += '<li class="%s"><a data-toggle="tab" href="#%s_%s"><img class="img img-responsive" src="%s"/></a></li>' %('active' if idx == 0 else '', product.id, image.id, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_thumbnail'))
             else:
                 product_images_nav_html = '<li class="active"><a data-toggle="tab" href="#%s"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></a></li>' %'0'
             ingredients_images_nav_html = ''
@@ -584,18 +584,18 @@ class product_product(models.Model):
             if len(product_ingredients) > 0:
                 for idx, i in enumerate(product_ingredients):
                     ingredients_carousel_html += '<div class="item ingredient_desc%s"><a href="/dn_shop/?current_ingredient=%s"><img class="img img-responsive" style="margin: auto; display: block;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></a></div>' %(' active' if idx == 0 else '', i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
-                    ingredients_carousel_nav_html += '<li class="%s" data-slide-to="%s" data-target="#ingredient_carousel"></li>' %(' active' if idx == 0 else '', idx)
+                    ingredients_carousel_nav_html += '<li class="%s" data-slide-to="%s" data-target="#%s_ingredient_carousel"></li>' %(' active' if idx == 0 else '', idx, product.id)
 
             page = u"""<div id="ingredients_div_mobile">
     <div class="container mb16 hidden-lg hidden-md hidden-sm">
         <h4 class="text-center dn_uppercase">{ingredients_title}</h4>
         <div class="col-md-12">
-            <div class="carousel slide" id="ingredient_carousel" data-ride="carousel">
+            <div class="carousel slide" id="{product_id}_ingredient_carousel" data-ride="carousel">
                 <div class="carousel-inner" style="width: 100%;">
                     {ingredients_carousel_html}
                 </div>
-                <div class="carousel-control left" data-slide="prev" data-target="#ingredient_carousel" href="#ingredient_carousel" style="width: 10%; left: 0px;"><i class="fa fa-chevron-left" style="right: 20%; color: #000;"></i></div>
-                <div class="carousel-control right" data-slide="next" data-target="#ingredient_carousel" href="#ingredient_carousel" style="width: 10%; right: 0px;"><i class="fa fa-chevron-right" style="left: 20%; color: #000;"></i></div>
+                <div class="carousel-control left" data-slide="prev" data-target="#{product_id}_ingredient_carousel" href="#{product_id}_ingredient_carousel" style="width: 10%; left: 0px;"><i class="fa fa-chevron-left" style="right: 20%; color: #000;"></i></div>
+                <div class="carousel-control right" data-slide="next" data-target="#{product_id}_ingredient_carousel" href="#{product_id}_ingredient_carousel" style="width: 10%; right: 0px;"><i class="fa fa-chevron-right" style="left: 20%; color: #000;"></i></div>
                 <ol class="carousel-indicators" style="bottom: -10px;">
                     {ingredients_carousel_nav_html}
                 </ol>
@@ -606,6 +606,7 @@ class product_product(models.Model):
 <div id="ingredients_description_mobile" class="container hidden-lg hidden-md hidden-sm">
     <p><strong class="dn_uppercase">{ingredients} </strong><span class="text-muted">{ingredients_desc}</span></p>
 </div>""".format(
+                product_id = product.id,
                 ingredients_title = _('made from all-natural ingredients'),
                 ingredients_carousel_html = ingredients_carousel_html,
                 ingredients_carousel_nav_html = ingredients_carousel_nav_html,
@@ -634,8 +635,8 @@ class product_product(models.Model):
                     if attr_line.attribute_id.type in ['select', 'hidden']:
                         attr_sel += '<li><strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">%s</strong><select class="form-control js_variant_change attr_sel" name="attribute-%s-%s">' %(attr_line.attribute_id.name, product.id, attr_line.attribute_id.id)
                         for value_id in attr_line.value_ids:
-							if value_id in variant_value_ids:
-								attr_sel += '<option value="%s" %s><span>%s</span></option>' %(value_id.id, 'selected="selected"' if value_id in product_variant.attribute_value_ids else '', value_id.name)
+                            if value_id in variant_value_ids:
+                                attr_sel += '<option value="%s" %s><span>%s</span></option>' %(value_id.id, 'selected="selected"' if value_id in product_variant.attribute_value_ids else '', value_id.name)
                         attr_sel += '</select></li>'
 
         # ~ <t t-if="variant_id.attribute_id.type == 'radio'">
