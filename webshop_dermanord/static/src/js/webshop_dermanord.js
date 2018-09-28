@@ -12,26 +12,26 @@ $("select.attr_sel").on('change', function() {
     $.each($these_sel, function() {
         sel_lst.push($(this).val());
     });
-    var section_id = sel_lst.sort(function(a, b){return a - b}).join("_");
+    var section_id = sel_lst.sort(function(a, b){return a - b}).join("_") + "_section";
     $.each($("option"), function() {
-		if ($.inArray($(this).attr("value"), sel_lst) !== -1) {
-			$(this).attr("selected", "selected");
-			activate_section(section_id);
-		}
-		else {
-			$(this).removeAttr("selected");
-		}
-	});
-	function activate_section(section_id) {
-		$.each($("section.oe_website_sale"), function() {
-			if ($(this).attr("id") == section_id) {
-				$(this).removeClass("hidden");
-			}
-			else {
-				$(this).addClass("hidden");
-			}
-		});
-	}
+        if ($.inArray($(this).attr("value"), sel_lst) !== -1) {
+            $(this).attr("selected", "selected");
+            activate_section(section_id);
+        }
+        else {
+            $(this).removeAttr("selected");
+        }
+    });
+    function activate_section(section_id) {
+        $.each($("section.oe_website_sale"), function() {
+            if ($(this).attr("id") == section_id) {
+                $(this).removeClass("hidden");
+            }
+            else {
+                $(this).addClass("hidden");
+            }
+        });
+    }
 });
 
 function show_popover(trigger){
