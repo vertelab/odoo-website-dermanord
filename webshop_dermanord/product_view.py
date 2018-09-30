@@ -76,7 +76,7 @@ THUMBNAIL = u"""
                         <!-- Product name -->
                         <h4 class="p_name">
                             <strong>
-                                <a itemprop="name" href="dn_shop/{view_type}/{product_id}">{product_name}</a>
+                                <a itemprop="name" href="/dn_shop/{view_type}/{product_id}">{product_name}</a>
                             </strong>
                         </h4>
                         <div class="product_price">
