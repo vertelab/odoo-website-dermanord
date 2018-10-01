@@ -423,8 +423,8 @@ class product_product(models.Model):
                                                         </a>
                                                     </span>
                                                 </div>
-                                                <a id="add_to_cart" class="btn btn-default dn_list_add_to_cart" href="javascript:void(0);">
-                                                    <i class="fa fa-shopping-cart" style="color: #CB683F;"></i>
+                                                <a class="btn dn_list_add_to_cart" href="javascript:void(0);">
+                                                    <i class="fa fa-shopping-cart" style="color: #839794;"></i>
                                                 </a>
                                             </div>
                                         </form>

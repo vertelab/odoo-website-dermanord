@@ -94,7 +94,7 @@
                     </t>
                 </div>
                 <div id="loading" class="col-md-offset-3 col-md-9 col-xs-12 text-center hidden">
-                    <img src="/web/static/src/img/throbber-large.gif"/> <h3 style="color: #BB602F;">Loading more products...</h3>
+                    <img src="/web/static/src/img/throbber-large.gif"/> <h3>Loading more products...</h3>
                 </div>
             </div>
         </template>
@@ -211,7 +211,7 @@
                                 </table>
                             </div>
                             <div id="loading" class="col-md-offset-3 col-md-9 col-xs-12 text-center hidden">
-                                <img src="/web/static/src/img/throbber-large.gif"/> <h3 style="color: #BB602F;">Loading more products...</h3>
+                                <img src="/web/static/src/img/throbber-large.gif"/> <h3>Loading more products...</h3>
                             </div>
                         </div>
                     </t>
@@ -430,7 +430,7 @@
                            }' />
                         </t>
                         <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
-                            
+
                         </t>
                     </td>
                     <td class="text-center">

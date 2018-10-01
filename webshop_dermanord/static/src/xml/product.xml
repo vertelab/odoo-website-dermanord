@@ -218,7 +218,7 @@
                             <a id="add_to_cart" class="btn btn-default js_check_product a-submit" href="#" onclick="$(this).closest('form').submit();"><i class="fa fa-shopping-cart a-submit" style="color: #CB683F;"/></a>
 -->
                             <a id="add_to_cart" class="btn btn-default dn_list_add_to_cart" href="javascript:void(0);">
-                                <i class="fa fa-shopping-cart" style="color: #CB683F;" />
+                                <i class="fa fa-shopping-cart" style="color: #839794;" />
                             </a>
                         </div>
                     </form>

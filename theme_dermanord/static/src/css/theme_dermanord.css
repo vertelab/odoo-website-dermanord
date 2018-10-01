@@ -261,6 +261,10 @@ ul.wizard li.text-primary .chevron::before {
     color: #eee !important;
 }
 
+#load h3, #loading h3 {
+    color: #839794;
+}
+
 .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus
 {
     background-color: #000;
