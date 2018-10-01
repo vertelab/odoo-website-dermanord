@@ -70,7 +70,7 @@ body a {
 }
 
 body a:hover {
-    color: #BB602F;
+    color: #788A87;
 }
 
 em {
@@ -133,7 +133,7 @@ button {
 }
 
 #searchbox li:hover, #searchbox li[selected=selected] {
-    background-color: #BB602F;
+    background-color: #788A87;
 }
 
 #searchbox li:hover > a, #searchbox li[selected=selected] > a {
@@ -184,21 +184,25 @@ h1, .dn_uppercase {
 
 .btn-primary, .dn_primary {
     color: #fff;
-    background-color: #CB683F;
-    border-color: #CB683F;
+    background-color: #839794;
+    border-color: #839794;
     font-style: normal;
     font-weight: 500;
     font-family: futura-pt-medium, sans-serif;
 }
 
 .btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary[disabled], .dn_primary[disabled] {
-    background-color: #BB602F;
-    border-color: #BB602F;
+    background-color: #788A87;
+    border-color: #788A87;
+}
+
+.text-primary {
+    color: #839794;
 }
 
 .label-danger {
-    background-color: #CB683F;
-    border-color: #CB683F;
+    background-color: #839794;
+    border-color: #839794;
 }
 
 .label-info {
@@ -207,7 +211,7 @@ h1, .dn_uppercase {
 }
 
 .text-primary, td a {
-    color: #BB602F;
+    color: #788A87;
 }
 
 .text-success {
@@ -243,6 +247,7 @@ ul.wizard li.text-primary .chevron::before {
     -ms-user-select: none;
     background-image: none;
     border-radius: 0px;
+    border: 1px solid #839794;
 }
 
 .dn_btn:hover, .dn_btn:active, .dn_btn:focus {
@@ -251,8 +256,9 @@ ul.wizard li.text-primary .chevron::before {
 }
 
 .dn_primary:hover, .dn_primary:active, .dn_primary:focus {
-    background-color: #BB602F;
-    border-color: #BB602F;
+    background-color: #788A87;
+    border-color: #788A87;
+    color: #eee !important;
 }
 
 .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus
@@ -331,7 +337,7 @@ ul.wizard li.text-primary .chevron::before {
 }
 
 .dn_cart_qty_sm {
-    background-color: #CB683F !important;
+    background-color: #839794 !important;
     color: #fff;
     padding: 0px 6px !important;
     border-radius: 12px !important;
@@ -798,4 +804,86 @@ address span {
 .delivery_website_description {
     font-family: futura-pt-light, sans-serif;
     font-weight: normal;
+}
+
+/* css override theme colors from other modules */
+/* reseller_dermanord */
+.filter_match, .sort_match {
+    background-color: #839794 !important;
+}
+
+/* sale_promotions */
+.sp_one_one .sale_promotions_img:hover, .sp_one_two .sale_promotions_img:hover, .sp_two_one .sale_promotions_img:hover {
+    border: 3px solid #839794;
+}
+
+/* snippet_dermanord */
+.categ_p_section .categ_block_img:hover{
+    border: 3px solid #839794;
+}
+
+.categ_block_text a:hover {
+    color: #788A87 !important;
+}
+
+.ph_block:hover {
+    border: 3px solid #839794;
+}
+
+/* webshop_dermanord */
+@keyframes glowing {
+    0% { background-color: #839794; box-shadow: 0 0 3px #839794; border-color: #839794; }
+    50% { background-color: #A4B7B4; box-shadow: 0 0 10px #A4B7B4; border-color: #A4B7B4; }
+    100% { background-color: #839794; box-shadow: 0 0 3px #839794; border-color: #839794; }
+}
+
+#image_big > div > .offer-wrapper i {
+    color: #839794;
+}
+
+#image_nav > li.active > a > img {
+    border: 1px solid #839794;
+}
+
+.fts_result a {
+    color: #839794;
+}
+
+.fts_result .dn_tags {
+    border: 1px solid #839794;
+}
+
+.filter_match, .sort_match, .dn_cart_qty {
+    background-color: #839794 !important;
+}
+
+.dn_product_div .offer-wrapper i {
+    color: #839794;
+}
+
+.dn_list_instock {
+    color: #839794;
+}
+
+.td_lst .lst-ribbon-wrapper {
+    color: #839794;
+}
+
+/* website_blog_dermanord */
+.bpp_block:hover {
+    border: 1px solid #839794 !important;
+}
+
+/* website_sale_home */
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus{
+  background-color: #839794;
+  background-image: #839794;
+}
+
+.nav-pills > li.active > a.active:after{
+  border-left: 10px solid #839794;
+}
+
+.nav-pills > li.active > a {
+    border-color: #839794;
 }

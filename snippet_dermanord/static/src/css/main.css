@@ -32,10 +32,6 @@ a {
     border: 3px solid #000;
 }
 
-.categ_p_section .categ_block_img:hover{
-    border: 3px solid #CB683F;
-}
-
 .categ_block_img .container {
     position: absolute;
     top: 42%;
@@ -48,10 +44,6 @@ a {
 
 .categ_block_text a {
     color: #000 !important;
-}
-
-.categ_block_text a:hover {
-    color: #BB602F !important;
 }
 
 /* Blog Banner */
@@ -88,10 +80,6 @@ a {
     border: 3px solid #fff;
     margin: auto;
     position: relative;
-}
-
-.ph_block:hover {
-    border: 3px solid #CB683F;
 }
 
 .ph_block a {

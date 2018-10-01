@@ -24,7 +24,7 @@
                                     <t t-if="ingredient.image">
                                         <img class="img img-responsive" style="margin: auto;" src="/web/static/src/img/placeholder.png"/>
                                     </t>
-                                    <h6 class="text-center" style="white-space: nowrap; font-size: 1.8em; padding: 0px; margin-top: 0px;"><i t-field="ingredient.name"/></h6>
+                                    <h6 class="text-center text-primary" style="white-space: nowrap; font-size: 1.8em; padding: 0px; margin-top: 0px;"><i t-field="ingredient.name"/></h6>
 <!--
                                     <h5 class="text-muted text-center" t-field="ingredient.description"/>
 -->
@@ -60,7 +60,7 @@
                                                 <t t-if="ingredient.image">
                                                     <img class="img img-responsive" style="margin: auto; display: block;" src="/web/static/src/img/placeholder.png"/>
                                                 </t>
-                                                <h6 class="text-center" style="white-space: nowrap; font-size: 1.8em; padding: 0px; margin-top: 0px;"><i t-field="ingredient.name"/></h6>
+                                                <h6 class="text-center text-primary" style="white-space: nowrap; font-size: 1.8em; padding: 0px; margin-top: 0px;"><i t-field="ingredient.name"/></h6>
 <!--
                                                 <t t-if="ingredient.description">
                                                     <h5 class="text-muted text-center" t-field="ingredient.description"/>

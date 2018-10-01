@@ -63,10 +63,6 @@
     border: 3px solid #FFF;
 }
 
-.sp_one_one .sale_promotions_img:hover, .sp_one_two .sale_promotions_img:hover, .sp_two_one .sale_promotions_img:hover {
-    border: 3px solid #CB683F;
-}
-
 .sale_promotions_text {
     padding: 0px 20px;
     top: 0px;

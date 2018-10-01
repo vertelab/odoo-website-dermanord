@@ -36,12 +36,6 @@
     text-decoration: none;
 }
 
-.dn_primary {
-    color: #fff;
-    background-color: #CB683F;
-    border-color: #CB683F;
-}
-
 .dn_primary:hover {
     color: #eee !important;
 }
@@ -119,7 +113,6 @@
 }
 
 .filter_match, .sort_match {
-    background-color: #CB683F !important;
     color: #fff;
     padding: 0px 6px !important;
     border-radius: 12px !important;

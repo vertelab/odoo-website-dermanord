@@ -3,55 +3,14 @@
  ============================================================ */
 body {}
 
-.dn_btn {
-    display: inline-block;
-    padding: 12px 32px;
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: normal;
-    line-height: 1.42857143;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    background-image: none;
-    border-radius: 0px;
-    text-transform: uppercase;
-}
-
-.dn_btn:hover, .dn_btn:active, .dn_btn:focus {
-    color: inherit !important;
-    text-decoration: none;
-}
-
 div.shipping-address, div.invoicing-address {
     padding-top: 20px;
     padding-left: 10px;
     padding-right: 10px;
 }
 
-.dn_primary {
-    color: #fff;
-    background-color: #CB683F;
-    border-color: #CB683F;
-}
-
-.dn_primary:hover {
-    color: #eee !important;
-}
-
 .dn_blink {
     animation: glowing 1500ms infinite;
-}
-
-@keyframes glowing {
-    0% { background-color: #CB683F; box-shadow: 0 0 3px #CB683F; border-color: #CB683F; }
-    50% { background-color: #FF996F; box-shadow: 0 0 10px #DB835F; border-color: #FF996F; }
-    100% { background-color: #CB683F; box-shadow: 0 0 3px #CB683F; border-color: #CB683F; }
 }
 
 .dn_default {
@@ -171,7 +130,6 @@ div.shipping-address, div.invoicing-address {
 
 #image_big > div > .offer-wrapper i {
     padding-left: 30px;
-    color: #CB683F;
 }
 
 .image_block {
@@ -365,10 +323,6 @@ div.shipping-address, div.invoicing-address {
     max-width: 500px;
 }
 
-#image_nav > li.active > a > img {
-    border: 1px solid #CB683F;
-}
-
 #image_nav > li > a > img {
     border: 1px solid #ddd;
     margin: auto;
@@ -380,14 +334,9 @@ div.shipping-address, div.invoicing-address {
 
 /* fts search */
 
-.fts_result a {
-    color: #CB683F;
-}
-
 .fts_result .dn_tags {
     padding: 3px 5px;
     margin-right: 5px;
-    border: 1px solid #CB683F;
 }
 
 .fts_result .dn_facets {
@@ -478,7 +427,6 @@ span[data-oe-expression="ingredient.image"] > img {
 /*
 See also .dn_cart_qty_sm in theme_dermanord.
 */
-    background-color: #CB683F !important;
     color: #fff;
     padding: 0px 6px !important;
     border-radius: 12px !important;
@@ -648,11 +596,6 @@ select.dn_selection_dropdown + i.fa {
 
 .dn_product_div .offer-wrapper i {
     padding-left: 30px;
-    color: #CB683F;
-}
-
-.dn_list_instock {
-    color: #CB683F;
 }
 
 #order_comment {
@@ -705,7 +648,6 @@ tr.tr_lst td {
 }
 
 .td_lst .lst-ribbon-wrapper {
-    color: #CB683F;
     display: block;
     padding-left: 5px;
     z-index: 5;
