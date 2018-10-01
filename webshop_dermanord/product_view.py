@@ -82,7 +82,7 @@ THUMBNAIL = u"""
                         <div class="product_price">
                             <b class="text-muted">
                             <h5>{price_from}</h5>
-                                <h4>
+                                <h4 style="font-size: 0.9em;">
                                     {product_price}
                                 </h4>
                             </b>
@@ -216,8 +216,7 @@ class product_template(models.Model):
                     # ~ product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0].id, 'snippet_dermanord.img_product') if variant.image_main_id else '',
                     product_image=product['dv_image_src'],
                     product_name=product['name'],
-                    # ~ product_price=self.env['product.product'].browse(product['dv_id']).get_html_price_long(pricelist),
-                    product_price=self.env['product.template'].browse(product['id']).get_html_price_long(product['id'], pricelist),
+                    product_price = self.env['product.template'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=product['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
@@ -290,8 +289,7 @@ class product_product(models.Model):
                     # ~ product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0].id, 'snippet_dermanord.img_product') if variant.image_main_id else '',
                     product_image=product['dv_image_src'],
                     product_name=product['name'],
-                    # ~ product_price=self.env['product.product'].browse(product['dv_id']).get_html_price_long(pricelist),
-                    product_price=self.env['product.template'].browse(product['id']).get_html_price_long(product['id'], pricelist),
+                    product_price = self.env['product.template'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=product['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
@@ -445,7 +443,7 @@ class product_product(models.Model):
                     shop_widget='{shop_widget}',
                     product_stock='{product_stock}',
                     product_name=product['fullname'],
-                    product_price=self.env['product.product'].get_html_price_short(product['id'], pricelist),
+                    pricelist_line = self.env['product.product'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_short(),
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.id in product['website_style_ids_variant'] else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.id in product['website_style_ids_variant'] else '',
@@ -688,6 +686,9 @@ class product_product(models.Model):
             decimal_precision = pricelist.currency_id.rounding
             for variant in product.product_variant_ids:
                 render_start = timer()
+                #TODO:
+                # ~ if not chart_line:
+                    # ~ price += _("No price available")
                 pricelist_line = variant.get_pricelist_chart_line(pricelist)
                 campaign = variant.campaign_ids[0] if variant.campaign_ids else None
                 page += u"""<section id="{attribute_value}_section" class="product_detail container mt8 oe_website_sale discount {hide_variant}">
@@ -782,7 +783,7 @@ class product_product(models.Model):
                     data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, '{%s_in_stock}' % p.id] for p in product.product_variant_ids],
                     attr_sel = attr_sel,
                     decimal_precision = decimal_precision,
-                    product_price = variant.get_html_price_long(pricelist),
+                    product_price = pricelist_line.get_html_price_long(),
                     hide_add_to_cart = '{%s_hide_add_to_cart}' % variant.id,
                     add_to_cart = _('Add to cart'),
                     product_startdate = _('Available on %s') %campaign.date_start if campaign and campaign.date_start else '',
