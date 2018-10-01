@@ -460,7 +460,6 @@ class product_product(models.Model):
     # Product detail view with all variants
     @api.model
     def get_product_detail(self, product, variant_id):
-
         # right side product.description, directly after stock_status
         def html_product_detail_desc( product, partner, pricelist):
             is_reseller = False
@@ -468,7 +467,9 @@ class product_product(models.Model):
                 is_reseller = True
             category_html = ''
             category_value = ''
-            for c in product.public_categ_ids:
+            for idx, c in enumerate(product.public_categ_ids):
+                if idx != 0:
+                    category_html += '<span style="color: #bbb;">, </span>'
                 category_html += '<a href="/dn_shop/category/%s"><span style="color: #bbb;">%s</span></a>' %(c.id, c.name)
                 category_value += '&amp;category_%s=%s' %(c.id, c.id)
             facet_html = ''
