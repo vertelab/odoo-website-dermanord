@@ -443,7 +443,7 @@ class product_product(models.Model):
                     shop_widget='{shop_widget}',
                     product_stock='{product_stock}',
                     product_name=product['fullname'],
-                    pricelist_line = self.env['product.product'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_short(),
+                    product_price = self.env['product.product'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_short(),
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.id in product['website_style_ids_variant'] else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.id in product['website_style_ids_variant'] else '',
