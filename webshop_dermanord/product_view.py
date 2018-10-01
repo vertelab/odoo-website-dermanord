@@ -174,7 +174,7 @@ class product_template(models.Model):
 
 
     @api.model
-    def get_thumbnail_default_variant(self,domain,pricelist,limit=21,order='',offset=1):
+    def get_thumbnail_default_variant(self,domain,pricelist,limit=21,order='',offset=0):
         if isinstance(pricelist,int):
             pricelist = self.env['product.pricelist'].browse(pricelist)
         # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % ('Start'))
