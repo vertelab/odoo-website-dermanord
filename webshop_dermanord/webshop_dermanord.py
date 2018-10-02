@@ -341,6 +341,14 @@ class sale_order(models.Model):
                 'amount_untaxed': self.amount_untaxed,
             }
 
+    @api.multi
+    def action_button_confirm(self):
+        self.ensure_one()
+        if not self.client_order_ref:
+            self.client_order_ref = '%s (%s)' %(self.partner_id.name, self.name)
+        return super(sale_order, self).action_button_confirm()
+
+
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
@@ -1066,3 +1074,9 @@ class WebsiteSale(website_sale):
             ]),
         }
         return request.website.render("webshop_dermanord.event_type_info", values)
+
+    @http.route(['/shop/order/client_order_ref'], type='json', auth="public", website=True)
+    def order_note(self, client_order_ref, **post):
+        order = request.website.sale_get_order()
+        if order:
+            order.sudo().client_order_ref = client_order_ref

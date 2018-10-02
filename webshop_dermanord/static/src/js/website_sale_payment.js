@@ -26,4 +26,10 @@ $(document).ready(function () {
         });
     });
 
+    $("#client_order_ref").find("[name='client_order_ref']").on('change', function () {
+        openerp.jsonRpc("/shop/order/client_order_ref", 'call', {
+            'client_order_ref': $(this).val(),
+        });
+    });
+
 });

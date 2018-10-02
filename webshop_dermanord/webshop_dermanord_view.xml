@@ -217,6 +217,11 @@
                     </div>
                     <div class="clearfix" />
                     <div class="oe_structure" />
+                    <div class="row form-group" id="client_order_ref">
+                        <label for="client_order_ref">Reference:</label>
+                        <input class="form-control" type="text" name="client_order_ref" t-att-value="request.website.sale_get_order().client_order_ref if request.website.sale_get_order() else ''" />
+                        <small>Fill in your customer number here. Otherwise it will be your name on invoice if you leave it empty.</small>
+                    </div>
                     <div class="row form-group" id="order_comment">
                         <label for="note">Comment:</label>
                         <textarea class="form-control" rows="5" name="note" />

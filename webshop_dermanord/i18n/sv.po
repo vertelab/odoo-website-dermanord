@@ -134,6 +134,16 @@ msgstr "Stäng"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.payment
+msgid "Reference:"
+msgstr "Referens:"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.payment
+msgid "Fill in your customer number here. Otherwise it will be your name on invoice if you leave it empty."
+msgstr "Fyll i ditt kundnummer här. Annars blir det ditt namn på faktura om du lämnar det tomt."
+
+#. module: webshop_dermanord
+#: view:website:website_sale.payment
 msgid "Comment:"
 msgstr "Kommentar:"
 

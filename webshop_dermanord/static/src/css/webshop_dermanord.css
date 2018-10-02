@@ -598,7 +598,7 @@ select.dn_selection_dropdown + i.fa {
     padding-left: 30px;
 }
 
-#order_comment {
+#client_order_ref, #order_comment {
     padding: 0px 15px;
 }
 
