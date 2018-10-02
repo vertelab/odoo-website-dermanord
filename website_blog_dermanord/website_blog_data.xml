@@ -119,4 +119,22 @@ else:
             <field name="recipe_id" ref="website_blog_dermanord.img_post"/>
         </record>
     </data>
+    <data>
+        <record id="copy_create_date_2_start_date" model="ir.actions.server">
+            <field name="name">Copy Create Date 2 Start Date</field>
+            <field name="model_id" ref="base.model_ir_actions_server"/>
+            <field name="state">code</field>
+            <field name="code"># Copy create date to start date if start date is empty
+for p in env['blog.post'].search([]):
+    if not p.date_start:
+        p.date_start = p.create_date
+            </field>
+        </record>
+        <record id="ir_values_copy_create_date_2_start_date" model="ir.values">
+            <field name="name">Copy Create Date 2 Start Date</field>
+            <field name="model">model.name</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,%s' %ref('website_blog_dermanord.copy_create_date_2_start_date')"/>
+        </record>
+    </data>
 </openerp>

@@ -135,6 +135,8 @@ class BlogPost(models.Model):
     blog_post_product_ids = fields.One2many(comodel_name='blog.post.product', inverse_name='blog_post_id', string='Products')
     object_ids = fields.One2many(comodel_name='blog.post.object', inverse_name='blog_post_id', string='Objects')
     related_posts = fields.Many2many(comodel_name='blog.post', compute='_related_posts')
+    # inherited from website_blog_publish
+    date_start = fields.Datetime(string="Start date",help="Start/stop-time when this blog post will be published. If stop-time is missing it will not be unpublished",default=fields.Datetime.now())
 
     @api.one
     def _related_posts(self):
@@ -295,7 +297,7 @@ class WebsiteBlog(WebsiteBlog):
             domain += [('tag_ids', '=', tag.id)]
         if date_begin and date_end:
             domain += [("create_date", ">=", date_begin), ("create_date", "<=", date_end)]
-        order = 'write_date desc'
+        order = 'date_start desc'
         blog_url = QueryURL('', ['blog', 'tag'], blog=blog, tag=tag, date_begin=date_begin, date_end=date_end)
         post_url = QueryURL('', ['blogpost'], tag_id=tag and tag.id or None, date_begin=date_begin, date_end=date_end)
         blog_post_ids = blog_post_obj.search(cr, uid, domain, order=order, limit=BPG, context=context)
