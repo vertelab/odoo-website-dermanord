@@ -20,7 +20,7 @@
                                     </t>
                                     <div class="col-md-6 col-sm-6 col-xs-12 mt16 mb16 blog_content_div">
                                         <h6 t-field="news_post.name" style="font-size: 28px; font-weight: 500; padding-top: 0px; margin-top: 0px;"/>
-                                        <h5 class="text-muted" style="color: #bbb;"><t t-esc="website.formatted_date(str(news_post.date_start)[:10])"/></h5>
+                                        <h5 class="text-muted" style="color: #bbb;"><t t-esc="website.formatted_date(str(news_post.date_start)[:10] or str(blog_post.create_date)[:10])"/></h5>
                                         <p t-field="news_post.subtitle" class="text-muted mt16 dn_blog_subtitle"/>
                                         <a t-att-href="'/blog/%s/post/%s' %(news_post.blog_id.id, news_post.id)"><i style="font-size: 20px; text-decoration: underline; color: #000;">Read more</i></a>
                                         <div class="blog_tag_div">
@@ -66,7 +66,7 @@
                 </div>
                 <div id="blog_block" class="container mt32 mb32">
                     <h6 class="readable" style="font-size: 2.5em; padding-top: 40px;"><i t-field="blog_post.name" id="blog_post_name" style="font-size: 120%;" t-att-data-blog-id="blog_post.id"/></h6>
-                    <h5 class="text-muted readable" style="color: #bbb;"><t t-esc="website.formatted_date(str(blog_post.date_start)[:10])"/></h5>
+                    <h5 class="text-muted readable" style="color: #bbb;"><t t-esc="website.formatted_date(str(blog_post.date_start)[:10] or str(blog_post.create_date)[:10])"/></h5>
                     <div id="blog_content" t-field="blog_post.content" class="mt32"/>
                     <p class="dn_uppercase mt32">tags:</p>
                     <t t-foreach="blog_post.tag_ids" t-as="tag">
