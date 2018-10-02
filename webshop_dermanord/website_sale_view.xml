@@ -285,7 +285,7 @@
 
             <xpath expr="//td[@name='price']" position="replace">
                 <td name="price">
-                    <t t-raw="line.product_id.get_html_price_long(line.order_id.pricelist_id)"/>
+                    <t t-raw="line.product_id.get_pricelist_chart_line(user_id.partner_id.property_product_pricelist).get_html_price_long()"/>
                 </td>
             </xpath>
 
