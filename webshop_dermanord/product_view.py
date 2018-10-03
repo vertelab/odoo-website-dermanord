@@ -685,7 +685,7 @@ class product_product(models.Model):
 
             visible_attrs = set(l.attribute_id.id for l in product.attribute_line_ids if len(l.value_ids) > 1)
             decimal_precision = pricelist.currency_id.rounding
-            for variant in product.product_variant_ids:
+            for variant in self.env['product.product'].search([('id', 'in', product.product_variant_ids.mapped('id')]):
                 render_start = timer()
                 #TODO:
                 # ~ if not chart_line:
