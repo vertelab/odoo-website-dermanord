@@ -1210,3 +1210,9 @@ msgstr "Länk"
 #: view:website:reseller_dermanord.resellers_search_cosumer
 msgid "Go to reseller"
 msgstr "Gå till återförsäljare"
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/product_view.py:791
+#, python-format
+msgid "Buy"
+msgstr "Köp"
