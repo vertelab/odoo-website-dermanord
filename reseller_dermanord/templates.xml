@@ -285,7 +285,7 @@
                                 </form>
                                 <div class="col-md-12 col-sm-12 col-xs-12 mb16">
                                     <t t-if="len(resellers) &gt; 0">
-                                        <table class="table table-responsive table_striped">
+                                        <table class="table table-responsive table-striped">
                                             <thead>
                                                 <th>Salon name</th>
                                                 <th>City</th>
