@@ -303,7 +303,7 @@
                                                                     <a t-att-href="'/reseller/%s' %reseller.id">Go to reseller</a>
                                                                 </t>
                                                                 <t t-if="link_type == 'webshop'">
-                                                                    <a t-att-href="'%s' %reseller.webshop_website" target="_blank">Go to reseller</a>
+                                                                    <a t-att-href="'http://%s' %reseller.webshop_website" target="_blank">Go to reseller</a>
                                                                 </t>
                                                             </td>
                                                         </t>
