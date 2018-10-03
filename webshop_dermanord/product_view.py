@@ -749,6 +749,7 @@ class product_product(models.Model):
                     </div>
                     <a id="add_to_cart" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center {hide_add_to_cart}" groups="base.group_user,base.group_portal" disable="1">{add_to_cart}</a>
                     <!-- <input id="sale_ok" name="sale_ok" type="hidden" t-att-value="product.sale_ok" /> -->
+                    <a id="add_to_cart_consumer" href="/resellers/search/{variant_id}" class="dn_btn dn_primary mt8 text-center {hide_add_to_cart_consumer}">{add_to_cart}</a>
                     <h5>
                         <div>
                             <span>{product_startdate}</span>&nbsp;<span>{product_stopdate}</span>
@@ -786,6 +787,7 @@ class product_product(models.Model):
                     decimal_precision = decimal_precision,
                     product_price = pricelist_line.get_html_price_long(),
                     hide_add_to_cart = '{%s_hide_add_to_cart}' % variant.id,
+                    hide_add_to_cart_consumer = '' if self.env.user == self.env.ref('base.public_user') else 'hidden',
                     add_to_cart = _('Add to cart'),
                     product_startdate = _('Available on %s') %campaign.date_start if campaign and campaign.date_start else '',
                     product_stopdate = _('to %s') %campaign.date_stop if campaign and campaign.date_stop else '',

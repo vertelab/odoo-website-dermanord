@@ -1172,3 +1172,41 @@ msgstr "user_id.partner_id.property_product_pricelist.for_reseller"
 #: model:product.pricelist,name:webshop_dermanord.pricelist_af
 msgid "Återförsäljare 45"
 msgstr "Återförsäljare 45"
+
+#. module: reseller_dermanord
+#: code:addons/reseller_dermanord/main.py:261
+#: code:addons/reseller_dermanord/main.py:279
+#, python-format
+msgid "No reseller found"
+msgstr "Ingen återförsäljare hittade"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers_search_cosumer
+msgid "Salon"
+msgstr "Salong"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers_search_cosumer
+msgid "Webshop"
+msgstr "Webshop"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers_search_cosumer
+msgid "Salon name"
+msgstr "Salong namn"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers_search_cosumer
+#: view:website:website_sale_home.company_info_form
+msgid "City"
+msgstr "Stad"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers_search_cosumer
+msgid "Link"
+msgstr "Länk"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers_search_cosumer
+msgid "Go to reseller"
+msgstr "Gå till återförsäljare"

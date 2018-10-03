@@ -211,7 +211,7 @@ class product_facet(models.Model):
     @api.multi
     def get_filtered_facets(self, form_values):
         categories = []
-        if len(form_values) > 0:
+        if form_values and len(form_values) > 0:
             for k, v in form_values.iteritems():
                 if k.split('_')[0] == 'category':
                     if v:

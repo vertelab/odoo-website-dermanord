@@ -237,6 +237,49 @@ class Main(http.Controller):
                 'reseller': partner,
             })
 
+    @http.route(['/resellers/search/<model("product.product"):product>'], type='http', auth="public", website=True)
+    def resellers_search(self, product, **post):
+        word = post.get('search_resellers')
+        if product and word and word != '' and (post.get('salon') or post.get('webshop')):
+            matching_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('zip', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
+            all_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
+            if post.get('salon') and post.get('salon') == '1':
+                resellers = request.env['res.partner'].sudo().search([
+                    ('is_company', '=', True),
+                    ('is_reseller', '=', True),
+                    ('webshop_category_ids', 'in', product.public_categ_ids.mapped('id')),
+                    ('child_ids.type', '=', 'visit'),
+                    ('child_ids', 'in', all_visit_ids),
+                    '|', '|', '|',
+                        ('child_ids', 'in', matching_visit_ids),
+                        ('child_category_ids.name', 'ilike', word),
+                        ('brand_name', 'ilike', word),
+                        '&',
+                            ('name', 'ilike', word),
+                            ('brand_name', '=', False),
+                        ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
+                return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'link_type': 'salon', 'not_found_msg': _('No reseller found') if len(resellers) == 0 else ''})
+            else:
+                resellers = request.env['res.partner'].sudo().search([
+                    ('is_company', '=', True),
+                    ('is_reseller', '=', True),
+                    ('has_webshop', '=', True),
+                    ('webshop_website', '!=', ''),
+                    ('webshop_category_ids', 'in', product.public_categ_ids.mapped('id')),
+                    ('child_ids.type', '=', 'visit'),
+                    ('child_ids', 'in', all_visit_ids),
+                    '|', '|', '|',
+                        ('child_ids', 'in', matching_visit_ids),
+                        ('child_category_ids.name', 'ilike', word),
+                        ('brand_name', 'ilike', word),
+                        '&',
+                            ('name', 'ilike', word),
+                            ('brand_name', '=', False),
+                        ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
+                return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'link_type': 'webshop', 'not_found_msg': _('No reseller found') if len(resellers) == 0 else ''})
+        else:
+            return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': [], 'product': product})
+
         #~ if partner:
             #~ return request.website.render('reseller_dermanord.reseller', {
                 #~ 'reseller': partner,

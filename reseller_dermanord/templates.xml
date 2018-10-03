@@ -254,6 +254,76 @@
             </t>
         </template>
 
+        <template id="resellers_search_cosumer" name="Resellers Search Consumer">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 mb16">
+                                <form t-att-action="'/resellers/search/%s' % product.id" method="post" class="pagination form-inline col-md-12 col-sm-12 col-xs-12 mb16">
+                                    <div class="container text-center">
+                                        <div class="input-group">
+                                            <input name="search_resellers" class="form-control" placeholder="Search..." type="text"/>
+                                            <span class="input-group-btn">
+                                                <button type="submit" class="btn btn-default">
+                                                    <i class="fa fa-search" />
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <div class="input-group">
+                                            <div class="checkbox">
+                                                <label><input name="salon" type="checkbox" value="1"/>Salon</label>
+                                            </div>
+                                        </div>
+                                        <div class="input-group">
+                                            <div class="checkbox">
+                                                <label><input name="webshop" type="checkbox" value="1"/>Webshop</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="col-md-12 col-sm-12 col-xs-12 mb16">
+                                    <t t-if="len(resellers) &gt; 0">
+                                        <table class="table table-responsive table_striped">
+                                            <thead>
+                                                <th>Salon name</th>
+                                                <th>City</th>
+                                                <th>Link</th>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="resellers" t-as="reseller">
+                                                    <tr>
+                                                        <t t-set="visit" t-value="reseller.child_ids.filtered(lambda c: c.type == 'visit')"/>
+                                                        <t t-if="visit">
+                                                            <td t-esc="reseller.name"/>
+                                                            <td t-esc="visit.city"/>
+                                                            <td>
+                                                                <t t-if="link_type == 'salon'">
+                                                                    <a t-att-href="'/reseller/%s' %reseller.id">Go to reseller</a>
+                                                                </t>
+                                                                <t t-if="link_type == 'webshop'">
+                                                                    <a t-att-href="'%s' %reseller.webshop_website" target="_blank">Go to reseller</a>
+                                                                </t>
+                                                            </td>
+                                                        </t>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                    <t t-if="len(resellers) == 0 and not_found_msg != ''">
+                                        <h2 class="text-center" t-esc="not_found_msg"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="oe_structure"/>
+            </t>
+        </template>
+
         <template id="home_page" inherit_id="website_sale_home.home_page" name="Home Page Inherited Reseller Dermanord">
             <xpath expr="//label[@for='website_short_description']/.." position="attributes">
                 <attribute name="t-if">not home_user.partner_id.commercial_partner_id.is_reseller</attribute>
