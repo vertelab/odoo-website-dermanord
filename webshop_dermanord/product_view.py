@@ -461,19 +461,19 @@ class product_product(models.Model):
     @api.model
     def get_product_detail(self, product, variant_id):
         # right side product.description, directly after stock_status
-        def html_product_detail_desc( product, partner, pricelist):
+        def html_product_detail_desc( variant, partner, pricelist):
             is_reseller = False
             if pricelist and pricelist.for_reseller:
                 is_reseller = True
             category_html = ''
             category_value = ''
-            for idx, c in enumerate(product.public_categ_ids):
+            for idx, c in enumerate(variant.public_categ_ids):
                 if idx != 0:
                     category_html += '<span style="color: #bbb;">, </span>'
                 category_html += '<a href="/dn_shop/category/%s"><span style="color: #bbb;">%s</span></a>' %(c.id, c.name)
                 category_value += '&amp;category_%s=%s' %(c.id, c.id)
             facet_html = ''
-            for line in product.facet_line_ids:
+            for line in variant.facet_line_ids:
                 facet_html += '<div class="col-md-6"><h2 class="dn_uppercase">%s</h2>' %line.facet_id.name
                 for idx, value in enumerate(line.value_ids):
                     facet_html += '<a href="/dn_shop/?facet_%s_%s=%s%s" class="text-muted"><span>%s</span></a>' %(line.facet_id.id, value.id, value.id, category_value, value.name)
@@ -500,12 +500,12 @@ class product_product(models.Model):
         <h4 class="hide_more_facet text-center hidden-lg hidden-md hidden-sm hidden" style="text-decoration: underline;">{less_info}<i class="fa fa-angle-up"></i></h4>
     </div>
 </div>""".format(
-                public_desc = '<p class="text-muted public_desc%s">%s</p>' %(' hidden' if not product.public_desc else '', product.public_desc if product.public_desc else ''),
+                public_desc = '<p class="text-muted public_desc%s">%s</p>' %('' if variant.public_desc else ' hidden', variant.public_desc.replace('\n', '<br/>') if variant.public_desc else ''),
                 more_info = _('More info'),
-                use_desc_title = '<h2 class="use_desc_title dn_uppercase%s">%s</h2>' %(' hidden' if not product.use_desc else '', _('Directions')),
-                use_desc = '<p class="text-muted use_desc%s">%s</p>' %(' hidden' if not product.use_desc else '', product.use_desc if product.use_desc else ''),
-                reseller_desc_title = '<h2 class="reseller_desc_title dn_uppercase%s">%s</h2>' %(' hidden' if not product.reseller_desc or not is_reseller else '', _('For Resellers')),
-                reseller_desc = '<p class="text-muted reseller_desc%s">%s</p>' %(' hidden' if not product.reseller_desc or not is_reseller else '', product.reseller_desc if not product.reseller_desc or not is_reseller else ''),
+                use_desc_title = '<h2 class="use_desc_title dn_uppercase%s">%s</h2>' %('' if variant.use_desc else ' hidden', _('Directions')),
+                use_desc = '<p class="text-muted use_desc%s">%s</p>' %('' if variant.use_desc else ' hidden', variant.use_desc.replace('\n', '<br/>') if variant.use_desc else ''),
+                reseller_desc_title = '<h2 class="reseller_desc_title dn_uppercase%s">%s</h2>' %('' if variant.reseller_desc and is_reseller else ' hidden', _('For Resellers')),
+                reseller_desc = '<p class="text-muted reseller_desc%s">%s</p>' %('' if variant.reseller_desc and is_reseller else ' hidden', variant.reseller_desc.replace('\n', '<br/>') if variant.reseller_desc else ''),
                 category_title = _('Categories'),
                 category_html = category_html,
                 facet_html = facet_html,
@@ -514,33 +514,33 @@ class product_product(models.Model):
             return page
 
         # left side product image with image nav bar, product ingredients with nav bar
-        def html_product_detail_image( product, partner):
+        def html_product_detail_image( variant, partner):
             ribbon_limited = self.env.ref('webshop_dermanord.image_limited')
             ribbon_promo = self.env.ref('website_sale.image_promo')
             ribbon_wrapper = ''
-            if len(product.website_style_ids_variant) > 0:
-                if product.website_style_ids_variant[0] == ribbon_promo:
+            if len(variant.website_style_ids_variant) > 0:
+                if variant.website_style_ids_variant[0] == ribbon_promo:
                     ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('News')
-                elif product.website_style_ids_variant[0] == ribbon_limited:
+                elif variant.website_style_ids_variant[0] == ribbon_limited:
                     ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('Limited Edition')
-            elif len(product.product_tmpl_id.website_style_ids) > 0:
-                if product.product_tmpl_id.website_style_ids[0] == ribbon_promo:
+            elif len(variant.product_tmpl_id.website_style_ids) > 0:
+                if variant.product_tmpl_id.website_style_ids[0] == ribbon_promo:
                     ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('News')
-                elif product.product_tmpl_id.website_style_ids[0] == ribbon_limited:
+                elif variant.product_tmpl_id.website_style_ids[0] == ribbon_limited:
                     ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('Limited Edition')
-            offer_wrapper = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">%s</div></div>' %_('Offer') if product.is_offer_product_reseller or product.is_offer_product_consumer else ''
-            product_images = product.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
+            offer_wrapper = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">%s</div></div>' %_('Offer') if variant.is_offer_product_reseller or variant.is_offer_product_consumer else ''
+            product_images = variant.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
             product_images_html = ''
             product_images_nav_html = ''
             if len(product_images) > 0:
                 for idx, image in enumerate(product_images):
-                    product_images_html += '<div id="%s_%s_image" class="tab-pane fade%s">%s%s<img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' %(product.id, image.id, ' active in' if idx == 0 else '', offer_wrapper, ribbon_wrapper, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_detail'))
-                    product_images_nav_html += '<li class="%s"><a data-toggle="tab" href="#%s_%s_image"><img class="img img-responsive" src="%s"/></a></li>' %('active' if idx == 0 else '', product.id, image.id, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_thumbnail'))
+                    product_images_html += '<div id="%s_%s_image" class="tab-pane fade%s">%s%s<img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' %(variant.id, image.id, ' active in' if idx == 0 else '', offer_wrapper, ribbon_wrapper, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_detail'))
+                    product_images_nav_html += '<li class="%s"><a data-toggle="tab" href="#%s_%s_image"><img class="img img-responsive" src="%s"/></a></li>' %('active' if idx == 0 else '', variant.id, image.id, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_thumbnail'))
             else:
-                product_images_html += '<div id="%s_image" class="tab-pane fade active in">%s%s<img class="img img-responsive product_detail_img" style="margin: auto; width: 500px; height: 500px;" src="/web/static/src/img/placeholder.png"/></div>' %(product.id, offer_wrapper, ribbon_wrapper)
-                product_images_nav_html = '<li class="active"><a data-toggle="tab" href="#%s_image"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></a></li>' %product.id
+                product_images_html += '<div id="%s_image" class="tab-pane fade active in">%s%s<img class="img img-responsive product_detail_img" style="margin: auto; width: 500px; height: 500px;" src="/web/static/src/img/placeholder.png"/></div>' %(variant.id, offer_wrapper, ribbon_wrapper)
+                product_images_nav_html = '<li class="active"><a data-toggle="tab" href="#%s_image"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></a></li>' %variant.id
             ingredients_images_nav_html = ''
-            product_ingredients = self.env['product.ingredient'].search([('product_ids', 'in', product.id)], order='sequence')
+            product_ingredients = self.env['product.ingredient'].search([('product_ids', 'in', variant.id)], order='sequence')
             if len(product_ingredients) > 0:
                 for i in product_ingredients:
                     ingredients_images_nav_html += '<a href="/dn_shop/?current_ingredient=%s"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="%s"/><h6 class="text-center text-primary" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></div></a>' %(i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
@@ -571,22 +571,22 @@ class product_product(models.Model):
                 product_images_nav_html = product_images_nav_html,
                 ingredients_title = _('made from all-natural ingredients'),
                 ingredients_images_nav_html = ingredients_images_nav_html,
-                current_product_id = product.id,
-                hide_ingredients_desc = '' if product.ingredients else 'hidden',
+                current_product_id = variant.id,
+                hide_ingredients_desc = '' if variant.ingredients else 'hidden',
                 ingredients = _('ingredients:'),
-                ingredients_desc = product.ingredients if product.ingredients else ''
+                ingredients_desc = variant.ingredients.replace('\n', '<br/>') if variant.ingredients else ''
             )
             return page
 
         # product ingredients in mobile, directly after <section id="product_detail"></section>
-        def html_product_ingredients_mobile(product, partner):
+        def html_product_ingredients_mobile(variant, partner):
             ingredients_carousel_html = ''
             ingredients_carousel_nav_html = ''
-            product_ingredients = self.env['product.ingredient'].search([('product_ids', 'in', product.id)], order='sequence')
+            product_ingredients = self.env['product.ingredient'].search([('product_ids', 'in', variant.id)], order='sequence')
             if len(product_ingredients) > 0:
                 for idx, i in enumerate(product_ingredients):
                     ingredients_carousel_html += '<div class="item ingredient_desc%s"><a href="/dn_shop/?current_ingredient=%s"><img class="img img-responsive" style="margin: auto; display: block;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></a></div>' %(' active' if idx == 0 else '', i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
-                    ingredients_carousel_nav_html += '<li class="%s" data-slide-to="%s" data-target="#%s_ingredient_carousel"></li>' %(' active' if idx == 0 else '', idx, product.id)
+                    ingredients_carousel_nav_html += '<li class="%s" data-slide-to="%s" data-target="#%s_ingredient_carousel"></li>' %(' active' if idx == 0 else '', idx, variant.id)
 
             page = u"""<div id="ingredients_div_mobile">
     <div class="container mb16 hidden-lg hidden-md hidden-sm">
@@ -608,12 +608,12 @@ class product_product(models.Model):
 <div id="ingredients_description_mobile" class="container hidden-lg hidden-md hidden-sm">
     <p><strong class="dn_uppercase">{ingredients} </strong><span class="text-muted">{ingredients_desc}</span></p>
 </div>""".format(
-                product_id = product.id,
+                product_id = variant.id,
                 ingredients_title = _('made from all-natural ingredients'),
                 ingredients_carousel_html = ingredients_carousel_html,
                 ingredients_carousel_nav_html = ingredients_carousel_nav_html,
                 ingredients = _('ingredients:'),
-                ingredients_desc = product.ingredients
+                ingredients_desc = variant.ingredients.replace('\n', '<br/>') if variant.ingredients else ''
             )
             return page
 
