@@ -5,6 +5,13 @@
 .reseller_cell {
     padding: 5px;
     margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reseller_cell > a > h4 {
+    height: 2.2em;
 }
 
 .reseller_cell p, .reseller_cell a {

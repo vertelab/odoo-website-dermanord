@@ -82,7 +82,7 @@
                                     <p><a href="/reseller_register/new">Läs mer om hur vi samarbetar och anmäl ditt intresse här.</a></p>
                                 </div>
                                 <div class="col-md-12 col-sm-12 col-xs-12 mb16">
-                                    <div class="grid readable">
+                                    <div class="readable">
                                         <t t-if="resellers">
                                             <t t-foreach="resellers" t-as="reseller">
                                                 <div class="reseller_cell col-md-4 col-sm-4 col-xs-12">
@@ -93,14 +93,16 @@
                                                     <a t-att-href="'/reseller/%s' %reseller.id"><h4><strong><t t-esc="reseller.brand_name if reseller.brand_name else reseller.name"/></strong></h4></a>
                                                     <!--<p class="text-muted"><t t-esc="','.join(reseller.category_id.mapped('name'))"/></p>-->
                                                     <p>
-                                                        <t t-if="visit.street"><span t-esc="visit.street"/><br/></t>
-                                                        <t t-if="visit.street2"><span t-esc="visit.street2"/><br/></t>
-                                                        <t t-if="visit.zip"><span t-esc="visit.zip"/></t> <t t-if="visit.city"><span t-esc="visit.city"/><br/></t>
-                                                        <t t-if="reseller.country_id"><span t-esc="reseller.country_id.name"/></t>
+                                                        <span t-if="visit.street" t-esc="visit.street"/><br/>
+                                                        <t t-if="visit.street2 and not visit.street"><span t-esc="visit.street2"/><br/></t>
+                                                        <span t-if="visit.zip" t-esc="visit.zip"/> <span t-if="visit.city" t-esc="visit.city"/><br/>
+                                                        <span t-if="reseller.country_id" t-esc="reseller.country_id.name"/>
                                                     </p>
+<!--
                                                     <t t-if="visit.email"><p style="text-decoration: underline;"><a t-att-href="'mailto:%s' %visit.email"><span t-esc="visit.email"/></a></p></t>
                                                     <t t-if="visit.phone"><p><a t-att-href="'tel:%s' %visit.phone"><span t-esc="visit.phone"/></a></p></t>
                                                     <t t-if="reseller.website"><p style="text-decoration: underline;"><a t-att-href="reseller.website"><span t-esc="reseller.website.replace('http://', '')"/></a></p></t>
+-->
                                                 </div>
                                             </t>
                                         </t>
