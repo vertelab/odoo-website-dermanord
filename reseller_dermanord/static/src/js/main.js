@@ -1,8 +1,8 @@
 $(document).ready(function() {
-    if ($("#reseller_description_div").height() > 300) {
-        $("#reseller_description_div").height(300);
-        $("#reseller_description_div").find(".read-more").removeClass("hidden");
-    }
+    //~ if ($("#reseller_description_div").height() > 300) {
+        //~ $("#reseller_description_div").height(300);
+        //~ $("#reseller_description_div").find(".read-more").removeClass("hidden");
+    //~ }
     $("i#remove_img").click(function(){
         var self = $(this);
         openerp.jsonRpc("/remove_img", "call", {
@@ -28,38 +28,36 @@ function reseller_restore_filter() {
 }
 
 
-var $el, $ps, $up, totalHeight;
+//~ var $el, $ps, $up, totalHeight;
 
-$("#reseller_description_div .button").click(function() {
+//~ $("#reseller_description_div .button").click(function() {
 
-  totalHeight = 0
+  //~ totalHeight = 0
 
-  $el = $(this);
-  $p  = $el.parent();
-  $up = $p.parent();
-  $ps = $up.find("p:not('.read-more')");
+  //~ $el = $(this);
+  //~ $p  = $el.parent();
+  //~ $up = $p.parent();
+  //~ $ps = $up.find("p:not('.read-more')");
 
-  // measure how tall inside should be by adding together heights of all inside paragraphs (except read-more paragraph)
-  $ps.each(function() {
-    totalHeight += $(this).outerHeight() + 10; // 10px from each p-tag
-  });
+  //~ // measure how tall inside should be by adding together heights of all inside paragraphs (except read-more paragraph)
+  //~ $ps.each(function() {
+    //~ totalHeight += $(this).outerHeight() + 10; // 10px from each p-tag
+  //~ });
 
-  console.log(totalHeight);
+  //~ $up
+    //~ .css({
+      //~ // Set height to prevent instant jumpdown when max height is removed
+      //~ "height": $up.height(),
+      //~ "max-height": 9999
+    //~ })
+    //~ .animate({
+      //~ "height": totalHeight
+    //~ });
 
-  $up
-    .css({
-      // Set height to prevent instant jumpdown when max height is removed
-      "height": $up.height(),
-      "max-height": 9999
-    })
-    .animate({
-      "height": totalHeight
-    });
+  //~ // fade out read-more
+  //~ $p.fadeOut();
 
-  // fade out read-more
-  $p.fadeOut();
+  //~ // prevent jump-down
+  //~ return false;
 
-  // prevent jump-down
-  return false;
-
-});
+//~ });

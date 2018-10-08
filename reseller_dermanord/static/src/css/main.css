@@ -97,6 +97,7 @@
     position: relative;
     overflow: hidden;
 }
+
 #reseller_description_div .read-more {
     position: absolute;
     bottom: 0;
@@ -140,5 +141,9 @@ i#remove_img {
     input[type="checkbox"] {
         margin-left: -25px !important;
         transform: scale(1.5, 1.5);
+    }
+
+    #reseller_description_div {
+        padding-right: 0px;
     }
 }

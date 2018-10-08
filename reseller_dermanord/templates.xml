@@ -139,7 +139,9 @@
                                             <p><t t-esc="r"/></p>
                                         </t>
                                     </t>
+<!--
                                     <p class="read-more hidden"><a href="#" class="button">Read More</a></p>
+-->
                                 </div>
                                 <t t-if="reseller.child_competence_ids">
                                     <h3>Our competences</h3>
