@@ -286,7 +286,7 @@ class sale_order(models.Model):
             request.session['sale_order_id'] = None
             raise Warning(_('It is forbidden to modify a sale order which is not in draft status'))
 
-        ticket_id = request.context.get("event_ticket_id")
+        ticket_id = self.env.context.get("event_ticket_id")
         line = self.order_line.filtered(lambda l: ((line_id == l.id) if line_id else (l.product_id.id == product_id)) and (not ticket_id or l.event_ticket_id.id == ticket_id))
         line = line and line[0]
 
