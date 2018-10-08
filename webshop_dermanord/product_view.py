@@ -569,7 +569,7 @@ class product_product(models.Model):
 </div>""".format(
                 product_images_html = product_images_html,
                 product_images_nav_html = product_images_nav_html,
-                ingredients_title = _('made from all-natural ingredients'),
+                ingredients_title = _('made from all-natural ingredients') if len(product_ingredients) > 0 else '',
                 ingredients_images_nav_html = ingredients_images_nav_html,
                 current_product_id = variant.id,
                 hide_ingredients_desc = '' if variant.ingredients else 'hidden',
@@ -609,7 +609,7 @@ class product_product(models.Model):
     <p><strong class="dn_uppercase">{ingredients} </strong><span class="text-muted">{ingredients_desc}</span></p>
 </div>""".format(
                 product_id = variant.id,
-                ingredients_title = _('made from all-natural ingredients'),
+                ingredients_title = _('made from all-natural ingredients') if len(product_ingredients) > 0 else '',
                 ingredients_carousel_html = ingredients_carousel_html,
                 ingredients_carousel_nav_html = ingredients_carousel_nav_html,
                 ingredients = _('ingredients:'),
