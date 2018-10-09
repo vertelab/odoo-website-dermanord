@@ -16,7 +16,7 @@
                     <div class="container mb16 hidden-xs">
                         <h2 class="mt64 mb32 text-center dn_uppercase">made from all-natural ingredients</h2>
                         <t t-foreach="ingredients" t-as="ingredient">
-                            <a t-att-href="'/dn_shop/?current_ingredient=%s' %ingredient.id">
+                            <a t-att-href="'/webshop/?current_ingredient=%s' %ingredient.id">
                                 <div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;">
                                     <t t-if="ingredient.image">
                                         <img class="img img-responsive" style="margin: auto;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'product_ingredients.img_ingredients')"/>
@@ -53,7 +53,7 @@
                                 <div class="carousel-inner" style="width: 100%;">
                                     <t t-foreach="ingredients" t-as="ingredient">
                                         <div t-att-class="'item ingredient_desc %s' %('active' if ingredient_index == 0 else '')">
-                                            <a t-att-href="'/dn_shop/?current_ingredient=%s' %ingredient.id">
+                                            <a t-att-href="'/webshop/?current_ingredient=%s' %ingredient.id">
                                                 <t t-if="ingredient.image">
                                                     <img class="img img-responsive" style="margin: auto; display: block;" t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(ingredient.id, 'product_ingredients.img_ingredients')"/>
                                                 </t>

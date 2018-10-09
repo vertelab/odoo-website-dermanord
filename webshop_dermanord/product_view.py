@@ -185,7 +185,7 @@ class product_template(models.Model):
         ribbon_limited = None
         for product in self.env['product.template'].search_read(domain, fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=limit, order=order,offset=offset):
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
-            key_raw = 'dn_shop %s %s %s %s %s %s %s %s' % (
+            key_raw = 'thumbnail_default_variant %s %s %s %s %s %s %s %s' % (
                 self.env.cr.dbname, flush_type, product['id'], pricelist.id,
                 self.env.lang, request.session.get('device_type','md'),
                 self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
@@ -358,7 +358,7 @@ class product_product(models.Model):
         ribbon_promo = None
         ribbon_limited = None
         for product in self.env['product.product'].search_read(domain, fields=['id','fullname', 'default_code','type', 'is_offer_product_reseller', 'is_offer_product_consumer', 'product_tmpl_id', 'sale_ok','campaign_ids','website_style_ids_variant'], limit=limit, order=order,offset=offset):
-            key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,product['id'],pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
+            key_raw = 'list_row %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,product['id'],pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
             key,page_dict = self.env['website'].get_page_dict(key_raw)
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
             if not page_dict:
@@ -380,7 +380,7 @@ class product_product(models.Model):
                                     <h5 class="list_product_name">
                                         <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_name">
                                             <strong>
-                                                <a href="/sv_SE/dn_shop/variant/{product_id}" title="{product_name}">
+                                                <a href="/dn_shop/variant/{product_id}" title="{product_name}">
                                                     <span itemprop="name">{product_name}</span>
                                                 </a>
                                             </strong>
@@ -470,13 +470,13 @@ class product_product(models.Model):
             for idx, c in enumerate(variant.public_categ_ids):
                 if idx != 0:
                     category_html += '<span style="color: #bbb;">, </span>'
-                category_html += '<a href="/dn_shop/category/%s"><span style="color: #bbb;">%s</span></a>' %(c.id, c.name)
+                category_html += '<a href="/webshop/category/%s"><span style="color: #bbb;">%s</span></a>' %(c.id, c.name)
                 category_value += '&amp;category_%s=%s' %(c.id, c.id)
             facet_html = ''
             for line in variant.facet_line_ids:
                 facet_html += '<div class="col-md-6"><h2 class="dn_uppercase">%s</h2>' %line.facet_id.name
                 for idx, value in enumerate(line.value_ids):
-                    facet_html += '<a href="/dn_shop/?facet_%s_%s=%s%s" class="text-muted"><span>%s</span></a>' %(line.facet_id.id, value.id, value.id, category_value, value.name)
+                    facet_html += '<a href="/webshop/?facet_%s_%s=%s%s" class="text-muted"><span>%s</span></a>' %(line.facet_id.id, value.id, value.id, category_value, value.name)
                     if idx != len(line.value_ids)-1:
                         facet_html += '<span>, </span>'
                 facet_html += '</div>'
@@ -543,7 +543,7 @@ class product_product(models.Model):
             product_ingredients = self.env['product.ingredient'].search([('product_ids', 'in', variant.id)], order='sequence')
             if len(product_ingredients) > 0:
                 for i in product_ingredients:
-                    ingredients_images_nav_html += '<a href="/dn_shop/?current_ingredient=%s"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="%s"/><h6 class="text-center text-primary" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></div></a>' %(i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
+                    ingredients_images_nav_html += '<a href="/webshop/?current_ingredient=%s"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="%s"/><h6 class="text-center text-primary" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></div></a>' %(i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
             page = u"""<div id="image_big" class="tab-content">
     {product_images_html}
 </div>
@@ -585,7 +585,7 @@ class product_product(models.Model):
             product_ingredients = self.env['product.ingredient'].search([('product_ids', 'in', variant.id)], order='sequence')
             if len(product_ingredients) > 0:
                 for idx, i in enumerate(product_ingredients):
-                    ingredients_carousel_html += '<div class="item ingredient_desc%s"><a href="/dn_shop/?current_ingredient=%s"><img class="img img-responsive" style="margin: auto; display: block;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></a></div>' %(' active' if idx == 0 else '', i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
+                    ingredients_carousel_html += '<div class="item ingredient_desc%s"><a href="/webshop/?current_ingredient=%s"><img class="img img-responsive" style="margin: auto; display: block;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></a></div>' %(' active' if idx == 0 else '', i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
                     ingredients_carousel_nav_html += '<li class="%s" data-slide-to="%s" data-target="#%s_ingredient_carousel"></li>' %(' active' if idx == 0 else '', idx, variant.id)
 
             page = u"""<div id="ingredients_div_mobile">
@@ -620,7 +620,7 @@ class product_product(models.Model):
         partner = self.env.user.partner_id.commercial_partner_id
         pricelist = partner.property_product_pricelist
         flush_type = 'get_product_detail'
-        key_raw = 'dn_shop %s %s %s %s %s %s %s %s' % (
+        key_raw = 'product_detail %s %s %s %s %s %s %s %s' % (
             self.env.cr.dbname, flush_type, variant_id, pricelist.id, self.env.lang,
             request.session.get('device_type', 'md'),
             self.env.user in self.sudo().env.ref('base.group_website_publisher').users,

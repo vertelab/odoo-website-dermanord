@@ -73,7 +73,7 @@
         </template>
 
         <template id="dn_filter_form" name="DN Filter Form">
-            <form t-att-action="'/dn_list' if url == '/dn_list' else '/dn_shop'" method="post">
+            <form action="/webshop" method="post">
                 <div class="container" style="padding: 0px;">
                     <t t-set="first_facet" t-value="0"/>
                     <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
@@ -258,7 +258,7 @@
         </template>
 
         <template id="dn_sort_form" name="DN Sort Form">
-            <form t-att-action="'/dn_list' if url == '/dn_list' else '/dn_shop'" method="post">
+            <form action="/webshop" method="post">
                 <div class="container" style="padding: 0px;">
                     <ul style="list-style-type: none;">
                         <li><div class="radio"><label>
@@ -367,11 +367,11 @@
                 <div class="btn-group">
                     <button class="mt32 dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit">OK</button>
                     <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
-                        <t t-if="url == '/dn_list'">
-                            <button class="mt32 dn_btn dn_primary" formaction="/dn_shop" type="submit" aria-label="Switch to grid view" title="Switch to grid view"><i class="fa fa-th"/></button>
+                        <t t-if="webshop_type == 'dn_list'">
+                            <button class="mt32 dn_btn dn_primary" formaction="/webshop/webshop_type/dn_shop" type="submit" aria-label="Switch to grid view" title="Switch to grid view"><i class="fa fa-th"/></button>
                         </t>
-                        <t t-if="url == '/dn_shop'">
-                            <button class="mt32 dn_btn dn_primary" formaction="/dn_list" type="submit" aria-label="Switch to list view" title="Switch to list view"><i class="fa fa-th-list"/></button>
+                        <t t-if="webshop_type == 'dn_shop'">
+                            <button class="mt32 dn_btn dn_primary" formaction="/webshop/webshop_type/dn_list" type="submit" aria-label="Switch to list view" title="Switch to list view"><i class="fa fa-th-list"/></button>
                         </t>
                     </t>
                 </div>
@@ -391,7 +391,7 @@
         </template>
 
         <template id="desktop_product_filter_form" name="Desktop Product Filter Form">
-            <form t-att-action="'/dn_list' if url == '/dn_list' else '/dn_shop'" method="post">
+            <form action="/webshop" method="post">
                 <div class="btn-group">
                     <button class="mt32 dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
                     <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;"><i class="fa fa-trash-o"/> Clear All</button>
@@ -582,7 +582,7 @@
 
         <template id="desktop_product_sort_form" name="Desktop Product Sort Form">
             <h4 class="text-center dn_uppercase">Sorting</h4>
-            <form t-att-action="'/dn_list' if url == '/dn_list' else '/dn_shop'" method="post">
+            <form action="/webshop" method="post">
                 <select id="descktop_sort_selector" name="order" class="form-control selectpicker dropdown dn_selection_dropdown" onchange="this.form.submit();">
                     <t t-if="request.session.get('form_values')">
                         <option value="sold_qty desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'sold_qty desc' else {}">Most Sold</option>
@@ -653,11 +653,11 @@
                 </t>
                 <input class="hidden" name="post_form" value="ok"/>
                 <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
-                    <t t-if="url == '/dn_list'">
-                        <button class="mt32 dn_btn dn_primary" formaction="/dn_shop" type="submit" title="Swith to grid view"><i class="fa fa-th"/></button>
+                    <t t-if="webshop_type == 'dn_list'">
+                        <button class="mt32 dn_btn dn_primary" formaction="/webshop/webshop_type/dn_shop" type="submit" title="Swith to grid view"><i class="fa fa-th"/></button>
                     </t>
-                    <t t-if="url == '/dn_shop'">
-                        <button class="mt32 dn_btn dn_primary" formaction="/dn_list" type="submit" title="Swith to list view"><i class="fa fa-th-list"/></button>
+                    <t t-if="webshop_type == 'dn_shop'">
+                        <button class="mt32 dn_btn dn_primary" formaction="/webshop/webshop_type/dn_list" type="submit" title="Swith to list view"><i class="fa fa-th-list"/></button>
                     </t>
                 </t>
             </form>

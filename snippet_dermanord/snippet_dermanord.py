@@ -150,7 +150,7 @@ class snippet(http.Controller):
                             url = '/dn_shop/variant/%s' %(occ.object_id.id)
                     elif occ.object_id._name == 'product.public.category':
                         if check_access(occ.object_id):
-                            url = '/dn_shop/category/%s' %occ.object_id.id
+                            url = '/webshop/category/%s' %occ.object_id.id
                     elif occ.object_id._name == 'blog.post':
                         if check_access(occ.object_id):
                             url = '/blog/%s/post/%s' %(occ.sudo().object_id.blog_id.id, occ.object_id.id)

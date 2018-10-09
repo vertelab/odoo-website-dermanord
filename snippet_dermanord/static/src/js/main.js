@@ -16,7 +16,7 @@ $(document).ready(function() {
                 var show_less_block = "<h3 id='show_less_block' class='text-center mt16 mb16 hidden-lg hidden-md hidden-sm hidden' style='color: #fff; text-decoration: underline;'>Show Less <i class='fa fa-angle-up'/></h3>";
                 i = 0;
                 $.each(data, function(key, info) {
-                    var content = '<a href="/dn_shop/category/' + data[key]['id'] + '"><div class="categ_block col-md-4 col-xs-12"><img class="img img-responsive categ_block_img" src="' + data[key]['image'] + '"/><div class="container"><h2 class="categ_block_text dn_uppercase">' + '<span>' + data[key]['name'] + '</span></h2></div></div></a>';
+                    var content = '<a href="/webshop/category/' + data[key]['id'] + '"><div class="categ_block col-md-4 col-xs-12"><img class="img img-responsive categ_block_img" src="' + data[key]['image'] + '"/><div class="container"><h2 class="categ_block_text dn_uppercase">' + '<span>' + data[key]['name'] + '</span></h2></div></div></a>';
                     category_content += i > categ_block_hidden_indicator ? content.replace("categ_block", "categ_block extra_block hidden-xs") : content;
                     if(i == categ_block_hidden_indicator){
                         category_content += show_more_block;

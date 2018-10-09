@@ -240,6 +240,13 @@ class product_pricelist(models.Model):
     # ~ def price_get(self, prod_id, qty, partner=None):
         # ~ return super(product_pricelist, self).price_get(prod_id, qty, partner)
 
+
+class res_users(models.Model):
+    _inherit = 'res.users'
+
+    webshop_type = fields.Selection(selection=[('dn_shop', 'dn_shop'), ('dn_list', 'dn_list')])
+
+
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
@@ -836,15 +843,14 @@ class WebsiteSale(website_sale):
 
         # ~ _logger.warn('checkout_form_save:%s' % (timer() - start))
 
-    @http.route([
-        '/dn_shop',
-        '/dn_shop/page/<int:page>',
-        '/dn_shop/category/<model("product.public.category"):category>',
-        '/dn_shop/category/<model("product.public.category"):category>/page/<int:page>',
-    ], type='http', auth="public", website=True)
+    # ~ @http.route([
+        # ~ '/dn_shop',
+        # ~ '/dn_shop/page/<int:page>',
+        # ~ '/dn_shop/category/<model("product.public.category"):category>',
+        # ~ '/dn_shop/category/<model("product.public.category"):category>/page/<int:page>',
+    # ~ ], type='http', auth="public", website=True)
     def dn_shop(self, page=0, category=None, search='', **post):
         _logger.warn('----------------_> %s '  % 'Start')
-
 
         url = "/dn_shop"
         request.website.dn_shop_set_session('product.template', post, url)
@@ -893,6 +899,7 @@ class WebsiteSale(website_sale):
             # ~ 'attributes': attributes,
             'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
             'url': url,
+            'webshop_type': 'dn_shop',
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
             'shop_footer': True,
             'page_lang': request.env.lang,
@@ -945,12 +952,12 @@ class WebsiteSale(website_sale):
         return request.website.render("webshop_dermanord.product_detail_view", values)
 
     #controller only for reseller
-    @http.route([
-        '/dn_list',
-        '/dn_list/page/<int:page>',
-        '/dn_list/category/<model("product.public.category"):category>',
-        '/dn_list/category/<model("product.public.category"):category>/page/<int:page>',
-    ], type='http', auth="public", website=True)
+    # ~ @http.route([
+        # ~ '/dn_list',
+        # ~ '/dn_list/page/<int:page>',
+        # ~ '/dn_list/category/<model("product.public.category"):category>',
+        # ~ '/dn_list/category/<model("product.public.category"):category>/page/<int:page>',
+    # ~ ], type='http', auth="public", website=True)
     def dn_list(self, page=0, category=None, search='', **post):
         url = '/dn_list'
         request.website.dn_shop_set_session('product.product', post, url)
@@ -978,13 +985,34 @@ class WebsiteSale(website_sale):
             'rows': PPR,
             # ~ 'compute_currency': compute_currency,
             'url': url,
+            'webshop_type': 'dn_list',
             'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
             'shop_footer': True,
             'no_product_message': no_product_message,
             'all_products_loaded': True if len(products) < PPG else False,
         })
 
+    #controller for read webshop_type
+    @http.route([
+        '/webshop',
+        '/webshop/page/<int:page>',
+        '/webshop/category/<model("product.public.category"):category>',
+        '/webshop/category/<model("product.public.category"):category>/page/<int:page>',
+        ], type='http', auth="public", website=True)
+    def webshop(self, page=0, category=None, search='', **post):
+        if request.env.user.webshop_type == 'dn_list':
+            return self.dn_list(page, category, search, **post)
+        else:
+            return self.dn_shop(page, category, search, **post)
 
+    @http.route([
+        '/webshop/webshop_type/<string:webshop_type>',
+        ], type='http', auth="public", website=True)
+    def webshop_webshop_type(self, webshop_type='dn_shop', **post):
+        if not webshop_type in ['dn_shop', 'dn_list']:
+            webshop_type = 'dn_shop'
+        request.env.user.webshop_type = webshop_type
+        return request.redirect('/webshop')
 
     @http.route(['/shop/cart'], type='http', auth="public", website=True)
     def cart(self, **post):

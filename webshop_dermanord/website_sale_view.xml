@@ -446,20 +446,11 @@
         </template>
         <template id="continue_shopping" inherit_id="website_sale.continue_shopping">
             <xpath expr="//a[@href='/shop']" position="replace">
-                <t t-if="url == '/dn_list'">
-                    <a href="/dn_list" class="btn btn-default mb32">
-                        <span class="fa fa-long-arrow-left" />
-                        <span class="hidden-xs">Continue Shopping</span>
-                        <span class="visible-xs-inline">Continue</span>
-                    </a>
-                </t>
-                <t t-if="url == '/dn_shop'">
-                    <a href="/dn_shop" class="btn btn-default mb32">
-                        <span class="fa fa-long-arrow-left" />
-                        <span class="hidden-xs">Continue Shopping</span>
-                        <span class="visible-xs-inline">Continue</span>
-                    </a>
-                </t>
+                <a href="/webshop" class="btn btn-default mb32">
+                    <span class="fa fa-long-arrow-left" />
+                    <span class="hidden-xs">Continue Shopping</span>
+                    <span class="visible-xs-inline">Continue</span>
+                </a>
             </xpath>
         </template>
         <template id="main_search_layout" inherit_id="website_sale_previous_products.main_search_layout">
@@ -469,7 +460,7 @@
         </template>
         <template id="search_layout" inherit_id="website_fts_popular.search_layout">
             <xpath expr="//t[@t-foreach='popular_terms']/li/a" position="attributes">
-                <attribute name="t-att-href">'/dn_shop?search=%s' %pt.name</attribute>
+                <attribute name="t-att-href">'/webshop?search=%s' %pt.name</attribute>
             </xpath>
         </template>
         <template id="products_attributes_search" inherit_id="products" active="False" customize_show="True" name="Product Attribute's Search">
@@ -563,7 +554,7 @@
                     <div t-if="len(product.public_categ_ids) &gt; 0" class="col-md-12 no_padding_div">
                         <h2 class="category_title dn_uppercase">Categories</h2>
                         <t t-foreach="product.public_categ_ids" t-as="pc">
-                            <a t-att-href="'/dn_shop/category/%s' %pc.id">
+                            <a t-att-href="'/webshop/category/%s' %pc.id">
                                 <span style="color: #bbb;" t-field="pc.name" />
                             </a>
                         </t>
@@ -578,7 +569,7 @@
                                     <!--
                                     <t t-set="facet_value_ids" t-value="product_product.facet_line_ids.mapped('value_ids') &amp; facet.value_ids" />
                                     <t t-foreach="facet_value_ids" t-as="value">
-                                        <a t-att-href="'/dn_shop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, ('&amp;%s' %'&amp;'.join(['category_%s=%s' %(c.id, c.id) for c in product.public_categ_ids]) if len(product.public_categ_ids) &gt; 0 else ''))" class="text-muted">
+                                        <a t-att-href="'/webshop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, ('&amp;%s' %'&amp;'.join(['category_%s=%s' %(c.id, c.id) for c in product.public_categ_ids]) if len(product.public_categ_ids) &gt; 0 else ''))" class="text-muted">
                                             <span t-field="value.name" />
                                         </a>
                                         <span t-if="value_index != len(facet_value_ids)-1">,</span>
@@ -593,7 +584,7 @@
                                     <h2 class="dn_uppercase" t-field="facet.name" />
                                     <t t-set="facet_value_ids" t-value="product.facet_line_ids.mapped('value_ids') &amp; facet.value_ids" />
                                     <t t-foreach="facet_value_ids" t-as="value">
-                                        <a t-att-href="'/dn_shop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, ('&amp;%s' %'&amp;'.join(['category_%s=%s' %(c.id, c.id) for c in product.public_categ_ids]) if len(product.public_categ_ids) &gt; 0 else ''))" class="text-muted">
+                                        <a t-att-href="'/webshop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, ('&amp;%s' %'&amp;'.join(['category_%s=%s' %(c.id, c.id) for c in product.public_categ_ids]) if len(product.public_categ_ids) &gt; 0 else ''))" class="text-muted">
                                             <span t-field="value.name" />
                                         </a>
                                         <span t-if="value_index != len(facet_value_ids)-1">,</span>
