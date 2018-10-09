@@ -43,10 +43,10 @@ Extra snippets for Dermanord.
         'product_action',
     ],
     'data': [
+        'snippets_data.xml',
         'snippets_css_js.xml',
         'product_view.xml',
         'snippets.xml',
-        'snippets_data.xml',
     ],
     'qweb': ['static/src/xml/snippets.xml'],
     'application': True,

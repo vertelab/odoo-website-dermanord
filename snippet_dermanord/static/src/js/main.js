@@ -80,31 +80,29 @@ $(document).ready(function() {
         }).done(function(data){
             if (data.length == 0) {
                 $("section.product_highlights").addClass("hidden");
-                //~ var message = '<h2 class="text-center text-muted css_non_editable_mode_hidden">No product highlight yet</h2>';
-                //~ var message = '<h2 class="text-center text-muted">No product highlight yet</h2>';
-                //~ $(".product_div").html(message);
             }
             else {
                 $("section.product_highlights").removeClass("hidden");
                 var ph_content = '';
                 $.each(data, function(key, info) {
-                    var ribbon_html = '';
-                    if (data[key]['oe_ribbon_promo'] || data[key]['oe_ribbon_promo']) {
-                        ribbon_html += '<div class="ribbon-wrapper">';
-                        if (data[key]['oe_ribbon_promo']) {
-                            ribbon_html += '<div class="ribbon ribbon_news btn btn-primary">' + data[key]['oe_ribbon_promo_text'] + '</div>';
-                        }
-                        if (data[key]['oe_ribbon_limited']) {
-                            ribbon_html += '<div class="ribbon ribbon_limited btn btn-primary">Limited<br/>Edition</div>';
-                        }
-                        ribbon_html += '</div>';
-                    }
-                    if (data[key]['oe_ribbon_offer']) {
-                        ribbon_html += '<div class="offer-wrapper">';
-                        ribbon_html += '<div class="ribbon ribbon_offer btn btn-primary">' + data[key]['oe_ribbon_offer_text'] + '</div>';
-                        ribbon_html += '</div>';
-                    }
-                    var content = '<a href="' + data[key]['url'] + '"><div class="col-md-3 col-sm-6 col-xs-12"><div class="ph_block">' + ribbon_html + '<img class="img img-responsive ph_img" src="' + data[key]['image'] + '"/><div class="container desc_div"><h4 class="dn_uppercase">' + data[key]['name'] + '</h4><p class="ph_desc text-muted">' + data[key]['description'] + '</p></div></div></div></a>';
+                    console.log(data);
+                    //~ var ribbon_html = '';
+                    //~ if (data[key]['oe_ribbon_promo'] || data[key]['oe_ribbon_promo']) {
+                        //~ ribbon_html += '<div class="ribbon-wrapper">';
+                        //~ if (data[key]['oe_ribbon_promo']) {
+                            //~ ribbon_html += '<div class="ribbon ribbon_news btn btn-primary">' + data[key]['oe_ribbon_promo_text'] + '</div>';
+                        //~ }
+                        //~ if (data[key]['oe_ribbon_limited']) {
+                            //~ ribbon_html += '<div class="ribbon ribbon_limited btn btn-primary">Limited<br/>Edition</div>';
+                        //~ }
+                        //~ ribbon_html += '</div>';
+                    //~ }
+                    //~ if (data[key]['oe_ribbon_offer']) {
+                        //~ ribbon_html += '<div class="offer-wrapper">';
+                        //~ ribbon_html += '<div class="ribbon ribbon_offer btn btn-primary">' + data[key]['oe_ribbon_offer_text'] + '</div>';
+                        //~ ribbon_html += '</div>';
+                    //~ }
+                    var content = '<a href="' + data[key]['url'] + '"><div class="col-md-3 col-sm-6 col-xs-12"><div class="ph_block"><img class="img img-responsive ph_img" src="' + data[key]['image'] + '"/><div class="container desc_div"><h4 class="dn_uppercase">' + data[key]['name'] + '</h4><p class="ph_desc text-muted">' + data[key]['description'] + '</p></div></div></div></a>';
                     ph_content += content;
                 });
                 $(".product_div").html(ph_content).text();

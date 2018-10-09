@@ -46,11 +46,19 @@ class product_action(models.Model):
         else:
             super(product_action,self)._do_action()
 
+
 class product_product(models.Model):
     _inherit = 'product.product'
     show_on_startpage = fields.Boolean(string="Show on Start Page")
     show_on_startpage_image = fields.Binary(string='Image on startpage')
     show_on_startpage_desc = fields.Text(string="Description on startpage",translate=True)
+
+
+class crm_campaign_object(models.Model):
+    _inherit = 'crm.campaign.object'
+
+    recipe_en = fields.Many2one(comodel_name='image.recipe', string='Image recipe for English', default=lambda self: self.env.ref('snippet_dermanord.img_product').id)
+    recipe_sv = fields.Many2one(comodel_name='image.recipe', string='Image recipe for Swedish', default=lambda self: self.env.ref('snippet_dermanord.img_product').id)
 
 
 class snippet(http.Controller):
@@ -136,16 +144,16 @@ class snippet(http.Controller):
                 occs = occs.sorted(key=lambda o: o.sequence)
                 for occ in occs:
                     url = ''
-                    oe_ribbon_promo = False
-                    oe_ribbon_limited = False
+                    # ~ oe_ribbon_promo = False
+                    # ~ oe_ribbon_limited = False
                     if occ.object_id._name == 'product.template':
-                        oe_ribbon_promo = True if request.env.ref('website_sale.image_promo') in occ.sudo().object_id.website_style_ids else False
-                        oe_ribbon_limited = True if request.env.ref('webshop_dermanord.image_limited') in occ.sudo().object_id.website_style_ids else False
+                        # ~ oe_ribbon_promo = True if request.env.ref('website_sale.image_promo') in occ.sudo().object_id.website_style_ids else False
+                        # ~ oe_ribbon_limited = True if request.env.ref('webshop_dermanord.image_limited') in occ.sudo().object_id.website_style_ids else False
                         if check_access(occ.object_id):
                             url = '/dn_shop/product/%s' %occ.object_id.id
                     elif occ.object_id._name == 'product.product':
-                        oe_ribbon_promo = True if request.env.ref('website_sale.image_promo') in occ.sudo().object_id.website_style_ids_variant else False
-                        oe_ribbon_limited = True if request.env.ref('webshop_dermanord.image_limited') in occ.sudo().object_id.website_style_ids_variant else False
+                        # ~ oe_ribbon_promo = True if request.env.ref('website_sale.image_promo') in occ.sudo().object_id.website_style_ids_variant else False
+                        # ~ oe_ribbon_limited = True if request.env.ref('webshop_dermanord.image_limited') in occ.sudo().object_id.website_style_ids_variant else False
                         if check_access(occ.object_id):
                             url = '/dn_shop/variant/%s' %(occ.object_id.id)
                     elif occ.object_id._name == 'product.public.category':
@@ -155,18 +163,26 @@ class snippet(http.Controller):
                         if check_access(occ.object_id):
                             url = '/blog/%s/post/%s' %(occ.sudo().object_id.blog_id.id, occ.object_id.id)
                     if url:
+                        image_url = '/web/static/src/img/placeholder.png'
+                        if occ.image:
+                            if request.env.lang == 'sv_SE' and occ.recipe_sv and occ.recipe_sv.external_id:
+                                image_url = '/imagefield/crm.campaign.object/image/%s/ref/%s' %(occ.id, occ.recipe_sv.external_id)
+                            elif request.env.lang == 'en_US' and occ.recipe_en and occ.recipe_en.external_id:
+                                image_url = '/imagefield/crm.campaign.object/image/%s/ref/%s' %(occ.id, occ.recipe_en.external_id)
+                            else:
+                                image_url = '/imagefield/crm.campaign.object/image/%s/ref/%s' %(occ.id, 'snippet_dermanord.img_product')
                         object_list.append(
                             {
                                 'id': occ.id,
                                 'name': occ.name if occ.name else '',
-                                'image': '/imagefield/crm.campaign.object/image/%s/ref/%s' %(occ.id, 'snippet_dermanord.img_product') if occ.image else '/web/static/src/img/placeholder.png',
+                                'image': image_url,
                                 'description': occ.description if occ.description else '',
                                 'url': url,
-                                'oe_ribbon_promo': oe_ribbon_promo,
-                                'oe_ribbon_promo_text': 'Nyhet' if request.env.lang == 'sv_SE' else 'New',
-                                'oe_ribbon_limited': oe_ribbon_limited,
-                                'oe_ribbon_offer': True if (request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af') and occ.sudo().object_id.is_offer_product_reseller) or (request.env.user.partner_id.property_product_pricelist not in [request.env.ref('webshop_dermanord.pricelist_af'), request.env.ref('webshop_dermanord.pricelist_special')] and occ.sudo().object_id.is_offer_product_consumer) else False,
-                                'oe_ribbon_offer_text': 'Erbjudande' if request.env.lang == 'sv_SE' else 'Offer',
+                                # ~ 'oe_ribbon_promo': oe_ribbon_promo,
+                                # ~ 'oe_ribbon_promo_text': 'Nyhet' if request.env.lang == 'sv_SE' else 'New',
+                                # ~ 'oe_ribbon_limited': oe_ribbon_limited,
+                                # ~ 'oe_ribbon_offer': True if (request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af') and occ.sudo().object_id.is_offer_product_reseller) or (request.env.user.partner_id.property_product_pricelist not in [request.env.ref('webshop_dermanord.pricelist_af'), request.env.ref('webshop_dermanord.pricelist_special')] and occ.sudo().object_id.is_offer_product_consumer) else False,
+                                # ~ 'oe_ribbon_offer_text': 'Erbjudande' if request.env.lang == 'sv_SE' else 'Offer',
                             }
                         )
         for product in request.env['product.product'].search([('show_on_startpage','=',True)]):
@@ -177,11 +193,11 @@ class snippet(http.Controller):
                     'image': '/imagefield/product.product/show_on_startpage_image/%s/ref/%s' %(product.id, 'snippet_dermanord.img_product') if product.show_on_startpage_image else '/web/static/src/img/placeholder.png',
                     'description': product.show_on_startpage_desc or product.public_desc or '',
                     'url': '/dn_shop/variant/%s' % product.id,
-                    'oe_ribbon_promo': True if request.env.ref('website_sale.image_promo') in product.website_style_ids_variant else False,
-                    'oe_ribbon_promo_text': 'Nyhet' if request.env.lang == 'sv_SE' else 'New',
-                    'oe_ribbon_limited': True if request.env.ref('webshop_dermanord.image_limited') in product.website_style_ids_variant else False,
-                    'oe_ribbon_offer': True if (request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af') and product.sudo().is_offer_product_reseller) or (request.env.user.partner_id.property_product_pricelist not in [request.env.ref('webshop_dermanord.pricelist_af'), request.env.ref('webshop_dermanord.pricelist_special')] and product.sudo().is_offer_product_consumer) else False,
-                    'oe_ribbon_offer_text': 'Erbjudande' if request.env.lang == 'sv_SE' else 'Offer',
+                    # ~ 'oe_ribbon_promo': True if request.env.ref('website_sale.image_promo') in product.website_style_ids_variant else False,
+                    # ~ 'oe_ribbon_promo_text': 'Nyhet' if request.env.lang == 'sv_SE' else 'New',
+                    # ~ 'oe_ribbon_limited': True if request.env.ref('webshop_dermanord.image_limited') in product.website_style_ids_variant else False,
+                    # ~ 'oe_ribbon_offer': True if (request.env.user.partner_id.property_product_pricelist == request.env.ref('webshop_dermanord.pricelist_af') and product.sudo().is_offer_product_reseller) or (request.env.user.partner_id.property_product_pricelist not in [request.env.ref('webshop_dermanord.pricelist_af'), request.env.ref('webshop_dermanord.pricelist_special')] and product.sudo().is_offer_product_consumer) else False,
+                    # ~ 'oe_ribbon_offer_text': 'Erbjudande' if request.env.lang == 'sv_SE' else 'Offer',
                 }
             )
         return object_list

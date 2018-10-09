@@ -31,6 +31,7 @@
         <a t-att-href="ph_url">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="ph_block">
+<!--
                     <div class="ribbon-wrapper">
                         <div t-if="oe_ribbon_promo" class="ribbon ribbon_news btn btn-primary">New</div>
                         <div t-if="oe_ribbon_limited" class="ribbon ribbon_limited btn btn-primary">Limited<br/>Edition</div>
@@ -38,6 +39,7 @@
                     <div class="offer-wrapper">
                         <div t-if="oe_ribbon_offer" class="ribbon ribbon_offer btn btn-primary">Offer</div>
                     </div>
+-->
                     <img class="img img-responsive ph_img" t-att-src="ph_image" t-att-data-cke-saved-src="ph_image"/>
                     <div class="container desc_div">
                         <h4 class="dn_uppercase"><t t-esc="ph_name"/></h4>
