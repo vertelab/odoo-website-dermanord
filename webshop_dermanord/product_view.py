@@ -310,7 +310,10 @@ class product_product(models.Model):
 
     @api.model
     def get_packaging_info(self, product_id):
-        product = self.env['product.product'].sudo().search_read([('id','=',product_id)],['packaging_ids'])[0]
+        packaging_ids = self.env['product.product'].sudo().search_read([('id','=',product_id)],['packaging_ids'])
+        product = packaging_ids[0] if len(packaging_ids) > 0 else None
+        if not product:
+            return ''
         packagings = self.env['product.packaging'].sudo().browse(product['packaging_ids'])
         html = ''
         for packaging in packagings:
@@ -338,6 +341,7 @@ class product_product(models.Model):
                                 kfp="""<b>%s</b> %s %s<br/>""" % (_('Quantity (KFP):') ,packaging.qty * packaging.ul_qty * packaging.rows,_('pcs / pallet')) if packaging.ul_container else '',
                             )
         return html
+
     @api.model
     def get_stock_info(self,product_id):
         product = self.env['product.product'].sudo().search_read([('id','=',product_id)],['virtual_available_days','type'])[0]

@@ -850,7 +850,6 @@ class WebsiteSale(website_sale):
         # ~ '/dn_shop/category/<model("product.public.category"):category>/page/<int:page>',
     # ~ ], type='http', auth="public", website=True)
     def dn_shop(self, page=0, category=None, search='', **post):
-        _logger.warn('----------------_> %s '  % 'Start')
 
         url = "/dn_shop"
         request.website.dn_shop_set_session('product.template', post, url)
@@ -863,12 +862,10 @@ class WebsiteSale(website_sale):
             request.session['current_domain'] = [('public_categ_ids', 'in', [int(category)])]
             request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
 
-        _logger.warn('----------------_> %s '  % 'before pricelist')
         if not request.context.get('pricelist'):
             request.context['pricelist'] = int(self.get_pricelist())
         if search:
             post["search"] = search
-        _logger.warn('----------------_> %s '  % 'before pricelist')
 
         # ~ category_obj = pool['product.public.category']
         # ~ category_ids = category_obj.search(cr, uid, [('parent_id', '=', False)], context=context)
@@ -880,13 +877,10 @@ class WebsiteSale(website_sale):
 
         no_product_message = ''
         products=request.env['product.template'].get_thumbnail_default_variant(request.session.get('current_domain'),request.context['pricelist'],limit=PPG, order=request.session.get('current_order'))
-        _logger.warn('----------------_> %s '  % products)
 
         if len(products) == 0:
             no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
         # ~ price_data = request.website.get_price_fields(partner_pricelist)
-
-        # ~ _logger.warn('----------------_> %s '  % request.env['product.template'].get_thumbnail_default_variant(domain, PPG, current_order,pricelist))
 
         return request.website.render("webshop_dermanord.products", {
             'search': search,
