@@ -57,8 +57,8 @@ class product_product(models.Model):
 class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
 
-    recipe_en = fields.Many2one(comodel_name='image.recipe', string='Image recipe for English', default=lambda self: self.env.ref('snippet_dermanord.img_product').id)
-    recipe_sv = fields.Many2one(comodel_name='image.recipe', string='Image recipe for Swedish', default=lambda self: self.env.ref('snippet_dermanord.img_product').id)
+    recipe_en = fields.Many2one(comodel_name='image.recipe', string='Image recipe for English', default=lambda self: self.env.ref('snippet_dermanord.img_product'))
+    recipe_sv = fields.Many2one(comodel_name='image.recipe', string='Image recipe for Swedish', default=lambda self: self.env.ref('snippet_dermanord.img_product'))
 
 
 class snippet(http.Controller):
