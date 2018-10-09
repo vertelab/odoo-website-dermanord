@@ -107,7 +107,7 @@ class snippet(http.Controller):
                         'image': image_url,
                     }
                 )
-        return category_list
+        return {'show_more': _('Show More'), 'show_less': _('Show Less'), 'category_list': category_list}
 
     @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="public", website=True)
     def get_highlighted_products(self, campaign_date, **kw):

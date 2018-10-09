@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* snippet_dermanord
+#   * snippet_dermanord
 #
 msgid ""
 msgstr ""
@@ -14,6 +14,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: snippet_dermanord
+#: code:addons/snippet_dermanord/snippet_dermanord.py:110
+#, python-format
+msgid "Show Less"
+msgstr "Visa mindre"
+
+#. module: snippet_dermanord
+#: code:addons/snippet_dermanord/snippet_dermanord.py:110
+#, python-format
+msgid "Show More"
+msgstr "Visa mer"
 
 #. module: snippet_dermanord
 #: view:website:website.snippet_options

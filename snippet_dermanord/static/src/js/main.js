@@ -6,17 +6,17 @@ $(document).ready(function() {
     if ($('.categ_p_section').length > 0) {
         openerp.jsonRpc("/category_snippet/get_p_categories", "call", {
         }).done(function(data){
-            if (data.length == 0) {
+            if (data['category_list'].length == 0) {
                 var message = '<h2 class="text-center text-muted css_non_editable_mode_hidden">No category yet</h2>';
                 //~ self.$target.find("h3").after(message);
             }
             else {
                 var category_content = '';
-                var show_more_block = "<h3 id='show_more_block' class='text-center mt16 mb16 hidden-lg hidden-md hidden-sm' style='color: #fff; text-decoration: underline;'>Show More <i class='fa fa-angle-down'/></h3>";
-                var show_less_block = "<h3 id='show_less_block' class='text-center mt16 mb16 hidden-lg hidden-md hidden-sm hidden' style='color: #fff; text-decoration: underline;'>Show Less <i class='fa fa-angle-up'/></h3>";
+                var show_more_block = '<h3 id="show_more_block" class="text-center mt16 mb16 hidden-lg hidden-md hidden-sm" style="color: #fff; text-decoration: underline;">' + data['show_more'] + ' <i class="fa fa-angle-down"/></h3>';
+                var show_less_block = '<h3 id="show_less_block" class="text-center mt16 mb16 hidden-lg hidden-md hidden-sm hidden" style="color: #fff; text-decoration: underline;">'  + data['show_less'] + ' <i class="fa fa-angle-up"/></h3>';
                 i = 0;
-                $.each(data, function(key, info) {
-                    var content = '<a href="/webshop/category/' + data[key]['id'] + '"><div class="categ_block col-md-4 col-xs-12"><img class="img img-responsive categ_block_img" src="' + data[key]['image'] + '"/><div class="container"><h2 class="categ_block_text dn_uppercase">' + '<span>' + data[key]['name'] + '</span></h2></div></div></a>';
+                $.each(data['category_list'], function(key, info) {
+                    var content = '<a href="/webshop/category/' + data['category_list'][key]['id'] + '"><div class="categ_block col-md-4 col-xs-12"><img class="img img-responsive categ_block_img" src="' + data['category_list'][key]['image'] + '"/><div class="container"><h2 class="categ_block_text dn_uppercase">' + '<span>' + data['category_list'][key]['name'] + '</span></h2></div></div></a>';
                     category_content += i > categ_block_hidden_indicator ? content.replace("categ_block", "categ_block extra_block hidden-xs") : content;
                     if(i == categ_block_hidden_indicator){
                         category_content += show_more_block;
