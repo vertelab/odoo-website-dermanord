@@ -61,7 +61,7 @@ class WebsiteBlog(WebsiteBlog):
                         'background_image_css': background_image_css,
                         'post_name': p.name,
                         'post_subtitle': p.subtitle,
-                        'write_date': request.website.formatted_date(str(p.write_date)[:10]),
+                        'date_start': request.website.formatted_date(str(p.date_start)[:10]),
                         #~ 'main_object': p.blog_id.id,
                         'tags_html': tags_html,
                         #~ 'nav_list': self.nav_list(),

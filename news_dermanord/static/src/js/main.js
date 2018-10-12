@@ -27,7 +27,7 @@ function load_blog_post_list(page){
                     'background_image_css': data['blog_posts'][key]['background_image_css'],
                     'post_name': data['blog_posts'][key]['post_name'],
                     'post_subtitle': data['blog_posts'][key]['post_subtitle'],
-                    'write_date': data['blog_posts'][key]['write_date'],
+                    'date_start': data['blog_posts'][key]['date_start'],
                     'tags_html': data['blog_posts'][key]['tags_html'],
                     'post_url': data['blog_posts'][key]['post_url'],
                     'str_read_more': data['blog_posts'][key]['str_read_more'],
