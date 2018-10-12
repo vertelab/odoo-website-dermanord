@@ -508,6 +508,7 @@
                 </field>
             </field>
         </record>
+        
         <record id="product_template_form_view" model="ir.ui.view">
             <field name="name">product.template.common.form.inherited.webshop_dermanord</field>
             <field name="model">product.template</field>
@@ -522,8 +523,29 @@
                         <label for="use_tmpl_name" />
                     </div>
                 </xpath>
+                <notebook position="before">
+                    <group>
+                        <field name="dv_default_code" invisible="1"/>
+                        <h2 style="color: red;" attrs="{'invisible': [('dv_default_code', '!=', 'error')]}">Problem i webbshoppen. Se produktmallens meddelandelogg.</h2>
+                    </group>
+                </notebook>
             </field>
         </record>
+        
+        <record id="product_template_search_view" model="ir.ui.view">
+            <field name="name">product.template.search.inherited.webshop_dermanord</field>
+            <field name="model">product.template</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="product.product_template_search_view" />
+            <field name="arch" type="xml">
+                <group expand="0" position="before">
+                     <filter string="Fel i webbshoppen" name="filter_dv_error" domain="[('dv_default_code','=','error')]"/>
+                     <filter string="Saknar bild" name="filter_image_src" domain="['|', '|', ('dv_image_src','=',False), ('dv_image_src','=',''), ('dv_image_src','=','/web/static/src/img/placeholder.png')]"/>
+                </group>
+            </field>
+        </record>
+        
+        
         <record id="website_sale_add_style_in_variant" model="ir.ui.view">
             <field name="name">product.template.product.website.form.add.style.in.variant</field>
             <field name="model">product.product</field>
