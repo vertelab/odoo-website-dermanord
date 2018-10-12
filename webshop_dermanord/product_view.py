@@ -113,7 +113,7 @@ class product_template(models.Model):
             memcached.mc_delete(key)
 
     @api.multi
-    @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_medium', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids')
+    @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.datas', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_attachment_ids.datas', 'product_variant_ids.image_medium', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids')
     def _get_all_variant_data(self):
         placeholder = '/web/static/src/img/placeholder.png'
 
@@ -129,8 +129,7 @@ class product_template(models.Model):
                 p.dv_default_code = variant['default_code'] or ''
                 p.dv_description_sale = variant['description_sale'] or ''
                 p.dv_name = p.name if p.use_tmpl_name else variant['fullname']
-                # ~ p.dv_image_src = '/imagefield/ir.attachment/datas/%s/ref/%s' %(variant['image_main_id'][0], 'snippet_dermanord.img_product') if variant['image_main_id'] else placeholder
-                p.dv_image_src = self.env['website'].imagefield_hash('ir.attachment', 'datas', variant['image_main_id'][0], 'snippet_dermanord.img_product')
+                p.dv_image_src = self.env['website'].imagefield_hash('ir.attachment', 'datas', variant['image_main_id'][0], 'snippet_dermanord.img_product') if variant['image_main_id'] else placeholder
                 p.dv_ribbon = website_style_ids_variant if website_style_ids_variant else ' '.join([c for c in p.website_style_ids.mapped('html_class') if c])
             except:
                 e = sys.exc_info()
