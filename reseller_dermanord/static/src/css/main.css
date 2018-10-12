@@ -10,6 +10,12 @@
     text-overflow: ellipsis;
 }
 
+.reseller_cell p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .reseller_cell > a > h4 {
     height: 2.2em;
 }
