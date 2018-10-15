@@ -7,7 +7,7 @@ $(document).ready(function() {
     $('.js_fullheight').css('min-height', '540px');
     resize_blog_background_image();
     $(window).scroll(function() {
-        if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+        if ($(document).height() - $(window).scrollTop() - $(window).height() < 1000) {
             if ($('.blog_list_item').length > 0) {
                 load_blog_post_list(current_page);
             }
