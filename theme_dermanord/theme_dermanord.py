@@ -61,7 +61,7 @@ class website(models.Model):
     def get_breadcrumb(self, path, **params):
         try:
             breadcrumb = []
-            if path.startswith('/dn_shop/product/'): # url is a product
+            if path.startswith('/dn_shop/product/') or path.startswith('/dn_shop/variant/'): # url is a product
                 product = params.get('product')
                 if product:
                     breadcrumb.append('<li>%s</li>' % product.name)
