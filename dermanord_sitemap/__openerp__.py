@@ -31,7 +31,7 @@ A sitemap for mariaakerberg.com
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['website'],
+    'depends': ['website_memcached'],
     'data': [],
     'qweb': [],
     'application': False,
