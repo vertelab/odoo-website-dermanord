@@ -37,6 +37,7 @@ Resellers Page
         'website_partner_google_maps',
         'child_catagory_tags',
         'postgres_geo_fields',
+        'partner_geolocalize',
         'event_participant_dermanord',
         'website_sale_home',
         'website_partner_opening_hours',
