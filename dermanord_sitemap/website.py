@@ -45,25 +45,26 @@ class Website(Website):
 
         pages = 0
         first_page = None
+        router = request.env['ir.config_parameter'].get_param('web.base.url')
 
         def get_locs():
-            router = request.env['ir.config_parameter'].get_param('web.base.url')
             products = request.env['product.product'].sudo(user=request.website.user_id.id).search([('sale_ok', '=', True)])
             blog_posts = request.env['blog.post'].sudo(user=request.website.user_id.id).search([('website_published', '=', True)])
             menus = request.env['website.menu'].sudo(user=request.website.user_id.id).search([('url', 'ilike', '/page/')])
             for p in products:
-                yield {'loc': '%s/dn_shop/variant/%s' %(router, p.id)}
+                yield {'loc': '/dn_shop/variant/%s' %(p.id)}
             for p in blog_posts:
-                yield {'loc': '%s/blog/%s/post/%s' %(router, p.blog_id.id, p.id)}
+                yield {'loc': '/blog/%s/post/%s' %(p.blog_id.id, p.id)}
             for m in menus:
                 yield {'loc': m.url}
 
         locs = get_locs()
+        _logger.warn(locs)
 
         while True:
             values = {
                 'locs': islice(locs, 0, LOC_PER_SITEMAP),
-                'url_root': request.httprequest.url_root[:-1],
+                'url_root': router,
             }
             urls = iuv.render(cr, uid, 'website.sitemap_locs', values, context=context)
             if urls.strip():
