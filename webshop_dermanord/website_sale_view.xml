@@ -565,7 +565,7 @@
                                 <t t-foreach="product_product.facet_line_ids.mapped('facet_id')" t-as="facet">
 
                                     <h2 class="dn_uppercase" t-field="facet.name" />
-                                    <t t-raw="product_product.format_facets(facet)"/>
+                                    <!-- <t t-raw="product_product.format_facets(facet)"/> -->
                                     <!--
                                     <t t-set="facet_value_ids" t-value="product_product.facet_line_ids.mapped('value_ids') &amp; facet.value_ids" />
                                     <t t-foreach="facet_value_ids" t-as="value">
