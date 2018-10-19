@@ -59,7 +59,6 @@ class Website(Website):
                 yield {'loc': m.url}
 
         locs = get_locs()
-        _logger.warn(locs)
 
         while True:
             values = {
