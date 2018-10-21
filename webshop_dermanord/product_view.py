@@ -182,6 +182,32 @@ class product_template(models.Model):
         flush_type = 'thumbnail_product'
         ribbon_promo = None
         ribbon_limited = None
+        
+        # ~ domain += [('website_published','=',True),('event_ok','=',False),('sale_ok','=',True),('access_group_ids','in',[286])]
+        # ~ d2 = []
+        # ~ for d in domain:
+            # ~ if not d[0] == 'product_variant_ids':
+                # ~ d2.append(d)
+        # ~ domain = d2
+        user = self.env.ref('base.public_user')
+        
+        _logger.warn('Anders user --------> %s user %s %s %s ' % (self.env.ref('base.public_user'),self.env.user,self._uid,user))
+
+        
+        
+        _logger.warn('Anders domain --------> %s limit %s order %s offset %s' % (domain, limit, order,offset))
+        _logger.warn('Anders search --------> %s ' % (len(self.env['product.template'].search(domain,limit=limit, order=order,offset=offset))))
+        # ~ _logger.warn('get_thumbnail_default_variant search --------> %s ' % (self.env['product.template'].sudo(self.env.ref('base.public_user')).search_read(domain,['name'])))
+        # ~ domain += [('website_published','=',True),('event_ok','=',False),('sale_ok','=',True),('access_group_ids','in',[286])]
+        
+        # ~ for product in self.env['product.template'].sudo().search_read([('website_published','=',True),('event_ok','=',False),('sale_ok','=',True),('access_group_ids','in',[286])],['name']):
+            # ~ _logger.warn('get_thumbnail_default_variant product --------> %s' % (product))
+            # ~ p = self.env['product.template'].browse(product['id'])
+        
+        # ~ for p in self.env['product.template'].search(domain,limit=limit, order=order,offset=offset):
+            # ~ _logger.warn('get_thumbnail_default_variant product --------> %s' % (p))
+            # ~ product = self.env['product.template'].read(p.id,['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',])
+        
         for product in self.env['product.template'].search_read(domain, fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=limit, order=order,offset=offset):
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
             key_raw = 'thumbnail_default_variant %s %s %s %s %s %s %s %s' % (
@@ -232,6 +258,75 @@ class product_template(models.Model):
                 page_dict['page'] = base64.b64encode(page)
             thumbnail.append(page_dict.get('page', '').decode('base64'))
         return thumbnail
+
+
+    @api.model
+    def get_thumbnail_default_variant2(self,pricelist,product_ids):
+        if isinstance(pricelist,int):
+            pricelist = self.env['product.pricelist'].sudo().browse(pricelist)
+        # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % ('Start'))
+        # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % self.env['product.template'].search_read(domain, fields=['id','name', 'dv_ribbon' ,'is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=limit, order=order,offset=offset))
+        thumbnail = []
+        flush_type = 'thumbnail_product'
+        ribbon_promo = None
+        ribbon_limited = None
+        
+
+        user = self.env.ref('base.public_user')
+        
+        _logger.warn('Anders get_thunmb2 --------> %s user %s %s %s ' % (self.env.ref('base.public_user'),self.env.user,self._uid,user))
+        
+        for product in product_ids: 
+            # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
+            key_raw = 'thumbnail_default_variant %s %s %s %s %s %s %s %s' % (
+                self.env.cr.dbname, flush_type, product['id'], pricelist.id,
+                self.env.lang, request.session.get('device_type','md'),
+                self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
+                ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))  # db flush_type produkt prislista språk webeditor kundgrupper,
+            key,page_dict = self.env['website'].get_page_dict(key_raw)
+            # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
+            if not page_dict:
+                render_start = timer()
+                if not ribbon_limited:
+                    ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
+                    ribbon_promo   = request.env.ref('website_sale.image_promo')
+
+                #
+                # TODO: get_html_price_long(pricelist) and variant.image_main_id[0].id  dv_ribbon
+                #
+
+                # ~ product = self.env['product.template'].browse(pid['id'])
+                # ~ if not product.product_variant_ids:
+                    # ~ continue
+                # ~ variant = product.product_variant_ids[0]
+                # ~ variant = product.get_default_variant()
+                # ~ if not variant:
+                    # ~ continue
+
+                page = THUMBNAIL.format(
+                    details=_('DETAILS'),
+                    product_id=product['id'],
+                    # ~ product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0].id, 'snippet_dermanord.img_product') if variant.image_main_id else '',
+                    product_image=product['dv_image_src'],
+                    product_name=product['name'],
+                    product_price = self.env['product.template'].sudo().browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
+                    product_ribbon=product['dv_ribbon'],
+                    # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
+                    product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
+                    product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
+                    key_raw=key_raw,
+                    key=key,
+                    view_type='product',
+                    render_time='%s' % (timer() - render_start),
+                    price_from=_('Price From'),
+                ).encode('utf-8')
+                # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
+                self.env['website'].put_page_dict(key, flush_type, page, 'product.template,%s' % product['id'])
+                page_dict['page'] = base64.b64encode(page)
+            thumbnail.append(page_dict.get('page', '').decode('base64'))
+        return thumbnail
+
 
 class product_product(models.Model):
     _inherit = 'product.product'

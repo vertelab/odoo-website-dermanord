@@ -874,9 +874,19 @@ class WebsiteSale(website_sale):
         # ~ attributes_obj = request.registry['product.attribute']
         # ~ attributes_ids = attributes_obj.search(cr, uid, [], context=context)
         # ~ attributes = attributes_obj.browse(cr, uid, attributes_ids, context=context)
+        domain = request.session.get('current_domain')
+        limit=PPG
+        order=request.session.get('current_order')
+        offset = 0
+        
+        user = request.env['res.users'].browse(request.uid)
+        
+        _logger.warn('Anders x domain --------> %s limit %s order %s offset %s' % (domain, limit, order,offset))
+        _logger.warn('Anders x search --------> %s  ' % (len(request.env['product.template'].sudo(user).search([],limit=1,order='name'))))
+        _logger.warn('Anders x user --------> %s user %s %s %s ' % (request.env.ref('base.public_user'),request.env.user,request.uid,user))
 
         no_product_message = ''
-        products=request.env['product.template'].get_thumbnail_default_variant(request.session.get('current_domain'),request.context['pricelist'],limit=PPG, order=request.session.get('current_order'))
+        products=request.env['product.template'].sudo(user).get_thumbnail_default_variant(request.session.get('current_domain'),request.context['pricelist'],limit=PPG, order=request.session.get('current_order'))
 
         if len(products) == 0:
             no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
@@ -988,6 +998,25 @@ class WebsiteSale(website_sale):
 
     #controller for read webshop_type
     @http.route([
+        '/webshop_old',
+        '/webshop_old/page/<int:page>',
+        '/webshop_old/category/<model("product.public.category"):category>',
+        '/webshop_old/category/<model("product.public.category"):category>/page/<int:page>',
+        ], type='http', auth="public", website=True)
+    def webshop_old(self, page=0, category=None, search='', **post):
+        
+        user = request.env['res.users'].browse(request.uid)
+        
+        _logger.warn('Anders webshop --------> %s user %s %s %s ' % (request.env.ref('base.public_user'),request.env.user,request.uid,user))
+        
+        if request.env.user.webshop_type == 'dn_list':
+            return self.dn_list(page, category, search, **post)
+        else:
+            return self.dn_shop(page, category, search, **post)
+
+
+    #controller for read webshop_type
+    @http.route([
         '/webshop',
         '/webshop/page/<int:page>',
         '/webshop/category/<model("product.public.category"):category>',
@@ -995,9 +1024,85 @@ class WebsiteSale(website_sale):
         ], type='http', auth="public", website=True)
     def webshop(self, page=0, category=None, search='', **post):
         if request.env.user.webshop_type == 'dn_list':
-            return self.dn_list(page, category, search, **post)
+            request.website.dn_shop_set_session('product.product', post, '/dn_list')
+        else: 
+            request.website.dn_shop_set_session('product.template', post, '/dn_shop')
+        if category:
+            if not request.session.get('form_values'):
+                request.session['form_values'] = {'category_%s' %int(category): int(category)}
+            request.session['form_values'] = {'category_%s' %int(category): int(category)}
+            request.website.get_form_values()['category_' + str(int(category))] = int(category)
+            request.session['current_domain'] = [('public_categ_ids', 'in', [int(category)])]
+            request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
+        if not request.context.get('pricelist'):
+            request.context['pricelist'] = int(self.get_pricelist())
+        if search:
+            post["search"] = search
+
+        
+        user = request.env['res.users'].browse(request.uid)
+        
+        _logger.warn('Anders webshop2 user --------> %s user %s %s %s ' % (request.env.ref('base.public_user'),request.env.user,request.uid,user))
+        _logger.warn('Anders webshop2 user --------> %s type ' % (request.env.user.webshop_type))
+
+        no_product_message = ''
+        if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
+            products=request.env['product.product'].get_list_row(request.session.get('current_domain'),request.context['pricelist'],limit=PPG, order=request.session.get('current_order'))
         else:
-            return self.dn_shop(page, category, search, **post)
+            product_ids = request.env['product.template'].sudo(user).search_read(request.session.get('current_domain'), fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=PPG, order=request.session.get('current_order'),offset=0)
+            # ~ _logger.warn('Anders webshop2 search --------> %s  ' % product_ids)
+            # ~ for p in product_ids:
+                # ~ _logger.warn('Anders webshop2 product_price --------> %s  ' % p['id'])
+                # ~ product_price = request.env['product.template'].browse(p['id'])
+                # ~ product_price = request.env['product.product'].search([('product_tmpl_id','=',p['id'])])
+                
+                
+                # ~ product_price = request.env['product.template'].sudo().browse(p['id']).product_variant_ids
+                # ~ product_price = request.env['product.template'].sudo().browse(p['id']).product_variant_ids.get_pricelist_chart_line(request.context['pricelist'])
+                # ~ product_price = request.env['product.template'].sudo().browse(p['id']).product_variant_ids.get_pricelist_chart_line(request.context['pricelist']).sorted(key=lambda p: p.price, reverse=False)
+                # ~ product_price = request.env['product.template'].sudo().browse(p['id']).product_variant_ids.get_pricelist_chart_line(request.context['pricelist']).sorted(key=lambda p: p.price, reverse=False)[0]
+                
+                # ~ product_price = request.env['product.template'].sudo().browse(p['id']).get_pricelist_chart_line(request.context['pricelist'])
+                # ~ product_price = request.env['product.template'].sudo().browse(p['id']).get_pricelist_chart_line(request.context['pricelist']).get_html_price_long(),
+
+            
+            products=request.env['product.template'].get_thumbnail_default_variant2(request.context['pricelist'],product_ids)
+        if len(products) == 0:
+            no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
+        if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
+            return request.website.render("webshop_dermanord.products_list_reseller_view", {
+                'title': _('Shop'),
+                'search': search,
+                'products': products,
+                'rows': PPR,
+                # ~ 'compute_currency': compute_currency,
+                'url': '/dn_list',
+                'webshop_type': 'dn_list',
+                'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
+                'shop_footer': True,
+                'no_product_message': no_product_message,
+                'all_products_loaded': True if len(products) < PPG else False,
+            })
+        else:
+            return request.website.render("webshop_dermanord.products", {
+                'search': search,
+                'category': category,
+                # ~ 'pricelist': pricelist,
+                'products':  products,
+                'rows': PPR,
+                # ~ 'styles': styles,
+                # ~ 'categories': categs,
+                # ~ 'attributes': attributes,
+                'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
+                'url': '/dn_shop',
+                'webshop_type': 'dn_shop',
+                'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
+                'shop_footer': True,
+                'page_lang': request.env.lang,
+                'no_product_message': no_product_message,
+                'all_products_loaded': True if len(products) < PPG else False,
+            })
+
 
     @http.route([
         '/webshop/webshop_type/<string:webshop_type>',
