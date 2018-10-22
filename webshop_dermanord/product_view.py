@@ -730,64 +730,72 @@ class product_product(models.Model):
         if not page_dict:
             render_start_tot = timer()
             page = ''
-            attr_sel = ''
-            product_variant = self.browse(variant_id)
-            variant_value_ids = product.product_variant_ids.mapped('attribute_value_ids')
-            if len(product.attribute_line_ids) > 0:
-                for attr_line in product.attribute_line_ids:
-                    if attr_line.attribute_id.type in ['select', 'hidden']:
-                        attr_sel += '<li><strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">%s</strong><select class="form-control js_variant_change attr_sel" name="attribute-%s-%s">' %(attr_line.attribute_id.name, product.id, attr_line.attribute_id.id)
-                        for value_id in attr_line.value_ids:
-                            if value_id in variant_value_ids:
-                                attr_sel += '<option value="%s" %s><span>%s</span></option>' %(value_id.id, 'selected="selected"' if value_id in product_variant.attribute_value_ids else '', value_id.name)
-                        attr_sel += '</select></li>'
-
-        # ~ <t t-if="variant_id.attribute_id.type == 'radio'">
-          # ~ <ul class="list-unstyled">
-              # ~ <t t-set="inc" t-value="0"/>
-              # ~ <t t-foreach="variant_id.value_ids" t-as="value_id">
-                  # ~ <li class="form-group js_attribute_value" style="margin: 0;">
-                      # ~ <label class="control-label" style="margin: 0 20px;">
-                          # ~ <input type="radio" class="js_variant_change" t-att-checked="'checked' if not inc else ''" t-att-name="'attribute-%s-%s' % (product.id, variant_id.attribute_id.id)" t-att-value="value_id.id" style="vertical-align: top; margin-right: 10px;"/>
-                          # ~ <span t-field="value_id.name"/>
-                          # ~ <span class="badge" t-if="value_id.price_extra">
-                              # ~ <t t-esc="value_id.price_extra > 0 and '+' or ''"/><span t-field="value_id.price_extra" style="white-space: nowrap;" t-field-options='{
-                                      # ~ "widget": "monetary",
-                                      # ~ "from_currency": "product.company_id.currency_id",
-                                      # ~ "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
-                                   # ~ }'/>
-                          # ~ </span>
-                      # ~ </label>
-                  # ~ </li>
-                  # ~ <t t-set="inc" t-value="inc+1"/>
-              # ~ </t>
-          # ~ </ul>
-        # ~ </t>
-
-        # ~ <t t-if="variant_id.attribute_id.type == 'color'">
-          # ~ <ul class="list-inline">
-              # ~ <t t-set="inc" t-value="0"/>
-              # ~ <li t-foreach="variant_id.value_ids" t-as="value_id">
-                  # ~ <label t-attf-style="background-color:#{value_id.color or value_id.name}"
-                      # ~ t-attf-class="css_attribute_color #{'active' if not inc else ''}">
-                    # ~ <input type="radio" class="js_variant_change"
-                      # ~ t-att-checked="'checked' if not inc else ''"
-                      # ~ t-att-name="'attribute-%s-%s' % (product.id, variant_id.attribute_id.id)"
-                      # ~ t-att-value="value_id.id"
-                      # ~ t-att-title="value_id.name"/>
-                  # ~ </label>
-                  # ~ <t t-set="inc" t-value="inc+1"/>
-              # ~ </li>
-          # ~ </ul>
-        # ~ </t>
-
-      # ~ </li>
-    # ~ </t>
-
             visible_attrs = set(l.attribute_id.id for l in product.attribute_line_ids if len(l.value_ids) > 1)
             decimal_precision = pricelist.currency_id.rounding
-            for variant in self.env['product.product'].search([('id', 'in', product.product_variant_ids.mapped('id'))]):
+            variants = self.env['product.product'].search([('id', 'in', product.product_variant_ids.mapped('id'))])
+            for variant in variants:
                 render_start = timer()
+
+                attr_sel = ''
+                product_variant = self.browse(variant_id)
+                for attribute in variant.attribute_value_ids.sorted(key=lambda a: a.id):
+                    attr_sel += '<li><strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">%s</strong><select class="form-control js_variant_change attr_sel" name="attribute-%s-%s">' %(attribute.name, product.id, attribute.attribute_id.id)
+                    for att in variants.mapped('attribute_value_ids').with_context(attribute_id=attribute.attribute_id.id).filtered(lambda a: a.attribute_id.id == a.env.context.get('attribute_id')):
+                        attr_sel += '<option value="%s" %s><span>%s</span></option>' %(att.id, 'selected="selected"' if att in product_variant.attribute_value_ids else '', att.name)
+                    attr_sel += '</select></li>'
+
+                # ~ variant_value_ids = product.product_variant_ids.mapped('attribute_value_ids')
+                # ~ if len(product.attribute_line_ids) > 0:
+                    # ~ for attr_line in product.attribute_line_ids:
+                        # ~ if attr_line.attribute_id.type in ['select', 'hidden']:
+                            # ~ attr_sel += '<li><strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">%s</strong><select class="form-control js_variant_change attr_sel" name="attribute-%s-%s">' %(attr_line.attribute_id.name, product.id, attr_line.attribute_id.id)
+                            # ~ for value_id in attr_line.value_ids:
+                                # ~ if value_id in variant_value_ids:
+                                    # ~ attr_sel += '<option value="%s" %s><span>%s</span></option>' %(value_id.id, 'selected="selected"' if value_id in product_variant.attribute_value_ids else '', value_id.name)
+                            # ~ attr_sel += '</select></li>'
+
+            # ~ <t t-if="variant_id.attribute_id.type == 'radio'">
+              # ~ <ul class="list-unstyled">
+                  # ~ <t t-set="inc" t-value="0"/>
+                  # ~ <t t-foreach="variant_id.value_ids" t-as="value_id">
+                      # ~ <li class="form-group js_attribute_value" style="margin: 0;">
+                          # ~ <label class="control-label" style="margin: 0 20px;">
+                              # ~ <input type="radio" class="js_variant_change" t-att-checked="'checked' if not inc else ''" t-att-name="'attribute-%s-%s' % (product.id, variant_id.attribute_id.id)" t-att-value="value_id.id" style="vertical-align: top; margin-right: 10px;"/>
+                              # ~ <span t-field="value_id.name"/>
+                              # ~ <span class="badge" t-if="value_id.price_extra">
+                                  # ~ <t t-esc="value_id.price_extra > 0 and '+' or ''"/><span t-field="value_id.price_extra" style="white-space: nowrap;" t-field-options='{
+                                          # ~ "widget": "monetary",
+                                          # ~ "from_currency": "product.company_id.currency_id",
+                                          # ~ "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                                       # ~ }'/>
+                              # ~ </span>
+                          # ~ </label>
+                      # ~ </li>
+                      # ~ <t t-set="inc" t-value="inc+1"/>
+                  # ~ </t>
+              # ~ </ul>
+            # ~ </t>
+
+            # ~ <t t-if="variant_id.attribute_id.type == 'color'">
+              # ~ <ul class="list-inline">
+                  # ~ <t t-set="inc" t-value="0"/>
+                  # ~ <li t-foreach="variant_id.value_ids" t-as="value_id">
+                      # ~ <label t-attf-style="background-color:#{value_id.color or value_id.name}"
+                          # ~ t-attf-class="css_attribute_color #{'active' if not inc else ''}">
+                        # ~ <input type="radio" class="js_variant_change"
+                          # ~ t-att-checked="'checked' if not inc else ''"
+                          # ~ t-att-name="'attribute-%s-%s' % (product.id, variant_id.attribute_id.id)"
+                          # ~ t-att-value="value_id.id"
+                          # ~ t-att-title="value_id.name"/>
+                      # ~ </label>
+                      # ~ <t t-set="inc" t-value="inc+1"/>
+                  # ~ </li>
+              # ~ </ul>
+            # ~ </t>
+
+          # ~ </li>
+        # ~ </t>
+
                 #TODO:
                 # ~ if not chart_line:
                     # ~ price += _("No price available")

@@ -12,15 +12,23 @@ $("select.attr_sel").on('change', function() {
     $.each($these_sel, function() {
         sel_lst.push($(this).val());
     });
-    var section_id = sel_lst.sort(function(a, b){return a - b}).join("_") + "_section";
-    $.each($("option"), function() {
-        if ($.inArray($(this).attr("value"), sel_lst) !== -1) {
-            $(this).attr("selected", "selected");
-            activate_section(section_id);
-        }
-        else {
-            $(this).removeAttr("selected");
-        }
+    // validate attribute_value exists on variant
+    openerp.jsonRpc("/validate_attibute_value", "call", {
+        'product_id': $self.attr("name").split("-")[1],
+        'attribute_value_id': $self.val(),
+        'attribute_value_list': sel_lst
+    }).done(function(data){
+        sel_lst = data;
+        var section_id = sel_lst.sort(function(a, b){return a - b}).join("_") + "_section";
+        $.each($("option"), function() {
+            if ($.inArray($(this).attr("value"), sel_lst) !== -1) {
+                $(this).attr("selected", "selected");
+                activate_section(section_id);
+            }
+            else {
+                $(this).removeAttr("selected");
+            }
+        });
     });
     function activate_section(section_id) {
         $.each($("section.oe_website_sale"), function() {

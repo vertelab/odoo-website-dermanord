@@ -878,9 +878,9 @@ class WebsiteSale(website_sale):
         limit=PPG
         order=request.session.get('current_order')
         offset = 0
-        
+
         user = request.env['res.users'].browse(request.uid)
-        
+
         _logger.warn('Anders x domain --------> %s limit %s order %s offset %s' % (domain, limit, order,offset))
         _logger.warn('Anders x search --------> %s  ' % (len(request.env['product.template'].sudo(user).search([],limit=1,order='name'))))
         _logger.warn('Anders x user --------> %s user %s %s %s ' % (request.env.ref('base.public_user'),request.env.user,request.uid,user))
@@ -1004,11 +1004,11 @@ class WebsiteSale(website_sale):
         '/webshop_old/category/<model("product.public.category"):category>/page/<int:page>',
         ], type='http', auth="public", website=True)
     def webshop_old(self, page=0, category=None, search='', **post):
-        
+
         user = request.env['res.users'].browse(request.uid)
-        
+
         _logger.warn('Anders webshop --------> %s user %s %s %s ' % (request.env.ref('base.public_user'),request.env.user,request.uid,user))
-        
+
         if request.env.user.webshop_type == 'dn_list':
             return self.dn_list(page, category, search, **post)
         else:
@@ -1025,7 +1025,7 @@ class WebsiteSale(website_sale):
     def webshop(self, page=0, category=None, search='', **post):
         if request.env.user.webshop_type == 'dn_list':
             request.website.dn_shop_set_session('product.product', post, '/dn_list')
-        else: 
+        else:
             request.website.dn_shop_set_session('product.template', post, '/dn_shop')
         if category:
             if not request.session.get('form_values'):
@@ -1039,9 +1039,9 @@ class WebsiteSale(website_sale):
         if search:
             post["search"] = search
 
-        
+
         user = request.env['res.users'].browse(request.uid)
-        
+
         _logger.warn('Anders webshop2 user --------> %s user %s %s %s ' % (request.env.ref('base.public_user'),request.env.user,request.uid,user))
         _logger.warn('Anders webshop2 user --------> %s type ' % (request.env.user.webshop_type))
 
@@ -1055,17 +1055,17 @@ class WebsiteSale(website_sale):
                 # ~ _logger.warn('Anders webshop2 product_price --------> %s  ' % p['id'])
                 # ~ product_price = request.env['product.template'].browse(p['id'])
                 # ~ product_price = request.env['product.product'].search([('product_tmpl_id','=',p['id'])])
-                
-                
+
+
                 # ~ product_price = request.env['product.template'].sudo().browse(p['id']).product_variant_ids
                 # ~ product_price = request.env['product.template'].sudo().browse(p['id']).product_variant_ids.get_pricelist_chart_line(request.context['pricelist'])
                 # ~ product_price = request.env['product.template'].sudo().browse(p['id']).product_variant_ids.get_pricelist_chart_line(request.context['pricelist']).sorted(key=lambda p: p.price, reverse=False)
                 # ~ product_price = request.env['product.template'].sudo().browse(p['id']).product_variant_ids.get_pricelist_chart_line(request.context['pricelist']).sorted(key=lambda p: p.price, reverse=False)[0]
-                
+
                 # ~ product_price = request.env['product.template'].sudo().browse(p['id']).get_pricelist_chart_line(request.context['pricelist'])
                 # ~ product_price = request.env['product.template'].sudo().browse(p['id']).get_pricelist_chart_line(request.context['pricelist']).get_html_price_long(),
 
-            
+
             products=request.env['product.template'].get_thumbnail_default_variant2(request.context['pricelist'],product_ids)
         if len(products) == 0:
             no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
@@ -1207,3 +1207,28 @@ class WebsiteSale(website_sale):
         order = request.website.sale_get_order()
         if order:
             order.sudo().client_order_ref = client_order_ref
+
+    @http.route(['/validate_attibute_value'], type='json', auth="public", website=True)
+    def validate_attibute_value(self, product_id=0, attribute_value_id=0, attribute_value_list=[], **kw):
+        attribute_value_list = map(int, attribute_value_list)
+        product = request.env['product.template'].browse(int(product_id))
+        if product:
+            # variant found with all matched attributes
+            if len(product.product_variant_ids.with_context(att_value_list=sorted(attribute_value_list)).filtered(lambda v: sorted(v.attribute_value_ids.mapped('id')) == v.env.context.get('att_value_list'))) == 1:
+                return map(str, attribute_value_list)
+            # variant not found with matched attributes, return variant with chosen attribute or the matched with other attributes in attribute_value_list
+            else:
+                variant = product.product_variant_ids.with_context(att_value_id=int(attribute_value_id)).filtered(lambda v: v.env.context.get('att_value_id') in v.attribute_value_ids.mapped('id'))
+                if len(variant) == 1:
+                    if len(variant.attribute_value_ids) == 1:
+                        return [str(attribute_value_id)]
+                    else:
+                        return map(str, variant.attribute_value_ids.mapped('id'))
+                elif len(variant) > 1:
+                    for att_value_id in attribute_value_list:
+                        if att_value_id not in variant.attribute_value_ids.mapped('id'):
+                            attribute_value_list.remove(att_id)
+                    return map(str, attribute_value_list)
+                else:
+                    return []
+        return []
