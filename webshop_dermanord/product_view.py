@@ -111,6 +111,9 @@ class product_template(models.Model):
     def dn_clear_cache(self):
         for key in memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self]):
             memcached.mc_delete(key)
+        for p in self:
+           for key in memcached.get_keys(path=[('%s,%s' % (v._model, v.id)) for v in p.product_variant_ids]):
+                memcached.mc_delete(key)
 
     @api.multi
     @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.datas', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_attachment_ids.datas', 'product_variant_ids.image_medium', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids')
@@ -182,7 +185,7 @@ class product_template(models.Model):
         flush_type = 'thumbnail_product'
         ribbon_promo = None
         ribbon_limited = None
-        
+
         # ~ domain += [('website_published','=',True),('event_ok','=',False),('sale_ok','=',True),('access_group_ids','in',[286])]
         # ~ d2 = []
         # ~ for d in domain:
@@ -190,24 +193,24 @@ class product_template(models.Model):
                 # ~ d2.append(d)
         # ~ domain = d2
         user = self.env.ref('base.public_user')
-        
+
         _logger.warn('Anders user --------> %s user %s %s %s ' % (self.env.ref('base.public_user'),self.env.user,self._uid,user))
 
-        
-        
+
+
         _logger.warn('Anders domain --------> %s limit %s order %s offset %s' % (domain, limit, order,offset))
         _logger.warn('Anders search --------> %s ' % (len(self.env['product.template'].search(domain,limit=limit, order=order,offset=offset))))
         # ~ _logger.warn('get_thumbnail_default_variant search --------> %s ' % (self.env['product.template'].sudo(self.env.ref('base.public_user')).search_read(domain,['name'])))
         # ~ domain += [('website_published','=',True),('event_ok','=',False),('sale_ok','=',True),('access_group_ids','in',[286])]
-        
+
         # ~ for product in self.env['product.template'].sudo().search_read([('website_published','=',True),('event_ok','=',False),('sale_ok','=',True),('access_group_ids','in',[286])],['name']):
             # ~ _logger.warn('get_thumbnail_default_variant product --------> %s' % (product))
             # ~ p = self.env['product.template'].browse(product['id'])
-        
+
         # ~ for p in self.env['product.template'].search(domain,limit=limit, order=order,offset=offset):
             # ~ _logger.warn('get_thumbnail_default_variant product --------> %s' % (p))
             # ~ product = self.env['product.template'].read(p.id,['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',])
-        
+
         for product in self.env['product.template'].search_read(domain, fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=limit, order=order,offset=offset):
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
             key_raw = 'thumbnail_default_variant %s %s %s %s %s %s %s %s' % (
@@ -270,13 +273,13 @@ class product_template(models.Model):
         flush_type = 'thumbnail_product'
         ribbon_promo = None
         ribbon_limited = None
-        
+
 
         user = self.env.ref('base.public_user')
-        
+
         _logger.warn('Anders get_thunmb2 --------> %s user %s %s %s ' % (self.env.ref('base.public_user'),self.env.user,self._uid,user))
-        
-        for product in product_ids: 
+
+        for product in product_ids:
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
             key_raw = 'thumbnail_default_variant %s %s %s %s %s %s %s %s' % (
                 self.env.cr.dbname, flush_type, product['id'], pricelist.id,
