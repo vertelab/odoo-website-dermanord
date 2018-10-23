@@ -13,27 +13,37 @@ $("select.attr_sel").on('change', function() {
         sel_lst.push($(this).val());
     });
     // validate attribute_value exists on variant
-    openerp.jsonRpc("/validate_attibute_value", "call", {
-        'product_id': $self.attr("name").split("-")[1],
-        'attribute_value_id': $self.val(),
-        'attribute_value_list': sel_lst
-    }).done(function(data){
-        sel_lst = data;
-        var section_id = sel_lst.sort(function(a, b){return a - b}).join("_") + "_section";
-        $.each($("option"), function() {
-            if ($.inArray($(this).attr("value"), sel_lst) !== -1) {
-                $(this).attr("selected", "selected");
-                activate_section(section_id);
-            }
-            else {
-                $(this).removeAttr("selected");
-            }
-        });
+    //~ openerp.jsonRpc("/validate_attibute_value", "call", {
+        //~ 'product_id': $self.attr("name").split("-")[1],
+        //~ 'attribute_value_id': $self.val(),
+        //~ 'attribute_value_list': sel_lst
+    //~ }).done(function(data){
+        //~ sel_lst = data;
+    //~ });
+    $.each($("option"), function() {
+        if ($.inArray($(this).attr("value"), sel_lst) !== -1) {
+            $(this).attr("selected", "selected");
+            activate_section($self.val(), sel_lst);
+        }
+        else {
+            $(this).removeAttr("selected");
+        }
     });
-    function activate_section(section_id) {
+    function activate_section(sel_val, lst) {
+        var found = false;
         $.each($("section.oe_website_sale"), function() {
-            if ($(this).attr("id") == section_id) {
+            var ls = lst.sort(function(a, b){return a - b});
+            if ($(this).attr("id") == ("section_" + ls.join("_"))) {
                 $(this).removeClass("hidden");
+                found = true;
+            }
+            else if (!found && $(this).attr("id") == ("section_" + sel_val)) {
+                $(this).removeClass("hidden");
+                found = true;
+            }
+            else if (!found && ~$(this).attr("id").indexOf("section_" + sel_val) || ~$(this).attr("id").indexOf("section_") && ~$(this).attr("id").indexOf("_" + sel_val)) {
+                $(this).removeClass("hidden");
+                found = true;
             }
             else {
                 $(this).addClass("hidden");
@@ -47,7 +57,6 @@ function show_popover(trigger){
         container: 'body',
         html: true,
         content: function () {
-            console.log('here');
             var clone = $(trigger.data('popover-content')).clone(true).removeClass('hide');
             return clone;
         }

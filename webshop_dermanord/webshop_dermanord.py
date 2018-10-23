@@ -1208,27 +1208,27 @@ class WebsiteSale(website_sale):
         if order:
             order.sudo().client_order_ref = client_order_ref
 
-    @http.route(['/validate_attibute_value'], type='json', auth="public", website=True)
-    def validate_attibute_value(self, product_id=0, attribute_value_id=0, attribute_value_list=[], **kw):
-        attribute_value_list = map(int, attribute_value_list)
-        product = request.env['product.template'].browse(int(product_id))
-        if product:
-            # variant found with all matched attributes
-            if len(product.product_variant_ids.with_context(att_value_list=sorted(attribute_value_list)).filtered(lambda v: sorted(v.attribute_value_ids.mapped('id')) == v.env.context.get('att_value_list'))) == 1:
-                return map(str, attribute_value_list)
-            # variant not found with matched attributes, return variant with chosen attribute or the matched with other attributes in attribute_value_list
-            else:
-                variant = product.product_variant_ids.with_context(att_value_id=int(attribute_value_id)).filtered(lambda v: v.env.context.get('att_value_id') in v.attribute_value_ids.mapped('id'))
-                if len(variant) == 1:
-                    if len(variant.attribute_value_ids) == 1:
-                        return [str(attribute_value_id)]
-                    else:
-                        return map(str, variant.attribute_value_ids.mapped('id'))
-                elif len(variant) > 1:
-                    for att_value_id in attribute_value_list:
-                        if att_value_id not in variant.attribute_value_ids.mapped('id'):
-                            attribute_value_list.remove(att_id)
-                    return map(str, attribute_value_list)
-                else:
-                    return []
-        return []
+    # ~ @http.route(['/validate_attibute_value'], type='json', auth="public", website=True)
+    # ~ def validate_attibute_value(self, product_id=0, attribute_value_id=0, attribute_value_list=[], **kw):
+        # ~ attribute_value_list = map(int, attribute_value_list)
+        # ~ product = request.env['product.template'].browse(int(product_id))
+        # ~ if product:
+            # ~ # variant found with all matched attributes
+            # ~ if len(product.product_variant_ids.with_context(att_value_list=sorted(attribute_value_list)).filtered(lambda v: sorted(v.attribute_value_ids.mapped('id')) == v.env.context.get('att_value_list'))) == 1:
+                # ~ return map(str, attribute_value_list)
+            # ~ # variant not found with matched attributes, return variant with chosen attribute or the matched with other attributes in attribute_value_list
+            # ~ else:
+                # ~ variant = product.product_variant_ids.with_context(att_value_id=int(attribute_value_id)).filtered(lambda v: v.env.context.get('att_value_id') in v.attribute_value_ids.mapped('id'))
+                # ~ if len(variant) == 1:
+                    # ~ if len(variant.attribute_value_ids) == 1:
+                        # ~ return [str(attribute_value_id)]
+                    # ~ else:
+                        # ~ return map(str, variant.attribute_value_ids.mapped('id'))
+                # ~ elif len(variant) > 1:
+                    # ~ for att_value_id in attribute_value_list:
+                        # ~ if att_value_id not in variant.attribute_value_ids.mapped('id'):
+                            # ~ attribute_value_list.remove(att_id)
+                    # ~ return map(str, attribute_value_list)
+                # ~ else:
+                    # ~ return []
+        # ~ return []
