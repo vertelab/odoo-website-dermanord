@@ -1108,7 +1108,7 @@ class WebsiteSale(website_sale):
         '/webshop/webshop_type/<string:webshop_type>',
         ], type='http', auth="public", website=True)
     def webshop_webshop_type(self, webshop_type='dn_shop', **post):
-        if not webshop_type in ['dn_shop', 'dn_list']:
+        if not (webshop_type in ['dn_shop', 'dn_list'] and request.env.user.commercial_partner_id.property_product_pricelist.for_reseller):
             webshop_type = 'dn_shop'
         request.env.user.webshop_type = webshop_type
         return request.redirect('/webshop')

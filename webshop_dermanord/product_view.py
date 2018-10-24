@@ -116,7 +116,7 @@ class product_template(models.Model):
                 memcached.mc_delete(key)
 
     @api.multi
-    @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.datas', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_attachment_ids.datas', 'product_variant_ids.image_medium', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids')
+    @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.datas', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_attachment_ids.datas', 'product_variant_ids.image_medium', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids', 'sale_ok', 'product_variant_ids.sale_ok')
     def _get_all_variant_data(self):
         placeholder = '/web/static/src/img/placeholder.png'
 
@@ -136,19 +136,44 @@ class product_template(models.Model):
                 p.dv_ribbon = website_style_ids_variant if website_style_ids_variant else ' '.join([c for c in p.website_style_ids.mapped('html_class') if c])
             except:
                 e = sys.exc_info()
+                msg = u'%s' % e[1]
+                # Find latest error message to compare with
+                msg_old = self.env['mail.message'].search([
+                    ('subject', '=like', 'Default variant recompute failed on %'),
+                    ('model', '=', 'product.template'),
+                    ('res_id', '=', p.id)], order='date desc', limit=1)
+                if msg_old:
+                    msg_old = msg_old.body.replace('<p>', '').replace('</p>', '').split('<br>')
+                    if len(msg_old) > 1:
+                        msg_old = msg_old[-2].split(': ', 1)
+                        if len(msg_old) == 2:
+                            msg_old = msg_old[1]
+                        else:
+                            msg_old = ''
+                    else:
+                        msg_old = ''
+                else:
+                    msg_old = ''
+                send = True
+                if msg.startswith(u'Default variant on ') and msg.endswith(u' can not be sold'):
+                    if msg_old.startswith(u'Default variant on ') and msg_old.endswith(u' can not be sold'):
+                        send = False
+                elif msg == msg_old:
+                    send = False
                 tb = ''.join(traceback.format_exception(e[0], e[1], e[2]))
                 _logger.error(tb)
-                self.env['mail.message'].create({
-                    'body': tb.replace('\n', '<br/>'),
-                    'subject': 'Default variant recompute failed on %s' % p.name,
-                    'author_id': self.env.ref('base.partner_root').id,
-                    'res_id': p.id,
-                    'model': p._name,
-                    'type': 'notification',
-                    'partner_ids': [(4, pid) for pid in p.message_follower_ids.mapped('id')],
-                })
-                p.dv_default_code = '%s' % 'error'
-                p.dv_description_sale = u'%s' % e[1]
+                if send:
+                    self.env['mail.message'].create({
+                        'body': tb.replace('\n', '<br/>'),
+                        'subject': 'Default variant recompute failed on %s' % p.name,
+                        'author_id': self.env.ref('base.partner_root').id,
+                        'res_id': p.id,
+                        'model': p._name,
+                        'type': 'notification',
+                        'partner_ids': [(4, pid) for pid in p.message_follower_ids.mapped('id')],
+                    })
+                p.dv_default_code = 'error'
+                p.dv_description_sale = msg
                 p.dv_name = 'Error'
                 p.dv_image_src = placeholder
                 p.dv_ribbon = ''
