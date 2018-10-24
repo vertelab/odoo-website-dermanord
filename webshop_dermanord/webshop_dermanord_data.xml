@@ -40,36 +40,36 @@ else:
         </record>
         <record id="img_ingredients_big_height_xs" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">197</field>
+            <field name="value">350</field>
             <field name="device_type">xs</field>
             <field name="recipe_id" ref="webshop_dermanord.img_ingredients_big"/>
         </record>
         <record id="img_ingredients_big_height_sm" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">280</field>
+            <field name="value">500</field>
             <field name="device_type">sm</field>
             <field name="recipe_id" ref="webshop_dermanord.img_ingredients_big"/>
         </record>
         <record id="img_ingredients_big_height_md" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">280</field>
+            <field name="value">500</field>
             <field name="device_type">md</field>
             <field name="recipe_id" ref="webshop_dermanord.img_ingredients_big"/>
         </record>
         <record id="img_ingredients_big_height_lg" model="image.recipe.param">
             <field name="name">height</field>
-            <field name="value">280</field>
+            <field name="value">500</field>
             <field name="device_type">lg</field>
             <field name="recipe_id" ref="webshop_dermanord.img_ingredients_big"/>
         </record>
         <record id="img_ingredients_big_horizontal" model="image.recipe.param">
             <field name="name">horizontal</field>
-            <field name="value">16</field>
+            <field name="value">1</field>
             <field name="recipe_id" ref="webshop_dermanord.img_ingredients_big"/>
         </record>
         <record id="img_ingredients_big_vertical" model="image.recipe.param">
             <field name="name">vertical</field>
-            <field name="value">9</field>
+            <field name="value">1</field>
             <field name="recipe_id" ref="webshop_dermanord.img_ingredients_big"/>
         </record>
 
