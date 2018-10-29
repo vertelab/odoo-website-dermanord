@@ -15,19 +15,6 @@
             </field>
         </record>
 
-        <record id="product_template_action" model="ir.actions.act_window">
-            <field name="name">Variantless Templates</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">product.template</field>
-            <field name="view_mode">kanban,tree,form</field>
-            <field name="view_type">form</field>
-            <field name="view_id" ref="product_template_tree_view" />
-            <field name="context">{}</field>
-            <field name="domain">[('product_variant_count', '=', 0)]</field>
-        </record>
-
-        <menuitem action="product_template_action" id="menu_product_template_action" parent="base.menu_product" sequence="100" />
-
         <template id="website_sale.confirmation">
             <t t-call="website.layout">
                 <t t-set="additional_title">Shop - Confirmed</t>
@@ -594,6 +581,25 @@
             </field>
         </record>
 
+        <record id="action_broken_products" model="ir.actions.server">
+            <field name="name">Produkter utan varianter</field>
+            <field name="model_id" ref="base.model_ir_actions_server"/>
+            <field name="state">code</field>
+            <field name="code">
+products = [p['id'] for p in env['product.template'].search_read([('product_variant_ids.active', '=', True)], ['id'])]
+problem = env['product.template'].search([('id', 'not in', products)])
+action = {
+'type': 'ir.actions.act_window',
+'view_mode': 'tree,form',
+'view_type': 'form',
+'name': 'Produkter utan variant',
+'res_model': 'product.template',
+'domain': [('id', 'in', [p.id for p in problem])],
+}
+            </field>
+        </record>
+        
+        <menuitem action="action_broken_products" id="menu_broken_products" parent="base.menu_product" sequence="100" />
 
     </data>
 </openerp>
