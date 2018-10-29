@@ -599,7 +599,7 @@ action = {
             </field>
         </record>
         
-        <menuitem action="product_template_action" id="menu_broken_products" parent="base.menu_product" sequence="100" />
+        <menuitem action="action_broken_products" id="menu_broken_products" parent="base.menu_product" sequence="100" />
 
     </data>
 </openerp>
