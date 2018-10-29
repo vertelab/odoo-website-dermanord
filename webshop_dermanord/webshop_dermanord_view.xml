@@ -594,6 +594,29 @@
             </field>
         </record>
 
+        <record id="action_broken_products" model="ir.actions.server">
+            <field name="name">Produkter utan varianter</field>
+            <field name="model_id" ref="base.model_ir_actions_server"/>
+            <field name="state">code</field>
+            <field name="code">
+products = [p['id'] for p in env['product.template'].search_read([('product_variant_ids.active', '=', True)], ['id'])]
+problem = env['product.template'].search([('id', 'not in', products)])
+action = {
+'type': 'ir.actions.act_window',
+'view_mode': 'tree,form',
+'view_type': 'form',
+'name': 'Produkter utan variant',
+'res_model': 'product.template',
+'domain': [('id', 'in', [p.id for p in problem])],
+}
+            </field>
+        </record>
+        
+        <menuitem action="action_broken_products" id="menu_broken_products" parent="base.menu_product" sequence="1000" />
+        
+<!--
+        <record id="menu_broken_products" id="ir.ui.menu"
+-->
 
     </data>
 </openerp>
