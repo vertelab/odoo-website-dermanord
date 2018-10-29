@@ -81,6 +81,9 @@
                 <div id="desktop_product_navigator" class="col-md-3 hidden-xs">
                     <!-- navigator -->
                     <t t-call="webshop_dermanord.desktop_product_navigator" />
+<!--
+                    <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_filter_navigator" />
+-->
                 </div>
                 <div id="desktop_product_grid" class="col-md-9 col-xs-12">
                     <t t-if="no_product_message != ''">

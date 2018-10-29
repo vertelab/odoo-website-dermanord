@@ -71,6 +71,10 @@ $("select.attr_sel").on('change', function() {
     }
 });
 
+function submit_facet(facet) {
+    console.log(facet);
+}
+
 function show_popover(trigger){
     trigger.popover({
         container: 'body',
