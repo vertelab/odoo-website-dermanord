@@ -1131,7 +1131,7 @@
         </template>
         <template id="webshop_dermanord_desktop_product_filter_content" name="Webshop Dermanord Desktop Filter Content">
             <div id="desktop_product_navigator_filter">
-                <h4 class="text-center dn_uppercase">Refine results</h4>
+                <h4 class="text-center dn_uppercase">Categories</h4>
                 <div class="panel-group">
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -1233,6 +1233,11 @@
                             </div>
                         </t>
 -->
+                    </div>
+                </div>
+                <h4 class="text-center dn_uppercase">Filter</h4>
+                <div class="panel-group">
+                    <div class="panel panel-default">
                         <t t-foreach="filter_facets" t-as="facet">
                             <div class="panel-heading">
                                 <h4 class="panel-title">
@@ -1254,7 +1259,6 @@
                                     </t>
                                 </h4>
                             </div>
-<!--
                             <div t-att-id="'desktop_facet_%s' %facet.id" class="panel-collapse collapse">
                                 <div class="panel-body">
                                     <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])" />
@@ -1278,7 +1282,6 @@
                                     </t>
                                 </div>
                             </div>
--->
                         </t>
                         <div class="panel-heading" t-if="False">
                             <h4 class="panel-title">
@@ -1433,7 +1436,7 @@
         </template>
         <template id="webshop_dermanord_desktop_product_filter_navigator" name="Webshop Dermanord Desktop Product Filter Navigator">
             <div class="mt64">
-                <t t-set="filter_facets" t-value="request.env['product.facet'].get_filtered_facets(request.session.get('form_values'))" />
+                <t t-set="filter_facets" t-value="request.env['product.facet'].search([])" />
                 <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])" />
                 <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_filter_form" />
                 <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_sort_form" />
