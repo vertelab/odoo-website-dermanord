@@ -743,7 +743,7 @@
                         <t t-if="filter_categories">
                             <div class="checkbox">
                                 <input type="checkbox" t-att-name="'category_%s' %category.id" t-att-value="category.id" t-att="{'checked': '1'} if request.session.get('form_values').get('category_%s' %category.id) == category.id else {}" />
-                                <a t-att-href="'/webshop/category/%s' %category.id">
+                                <a t-att-href="'/webshop_new/category/%s' %category.id">
                                     <t t-esc="category.name" />
                                 </a>
                             </div>
@@ -764,6 +764,7 @@
                         </t>
                     </div>
                 </t>
+<!--
                 <t t-foreach="filter_facets" t-as="facet">
                     <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])" />
                     <div t-att-id="'facet_%s' %facet.id" class="tab-pane">
@@ -785,6 +786,7 @@
                         </t>
                     </div>
                 </t>
+-->
                 <div id="ingredient" class="tab-pane fade">
                     <t t-if="filter_ingredients">
                         <t t-foreach="filter_ingredients" t-as="ingredient">
@@ -842,7 +844,7 @@
                 <t t-foreach="filter_categories" t-as="category">
                     <li>
                         <h5>
-                            <a t-att-href="'/webshop/category/%s' %category.id">
+                            <a t-att-href="'/webshop_new/category/%s' %category.id">
                                 <t t-esc="category.name" />
                             </a>
                             <t t-set="category_count" t-value="0" />
@@ -858,6 +860,7 @@
                         </h5>
                     </li>
                 </t>
+<!--
                 <t t-foreach="filter_facets" t-as="facet">
                     <li>
                         <a data-toggle="tab" t-att-href="'#facet_%s' %facet.id">
@@ -880,6 +883,7 @@
                         </a>
                     </li>
                 </t>
+-->
                 <li t-if="filter_ingredients and request.session.get('form_values')">
                     <a data-toggle="tab" href="#ingredient">
                         <h5>
@@ -903,7 +907,7 @@
             </ul>
         </template>
         <template id="webshop_dermanord_mobile_product_filter_form" name="Webshop Dermanord Mobile Product Filter Form">
-            <form action="/webshop" method="post">
+            <form action="/webshop_new" method="post">
                 <div class="container" style="padding: 0px;">
                     <t t-set="first_facet" t-value="0" />
                     <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
@@ -923,7 +927,7 @@
             </form>
         </template>
         <template id="webshop_dermanord_mobile_product_sort_form" name="Webshop Dermanord Mobile Product Sort Form">
-            <form action="/webshop" method="post">
+            <form action="/webshop_new" method="post">
                 <div class="container" style="padding: 0px;">
                     <ul style="list-style-type: none;">
                         <li>
@@ -1043,12 +1047,12 @@
                     <button class="mt32 dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit">OK</button>
                     <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                         <t t-if="webshop_type == 'dn_list'">
-                            <button class="mt32 dn_btn dn_primary" formaction="/webshop/webshop_type/dn_shop" type="submit" aria-label="Switch to grid view" title="Switch to grid view">
+                            <button class="mt32 dn_btn dn_primary" formaction="/webshop_new/webshop_type/dn_shop" type="submit" aria-label="Switch to grid view" title="Switch to grid view">
                                 <i class="fa fa-th" />
                             </button>
                         </t>
                         <t t-if="webshop_type == 'dn_shop'">
-                            <button class="mt32 dn_btn dn_primary" formaction="/webshop/webshop_type/dn_list" type="submit" aria-label="Switch to list view" title="Switch to list view">
+                            <button class="mt32 dn_btn dn_primary" formaction="/webshop_new/webshop_type/dn_list" type="submit" aria-label="Switch to list view" title="Switch to list view">
                                 <i class="fa fa-th-list" />
                             </button>
                         </t>
@@ -1060,8 +1064,8 @@
             <xpath expr="//div[@id='wrapwrap']/main" position="inside">
                 <t t-if="shop_footer">
                     <t t-set="filter_facets" t-value="request.env['product.facet'].get_filtered_facets(request.session.get('form_values'))" />
-                    <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])" />
-                    <div id="dn_filter_modal" class="modal fade" role="dialog">
+                    <t t-set="filter_categories" t-value="request.env['product.public.category'].search([('parent_id', '=', None)])" />
+                    <div id="webshop_dermanord_mobile_filter_modal" class="modal fade" role="dialog">
                         <div class="modal-dialog" style="margin: 0px; width: 100%;">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -1081,7 +1085,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="dn_sort_modal" class="modal fade" role="dialog">
+                    <div id="webshop_dermanord_mobile_sort_modal" class="modal fade" role="dialog">
                         <div class="modal-dialog" style="margin: 0px; width: 100%;">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -1101,15 +1105,15 @@
                             </div>
                         </div>
                     </div>
-                    <div id="bottom_div" class="container hidden-lg hidden-md hidden-sm">
-                        <a href="#" id="filter-btn-modal" data-toggle="modal" data-target="#dn_filter_modal" class="pull-left" style="color: #fff; font-size: 1.3em; padding: 5px;">
+                    <div id="#webshop_dermanord_mobile_bottom_div" class="container hidden-lg hidden-md hidden-sm">
+                        <a href="#" id="webshop-dermanord-btn-modal" data-toggle="modal" data-target="#webshop_dermanord_mobile_filter_modal" class="pull-left" style="color: #fff; font-size: 1.3em; padding: 5px;">
                             <i class="fa fa-filter" />
                             Filter
                             <span class="filter_match" t-if="request.session.get('chosen_filter_qty') &gt; 0">
                                 <t t-esc="request.session.get('chosen_filter_qty')" />
                             </span>
                         </a>
-                        <a href="#" id="sort-btn-modal" data-toggle="modal" data-target="#dn_sort_modal" class="pull-right" style="color: #fff; font-size: 1.3em; padding: 5px;">
+                        <a href="#" id="webshop-dermanord-sort-btn-modal" data-toggle="modal" data-target="#webshop_dermanord_mobile_sort_modal" class="pull-right" style="color: #fff; font-size: 1.3em; padding: 5px;">
                             <i class="fa fa-sort" />
                             Sort
                             <span class="sort_match" t-if="request.session.get('sort_name') and request.session.get('sort_order')">
@@ -1127,7 +1131,7 @@
         </template>
         <template id="webshop_dermanord_desktop_product_filter_content" name="Webshop Dermanord Desktop Filter Content">
             <div id="desktop_product_navigator_filter">
-                <h4 class="text-center dn_uppercase">Refine results</h4>
+                <h4 class="text-center dn_uppercase">Categories</h4>
                 <div class="panel-group">
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -1178,11 +1182,13 @@
                                 </div>
                             </div>
                         </div>
+                        <t t-raw="filter_categories[0].get_category_tree_html()"/>
+<!--
                         <t t-foreach="filter_categories" t-as="category">
                             <div class="panel-heading">
                                 <h4 class="panel-title">
-                                    <input type="checkbox" class="category_checkbox"/>
-                                    <a t-att-href="'/webshop/category/%s' %category.id">
+                                    <input type="checkbox" class="category_checkbox" t-att-data-category="'desktop_category_%s' %category.id"/>
+                                    <a t-att-href="'/webshop_new/category/%s' %category.id">
                                         <t t-esc="category.name"/>
                                     </a>
                                     <a data-toggle="collapse" t-att-href="'#desktop_category_%s' %category.id" class="pull-right">
@@ -1203,25 +1209,35 @@
                                 <div class="panel-body">
                                     <t t-if="filter_categories">
                                         <t t-foreach="request.env['product.facet.value'].search([('facet_id', 'in', request.env['product.facet'].search([('category_ids', 'in', category.id)]).mapped('id'))], order='name')" t-as="facet_value">
-                                            <h5>
-                                                <t t-if="request.session.get('form_values')">
-                                                    <input type="checkbox" t-att-name="'facet_%s_%s' %(facet_value.facet_id.id, facet_value.id)" t-att-value="facet_value.id" t-att="{'checked': '1'} if (request.session.get('form_values').get('facet_%s_%s' %(facet_value.facet_id.id, facet_value.id)) and request.session.get('form_values').get('facet_%s_%s' %(facet_value.facet_id.id, facet_value.id)) == str(facet_value.id)) else {}" />
-                                                    <a href="javascript:void(0)" onclick="submit_facet($(this));">
-                                                        <t t-esc="facet_value.name" />
-                                                    </a>
-                                                </t>
-                                                <t t-if="not request.session.get('form_values')">
-                                                    <input type="checkbox" t-att-name="'facet_%s_%s' %(facet_value.facet_id.id, facet_value.id)" t-att-value="facet_value.id" />
-                                                    <a href="javascript:void(0)" onclick="submit_facet($(this));">
-                                                        <t t-esc="facet_value.name" />
-                                                    </a>
-                                                </t>
-                                            </h5>
+                                            <div class="checkbox">
+                                                <h5>
+                                                    <label>
+                                                        <t t-if="request.session.get('form_values')">
+                                                            <input type="checkbox" t-att-name="'facet_%s_%s' %(facet_value.facet_id.id, facet_value.id)" t-att-value="facet_value.id" t-att="{'checked': '1'} if (request.session.get('form_values').get('facet_%s_%s' %(facet_value.facet_id.id, facet_value.id)) and request.session.get('form_values').get('facet_%s_%s' %(facet_value.facet_id.id, facet_value.id)) == str(facet_value.id)) else {}" />
+                                                            <a href="javascript:void(0)" onclick="submit_facet($(this));">
+                                                                <t t-esc="facet_value.name" />
+                                                            </a>
+                                                        </t>
+                                                        <t t-if="not request.session.get('form_values')">
+                                                            <input type="checkbox" t-att-name="'facet_%s_%s' %(facet_value.facet_id.id, facet_value.id)" t-att-value="facet_value.id" />
+                                                            <a href="javascript:void(0)" onclick="submit_facet($(this));">
+                                                                <t t-esc="facet_value.name" />
+                                                            </a>
+                                                        </t>
+                                                    </label>
+                                                </h5>
+                                            </div>
                                         </t>
                                     </t>
                                 </div>
                             </div>
                         </t>
+-->
+                    </div>
+                </div>
+                <h4 class="text-center dn_uppercase">Filter</h4>
+                <div class="panel-group">
+                    <div class="panel panel-default">
                         <t t-foreach="filter_facets" t-as="facet">
                             <div class="panel-heading">
                                 <h4 class="panel-title">
@@ -1327,7 +1343,7 @@
             </div>
         </template>
         <template id="webshop_dermanord_desktop_product_filter_form" name="Webshop Dermanord Desktop Product Filter Form">
-            <form action="/webshop" method="post">
+            <form action="/webshop_new" method="post">
                 <div class="btn-group">
                     <button class="mt32 dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
                     <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
@@ -1344,7 +1360,7 @@
         </template>
         <template id="webshop_dermanord_desktop_product_sort_form" name="Webshop Dermanord Desktop Product Sort Form">
             <h4 class="text-center dn_uppercase">Sorting</h4>
-            <form action="/webshop" method="post">
+            <form action="/webshop_new" method="post">
                 <select id="descktop_sort_selector" name="order" class="form-control selectpicker dropdown dn_selection_dropdown" onchange="this.form.submit();">
                     <t t-if="request.session.get('form_values')">
                         <option value="sold_qty desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'sold_qty desc' else {}">Most Sold</option>
@@ -1406,12 +1422,12 @@
                 <input class="hidden" name="post_form" value="ok" />
                 <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                     <t t-if="webshop_type == 'dn_list'">
-                        <button class="mt32 dn_btn dn_primary" formaction="/webshop/webshop_type/dn_shop" type="submit" title="Swith to grid view">
+                        <button class="mt32 dn_btn dn_primary" formaction="/webshop_new/webshop_type/dn_shop" type="submit" title="Swith to grid view">
                             <i class="fa fa-th" />
                         </button>
                     </t>
                     <t t-if="webshop_type == 'dn_shop'">
-                        <button class="mt32 dn_btn dn_primary" formaction="/webshop/webshop_type/dn_list" type="submit" title="Swith to list view">
+                        <button class="mt32 dn_btn dn_primary" formaction="/webshop_new/webshop_type/dn_list" type="submit" title="Swith to list view">
                             <i class="fa fa-th-list" />
                         </button>
                     </t>
@@ -1420,7 +1436,7 @@
         </template>
         <template id="webshop_dermanord_desktop_product_filter_navigator" name="Webshop Dermanord Desktop Product Filter Navigator">
             <div class="mt64">
-                <t t-set="filter_facets" t-value="request.env['product.facet'].get_filtered_facets(request.session.get('form_values'))" />
+                <t t-set="filter_facets" t-value="request.env['product.facet'].search([])" />
                 <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])" />
                 <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_filter_form" />
                 <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_sort_form" />

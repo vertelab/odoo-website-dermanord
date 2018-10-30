@@ -71,9 +71,22 @@ $("select.attr_sel").on('change', function() {
     }
 });
 
-function submit_facet(facet) {
-    console.log(facet);
+function submit_facet($facet) {
+    $facet.closest("h5").find("input[type='checkbox']").attr("checked", "checked");
+    $facet.closest("form").submit();
 }
+
+$("input.category_checkbox").change(function() {
+    var $self = $(this);
+    var checked = $self.is(":checked");
+    var categ_id = $self.data("category");
+    $.each($self.closest("div.panel").find("div#" + categ_id + " input[type='checkbox']"), function() {
+        if (checked)
+            $(this).attr("checked", "checked");
+        else
+            $(this).removeAttr("checked", "checked");
+    });
+});
 
 function show_popover(trigger){
     trigger.popover({

@@ -161,9 +161,9 @@ class product_template(models.Model):
         res['event_type_id'] = self.event_type_id and self.event_type_id.id or False
         return res
 
+
 class product_product(models.Model):
     _inherit = 'product.product'
-
 
     #~ so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')  # performance hog, do we need it?
     sold_qty = fields.Integer(string='Sold', default=0)
@@ -205,6 +205,7 @@ class product_product(models.Model):
         res['event_type_id'] = self.event_type_id and self.event_type_id.id or False
         return res
 
+
 class product_facet(models.Model):
     _inherit = 'product.facet'
 
@@ -239,6 +240,99 @@ class product_pricelist(models.Model):
     # ~ @api.multi
     # ~ def price_get(self, prod_id, qty, partner=None):
         # ~ return super(product_pricelist, self).price_get(prod_id, qty, partner)
+
+
+class product_public_category(models.Model):
+    _inherit = 'product.public.category'
+
+    @api.model
+    def get_category_tree(self):
+        categ_lst = []
+        def get_child_categories(categories):
+            children = self.env['product.public.category'].search([('parent_id', 'in', categories.mapped('id')), ('website_published', '=', True)])
+            if len(children) > 0:
+                categ_lst.append(children)
+                get_child_categories(children)
+        parent_categories = self.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True)])
+        categ_lst.append(parent_categories)
+        get_child_categories(parent_categories)
+        return categ_lst
+
+    @api.model
+    def get_category_tree_html(self):
+        def get_child_categs(categories):
+            children = self.env['product.public.category'].search([('parent_id', 'in', categories.mapped('id')), ('website_published', '=', True)])
+            if len(children) > 0:
+                return children
+            else:
+                return []
+        def get_panel_heading_html(category):
+            return u"""<div class="panel-heading">
+    <h4 class="panel-title">
+        <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox" data-category="{desktop_category}" {category_checked}/>
+        <a href="{desktop_category_href}">
+            {desktop_category_name}
+        </a>
+        {desktop_category_collapse}
+        {desktop_category_filter_match}
+    </h4>
+</div>""".format(
+    category_name = 'category_%s' %category.id,
+    category_value = '%s' %category.id,
+    desktop_category = 'desktop_category_%s' %category.id,
+    category_checked = 'checked="checked"' if category.id in category_checked else '',
+    desktop_category_href = '/webshop_new/category/%s' %category.id,
+    desktop_category_name = category.name,
+    desktop_category_collapse = ('<a data-toggle="collapse" href="#desktop_category_%s" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a>' %category.id) if len(get_child_categs(category)) > 0 else '',
+    # ~ desktop_category_filter_match = '<span class="filter_match">%s</span>' %''
+    desktop_category_filter_match = ''
+)
+
+        def get_panel_body_html(category):
+            children = get_child_categs(category)
+            html_code = '<div id="desktop_category_%s" class="panel-collapse collapse"><div class="panel-body">' %category.id
+            for child in children:
+                html_code += get_panel_heading_html(child)
+                html_code += get_panel_body_html(child)
+            html_code += '</div></div>'
+            return html_code
+
+        current_domain = request.session.get('current_domain')
+        current_category = 0
+        category_checked = []
+        if current_domain:
+            for d in current_domain:
+                if d[0] == 'public_categ_ids':
+                    current_category = d[2]
+        if current_category != 0:
+            category_checked = self.env['product.public.category'].search([('id', 'child_of', current_category)]).mapped('id')
+
+        html = ''
+        all_categories = self.get_category_tree()
+        if len(all_categories) > 0:
+            for category in all_categories[0]:
+                html += get_panel_heading_html(category)
+                html += get_panel_body_html(category)
+        return html
+
+# ~ <div class="checkbox">
+    # ~ <h5>
+        # ~ <label>
+            # ~ <t t-if="request.session.get('form_values')">
+                # ~ <input type="checkbox" t-att-name="'facet_%s_%s' %(facet_value.facet_id.id, facet_value.id)" t-att-value="facet_value.id" t-att="{'checked': '1'} if (request.session.get('form_values').get('facet_%s_%s' %(facet_value.facet_id.id, facet_value.id)) and request.session.get('form_values').get('facet_%s_%s' %(facet_value.facet_id.id, facet_value.id)) == str(facet_value.id)) else {}" />
+                # ~ <a href="javascript:void(0)" onclick="submit_facet($(this));">
+                    # ~ <t t-esc="facet_value.name" />
+                # ~ </a>
+            # ~ </t>
+            # ~ <t t-if="not request.session.get('form_values')">
+                # ~ <input type="checkbox" t-att-name="'facet_%s_%s' %(facet_value.facet_id.id, facet_value.id)" t-att-value="facet_value.id" />
+                # ~ <a href="javascript:void(0)" onclick="submit_facet($(this));">
+                    # ~ <t t-esc="facet_value.name" />
+                # ~ </a>
+            # ~ </t>
+        # ~ </label>
+    # ~ </h5>
+# ~ </div>
 
 
 class res_users(models.Model):
@@ -1101,8 +1195,8 @@ class WebsiteSale(website_sale):
                 'page_lang': request.env.lang,
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products) < PPG else False,
+                'filter_version': 'old',
             })
-
 
     @http.route([
         '/webshop/webshop_type/<string:webshop_type>',
@@ -1112,6 +1206,83 @@ class WebsiteSale(website_sale):
             webshop_type = 'dn_shop'
         request.env.user.webshop_type = webshop_type
         return request.redirect('/webshop')
+
+    #controller with new filter under developing
+    @http.route([
+        '/webshop_new',
+        '/webshop_new/page/<int:page>',
+        '/webshop_new/category/<model("product.public.category"):category>',
+        '/webshop_new/category/<model("product.public.category"):category>/page/<int:page>',
+        ], type='http', auth="public", website=True)
+    def webshop_new(self, page=0, category=None, search='', **post):
+        if request.env.user.webshop_type == 'dn_list':
+            request.website.dn_shop_set_session('product.product', post, '/dn_list')
+        else:
+            request.website.dn_shop_set_session('product.template', post, '/dn_shop')
+        if category:
+            if not request.session.get('form_values'):
+                request.session['form_values'] = {'category_%s' %int(category): int(category)}
+            request.session['form_values'] = {'category_%s' %int(category): int(category)}
+            request.website.get_form_values()['category_' + str(int(category))] = int(category)
+            request.session['current_domain'] = [('public_categ_ids', 'child_of', [int(category)])]
+            request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
+        if not request.context.get('pricelist'):
+            request.context['pricelist'] = int(self.get_pricelist())
+        if search:
+            post["search"] = search
+
+        user = request.env['res.users'].browse(request.uid)
+
+        _logger.warn('Anders webshop2 user --------> %s user %s %s %s ' % (request.env.ref('base.public_user'),request.env.user,request.uid,user))
+        _logger.warn('Anders webshop2 user --------> %s type ' % (request.env.user.webshop_type))
+
+        no_product_message = ''
+        if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
+            products=request.env['product.product'].get_list_row(request.session.get('current_domain'),request.context['pricelist'],limit=PPG, order=request.session.get('current_order'))
+        else:
+            product_ids = request.env['product.template'].sudo(user).search_read(request.session.get('current_domain'), fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=PPG, order=request.session.get('current_order'),offset=0)
+
+            products=request.env['product.template'].get_thumbnail_default_variant2(request.context['pricelist'],product_ids)
+        if len(products) == 0:
+            no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
+        if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
+            return request.website.render("webshop_dermanord.products_list_reseller_view", {
+                'title': _('Shop'),
+                'search': search,
+                'products': products,
+                'rows': PPR,
+                'url': '/dn_list',
+                'webshop_type': 'dn_list',
+                'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
+                'shop_footer': True,
+                'no_product_message': no_product_message,
+                'all_products_loaded': True if len(products) < PPG else False,
+            })
+        else:
+            return request.website.render("webshop_dermanord.products", {
+                'search': search,
+                'category': category,
+                'products':  products,
+                'rows': PPR,
+                'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
+                'url': '/dn_shop',
+                'webshop_type': 'dn_shop',
+                'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
+                'shop_footer': True,
+                'page_lang': request.env.lang,
+                'no_product_message': no_product_message,
+                'all_products_loaded': True if len(products) < PPG else False,
+                'filter_version': 'new',
+            })
+
+    @http.route([
+        '/webshop_new/webshop_type/<string:webshop_type>',
+        ], type='http', auth="public", website=True)
+    def webshop_new_webshop_type(self, webshop_type='dn_shop', **post):
+        if not (webshop_type in ['dn_shop', 'dn_list'] and request.env.user.commercial_partner_id.property_product_pricelist.for_reseller):
+            webshop_type = 'dn_shop'
+        request.env.user.webshop_type = webshop_type
+        return request.redirect('/webshop_new')
 
     @http.route(['/shop/cart'], type='http', auth="public", website=True)
     def cart(self, **post):
