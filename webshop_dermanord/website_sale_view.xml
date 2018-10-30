@@ -819,5 +819,16 @@
             </xpath>
         </template>
 
+        <template id="dn_website_access_rights_desc" name="DN Webbplatsbehörighet Description">
+            <div class="dn-tooltip text-centered" style="display: inline"><i class="fa fa-info-circle"></i>
+                <div class="dn-tooltiptext">
+                    <b t-esc="group.name"/><br/>
+                    <t t-foreach="(group.comment or '').split('\n')" t-as="line">
+                        <t t-esc="line"/><br/>
+                    </t>
+                </div>
+            </div>
+        </template>
+
     </data>
 </openerp>

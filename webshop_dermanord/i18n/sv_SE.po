@@ -107,6 +107,11 @@ msgstr "Last Updated by"
 msgid "Last Updated on"
 msgstr "Last Updated on"
 
+#. module: webshop_dermanord
+#: model:ir.module.category,description:webshop_dermanord.module_category_dn_webshop
+msgid "Manages access to products and features for website visitors."
+msgstr "Hanterar rättigheter för produkter och funktioner för webbplatsbesökare."
+
 #. module: website_sale_price_chart
 #: field:pricelist_chart.type,name:0
 msgid "Name"
@@ -248,3 +253,7 @@ msgstr "ca pris"
 msgid "pricelist_chart_type_action"
 msgstr "pricelist_chart_type_action"
 
+#. module: webshop_dermanord
+#: model:ir.module.category,name:webshop_dermanord.module_category_dn_webshop
+msgid "Website Access Rights"
+msgstr "Webbplatsbehörigheter"

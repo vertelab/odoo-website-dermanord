@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <record model="ir.module.category" id="module_category_dn_webshop">
+            <field name="name">Website Access Rights</field>
+            <field name="description">Manages access to products and features for website visitors.</field>
+        </record>
+        
+    </data>
+</openerp>
