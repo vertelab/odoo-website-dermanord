@@ -267,7 +267,7 @@ class product_public_category(models.Model):
             else:
                 return []
         def get_panel_heading_html(category):
-            return """<div class="panel-heading">
+            return u"""<div class="panel-heading">
     <h4 class="panel-title">
         <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox" data-category="{desktop_category}" {category_checked}/>
         <a href="{desktop_category_href}">
