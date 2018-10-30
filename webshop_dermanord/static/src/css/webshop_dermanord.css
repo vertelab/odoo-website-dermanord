@@ -487,15 +487,21 @@ select.dn_selection_dropdown + i.fa {
     font-size: 18px !important;
 }
 
-#desktop_product_navigator h4, #webshop_dermanord_desktop_product_filter_navigator h4 {
+#desktop_product_navigator h4 {
     font-size: 23px;
 }
 
-#desktop_product_navigator .panel-title, #webshop_dermanord_desktop_product_filter_navigator .panel-title > a {
+#desktop_product_navigator .panel-title, #desktop_product_navigator .panel-title > a {
+    font-family: futura-pt-medium, sans-serif !important;
     font-size: 18px;
 }
 
-#desktop_product_navigator h5, #webshop_dermanord_desktop_product_filter_navigator .panel-title > a {
+#desktop_product_navigator_filter a {
+    font-family: futura-pt-medium, sans-serif !important;
+    font-size: 14px;
+}
+
+#desktop_product_navigator h5 {
     font-size: 14px;
 }
 
