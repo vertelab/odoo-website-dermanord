@@ -269,20 +269,21 @@ class product_public_category(models.Model):
         def get_panel_heading_html(category):
             return """<div class="panel-heading">
     <h4 class="panel-title">
-        <input type="checkbox" class="category_checkbox" data-category="{desktop_category}"/>
+        <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox" data-category="{desktop_category}" {category_checked}/>
         <a href="{desktop_category_href}">
             {desktop_category_name}
         </a>
-        <a data-toggle="collapse" href="#{desktop_category_collapse}" class="pull-right">
-            <i class="desktop_angle fa fa-angle-down"></i>
-        </a>
+        {desktop_category_collapse}
         {desktop_category_filter_match}
     </h4>
 </div>""".format(
+    category_name = 'category_%s' %category.id,
+    category_value = '%s' %category.id,
     desktop_category = 'desktop_category_%s' %category.id,
-    desktop_category_href = '/webshop/category/%s' %category.id,
+    category_checked = 'checked="checked"' if category.id in category_checked else '',
+    desktop_category_href = '/webshop_new/category/%s' %category.id,
     desktop_category_name = category.name,
-    desktop_category_collapse = 'desktop_category_%s' %category.id,
+    desktop_category_collapse = ('<a data-toggle="collapse" href="#desktop_category_%s" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a>' %category.id) if len(get_child_categs(category)) > 0 else '',
     # ~ desktop_category_filter_match = '<span class="filter_match">%s</span>' %''
     desktop_category_filter_match = ''
 )
@@ -295,6 +296,16 @@ class product_public_category(models.Model):
                 html_code += get_panel_body_html(child)
             html_code += '</div></div>'
             return html_code
+
+        current_domain = request.session.get('current_domain')
+        current_category = 0
+        category_checked = []
+        if current_domain:
+            for d in current_domain:
+                if d[0] == 'public_categ_ids':
+                    current_category = d[2]
+        if current_category != 0:
+            category_checked = self.env['product.public.category'].search([('id', 'child_of', current_category)]).mapped('id')
 
         html = ''
         all_categories = self.get_category_tree()
@@ -1187,6 +1198,15 @@ class WebsiteSale(website_sale):
                 'filter_version': 'old',
             })
 
+    @http.route([
+        '/webshop/webshop_type/<string:webshop_type>',
+        ], type='http', auth="public", website=True)
+    def webshop_webshop_type(self, webshop_type='dn_shop', **post):
+        if not (webshop_type in ['dn_shop', 'dn_list'] and request.env.user.commercial_partner_id.property_product_pricelist.for_reseller):
+            webshop_type = 'dn_shop'
+        request.env.user.webshop_type = webshop_type
+        return request.redirect('/webshop')
+
     #controller with new filter under developing
     @http.route([
         '/webshop_new',
@@ -1204,7 +1224,7 @@ class WebsiteSale(website_sale):
                 request.session['form_values'] = {'category_%s' %int(category): int(category)}
             request.session['form_values'] = {'category_%s' %int(category): int(category)}
             request.website.get_form_values()['category_' + str(int(category))] = int(category)
-            request.session['current_domain'] = [('public_categ_ids', 'child of', [int(category)])]
+            request.session['current_domain'] = [('public_categ_ids', 'child_of', [int(category)])]
             request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
         if not request.context.get('pricelist'):
             request.context['pricelist'] = int(self.get_pricelist())
@@ -1255,15 +1275,14 @@ class WebsiteSale(website_sale):
                 'filter_version': 'new',
             })
 
-
     @http.route([
-        '/webshop/webshop_type/<string:webshop_type>',
+        '/webshop_new/webshop_type/<string:webshop_type>',
         ], type='http', auth="public", website=True)
-    def webshop_webshop_type(self, webshop_type='dn_shop', **post):
+    def webshop_new_webshop_type(self, webshop_type='dn_shop', **post):
         if not (webshop_type in ['dn_shop', 'dn_list'] and request.env.user.commercial_partner_id.property_product_pricelist.for_reseller):
             webshop_type = 'dn_shop'
         request.env.user.webshop_type = webshop_type
-        return request.redirect('/webshop')
+        return request.redirect('/webshop_new')
 
     @http.route(['/shop/cart'], type='http', auth="public", website=True)
     def cart(self, **post):
