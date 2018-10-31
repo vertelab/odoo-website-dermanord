@@ -87,6 +87,7 @@
                         <i class="fa fa-trash-o" />
                         Clear All
                     </button>
+                    <t t-call="webshop_dermanord.dn_website_group_info"/>
                 </div>
             </form>
         </template>
@@ -432,6 +433,7 @@
                         <i class="fa fa-trash-o" />
                         Clear All
                     </button>
+                    <t t-call="webshop_dermanord.dn_website_group_info"/>
                 </div>
                 <div class="container" style="padding: 0px;">
                     <t t-set="first_facet" t-value="0" />
@@ -923,6 +925,7 @@
                         <i class="fa fa-trash-o" />
                         Clear All
                     </button>
+                    <t t-call="webshop_dermanord.dn_website_group_info"/>
                 </div>
             </form>
         </template>
@@ -1350,6 +1353,7 @@
                         <i class="fa fa-trash-o" />
                         Clear All
                     </button>
+                    <t t-call="webshop_dermanord.dn_website_group_info"/>
                 </div>
                 <div class="container" style="padding: 0px;">
                     <t t-set="first_facet" t-value="0" />

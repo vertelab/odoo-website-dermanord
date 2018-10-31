@@ -131,6 +131,8 @@ $(document).ready(function(){
         $(this).tooltip();
     });
 
+    $('[data-toggle="tooltip"]').tooltip();
+
     $(".show_more_facet").click(function(){
         $(this).addClass("hidden");
         $(".hide_more_facet").removeClass("hidden");
@@ -476,6 +478,11 @@ $(document).ready(function(){
 
     //blink ok button when filter form input changed
     $("#desktop_product_navigator_filter").find(".checkbox").each(function() {
+        $(this).on("change", function() {
+            $(this).closest("form").find(".dn_ok").addClass("dn_blink");
+        });
+    });
+    $("#desktop_product_navigator_filter").find(".category_checkbox").each(function() {
         $(this).on("change", function() {
             $(this).closest("form").find(".dn_ok").addClass("dn_blink");
         });

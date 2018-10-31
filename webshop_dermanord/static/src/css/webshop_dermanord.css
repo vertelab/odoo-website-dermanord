@@ -505,6 +505,15 @@ select.dn_selection_dropdown + i.fa {
     font-size: 14px;
 }
 
+#desktop_product_navigator .dn-tooltip, #filter_btn_group .dn-tooltip {
+    top: 17px;
+    left: 17px;
+}
+
+#desktop_product_navigator .dn-tooltip > i, #filter_btn_group .dn-tooltip > i {
+    font-size: 1.5em;
+}
+
 .dn_oe_product {
     padding: 0px;
 }
