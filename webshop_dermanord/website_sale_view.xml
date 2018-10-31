@@ -831,6 +831,32 @@
                 </div>
             </div>
         </template>
-
+        
+        <template id="dn_website_group_info" name="DN Webbplatsbehörighet Filter Button">
+            <!-- Check if we need to publish group info -->
+            <t t-set="dn_group_check" t-value="request.env.ref('webshop_dermanord.group_dn_ht')"/>
+            <t t-if="dn_group_check in request.env.user.commercial_partner_id.access_group_ids">
+                <t t-set="dn_group_check_done" t-value="True"/>
+            </t>
+            <t t-if="not dn_group_check_done">
+                <t t-set="dn_group_check" t-value="request.env.ref('webshop_dermanord.group_dn_spa')"/>
+                <t t-if="dn_group_check in request.env.user.commercial_partner_id.access_group_ids">
+                    <t t-set="dn_group_check_done" t-value="True"/>
+                    <t t-call="webshop_dermanord.dn_website_access_rights_desc">
+                        <t t-set="group" t-value="dn_group_check.sudo()"/>
+                    </t>
+                </t>
+            </t>
+            <t t-if="not dn_group_check_done">
+                <t t-set="dn_group_check" t-value="request.env.ref('webshop_dermanord.group_dn_af')"/>
+                <t t-if="dn_group_check in request.env.user.commercial_partner_id.access_group_ids">
+                    <t t-set="dn_group_check_done" t-value="True"/>
+                    <t t-call="webshop_dermanord.dn_website_access_rights_desc">
+                        <t t-set="group" t-value="dn_group_check.sudo()"/>
+                    </t>
+                </t>
+            </t>
+        </template>
+        
     </data>
 </openerp>

@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
+    <data noupdate="1">
         
         <record model="ir.module.category" id="module_category_dn_webshop">
             <field name="name">Website Access Rights</field>
             <field name="description">Manages access to products and features for website visitors.</field>
+        </record>
+        
+        <record model="res.groups" id="group_dn_af">
+            <field name="name">Återförsäljare</field>
+            <field name="category_id" ref="module_category_dn_webshop"/>
+        </record>
+        
+        <record model="res.groups" id="group_dn_ht">
+            <field name="name">Hudterapeut</field>
+            <field name="category_id" ref="module_category_dn_webshop"/>
+        </record>
+        
+        <record model="res.groups" id="group_dn_spa">
+            <field name="name">SPA-Terapeut</field>
+            <field name="category_id" ref="module_category_dn_webshop"/>
+        </record>
+        
+        <record model="res.groups" id="group_dn_sk">
+            <field name="name">Slutkonsument</field>
+            <field name="category_id" ref="module_category_dn_webshop"/>
         </record>
         
     </data>

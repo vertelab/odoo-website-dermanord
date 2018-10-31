@@ -336,7 +336,7 @@
                     <div class="col-md-7 col-sm-8">
                         <t t-foreach="request.env['res.groups'].sudo().search([('category_id', '=', request.env.ref('webshop_dermanord.module_category_dn_webshop').id)])" t-as="group">
                             <div class="col-md-4 col-sm-6 col-xs-11 col-sm-offset-0 col-xs-offset-1">
-                                <input type="checkbox" name="dummy_wummy_groups" t-att="{'checked': '1' if group in home_user.commercial_partner_id.access_group_ids else '0'}" readonly=""/>
+                                <input type="checkbox" name="dummy_wummy_groups" t-att="{'checked': '1' if group in home_user.commercial_partner_id.access_group_ids else False}" readonly=""/>
                                     &amp;nbsp;<t t-esc="group.name"/>&amp;nbsp;<t t-call="webshop_dermanord.dn_website_access_rights_desc"/>
                             </div>
                         </t>
