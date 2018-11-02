@@ -330,13 +330,13 @@
 
         <template id="home_page" inherit_id="website_sale_home.home_page" name="Home Page Inherited Reseller Dermanord">
             <xpath expr="//label[@for='vat']/.." position="after">
-                
+
                 <div class="form-group">
                     <label class="col-md-3 col-sm-4 control-label" for="dummy_wummy_groups">Product Access</label>
                     <div class="col-md-7 col-sm-8">
-                        <t t-foreach="request.env['res.groups'].sudo().search([('category_id', '=', request.env.ref('webshop_dermanord.module_category_dn_webshop').id)])" t-as="group">
+                        <t t-foreach="request.env['res.groups'].sudo().search([('category_id', '=', request.env.ref('webshop_dermanord.module_category_dn_webshop').id), ('id', '!=', request.env.ref('webshop_dermanord.group_dn_sk').id)])" t-as="group">
                             <div class="col-md-4 col-sm-6 col-xs-11 col-sm-offset-0 col-xs-offset-1">
-                                <input type="checkbox" name="dummy_wummy_groups" t-att="{'checked': '1' if group in home_user.commercial_partner_id.access_group_ids else False}" readonly=""/>
+                                <input type="checkbox" name="dummy_wummy_groups" t-att="{'checked': '1' if group in home_user.commercial_partner_id.access_group_ids else False}" readonly="" onclick="return false;"/>
                                     &amp;nbsp;<t t-esc="group.name"/>&amp;nbsp;<t t-call="webshop_dermanord.dn_website_access_rights_desc"/>
                             </div>
                         </t>
@@ -344,7 +344,7 @@
                     </div>
                 </div>
             </xpath>
-            
+
             <xpath expr="//label[@for='website_short_description']/.." position="attributes">
                 <attribute name="t-if">not home_user.partner_id.commercial_partner_id.is_reseller</attribute>
             </xpath>
