@@ -3,6 +3,16 @@
  ============================================================ */
 body {}
 
+.dn_viewtype_active, .dn_view_type_inactive {
+    display: inline-block;
+    padding: 9px 15px;
+}
+
+.dn_viewtype_active {
+    background-color: #839794;
+    color: #fff;
+}
+
 div.shipping-address, div.invoicing-address {
     padding-top: 20px;
     padding-left: 10px;
@@ -432,6 +442,7 @@ See also .dn_cart_qty_sm in theme_dermanord.
     border-radius: 12px !important;
 }
 
+/* category panel */
 .panel-default {
     border: none !important;
     -webkit-box-shadow: none !important;
@@ -487,18 +498,10 @@ select.dn_selection_dropdown + i.fa {
     font-size: 18px !important;
 }
 
+/* category panel */
+
 #desktop_product_navigator h4 {
-    font-size: 23px;
-}
-
-#desktop_product_navigator .panel-title, #desktop_product_navigator .panel-title > a {
-    font-family: futura-pt-medium, sans-serif !important;
     font-size: 18px;
-}
-
-#desktop_product_navigator_filter a {
-    font-family: futura-pt-medium, sans-serif !important;
-    font-size: 14px;
 }
 
 #desktop_product_navigator h5 {
@@ -512,6 +515,20 @@ select.dn_selection_dropdown + i.fa {
 
 #desktop_product_navigator .dn-tooltip > i, #filter_btn_group .dn-tooltip > i {
     font-size: 1.5em;
+}
+
+.category_heading_children, .category_children_panel {
+    padding: 0px 15px;
+}
+
+.category_parents_style {
+    font-family: futura-pt-medium, sans-serif !important;
+    font-size: 18px !important;
+}
+
+.category_children_style {
+    font-family: futura-pt-light, sans-serif !important;
+    font-size: 14px !important;
 }
 
 .dn_oe_product {
@@ -529,6 +546,10 @@ select.dn_selection_dropdown + i.fa {
 #desktop_product_grid .dn_css_options .dropdown {
     position: relative;
     left: -50%;
+}
+
+.webshop_dermanord_descktop_sort_selector {
+    width: 50%;
 }
 
 .cke_editable #desktop_product_grid .dn_oe_product:hover > .dn_css_options {

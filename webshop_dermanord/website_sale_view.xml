@@ -186,7 +186,12 @@
                             <t t-call="webshop_dermanord.form_values" />
                             <div id="desktop_product_navigator" class="col-md-3 hidden-xs">
                                 <!-- navigator -->
-                                <t t-call="webshop_dermanord.desktop_product_navigator" />
+                                <t t-if="filter_version == 'old'">
+                                    <t t-call="webshop_dermanord.desktop_product_navigator" />
+                                </t>
+                                <t t-if="filter_version == 'new'">
+                                    <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_filter_navigator" />
+                                </t>
                             </div>
                             <div id="desktop_product_list" class="col-md-9 col-xs-12">
                                 <t t-if="no_product_message != ''">
@@ -831,7 +836,7 @@
                 </div>
             </div>
         </template>
-        
+
         <template id="dn_website_group_info" name="DN Webbplatsbehörighet Filter Button">
             <!-- Check if we need to publish group info -->
             <t t-set="dn_group_check" t-value="request.env.ref('webshop_dermanord.group_dn_ht')"/>
@@ -857,6 +862,6 @@
                 </t>
             </t>
         </template>
-        
+
     </data>
 </openerp>

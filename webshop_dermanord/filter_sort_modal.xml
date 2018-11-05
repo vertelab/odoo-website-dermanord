@@ -418,7 +418,7 @@
             </form>
         </template>
         <template id="desktop_product_navigator" name="Desktop Product Navigator">
-            <div class="mt64">
+            <div class="mt16">
                 <t t-set="filter_facets" t-value="request.env['product.facet'].get_filtered_facets(request.session.get('form_values'))" />
                 <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])" />
                 <t t-call="webshop_dermanord.desktop_product_filter_form" />
@@ -428,8 +428,8 @@
         <template id="desktop_product_filter_form" name="Desktop Product Filter Form">
             <form action="/webshop" method="post">
                 <div class="btn-group">
-                    <button class="mt32 dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
-                    <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
+                    <button class="dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
+                    <button class="dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
                         <i class="fa fa-trash-o" />
                         Clear All
                     </button>
@@ -1134,57 +1134,8 @@
         </template>
         <template id="webshop_dermanord_desktop_product_filter_content" name="Webshop Dermanord Desktop Filter Content">
             <div id="desktop_product_navigator_filter">
-                <h4 class="text-center dn_uppercase">Categories</h4>
-                <div class="panel-group">
+                <div class="panel-group mt32">
                     <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                New products &amp; Offers
-                                <a data-toggle="collapse" href="#desktop_current" class="pull-right">
-                                    <i class="desktop_angle fa fa-angle-down" />
-                                </a>
-                                <t t-if="request.session.get('form_values')">
-                                    <t t-set="current_count" t-value="0" />
-                                    <t t-if="'current_news' in request.session.get('form_values', {}) or 'current_offer' in request.session.get('form_values', {})">
-                                        <t t-if="request.session.get('form_values').get('current_news') == 'current_news'">
-                                            <t t-set="current_count" t-value="current_count + 1" />
-                                        </t>
-                                        <t t-if="request.session.get('form_values').get('current_offer') == 'current_offer'">
-                                            <t t-set="current_count" t-value="current_count + 1" />
-                                        </t>
-                                    </t>
-                                    <t t-if="current_count != 0">
-                                        <span class="filter_match" t-esc="current_count" />
-                                    </t>
-                                </t>
-                            </h4>
-                        </div>
-                        <div id="desktop_current" class="panel-collapse collapse">
-                            <div class="panel-body">
-                                <div class="checkbox">
-                                    <h5>
-                                        <label>
-                                            <t t-if="request.session.get('form_values')">
-                                                <input type="checkbox" name="current_news" value="current_news" t-att="{'checked': '1'} if request.session.get('form_values').get('current_news') == 'current_news' else {}" />
-                                                News
-                                            </t>
-                                            <t t-if="not request.session.get('form_values')">
-                                                <input type="checkbox" name="current_news" value="current_news" />
-                                                News
-                                            </t>
-                                        </label>
-                                    </h5>
-                                </div>
-                                <div class="checkbox">
-                                    <h5>
-                                        <label>
-                                            <input type="checkbox" name="current_offer" value="current_offer" t-att="{'checked': '1'} if request.session.get('form_values', {}).get('current_offer') == 'current_offer' else {}" />
-                                            Offer
-                                        </label>
-                                    </h5>
-                                </div>
-                            </div>
-                        </div>
                         <t t-raw="filter_categories[0].get_category_tree_html()"/>
 <!--
                         <t t-foreach="filter_categories" t-as="category">
@@ -1238,7 +1189,59 @@
 -->
                     </div>
                 </div>
-                <h4 class="text-center dn_uppercase">Filter</h4>
+                <div class="panel-group mt32">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                New products &amp; Offers
+                                <a data-toggle="collapse" href="#desktop_current" class="pull-right">
+                                    <i class="desktop_angle fa fa-angle-down" />
+                                </a>
+                                <t t-if="request.session.get('form_values')">
+                                    <t t-set="current_count" t-value="0" />
+                                    <t t-if="'current_news' in request.session.get('form_values', {}) or 'current_offer' in request.session.get('form_values', {})">
+                                        <t t-if="request.session.get('form_values').get('current_news') == 'current_news'">
+                                            <t t-set="current_count" t-value="current_count + 1" />
+                                        </t>
+                                        <t t-if="request.session.get('form_values').get('current_offer') == 'current_offer'">
+                                            <t t-set="current_count" t-value="current_count + 1" />
+                                        </t>
+                                    </t>
+                                    <t t-if="current_count != 0">
+                                        <span class="filter_match" t-esc="current_count" />
+                                    </t>
+                                </t>
+                            </h4>
+                        </div>
+                        <div id="desktop_current" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <div class="checkbox">
+                                    <h5>
+                                        <label>
+                                            <t t-if="request.session.get('form_values')">
+                                                <input type="checkbox" name="current_news" value="current_news" t-att="{'checked': '1'} if request.session.get('form_values').get('current_news') == 'current_news' else {}" />
+                                                News
+                                            </t>
+                                            <t t-if="not request.session.get('form_values')">
+                                                <input type="checkbox" name="current_news" value="current_news" />
+                                                News
+                                            </t>
+                                        </label>
+                                    </h5>
+                                </div>
+                                <div class="checkbox">
+                                    <h5>
+                                        <label>
+                                            <input type="checkbox" name="current_offer" value="current_offer" t-att="{'checked': '1'} if request.session.get('form_values', {}).get('current_offer') == 'current_offer' else {}" />
+                                            Offer
+                                        </label>
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="text-dn_uppercase">Filter</h4>
                 <div class="panel-group">
                     <div class="panel panel-default">
                         <t t-foreach="filter_facets" t-as="facet">
@@ -1363,25 +1366,26 @@
             </form>
         </template>
         <template id="webshop_dermanord_desktop_product_sort_form" name="Webshop Dermanord Desktop Product Sort Form">
-            <h4 class="text-center dn_uppercase">Sorting</h4>
             <form action="/webshop_new" method="post">
-                <select id="descktop_sort_selector" name="order" class="form-control selectpicker dropdown dn_selection_dropdown" onchange="this.form.submit();">
-                    <t t-if="request.session.get('form_values')">
-                        <option value="sold_qty desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'sold_qty desc' else {}">Most Sold</option>
-                        <option value="name asc, default_code asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'name asc, default_code asc' else {}">Name Ascending</option>
-                        <option value="name desc, default_code desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'name desc, default_code desc' else {}">Name Descending</option>
-                        <option value="list_price asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'list_price asc' else {}">Price Ascending</option>
-                        <option value="list_price desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'list_price desc' else {}">Price Descending</option>
-                    </t>
-                    <t t-if="not request.session.get('form_values')">
-                        <option value="sold_qty desc" select="1">Most Sold</option>
-                        <option value="name asc, default_code asc">Name Ascending</option>
-                        <option value="name desc, default_code desc">Name Descending</option>
-                        <option value="list_price asc">Price Ascending</option>
-                        <option value="list_price desc">Price Descending</option>
-                    </t>
-                </select>
-                <i class="desktop_angle fa fa-angle-down" />
+                <div class="col-md-7" style="padding: 0px;">
+                    <select id="webshop_dermanord_descktop_sort_selector" name="order" class="form-control selectpicker dropdown dn_selection_dropdown" onchange="this.form.submit();">
+                        <t t-if="request.session.get('form_values')">
+                            <option value="sold_qty desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'sold_qty desc' else {}">Most Sold</option>
+                            <option value="name asc, default_code asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'name asc, default_code asc' else {}">Name Ascending</option>
+                            <option value="name desc, default_code desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'name desc, default_code desc' else {}">Name Descending</option>
+                            <option value="list_price asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'list_price asc' else {}">Price Ascending</option>
+                            <option value="list_price desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'list_price desc' else {}">Price Descending</option>
+                        </t>
+                        <t t-if="not request.session.get('form_values')">
+                            <option value="sold_qty desc" select="1">Most Sold</option>
+                            <option value="name asc, default_code asc">Name Ascending</option>
+                            <option value="name desc, default_code desc">Name Descending</option>
+                            <option value="list_price asc">Price Ascending</option>
+                            <option value="list_price desc">Price Descending</option>
+                        </t>
+                    </select>
+                    <i class="desktop_angle fa fa-angle-down" />
+                </div>
                 <t t-if="request.session.get('form_values')">
                     <t t-if="request.session.get('form_values').get('current_news') == 'current_news'">
                         <input type="hidden" name="current_news" value="current_news" />
@@ -1424,26 +1428,42 @@
                     </t>
                 </t>
                 <input class="hidden" name="post_form" value="ok" />
-                <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
-                    <t t-if="webshop_type == 'dn_list'">
-                        <button class="mt32 dn_btn dn_primary" formaction="/webshop_new/webshop_type/dn_shop" type="submit" title="Swith to grid view">
-                            <i class="fa fa-th" />
-                        </button>
+                <div class="col-md-5 btn-group">
+                    <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
+                        <t t-if="webshop_type == 'dn_list'">
+                            <div class="col-md-6" style="padding: 0px;">
+                                <button class="dn_btn dn_view_type_inactive" formaction="/webshop_new/webshop_type/dn_shop" type="submit" title="Swith to grid view">
+                                    <i class="fa fa-th"/>
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="dn_btn dn_viewtype_active" formaction="/webshop_new/webshop_type/dn_list" type="submit" title="Swith to list view">
+                                    <i class="fa fa-th-list"/>
+                                </button>
+                            </div>
+                        </t>
+                        <t t-if="webshop_type == 'dn_shop'">
+                            <div class="col-md-6" style="padding: 0px;">
+                                <button class="dn_btn dn_viewtype_active" formaction="/webshop_new/webshop_type/dn_shop" type="submit" title="Swith to grid view">
+                                    <i class="fa fa-th"/>
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="dn_btn dn_view_type_inactive" formaction="/webshop_new/webshop_type/dn_list" type="submit" title="Swith to list view">
+                                    <i class="fa fa-th-list"/>
+                                </button>
+                            </div>
+                        </t>
                     </t>
-                    <t t-if="webshop_type == 'dn_shop'">
-                        <button class="mt32 dn_btn dn_primary" formaction="/webshop_new/webshop_type/dn_list" type="submit" title="Swith to list view">
-                            <i class="fa fa-th-list" />
-                        </button>
-                    </t>
-                </t>
+                </div>
             </form>
         </template>
         <template id="webshop_dermanord_desktop_product_filter_navigator" name="Webshop Dermanord Desktop Product Filter Navigator">
             <div class="mt64">
                 <t t-set="filter_facets" t-value="request.env['product.facet'].search([])" />
                 <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])" />
-                <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_filter_form" />
                 <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_sort_form" />
+                <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_filter_form" />
             </div>
         </template>
     </data>

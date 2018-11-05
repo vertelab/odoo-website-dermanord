@@ -245,6 +245,9 @@ class product_pricelist(models.Model):
 class product_public_category(models.Model):
     _inherit = 'product.public.category'
 
+    text_hex = fields.Char(string='Text Color (Hex)', help='Text Color in hex', default='#000000')
+    bg_hex = fields.Char(string='Background Color (Hex)', help='Background Color in hex', default='dddddd')
+
     @api.model
     def get_category_tree(self):
         categ_lst = []
@@ -253,13 +256,14 @@ class product_public_category(models.Model):
             if len(children) > 0:
                 categ_lst.append(children)
                 get_child_categories(children)
-        parent_categories = self.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True)])
+        parent_categories = self.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True), ('id', 'not in', [self.env.ref('webshop_dermanord.reseforpackningar').id, self.env.ref('webshop_dermanord.salongsprodukter').id])])
         categ_lst.append(parent_categories)
         get_child_categories(parent_categories)
         return categ_lst
 
     @api.model
     def get_category_tree_html(self):
+        parent_categories = self.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True), ('id', 'not in', [self.env.ref('webshop_dermanord.reseforpackningar').id, self.env.ref('webshop_dermanord.salongsprodukter').id])])
         def get_child_categs(categories):
             children = self.env['product.public.category'].search([('parent_id', 'in', categories.mapped('id')), ('website_published', '=', True)])
             if len(children) > 0:
@@ -267,21 +271,31 @@ class product_public_category(models.Model):
             else:
                 return []
         def get_panel_heading_html(category):
-            return u"""<div class="panel-heading">
+            parent_categ = category in parent_categories
+            parent_categ_bg = ''
+            parent_categ_text = ''
+            if parent_categ:
+                parent_categ_bg = 'border-color: #ddd; background-color: %s;' %category.bg_hex
+                parent_categ_text = 'color: %s;' %category.text_hex
+            return u"""<div class="panel-heading {category_heading_level}" style="{parent_categ_bg}">
     <h4 class="panel-title">
         <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox" data-category="{desktop_category}" {category_checked}/>
-        <a href="{desktop_category_href}">
+        <a href="{desktop_category_href}" class="{category_title_level}" style="{parent_categ_text}">
             {desktop_category_name}
         </a>
         {desktop_category_collapse}
         {desktop_category_filter_match}
     </h4>
 </div>""".format(
+    parent_categ_bg = parent_categ_bg,
+    parent_categ_text = parent_categ_text,
+    category_heading_level = 'category_heading_parents' if parent_categ else 'category_heading_children',
     category_name = 'category_%s' %category.id,
     category_value = '%s' %category.id,
     desktop_category = 'desktop_category_%s' %category.id,
     category_checked = 'checked="checked"' if category.id in category_checked else '',
     desktop_category_href = '/webshop_new/category/%s' %category.id,
+    category_title_level = 'category_parents_style' if parent_categ else 'category_children_style',
     desktop_category_name = category.name,
     desktop_category_collapse = ('<a data-toggle="collapse" href="#desktop_category_%s" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a>' %category.id) if len(get_child_categs(category)) > 0 else '',
     # ~ desktop_category_filter_match = '<span class="filter_match">%s</span>' %''
@@ -290,7 +304,7 @@ class product_public_category(models.Model):
 
         def get_panel_body_html(category):
             children = get_child_categs(category)
-            html_code = '<div id="desktop_category_%s" class="panel-collapse collapse"><div class="panel-body">' %category.id
+            html_code = '<div id="desktop_category_%s" class="panel-collapse collapse %s"><div class="panel-body %s">' %(category.id, 'category_panel_parents' if category in parent_categories else 'category_panel_children', '' if category in parent_categories else 'category_children_panel' )
             for child in children:
                 html_code += get_panel_heading_html(child)
                 html_code += get_panel_body_html(child)
@@ -1176,6 +1190,7 @@ class WebsiteSale(website_sale):
                 'shop_footer': True,
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products) < PPG else False,
+                'filter_version': 'old',
             })
         else:
             return request.website.render("webshop_dermanord.products", {
@@ -1257,6 +1272,7 @@ class WebsiteSale(website_sale):
                 'shop_footer': True,
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products) < PPG else False,
+                'filter_version': 'new',
             })
         else:
             return request.website.render("webshop_dermanord.products", {
