@@ -249,11 +249,11 @@ class product_public_category(models.Model):
     bg_hex = fields.Char(string='Background Color (Hex)', help='Background Color in hex', default='#ffffff')
 
     @api.model
-    def get_dn_category_tree_html(self, parent_categories):
-        return self.dn_category_tree_html(parent_categories)
+    def get_dn_category_desktop_tree_html(self, parent_categories):
+        return self.dn_category_desktop_tree_html(parent_categories)
 
     @api.model
-    def dn_category_tree(self, parent_categories):
+    def dn_category_desktop_tree(self, parent_categories):
         categ_lst = []
         def get_child_categories(categories):
             children = self.env['product.public.category'].search([('parent_id', 'in', categories.mapped('id')), ('website_published', '=', True)])
@@ -265,7 +265,7 @@ class product_public_category(models.Model):
         return categ_lst
 
     @api.model
-    def dn_category_tree_html(self, parent_categories):
+    def dn_category_desktop_tree_html(self, parent_categories):
         def get_child_categs(categories):
             children = self.env['product.public.category'].search([('parent_id', 'in', categories.mapped('id')), ('website_published', '=', True)])
             if len(children) > 0:
@@ -324,7 +324,7 @@ class product_public_category(models.Model):
             category_checked = self.env['product.public.category'].search([('id', 'child_of', current_category)]).mapped('id')
 
         html = ''
-        all_categories = self.dn_category_tree(parent_categories)
+        all_categories = self.dn_category_desktop_tree(parent_categories)
         if len(all_categories) > 0:
             for category in all_categories[0]:
                 html += get_panel_heading_html(category)

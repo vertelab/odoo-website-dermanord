@@ -1136,7 +1136,7 @@
             <div id="desktop_product_navigator_filter">
                 <div class="panel-group mt32">
                     <div class="panel panel-default">
-                        <t t-raw="request.env['product.public.category'].get_dn_category_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True)]))"/>
+                        <t t-raw="request.env['product.public.category'].get_dn_category_desktop_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True)]))"/>
                     </div>
                 </div>
                 <div class="panel-group">
@@ -1208,7 +1208,7 @@
                                 </div>
                             </div>
                         </div>
-                        <t t-raw="request.env['product.public.category'].get_dn_category_tree_html(request.env['product.public.category'].search([('website_published', '=', True), ('id', 'in', [request.env.ref('webshop_dermanord.reseforpackningar').id, request.env.ref('webshop_dermanord.salongsprodukter').id])]))"/>
+                        <t t-raw="request.env['product.public.category'].get_dn_category_desktop_tree_html(request.env['product.public.category'].search([('website_published', '=', True), ('id', 'in', [request.env.ref('webshop_dermanord.reseforpackningar').id, request.env.ref('webshop_dermanord.salongsprodukter').id])]))"/>
 -->
                     </div>
                 </div>
