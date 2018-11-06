@@ -394,7 +394,7 @@ div.shipping-address, div.invoicing-address {
     list-style-type: none;
 }
 
-#bottom_div {
+#bottom_div, #webshop_dermanord_mobile_bottom_div {
     width: 100%;
     position: fixed;
     z-index: 99;
