@@ -246,7 +246,7 @@ class product_public_category(models.Model):
     _inherit = 'product.public.category'
 
     text_hex = fields.Char(string='Text Color (Hex)', help='Text Color in hex', default='#000000')
-    bg_hex = fields.Char(string='Background Color (Hex)', help='Background Color in hex', default='dddddd')
+    bg_hex = fields.Char(string='Background Color (Hex)', help='Background Color in hex', default='#ffffff')
 
     @api.model
     def get_dn_category_tree_html(self, parent_categories):
