@@ -451,6 +451,7 @@ See also .dn_cart_qty_sm in theme_dermanord.
 
 .panel-body {
     border-top-color: transparent !important;
+    padding: 5px 15px;
 }
 
 .like_icon {
@@ -464,11 +465,9 @@ See also .dn_cart_qty_sm in theme_dermanord.
 }
 
 .dn_selection_dropdown {
-    color: #fff !important;
-    background-color: #000 !important;
     height: 40px;
     font-size: 1.3em;
-    border: 0px solid #F6BB43;
+    border: 1px solid #ddd;
     border-radius: 0px !important;
     font-family: futura-pt-medium, sans-serif;
     font-weight: 400;
@@ -481,9 +480,9 @@ See also .dn_cart_qty_sm in theme_dermanord.
 select.dn_selection_dropdown + i.fa {
     float: right;
     margin-top: -25px;
-    margin-right: 25px;
+    margin-right: 10px;
     pointer-events: none;
-    color: #fff;
+    color: #000;
     position: absolute;
     right: 0px;
 }
@@ -500,14 +499,6 @@ select.dn_selection_dropdown + i.fa {
 
 /* category panel */
 
-#desktop_product_navigator h4 {
-    font-size: 18px;
-}
-
-#desktop_product_navigator h5 {
-    font-size: 14px;
-}
-
 #desktop_product_navigator .dn-tooltip, #filter_btn_group .dn-tooltip {
     top: 17px;
     left: 17px;
@@ -521,14 +512,19 @@ select.dn_selection_dropdown + i.fa {
     padding: 0px 15px;
 }
 
-.category_parents_style {
+#desktop_product_navigator h4, .category_parents_style {
     font-family: futura-pt-medium, sans-serif !important;
     font-size: 18px !important;
 }
 
-.category_children_style {
+#desktop_product_navigator .panel-body a, #desktop_product_navigator .panel-body label {
     font-family: futura-pt-light, sans-serif !important;
     font-size: 14px !important;
+}
+
+#desktop_product_navigator .panel-body .checkbox {
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .dn_oe_product {

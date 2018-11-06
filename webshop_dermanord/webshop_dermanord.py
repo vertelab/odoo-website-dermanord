@@ -249,21 +249,23 @@ class product_public_category(models.Model):
     bg_hex = fields.Char(string='Background Color (Hex)', help='Background Color in hex', default='dddddd')
 
     @api.model
-    def get_category_tree(self):
+    def get_dn_category_tree_html(self, parent_categories):
+        return self.dn_category_tree_html(parent_categories)
+
+    @api.model
+    def dn_category_tree(self, parent_categories):
         categ_lst = []
         def get_child_categories(categories):
             children = self.env['product.public.category'].search([('parent_id', 'in', categories.mapped('id')), ('website_published', '=', True)])
             if len(children) > 0:
                 categ_lst.append(children)
                 get_child_categories(children)
-        parent_categories = self.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True), ('id', 'not in', [self.env.ref('webshop_dermanord.reseforpackningar').id, self.env.ref('webshop_dermanord.salongsprodukter').id])])
         categ_lst.append(parent_categories)
         get_child_categories(parent_categories)
         return categ_lst
 
     @api.model
-    def get_category_tree_html(self):
-        parent_categories = self.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True), ('id', 'not in', [self.env.ref('webshop_dermanord.reseforpackningar').id, self.env.ref('webshop_dermanord.salongsprodukter').id])])
+    def dn_category_tree_html(self, parent_categories):
         def get_child_categs(categories):
             children = self.env['product.public.category'].search([('parent_id', 'in', categories.mapped('id')), ('website_published', '=', True)])
             if len(children) > 0:
@@ -275,7 +277,7 @@ class product_public_category(models.Model):
             parent_categ_bg = ''
             parent_categ_text = ''
             if parent_categ:
-                parent_categ_bg = 'border-color: #ddd; background-color: %s;' %category.bg_hex
+                parent_categ_bg = 'border: 1px solid #ddd; background-color: %s;' %(category.bg_hex or '#fff')
                 parent_categ_text = 'color: %s;' %category.text_hex
             return u"""<div class="panel-heading {category_heading_level}" style="{parent_categ_bg}">
     <h4 class="panel-title">
@@ -322,7 +324,7 @@ class product_public_category(models.Model):
             category_checked = self.env['product.public.category'].search([('id', 'child_of', current_category)]).mapped('id')
 
         html = ''
-        all_categories = self.get_category_tree()
+        all_categories = self.dn_category_tree(parent_categories)
         if len(all_categories) > 0:
             for category in all_categories[0]:
                 html += get_panel_heading_html(category)

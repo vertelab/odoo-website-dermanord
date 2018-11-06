@@ -72,7 +72,8 @@ $("select.attr_sel").on('change', function() {
 });
 
 function submit_facet($facet) {
-    $facet.closest("h5").find("input[type='checkbox']").attr("checked", "checked");
+    //~ $facet.closest("h5").find("input[type='checkbox']").attr("checked", "checked");
+    $facet.prev().attr("checked", "checked");
     $facet.closest("form").submit();
 }
 
