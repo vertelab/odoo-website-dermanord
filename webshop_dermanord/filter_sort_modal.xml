@@ -1117,7 +1117,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="#webshop_dermanord_mobile_bottom_div" class="container hidden-lg hidden-md hidden-sm">
+                    <div id="webshop_dermanord_mobile_bottom_div" class="container hidden-lg hidden-md hidden-sm">
                         <a href="#" id="webshop-dermanord-btn-modal" data-toggle="modal" data-target="#webshop_dermanord_mobile_filter_modal" class="pull-left" style="color: #fff; font-size: 1.3em; padding: 5px;">
                             <i class="fa fa-filter" />
                             Filter
