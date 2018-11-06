@@ -517,6 +517,10 @@ select.dn_selection_dropdown + i.fa {
     font-size: 18px !important;
 }
 
+.category_parents_style {
+    text-transform: uppercase;
+}
+
 #desktop_product_navigator .panel-body a, #desktop_product_navigator .panel-body label {
     font-family: futura-pt-light, sans-serif !important;
     font-size: 14px !important;

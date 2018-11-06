@@ -1143,8 +1143,8 @@
                     <div class="panel panel-default">
                         <div class="panel-heading" style="border: 1px solid #ddd; background-color: #fff;">
                             <h4 class="panel-title">
-                                <input type="checkbox" class="category_checkbox"/>
-                                Offers &amp; Set
+                                <input type="checkbox" class="heading_checkbox"/>
+                                <span class="category_parents_style">Offers &amp; Set</span>
                                 <a data-toggle="collapse" href="#desktop_current_offer" class="pull-right">
                                     <i class="desktop_angle fa fa-angle-down" />
                                 </a>
@@ -1173,8 +1173,8 @@
                         </div>
                         <div class="panel-heading" style="border: 1px solid #ddd; background-color: #fff;">
                             <h4 class="panel-title">
-                                <input type="checkbox" class="category_checkbox"/>
-                                News
+                                <input type="checkbox" class="heading_checkbox"/>
+                                <span class="category_parents_style">News</span>
                                 <a data-toggle="collapse" href="#desktop_current_news" class="pull-right">
                                     <i class="desktop_angle fa fa-angle-down" />
                                 </a>
@@ -1210,12 +1210,13 @@
                         <t t-raw="request.env['product.public.category'].get_dn_category_tree_html(request.env['product.public.category'].search([('website_published', '=', True), ('id', 'in', [request.env.ref('webshop_dermanord.reseforpackningar').id, request.env.ref('webshop_dermanord.salongsprodukter').id])]))"/>
                     </div>
                 </div>
-                <h4 class="text-dn_uppercase">Filter</h4>
+                <h4 class="dn_uppercase">Filter</h4>
                 <div class="panel-group">
                     <div class="panel panel-default">
                         <t t-foreach="filter_facets" t-as="facet">
                             <div class="panel-heading">
                                 <h4 class="panel-title">
+                                    <input type="checkbox" class="heading_checkbox"/>
                                     <t t-esc="facet.name" />
                                     <a data-toggle="collapse" t-att-href="'#desktop_facet_%s' %facet.id" class="pull-right">
                                         <i class="desktop_angle fa fa-angle-down" />
@@ -1258,6 +1259,7 @@
                         </t>
                         <div class="panel-heading" t-if="False">
                             <h4 class="panel-title">
+                                <input type="checkbox" class="heading_checkbox"/>
                                 Ingredients
                                 <a data-toggle="collapse" href="#desktop_ingredient" class="pull-right">
                                     <i class="desktop_angle fa fa-angle-down" />

@@ -89,6 +89,17 @@ $("input.category_checkbox").change(function() {
     });
 });
 
+$("input.heading_checkbox").change(function() {
+    var $self = $(this);
+    var checked = $self.is(":checked");
+    $.each($self.closest("div.panel-heading").next().find("input[type='checkbox']"), function() {
+        if (checked)
+            $(this).attr("checked", "checked");
+        else
+            $(this).removeAttr("checked", "checked");
+    });
+});
+
 function show_popover(trigger){
     trigger.popover({
         container: 'body',
