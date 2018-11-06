@@ -1136,11 +1136,12 @@
             <div id="desktop_product_navigator_filter">
                 <div class="panel-group mt32">
                     <div class="panel panel-default">
-                        <t t-raw="request.env['product.public.category'].get_dn_category_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True), ('id', 'not in', [request.env.ref('webshop_dermanord.reseforpackningar').id, request.env.ref('webshop_dermanord.salongsprodukter').id])]))"/>
+                        <t t-raw="request.env['product.public.category'].get_dn_category_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True)]))"/>
                     </div>
                 </div>
                 <div class="panel-group">
                     <div class="panel panel-default">
+<!--
                         <div class="panel-heading" style="border: 1px solid #ddd; background-color: #fff;">
                             <h4 class="panel-title">
                                 <input type="checkbox" class="heading_checkbox"/>
@@ -1208,6 +1209,7 @@
                             </div>
                         </div>
                         <t t-raw="request.env['product.public.category'].get_dn_category_tree_html(request.env['product.public.category'].search([('website_published', '=', True), ('id', 'in', [request.env.ref('webshop_dermanord.reseforpackningar').id, request.env.ref('webshop_dermanord.salongsprodukter').id])]))"/>
+-->
                     </div>
                 </div>
                 <h4 class="dn_uppercase">Filter</h4>
