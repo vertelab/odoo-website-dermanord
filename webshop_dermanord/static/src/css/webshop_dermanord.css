@@ -499,12 +499,12 @@ select.dn_selection_dropdown + i.fa {
 
 /* category panel */
 
-#desktop_product_navigator .dn-tooltip, #filter_btn_group .dn-tooltip {
+#desktop_product_navigator_filter .dn-tooltip, #mobile_product_navigator_filter .dn-tooltip, #filter_btn_group .dn-tooltip {
     top: 17px;
     left: 17px;
 }
 
-#desktop_product_navigator .dn-tooltip > i, #filter_btn_group .dn-tooltip > i {
+#desktop_product_navigator_filter .dn-tooltip > i, #mobile_product_navigator_filter .dn-tooltip > i, #filter_btn_group .dn-tooltip > i {
     font-size: 1.5em;
 }
 
@@ -512,7 +512,7 @@ select.dn_selection_dropdown + i.fa {
     padding: 0px 15px;
 }
 
-#desktop_product_navigator h4, .category_parents_style {
+#desktop_product_navigator_filter h4, .category_parents_style, #mobile_product_navigator_filter h4, .category_parents_style {
     font-family: futura-pt-medium, sans-serif !important;
     font-size: 18px !important;
 }
@@ -521,12 +521,12 @@ select.dn_selection_dropdown + i.fa {
     text-transform: uppercase;
 }
 
-#desktop_product_navigator .panel-body a, #desktop_product_navigator .panel-body label {
+#desktop_product_navigator_filter .panel-body a, #desktop_product_navigator_filter .panel-body label, #mobile_product_navigator_filter .panel-body a, #mobile_product_navigator_filter .panel-body label {
     font-family: futura-pt-light, sans-serif !important;
     font-size: 14px !important;
 }
 
-#desktop_product_navigator .panel-body .checkbox {
+#desktop_product_navigator_filter .panel-body .checkbox, #mobile_product_navigator_filter .panel-body .checkbox {
     margin-top: 0px;
     margin-bottom: 0px;
 }

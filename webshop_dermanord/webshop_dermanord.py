@@ -249,8 +249,8 @@ class product_public_category(models.Model):
     bg_hex = fields.Char(string='Background Color (Hex)', help='Background Color in hex', default='#ffffff')
 
     @api.model
-    def get_dn_category_desktop_tree_html(self, parent_categories):
-        return self.dn_category_desktop_tree_html(parent_categories)
+    def get_dn_category_desktop_tree_html(self, parent_categories, mobile):
+        return self.dn_category_desktop_tree_html(parent_categories, mobile)
 
     @api.model
     def dn_category_desktop_tree(self, parent_categories):
@@ -265,14 +265,14 @@ class product_public_category(models.Model):
         return categ_lst
 
     @api.model
-    def dn_category_desktop_tree_html(self, parent_categories):
+    def dn_category_desktop_tree_html(self, parent_categories, mobile):
         def get_child_categs(categories):
             children = self.env['product.public.category'].search([('parent_id', 'in', categories.mapped('id')), ('website_published', '=', True)])
             if len(children) > 0:
                 return children
             else:
                 return []
-        def get_panel_heading_html(category):
+        def get_panel_heading_html(category, mobile):
             parent_categ = category in parent_categories
             parent_categ_bg = ''
             parent_categ_text = ''
@@ -294,22 +294,22 @@ class product_public_category(models.Model):
     category_heading_level = 'category_heading_parents' if parent_categ else 'category_heading_children',
     category_name = 'category_%s' %category.id,
     category_value = '%s' %category.id,
-    desktop_category = 'desktop_category_%s' %category.id,
+    desktop_category = '%s_category_%s' %('mobile' if mobile else 'desktop', category.id),
     category_checked = 'checked="checked"' if category.id in category_checked else '',
     desktop_category_href = '/webshop_new/category/%s' %category.id,
     category_title_level = 'category_parents_style' if parent_categ else 'category_children_style',
     desktop_category_name = category.name,
-    desktop_category_collapse = ('<a data-toggle="collapse" href="#desktop_category_%s" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a>' %category.id) if len(get_child_categs(category)) > 0 else '',
+    desktop_category_collapse = ('<a data-toggle="collapse" href="#%s_category_%s" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a>' %('mobile' if mobile else 'desktop', category.id)) if len(get_child_categs(category)) > 0 else '',
     # ~ desktop_category_filter_match = '<span class="filter_match">%s</span>' %''
     desktop_category_filter_match = ''
 )
 
-        def get_panel_body_html(category):
+        def get_panel_body_html(category, mobile):
             children = get_child_categs(category)
-            html_code = '<div id="desktop_category_%s" class="panel-collapse collapse %s"><div class="panel-body %s">' %(category.id, 'category_panel_parents' if category in parent_categories else 'category_panel_children', '' if category in parent_categories else 'category_children_panel' )
+            html_code = '<div id="%s_category_%s" class="panel-collapse collapse %s"><div class="panel-body %s">' %('mobile' if mobile else 'desktop', category.id, 'category_panel_parents' if category in parent_categories else 'category_panel_children', '' if category in parent_categories else 'category_children_panel' )
             for child in children:
-                html_code += get_panel_heading_html(child)
-                html_code += get_panel_body_html(child)
+                html_code += get_panel_heading_html(child, mobile)
+                html_code += get_panel_body_html(child, mobile)
             html_code += '</div></div>'
             return html_code
 
@@ -327,8 +327,8 @@ class product_public_category(models.Model):
         all_categories = self.dn_category_desktop_tree(parent_categories)
         if len(all_categories) > 0:
             for category in all_categories[0]:
-                html += get_panel_heading_html(category)
-                html += get_panel_body_html(category)
+                html += get_panel_heading_html(category, mobile)
+                html += get_panel_body_html(category, mobile)
         return html
 
 # ~ <div class="checkbox">

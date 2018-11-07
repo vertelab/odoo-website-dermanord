@@ -722,7 +722,7 @@
             <div id="webshop_dermanord_desktop_product_navigator_filter">
                 <div class="panel-group mt32">
                     <div class="panel panel-default">
-                        <t t-raw="request.env['product.public.category'].get_dn_category_desktop_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True)]))"/>
+                        <t t-raw="request.env['product.public.category'].get_dn_category_desktop_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True)]), mobile=mobile)"/>
                     </div>
                 </div>
                 <h4 class="dn_uppercase">Filter</h4>
@@ -733,7 +733,7 @@
                                 <h4 class="panel-title">
                                     <input type="checkbox" class="heading_checkbox"/>
                                     <t t-esc="facet.name" />
-                                    <a data-toggle="collapse" t-att-href="'#desktop_facet_%s' %facet.id" class="pull-right">
+                                    <a data-toggle="collapse" t-att-href="('#mobile_facet_%s' %facet.id) if mobile else ('#desktop_facet_%s' %facet.id)" class="pull-right">
                                         <i class="desktop_angle fa fa-angle-down" />
                                     </a>
                                     <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])" />
@@ -750,7 +750,7 @@
                                     </t>
                                 </h4>
                             </div>
-                            <div t-att-id="'desktop_facet_%s' %facet.id" class="panel-collapse collapse">
+                            <div t-att-id="('mobile_facet_%s' %facet.id) if mobile else ('desktop_facet_%s' %facet.id)" class="panel-collapse collapse">
                                 <div class="panel-body">
                                     <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])" />
                                     <t t-if="len(facet_values) &gt; 0">
@@ -776,7 +776,7 @@
                             <h4 class="panel-title">
                                 <input type="checkbox" class="heading_checkbox"/>
                                 Ingredients
-                                <a data-toggle="collapse" href="#desktop_ingredient" class="pull-right">
+                                <a data-toggle="collapse" t-att-href="'#mobile_ingredient' if mobile else '#desktop_ingredient'" class="pull-right">
                                     <i class="desktop_angle fa fa-angle-down" />
                                 </a>
                                 <t t-if="filter_ingredients and request.session.get('form_values')">
@@ -795,7 +795,7 @@
                                 </t>
                             </h4>
                         </div>
-                        <div id="desktop_ingredient" class="panel-collapse collapse" t-if="False">
+                        <div t-att-id="'mobile_ingredient' if mobile else 'desktop_ingredient'" class="panel-collapse collapse" t-if="False">
                             <div class="panel-body">
                                 <t t-if="filter_ingredients">
                                     <t t-foreach="filter_ingredients" t-as="ingredient">
@@ -918,6 +918,7 @@
             </ul>
         </template>
         <template id="webshop_dermanord_mobile_product_filter_form" name="Webshop Dermanord Mobile Product Filter Form">
+<!--
             <form action="/webshop_new" method="post">
                 <div class="container" style="padding: 0px;">
                     <t t-set="first_facet" t-value="0" />
@@ -936,6 +937,24 @@
                     </button>
                     <t t-call="webshop_dermanord.dn_website_group_info"/>
                 </div>
+            </form>
+-->
+            <form action="/webshop_new" method="post" class="container">
+                <div class="btn-group">
+                    <button class="mt32 dn_btn dn_primary dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
+                    <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
+                        <i class="fa fa-trash-o" />
+                        Clear All
+                    </button>
+                    <t t-call="webshop_dermanord.dn_website_group_info"/>
+                </div>
+                <div style="padding: 0px;">
+                    <t t-set="filter_facets" t-value="request.env['product.facet'].search([])" />
+                    <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])" />
+                    <t t-set="first_facet" t-value="0" />
+                    <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_filter_content"><t t-set="mobile" t-value="True"/></t>
+                </div>
+                <input type="hidden" name="order" t-att-value="request.session.get('form_values', {}).get('order') or 'sold_qty desc'" />
             </form>
         </template>
         <template id="webshop_dermanord_mobile_product_sort_form" name="Webshop Dermanord Mobile Product Sort Form">
@@ -1077,7 +1096,7 @@
                 <t t-if="shop_footer and filter_version == 'new'">
                     <t t-set="filter_facets" t-value="request.env['product.facet'].get_filtered_facets(request.session.get('form_values'))" />
                     <t t-set="filter_categories" t-value="request.env['product.public.category'].search([('parent_id', '=', None)])" />
-                    <div id="webshop_dermanord_mobile_filter_modal" class="modal fade" role="dialog">
+                    <div id="webshop_dermanord_mobile_filter_modal" class="modal fade hidden-lg hidden-md hidden-sm" role="dialog">
                         <div class="modal-dialog" style="margin: 0px; width: 100%;">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -1097,7 +1116,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="webshop_dermanord_mobile_sort_modal" class="modal fade" role="dialog">
+                    <div id="webshop_dermanord_mobile_sort_modal" class="modal fade hidden-lg hidden-md hidden-sm" role="dialog">
                         <div class="modal-dialog" style="margin: 0px; width: 100%;">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -1142,10 +1161,10 @@
             </xpath>
         </template>
         <template id="webshop_dermanord_desktop_product_filter_content" name="Webshop Dermanord Desktop Filter Content">
-            <div id="desktop_product_navigator_filter">
+            <div t-att-id="'mobile_product_navigator_filter' if mobile else 'desktop_product_navigator_filter'">
                 <div class="panel-group mt32">
                     <div class="panel panel-default">
-                        <t t-raw="request.env['product.public.category'].get_dn_category_desktop_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True)]))"/>
+                        <t t-raw="request.env['product.public.category'].get_dn_category_desktop_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True)]), mobile=mobile)"/>
                     </div>
                 </div>
                 <h4 class="dn_uppercase">Filter</h4>
@@ -1156,7 +1175,7 @@
                                 <h4 class="panel-title">
                                     <input type="checkbox" class="heading_checkbox"/>
                                     <t t-esc="facet.name" />
-                                    <a data-toggle="collapse" t-att-href="'#desktop_facet_%s' %facet.id" class="pull-right">
+                                    <a data-toggle="collapse" t-att-href="('#mobile_facet_%s' %facet.id) if mobile else ('#desktop_facet_%s' %facet.id)" class="pull-right">
                                         <i class="desktop_angle fa fa-angle-down" />
                                     </a>
                                     <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])" />
@@ -1173,7 +1192,7 @@
                                     </t>
                                 </h4>
                             </div>
-                            <div t-att-id="'desktop_facet_%s' %facet.id" class="panel-collapse collapse">
+                            <div t-att-id="('mobile_facet_%s' %facet.id) if mobile else ('desktop_facet_%s' %facet.id)" class="panel-collapse collapse">
                                 <div class="panel-body">
                                     <t t-set="facet_values" t-value="request.env['product.facet.value'].search([('facet_id', '=', facet.id)])" />
                                     <t t-if="len(facet_values) &gt; 0">
@@ -1199,7 +1218,7 @@
                             <h4 class="panel-title">
                                 <input type="checkbox" class="heading_checkbox"/>
                                 Ingredients
-                                <a data-toggle="collapse" href="#desktop_ingredient" class="pull-right">
+                                <a data-toggle="collapse" t-att-href="'#mobile_ingredient' if mobile else '#desktop_ingredient'" class="pull-right">
                                     <i class="desktop_angle fa fa-angle-down" />
                                 </a>
                                 <t t-if="filter_ingredients and request.session.get('form_values')">
@@ -1218,7 +1237,7 @@
                                 </t>
                             </h4>
                         </div>
-                        <div id="desktop_ingredient" class="panel-collapse collapse" t-if="False">
+                        <div t-att-id="'mobile_ingredient' if mobile else 'desktop_ingredient'" class="panel-collapse collapse" t-if="False">
                             <div class="panel-body">
                                 <t t-if="filter_ingredients">
                                     <t t-foreach="filter_ingredients" t-as="ingredient">
@@ -1265,7 +1284,7 @@
                 </div>
                 <div class="container" style="padding: 0px;">
                     <t t-set="first_facet" t-value="0" />
-                    <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_filter_content" />
+                    <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_filter_content"><t t-set="mobile" t-value="False"/></t>
                 </div>
                 <input type="hidden" name="order" t-att-value="request.session.get('form_values', {}).get('order') or 'sold_qty desc'" />
             </form>
@@ -1364,7 +1383,7 @@
             </form>
         </template>
         <template id="webshop_dermanord_desktop_product_filter_navigator" name="Webshop Dermanord Desktop Product Filter Navigator">
-            <div class="mt64">
+            <div class="mt64 hidden-xs">
                 <t t-set="filter_facets" t-value="request.env['product.facet'].search([])" />
                 <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])" />
                 <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_sort_form" />
