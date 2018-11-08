@@ -1205,7 +1205,7 @@
 -->
                         <div class="panel-heading" style="border: 1px solid #ddd; background-color: #fff;">
                             <h4 class="panel-title">
-                                <input type="checkbox" class="heading_checkbox" name="curent_news" value="current_news" t-att="{'checked': 'checked'} if request.session.get('form_values').get('current_news') == 'current_news' else {}"/>
+                                <input type="checkbox" class="heading_checkbox" name="current_news" value="current_news" t-att="{'checked': 'checked'} if request.session.get('form_values').get('current_news') == 'current_news' else {}"/>
                                 <a class="category_parents_style" href="javascript:void(0)" onclick="onclick_submit($(this));">News</a>
 <!--
                                 <a data-toggle="collapse" href="#desktop_current_news" class="pull-right">
