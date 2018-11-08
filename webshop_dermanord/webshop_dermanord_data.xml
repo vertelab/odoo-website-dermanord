@@ -208,7 +208,6 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
 
     </data>
 
-<!--
     <data>
         <record id="reseforpackningar" model="product.public.category">
             <field name="name">Reseförpackningar</field>
@@ -219,6 +218,5 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
             <field name="website_published" eval="True"/>
         </record>
     </data>
--->
 
 </openerp>

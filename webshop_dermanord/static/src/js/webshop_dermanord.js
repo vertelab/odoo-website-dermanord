@@ -77,6 +77,11 @@ function submit_facet($facet) {
     $facet.closest("form").submit();
 }
 
+function onclick_submit($element) {
+    $element.prev().attr("checked", "checked");
+    $element.closest("form").submit();
+}
+
 $("input.category_checkbox").change(function() {
     var $self = $(this);
     var checked = $self.is(":checked");
