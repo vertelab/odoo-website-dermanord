@@ -1239,7 +1239,7 @@ class WebsiteSale(website_sale):
         if category:
             if not request.session.get('form_values'):
                 request.session['form_values'] = {'category_%s' %int(category): int(category)}
-            request.session['form_values'] = {'category_%s' %int(category): int(category)}
+            request.session['form_values'].update({'category_%s' %int(category): int(category)})
             request.website.get_form_values()['category_' + str(int(category))] = int(category)
             request.session['current_domain'] = [('public_categ_ids', 'child_of', [int(category)])]
             request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
