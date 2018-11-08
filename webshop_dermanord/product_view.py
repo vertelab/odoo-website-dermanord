@@ -763,7 +763,7 @@ class product_product(models.Model):
                 attr_sel = ''
                 product_variant = self.browse(variant_id)
                 for attribute in variant.attribute_value_ids.sorted(key=lambda a: a.id):
-                    attr_sel += '<li><strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">%s</strong><select class="form-control js_variant_change attr_sel" name="attribute-%s-%s">' %(attribute.name, product.id, attribute.attribute_id.id)
+                    attr_sel += '<li><strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">%s</strong><select class="form-control js_variant_change attr_sel" name="attribute-%s-%s">' %(attribute.attribute_id.name, product.id, attribute.attribute_id.id)
                     for att in variants.mapped('attribute_value_ids').with_context(attribute_id=attribute.attribute_id.id).filtered(lambda a: a.attribute_id.id == a.env.context.get('attribute_id')):
                         attr_sel += '<option value="%s" %s><span>%s</span></option>' %(att.id, 'selected="selected"' if att in product_variant.attribute_value_ids else '', att.name)
                     attr_sel += '</select></li>'
