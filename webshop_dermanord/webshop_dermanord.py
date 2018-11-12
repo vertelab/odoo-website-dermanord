@@ -280,7 +280,7 @@ class product_public_category(models.Model):
                 parent_categ_bg = 'border: 1px solid #ddd; background-color: %s;' %(category.bg_hex or '#fff')
                 parent_categ_text = 'color: %s;' %category.text_hex
             return u"""<div class="panel-heading {category_heading_level}" style="{parent_categ_bg}">
-    <h4 class="panel-title">
+    <h4 class="panel-title parent_category_panel_title">
         <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox" data-category="{desktop_category}" {category_checked}/>
         <a href="{desktop_category_href}" class="{category_title_level}" style="{parent_categ_text}">
             {desktop_category_name}

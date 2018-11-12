@@ -200,6 +200,20 @@ h1, .dn_uppercase {
     color: #839794;
 }
 
+.btn-success, .dn_success {
+    color: #fff;
+    background-color: #000;
+    border-color: #000;
+    font-style: normal;
+    font-weight: 500;
+    font-family: futura-pt-medium, sans-serif;
+}
+
+.btn-success:hover, .btn-success:active, .btn-success:focus, .btn-success[disabled], .dn_success[disabled] {
+    background-color: #000;
+    border-color: #000;
+}
+
 .label-danger {
     background-color: #839794;
     border-color: #839794;
