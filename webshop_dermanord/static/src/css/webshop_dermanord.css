@@ -542,7 +542,7 @@ select.dn_selection_dropdown + i.fa {
 }
 
 .desktop_angle {
-    color: #D0D0D0;
+    color: #aaa;
 }
 
 .dn_oe_product {
@@ -777,8 +777,8 @@ tr.tr_lst td {
     }
 
     input[type="checkbox"] {
-        margin-left: -25px !important;
-        transform: scale(1.5, 1.5);
+        margin-left: 0px !important;
+        transform: scale(1.2, 1.2);
     }
 
     .modal-body h5 {
@@ -800,5 +800,13 @@ tr.tr_lst td {
     .oe_website_spinner {
         min-width: 156px;
         text-align: right;
+    }
+
+    span.category_children_style {
+        margin-left: 30px;
+    }
+
+    #view_switcher {
+        padding: 0px;
     }
 }

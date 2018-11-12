@@ -272,12 +272,12 @@ class product_public_category(models.Model):
                 return children
             else:
                 return []
-        def get_panel_heading_html(category, mobile):
+        def get_panel_heading_html(category, mobile, last):
             parent_categ = category in parent_categories
             parent_categ_bg = ''
             parent_categ_text = ''
             if parent_categ:
-                parent_categ_bg = 'border: 1px solid #ddd; background-color: %s;' %(category.bg_hex or '#fff')
+                parent_categ_bg = 'background-color: %s; border: 1px solid #ddd; %s' %(category.bg_hex or '#fff', '' if last else 'border-bottom: none;')
                 parent_categ_text = 'color: %s;' %category.text_hex
             return u"""<div class="panel-heading {category_heading_level}" style="{parent_categ_bg}">
     <h4 class="panel-title parent_category_panel_title">
@@ -304,12 +304,13 @@ class product_public_category(models.Model):
     desktop_category_filter_match = ''
 )
 
-        def get_panel_body_html(category, mobile):
+        def get_panel_body_html(category, mobile, first_level_children, last, bg):
             children = get_child_categs(category)
-            html_code = '<div id="%s_category_%s" class="panel-collapse collapse %s"><div class="panel-body %s">' %('mobile' if mobile else 'desktop', category.id, 'category_panel_parents' if category in parent_categories else 'category_panel_children', '' if category in parent_categories else 'category_children_panel' )
-            for child in children:
-                html_code += get_panel_heading_html(child, mobile)
-                html_code += get_panel_body_html(child, mobile)
+            panel_style = 'background-color: %s; %s %s' %(bg or '#fff', 'border-left: 1px solid #ddd; border-right: 1px solid #ddd;' if first_level_children else '', 'border-bottom: 1px solid #ddd;' if last else '')
+            html_code = '<div id="%s_category_%s" class="panel-collapse collapse %s" style="%s"><div class="panel-body %s" style="%s">' %('mobile' if mobile else 'desktop', category.id, 'category_panel_parents' if category in parent_categories else 'category_panel_children', panel_style, '' if category in parent_categories else 'category_children_panel', 'background-color: %s;' %bg)
+            for idx, child in enumerate(children):
+                html_code += get_panel_heading_html(child, mobile, False)
+                html_code += get_panel_body_html(child, mobile, idx == 0, False, bg)
             html_code += '</div></div>'
             return html_code
 
@@ -326,9 +327,9 @@ class product_public_category(models.Model):
         html = ''
         all_categories = self.dn_category_desktop_tree(parent_categories)
         if len(all_categories) > 0:
-            for category in all_categories[0]:
-                html += get_panel_heading_html(category, mobile)
-                html += get_panel_body_html(category, mobile)
+            for idx, category in enumerate(all_categories[0]):
+                html += get_panel_heading_html(category, mobile, idx == len(all_categories[0]) -1)
+                html += get_panel_body_html(category, mobile, True, idx == len(all_categories[0]) -1, category.bg_hex)
         return html
 
 # ~ <div class="checkbox">

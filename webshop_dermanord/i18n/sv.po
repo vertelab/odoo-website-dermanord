@@ -503,10 +503,16 @@ msgid "New products & Offers"
 msgstr "Nyheter & Erbjudanden"
 
 #. module: webshop_dermanord
+#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_content
+msgid "Offers &amp; Set"
+msgstr "Erbjudanden & set"
+
+#. module: webshop_dermanord
 #: code:addons/webshop_dermanord/product_view.py:523
 #: code:addons/webshop_dermanord/product_view.py:528
 #: code:addons/webshop_dermanord/webshop_dermanord.py:1234
 #: view:website:webshop_dermanord.desktop_product_filter
+#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_content
 #: view:website:webshop_dermanord.dn_filter_content
 #, python-format
 msgid "News"
