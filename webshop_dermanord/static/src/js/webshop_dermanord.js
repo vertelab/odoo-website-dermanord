@@ -124,6 +124,18 @@ $(document).ready(function(){
         });
     });
 
+    $("input.heading_checkbox").change(function() {
+        var $self = $(this);
+        var checked = $self.is(":checked");
+        var facet_id = $self.next().attr("href").replace("#", "");
+        $.each($self.closest("div.panel").find("div#" + facet_id + " input[type='checkbox']"), function() {
+            if (checked)
+                $(this).attr("checked", "checked");
+            else
+                $(this).removeAttr("checked", "checked");
+        });
+    });
+
     function category_heading_parents() {
         $.each($("div.panel-heading.category_heading_parents"), function() {
             var $self = $(this);

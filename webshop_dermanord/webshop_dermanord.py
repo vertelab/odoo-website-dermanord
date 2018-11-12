@@ -307,7 +307,7 @@ class product_public_category(models.Model):
         def get_panel_body_html(category, mobile, first_level_children, last, bg):
             children = get_child_categs(category)
             panel_style = 'background-color: %s; %s %s' %(bg or '#fff', 'border-left: 1px solid #ddd; border-right: 1px solid #ddd;' if first_level_children else '', 'border-bottom: 1px solid #ddd;' if last else '')
-            html_code = '<div id="%s_category_%s" class="panel-collapse collapse %s" style="%s"><div class="panel-body %s" style="%s">' %('mobile' if mobile else 'desktop', category.id, 'category_panel_parents' if category in parent_categories else 'category_panel_children', panel_style, '' if category in parent_categories else 'category_children_panel', 'background-color: %s;' %bg)
+            html_code = '<div id="%s_category_%s" class="panel-collapse collapse %s" style="%s"><div class="panel-body %s" style="%s">' %('mobile' if mobile else 'desktop', category.id, 'category_panel_parents' if category in parent_categories else 'category_panel_children', panel_style if category in parent_categories else '', '' if category in parent_categories else 'category_children_panel', 'background-color: %s;' %bg)
             for idx, child in enumerate(children):
                 html_code += get_panel_heading_html(child, mobile, False)
                 html_code += get_panel_body_html(child, mobile, idx == 0, False, bg)
