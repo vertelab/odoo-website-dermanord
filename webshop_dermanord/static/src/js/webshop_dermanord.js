@@ -82,29 +82,6 @@ function onclick_submit($element) {
     $element.closest("form").submit();
 }
 
-$("input.category_checkbox").change(function() {
-    var $self = $(this);
-    var checked = $self.is(":checked");
-    var categ_id = $self.data("category");
-    $.each($self.closest("div.panel").find("div#" + categ_id + " input[type='checkbox']"), function() {
-        if (checked)
-            $(this).attr("checked", "checked");
-        else
-            $(this).removeAttr("checked", "checked");
-    });
-});
-
-$("input.heading_checkbox").change(function() {
-    var $self = $(this);
-    var checked = $self.is(":checked");
-    $.each($self.closest("div.panel-heading").next().find("input[type='checkbox']"), function() {
-        if (checked)
-            $(this).attr("checked", "checked");
-        else
-            $(this).removeAttr("checked", "checked");
-    });
-});
-
 function show_popover(trigger){
     trigger.popover({
         container: 'body',
@@ -135,7 +112,17 @@ function setCartPriceQuantity(price, quantity, price_float) {
 
 $(document).ready(function(){
 
-    category_heading_parents();
+    $("input.category_checkbox").change(function() {
+        var $self = $(this);
+        var checked = $self.is(":checked");
+        var categ_id = $self.data("category");
+        $.each($self.closest("div.panel").find("div#" + categ_id + " input[type='checkbox']"), function() {
+            if (checked)
+                $(this).attr("checked", "checked");
+            else
+                $(this).removeAttr("checked", "checked");
+        });
+    });
 
     function category_heading_parents() {
         $.each($("div.panel-heading.category_heading_parents"), function() {
@@ -149,12 +136,38 @@ $(document).ready(function(){
                    input_checked_count += 1;
                 }
             });
-            console.log(input_checked_count);
             if (input_checked_count != 0) {
                 $h4.append('<span class="filter_match">' + input_checked_count + '</span>');
             }
         });
     }
+
+    function activate_facet() {
+        var all_active_categ_ids = [];
+        $.each($("div.category_heading_parents"), function() {
+            var $self = $(this);
+            var $parent_input = $self.find("input.category_checkbox");
+            if ($parent_input.is(":checked")) {
+                all_active_categ_ids.push(parseInt($parent_input.val()));
+            }
+        });
+        $.each($("div.facet_panel_heading"), function() {
+            var $self = $(this);
+            var c_list = $self.data("categories");
+            $.each(c_list, function(key, val) {
+                if ($.inArray(val, all_active_categ_ids) !== -1) {
+                    $self.removeClass("hidden");
+                    return false;
+                }
+                else {
+                    $self.addClass("hidden");
+                }
+            });
+        });
+    }
+
+    category_heading_parents();
+    activate_facet();
 
     openerp.jsonRpc("/website_sale_update_cart", "call", {
     }).done(function(data){
@@ -520,9 +533,20 @@ $(document).ready(function(){
             $(this).closest("form").find(".dn_ok").addClass("dn_blink");
         });
     });
+
     $("#desktop_product_navigator_filter").find(".category_checkbox").each(function() {
-        $(this).on("change", function() {
-            $(this).closest("form").find(".dn_ok").addClass("dn_blink");
+        var $self = $(this);
+        $self.on("change", function() {
+            $self.closest("form").find(".dn_ok").addClass("dn_blink");
+            activate_facet();
+        });
+    });
+
+    $("#mobile_product_navigator_filter").find(".category_checkbox").each(function() {
+        var $self = $(this);
+        $self.on("change", function() {
+            $self.closest("form").find(".dn_ok").addClass("dn_blink");
+            activate_facet();
         });
     });
 

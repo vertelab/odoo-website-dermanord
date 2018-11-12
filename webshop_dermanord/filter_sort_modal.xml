@@ -1275,7 +1275,7 @@
                 <div class="panel-group">
                     <div class="panel panel-default">
                         <t t-foreach="filter_facets" t-as="facet">
-                            <div class="panel-heading">
+                            <div class="panel-heading facet_panel_heading hidden" t-att-data-categories="facet.category_ids.mapped('id')">
                                 <h4 class="panel-title">
                                     <input type="checkbox" class="heading_checkbox"/>
                                     <t t-esc="facet.name" />
