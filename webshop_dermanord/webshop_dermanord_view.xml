@@ -15,6 +15,17 @@
             </field>
         </record>
 
+        <record id="product_public_category_tree_view" model="ir.ui.view">
+            <field name="name">product.public.category.tree.inherited.webshop_dermanord</field>
+            <field name="model">product.public.category</field>
+            <field name="inherit_id" ref="website_sale.product_public_category_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="complete_name" position="after">
+                    <field name="group_ids" widget="many2many_tags"/>
+                </field>
+            </field>
+        </record>
+
         <template id="website_sale.confirmation">
             <t t-call="website.layout">
                 <t t-set="additional_title">Shop - Confirmed</t>
@@ -485,6 +496,7 @@
                 <field name="sequence" position="before">
                     <field name="text_hex" attrs="{'invisible': [('parent_id', '!=', False)]}" placeholder="#ffffff"/>
                     <field name="bg_hex" attrs="{'invisible': [('parent_id', '!=', False)]}" placeholder="#000000"/>
+                    <field name="group_ids" widget="many2many_tags"/>
                 </field>
             </field>
         </record>

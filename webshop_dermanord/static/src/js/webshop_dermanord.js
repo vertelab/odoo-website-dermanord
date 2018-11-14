@@ -141,6 +141,9 @@ $(document).ready(function(){
             var $self = $(this);
             var $h4 = $self.find("h4.panel-title.parent_category_panel_title");
             var input_checked_count = 0;
+            if ($self.find("input.category_checkbox").first().is(":checked")) {
+                input_checked_count += 1;
+            }
             var div_categories_id = $self.find("input.category_checkbox").data("category");
             var $all_child_checkbox = $self.closest("div.panel.panel-default").find("div#" + div_categories_id).find("input[class='category_checkbox']");
             $.each($all_child_checkbox, function() {

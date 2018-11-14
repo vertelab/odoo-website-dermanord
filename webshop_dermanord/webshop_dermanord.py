@@ -247,6 +247,7 @@ class product_public_category(models.Model):
 
     text_hex = fields.Char(string='Text Color (Hex)', help='Text Color in hex', default='#000000')
     bg_hex = fields.Char(string='Background Color (Hex)', help='Background Color in hex', default='#ffffff')
+    group_ids = fields.Many2many(comodel_name='res.groups', string='Access groups')
 
     @api.model
     def get_dn_category_desktop_tree_html(self, parent_categories, mobile):
@@ -256,7 +257,7 @@ class product_public_category(models.Model):
     def dn_category_desktop_tree(self, parent_categories):
         categ_lst = []
         def get_child_categories(categories):
-            children = self.env['product.public.category'].search([('parent_id', 'in', categories.mapped('id')), ('website_published', '=', True)])
+            children = self.env['product.public.category'].search([('parent_id', 'in', categories.mapped('id')), ('website_published', '=', True), ('group_ids', 'in', self.env.user.commercial_partner_id.access_group_ids.mapped('id'))])
             if len(children) > 0:
                 categ_lst.append(children)
                 get_child_categories(children)
@@ -267,19 +268,25 @@ class product_public_category(models.Model):
     @api.model
     def dn_category_desktop_tree_html(self, parent_categories, mobile):
         def get_child_categs(categories):
-            children = self.env['product.public.category'].search([('parent_id', 'in', categories.mapped('id')), ('website_published', '=', True)])
+            children = self.env['product.public.category'].search([('parent_id', 'in', categories.mapped('id')), ('website_published', '=', True), ('group_ids', 'in', self.env.user.commercial_partner_id.access_group_ids.mapped('id'))])
             if len(children) > 0:
                 return children
             else:
                 return []
         def get_panel_heading_html(category, mobile, last):
-            parent_categ = category in parent_categories
-            parent_categ_bg = ''
-            parent_categ_text = ''
-            if parent_categ:
-                parent_categ_bg = 'background-color: %s; border: 1px solid #ddd; %s' %(category.bg_hex or '#fff', '' if last else 'border-bottom: none;')
-                parent_categ_text = 'color: %s;' %category.text_hex
-            return u"""<div class="panel-heading {category_heading_level}" style="{parent_categ_bg}">
+            accessable = False
+            for a in self.env.user.commercial_partner_id.access_group_ids:
+                if a in category.group_ids:
+                    accessable = True
+                    break
+            if accessable:
+                parent_categ = category in parent_categories
+                parent_categ_bg = ''
+                parent_categ_text = ''
+                if parent_categ:
+                    parent_categ_bg = 'background-color: %s; border: 1px solid #ddd; %s' %(category.bg_hex or '#fff', '' if last else 'border-bottom: none;')
+                    parent_categ_text = 'color: %s;' %category.text_hex
+                return u"""<div class="panel-heading {category_heading_level}" style="{parent_categ_bg}">
     <h4 class="panel-title parent_category_panel_title">
         <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox" data-category="{desktop_category}" {category_checked}/>
         <a href="{desktop_category_href}" class="{category_title_level}" style="{parent_categ_text}">
@@ -303,16 +310,26 @@ class product_public_category(models.Model):
     # ~ desktop_category_filter_match = '<span class="filter_match">%s</span>' %''
     desktop_category_filter_match = ''
 )
+            else:
+                return ''
 
         def get_panel_body_html(category, mobile, first_level_children, last, bg):
-            children = get_child_categs(category)
-            panel_style = 'background-color: %s; %s %s' %(bg or '#fff', 'border-left: 1px solid #ddd; border-right: 1px solid #ddd;' if first_level_children else '', 'border-bottom: 1px solid #ddd;' if last else '')
-            html_code = '<div id="%s_category_%s" class="panel-collapse collapse %s" style="%s"><div class="panel-body %s" style="%s">' %('mobile' if mobile else 'desktop', category.id, 'category_panel_parents' if category in parent_categories else 'category_panel_children', panel_style if category in parent_categories else '', '' if category in parent_categories else 'category_children_panel', 'background-color: %s;' %bg)
-            for idx, child in enumerate(children):
-                html_code += get_panel_heading_html(child, mobile, False)
-                html_code += get_panel_body_html(child, mobile, idx == 0, False, bg)
-            html_code += '</div></div>'
-            return html_code
+            accessable = False
+            for a in self.env.user.commercial_partner_id.access_group_ids:
+                if a in category.group_ids:
+                    accessable = True
+                    break
+            if accessable:
+                children = get_child_categs(category)
+                panel_style = 'background-color: %s; %s %s' %(bg or '#fff', 'border-left: 1px solid #ddd; border-right: 1px solid #ddd;' if first_level_children else '', 'border-bottom: 1px solid #ddd;' if last else '')
+                html_code = '<div id="%s_category_%s" class="panel-collapse collapse %s" style="%s"><div class="panel-body %s" style="%s">' %('mobile' if mobile else 'desktop', category.id, 'category_panel_parents' if category in parent_categories else 'category_panel_children', panel_style if category in parent_categories else '', '' if category in parent_categories else 'category_children_panel', 'background-color: %s;' %bg)
+                for idx, child in enumerate(children):
+                    html_code += get_panel_heading_html(child, mobile, False)
+                    html_code += get_panel_body_html(child, mobile, idx == 0, False, bg)
+                html_code += '</div></div>'
+                return html_code
+            else:
+                return ''
 
         current_domain = request.session.get('current_domain')
         current_category = 0
