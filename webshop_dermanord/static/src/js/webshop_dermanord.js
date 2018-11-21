@@ -163,7 +163,8 @@ $(document).ready(function(){
             var $self = $(this);
             var $parent_input = $self.find("input.category_checkbox");
             if ($parent_input.is(":checked")) {
-                all_active_categ_ids.push(parseInt($parent_input.val()));
+                //~ all_active_categ_ids.push(parseInt($parent_input.val()));
+                all_active_categ_ids.push(parseInt($parent_input.data("parent_category")));
             }
         });
         $.each($("div.facet_panel_heading"), function() {

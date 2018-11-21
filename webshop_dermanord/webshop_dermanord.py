@@ -282,6 +282,11 @@ class product_public_category(models.Model):
                 return children
             else:
                 return []
+        def get_last_parent_id(category):
+            if category.parent_id:
+                return get_last_parent_id(category.parent_id)
+            else:
+                return category.id
         def get_panel_heading_html(category, mobile, last):
             if self.check_accessable(self.env.user.commercial_partner_id.access_group_ids, category.group_ids):
                 parent_categ = category in parent_categories
@@ -292,7 +297,7 @@ class product_public_category(models.Model):
                     parent_categ_text = 'color: %s;' %category.text_hex
                 return u"""<div class="panel-heading {category_heading_level}" style="{parent_categ_bg}">
     <h4 class="panel-title parent_category_panel_title">
-        <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox" data-category="{desktop_category}" {category_checked}/>
+        <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox" data-category="{desktop_category}" data-parent_category="{desktop_parent_category}" {category_checked}/>
         <a href="{desktop_category_href}" class="{category_title_level}" style="{parent_categ_text}">
             {desktop_category_name}
         </a>
@@ -306,6 +311,7 @@ class product_public_category(models.Model):
     category_name = 'category_%s' %category.id,
     category_value = '%s' %category.id,
     desktop_category = '%s_category_%s' %('mobile' if mobile else 'desktop', category.id),
+    desktop_parent_category = get_last_parent_id(category),
     category_checked = 'checked="checked"' if category.id in category_checked else '',
     desktop_category_href = '/webshop_new/category/%s' %category.id,
     category_title_level = 'category_parents_style' if parent_categ else 'category_children_style',
