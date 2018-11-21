@@ -1189,7 +1189,7 @@
             <div t-att-id="'mobile_product_navigator_filter' if mobile else 'desktop_product_navigator_filter'">
                 <div class="panel-group mt32">
                     <div class="panel panel-default">
-                        <t t-raw="request.env['product.public.category'].get_dn_category_desktop_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True), ('group_ids', 'in', request.env.user.commercial_partner_id.access_group_ids.mapped('id')), ('id', 'not in', [request.env.ref('webshop_dermanord.reseforpackningar').id, request.env.ref('webshop_dermanord.salongsprodukter').id])]), mobile=mobile)"/>
+                        <t t-raw="request.env['product.public.category'].get_dn_category_desktop_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True), ('group_ids', 'in', request.env.user.commercial_partner_id.access_group_ids.mapped('id'))]), mobile=mobile)"/>
                     </div>
                 </div>
                 <div class="panel-group">
@@ -1228,8 +1228,7 @@
                             </div>
                         </div>
 -->
-                        <t t-set="rese_salong" t-value="request.env['product.public.category'].search([('website_published', '=', True), ('group_ids', 'in', request.env.user.commercial_partner_id.access_group_ids.mapped('id')), ('id', 'in', [request.env.ref('webshop_dermanord.reseforpackningar').id, request.env.ref('webshop_dermanord.salongsprodukter').id])])"/>
-                        <div class="panel-heading" t-att-style="'border: 1px solid #ddd; %s background-color: #fff;' %('border-bottom: none;' if len(rese_salong) &gt; 0 else '')">
+                        <div class="panel-heading" style="border: 1px solid #ddd; background-color: #fff;">
                             <h4 class="panel-title">
                                 <input type="checkbox" class="heading_checkbox" name="current_news" value="current_news" t-att="{'checked': 'checked'} if request.session.get('form_values').get('current_news') == 'current_news' else {}"/>
                                 <a class="category_parents_style" href="javascript:void(0)" onclick="onclick_submit($(this));">News</a>
@@ -1269,7 +1268,6 @@
                             </div>
                         </div>
 -->
-                        <t t-raw="request.env['product.public.category'].get_dn_category_desktop_tree_html(rese_salong, mobile=mobile)"/>
                     </div>
                 </div>
                 <h4 class="dn_uppercase">Filter</h4>
