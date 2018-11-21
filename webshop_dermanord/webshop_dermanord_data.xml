@@ -217,4 +217,11 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
         </record>
     </data>
 
+    <data noupdate="1">
+        <record id="dn_filter_version" model="ir.config_parameter">
+            <field name="key">webshop_dermanord.filter_version</field>
+            <field name="value">webshop</field>
+        </record>
+    </data>
+
 </openerp>

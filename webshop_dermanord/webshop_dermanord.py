@@ -1215,7 +1215,7 @@ class WebsiteSale(website_sale):
                 'shop_footer': True,
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products) < PPG else False,
-                'filter_version': 'old',
+                'filter_version': request.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version'),
             })
         else:
             return request.website.render("webshop_dermanord.products", {
@@ -1235,7 +1235,7 @@ class WebsiteSale(website_sale):
                 'page_lang': request.env.lang,
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products) < PPG else False,
-                'filter_version': 'old',
+                'filter_version': request.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version'),
             })
 
     @http.route([
@@ -1297,7 +1297,7 @@ class WebsiteSale(website_sale):
                 'shop_footer': True,
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products) < PPG else False,
-                'filter_version': 'new',
+                'filter_version': request.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version'),
             })
         else:
             return request.website.render("webshop_dermanord.products", {
@@ -1313,7 +1313,7 @@ class WebsiteSale(website_sale):
                 'page_lang': request.env.lang,
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products) < PPG else False,
-                'filter_version': 'new',
+                'filter_version': request.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version'),
             })
 
     @http.route([
