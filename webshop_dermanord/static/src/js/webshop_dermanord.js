@@ -122,6 +122,7 @@ $(document).ready(function(){
             else
                 $(this).removeAttr("checked", "checked");
         });
+        activate_facet();
     });
 
     $("input.heading_checkbox").change(function() {
@@ -134,6 +135,7 @@ $(document).ready(function(){
             else
                 $(this).removeAttr("checked", "checked");
         });
+        activate_facet();
     });
 
     function category_heading_parents() {
@@ -167,8 +169,8 @@ $(document).ready(function(){
         });
         $.each($("div.facet_panel_heading"), function() {
             var $self = $(this);
-            var c_list = $self.data("categories");
-            $.each(c_list, function(key, val) {
+            var $c_list = $self.data("categories");
+            $.each($c_list, function(key, val) {
                 if ($.inArray(val, all_active_categ_ids) !== -1) {
                     $self.removeClass("hidden");
                     return false;
