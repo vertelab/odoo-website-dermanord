@@ -597,7 +597,7 @@ class product_product(models.Model):
             for idx, c in enumerate(variant.public_categ_ids):
                 if idx != 0:
                     category_html += '<span style="color: #bbb;">, </span>'
-                category_html += '<a href="/%s/category/%s"><span style="color: #bbb;">%s</span></a>' %(webshop_version, c.id, c.name)
+                category_html += '<a href="/%s/category/%s"><span style="color: #bbb;">%s</span></a>' %(webshop_version, c.id, c.display_name)
                 category_value += '&amp;category_%s=%s' %(c.id, c.id)
             facet_html = ''
             for line in variant.facet_line_ids:
