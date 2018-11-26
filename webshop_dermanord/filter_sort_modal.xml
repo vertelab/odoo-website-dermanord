@@ -1118,7 +1118,7 @@
         </template>
         <template id="webshop_dermanord_mobile_main_filter_sort_layout" inherit_id="website.layout" name="Webshop Dermanord Mobile Main Filter Sort Layout">
             <xpath expr="//div[@id='wrapwrap']/main" position="inside">
-                <t t-if="shop_footer and filter_version == 'new'">
+                <t t-if="shop_footer and filter_version == 'webshop_new'">
                     <t t-set="filter_facets" t-value="request.env['product.facet'].get_filtered_facets(request.session.get('form_values'))" />
                     <t t-set="filter_categories" t-value="request.env['product.public.category'].search([('parent_id', '=', None)])" />
                     <div id="webshop_dermanord_mobile_filter_modal" class="modal fade hidden-lg hidden-md hidden-sm" role="dialog">
