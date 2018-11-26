@@ -12,6 +12,10 @@ body {}
     padding: 9px 15px;
 }
 
+.dn_view_type_inactive{
+    background-color: #fff !important;
+}
+
 .dn_viewtype_active {
     background-color: #000;
     color: #fff;

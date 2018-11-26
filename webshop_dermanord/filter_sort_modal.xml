@@ -58,12 +58,12 @@
                             <i class="fa fa-sort" />
                             Sort
                             <span class="sort_match" t-if="request.session.get('sort_name') and request.session.get('sort_order')">
-                                <i class="fa fa-trophy" t-if="request.session.get('sort_name') == 'sold_qty'" />
                                 <i class="fa fa-font" t-if="request.session.get('sort_name') == 'name'" />
                                 <i class="fa fa-dollar" t-if="request.session.get('sort_name') == 'list_price'" />
                                 <i class="fa fa-barcode" t-if="request.session.get('sort_name') == 'default_code'" />
                                 <i class="fa fa-sort-asc" t-if="request.session.get('sort_order') == 'asc'" />
                                 <i class="fa fa-sort-desc" t-if="request.session.get('sort_order') == 'desc'" />
+                                <i class="fa fa-trophy" t-if="request.session.get('sort_name') == 'sold_qty'" />
                             </span>
                         </a>
                     </div>
@@ -723,7 +723,7 @@
                 <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                     <t t-if="webshop_type == 'dn_list'">
                         <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
-                            <button class="dn_btn dn_view_type_inactive" formaction="/webshop_new/webshop_type/dn_shop" type="submit" title="Switch to grid view">
+                            <button class="dn_btn dn_view_type_inactive" style="background-color: #fff;" formaction="/webshop_new/webshop_type/dn_shop" type="submit" title="Switch to grid view">
                                 <i class="fa fa-th"/>
                             </button>
                             <h5 class="text-center dn_uppercase" style="width: 100%;"><small style="font-size: 70%">Imageview</small></h5>
@@ -743,7 +743,7 @@
                             <h5 class="text-center dn_uppercase" style="width: 100%;"><small style="font-size: 70%">Imageview</small></h5>
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
-                            <button class="dn_btn dn_view_type_inactive" formaction="/webshop_new/webshop_type/dn_list" type="submit" title="Switch to list view">
+                            <button class="dn_btn dn_view_type_inactive" style="background-color: #fff;" formaction="/webshop_new/webshop_type/dn_list" type="submit" title="Switch to list view">
                                 <i class="fa fa-th-list"/>
                             </button>
                             <h5 class="text-center dn_uppercase" style="width: 100%;"><small style="font-size: 70%">Listview</small></h5>
@@ -991,27 +991,13 @@
                     <t t-set="first_facet" t-value="0" />
                     <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_filter_content"><t t-set="mobile" t-value="True"/></t>
                 </div>
-                <input type="hidden" name="order" t-att-value="request.session.get('form_values', {}).get('order') or 'sold_qty desc'" />
+                <input type="hidden" name="order" t-att-value="request.session.get('form_values', {}).get('order') or 'name desc'" />
             </form>
         </template>
         <template id="webshop_dermanord_mobile_product_sort_form" name="Webshop Dermanord Mobile Product Sort Form">
             <form action="/webshop_new" method="post">
                 <div class="container" style="padding: 0px;">
                     <ul style="list-style-type: none;">
-                        <li>
-                            <div class="radio">
-                                <label>
-                                    <t t-if="request.session.get('form_values')">
-                                        <input type="radio" name="order" value="sold_qty desc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'sold_qty desc' else {}" />
-                                        Most Sold
-                                    </t>
-                                    <t t-if="not request.session.get('form_values')">
-                                        <input type="radio" name="order" value="sold_qty desc" checked="1" />
-                                        Most Sold
-                                    </t>
-                                </label>
-                            </div>
-                        </li>
                         <li>
                             <div class="radio">
                                 <label>
@@ -1064,6 +1050,20 @@
                                     <t t-if="not request.session.get('form_values')">
                                         <input type="radio" name="order" value="list_price desc" />
                                         Price Descending
+                                    </t>
+                                </label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="radio">
+                                <label>
+                                    <t t-if="request.session.get('form_values')">
+                                        <input type="radio" name="order" value="sold_qty desc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'sold_qty desc' else {}" />
+                                        Most Sold
+                                    </t>
+                                    <t t-if="not request.session.get('form_values')">
+                                        <input type="radio" name="order" value="sold_qty desc" checked="1" />
+                                        Most Sold
                                     </t>
                                 </label>
                             </div>
@@ -1173,10 +1173,10 @@
                             <i class="fa fa-sort" />
                             Sort
                             <span class="sort_match" t-if="request.session.get('sort_name') and request.session.get('sort_order')">
-                                <i class="fa fa-trophy" t-if="request.session.get('sort_name') == 'sold_qty'" />
                                 <i class="fa fa-font" t-if="request.session.get('sort_name') == 'name'" />
                                 <i class="fa fa-dollar" t-if="request.session.get('sort_name') == 'list_price'" />
                                 <i class="fa fa-barcode" t-if="request.session.get('sort_name') == 'default_code'" />
+                                <i class="fa fa-trophy" t-if="request.session.get('sort_name') == 'sold_qty'" />
                                 <i class="fa fa-sort-asc" t-if="request.session.get('sort_order') == 'asc'" />
                                 <i class="fa fa-sort-desc" t-if="request.session.get('sort_order') == 'desc'" />
                             </span>
@@ -1329,7 +1329,7 @@
                     <t t-set="first_facet" t-value="0" />
                     <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_filter_content"><t t-set="mobile" t-value="False"/></t>
                 </div>
-                <input type="hidden" name="order" t-att-value="request.session.get('form_values', {}).get('order') or 'sold_qty desc'" />
+                <input type="hidden" name="order" t-att-value="request.session.get('form_values', {}).get('order') or 'name desc'" />
             </form>
         </template>
         <template id="webshop_dermanord_desktop_product_sort_form" name="Webshop Dermanord Desktop Product Sort Form">
@@ -1337,18 +1337,18 @@
                 <div class="col-md-7 col-sm-7 col-xs-7" style="padding: 0px;">
                     <select id="webshop_dermanord_desktop_sort_selector" name="order" class="form-control selectpicker dropdown dn_selection_dropdown" onchange="this.form.submit();">
                         <t t-if="request.session.get('form_values')">
-                            <option value="sold_qty desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'sold_qty desc' else {}">Most Sold</option>
                             <option value="name asc, default_code asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'name asc, default_code asc' else {}">Name Ascending</option>
                             <option value="name desc, default_code desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'name desc, default_code desc' else {}">Name Descending</option>
                             <option value="list_price asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'list_price asc' else {}">Price Ascending</option>
                             <option value="list_price desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'list_price desc' else {}">Price Descending</option>
+                            <option value="sold_qty desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'sold_qty desc' else {}">Most Sold</option>
                         </t>
                         <t t-if="not request.session.get('form_values')">
-                            <option value="sold_qty desc" select="1">Most Sold</option>
-                            <option value="name asc, default_code asc">Name Ascending</option>
+                            <option value="name asc, default_code asc" select="1">Name Ascending</option>
                             <option value="name desc, default_code desc">Name Descending</option>
                             <option value="list_price asc">Price Ascending</option>
                             <option value="list_price desc">Price Descending</option>
+                            <option value="sold_qty desc">Most Sold</option>
                         </t>
                     </select>
                     <i class="desktop_angle fa fa-angle-down" />

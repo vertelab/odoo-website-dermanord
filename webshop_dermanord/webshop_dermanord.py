@@ -563,7 +563,7 @@ class Website(models.Model):
         return chosen_filter_qty
 
     def get_chosen_order(self, post):
-        sort_name = 'sold_qty'
+        sort_name = 'name'
         sort_order = 'desc'
         for k, v in post.iteritems():
             if k == 'order':
@@ -676,7 +676,7 @@ class Website(models.Model):
 
     def dn_shop_set_session(self, model, post, url):
         """Update session for /dn_shop"""
-        default_order = 'sold_qty desc'
+        default_order = 'name asc'
         if post.get('order'):
             default_order = post.get('order')
             if request.session.get('form_values'):

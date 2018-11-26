@@ -263,7 +263,7 @@ msgstr "Webbplatsbehörigheter"
 #: view:website:webshop_dermanord.dn_sort_form
 #: view:website:webshop_dermanord.webshop_dermanord_view_switcher
 msgid "Switch to grid view"
-msgstr "Byt till nätvy"
+msgstr "Byt till bildvy"
 
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.desktop_product_sort_form
@@ -275,9 +275,80 @@ msgstr "Byt till listvy"
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.webshop_dermanord_view_switcher
 msgid "Imageview"
-msgstr "Nätvy"
+msgstr "Bildvy"
 
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.webshop_dermanord_view_switcher
 msgid "Listview"
 msgstr "Listvy"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.desktop_product_filter_form
+#: view:website:webshop_dermanord.dn_filter_form
+#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_form
+#: view:website:webshop_dermanord.webshop_dermanord_mobile_product_filter_form
+msgid "Search"
+msgstr "Sök"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.desktop_product_filter_form
+#: view:website:webshop_dermanord.dn_filter_form
+#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_form
+#: view:website:webshop_dermanord.webshop_dermanord_mobile_product_filter_form
+msgid "Clear All"
+msgstr "Rensa"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.desktop_product_sort_form
+#: view:website:webshop_dermanord.dn_sort_form
+#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_sort_form
+#: view:website:webshop_dermanord.webshop_dermanord_mobile_product_sort_form
+msgid "Name Ascending"
+msgstr "Namn A-Ö"
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/product_view.py:631
+#: view:website:website_sale.product
+#, python-format
+msgid "More info"
+msgstr "Mer information"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.desktop_product_sort_form
+#: view:website:webshop_dermanord.dn_sort_form
+#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_sort_form
+#: view:website:webshop_dermanord.webshop_dermanord_mobile_product_sort_form
+msgid "Most Sold"
+msgstr "Mest sålda"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.desktop_product_sort_form
+#: view:website:webshop_dermanord.dn_sort_form
+#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_sort_form
+#: view:website:webshop_dermanord.webshop_dermanord_mobile_product_sort_form
+msgid "Name Ascending"
+msgstr "Namn A-Ö"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.desktop_product_sort_form
+#: view:website:webshop_dermanord.dn_sort_form
+#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_sort_form
+#: view:website:webshop_dermanord.webshop_dermanord_mobile_product_sort_form
+msgid "Name Descending"
+msgstr "Namn Ö-A"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.desktop_product_sort_form
+#: view:website:webshop_dermanord.dn_sort_form
+#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_sort_form
+#: view:website:webshop_dermanord.webshop_dermanord_mobile_product_sort_form
+msgid "Price Ascending"
+msgstr "Pris stigande"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.desktop_product_sort_form
+#: view:website:webshop_dermanord.dn_sort_form
+#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_sort_form
+#: view:website:webshop_dermanord.webshop_dermanord_mobile_product_sort_form
+msgid "Price Descending"
+msgstr "Pris fallande"
