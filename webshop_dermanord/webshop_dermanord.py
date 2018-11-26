@@ -381,46 +381,31 @@ class product_public_category(models.Model):
                 facet_value_ids.append(domain[2])
         rese = self.env.ref('webshop_dermanord.reseforpackningar')
         salong = self.env.ref('webshop_dermanord.salongsprodukter')
-        af_groups_users = self.env.ref('webshop_dermanord.group_dn_af').mapped('users') | self.env.ref('webshop_dermanord.group_dn_ht').mapped('users') | self.env.ref('webshop_dermanord.group_dn_spa').mapped('users') | self.env.ref('webshop_dermanord.group_dn_sk').mapped('users')
+        af_groups_users = self.env.ref('webshop_dermanord.group_dn_af').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_ht').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_spa').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_sk').sudo().mapped('users')
         af = self.env.user in af_groups_users
-        sk = self.env.user in self.env.ref('webshop_dermanord.group_dn_sk').mapped('users')
+        rese_header = ''
         rese_div = ''
-        if sk or af:
-            rese_div += '<div id="rese_div" class="panel-collapse collapse" style="border-left: 1px solid rgb(221, 221, 221); border-right: 1px solid rgb(221, 221, 221); %s"><div class="panel-body">' %('' if af else 'border-bottom: 1px solid rgb(221, 221, 221);')
-            for facet_value in self.env['product.facet.value'].search([('facet_id', '=', rese.id)]):
-                rese_div += '<div class="panel-heading category_heading_children"><h4 class="panel-title parent_category_panel_title"><input type="checkbox" class="facet_checkbox" name="facet_%s_%s" value="%s" %s><a href="javascript:void(0)" class="category_children_style">%s</a></h4></div>' %(facet_value.facet_id.id, facet_value.id, facet_value.id, 'checked="checked"' if facet_value.id in facet_value_ids else '', facet_value.name)
-            rese_div += '</div></div>'
+        rese_header = '<div class="panel-heading facet_heading_parents" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox"><a class="facet_parents_style" href="javascript:void(0)">%s</a><a data-toggle="collapse" href="#rese_div" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a></h4></div>' %('border-bottom: none;' if af else '', rese.name)
+        rese_div += '<div id="rese_div" class="panel-collapse collapse" style="border-left: 1px solid rgb(221, 221, 221); border-right: 1px solid rgb(221, 221, 221); %s"><div class="panel-body">' %('' if af else 'border-bottom: 1px solid rgb(221, 221, 221);')
+        for facet_value in self.env['product.facet.value'].search([('facet_id', '=', rese.id)]):
+            rese_div += '<div class="panel-heading category_heading_children"><h4 class="panel-title parent_category_panel_title"><input type="checkbox" class="facet_checkbox" name="facet_%s_%s" value="%s" %s><a href="javascript:void(0)" class="category_children_style">%s</a></h4></div>' %(facet_value.facet_id.id, facet_value.id, facet_value.id, 'checked="checked"' if facet_value.id in facet_value_ids else '', facet_value.name)
+        rese_div += '</div></div>'
+        salong_header = ''
         salong_div = ''
         if af:
+            salong_header = '<div class="panel-heading facet_heading_parents" style="border: 1px solid #ddd; background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox"><a class="facet_parents_style" href="javascript:void(0)">%s</a><a data-toggle="collapse" href="#salong_div" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a></h4></div>' %(salong.name)
             salong_div = '<div id="salong_div" class="panel-collapse collapse" style="border-left: 1px solid rgb(221, 221, 221); border-right: 1px solid rgb(221, 221, 221); border-bottom: 1px solid rgb(221, 221, 221);"><div class="panel-body">'
             for facet_value in self.env['product.facet.value'].search([('facet_id', '=', salong.id)]):
                 salong_div += '<div class="panel-heading category_heading_children"><h4 class="panel-title parent_category_panel_title"><input type="checkbox" class="facet_checkbox" name="facet_%s_%s" value="%s" %s><a href="javascript:void(0)" class="category_children_style">%s</a></h4></div>' %(facet_value.facet_id.id, facet_value.id, facet_value.id, 'checked="checked"' if facet_value.id in facet_value_ids else '', facet_value.name)
             salong_div += '</div></div>'
-        return u'''<div class="panel-heading facet_heading_parents" style="border: 1px solid #ddd; {rese_border_style} background-color: #fff;">
-    <h4 class="panel-title">
-        <input type="checkbox" class="facet_heading_checkbox">
-        <a class="facet_parents_style" href="javascript:void(0)">{rese_name}</a>
-        <a data-toggle="collapse" href="#rese_div" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a>
-        {rese_facet_filter_match}
-    </h4>
-</div>
+        return u'''{rese_header}
 {rese_div}
-<div class="panel-heading facet_heading_parents" style="border: 1px solid #ddd; background-color: #fff;">
-    <h4 class="panel-title">
-        <input type="checkbox" class="facet_heading_checkbox">
-        <a class="facet_parents_style" href="javascript:void(0)">{salong_name}</a>
-        <a data-toggle="collapse" href="#salong_div" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a>
-        {salong_facet_filter_match}
-    </h4>
-</div>
+{salong_header}
 {salong_div}'''.format(
-    rese_border_style = 'border-bottom: none;' if af else '',
-    rese_name = rese.name,
+    rese_header = rese_header,
     rese_div = rese_div,
-    rese_facet_filter_match = '',
-    salong_name = salong.name,
+    salong_header = salong_header,
     salong_div = salong_div,
-    salong_facet_filter_match = ''
 )
 
 
