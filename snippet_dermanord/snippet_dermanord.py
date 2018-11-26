@@ -47,11 +47,17 @@ class product_action(models.Model):
             super(product_action,self)._do_action()
 
 
+class product_public_category(models.Model):
+    _inherit = 'product.public.category'
+
+    show_on_startpage = fields.Boolean(string='Show on Start Page', help="Check this box to make this category visible on the start page.")
+
 class product_product(models.Model):
     _inherit = 'product.product'
+
     show_on_startpage = fields.Boolean(string="Show on Start Page")
     show_on_startpage_image = fields.Binary(string='Image on startpage')
-    show_on_startpage_desc = fields.Text(string="Description on startpage",translate=True)
+    show_on_startpage_desc = fields.Text(string="Description on startpage", translate=True)
 
 
 class crm_campaign_object(models.Model):
@@ -101,20 +107,18 @@ class snippet(http.Controller):
 
     @http.route(['/category_snippet/get_p_categories'], type='json', auth="public", website=True)
     def get_p_categories(self, **kw):
-        categories = request.env['product.public.category'].search([('website_published', '=', True)], order='sequence')
         category_list = []
-        if len(categories) > 0:
-            for c in categories:
-                image_url = ''
-                if c.image_medium:
-                    image_url = '/imagefield/product.public.category/image/%s/ref/%s' %(c.id, 'snippet_dermanord.img_categories')
-                category_list.append(
-                    {
-                        'id': c.id,
-                        'name': c.name,
-                        'image': image_url,
-                    }
-                )
+        for c in request.env['product.public.category'].search([('website_published', '=', True), ('show_on_startpage', '=', True)], order='sequence'):
+            image_url = ''
+            if c.image_medium:
+                image_url = '/imagefield/product.public.category/image/%s/ref/%s' %(c.id, 'snippet_dermanord.img_categories')
+            category_list.append(
+                {
+                    'id': c.id,
+                    'name': c.name,
+                    'image': image_url,
+                }
+            )
         return {'show_more': _('Show More'), 'show_less': _('Show Less'), 'category_list': category_list}
 
     @http.route(['/product_hightlights_snippet/get_highlighted_products'], type='json', auth="public", website=True)
