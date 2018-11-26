@@ -203,10 +203,12 @@ $(document).ready(function(){
             $.each($c_list, function(key, val) {
                 if ($.inArray(val, all_active_categ_ids) !== -1) {
                     $self.removeClass("hidden");
+                    $self.closest(".panel").find("div#" + $self.data("mobile") + "_facet_" + $self.data("facet")).removeClass("hidden");
                     return false;
                 }
                 else {
                     $self.addClass("hidden");
+                    $self.closest(".panel").find("div#" + $self.data("mobile") + "_facet_" + $self.data("facet")).addClass("hidden");
                 }
             });
         });

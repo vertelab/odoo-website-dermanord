@@ -1214,7 +1214,7 @@
                 <div class="panel-group">
                     <div class="panel panel-default">
                         <t t-foreach="filter_facets.with_context(ressal=ressal).filtered(lambda f: f.id not in f._context.get('ressal'))" t-as="facet">
-                            <div class="panel-heading facet_panel_heading hidden" t-att-data-categories="facet.category_ids.mapped('id')">
+                            <div class="panel-heading facet_panel_heading hidden" t-att-data-facet="facet.id" t-att-data-mobile="'mobile' if mobile else 'desktop'" t-att-data-categories="facet.category_ids.mapped('id')">
                                 <h4 class="panel-title">
                                     <input type="checkbox" class="heading_checkbox"/>
                                     <t t-esc="facet.name" />
