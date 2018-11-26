@@ -138,6 +138,18 @@ $(document).ready(function(){
         activate_facet();
     });
 
+    $("input.facet_heading_checkbox").change(function() {
+        var $self = $(this);
+        var checked = $self.is(":checked");
+        var div_id = $self.closest("h4").find("a[data-toggle='collapse']").attr("href");
+        $.each($self.closest("div.panel").find(div_id).find(".facet_checkbox"), function() {
+            if (checked)
+                $(this).attr("checked", "checked");
+            else
+                $(this).removeAttr("checked", "checked");
+        });
+    });
+
     function category_heading_parents() {
         $.each($("div.panel-heading.category_heading_parents"), function() {
             var $self = $(this);
@@ -147,7 +159,25 @@ $(document).ready(function(){
                 input_checked_count += 1;
             }
             var div_categories_id = $self.find("input.category_checkbox").data("category");
-            var $all_child_checkbox = $self.closest("div.panel.panel-default").find("div#" + div_categories_id).find("input[class='category_checkbox']");
+            var $all_child_checkbox = $self.closest("div.panel.panel-default").find("div#" + div_categories_id).find("input.category_checkbox");
+            $.each($all_child_checkbox, function() {
+                if ($(this).is(":checked")) {
+                   input_checked_count += 1;
+                }
+            });
+            if (input_checked_count != 0) {
+                $h4.append('<span class="filter_match">' + input_checked_count + '</span>');
+            }
+        });
+    }
+
+    function facet_heading_parents() {
+        $.each($("div.panel-heading.facet_heading_parents"), function() {
+            var $self = $(this);
+            var $h4 = $self.find("h4.panel-title");
+            var input_checked_count = 0;
+            var div_facet_id = $h4.find("a[data-toggle='collapse']").attr("href");
+            var $all_child_checkbox = $self.closest("div.panel.panel-default").find(div_facet_id).find("input.facet_checkbox");
             $.each($all_child_checkbox, function() {
                 if ($(this).is(":checked")) {
                    input_checked_count += 1;
@@ -183,6 +213,7 @@ $(document).ready(function(){
     }
 
     category_heading_parents();
+    facet_heading_parents();
     activate_facet();
 
     openerp.jsonRpc("/website_sale_update_cart", "call", {
