@@ -45,5 +45,16 @@
                 </notebook>
             </field>
         </record>
+        <!-- website category -->
+        <record id="product_public_category_form_view" model="ir.ui.view">
+            <field name="name">product.public.category.form.show_on_startpage</field>
+            <field name="model">product.public.category</field>
+            <field name="inherit_id" ref="website_sale.product_public_category_form_view" />
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="show_on_startpage" />
+                </field>
+            </field>
+        </record>
     </data>
 </openerp>
