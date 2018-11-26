@@ -385,17 +385,19 @@ class product_public_category(models.Model):
         af = self.env.user in af_groups_users
         rese_header = ''
         rese_div = ''
-        rese_header = '<div class="panel-heading facet_heading_parents" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox"><a class="facet_parents_style" href="javascript:void(0)">%s</a><a data-toggle="collapse" href="#rese_div" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a></h4></div>' %('border-bottom: none;' if af else '', rese.name)
+        rese_facet_values = self.env['product.facet.value'].search([('facet_id', '=', rese.id)])
+        rese_header = '<div class="panel-heading facet_heading_parents" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox"><a class="facet_parents_style" href="javascript:void(0)">%s</a><a data-toggle="collapse" href="#rese_div" class="pull-right">%s</a></h4></div>' %('border-bottom: none;' if af else '', rese.name, '<i class="desktop_angle fa fa-angle-down"></i>' if len(rese_facet_values) > 0 else '')
         rese_div += '<div id="rese_div" class="panel-collapse collapse" style="border-left: 1px solid rgb(221, 221, 221); border-right: 1px solid rgb(221, 221, 221); %s"><div class="panel-body">' %('' if af else 'border-bottom: 1px solid rgb(221, 221, 221);')
-        for facet_value in self.env['product.facet.value'].search([('facet_id', '=', rese.id)]):
+        for facet_value in rese_facet_values:
             rese_div += '<div class="panel-heading category_heading_children"><h4 class="panel-title parent_category_panel_title"><input type="checkbox" class="facet_checkbox" name="facet_%s_%s" value="%s" %s><a href="javascript:void(0)" class="category_children_style">%s</a></h4></div>' %(facet_value.facet_id.id, facet_value.id, facet_value.id, 'checked="checked"' if facet_value.id in facet_value_ids else '', facet_value.name)
         rese_div += '</div></div>'
         salong_header = ''
         salong_div = ''
+        salong_facet_values = self.env['product.facet.value'].search([('facet_id', '=', salong.id)])
         if af:
-            salong_header = '<div class="panel-heading facet_heading_parents" style="border: 1px solid #ddd; background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox"><a class="facet_parents_style" href="javascript:void(0)">%s</a><a data-toggle="collapse" href="#salong_div" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a></h4></div>' %(salong.name)
+            salong_header = '<div class="panel-heading facet_heading_parents" style="border: 1px solid #ddd; background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox"><a class="facet_parents_style" href="javascript:void(0)">%s</a><a data-toggle="collapse" href="#salong_div" class="pull-right">%s</a></h4></div>' %(salong.name, '<i class="desktop_angle fa fa-angle-down"></i>' if len(salong_facet_values) > 0 else '')
             salong_div = '<div id="salong_div" class="panel-collapse collapse" style="border-left: 1px solid rgb(221, 221, 221); border-right: 1px solid rgb(221, 221, 221); border-bottom: 1px solid rgb(221, 221, 221);"><div class="panel-body">'
-            for facet_value in self.env['product.facet.value'].search([('facet_id', '=', salong.id)]):
+            for facet_value in salong_facet_values:
                 salong_div += '<div class="panel-heading category_heading_children"><h4 class="panel-title parent_category_panel_title"><input type="checkbox" class="facet_checkbox" name="facet_%s_%s" value="%s" %s><a href="javascript:void(0)" class="category_children_style">%s</a></h4></div>' %(facet_value.facet_id.id, facet_value.id, facet_value.id, 'checked="checked"' if facet_value.id in facet_value_ids else '', facet_value.name)
             salong_div += '</div></div>'
         return u'''{rese_header}
