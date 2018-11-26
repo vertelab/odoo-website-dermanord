@@ -193,8 +193,11 @@ $(document).ready(function(){
         var all_active_categ_ids = [];
         $.each($("input.category_checkbox"), function() {
             var $self = $(this);
+            var categ_id = parseInt($self.data("parent_category"));
             if ($self.is(":checked")) {
-                all_active_categ_ids.push(parseInt($self.data("parent_category")));
+                if ($.inArray(categ_id, all_active_categ_ids) === -1) {
+                    all_active_categ_ids.push(categ_id);
+                }
             }
         });
         $.each($("div.facet_panel_heading"), function() {
