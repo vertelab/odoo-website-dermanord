@@ -63,9 +63,9 @@ class crm_tracking_campaign(models.Model):
         for r in self:
             for o in r.object_ids:
                 if o.object_id._name == 'product.template':
-                    o.object_id.write({'campaign_changed': False if o.object_id.campaign_changed else True})
+                    o.object_id._is_offer_product()
                 elif o.object_id._name == 'product.product':
-                    o.object_id.product_tmpl_id.write({'campaign_changed': False if o.object_id.product_tmpl_id.campaign_changed else True})
+                    o.object_id.product_tmpl_id._is_offer_product()
         return super(crm_tracking_campaign, self).write(vals)
 
     @api.model
@@ -73,9 +73,9 @@ class crm_tracking_campaign(models.Model):
         res = super(crm_tracking_campaign, self).create(vals)
         for o in res.object_ids:
             if o.object_id._name == 'product.template':
-                o.object_id.write({'campaign_changed': True})
+                o.object_id._is_offer_product()
             elif o.object_id._name == 'product.product':
-                o.object_id.product_tmpl_id.write({'campaign_changed': True})
+                o.object_id.product_tmpl_id._is_offer_product()
         return res
 
 
@@ -93,19 +93,20 @@ class crm_campaign_object(models.Model):
 
     @api.model
     def create(self, vals):
-        if vals.get('object_id') and vals['object_id'][0] == 'product.template':
-            self.env['product.template'].browse(vals['object_id'][1]).write({'campaign_changed': True})
-        elif vals.get('object_id') and vals['object_id'][0] == 'product.product':
-            self.env['product.product'].browse(vals['object_id'][1]).product_tmpl_id.write({'campaign_changed': True})
-        return super(crm_campaign_object, self).create(vals)
+        res = super(crm_campaign_object, self).create(vals)
+        if vals.get('object_id') and vals.get('object_id').split(',')[0] == 'product.template':
+            self.env['product.template'].browse(int(vals.get('object_id').split(',')[1]))._is_offer_product()
+        elif vals.get('object_id') and vals.get('object_id').split(',')[0] == 'product.product':
+            self.env['product.product'].browse(int(vals.get('object_id').split(',')[1])).product_tmpl_id._is_offer_product()
+        return res
 
     @api.multi
     def write(self, vals):
         for r in self:
             if r.object_id and r.object_id._name == 'product.template':
-                r.object_id.write({'campaign_changed': False if r.object_id.campaign_changed else True})
+                r.object_id._is_offer_product()
             elif r.object_id and r.object_id._name == 'product.product':
-                r.object_id.product_tmpl_id.write({'campaign_changed': False if r.object_id.product_tmpl_id.campaign_changed else True})
+                r.object_id.product_tmpl_id._is_offer_product()
         return super(crm_campaign_object, self).write(vals)
 
 
