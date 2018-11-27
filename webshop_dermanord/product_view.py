@@ -851,7 +851,7 @@ class product_product(models.Model):
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb32">
         <div class="col-sm-7 col-md-7 col-lg-7">
             {html_product_detail_image}
         </div>
