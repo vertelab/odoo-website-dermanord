@@ -677,7 +677,7 @@ class Website(models.Model):
 
     def dn_shop_set_session(self, model, post, url):
         """Update session for /dn_shop"""
-        default_order = 'name asc'
+        default_order = request.session.get('current_order', 'name asc')
         if post.get('order'):
             default_order = post.get('order')
             if request.session.get('form_values'):
@@ -1293,17 +1293,18 @@ class WebsiteSale(website_sale):
         '/webshop_new/category/<model("product.public.category"):category>/page/<int:page>',
         ], type='http', auth="public", website=True)
     def webshop_new(self, page=0, category=None, search='', **post):
+        # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\n' % (request.session.get('current_order'), request.session.get('current_domain')))
+        # ~ _logger.warn(post)
+        if category:
+            for key in post.keys():
+                if key.startswith('category_') and key.split('_', 1).isdigit():
+                    del post[key]
+            post['category_%s' % category.id] = category.id
+        # ~ _logger.warn(post)
         if request.env.user.webshop_type == 'dn_list':
             request.website.dn_shop_set_session('product.product', post, '/dn_list')
         else:
             request.website.dn_shop_set_session('product.template', post, '/dn_shop')
-        if category:
-            if not request.session.get('form_values'):
-                request.session['form_values'] = {'category_%s' %int(category): int(category)}
-            request.session['form_values'].update({'category_%s' %int(category): int(category)})
-            request.website.get_form_values()['category_' + str(int(category))] = int(category)
-            request.session['current_domain'] = [('public_categ_ids', 'child_of', [int(category)])]
-            request.session['chosen_filter_qty'] = request.website.get_chosen_filter_qty(request.website.get_form_values())
         if not request.context.get('pricelist'):
             request.context['pricelist'] = int(self.get_pricelist())
         if search:
@@ -1311,8 +1312,9 @@ class WebsiteSale(website_sale):
 
         user = request.env['res.users'].browse(request.uid)
 
-        _logger.warn('Anders webshop2 user --------> %s user %s %s %s ' % (request.env.ref('base.public_user'),request.env.user,request.uid,user))
-        _logger.warn('Anders webshop2 user --------> %s type ' % (request.env.user.webshop_type))
+        # ~ _logger.warn('Anders webshop2 user --------> %s user %s %s %s ' % (request.env.ref('base.public_user'),request.env.user,request.uid,user))
+        # ~ _logger.warn('Anders webshop2 user --------> %s type ' % (request.env.user.webshop_type))
+        # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\n' % (request.session.get('current_order'), request.session.get('current_domain')))
 
         no_product_message = ''
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
