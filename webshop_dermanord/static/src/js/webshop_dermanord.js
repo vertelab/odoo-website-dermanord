@@ -159,7 +159,8 @@ $(document).ready(function(){
                 input_checked_count += 1;
             }
             var div_categories_id = $self.find("input.category_checkbox").data("category");
-            var $all_child_checkbox = $self.closest("div.panel.panel-default").find("div#" + div_categories_id).find("input.category_checkbox");
+            var $submenu_div = $self.closest("div.panel.panel-default").find("div#" + div_categories_id)
+            var $all_child_checkbox = $submenu_div.find("input.category_checkbox");
             $.each($all_child_checkbox, function() {
                 if ($(this).is(":checked")) {
                    input_checked_count += 1;
@@ -167,6 +168,7 @@ $(document).ready(function(){
             });
             if (input_checked_count != 0) {
                 $h4.append('<span class="filter_match">' + input_checked_count + '</span>');
+                $submenu_div.addClass("in");
             }
         });
     }
