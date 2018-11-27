@@ -164,6 +164,7 @@ $(document).ready(function(){
             $.each($all_child_checkbox, function() {
                 if ($(this).is(":checked")) {
                    input_checked_count += 1;
+                   $(this).closest("div.panel-collapse").addClass("in");
                 }
             });
             if (input_checked_count != 0) {
