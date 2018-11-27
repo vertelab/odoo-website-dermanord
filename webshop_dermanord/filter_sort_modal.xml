@@ -3,7 +3,7 @@
     <data>
         <template id="main_filter_sort_layout" inherit_id="website.layout">
             <xpath expr="//div[@id='wrapwrap']/main" position="inside">
-                <t t-if="shop_footer and filter_version == 'old'">
+                <t t-if="shop_footer and filter_version == 'webshop'">
                     <t t-set="filter_facets" t-value="request.env['product.facet'].get_filtered_facets(request.session.get('form_values'))" />
                     <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])" />
                     <div id="dn_filter_modal" class="modal fade" role="dialog">
