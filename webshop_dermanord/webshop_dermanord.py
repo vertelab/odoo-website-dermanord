@@ -678,6 +678,13 @@ class Website(models.Model):
 
     def dn_shop_set_session(self, model, post, url):
         """Update session for /dn_shop"""
+        categ_ids = []
+        def get_all_children_category(categ_id):
+            categ_ids.append(categ_id)
+            children = self.env['product.public.category'].search([('parent_id', '=', categ_id)])
+            if len(children) > 0:
+                for c in children:
+                    get_all_children_category(c.id)
         default_order = request.session.get('current_order', 'name asc')
         if post.get('order'):
             default_order = post.get('order')
@@ -691,11 +698,17 @@ class Website(models.Model):
         request.session['url'] = url
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
         request.session['sort_name'], request.session['sort_order'] = self.get_chosen_order(self.get_form_values())
-
         if post:
             request.session['form_values']['current_ingredient'] = post.get('current_ingredient')
             request.session['current_ingredient'] = post.get('current_ingredient')
-            domain = self.get_domain_append(model, post)
+            if len(post) == 1 and post.keys()[0].startswith('category_'): #change category
+                domain = request.session.get('current_domain')
+                get_all_children_category(post.values()[0])
+                for idx, d in enumerate(domain):
+                   if d[0] == 'public_categ_ids':
+                       domain[idx] = tuple(('public_categ_ids', 'in', categ_ids))
+            else:
+                domain = self.get_domain_append(model, post)
         else:
             domain = self.get_domain_append(model, request.session.get('form_values', {}))
         # ~ _logger.warn('\n\ndomain: %s\n' % domain)
@@ -1295,13 +1308,14 @@ class WebsiteSale(website_sale):
         ], type='http', auth="public", website=True)
     def webshop_new(self, page=0, category=None, search='', **post):
         # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\n' % (request.session.get('current_order'), request.session.get('current_domain')))
-        # ~ _logger.warn(post)
         if category:
+            for idx, d in enumerate(request.session.get('current_domain')):
+                if d[0] == 'public_categ_ids' or d[0] == 'product_tmpl_id.public_categ_ids':
+                    request.session['current_domain'][idx] = tuple(('public_categ_ids', 'in', [category.id]))
             for key in post.keys():
                 if key.startswith('category_') and key.split('_', 1).isdigit():
                     del post[key]
             post['category_%s' % category.id] = category.id
-        # ~ _logger.warn(post)
         if request.env.user.webshop_type == 'dn_list':
             request.website.dn_shop_set_session('product.product', post, '/dn_list')
         else:
@@ -1310,7 +1324,6 @@ class WebsiteSale(website_sale):
             request.context['pricelist'] = int(self.get_pricelist())
         if search:
             post["search"] = search
-
         user = request.env['res.users'].browse(request.uid)
 
         # ~ _logger.warn('Anders webshop2 user --------> %s user %s %s %s ' % (request.env.ref('base.public_user'),request.env.user,request.uid,user))
