@@ -481,17 +481,14 @@ class product_product(models.Model):
             pricelist = self.env['product.pricelist'].browse(pricelist)
         rows = []
         flush_type = 'product_list_row'
-        ribbon_promo = None
-        ribbon_limited = None
-        for product in self.env['product.product'].search_read(domain, fields=['id','fullname', 'default_code','type', 'is_offer_product_reseller', 'is_offer_product_consumer', 'product_tmpl_id', 'sale_ok','campaign_ids','website_style_ids_variant'], limit=limit, order=order,offset=offset):
+        ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
+        ribbon_promo   = request.env.ref('website_sale.image_promo')
+        for product in self.env['product.product'].search_read(domain, fields=['id','fullname', 'default_code','type', 'is_offer_product_reseller', 'is_offer_product_consumer', 'product_tmpl_id', 'sale_ok','campaign_ids', 'website_style_ids', 'website_style_ids_variant'], limit=limit, order=order,offset=offset):
             key_raw = 'list_row %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,product['id'],pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
             key,page_dict = self.env['website'].get_page_dict(key_raw)
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
             if not page_dict:
                 render_start = timer()
-                if not ribbon_limited:
-                    ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
-                    ribbon_promo   = request.env.ref('website_sale.image_promo')
                 campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
                 page = u"""<tr class="tr_lst ">
                                 <td class="td_lst">
@@ -571,7 +568,7 @@ class product_product(models.Model):
                     product_name=product['fullname'],
                     product_price = self.env['product.product'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_short(),
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
-                    product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.id in product['website_style_ids_variant'] else '',
+                    product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.id in (product['website_style_ids'] + product['website_style_ids_variant']) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.id in product['website_style_ids_variant'] else '',
                     key_raw=key_raw,
                     key=key,
