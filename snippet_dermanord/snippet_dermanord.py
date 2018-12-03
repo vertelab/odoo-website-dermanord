@@ -117,6 +117,7 @@ class snippet(http.Controller):
                     'id': c.id,
                     'name': c.name,
                     'image': image_url,
+                    'url': '/%s/category/%s' %(request.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version'), c.id),
                 }
             )
         return {'show_more': _('Show More'), 'show_less': _('Show Less'), 'category_list': category_list}
@@ -135,8 +136,8 @@ class snippet(http.Controller):
                 '&',
                     ('date_stop', '=', False),
                     '|',
-                        ('country_id', '=', request.env.ref('base.se').id),
-                        ('country_id', '=', False)
+                        ('country_ids', '=', request.env.ref('base.se').id),
+                        ('country_ids', '=', False)
         ])
         object_list = []
         if campaigns:

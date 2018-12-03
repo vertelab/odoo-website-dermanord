@@ -209,11 +209,16 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
     </data>
 
     <data>
-        <record id="reseforpackningar" model="product.facet">
-            <field name="name">Reseförpackningar</field>
+        <record id="facet_specialforpackningar" model="product.facet">
+            <field name="name">Specialförpackningar</field>
         </record>
-        <record id="salongsprodukter" model="product.facet">
+        <record id="facet_value_reseforpackningar" model="product.facet.value">
+            <field name="name">Reseförpackningar</field>
+            <field name="facet_id" ref="webshop_dermanord.facet_specialforpackningar"/>
+        </record>
+        <record id="facet_value_salongsprodukter" model="product.facet.value">
             <field name="name">Salongsprodukter</field>
+            <field name="facet_id" ref="webshop_dermanord.facet_specialforpackningar"/>
         </record>
     </data>
 

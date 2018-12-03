@@ -1186,7 +1186,7 @@
             </xpath>
         </template>
         <template id="webshop_dermanord_desktop_product_filter_content" name="Webshop Dermanord Desktop Filter Content">
-            <t t-set="ressal" t-value="[request.env.ref('webshop_dermanord.reseforpackningar').id, request.env.ref('webshop_dermanord.salongsprodukter').id]"/>
+            <t t-set="ressal" t-value="[request.env.ref('webshop_dermanord.facet_specialforpackningar').id]"/>
             <div t-att-id="'mobile_product_navigator_filter' if mobile else 'desktop_product_navigator_filter'">
                 <div class="panel-group mt32">
                     <div class="panel panel-default">

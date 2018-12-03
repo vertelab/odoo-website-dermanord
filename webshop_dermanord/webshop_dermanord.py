@@ -381,35 +381,29 @@ class product_public_category(models.Model):
             if domain[0] == 'facet_line_ids.value_ids' or domain[0] == 'product_variant_ids.facet_line_ids.value_ids':
                 if domain[2] not in facet_value_ids:
                     facet_value_ids.append(domain[2])
-        rese = self.env.ref('webshop_dermanord.reseforpackningar')
-        salong = self.env.ref('webshop_dermanord.salongsprodukter')
+        spec = self.env.ref('webshop_dermanord.facet_specialforpackningar')
+        rese = self.env.ref('webshop_dermanord.facet_value_reseforpackningar')
+        salong = self.env.ref('webshop_dermanord.facet_value_salongsprodukter')
         af_groups_users = self.env.ref('webshop_dermanord.group_dn_af').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_ht').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_spa').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_sk').sudo().mapped('users')
         af = self.env.user in af_groups_users
-        rese_header = ''
-        rese_div = ''
-        rese_facet_values = self.env['product.facet.value'].search([('facet_id', '=', rese.id)])
-        rese_header = '<div class="panel-heading facet_heading_parents" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox"><a class="facet_parents_style" href="javascript:void(0)">%s</a><a data-toggle="collapse" href="#rese_div" class="pull-right">%s</a></h4></div>' %('border-bottom: none;' if af else '', rese.name, '<i class="desktop_angle fa fa-angle-down"></i>' if len(rese_facet_values) > 0 else '')
-        rese_div += '<div id="rese_div" class="panel-collapse collapse" style="border-left: 1px solid rgb(221, 221, 221); border-right: 1px solid rgb(221, 221, 221); %s"><div class="panel-body">' %('' if af else 'border-bottom: 1px solid rgb(221, 221, 221);')
-        for facet_value in rese_facet_values:
-            rese_div += '<div class="panel-heading category_heading_children"><h4 class="panel-title parent_category_panel_title"><input type="checkbox" class="facet_checkbox" name="facet_%s_%s" value="%s" %s><a href="javascript:void(0)" class="category_children_style">%s</a></h4></div>' %(facet_value.facet_id.id, facet_value.id, facet_value.id, 'checked="checked"' if facet_value.id in facet_value_ids else '', facet_value.name)
-        rese_div += '</div></div>'
-        salong_header = ''
-        salong_div = ''
-        salong_facet_values = self.env['product.facet.value'].search([('facet_id', '=', salong.id)])
-        if af:
-            salong_header = '<div class="panel-heading facet_heading_parents" style="border: 1px solid #ddd; background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox"><a class="facet_parents_style" href="javascript:void(0)">%s</a><a data-toggle="collapse" href="#salong_div" class="pull-right">%s</a></h4></div>' %(salong.name, '<i class="desktop_angle fa fa-angle-down"></i>' if len(salong_facet_values) > 0 else '')
-            salong_div = '<div id="salong_div" class="panel-collapse collapse" style="border-left: 1px solid rgb(221, 221, 221); border-right: 1px solid rgb(221, 221, 221); border-bottom: 1px solid rgb(221, 221, 221);"><div class="panel-body">'
-            for facet_value in salong_facet_values:
-                salong_div += '<div class="panel-heading category_heading_children"><h4 class="panel-title parent_category_panel_title"><input type="checkbox" class="facet_checkbox" name="facet_%s_%s" value="%s" %s><a href="javascript:void(0)" class="category_children_style">%s</a></h4></div>' %(facet_value.facet_id.id, facet_value.id, facet_value.id, 'checked="checked"' if facet_value.id in facet_value_ids else '', facet_value.name)
-            salong_div += '</div></div>'
-        return u'''{rese_header}
-{rese_div}
-{salong_header}
-{salong_div}'''.format(
-    rese_header = rese_header,
-    rese_div = rese_div,
-    salong_header = salong_header,
-    salong_div = salong_div,
+        spec_header = ''
+        spec_div = ''
+        spec_facet_values = self.env['product.facet.value'].search([('facet_id', '=', spec.id)])
+        spec_header = '<div class="panel-heading facet_heading_parents" style="border: 1px solid #ddd; background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox"><a class="facet_parents_style" href="javascript:void(0)">%s</a><a data-toggle="collapse" href="#spec_div" class="pull-right">%s</a></h4></div>' %(spec.name, '<i class="desktop_angle fa fa-angle-down"></i>' if len(spec_facet_values) > 0 else '')
+        spec_div += '<div id="spec_div" class="panel-collapse collapse" style="border-left: 1px solid #ddd; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd;"><div class="panel-body">'
+        def get_facet_value_div(facet_value):
+            return '<div class="panel-heading category_heading_children"><h4 class="panel-title parent_category_panel_title"><input type="checkbox" class="facet_checkbox" name="facet_%s_%s" value="%s" %s><a href="javascript:void(0)" class="category_children_style">%s</a></h4></div>' %(facet_value.facet_id.id, facet_value.id, facet_value.id, 'checked="checked"' if facet_value.id in facet_value_ids else '', facet_value.name)
+        for facet_value in spec_facet_values:
+            if facet_value == salong:
+                if af:
+                    spec_div += get_facet_value_div(facet_value)
+            else:
+                spec_div += get_facet_value_div(facet_value)
+        spec_div += '</div></div>'
+        return u'''{spec_header}
+{spec_div}'''.format(
+    spec_header = spec_header,
+    spec_div = spec_div
 )
 
 
@@ -678,13 +672,6 @@ class Website(models.Model):
 
     def dn_shop_set_session(self, model, post, url):
         """Update session for /dn_shop"""
-        categ_ids = []
-        def get_all_children_category(categ_id):
-            categ_ids.append(categ_id)
-            children = self.env['product.public.category'].search([('parent_id', '=', categ_id)])
-            if len(children) > 0:
-                for c in children:
-                    get_all_children_category(c.id)
         default_order = request.session.get('current_order', 'name asc')
         if post.get('order'):
             default_order = post.get('order')
@@ -701,17 +688,9 @@ class Website(models.Model):
         if post:
             request.session['form_values']['current_ingredient'] = post.get('current_ingredient')
             request.session['current_ingredient'] = post.get('current_ingredient')
-            if len(post) == 1 and post.keys()[0].startswith('category_'): #change category
-                domain = request.session.get('current_domain')
-                get_all_children_category(post.values()[0])
-                for idx, d in enumerate(domain):
-                   if d[0] == 'public_categ_ids':
-                       domain[idx] = tuple(('public_categ_ids', 'in', categ_ids))
-            else:
-                domain = self.get_domain_append(model, post)
+            domain = self.get_domain_append(model, post)
         else:
             domain = self.get_domain_append(model, request.session.get('form_values', {}))
-        # ~ _logger.warn('\n\ndomain: %s\n' % domain)
         request.session['current_domain'] = domain
 
     # API handling broken for unknown reasons. Decorators not working properly with this method.
@@ -1308,27 +1287,40 @@ class WebsiteSale(website_sale):
         ], type='http', auth="public", website=True)
     def webshop_new(self, page=0, category=None, search='', **post):
         # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\n' % (request.session.get('current_order'), request.session.get('current_domain')))
-        if category:
+        def update_current_domain(model):
+            public_categ_ids = []
+            def get_all_children_category(categ_id):
+                public_categ_ids.append(categ_id)
+                children = request.env['product.public.category'].search([('parent_id', '=', categ_id)])
+                if len(children) > 0:
+                    for c in children:
+                        get_all_children_category(c.id)
+            get_all_children_category(category.id)
+            domain_field = 'public_categ_ids'
+            # ~ if model == 'product.template':
+                # ~ domain_field = 'product_variant_ids.public_categ_ids'
+            found_public_categ_ids = False
             for idx, d in enumerate(request.session.get('current_domain')):
-                if d[0] == 'public_categ_ids' or d[0] == 'product_tmpl_id.public_categ_ids':
-                    request.session['current_domain'][idx] = tuple(('public_categ_ids', 'in', [category.id]))
-            for key in post.keys():
-                if key.startswith('category_') and key.split('_', 1).isdigit():
-                    del post[key]
-            post['category_%s' % category.id] = category.id
+                if d[0] == 'public_categ_ids':
+                    request.session['current_domain'][idx] = tuple((domain_field, 'in', public_categ_ids)) # replace the public categories to current category and it's child categories
+                    found_public_categ_ids = True
+            if not found_public_categ_ids:
+                request.session['current_domain'].append(tuple((domain_field, 'in', public_categ_ids))) # add categories in the first time
+
         if request.env.user.webshop_type == 'dn_list':
             request.website.dn_shop_set_session('product.product', post, '/dn_list')
+            if category:
+                update_current_domain('product.product')
         else:
             request.website.dn_shop_set_session('product.template', post, '/dn_shop')
+            if category:
+                update_current_domain('product.template')
+
         if not request.context.get('pricelist'):
             request.context['pricelist'] = int(self.get_pricelist())
         if search:
             post["search"] = search
         user = request.env['res.users'].browse(request.uid)
-
-        # ~ _logger.warn('Anders webshop2 user --------> %s user %s %s %s ' % (request.env.ref('base.public_user'),request.env.user,request.uid,user))
-        # ~ _logger.warn('Anders webshop2 user --------> %s type ' % (request.env.user.webshop_type))
-        # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\n' % (request.session.get('current_order'), request.session.get('current_domain')))
 
         no_product_message = ''
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):

@@ -83,7 +83,7 @@ website.snippet.options.categ_p_option = website.snippet.Option.extend({
         }).done(function(data){
             if (data['category_list'].length == 0) {
                 var message = '<h2 class="text-center text-muted css_non_editable_mode_hidden">No category yet</h2>';
-                self.$target.find("h3").after(message);
+                self.$target.find("h2").after(message);
             }
             else {
                 var category_content = '';
@@ -95,7 +95,7 @@ website.snippet.options.categ_p_option = website.snippet.Option.extend({
                         'category_name': data['category_list'][key]['name'],
                         'category_image': data['category_list'][key]['image'],
                     });
-                    content = content.replace("/webshop/category/category_id", "/webshop/category/" + data['category_list'][key]['id']);
+                    content = content.replace("/webshop/category/category_id", data['category_list'][key]['url']);
                     category_content += i > categ_block_hidden_indicator ? content.replace("categ_block", "categ_block extra_block hidden-xs") : content;
                     if(i == categ_block_hidden_indicator){
                         category_content += show_more_block;
