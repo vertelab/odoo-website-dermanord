@@ -393,7 +393,7 @@ class product_public_category(models.Model):
             chosen_facet = request.session.get('form_values').get('facet_%s_%s' %(facet_value.facet_id.id, facet_value.id), False)
             if chosen_facet and chosen_facet == str(facet_value.id):
                 checked = 'checked="checked"'
-            return '<div class="panel-heading" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox" name="facet_%s_%s" value="%s" %s/><a class="facet_parents_style" href="javascript:void(0)">%s</a></h4></div>' %('' if last else 'border-bottom: none;', facet_value.facet_id.id, facet_value.id, facet_value.id, checked, facet_value.name)
+            return '<div class="panel-heading" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox" name="facet_%s_%s" value="%s" %s/><a class="facet_parents_style" href="javascript:void(0)" onclick="onclick_submit($(this));">%s</a></h4></div>' %('' if last else 'border-bottom: none;', facet_value.facet_id.id, facet_value.id, facet_value.id, checked, facet_value.name)
         for facet_value in spec_facet_values:
             if facet_value in [salong]:
                 if af:
