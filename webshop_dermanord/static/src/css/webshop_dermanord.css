@@ -10,6 +10,7 @@ body {}
 .dn_viewtype_active, .dn_view_type_inactive {
     display: inline-block;
     padding: 9px 15px;
+    border: 1px solid #ddd;
 }
 
 .dn_view_type_inactive{
