@@ -117,6 +117,20 @@ msgstr "Hanterar rättigheter för produkter och funktioner för webbplatsbesök
 msgid "Name"
 msgstr "Namn"
 
+#. module: webshop_dermanord
+#. openerp-web
+#: code:addons/webshop_dermanord/product_view.py:276
+#: code:addons/webshop_dermanord/product_view.py:344
+#: code:addons/webshop_dermanord/product_view.py:418
+#: code:addons/webshop_dermanord/product_view.py:571
+#: code:addons/webshop_dermanord/product_view.py:647
+#: code:addons/webshop_dermanord/product_view.py:652
+#: code:addons/webshop_dermanord/static/src/xml/product.xml:29
+#: code:addons/webshop_dermanord/static/src/xml/product.xml:110
+#, python-format
+msgid "New"
+msgstr "Nyhet"
+
 #. module: website_sale_price_chart
 #: code:addons/website_sale_price_chart/sale.py:288
 #, python-format
