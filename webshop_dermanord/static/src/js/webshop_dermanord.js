@@ -78,7 +78,10 @@ function submit_facet($facet) {
 }
 
 function onclick_submit($element) {
-    $element.prev().attr("checked", "checked");
+    $.each($element.closest("div.panel").find(".onrs_style"), function() {
+        $(this).prev().attr("checked", false);
+    });
+    $element.prev().attr("checked", true);
     $element.closest("form").submit();
 }
 
@@ -116,26 +119,30 @@ $(document).ready(function(){
         var $self = $(this);
         var checked = $self.is(":checked");
         var categ_id = $self.data("category");
-        $.each($self.closest("div.panel").find("div#" + categ_id + " input[type='checkbox']"), function() {
-            if (checked)
-                $(this).attr("checked", "checked");
-            else
-                $(this).removeAttr("checked", "checked");
-        });
-        activate_facet();
+        if (categ_id != "") {
+            $.each($self.closest("div.panel").find("div#" + categ_id + " input[type='checkbox']"), function() {
+                if (checked)
+                    $(this).attr("checked", "checked");
+                else
+                    $(this).removeAttr("checked", "checked");
+            });
+            activate_facet();
+        }
     });
 
     $("input.heading_checkbox").change(function() {
         var $self = $(this);
         var checked = $self.is(":checked");
         var facet_id = $self.next().attr("href").replace("#", "");
-        $.each($self.closest("div.panel").find("div#" + facet_id + " input[type='checkbox']"), function() {
-            if (checked)
-                $(this).attr("checked", "checked");
-            else
-                $(this).removeAttr("checked", "checked");
-        });
-        activate_facet();
+        if (facet_id != "") {
+            $.each($self.closest("div.panel").find("div#" + facet_id + " input[type='checkbox']"), function() {
+                if (checked)
+                    $(this).attr("checked", "checked");
+                else
+                    $(this).removeAttr("checked", "checked");
+            });
+            activate_facet();
+        }
     });
 
     $("input.facet_heading_checkbox").change(function() {

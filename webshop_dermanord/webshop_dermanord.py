@@ -393,7 +393,7 @@ class product_public_category(models.Model):
             chosen_facet = request.session.get('form_values').get('facet_%s_%s' %(facet_value.facet_id.id, facet_value.id), False)
             if chosen_facet and chosen_facet == str(facet_value.id):
                 checked = 'checked="checked"'
-            return '<div class="panel-heading" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox" name="facet_%s_%s" value="%s" %s/><a class="facet_parents_style" href="javascript:void(0)" onclick="onclick_submit($(this));">%s</a></h4></div>' %('' if last else 'border-bottom: none;', facet_value.facet_id.id, facet_value.id, facet_value.id, checked, facet_value.name)
+            return '<div class="panel-heading" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox" name="facet_%s_%s" value="%s" %s/><span class="onrs_style" style="cursor: pointer;" onclick="onclick_submit($(this));">%s</span></h4></div>' %('' if last else 'border-bottom: none;', facet_value.facet_id.id, facet_value.id, facet_value.id, checked, facet_value.name)
         for facet_value in spec_facet_values:
             if facet_value in [salong]:
                 if af:
@@ -1286,6 +1286,66 @@ class WebsiteSale(website_sale):
         ], type='http', auth="public", website=True)
     def webshop_new(self, page=0, category=None, search='', **post):
         # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\n' % (request.session.get('current_order'), request.session.get('current_domain')))
+
+        facet_rese = 'facet_%s_%s' %(request.env.ref('webshop_dermanord.facet_specialforpackningar').id, request.env.ref('webshop_dermanord.facet_value_reseforpackningar').id)
+        facet_rese_id = request.env.ref('webshop_dermanord.facet_value_reseforpackningar').id
+        facet_salong = 'facet_%s_%s' %(request.env.ref('webshop_dermanord.facet_specialforpackningar').id, request.env.ref('webshop_dermanord.facet_value_salongsprodukter').id)
+        facet_salong_id = request.env.ref('webshop_dermanord.facet_value_salongsprodukter').id
+
+        to_remove_form_values = []
+        for key,value in post.iteritems():
+            if key == facet_rese:
+                for idx, d in enumerate(request.session.get('current_domain')):
+                    if (d[0] == 'facet_line_ids.value_ids' or d[0] == 'product_variant_ids.facet_line_ids.value_ids') and d[2] == facet_salong_id:
+                        del request.session['current_domain'][idx]
+                for k,v in request.session.get('form_values').iteritems():
+                    if (k == facet_salong):
+                        to_remove_form_values.append(facet_salong)
+                    if (k == 'current_offer'):
+                        to_remove_form_values.append('current_offer')
+                    if (k == 'current_news'):
+                        to_remove_form_values.append('current_news')
+            if key == facet_salong:
+                for idx, d in enumerate(request.session.get('current_domain')):
+                    if (d[0] == 'facet_line_ids.value_ids' or d[0] == 'product_variant_ids.facet_line_ids.value_ids') and d[2] == facet_rese_id:
+                        del request.session['current_domain'][idx]
+                for k,v in request.session.get('form_values').iteritems():
+                    if (k == facet_rese):
+                        to_remove_form_values.append(facet_rese)
+                    if (k == 'current_offer'):
+                        to_remove_form_values.append('current_offer')
+                    if (k == 'current_news'):
+                        to_remove_form_values.append('current_news')
+            if key == 'current_offer':
+                for idx, d in enumerate(request.session.get('current_domain')):
+                    if (d[0] == 'facet_line_ids.value_ids' or d[0] == 'product_variant_ids.facet_line_ids.value_ids') and d[2] == facet_rese_id:
+                        del request.session['current_domain'][idx]
+                    if (d[0] == 'facet_line_ids.value_ids' or d[0] == 'product_variant_ids.facet_line_ids.value_ids') and d[2] == facet_salong_id:
+                        del request.session['current_domain'][idx]
+                for k,v in request.session.get('form_values').iteritems():
+                    if (k == facet_rese):
+                        to_remove_form_values.append(facet_rese)
+                    if (k == facet_salong):
+                        to_remove_form_values.append(facet_salong)
+                    if (k == 'current_news'):
+                        to_remove_form_values.append('current_news')
+            if key == 'current_news':
+                for idx, d in enumerate(request.session.get('current_domain')):
+                    if (d[0] == 'facet_line_ids.value_ids' or d[0] == 'product_variant_ids.facet_line_ids.value_ids') and d[2] == facet_rese_id:
+                        del request.session['current_domain'][idx]
+                    if (d[0] == 'facet_line_ids.value_ids' or d[0] == 'product_variant_ids.facet_line_ids.value_ids') and d[2] == facet_salong_id:
+                        del request.session['current_domain'][idx]
+                for k,v in request.session.get('form_values').iteritems():
+                    if (k == facet_rese):
+                        to_remove_form_values.append(facet_rese)
+                    if (k == facet_salong):
+                        to_remove_form_values.append(facet_salong)
+                    if (k == 'current_offer'):
+                        to_remove_form_values.append('current_offer')
+        for v in to_remove_form_values:
+            if v in request.session.get('form_values'):
+                del request.session['form_values'][v]
+
         def update_current_domain(model):
             public_categ_ids = []
             def get_all_children_category(categ_id):

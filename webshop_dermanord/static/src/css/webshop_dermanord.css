@@ -521,7 +521,7 @@ select.dn_selection_dropdown + i.fa {
     padding: 0px 15px;
 }
 
-#desktop_product_navigator_filter h4, .category_parents_style, #mobile_product_navigator_filter h4, .facet_parents_style {
+#desktop_product_navigator_filter h4, .category_parents_style, #mobile_product_navigator_filter h4, .facet_parents_style, .onrs_style {
     font-family: futura-pt-medium, sans-serif !important;
     font-size: 16px !important;
 }
