@@ -282,7 +282,7 @@ class product_template(models.Model):
                     price_from=_('Price From'),
                 ).encode('utf-8')
                 # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
-                self.env['website'].put_page_dict(key, flush_type, page, 'product.template,%s' % product['id'])
+                self.env['website'].put_page_dict(key_raw, flush_type, page, 'product.template,%s' % product['id'])
                 page_dict['page'] = base64.b64encode(page)
             thumbnail.append(page_dict.get('page', '').decode('base64'))
         return thumbnail
@@ -350,7 +350,7 @@ class product_template(models.Model):
                     price_from=_('Price From'),
                 ).encode('utf-8')
                 # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
-                self.env['website'].put_page_dict(key, flush_type, page, 'product.template,%s' % product['id'])
+                self.env['website'].put_page_dict(key_raw, flush_type, page, 'product.template,%s' % product['id'])
                 page_dict['page'] = base64.b64encode(page)
             thumbnail.append(page_dict.get('page', '').decode('base64'))
         return thumbnail
@@ -424,7 +424,7 @@ class product_product(models.Model):
                     price_from=_('Price From'),
                 ).encode('utf-8')
                 _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
-                self.env['website'].put_page_dict(key, flush_type, page, 'product.template,%s' % product['id'])
+                self.env['website'].put_page_dict(key_raw, flush_type, page, 'product.template,%s' % product['id'])
                 page_dict['page'] = base64.b64encode(page)
             thumbnail.append(page_dict.get('page', '').decode('base64'))
             _logger.warn('get_thumbnail_default_variant (thiumnails)--------> %s' % (thumbnail))
@@ -574,7 +574,7 @@ class product_product(models.Model):
                     key=key,
                     render_time='%s' % (timer() - render_start),
                 ).encode('utf-8')
-                self.env['website'].put_page_dict(key, flush_type, page, 'product.product,%s' % product['id'])
+                self.env['website'].put_page_dict(key_raw, flush_type, page, 'product.product,%s' % product['id'])
                 page_dict['page'] = base64.b64encode(page)
             stock_info = self.get_stock_info(product['id'])
             rows.append(page_dict.get('page', '').decode('base64').format(shop_widget='' if stock_info[0] else 'hidden', product_stock=stock_info[2]))
@@ -644,12 +644,12 @@ class product_product(models.Model):
             ribbon_wrapper = ''
             if len(variant.website_style_ids_variant) > 0:
                 if variant.website_style_ids_variant[0] == ribbon_promo:
-                    ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('News')
+                    ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('New')
                 elif variant.website_style_ids_variant[0] == ribbon_limited:
                     ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('Limited Edition')
             elif len(variant.product_tmpl_id.website_style_ids) > 0:
                 if variant.product_tmpl_id.website_style_ids[0] == ribbon_promo:
-                    ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('News')
+                    ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('New')
                 elif variant.product_tmpl_id.website_style_ids[0] == ribbon_limited:
                     ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('Limited Edition')
             offer_wrapper = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">%s</div></div>' %_('Offer') if variant.is_offer_product_reseller or variant.is_offer_product_consumer else ''
@@ -934,7 +934,7 @@ class product_product(models.Model):
                     render_time='%s' % (timer() - render_start)
                 ).encode('utf-8')
             page += "\n<!-- render_time_total %s -->\n" % (timer() - render_start_tot)
-            self.env['website'].put_page_dict(key, flush_type, page, '%s,%s' % (product._model, product.id))
+            self.env['website'].put_page_dict(key_raw, flush_type, page, '%s,%s' % (product._model, product.id))
             page_dict['page'] = base64.b64encode(page)
         stock = {}
         for variant in product.product_variant_ids:
@@ -985,13 +985,14 @@ class Website(models.Model):
         return key,page_dict
 
     @api.model
-    def put_page_dict(self, key, flush_type, page, path):
+    def put_page_dict(self, key_raw, flush_type, page, path):
+        key = str(memcached.MEMCACHED_HASH(key_raw.encode('latin-1')))
         page_dict = {
             # ~ 'ETag':     '%s' % MEMCACHED_HASH(page),
             # ~ 'max-age':  max_age,
             # ~ 'cache-age':cache_age,
             # ~ 'private':  routing.get('private',False),
-            # ~ 'key_raw':  key_raw,
+            'key_raw':  key_raw,
             # ~ 'render_time': '%.3f sec' % (timer()-render_start),
             # ~ 'controller_time': '%.3f sec' % (render_start-controller_start),
             'path':     path,
