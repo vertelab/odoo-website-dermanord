@@ -1287,11 +1287,7 @@ class WebsiteSale(website_sale):
         ], type='http', auth="public", website=True)
     def webshop_new(self, page=0, category=None, search='', **post):
         # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\n' % (request.session.get('current_order'), request.session.get('current_domain')))
-        if request.env.user.webshop_type == 'dn_list':
-            request.website.dn_shop_set_session('product.product', post, '/dn_list')
-        else:
-            request.website.dn_shop_set_session('product.template', post, '/dn_shop')
-        if category:
+        def update_current_domain(model):
             public_categ_ids = []
             def get_all_children_category(categ_id):
                 public_categ_ids.append(categ_id)
@@ -1300,9 +1296,26 @@ class WebsiteSale(website_sale):
                     for c in children:
                         get_all_children_category(c.id)
             get_all_children_category(category.id)
+            domain_field = 'public_categ_ids'
+            # ~ if model == 'product.template':
+                # ~ domain_field = 'product_variant_ids.public_categ_ids'
+            found_public_categ_ids = False
             for idx, d in enumerate(request.session.get('current_domain')):
                 if d[0] == 'public_categ_ids':
-                    request.session['current_domain'][idx] = tuple(('public_categ_ids', 'in', public_categ_ids)) # replace the public categories to current category and it's child categories
+                    request.session['current_domain'][idx] = tuple((domain_field, 'in', public_categ_ids)) # replace the public categories to current category and it's child categories
+                    found_public_categ_ids = True
+            if not found_public_categ_ids:
+                request.session['current_domain'].append(tuple((domain_field, 'in', public_categ_ids))) # add categories in the first time
+
+        if request.env.user.webshop_type == 'dn_list':
+            request.website.dn_shop_set_session('product.product', post, '/dn_list')
+            if category:
+                update_current_domain('product.product')
+        else:
+            request.website.dn_shop_set_session('product.template', post, '/dn_shop')
+            if category:
+                update_current_domain('product.template')
+
         if not request.context.get('pricelist'):
             request.context['pricelist'] = int(self.get_pricelist())
         if search:
