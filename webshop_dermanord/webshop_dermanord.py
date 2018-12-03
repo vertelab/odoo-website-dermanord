@@ -386,25 +386,24 @@ class product_public_category(models.Model):
         salong = self.env.ref('webshop_dermanord.facet_value_salongsprodukter')
         af_groups_users = self.env.ref('webshop_dermanord.group_dn_af').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_ht').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_spa').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_sk').sudo().mapped('users')
         af = self.env.user in af_groups_users
-        spec_header = ''
-        spec_div = ''
+        html_code = ''
         spec_facet_values = self.env['product.facet.value'].search([('facet_id', '=', spec.id)])
-        spec_header = '<div class="panel-heading facet_heading_parents" style="border: 1px solid #ddd; background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox"><a class="facet_parents_style" href="javascript:void(0)">%s</a><a data-toggle="collapse" href="#spec_div" class="pull-right">%s</a></h4></div>' %(spec.name, '<i class="desktop_angle fa fa-angle-down"></i>' if len(spec_facet_values) > 0 else '')
-        spec_div += '<div id="spec_div" class="panel-collapse collapse" style="border-left: 1px solid #ddd; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd;"><div class="panel-body">'
-        def get_facet_value_div(facet_value):
-            return '<div class="panel-heading category_heading_children"><h4 class="panel-title parent_category_panel_title"><input type="checkbox" class="facet_checkbox" name="facet_%s_%s" value="%s" %s><a href="javascript:void(0)" class="category_children_style">%s</a></h4></div>' %(facet_value.facet_id.id, facet_value.id, facet_value.id, 'checked="checked"' if facet_value.id in facet_value_ids else '', facet_value.name)
+        def get_facet_value_div(facet_value, last):
+            checked = ''
+            chosen_facet = request.session.get('form_values').get('facet_%s_%s' %(facet_value.facet_id.id, facet_value.id), False)
+            if chosen_facet and chosen_facet == str(facet_value.id):
+                checked = 'checked="checked"'
+            return '<div class="panel-heading" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox" name="facet_%s_%s" value="%s" %s/><a class="facet_parents_style" href="javascript:void(0)">%s</a></h4></div>' %('' if last else 'border-bottom: none;', facet_value.facet_id.id, facet_value.id, facet_value.id, checked, facet_value.name)
         for facet_value in spec_facet_values:
-            if facet_value == salong:
+            if facet_value in [salong]:
                 if af:
-                    spec_div += get_facet_value_div(facet_value)
+                    html_code += get_facet_value_div(facet_value, last=True)
             else:
-                spec_div += get_facet_value_div(facet_value)
-        spec_div += '</div></div>'
-        return u'''{spec_header}
-{spec_div}'''.format(
-    spec_header = spec_header,
-    spec_div = spec_div
-)
+                if af:
+                    html_code += get_facet_value_div(facet_value, last=False)
+                else:
+                    html_code += get_facet_value_div(facet_value, last=True)
+        return html_code
 
 
 class res_users(models.Model):
