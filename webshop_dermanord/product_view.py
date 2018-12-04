@@ -19,7 +19,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, _
+from openerp import models, fields, api
 from datetime import datetime, date, timedelta
 from openerp.addons.website_memcached import memcached
 import base64
@@ -28,12 +28,52 @@ from openerp import http
 from openerp.http import request
 
 from timeit import default_timer as timer
+import sys, traceback
 
 import logging
 _logger = logging.getLogger(__name__)
 
-import sys, traceback
+from openerp.tools.translate import GettextAlias
+from openerp import SUPERUSER_ID
+import inspect
+import openerp
 
+class GettextAlias(GettextAlias):
+    def __init__(self, name=None):
+        self.name = '/'.join(name.split('.')[1:]) + '.py'
+
+    def __call__(self, source):
+        _logger.warn('\n\nmodule: %s\n' % inspect.getmodule(inspect.stack()[1][0]))
+        res = source
+        cr = None
+        is_new_cr = False
+        try:
+            frame = inspect.currentframe()
+            if frame is None:
+                return source
+            frame = frame.f_back
+            if not frame:
+                return source
+            lang = self._get_lang(frame)
+            if lang:
+                cr, is_new_cr = self._get_cr(frame)
+                if cr:
+                    # Try to use ir.translation to benefit from global cache if possible
+                    registry = openerp.registry(cr.dbname)
+                    res = registry['ir.translation']._get_source(cr, SUPERUSER_ID, self.name, ('code','sql_constraint'), lang, source)
+                else:
+                    _logger.debug('no context cursor detected, skipping translation for "%r"', source)
+            else:
+                _logger.debug('no translation language detected, skipping translation for "%r" ', source)
+        except Exception:
+            _logger.debug('translation went wrong for "%r", skipped', source)
+                # if so, double-check the root/base translations filenames
+        finally:
+            if cr and is_new_cr:
+                cr.close()
+        return res
+
+_ = GettextAlias(__name__)
 
 #
 #  tumnagel template + default variant, tumnagel variant, rad variant
