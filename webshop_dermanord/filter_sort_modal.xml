@@ -723,13 +723,13 @@
                 <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
                     <t t-if="webshop_type == 'dn_list'">
                         <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
-                            <button class="dn_btn dn_view_type_inactive" style="background-color: #fff;" formaction="/webshop_new/webshop_type/dn_shop" type="submit" title="Switch to grid view">
+                            <button class="dn_btn dn_view_type_inactive" style="background-color: #fff;" name="webshop_type" value="dn_shop" type="submit" title="Switch to grid view">
                                 <i class="fa fa-th"/>
                             </button>
                             <h5 class="text-center dn_uppercase" style="width: 100%;"><small style="font-size: 70%">Imageview</small></h5>
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
-                            <button class="dn_btn btn-success dn_viewtype_active" formaction="/webshop_new/webshop_type/dn_list" type="submit" title="Switch to list view">
+                            <button class="dn_btn btn-success dn_viewtype_active" name="webshop_type" value="dn_list" type="submit" title="Switch to list view">
                                 <i class="fa fa-th-list"/>
                             </button>
                             <h5 class="text-center dn_uppercase" style="width: 100%;"><small style="font-size: 70%">Listview</small></h5>
@@ -737,13 +737,13 @@
                     </t>
                     <t t-if="webshop_type == 'dn_shop'">
                         <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
-                            <button class="dn_btn btn-success dn_viewtype_active" formaction="/webshop_new/webshop_type/dn_shop" type="submit" title="Switch to grid view">
+                            <button class="dn_btn btn-success dn_viewtype_active" name="webshop_type" value="dn_shop" type="submit" title="Switch to grid view">
                                 <i class="fa fa-th"/>
                             </button>
                             <h5 class="text-center dn_uppercase" style="width: 100%;"><small style="font-size: 70%">Imageview</small></h5>
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
-                            <button class="dn_btn dn_view_type_inactive" style="background-color: #fff;" formaction="/webshop_new/webshop_type/dn_list" type="submit" title="Switch to list view">
+                            <button class="dn_btn dn_view_type_inactive" style="background-color: #fff;" name="webshop_type" value="dn_list" type="submit" title="Switch to list view">
                                 <i class="fa fa-th-list"/>
                             </button>
                             <h5 class="text-center dn_uppercase" style="width: 100%;"><small style="font-size: 70%">Listview</small></h5>
@@ -754,7 +754,7 @@
         </template>
         <template id="webshop_dermanord_mobile_product_filter_content" name="Webshop Dermanord Mobile Product Filter Content">
             <div id="webshop_dermanord_desktop_product_navigator_filter">
-                <div class="panel-group mt32">
+                <div class="panel-group mt32 category_filter">
                     <div class="panel panel-default">
                         <t t-raw="request.env['product.public.category'].get_dn_category_desktop_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True)]), mobile=mobile)"/>
                     </div>
@@ -1317,6 +1317,27 @@
         </template>
         <template id="webshop_dermanord_desktop_product_filter_form" name="Webshop Dermanord Desktop Product Filter Form">
             <form action="/webshop_new" method="post">
+                <div class="col-md-7 col-sm-7 col-xs-7" style="padding: 0px;">
+                    <select id="webshop_dermanord_desktop_sort_selector" name="order" class="form-control selectpicker dropdown dn_selection_dropdown" onchange="this.form.submit();">
+                        <t t-if="request.session.get('form_values')">
+                            <option value="name asc, default_code asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'name asc, default_code asc' else {}">Name Ascending</option>
+                            <option value="name desc, default_code desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'name desc, default_code desc' else {}">Name Descending</option>
+                            <option value="list_price asc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'list_price asc' else {}">Price Ascending</option>
+                            <option value="list_price desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'list_price desc' else {}">Price Descending</option>
+                            <option value="sold_qty desc" t-att="{'selected': '1'} if request.session.get('form_values').get('order') == 'sold_qty desc' else {}">Most Sold</option>
+                        </t>
+                        <t t-if="not request.session.get('form_values')">
+                            <option value="name asc, default_code asc" select="1">Name Ascending</option>
+                            <option value="name desc, default_code desc">Name Descending</option>
+                            <option value="list_price asc">Price Ascending</option>
+                            <option value="list_price desc">Price Descending</option>
+                            <option value="sold_qty desc">Most Sold</option>
+                        </t>
+                    </select>
+                    <i class="desktop_angle fa fa-angle-down" />
+                </div>
+                <input class="hidden" name="post_form" value="ok" />
+                <t t-call="webshop_dermanord.webshop_dermanord_view_switcher"/>
                 <div class="btn-group">
                     <button class="mt32 dn_btn dn_success dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
                     <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
@@ -1402,7 +1423,9 @@
             <div class="mt64 hidden-xs">
                 <t t-set="filter_facets" t-value="request.env['product.facet'].search([])" />
                 <t t-set="filter_categories" t-value="request.env['product.public.category'].search([])" />
+<!--
                 <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_sort_form" />
+-->
                 <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_filter_form" />
             </div>
         </template>

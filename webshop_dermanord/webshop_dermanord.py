@@ -299,9 +299,9 @@ class product_public_category(models.Model):
                 return u"""<div class="panel-heading {category_heading_level}" style="{parent_categ_bg}">
     <h4 class="panel-title parent_category_panel_title">
         <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox" data-category="{desktop_category}" data-parent_category="{desktop_parent_category}" {category_checked}/>
-        <a href="{desktop_category_href}" class="{category_title_level}" style="{parent_categ_text}">
+        <span class="{category_title_level}" style="cursor: pointer; {parent_categ_text}">
             {desktop_category_name}
-        </a>
+        </span>
         {desktop_category_collapse}
         {desktop_category_filter_match}
     </h4>
@@ -314,8 +314,8 @@ class product_public_category(models.Model):
     desktop_category = '%s_category_%s' %('mobile' if mobile else 'desktop', category.id),
     desktop_parent_category = get_last_parent_id(category),
     category_checked = 'checked="checked"' if category.id in category_checked else '',
-    desktop_category_href = '/webshop_new/category/%s' %category.id,
-    category_title_level = 'category_parents_style' if parent_categ else 'category_children_style',
+    # ~ desktop_category_href = '/webshop_new/category/%s' %category.id,
+    category_title_level = 'category_parents_style onclick_category' if parent_categ else 'category_children_style onclick_category',
     desktop_category_name = category.name,
     desktop_category_collapse = ('<a data-toggle="collapse" href="#%s_category_%s" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a>' %('mobile' if mobile else 'desktop', category.id)) if len(get_child_categs(category)) > 0 else '',
     desktop_category_filter_match = ''
@@ -337,6 +337,7 @@ class product_public_category(models.Model):
                 return ''
 
         current_domain = request.session.get('current_domain')
+        form_values = request.session.get('form_values')
         current_category = 0
         category_checked = []
         if current_domain:
@@ -345,6 +346,9 @@ class product_public_category(models.Model):
                     current_category = d[2]
         if current_category != 0:
             category_checked = self.env['product.public.category'].search([('id', 'child_of', current_category)]).mapped('id')
+        for k,v in form_values.items():
+            if k.split('_')[0] == 'category' and v not in category_checked:
+                category_checked.append(v)
 
         html = ''
         all_categories = self.dn_category_desktop_tree(parent_categories)
@@ -544,7 +548,6 @@ class Website(models.Model):
             # Reset domain so customer is hopefully not endlessly stuck.
             self.dn_shop_set_session('product.product', {'post_form': 'ok'}, '/dn_list')
 
-    # TODO: Move these functions from WebsiteSale
     def get_form_values(self):
         if not request.session.get('form_values'):
             request.session['form_values'] = {}
@@ -576,6 +579,7 @@ class Website(models.Model):
         current_ingredient_key = None
         current_news = None
         current_offer = None
+        form_values = {}
 
         for k, v in dic.iteritems():
             if k.split('_')[0] == 'facet':
@@ -584,27 +588,27 @@ class Website(models.Model):
                     if not group in facet_ids:
                         facet_ids[group] = []
                     facet_ids[group].append(int(v))
-                    request.session.get('form_values')['facet_%s_%s' %(group, id)] = id
+                    form_values['facet_%s_%s' %(group, id)] = id
             if k.split('_')[0] == 'category':
                 if v:
                      category_ids.append(int(v))
-                     request.session.get('form_values')['category_%s' % int(v)] = int(v)
+                     form_values['category_%s' % int(v)] = int(v)
             if k.split('_')[0] == 'ingredient':
                 if v:
                     ingredient_ids.append(int(v))
-                    request.session.get('form_values')['ingredient_%s' %int(v)] = int(v)
+                    form_values['ingredient_%s' %int(v)] = int(v)
             if k == 'current_news':
                 if v:
                     current_news = 'current_news'
-                    request.session.get('form_values')['current_news'] = 'current_news'
+                    form_values['current_news'] = 'current_news'
             if k == 'current_offer':
                 if v:
                     current_offer = 'current_offer'
-                    request.session.get('form_values')['current_offer'] = 'current_offer'
+                    form_values['current_offer'] = 'current_offer'
             if k.split('_')[0] == 'notingredient':
                 if v:
                     not_ingredient_ids.append(int(v))
-                    request.session.get('form_values')['notingredient_%s' % int(v)] = int(v)
+                    form_values['notingredient_%s' % int(v)] = int(v)
             if k == 'current_ingredient':
                 if v:
                     current_ingredient = int(v)
@@ -629,13 +633,13 @@ class Website(models.Model):
             product_ids = request.env['product.product'].sudo().search_read(
                 ['|' for i in range(len(ingredient_ids) - 1)] + [('ingredient_ids', '=', id) for id in ingredient_ids] + [('ingredient_ids', '!=', id) for id in not_ingredient_ids], ['id'])
             domain_append.append(('product_variant_ids', 'in', [r['id'] for r in product_ids]))
-        if request.session.get('form_values'):
-            if request.session.get('form_values').get('current_news') or request.session.get('form_values').get('current_offer'):
+        if form_values:
+            if form_values.get('current_news') or form_values.get('current_offer'):
                 offer_domain = self.domain_current(model, dic)
                 if len(offer_domain) > 0:
                     for d in offer_domain:
                         domain_append.append(d)
-
+        request.session['form_values'] = form_values
         return domain_append
 
     def domain_current(self, model, dic):
@@ -1285,36 +1289,54 @@ class WebsiteSale(website_sale):
         '/webshop_new/category/<model("product.public.category"):category>/page/<int:page>',
         ], type='http', auth="public", website=True)
     def webshop_new(self, page=0, category=None, search='', **post):
-        # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\n' % (request.session.get('current_order'), request.session.get('current_domain')))
+        # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\nform_values: %s\n' % (request.session.get('current_order'), request.session.get('current_domain'), request.session.get('form_values')))
 
-        def update_current_domain(model):
-            public_categ_ids = []
-            def get_all_children_category(categ_id):
-                public_categ_ids.append(categ_id)
-                children = request.env['product.public.category'].search([('parent_id', '=', categ_id)])
-                if len(children) > 0:
-                    for c in children:
-                        get_all_children_category(c.id)
-            get_all_children_category(category.id)
-            domain_field = 'public_categ_ids'
-            # ~ if model == 'product.template':
-                # ~ domain_field = 'product_variant_ids.public_categ_ids'
-            found_public_categ_ids = False
-            for idx, d in enumerate(request.session.get('current_domain')):
-                if d[0] == 'public_categ_ids':
-                    request.session['current_domain'][idx] = tuple((domain_field, 'in', public_categ_ids)) # replace the public categories to current category and it's child categories
-                    found_public_categ_ids = True
-            if not found_public_categ_ids:
-                request.session['current_domain'].append(tuple((domain_field, 'in', public_categ_ids))) # add categories in the first time
+        if not request.env.user.webshop_type or request.env.user.webshop_type not in ['dn_shop', 'dn_list']: # first time use filter
+            if request.env.user.commercial_partner_id.property_product_pricelist.for_reseller: # reseller
+                request.env.user.webshop_type = 'dn_list'
+            else: # public user / not reseller
+                request.env.user.webshop_type = 'dn_shop'
+        else:
+            if post.get('webshop_type'):
+                if post.get('webshop_type') == 'dn_shop': # use imageview in view switcher
+                    request.env.user.webshop_type = 'dn_shop'
+                elif post.get('webshop_type') == 'dn_list': # use listview in view switcher
+                    request.env.user.webshop_type = 'dn_list'
 
+        # ~ def update_current_domain(model):
+            # ~ public_categ_ids = []
+            # ~ def get_all_children_category(categ_id):
+                # ~ public_categ_ids.append(categ_id)
+                # ~ children = request.env['product.public.category'].search([('parent_id', '=', categ_id)])
+                # ~ if len(children) > 0:
+                    # ~ for c in children:
+                        # ~ get_all_children_category(c.id)
+            # ~ get_all_children_category(category.id)
+            # ~ domain_field = 'public_categ_ids'
+            # ~ found_public_categ_ids = False
+            # ~ for idx, d in enumerate(request.session.get('current_domain')):
+                # ~ if d[0] == 'public_categ_ids':
+                    # ~ request.session['current_domain'][idx] = tuple((domain_field, 'in', public_categ_ids)) # replace the public categories to current category and it's child categories
+                    # ~ found_public_categ_ids = True
+            # ~ if not found_public_categ_ids:
+                # ~ request.session['current_domain'].append(tuple((domain_field, 'in', public_categ_ids))) # add categories in the first time
+
+        # ~ if request.env.user.webshop_type == 'dn_list':
+            # ~ request.website.dn_shop_set_session('product.product', post, '/dn_list')
+            # ~ if category:
+                # ~ update_current_domain('product.product')
+        # ~ else:
+            # ~ request.website.dn_shop_set_session('product.template', post, '/dn_shop')
+            # ~ if category:
+                # ~ update_current_domain('product.template')
+
+        if category:
+            post['category_%s' % category.id] = category.id
+        # ~ _logger.warn(post)
         if request.env.user.webshop_type == 'dn_list':
             request.website.dn_shop_set_session('product.product', post, '/dn_list')
-            if category:
-                update_current_domain('product.product')
         else:
             request.website.dn_shop_set_session('product.template', post, '/dn_shop')
-            if category:
-                update_current_domain('product.template')
 
         if not request.context.get('pricelist'):
             request.context['pricelist'] = int(self.get_pricelist())
@@ -1362,14 +1384,14 @@ class WebsiteSale(website_sale):
                 'filter_version': request.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version'),
             })
 
-    @http.route([
-        '/webshop_new/webshop_type/<string:webshop_type>',
-        ], type='http', auth="public", website=True)
-    def webshop_new_webshop_type(self, webshop_type='dn_shop', **post):
-        if not (webshop_type in ['dn_shop', 'dn_list'] and request.env.user.commercial_partner_id.property_product_pricelist.for_reseller):
-            webshop_type = 'dn_shop'
-        request.env.user.webshop_type = webshop_type
-        return request.redirect('/webshop_new')
+    # ~ @http.route([
+        # ~ '/webshop_new/webshop_type/<string:webshop_type>',
+        # ~ ], type='http', auth="public", website=True)
+    # ~ def webshop_new_webshop_type(self, webshop_type='dn_shop', **post):
+        # ~ if not (webshop_type in ['dn_shop', 'dn_list'] and request.env.user.commercial_partner_id.property_product_pricelist.for_reseller):
+            # ~ webshop_type = 'dn_shop'
+        # ~ request.env.user.webshop_type = webshop_type
+        # ~ return request.redirect('/webshop_new')
 
     @http.route(['/shop/cart'], type='http', auth="public", website=True)
     def cart(self, **post):

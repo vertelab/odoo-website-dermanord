@@ -82,7 +82,7 @@ function onclick_submit($element) {
         $(this).prev().attr("checked", false);
     });
     $element.prev().attr("checked", true);
-    $element.closest("form").append('<input name="post_form" value="ok" type="hidden"/>');
+    //~ $element.closest("form").append('<input name="post_form" value="ok" type="hidden"/>');
     $element.closest("form").submit();
 }
 
@@ -117,19 +117,37 @@ function setCartPriceQuantity(price, quantity, price_float) {
 $(document).ready(function(){
 
     $("input.category_checkbox").change(function() {
-        var $self = $(this);
+        category_checkbox_onchange($(this));
+    });
+
+    $(".onclick_category").click(function() {
+        var $input = $(this).prev();
+        $.each($input.closest("div.category_filter").find("input[class='category_checkbox']"), function() {
+            $(this).attr("checked", false);
+        });
+        $input.attr("checked", true);
+        category_checkbox_onchange($input);
+        $input.closest("form").submit();
+    });
+
+    function category_checkbox_onchange($e) {
+        var $self = $e;
         var checked = $self.is(":checked");
         var categ_id = $self.data("category");
         if (categ_id != "") {
             $.each($self.closest("div.panel").find("div#" + categ_id + " input[type='checkbox']"), function() {
-                if (checked)
-                    $(this).attr("checked", "checked");
-                else
-                    $(this).removeAttr("checked", "checked");
+                if (checked) {
+                    $(this).attr("checked", true);
+                    console.log("checked");
+                }
+                else {
+                    $(this).attr("checked", false);
+                    console.log("unchecked");
+                }
             });
             activate_facet();
         }
-    });
+    }
 
     $("input.heading_checkbox").change(function() {
         var $self = $(this);

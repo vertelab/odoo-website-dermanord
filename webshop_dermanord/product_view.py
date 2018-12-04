@@ -600,7 +600,7 @@ class product_product(models.Model):
             for line in variant.facet_line_ids:
                 facet_html += '<div class="col-md-6"><h2 class="dn_uppercase">%s</h2>' %line.facet_id.name
                 for idx, value in enumerate(line.value_ids):
-                    facet_html += '<a href="/%s/?facet_%s_%s=%s%s" class="text-muted"><span>%s</span></a>' %(webshop_version, line.facet_id.id, value.id, value.id, category_value, value.name)
+                    facet_html += '<a href="/%s?facet_%s_%s=%s%s" class="text-muted"><span>%s</span></a>' %(webshop_version, line.facet_id.id, value.id, value.id, category_value, value.name)
                     if idx != len(line.value_ids)-1:
                         facet_html += '<span>, </span>'
                 facet_html += '</div>'
@@ -667,7 +667,7 @@ class product_product(models.Model):
             product_ingredients = self.env['product.ingredient'].search([('product_ids', 'in', variant.id)], order='sequence')
             if len(product_ingredients) > 0:
                 for i in product_ingredients:
-                    ingredients_images_nav_html += '<a href="/%s/?current_ingredient=%s"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="%s"/><h6 class="text-center text-primary" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></div></a>' %(webshop_version, i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
+                    ingredients_images_nav_html += '<a href="/%s?current_ingredient=%s"><div class="col-md-3 col-sm-3 ingredient_desc" style="padding: 0px;"><img class="img img-responsive" style="margin: auto;" src="%s"/><h6 class="text-center text-primary" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></div></a>' %(webshop_version, i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
             page = u"""<div id="image_big" class="tab-content">
     {product_images_html}
 </div>
@@ -709,7 +709,7 @@ class product_product(models.Model):
             product_ingredients = self.env['product.ingredient'].search([('product_ids', 'in', variant.id)], order='sequence')
             if len(product_ingredients) > 0:
                 for idx, i in enumerate(product_ingredients):
-                    ingredients_carousel_html += '<div class="item ingredient_desc%s"><a href="/%s/?current_ingredient=%s"><img class="img img-responsive" style="margin: auto; display: block;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></a></div>' %(' active' if idx == 0 else '', webshop_version, i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
+                    ingredients_carousel_html += '<div class="item ingredient_desc%s"><a href="/%s?current_ingredient=%s"><img class="img img-responsive" style="margin: auto; display: block;" src="%s"/><h6 class="text-center" style="padding: 0px; margin-top: 0px;"><i>%s</i></h6></a></div>' %(' active' if idx == 0 else '', webshop_version, i.id, self.env['website'].imagefield_hash('product.ingredient', 'image', i.id, 'product_ingredients.img_ingredients'), i.name)
                     ingredients_carousel_nav_html += '<li class="%s" data-slide-to="%s" data-target="#%s_ingredient_carousel"></li>' %(' active' if idx == 0 else '', idx, variant.id)
 
             page = u"""<div id="ingredients_div_mobile">
