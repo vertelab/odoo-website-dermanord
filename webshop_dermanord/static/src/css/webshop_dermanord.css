@@ -526,6 +526,11 @@ select.dn_selection_dropdown + i.fa {
     font-size: 16px !important;
 }
 
+.category_children_style.onclick_category {
+    font-family: futura-pt-light, sans-serif !important;
+    font-size: 14px !important;
+}
+
 /*
 .category_parents_style {
     text-transform: uppercase;
