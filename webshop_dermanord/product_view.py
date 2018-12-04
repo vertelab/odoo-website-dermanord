@@ -43,7 +43,6 @@ class GettextAlias(GettextAlias):
         self.name = '/'.join(name.split('.')[1:]) + '.py'
 
     def __call__(self, source):
-        _logger.warn('\n\nmodule: %s\n' % inspect.getmodule(inspect.stack()[1][0]))
         res = source
         cr = None
         is_new_cr = False
