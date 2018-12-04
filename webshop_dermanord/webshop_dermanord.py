@@ -854,6 +854,7 @@ class WebsiteSale(website_sale):
                 shipping_partner_id = order.partner_shipping_id.id
             else:
                 shipping_partner_id = order.partner_invoice_id.id
+            order.delivery_set()
         values = {
             'order': order.sudo()
         }
