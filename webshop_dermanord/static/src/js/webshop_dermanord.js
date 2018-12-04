@@ -82,6 +82,7 @@ function onclick_submit($element) {
         $(this).prev().attr("checked", false);
     });
     $element.prev().attr("checked", true);
+    $element.closest("form").append('<input name="post_form" value="ok" type="hidden"/>');
     $element.closest("form").submit();
 }
 
