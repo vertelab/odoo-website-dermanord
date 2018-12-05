@@ -1188,7 +1188,7 @@
         <template id="webshop_dermanord_desktop_product_filter_content" name="Webshop Dermanord Desktop Filter Content">
             <t t-set="ressal" t-value="[request.env.ref('webshop_dermanord.facet_specialforpackningar').id]"/>
             <div t-att-id="'mobile_product_navigator_filter' if mobile else 'desktop_product_navigator_filter'">
-                <div class="panel-group mt32">
+                <div class="panel-group mt32 category_filter">
                     <div class="panel panel-default">
                         <t t-raw="request.env['product.public.category'].get_dn_category_desktop_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True), ('group_ids', 'in', request.env.user.commercial_partner_id.access_group_ids.mapped('id'))]), mobile=mobile)"/>
                     </div>
