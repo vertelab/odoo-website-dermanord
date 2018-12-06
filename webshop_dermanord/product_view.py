@@ -512,6 +512,7 @@ class product_product(models.Model):
         elif product['is_offer']:
             # Can produce strange results if there's more than one active BoM. Probably not an issue.
             states = ['short', 'few', 'in']
+            state = None
             for id in [p['product_id'][0] for p in self.env['mrp.bom.line'].sudo().search_read([('bom_id.product_id', '=', product_id), ('bom_id.active', '=', True)], ['product_id'])]:
                 child_state = self.get_stock_info(id)[1]
                 if not state:
