@@ -421,6 +421,11 @@ msgid "Ordered from webshop"
 msgstr ""
 
 #. module: webshop_dermanord
+#: field:product.product,force_out_of_stock:0
+msgid "Out of Stock"
+msgstr ""
+
+#. module: webshop_dermanord
 #: model:ir.model,name:webshop_dermanord.model_res_partner
 msgid "Partner"
 msgstr ""
@@ -766,6 +771,11 @@ msgstr ""
 #. module: webshop_dermanord
 #: view:website:website_sale.product
 msgid "col-sm-3 hidden"
+msgstr ""
+
+#. module: webshop_dermanord
+#: help:product.product,force_out_of_stock:0
+msgid "Forces this product to display as out of stock in the webshop."
 msgstr ""
 
 #. module: webshop_dermanord

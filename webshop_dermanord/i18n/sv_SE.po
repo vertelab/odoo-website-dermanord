@@ -83,6 +83,11 @@ msgstr "Skapad"
 msgid "Display Name"
 msgstr "Visningsnamn"
 
+#. module: webshop_dermanord
+#: help:product.product,force_out_of_stock:0
+msgid "Forces this product to display as out of stock in the webshop."
+msgstr ""
+
 #. module: website_sale_price_chart
 #: field:pricelist_chart.type,id:0
 #: field:product.pricelist_chart,id:0
@@ -136,6 +141,11 @@ msgstr "Nyhet"
 #, python-format
 msgid "No price available"
 msgstr "Pris saknas"
+
+#. module: webshop_dermanord
+#: field:product.product,force_out_of_stock:0
+msgid "Out of Stock"
+msgstr "Ej i lager"
 
 #. module: website_sale_price_chart
 #: field:product.pricelist_chart,price:0
