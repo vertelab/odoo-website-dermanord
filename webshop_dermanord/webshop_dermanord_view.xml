@@ -557,6 +557,9 @@
                 <field name="website_style_ids" position="after">
                     <field name="website_style_ids_variant" widget="many2many_tags" />
                 </field>
+                <label for="incoming_qty" position="before">
+                    <field name="force_out_of_stock"/>
+                </label>
             </field>
         </record>
         <!--

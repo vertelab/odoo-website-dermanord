@@ -414,6 +414,7 @@ class product_product(models.Model):
             self.is_offer_product_consumer = self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False)
     is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
     is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
+    force_out_of_stock = fields.Boolean(string='Out of Stock', help="Forces this product to display as out of stock in the webshop.")
 
 
     @api.model
@@ -504,15 +505,29 @@ class product_product(models.Model):
         return html
 
     @api.model
-    def get_stock_info(self,product_id):
-        product = self.env['product.product'].sudo().search_read([('id','=',product_id)],['virtual_available_days','type'])[0]
-        if product['type'] != 'product' or product['virtual_available_days'] > 5:
+    def get_stock_info(self, product_id):
+        product = self.env['product.product'].sudo().search_read([('id', '=', product_id)], ['virtual_available_days', 'type', 'force_out_of_stock', 'is_offer'])[0]
+        if product['force_out_of_stock']:
+            state = 'short'
+        elif product['is_offer']:
+            # Can produce strange results if there's more than one active BoM. Probably not an issue.
+            states = ['short', 'few', 'in']
+            state = None
+            for id in [p['product_id'][0] for p in self.env['mrp.bom.line'].sudo().search_read([('bom_id.product_id', '=', product_id), ('bom_id.active', '=', True)], ['product_id'])]:
+                child_state = self.get_stock_info(id)[1]
+                if not state:
+                    state = child_state
+                elif states.index(child_state) < states.index(state):
+                    state = child_state
+                # Default if there is no BoM
+                state = state or 'short'
+        elif product['type'] != 'product' or product['virtual_available_days'] > 5:
             state = 'in'
         elif product['virtual_available_days'] >= 1.0:
             state = 'few'
         else:
-            state ='short'
-        return (state in ['in','few'],state,{'in': _('In stock'),'few': _('Few in stock'),'short': _('Shortage')}[state].encode('utf-8'))  # in_stock,state,info
+            state = 'short'
+        return (state in ['in', 'few'], state, {'in': _('In stock'), 'few': _('Few in stock'), 'short': _('Shortage')}[state].encode('utf-8'))  # in_stock,state,info
 
     @api.model
     def get_list_row(self,domain,pricelist,limit=21,order='',offset=0):
