@@ -1198,7 +1198,7 @@
                         <div class="panel-heading" style="border: 1px solid #ddd; border-bottom: none; background-color: #fff;">
                             <h4 class="panel-title">
                                 <input type="checkbox" class="heading_checkbox" name="current_offer" value="current_offer" t-att="{'checked': 'checked'} if request.session.get('form_values').get('current_offer') == 'current_offer' else {}"/>
-                                <a class="onrs_style" href="javascript:void(0);" onclick="onclick_submit($(this));">Offers &amp; Set</a>
+                                <a class="onrs_style" href="javascript:void(0);" onclick="onclick_submit($(this));">Offers</a>
                             </h4>
                         </div>
                         <div class="panel-heading" style="border: 1px solid #ddd; border-bottom: none; background-color: #fff;">
