@@ -726,13 +726,13 @@
                             <button class="dn_btn dn_view_type_inactive" style="background-color: #fff;" name="webshop_type" value="dn_shop" type="submit" title="Switch to grid view">
                                 <i class="fa fa-th"/>
                             </button>
-                            <h5 class="text-center dn_uppercase" style="width: 100%;"><small style="font-size: 70%">Imageview</small></h5>
+                            <h5 class="text-center dn_uppercase hidden-xs" style="width: 100%;"><small style="font-size: 70%">Imageview</small></h5>
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
                             <button class="dn_btn btn-success dn_viewtype_active" name="webshop_type" value="dn_list" type="submit" title="Switch to list view">
                                 <i class="fa fa-th-list"/>
                             </button>
-                            <h5 class="text-center dn_uppercase" style="width: 100%;"><small style="font-size: 70%">Listview</small></h5>
+                            <h5 class="text-center dn_uppercase hidden-xs" style="width: 100%;"><small style="font-size: 70%">Listview</small></h5>
                         </div>
                     </t>
                     <t t-if="webshop_type == 'dn_shop'">
@@ -740,13 +740,13 @@
                             <button class="dn_btn btn-success dn_viewtype_active" name="webshop_type" value="dn_shop" type="submit" title="Switch to grid view">
                                 <i class="fa fa-th"/>
                             </button>
-                            <h5 class="text-center dn_uppercase" style="width: 100%;"><small style="font-size: 70%">Imageview</small></h5>
+                            <h5 class="text-center dn_uppercase hidden-xs" style="width: 100%;"><small style="font-size: 70%">Imageview</small></h5>
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
                             <button class="dn_btn dn_view_type_inactive" style="background-color: #fff;" name="webshop_type" value="dn_list" type="submit" title="Switch to list view">
                                 <i class="fa fa-th-list"/>
                             </button>
-                            <h5 class="text-center dn_uppercase" style="width: 100%;"><small style="font-size: 70%">Listview</small></h5>
+                            <h5 class="text-center dn_uppercase hidden-xs" style="width: 100%;"><small style="font-size: 70%">Listview</small></h5>
                         </div>
                     </t>
                 </t>
@@ -982,7 +982,7 @@
                     </button>
                     <t t-call="webshop_dermanord.dn_website_group_info"/>
                 </div>
-                <div class="btn-group mt16">
+                <div class="btn-group mt32">
                     <t t-call="webshop_dermanord.webshop_dermanord_view_switcher"/>
                 </div>
                 <div style="padding: 0px;">

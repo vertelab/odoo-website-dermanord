@@ -366,3 +366,16 @@ msgstr "Pris stigande"
 #: view:website:webshop_dermanord.webshop_dermanord_mobile_product_sort_form
 msgid "Price Descending"
 msgstr "Pris fallande"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_content
+msgid "Offers"
+msgstr "Erbjudanden"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.desktop_product_filter
+#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_content
+#: view:website:webshop_dermanord.dn_filter_content
+#, python-format
+msgid "News"
+msgstr "Nyheter"

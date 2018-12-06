@@ -397,16 +397,16 @@ class product_public_category(models.Model):
             chosen_facet = request.session.get('form_values').get('facet_%s_%s' %(facet_value.facet_id.id, facet_value.id), False)
             if chosen_facet and chosen_facet == str(facet_value.id):
                 checked = 'checked="checked"'
-            return '<div class="panel-heading" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox" name="facet_%s_%s" value="%s" %s/><span class="onrs_style" style="cursor: pointer;" onclick="onclick_submit($(this));">%s</span></h4></div>' %('' if last else 'border-bottom: none;', facet_value.facet_id.id, facet_value.id, facet_value.id, checked, facet_value.name)
-        for facet_value in spec_facet_values:
-            if facet_value in [salong]:
-                if af:
-                    html_code += get_facet_value_div(facet_value, last=True)
+            return '<div class="panel-heading" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox" name="facet_%s_%s" value="%s" %s/><span class="onrs_style" style="cursor: pointer; margin-left: 4px;" onclick="onclick_submit($(this));">%s</span></h4></div>' %('' if last else 'border-bottom: none;', facet_value.facet_id.id, facet_value.id, facet_value.id, checked, facet_value.name)
+        if af:
+            spec_vals = spec_facet_values
+        else:
+            spec_vals = spec_facet_values.filtered(lambda v: v != salong)
+        for idx, facet_value in enumerate(spec_vals):
+            if idx == len(spec_vals)-1:
+                html_code += get_facet_value_div(facet_value, last=True)
             else:
-                if af:
-                    html_code += get_facet_value_div(facet_value, last=False)
-                else:
-                    html_code += get_facet_value_div(facet_value, last=True)
+                html_code += get_facet_value_div(facet_value, last=False)
         return html_code
 
 

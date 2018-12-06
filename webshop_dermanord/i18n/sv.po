@@ -507,8 +507,8 @@ msgstr "Nyheter & Erbjudanden"
 
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_content
-msgid "Offers &amp; Set"
-msgstr "Erbjudanden & set"
+msgid "Offers"
+msgstr "Erbjudanden"
 
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.desktop_product_filter
