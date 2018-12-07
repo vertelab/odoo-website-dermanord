@@ -138,11 +138,9 @@ $(document).ready(function(){
             $.each($self.closest("div.panel").find("div#" + categ_id + " input[type='checkbox']"), function() {
                 if (checked) {
                     $(this).attr("checked", true);
-                    console.log("checked");
                 }
                 else {
                     $(this).attr("checked", false);
-                    console.log("unchecked");
                 }
             });
             activate_facet();
@@ -232,17 +230,19 @@ $(document).ready(function(){
         $.each($("div.facet_panel_heading"), function() {
             var $self = $(this);
             var $c_list = $self.data("categories");
-            $.each($c_list, function(key, val) {
-                if ($.inArray(val, all_active_categ_ids) !== -1) {
-                    $self.removeClass("hidden");
-                    $self.closest(".panel").find("div#" + $self.data("mobile") + "_facet_" + $self.data("facet")).removeClass("hidden");
-                    return false;
-                }
-                else {
-                    $self.addClass("hidden");
-                    $self.closest(".panel").find("div#" + $self.data("mobile") + "_facet_" + $self.data("facet")).addClass("hidden");
-                }
-            });
+            if ($c_list !== undefined) {
+                $.each($c_list, function(key, val) {
+                    if ($.inArray(val, all_active_categ_ids) !== -1) {
+                        $self.removeClass("hidden");
+                        $self.closest(".panel").find("div#" + $self.data("mobile") + "_facet_" + $self.data("facet")).removeClass("hidden");
+                        return false;
+                    }
+                    else {
+                        $self.addClass("hidden");
+                        $self.closest(".panel").find("div#" + $self.data("mobile") + "_facet_" + $self.data("facet")).addClass("hidden");
+                    }
+                });
+            }
         });
     }
 
