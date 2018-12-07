@@ -889,7 +889,7 @@
                 <t t-foreach="filter_categories" t-as="category">
                     <li>
                         <h5>
-                            <a t-att-href="'/webshop_new/category/%s' %category.id">
+                            <a t-att-href="'/webshop/category/%s' %category.id">
                                 <t t-esc="category.name" />
                             </a>
                             <t t-set="category_count" t-value="0" />
@@ -953,7 +953,7 @@
         </template>
         <template id="webshop_dermanord_mobile_product_filter_form" name="Webshop Dermanord Mobile Product Filter Form">
 <!--
-            <form action="/webshop_new" method="post">
+            <form action="/webshop" method="post">
                 <div class="container" style="padding: 0px;">
                     <t t-set="first_facet" t-value="0" />
                     <div class="col-md-6 col-sm-6 col-xs-6" style="padding: 0px;">
@@ -973,7 +973,7 @@
                 </div>
             </form>
 -->
-            <form action="/webshop_new" method="post" class="container">
+            <form action="/webshop" method="post" class="container">
                 <div class="btn-group">
                     <button class="mt32 dn_btn dn_success dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
                     <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
@@ -995,7 +995,7 @@
             </form>
         </template>
         <template id="webshop_dermanord_mobile_product_sort_form" name="Webshop Dermanord Mobile Product Sort Form">
-            <form action="/webshop_new" method="post">
+            <form action="/webshop" method="post">
                 <div class="container" style="padding: 0px;">
                     <ul style="list-style-type: none;">
                         <li>
@@ -1118,7 +1118,7 @@
         </template>
         <template id="webshop_dermanord_mobile_main_filter_sort_layout" inherit_id="website.layout" name="Webshop Dermanord Mobile Main Filter Sort Layout">
             <xpath expr="//div[@id='wrapwrap']/main" position="inside">
-                <t t-if="shop_footer and filter_version == 'webshop_new'">
+                <t t-if="shop_footer and filter_version == 'webshop'">
                     <t t-set="filter_facets" t-value="request.env['product.facet'].get_filtered_facets(request.session.get('form_values'))" />
                     <t t-set="filter_categories" t-value="request.env['product.public.category'].search([('parent_id', '=', None)])" />
                     <div id="webshop_dermanord_mobile_filter_modal" class="modal fade hidden-lg hidden-md hidden-sm" role="dialog">
@@ -1316,7 +1316,7 @@
             </div>
         </template>
         <template id="webshop_dermanord_desktop_product_filter_form" name="Webshop Dermanord Desktop Product Filter Form">
-            <form action="/webshop_new" method="post">
+            <form action="/webshop" method="post">
                 <div class="col-md-7 col-sm-7 col-xs-7" style="padding: 0px;">
                     <select id="webshop_dermanord_desktop_sort_selector" name="order" class="form-control selectpicker dropdown dn_selection_dropdown" onchange="this.form.submit();">
                         <t t-if="request.session.get('form_values')">
@@ -1354,7 +1354,7 @@
             </form>
         </template>
         <template id="webshop_dermanord_desktop_product_sort_form" name="Webshop Dermanord Desktop Product Sort Form">
-            <form action="/webshop_new" method="post">
+            <form action="/webshop" method="post">
                 <div class="col-md-7 col-sm-7 col-xs-7" style="padding: 0px;">
                     <select id="webshop_dermanord_desktop_sort_selector" name="order" class="form-control selectpicker dropdown dn_selection_dropdown" onchange="this.form.submit();">
                         <t t-if="request.session.get('form_values')">

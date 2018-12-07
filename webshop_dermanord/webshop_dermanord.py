@@ -314,7 +314,6 @@ class product_public_category(models.Model):
     desktop_category = '%s_category_%s' %('mobile' if mobile else 'desktop', category.id),
     desktop_parent_category = get_last_parent_id(category),
     category_checked = 'checked="checked"' if category.id in category_checked else '',
-    # ~ desktop_category_href = '/webshop_new/category/%s' %category.id,
     category_title_level = 'category_parents_style onclick_category' if parent_categ else 'category_children_style onclick_category',
     desktop_category_name = category.name,
     desktop_category_collapse = ('<a data-toggle="collapse" href="#%s_category_%s" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a>' %('mobile' if mobile else 'desktop', category.id)) if len(get_child_categs(category)) > 0 else '',
@@ -1165,6 +1164,25 @@ class WebsiteSale(website_sale):
         })
 
     #controller for read webshop_type
+    # ~ @http.route([
+        # ~ '/webshop_old',
+        # ~ '/webshop_old/page/<int:page>',
+        # ~ '/webshop_old/category/<model("product.public.category"):category>',
+        # ~ '/webshop_old/category/<model("product.public.category"):category>/page/<int:page>',
+        # ~ ], type='http', auth="public", website=True)
+    # ~ def webshop_old(self, page=0, category=None, search='', **post):
+
+        # ~ user = request.env['res.users'].browse(request.uid)
+
+        # ~ _logger.warn('Anders webshop --------> %s user %s %s %s ' % (request.env.ref('base.public_user'),request.env.user,request.uid,user))
+
+        # ~ if request.env.user.webshop_type == 'dn_list':
+            # ~ return self.dn_list(page, category, search, **post)
+        # ~ else:
+            # ~ return self.dn_shop(page, category, search, **post)
+
+
+    # old controller
     @http.route([
         '/webshop_old',
         '/webshop_old/page/<int:page>',
@@ -1172,25 +1190,6 @@ class WebsiteSale(website_sale):
         '/webshop_old/category/<model("product.public.category"):category>/page/<int:page>',
         ], type='http', auth="public", website=True)
     def webshop_old(self, page=0, category=None, search='', **post):
-
-        user = request.env['res.users'].browse(request.uid)
-
-        _logger.warn('Anders webshop --------> %s user %s %s %s ' % (request.env.ref('base.public_user'),request.env.user,request.uid,user))
-
-        if request.env.user.webshop_type == 'dn_list':
-            return self.dn_list(page, category, search, **post)
-        else:
-            return self.dn_shop(page, category, search, **post)
-
-
-    #controller for read webshop_type
-    @http.route([
-        '/webshop',
-        '/webshop/page/<int:page>',
-        '/webshop/category/<model("product.public.category"):category>',
-        '/webshop/category/<model("product.public.category"):category>/page/<int:page>',
-        ], type='http', auth="public", website=True)
-    def webshop(self, page=0, category=None, search='', **post):
         if request.env.user.webshop_type == 'dn_list':
             request.website.dn_shop_set_session('product.product', post, '/dn_list')
         else:
@@ -1282,14 +1281,13 @@ class WebsiteSale(website_sale):
         request.env.user.webshop_type = webshop_type
         return request.redirect('/webshop')
 
-    #controller with new filter under developing
     @http.route([
-        '/webshop_new',
-        '/webshop_new/page/<int:page>',
-        '/webshop_new/category/<model("product.public.category"):category>',
-        '/webshop_new/category/<model("product.public.category"):category>/page/<int:page>',
+        '/webshop',
+        '/webshop/page/<int:page>',
+        '/webshop/category/<model("product.public.category"):category>',
+        '/webshop/category/<model("product.public.category"):category>/page/<int:page>',
         ], type='http', auth="public", website=True)
-    def webshop_new(self, page=0, category=None, search='', **post):
+    def webshop(self, page=0, category=None, search='', **post):
         # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\nform_values: %s\n' % (request.session.get('current_order'), request.session.get('current_domain'), request.session.get('form_values')))
 
         if not request.env.user.webshop_type or request.env.user.webshop_type not in ['dn_shop', 'dn_list']: # first time use filter
@@ -1384,15 +1382,6 @@ class WebsiteSale(website_sale):
                 'all_products_loaded': True if len(products) < PPG else False,
                 'filter_version': request.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version'),
             })
-
-    # ~ @http.route([
-        # ~ '/webshop_new/webshop_type/<string:webshop_type>',
-        # ~ ], type='http', auth="public", website=True)
-    # ~ def webshop_new_webshop_type(self, webshop_type='dn_shop', **post):
-        # ~ if not (webshop_type in ['dn_shop', 'dn_list'] and request.env.user.commercial_partner_id.property_product_pricelist.for_reseller):
-            # ~ webshop_type = 'dn_shop'
-        # ~ request.env.user.webshop_type = webshop_type
-        # ~ return request.redirect('/webshop_new')
 
     @http.route(['/shop/cart'], type='http', auth="public", website=True)
     def cart(self, **post):
