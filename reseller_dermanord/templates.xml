@@ -340,7 +340,6 @@
                                     &amp;nbsp;<t t-esc="group.name"/>&amp;nbsp;<t t-call="webshop_dermanord.dn_website_access_rights_desc"/>
                             </div>
                         </t>
-
                     </div>
                 </div>
             </xpath>

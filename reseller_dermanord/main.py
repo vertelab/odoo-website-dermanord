@@ -494,5 +494,6 @@ class website(models.Model):
 
     def sale_home_get_data(self, home_user, post):
         values = super(website, self).sale_home_get_data(home_user, post)
-        values['webshop_category_ids'] = [(category['id'], category['name']) for category in request.env['product.public.category'].search_read([('website_published', '=', True)], ['name'])]
+        values['webshop_category_ids'] = [(category['id'], category['name']) for category in request.env['product.public.category'].search_read([('website_published', '=', True), ('parent_id', '=', False), ('id', 'not in', [1])], ['name'])]
+        # id 1 är Ovrigt
         return values
