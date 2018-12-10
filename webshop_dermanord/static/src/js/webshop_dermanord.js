@@ -746,6 +746,13 @@ function webshop_restore_filter() {
             }
         }
     );
+    $("#webshop_dermanord_mobile_filter_modal").find(".panel-group").find("input[type=checkbox]").each(
+        function() {
+            if($(this).is(":checked")) {
+                $(this).removeAttr('checked');
+            }
+        }
+    );
 }
 
 $(".desktop_angle").click(function(){
