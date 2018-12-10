@@ -1006,7 +1006,7 @@
                                         Name Ascending
                                     </t>
                                     <t t-if="not request.session.get('form_values')">
-                                        <input type="radio" name="order" value="name asc, default_code asc" />
+                                        <input type="radio" name="order" value="name asc, default_code asc" checked="1" />
                                         Name Ascending
                                     </t>
                                 </label>
@@ -1062,7 +1062,7 @@
                                         Most Sold
                                     </t>
                                     <t t-if="not request.session.get('form_values')">
-                                        <input type="radio" name="order" value="sold_qty desc" checked="1" />
+                                        <input type="radio" name="order" value="sold_qty desc" />
                                         Most Sold
                                     </t>
                                 </label>
