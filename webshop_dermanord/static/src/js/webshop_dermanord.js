@@ -249,9 +249,24 @@ $(document).ready(function(){
         });
     }
 
+    function mobile_filter_count() {
+        var count = 0;
+        $.each($("div#webshop_dermanord_mobile_filter_modal").find("span.filter_match"), function() {
+            count += parseInt($(this).text());
+        });
+        if (count != 0) {
+            $("span#mobile_filter_match").text(count);
+            $("span#mobile_filter_match").removeClass("hidden");
+        }
+        else {
+            $("span#mobile_filter_match").addClass("hidden");
+        }
+    }
+
     category_heading_parents();
     facet_heading_parents();
     activate_facet();
+    mobile_filter_count();
 
     openerp.jsonRpc("/website_sale_update_cart", "call", {
     }).done(function(data){
