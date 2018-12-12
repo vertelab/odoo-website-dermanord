@@ -199,15 +199,15 @@ $(document).ready(function(){
     }
 
     function facet_heading_parents() {
-        $.each($("div.panel-heading.facet_heading_parents"), function() {
+        $.each($("div.panel-heading.facet_panel_heading"), function() {
             var $self = $(this);
             var $h4 = $self.find("h4.panel-title");
             var input_checked_count = 0;
-            var div_facet_id = $h4.find("a[data-toggle='collapse']").attr("href");
-            var $all_child_checkbox = $self.closest("div.panel.panel-default").find(div_facet_id).find("input.facet_checkbox");
-            $.each($all_child_checkbox, function() {
+            var div_facet_id = $h4.find("a").attr("href");
+            var all_child_checkbox = $self.closest("div.panel.panel-default").find(div_facet_id).find("input.facet_checkbox");
+            $.each(all_child_checkbox, function() {
                 if ($(this).is(":checked")) {
-                   input_checked_count += 1;
+                    input_checked_count += 1;
                 }
             });
             if (input_checked_count != 0) {
@@ -239,7 +239,10 @@ $(document).ready(function(){
                     }
                     else {
                         $self.addClass("hidden");
-                        $self.closest(".panel").find("div#" + $self.data("mobile") + "_facet_" + $self.data("facet")).addClass("hidden");
+                        var $facet = $self.closest(".panel").find("div#" + $self.data("mobile") + "_facet_" + $self.data("facet"));
+                        $facet.addClass("hidden");
+                        $facet.find("input[type='checkbox']").removeAttr("checked");
+                        $("a[href='#" + $facet.attr("id") + "']").closest("h4.panel-title").find("span.filter_match").remove();
                     }
                 });
             }
