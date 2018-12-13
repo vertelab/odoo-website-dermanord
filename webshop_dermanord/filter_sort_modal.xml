@@ -1165,12 +1165,9 @@
                         <a href="#" id="webshop-dermanord-btn-modal" data-toggle="modal" data-target="#webshop_dermanord_mobile_filter_modal" class="pull-left" style="color: #fff; font-size: 1.3em; padding: 5px;">
                             <i class="fa fa-filter" />
                             Filter
-<!--
                             <span class="filter_match" t-if="request.session.get('chosen_filter_qty') &gt; 0">
                                 <t t-esc="request.session.get('chosen_filter_qty')" />
                             </span>
--->
-                            <span id="mobile_filter_match" class="filter_match hidden"/>
                         </a>
                         <a href="#" id="webshop-dermanord-sort-btn-modal" data-toggle="modal" data-target="#webshop_dermanord_mobile_sort_modal" class="pull-right" style="color: #fff; font-size: 1.3em; padding: 5px;">
                             <i class="fa fa-sort" />

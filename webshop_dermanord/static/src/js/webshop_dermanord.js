@@ -217,61 +217,46 @@ $(document).ready(function(){
     }
 
     function activate_facet() {
-		var $desktop = $("div#desktop_product_navigator");
-		var $mobile = $("div#webshop_dermanord_mobile_filter_modal");
-		do_update($desktop);
-		do_update($mobile);
-		function do_update($e) {
-			var all_active_categ_ids = [];
-			$.each($e.find("input.category_checkbox"), function() {
-				var $self = $(this);
-				var categ_id = parseInt($self.data("parent_category"));
-				if ($self.is(":checked")) {
-					if ($.inArray(categ_id, all_active_categ_ids) === -1) {
-						all_active_categ_ids.push(categ_id);
-					}
-				}
-			});
-			$.each($e.find("div.facet_panel_heading"), function() {
-				var $self = $(this);
-				var $c_list = $self.data("categories");
-				if ($c_list !== undefined) {
-					$.each($c_list, function(key, val) {
-						if ($.inArray(val, all_active_categ_ids) !== -1) {
-							$self.removeClass("hidden");
-							$self.closest(".panel").find("div#" + $self.data("mobile") + "_facet_" + $self.data("facet")).removeClass("hidden");
-							return false;
-						}
-						else {
-							$self.addClass("hidden");
-							var $facet = $self.closest(".panel").find("div#" + $self.data("mobile") + "_facet_" + $self.data("facet"));
-							$facet.addClass("hidden");
-							$facet.find("input[type='checkbox']").removeAttr("checked");
-						}
-					});
-				}
-			});
-		}
-    }
-
-    function mobile_filter_count() {
-        var count = 0;
-        $.each($("div#webshop_dermanord_mobile_filter_modal").find("span.filter_match"), function() {
-            count += parseInt($(this).text());
-        });
-        if (count != 0) {
-            $("span#mobile_filter_match").text(count);
-            $("span#mobile_filter_match").removeClass("hidden");
-        }
-        else {
-            $("span#mobile_filter_match").addClass("hidden");
+        var $desktop = $("div#desktop_product_navigator");
+        var $mobile = $("div#webshop_dermanord_mobile_filter_modal");
+        do_update($desktop);
+        do_update($mobile);
+        function do_update($e) {
+            var all_active_categ_ids = [];
+            $.each($e.find("input.category_checkbox"), function() {
+                var $self = $(this);
+                var categ_id = parseInt($self.data("parent_category"));
+                if ($self.is(":checked")) {
+                    if ($.inArray(categ_id, all_active_categ_ids) === -1) {
+                        all_active_categ_ids.push(categ_id);
+                    }
+                }
+            });
+            $.each($e.find("div.facet_panel_heading"), function() {
+                var $self = $(this);
+                var $c_list = $self.data("categories");
+                if ($c_list !== undefined) {
+                    $.each($c_list, function(key, val) {
+                        if ($.inArray(val, all_active_categ_ids) !== -1) {
+                            $self.removeClass("hidden");
+                            $self.closest(".panel").find("div#" + $self.data("mobile") + "_facet_" + $self.data("facet")).removeClass("hidden");
+                            return false;
+                        }
+                        else {
+                            $self.addClass("hidden");
+                            var $facet = $self.closest(".panel").find("div#" + $self.data("mobile") + "_facet_" + $self.data("facet"));
+                            $facet.addClass("hidden");
+                            $facet.find("input[type='checkbox']").removeAttr("checked");
+                        }
+                    });
+                }
+            });
         }
     }
 
     category_heading_parents();
     facet_heading_parents();
     activate_facet();
-    mobile_filter_count();
 
     openerp.jsonRpc("/website_sale_update_cart", "call", {
     }).done(function(data){
