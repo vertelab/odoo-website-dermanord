@@ -506,10 +506,14 @@ class product_product(models.Model):
 
     @api.model
     def get_stock_info(self, product_id):
-        product = self.env['product.product'].sudo().search_read([('id', '=', product_id)], ['virtual_available_days', 'type', 'force_out_of_stock', 'is_offer'])[0]
-        if product['force_out_of_stock']:
+        product = self.env['product.product'].sudo().search_read([('id', '=', product_id)], ['virtual_available_days', 'type', 'force_out_of_stock', 'is_offer'])
+        if len(product) > 0:
+            product = product[0]
+        else:
+            product = {}
+        if product.get('force_out_of_stock', False):
             state = 'short'
-        elif product['is_offer']:
+        elif product.get('is_offer', False):
             # Can produce strange results if there's more than one active BoM. Probably not an issue.
             states = ['short', 'few', 'in']
             state = None
@@ -521,9 +525,9 @@ class product_product(models.Model):
                     state = child_state
                 # Default if there is no BoM
                 state = state or 'short'
-        elif product['type'] != 'product' or product['virtual_available_days'] > 5:
+        elif product.get('type', False) != 'product' or product.get('virtual_available_days', 0) > 5:
             state = 'in'
-        elif product['virtual_available_days'] >= 1.0:
+        elif product.get('virtual_available_days', 0.0) >= 1.0:
             state = 'few'
         else:
             state = 'short'
