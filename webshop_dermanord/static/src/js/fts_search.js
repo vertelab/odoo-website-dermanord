@@ -31,7 +31,7 @@ $(document).ready(function(){
                         content += c;
                     }
                     else if (data[key]['model_record'] == 'product.public.category'){
-                        var c = '<li><a href="/dn_shop/category/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
+                        var c = '<li><a href="/webshop/category/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
                         content += c;
                     }
                     else if (data[key]['model_record'] == 'blog.post'){
