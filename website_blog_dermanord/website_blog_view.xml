@@ -110,7 +110,7 @@
                 <t t-if="len(blog_post.object_ids) &gt; 0">
                     <h2 class="text-center mb16" style="font-family: futura-pt-heavy, sans-serif;">Related Products</h2>
                     <t t-foreach="blog_post.object_ids.sorted(key=lambda r: r.sequence)" t-as="object">
-                        <t t-if="object.object_id._name == 'product.template'">
+                        <t t-if="object.object_id._name == 'product.template' and object.object_id.sale_ok and object.object_id.website_published">
                             <a t-att-href="'/dn_shop/product/%s' %object.object_id.id">
                                 <div class="col-md-3 col-xs-12 bpp_block">
                                     <img class="img img-responsive bpp_img" t-att-src="'/imagefield/blog.post.object/image/%s/ref/website_blog_dermanord.img_product' %object.id"/>
@@ -121,7 +121,7 @@
                                 </div>
                             </a>
                         </t>
-                        <t t-if="object.object_id._name == 'product.product'">
+                        <t t-if="object.object_id._name == 'product.product' and object.object_id.sale_ok and object.object_id.website_published">
                             <a t-att-href="'/dn_shop/variant/%s' %object.object_id.id">
                                 <div class="col-md-3 col-xs-12 bpp_block">
                                     <img class="img img-responsive bpp_img" t-att-src="'/imagefield/blog.post.object/image/%s/ref/website_blog_dermanord.img_product' %object.id"/>
