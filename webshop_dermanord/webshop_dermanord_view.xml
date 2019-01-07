@@ -325,7 +325,7 @@
                                 </t>
                             </div>
                             <div class="col-md-9 col-sm-9 col-xs-9">
-                                <a t-att-href="('/event/type/%s' % term['object'].event_type_id.id) if term['object'].event_type_id else ('/dn_shop/variant/%s' %term['id'])">
+                                <a t-att-href="('/event/type/%s' % term['object'].event_type_id.id) if term['object'].event_type_id else ('/dn_shop/product/%s' %term['id'])">
                                     <h4>
                                         <t t-esc="term['object'].name" />
                                         <t t-esc="'[Event]' if term['object'].event_type_id else '[Product]'"/>
