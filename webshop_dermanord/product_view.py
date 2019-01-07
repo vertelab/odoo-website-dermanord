@@ -511,6 +511,7 @@ class product_product(models.Model):
             product = product[0]
         else:
             product = {}
+        state = None
         if product.get('force_out_of_stock', False):
             state = 'short'
         elif product.get('is_offer', False):
@@ -529,8 +530,7 @@ class product_product(models.Model):
             state = 'in'
         elif product.get('virtual_available_days', 0.0) >= 1.0:
             state = 'few'
-        else:
-            state = 'short'
+        state = state or 'short'
         return (state in ['in', 'few'], state, {'in': _('In stock'), 'few': _('Few in stock'), 'short': _('Shortage')}[state].encode('utf-8'))  # in_stock,state,info
 
     @api.model
@@ -548,6 +548,14 @@ class product_product(models.Model):
             if not page_dict:
                 render_start = timer()
                 campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
+                template = self.env['product.template'].search_read([('id', '=', product['product_tmpl_id'][0])], fields=['is_offer_product_reseller', 'is_offer_product_consumer'])[0]
+                product_ribbon_offer  = False
+                if pricelist.for_reseller:
+                    if product['is_offer_product_reseller'] or template['is_offer_product_reseller']:
+                        product_ribbon_offer  = True
+                else:
+                    if product['is_offer_product_consumer'] or template['is_offer_product_consumer']:
+                        product_ribbon_offer  = True
                 page = u"""<tr class="tr_lst ">
                                 <td class="td_lst">
                                     <div class="lst-ribbon-wrapper">{product_ribbon_offer}{product_ribbon_promo}{product_ribbon_limited}</div>
@@ -625,8 +633,8 @@ class product_product(models.Model):
                     product_stock='{product_stock}',
                     product_name=product['fullname'],
                     product_price = self.env['product.product'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_short(),
-                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
-                    product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.id in (product['website_style_ids'] + product['website_style_ids_variant']) else '',
+                    product_ribbon_offer = product_ribbon_offer and ('<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer')) or '',
+                    product_ribbon_promo = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.id in (product['website_style_ids'] + product['website_style_ids_variant']) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.id in product['website_style_ids_variant'] else '',
                     key_raw=key_raw,
                     key=key,
