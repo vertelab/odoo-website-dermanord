@@ -1104,7 +1104,7 @@ class WebsiteSale(website_sale):
 
 
     @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
-    def dn_product(self, product, category='', search='', **kwargs):
+    def dn_product(self, product, category='', search='', **post):
         values = {
             'url': request.session.get('url'),
             'detail': request.env['product.product'].get_product_detail(product, product.get_default_variant().id or product.product_variant_ids[0].id),
@@ -1115,7 +1115,7 @@ class WebsiteSale(website_sale):
     @http.route([
         '/dn_shop/variant/<model("product.product"):variant>'
     ], type='http', auth="public", website=True)
-    def dn_product_variant(self, variant, category='', search='', **kwargs):
+    def dn_product_variant(self, variant, category='', search='', **post):
         product = variant.sudo().product_tmpl_id
         values = {
             'url': request.session.get('url'),
@@ -1323,11 +1323,11 @@ class WebsiteSale(website_sale):
                 # ~ request.session['current_domain'].append(tuple((domain_field, 'in', public_categ_ids))) # add categories in the first time
 
         # ~ if request.env.user.webshop_type == 'dn_list':
-            # ~ request.website.dn_shop_set_session('product.product', post, '/dn_list')
+            # ~ request.website.dn_shop_set_session('product.product', post, '/webshop')
             # ~ if category:
                 # ~ update_current_domain('product.product')
         # ~ else:
-            # ~ request.website.dn_shop_set_session('product.template', post, '/dn_shop')
+            # ~ request.website.dn_shop_set_session('product.template', post, '/webshop')
             # ~ if category:
                 # ~ update_current_domain('product.template')
 
@@ -1335,9 +1335,9 @@ class WebsiteSale(website_sale):
             post['category_%s' % category.id] = category.id
         # ~ _logger.warn(post)
         if request.env.user.webshop_type == 'dn_list':
-            request.website.dn_shop_set_session('product.product', post, '/dn_list')
+            request.website.dn_shop_set_session('product.product', post, '/webshop')
         else:
-            request.website.dn_shop_set_session('product.template', post, '/dn_shop')
+            request.website.dn_shop_set_session('product.template', post, '/webshop')
 
         if not request.context.get('pricelist'):
             request.context['pricelist'] = int(self.get_pricelist())
@@ -1360,7 +1360,7 @@ class WebsiteSale(website_sale):
                 'search': search,
                 'products': products,
                 'rows': PPR,
-                'url': '/dn_list',
+                'url': '/webshop',
                 'webshop_type': 'dn_list',
                 'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
                 'shop_footer': True,
@@ -1375,7 +1375,7 @@ class WebsiteSale(website_sale):
                 'products':  products,
                 'rows': PPR,
                 'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
-                'url': '/dn_shop',
+                'url': '/webshop',
                 'webshop_type': 'dn_shop',
                 'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
                 'shop_footer': True,

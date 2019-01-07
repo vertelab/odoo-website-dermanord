@@ -41,7 +41,7 @@ class Website(models.Model):
     def get_webshop_type(self):
         return request.env.user.webshop_type
 
-    def get_search_values(self, kw):
+    def get_search_values(self, kw=None):
         def dedictify(value):
             # Order is not guaranteed in a dict. Make it a list of tuples instead
             if type(value) == dict:
@@ -49,7 +49,7 @@ class Website(models.Model):
             return value
         attrs = ['chosen_filter_qty', 'form_values', 'sort_order', 'sort_name', 'current_ingredient']
         if kw:
-            request.website.dn_shop_set_session('product.template', kw, '/dn_shop')
+            request.website.dn_shop_set_session('product.template', kw, '/webshop')
         return (' pricelist: %s ' % get_pricelist()) + ' '.join(['%s: %s' % (attr, dedictify(request.session.get(attr))) for attr in attrs]).replace('{', '{{').replace('}', '}}')
 
 class WebsiteSale(WebsiteSale):
@@ -62,20 +62,20 @@ class WebsiteSale(WebsiteSale):
     #~ ], type='http', auth="public", website=True)
     @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang}%s groups: %s webshop_type: %s' % (request.website.get_search_values(kw), request.website.get_dn_groups(), request.website.get_webshop_type()), flush_type=lambda kw: 'webshop', no_cache=True, cache_age=31536000, max_age=31536000, s_maxage=600)
     def webshop(self, page=0, category=None, search='', **post):
-        request.website.dn_shop_set_session('product.template', post, "/webshop")
+        request.website.dn_shop_set_session('product.template', post, '/webshop')
         return super(WebsiteSale, self).webshop(page, category, search, **post)
 
     #~ @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
-    @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw), flush_type=lambda kw: 'dn_shop', no_cache=True, cache_age=31536000, max_age=31536000, s_maxage=600)
+    @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}', flush_type=lambda kw: 'webshop', no_cache=True, cache_age=31536000, max_age=31536000, s_maxage=600)
     def dn_product(self, product, category='', search='', **post):
         return super(WebsiteSale, self).dn_product(product, category, search, **post)
 
     #~ @http.route([
         #~ '/dn_shop/variant/<model("product.product"):variant>'
     #~ ], type='http', auth="public", website=True)
-    @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}%s' % request.website.get_search_values(kw), flush_type=lambda kw: 'dn_shop', no_cache=True, cache_age=31536000, max_age=31536000, s_maxage=600)
-    def dn_product_variant(self, variant, category='', search='', **kwargs):
-        return super(WebsiteSale, self).dn_product_variant(variant, category, search, **kwargs)
+    @memcached.route(key=lambda kw:'db: {db} path: {path} logged_in: {logged_in} lang: {lang}', flush_type=lambda kw: 'webshop', no_cache=True, cache_age=31536000, max_age=31536000, s_maxage=600)
+    def dn_product_variant(self, variant, category='', search='', **post):
+        return super(WebsiteSale, self).dn_product_variant(variant, category, search, **post)
 
     #~ # '/shop/cart'
     #~ @memcached.route()
