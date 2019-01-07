@@ -994,7 +994,7 @@
                             <div class="radio">
                                 <label>
                                     <t t-if="request.session.get('form_values')">
-                                        <input type="radio" name="order" value="name asc, default_code asc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'name asc, default_code asc' else {}" />
+                                        <input type="radio" name="order" value="name asc, default_code asc" t-att="{'checked': '1'} if request.session.get('current_order') == 'name asc, default_code asc' else {}" />
                                         Name Ascending
                                     </t>
                                     <t t-if="not request.session.get('form_values')">
@@ -1008,7 +1008,7 @@
                             <div class="radio">
                                 <label>
                                     <t t-if="request.session.get('form_values')">
-                                        <input type="radio" name="order" value="name desc, default_code desc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'name desc, default_code desc' else {}" />
+                                        <input type="radio" name="order" value="name desc, default_code desc" t-att="{'checked': '1'} if request.session.get('current_order') == 'name desc, default_code desc' else {}" />
                                         Name Descending
                                     </t>
                                     <t t-if="not request.session.get('form_values')">
@@ -1022,7 +1022,7 @@
                             <div class="radio">
                                 <label>
                                     <t t-if="request.session.get('form_values')">
-                                        <input type="radio" name="order" value="list_price asc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'list_price asc' else {}" />
+                                        <input type="radio" name="order" value="list_price asc" t-att="{'checked': '1'} if request.session.get('current_order') == 'list_price asc' else {}" />
                                         Price Ascending
                                     </t>
                                     <t t-if="not request.session.get('form_values')">
@@ -1036,7 +1036,7 @@
                             <div class="radio">
                                 <label>
                                     <t t-if="request.session.get('form_values')">
-                                        <input type="radio" name="order" value="list_price desc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'list_price desc' else {}" />
+                                        <input type="radio" name="order" value="list_price desc" t-att="{'checked': '1'} if request.session.get('current_order') == 'list_price desc' else {}" />
                                         Price Descending
                                     </t>
                                     <t t-if="not request.session.get('form_values')">
@@ -1050,7 +1050,7 @@
                             <div class="radio">
                                 <label>
                                     <t t-if="request.session.get('form_values')">
-                                        <input type="radio" name="order" value="sold_qty desc" t-att="{'checked': '1'} if request.session.get('form_values').get('order') == 'sold_qty desc' else {}" />
+                                        <input type="radio" name="order" value="sold_qty desc" t-att="{'checked': '1'} if request.session.get('current_order') == 'sold_qty desc' else {}" />
                                         Most Sold
                                     </t>
                                     <t t-if="not request.session.get('form_values')">
