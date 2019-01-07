@@ -620,6 +620,7 @@ class Website(models.Model):
 
         domain_append = [('sale_ok', '=', True),('event_ok', '=', False)]
         if category_ids:
+            # ~ domain_append += [('public_categ_ids', 'in', [id for id in category_ids])]
             category_domain = [('public_categ_ids', 'child_of', id) for id in category_ids]
             category_domain = ['|' for i in range(len(category_domain) - 1)] + category_domain
             domain_append += category_domain

@@ -641,6 +641,7 @@ $(document).ready(function(){
     $("#desktop_product_navigator_filter").find(".category_checkbox").each(function() {
         var $self = $(this);
         $self.on("change", function() {
+            check_in_check_out_parent();
             $self.closest("form").find(".dn_ok").addClass("dn_blink");
         });
     });
@@ -648,9 +649,30 @@ $(document).ready(function(){
     $("#mobile_product_navigator_filter").find(".category_checkbox").each(function() {
         var $self = $(this);
         $self.on("change", function() {
+            check_in_check_out_parent();
             $self.closest("form").find(".dn_ok").addClass("dn_blink");
         });
     });
+
+    function check_in_check_out_parent() {
+        var parent_categories = $("i.desktop_angle.fa").closest("h4").find("input.category_checkbox");
+        $.each(parent_categories, function() {
+            var $self = $(this);
+            var checkin = true;
+            $inputs = $("div#" + $self.data("category")).find("input.category_checkbox");
+            $.each($inputs, function() {
+                if (!$(this).is(":checked")) {
+                    checkin = false;
+                }
+            });
+            if (!checkin) {
+                $self.removeAttr("checked", "checked");
+            }
+            else {
+                $self.attr("checked", "checked");
+            }
+        });
+    }
 
     $("#dn_filter_modal").find(".checkbox").each(function() {
         $(this).on("change", function() {
