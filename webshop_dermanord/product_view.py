@@ -919,7 +919,8 @@ class product_product(models.Model):
             {html_product_detail_image}
         </div>
         <div class="col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
-            <h1 itemprop="name">{product_name}</h1><h4 class="text-muted default_code">{default_code}</h4>
+            <h1 itemprop="name">{product_name}</h1>
+            <h4 class="text-muted default_code">{default_code}</h4>
             <form action="/shop/cart/update" class="js_add_cart_variants" data-attribute_value_ids="{variant_ids}" method="POST">
                 <div class="js_product">
                     <input class="product_id" name="product_id" value="{variant_id}" type="hidden">
@@ -977,7 +978,7 @@ class product_product(models.Model):
                     publish = _('Publish'),
                     action = '<a href="/web#return_label=Website&amp;view_type=form&amp;model=product.template&amp;id=%s&amp;action=%s" title="%s">Edit</a>' %(product.id, 'product.product_template_action', _('Edit in backend')),
                     product_name = variant.name,
-                    default_code = variant.default_code,
+                    default_code = variant.default_code or '',
                     variant_ids = product.product_variant_ids.mapped('id'),
                     data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, '{%s_in_stock}' % p.id] for p in product.product_variant_ids],
                     attr_sel = attr_sel,
@@ -1010,7 +1011,14 @@ class product_product(models.Model):
                 stock['%s_hide_add_to_cart' % variant.id] = 'hidden'
             else:
                 stock['%s_hide_add_to_cart' % variant.id] = '' if (stock['%s_in_stock' %variant.id] and variant.sale_ok) else 'hidden'
-        return page_dict.get('page','').decode('base64').format(**stock)
+        try:
+            return page_dict.get('page','').decode('base64').format(**stock)
+        except:
+            new_stock = {}
+            for key in stock.keys():
+                if key in page_dict.get('page','').decode('base64'):
+                    new_stock[key] = stock[key]
+            return page_dict.get('page','').decode('base64').format(**new_stock)
 
 
 class Website(models.Model):
