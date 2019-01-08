@@ -169,7 +169,7 @@
                         </table>
 
                         <!-- in mobile -->
-                        <div class="container hidden-lg hidden-md hidden-sm mb32" id="cart_products">
+                        <div t-if="website_sale_order and website_sale_order.website_order_line" class="container hidden-lg hidden-md hidden-sm mb32" id="cart_products">
                             <div class="col-xs-12" style="padding: 0px;">
                                 <div class="col-xs-2"><strong>Product</strong></div>
                                 <div class="col-xs-6 text-center"><strong>Price</strong></div>
