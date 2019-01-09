@@ -272,6 +272,7 @@ $(document).ready(function(){
     facet_heading_parents();
     activate_facet();
     mobile_filter_count();
+    check_in_check_out_parent();
 
     openerp.jsonRpc("/website_sale_update_cart", "call", {
     }).done(function(data){
@@ -659,10 +660,14 @@ $(document).ready(function(){
         $.each(parent_categories, function() {
             var $self = $(this);
             var checkin = true;
+            var expand = false;
             $inputs = $("div#" + $self.data("category")).find("input.category_checkbox");
             $.each($inputs, function() {
                 if (!$(this).is(":checked")) {
                     checkin = false;
+                }
+                else {
+                    expand = true;
                 }
             });
             if (!checkin) {
@@ -670,6 +675,12 @@ $(document).ready(function(){
             }
             else {
                 $self.attr("checked", "checked");
+            }
+            if (expand) {
+                $self.removeClass("fa-angle-down");
+                $self.addClass("fa-angle-up");
+                $self.closest("a").removeClass("collapsed");
+                $("div#" + $self.data("category")).addClass("in");
             }
         });
     }
