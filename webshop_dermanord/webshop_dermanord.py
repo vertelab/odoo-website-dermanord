@@ -1106,6 +1106,9 @@ class WebsiteSale(website_sale):
 
     @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
     def dn_product(self, product, category='', search='', **post):
+        if len(product.product_variant_ids) == 0:
+            _logger.warn('Product: %s has no attribute for current user: %s' %(product.name, request.env.user.login))
+            return request.website.render("website.404", {})
         values = {
             'url': request.session.get('url'),
             'detail': request.env['product.product'].get_product_detail(product, product.get_default_variant().id or product.product_variant_ids[0].id),
