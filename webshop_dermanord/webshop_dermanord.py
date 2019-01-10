@@ -1339,9 +1339,9 @@ class WebsiteSale(website_sale):
             post['category_%s' % category.id] = category.id
         # ~ _logger.warn(post)
         if request.env.user.webshop_type == 'dn_list':
-            request.website.dn_shop_set_session('product.product', post, '/webshop')
+            request.website.dn_shop_set_session('product.product', post, '/dn_list')
         else:
-            request.website.dn_shop_set_session('product.template', post, '/webshop')
+            request.website.dn_shop_set_session('product.template', post, '/dn_shop')
 
         if not request.context.get('pricelist'):
             request.context['pricelist'] = int(self.get_pricelist())
