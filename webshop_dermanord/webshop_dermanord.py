@@ -25,6 +25,7 @@ from openerp.http import request
 from openerp.tools.translate import _
 from openerp.tools import html_escape as escape
 from openerp.tools import float_compare
+from openerp.exceptions import except_orm
 from datetime import datetime, date, timedelta
 from lxml import html
 from openerp.addons.website_sale.controllers.main import website_sale, QueryURL, table_compute
@@ -124,6 +125,58 @@ class product_template(models.Model):
     use_tmpl_name = fields.Boolean(string='Use Template Name', help='When checked. The template name will be used in webshop')
     campaign_changed = fields.Boolean()
 
+    def _auto_init(self, cr, context=None):
+        """Install custom sorting functions."""
+        res = super(product_template, self)._auto_init(cr, context)
+        cr.execute("""CREATE OR REPLACE FUNCTION dn_product_template_price_chart_sort(int, int) RETURNS float 
+LANGUAGE sql
+AS
+$$
+    
+    SELECT price FROM product_pricelist_chart WHERE pricelist_chart_id = $2 AND product_id IN (SELECT id FROM product_product WHERE product_tmpl_id = $1 AND sale_ok = true and active = true AND website_published = true) ORDER BY price LIMIT 1;
+$$;""")
+        return res
+    
+    def _generate_order_by_inner(self, alias, order_spec, query, reverse_direction=False, seen=None):
+        """Handle sort by functions.
+        dn_price_chart_sort_{pricelist_chart_id} = sort by prices for the given chart.
+        """
+        if seen is None:
+            seen = set()
+        order_by_elements = []
+        
+        _logger.warn('\n\norder_spec: %s\n' % order_spec)
+        
+        special_order = []
+        if 'dn_price_chart_sort_' in order_spec:
+            new_order = []
+            for expr in order_spec.split(','):
+                if 'dn_price_chart_sort_' in expr:
+                    expr = expr.strip().split(' ')
+                    order_direction = expr[1].strip().upper() if len(expr) == 2 else ''
+                    chart_id = expr[0].split('_')[-1]
+                    if not chart_id.isdigit() and order_direction in ('', 'ASC', 'DESC'):
+                        raise except_orm(_('AccessError'), _('Invalid "order" specified for dn_price_chart_sort_'))
+                    special_order.append((chart_id, order_direction))
+                else:
+                    new_order.append(expr.strip())
+                    
+                _logger.warn('\n\nnew_order: %s\n' % new_order)
+                
+            order_spec = ','.join(new_order)
+        
+        _logger.warn('\n\norder_spec: %s\n' % order_spec)
+        
+        if order_spec:
+            order_by_elements = super(product_template, self)._generate_order_by_inner(alias, order_spec, query, reverse_direction=reverse_direction, seen=seen)
+        
+        for order in special_order:
+            order_by_elements.append('dn_product_template_price_chart_sort("%s"."id", %s) %s' % (alias, order[0], order[1]))
+        
+        _logger.warn(order_by_elements)
+        
+        return order_by_elements
+    
     @api.multi
     def get_default_variant(self):
         self.ensure_one()
@@ -169,12 +222,63 @@ class product_product(models.Model):
     #~ so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')  # performance hog, do we need it?
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
-
+    
     @api.one
     def _fullname(self):
         self.fullname = '%s %s' % (self.name, ', '.join(self.attribute_value_ids.mapped('name')))
     fullname = fields.Char(compute='_fullname')
-
+    
+    def _auto_init(self, cr, context=None):
+        """Install custom sorting functions."""
+        res = super(product_product, self)._auto_init(cr, context)
+        cr.execute("""CREATE OR REPLACE FUNCTION dn_product_product_price_chart_sort(int, int) RETURNS float 
+LANGUAGE sql
+AS
+$$
+    SELECT price FROM product_pricelist_chart WHERE pricelist_chart_id = $2 AND product_id = $1 LIMIT 1;
+$$;""")
+        return res
+    
+    def _generate_order_by_inner(self, alias, order_spec, query, reverse_direction=False, seen=None):
+        """Handle sort by functions.
+        dn_price_chart_sort_{pricelist_chart_type_id} = sort by prices for the given chart.
+        """
+        if seen is None:
+            seen = set()
+        order_by_elements = []
+        
+        _logger.warn('\n\norder_spec: %s\n' % order_spec)
+        
+        special_order = []
+        if 'dn_price_chart_sort_' in order_spec:
+            new_order = []
+            for expr in order_spec.split(','):
+                if 'dn_price_chart_sort_' in expr:
+                    expr = expr.strip().split(' ')
+                    order_direction = expr[1].strip().upper() if len(expr) == 2 else ''
+                    chart_id = expr[0].split('_')[-1]
+                    if not chart_id.isdigit() and order_direction in ('', 'ASC', 'DESC'):
+                        raise except_orm(_('AccessError'), _('Invalid "order" specified for dn_price_chart_sort_'))
+                    special_order.append((chart_id, order_direction))
+                else:
+                    new_order.append(expr.strip())
+                    
+                _logger.warn('\n\nnew_order: %s\n' % new_order)
+                
+            order_spec = ','.join(new_order)
+        
+        _logger.warn('\n\norder_spec: %s\n' % order_spec)
+        
+        if order_spec:
+            order_by_elements = super(product_product, self)._generate_order_by_inner(alias, order_spec, query, reverse_direction=reverse_direction, seen=seen)
+        
+        for order in special_order:
+            order_by_elements.append('dn_product_product_price_chart_sort("%s"."id", %s) %s' % (alias, order[0], order[1]))
+        
+        _logger.warn(order_by_elements)
+        
+        return order_by_elements
+    
     @api.model
     def update_sold_qty(self):
         self._cr.execute('UPDATE product_template SET sold_qty = 0')
@@ -682,14 +786,17 @@ class Website(models.Model):
             default_order = post.get('order')
             if request.session.get('form_values'):
                 request.session['form_values']['order'] = default_order
-        request.session['current_order'] = default_order
+        request.session.update({
+            'current_order': default_order,
+            'sort_name': default_order.split(' ')[0],
+            'sort_order': default_order.split(' ')[1],
+        })
 
         if post.get('post_form') == 'ok':
             request.session['form_values'] = post
 
         request.session['url'] = url
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
-        request.session['sort_name'], request.session['sort_order'] = self.get_chosen_order(self.get_form_values())
         if post:
             request.session['form_values']['current_ingredient'] = post.get('current_ingredient')
             request.session['current_ingredient'] = post.get('current_ingredient')
@@ -1358,6 +1465,7 @@ class WebsiteSale(website_sale):
             products=request.env['product.template'].get_thumbnail_default_variant2(request.context['pricelist'],product_ids)
         if len(products) == 0:
             no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
+        pricelist_chart_type_id = request.env['pricelist_chart.type'].sudo().search_read([('pricelist', '=', request.context['pricelist'])], ['id'])[0]['id']
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
             return request.website.render("webshop_dermanord.products_list_reseller_view", {
                 'title': _('Shop'),
@@ -1371,6 +1479,7 @@ class WebsiteSale(website_sale):
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products) < PPG else False,
                 'filter_version': request.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version'),
+                'pricelist_chart_type_id': pricelist_chart_type_id,
             })
         else:
             return request.website.render("webshop_dermanord.products", {
@@ -1387,6 +1496,7 @@ class WebsiteSale(website_sale):
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products) < PPG else False,
                 'filter_version': request.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version'),
+                'pricelist_chart_type_id': pricelist_chart_type_id,
             })
 
     @http.route(['/shop/cart'], type='http', auth="public", website=True)
