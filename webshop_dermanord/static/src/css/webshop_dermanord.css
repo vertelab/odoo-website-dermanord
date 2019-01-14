@@ -17,6 +17,11 @@ body {}
     background-color: #fff !important;
 }
 
+.dn_btn.btn-success.dn_viewtype_active:hover {
+    background-color: #fff;
+    border-color: #ddd;
+}
+
 .dn_viewtype_active {
     background-color: #000;
     color: #fff;
