@@ -127,6 +127,7 @@ $(document).ready(function(){
         });
         $input.attr("checked", true);
         category_checkbox_onchange($input);
+        check_in_check_out_parent();
         $input.closest("form").submit();
     });
 
