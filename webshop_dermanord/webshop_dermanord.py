@@ -144,9 +144,6 @@ $$;""")
         if seen is None:
             seen = set()
         order_by_elements = []
-        
-        _logger.warn('\n\norder_spec: %s\n' % order_spec)
-        
         special_order = []
         if 'dn_price_chart_sort_' in order_spec:
             new_order = []
@@ -160,21 +157,12 @@ $$;""")
                     special_order.append((chart_id, order_direction))
                 else:
                     new_order.append(expr.strip())
-                    
-                _logger.warn('\n\nnew_order: %s\n' % new_order)
-                
             order_spec = ','.join(new_order)
-        
-        _logger.warn('\n\norder_spec: %s\n' % order_spec)
-        
         if order_spec:
             order_by_elements = super(product_template, self)._generate_order_by_inner(alias, order_spec, query, reverse_direction=reverse_direction, seen=seen)
         
         for order in special_order:
             order_by_elements.append('dn_product_template_price_chart_sort("%s"."id", %s) %s' % (alias, order[0], order[1]))
-        
-        _logger.warn(order_by_elements)
-        
         return order_by_elements
     
     @api.multi
@@ -246,9 +234,6 @@ $$;""")
         if seen is None:
             seen = set()
         order_by_elements = []
-        
-        _logger.warn('\n\norder_spec: %s\n' % order_spec)
-        
         special_order = []
         if 'dn_price_chart_sort_' in order_spec:
             new_order = []
@@ -262,21 +247,12 @@ $$;""")
                     special_order.append((chart_id, order_direction))
                 else:
                     new_order.append(expr.strip())
-                    
-                _logger.warn('\n\nnew_order: %s\n' % new_order)
-                
             order_spec = ','.join(new_order)
-        
-        _logger.warn('\n\norder_spec: %s\n' % order_spec)
-        
         if order_spec:
             order_by_elements = super(product_product, self)._generate_order_by_inner(alias, order_spec, query, reverse_direction=reverse_direction, seen=seen)
         
         for order in special_order:
             order_by_elements.append('dn_product_product_price_chart_sort("%s"."id", %s) %s' % (alias, order[0], order[1]))
-        
-        _logger.warn(order_by_elements)
-        
         return order_by_elements
     
     @api.model
@@ -1214,8 +1190,33 @@ class WebsiteSale(website_sale):
     @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
     def dn_product(self, product, category='', search='', **post):
         if len(product.product_variant_ids) == 0:
-            _logger.warn('Product: %s has no attribute for current user: %s' %(product.name, request.env.user.login))
-            return request.website.render("website.404", {})
+            user = request.env.user
+            if not user:
+                user = request.env['res.users'].with_context(active_test=False).browse(request.env.uid).sudo()
+            _logger.warn('Product: %s (%s) has no variants for current user: %s' %(product.name, product.id, user.login))
+            subject = u'Felaktig konfiguration av %s' % product.name
+            body = u'Användaren %s (%s) får ej se några varianter på produkt %s (%s).' % (user.login, user.id, product.name, product.id)
+            body += u'Access Groups: %s' % ', '.join(user.commercial_partner_id.access_group_ids.mapped('name'))
+            author = request.env.ref('base.partner_root').sudo()
+            request.env['mail.message'].sudo().create({
+                'subject': subject,
+                'body': body,
+                'author_id': author.id,
+                'res_id': product.id,
+                'model': product._name,
+                'type': 'notification',
+                'partner_ids': [(4, pid) for pid in product.message_follower_ids.mapped('id')],
+            })
+            request.env['mail.mail'].sudo().create({
+                'subject': subject,
+                'body_html': body,
+                'author_id': author.id,
+                'email_from': author.email,
+                'type': 'email',
+                'auto_delete': True,
+                'email_to': 'support@dermanord.se',
+            })
+            return request.website.render('website.404', {'dn_404_message': _("You are not allowed to see this product.")})
         values = {
             'url': request.session.get('url'),
             'detail': request.env['product.product'].get_product_detail(product, product.get_default_variant().id or product.product_variant_ids[0].id),
