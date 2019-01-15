@@ -307,7 +307,12 @@
                                                                     <a t-att-href="'/reseller/%s' %reseller.id">Go to reseller</a>
                                                                 </t>
                                                                 <t t-if="link_type == 'webshop'">
-                                                                    <a t-att-href="'http://%s' %reseller.webshop_website" target="_blank">Go to reseller</a>
+                                                                    <t t-if="reseller.has_webshop">
+                                                                        <a t-if="reseller.webshop_website" t-att-href="'http://%s' %reseller.webshop_website" target="_blank">Go to reseller</a>
+                                                                    </t>
+                                                                    <t t-if="not reseller.has_webshop">
+                                                                        <a t-if="reseller.website" t-att-href="'http://%s' %reseller.website" target="_blank">Go to reseller</a>
+                                                                    </t>
                                                                 </t>
                                                             </td>
                                                         </t>
