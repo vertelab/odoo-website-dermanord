@@ -167,12 +167,13 @@ class Main(http.Controller):
         return res
 
     # Return result of resellers with postcode, domain searching
-    def get_resellers(self, words, domain, search_partner):
+    def get_resellers(self, words, domain, search_partner, webshop=None):
         # Split words and try to get postcode first
         word_list = words.split(' ')
         partner_ids = []
         post_codes = []
         strings = []
+        limit = 5 if webshop else 10
         resellers = request.env['res.partner'].sudo().browse()
         for w in word_list:
             if len(w) == 5:
@@ -188,7 +189,7 @@ class Main(http.Controller):
         if len(post_codes) > 0:
             # Search each postcode and get the closest reseller inside 0.5 degree
             for p in post_codes:
-                partner_ids += request.env['res.partner'].sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain, distance=0.5, limit=10)
+                partner_ids += request.env['res.partner'].sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=0.5, limit=limit)
         if len(strings) > 0:
             # Search keyword
             for s in strings:
@@ -205,12 +206,28 @@ class Main(http.Controller):
             partner_ids = []
             if len(post_codes) > 0:
                 for p in post_codes:
-                    partner_ids += request.env['res.partner'].sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain, distance=25, limit=3)
+                    partner_ids += request.env['res.partner'].sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain, distance=360, limit=3)
                 if len(partner_ids) > 0:
                     if len(partner_ids) > 3:
                         partner_ids = partner_ids[:3]
                     resellers = request.env['res.partner'].sudo().browse(partner_ids)
         return resellers
+
+    def get_resellers_without_keyword(self, domain, position, distance=None, limit=10, webshop=False):
+        def get_partner_ids(distance, limit):
+            return request.env['res.partner'].sudo().geo_search('position', position, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=distance, limit=limit)
+        if webshop:
+            partner_ids = get_partner_ids(0.5, 5)
+            if len(partner_ids) == 0:
+                partner_ids = get_partner_ids(360, 5)
+        else:
+            partner_ids = get_partner_ids(0.5, 10)
+            if len(partner_ids) == 0:
+                partner_ids = get_partner_ids(360, 10)
+        if len(partner_ids) > 0:
+            return request.env['res.partner'].sudo().browse(partner_ids)
+        else:
+            return request.env['res.partner'].sudo().browse()
 
     @http.route(['/resellers/competence/<model("res.partner.category"):competence>',], type='http', auth="public", website=True)
     def reseller_competence(self, competence, **post):
@@ -342,13 +359,19 @@ class Main(http.Controller):
                 ('child_ids', 'in', all_visit_ids),
             ]
             if words and words != '' and (post.get('salon') or post.get('webshop')):
-                resellers = self.get_resellers(words, domain, search_partner)
+                resellers = self.get_resellers(words, domain, search_partner, webshop=post.get('webshop') and not salon)
                 return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'link_type': 'salon' if salon else 'webshop', 'not_found_msg': _('No reseller found') if len(resellers) == 0 else ''})
-            else: # without searching term, do ip localize search
+            else: # without searching term, geo localize search
                 # ~ user_ip = request.httprequest.environ['REMOTE_ADDR']
-                user_ip = '81.170.222.15'
-                resellers = partner_obj.sudo().browse(partner_obj.geoip_search('position', user_ip, domain, limit=10))
-                return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'link_type': 'salon', 'not_found_msg': _('No reseller found') if len(resellers) == 0 else ''})
+                # ~ user_ip = '81.170.222.15'
+                # ~ resellers = partner_obj.sudo().browse(partner_obj.geoip_search('position', user_ip, domain, limit=10))
+                if post.get('lng') and post.get('lat'):
+                    resellers = self.get_resellers_without_keyword(domain, tuple((float(post.get('lng')), float(post.get('lat')))), webshop=post.get('webshop') and not salon)
+                    geo_accepted = True
+                else:
+                    resellers = request.env['res.partner'].sudo().browse()
+                    geo_accepted = False
+                return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'geo_accepted': geo_accepted, 'product': product, 'link_type': 'salon', 'not_found_msg': _('No reseller found') if len(resellers) == 0 else ''})
         return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': [], 'product': product})
 
         #~ if partner:

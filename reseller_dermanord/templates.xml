@@ -267,6 +267,28 @@
                             <div class="col-md-12 col-sm-12 col-xs-12 mb16">
                                 <form t-att-action="'/resellers/search/%s' % product.id" method="post" class="pagination form-inline col-md-12 col-sm-12 col-xs-12 mb16">
                                     <div class="container text-center">
+<!--
+                                        <t t-if="geo_accepted">
+                                            <p id="geo_accepted" value="1"/>
+                                        </t>
+                                        <t t-if="not geo_accepted">
+                                            <p id="geo_accepted" value="0"/>
+                                        </t>
+-->
+                                        <input id="pos_lng" type="hidden" name="lng" value="17.8419718" />
+                                        <input id="pos_lat" type="hidden" name="lat" value="59.3260668" />
+                                        <script>
+                                            getLocation();
+                                            function getLocation() {
+                                                if (navigator.geolocation) {
+                                                    navigator.geolocation.getCurrentPosition(setPosition);
+                                                }
+                                            }
+                                            function setPosition(position) {
+                                                $("input#pos_lng").val(position.coords.longitude);
+                                                $("input#pos_lat").val(position.coords.latitude);
+                                            }
+                                        </script>
                                         <div class="input-group">
                                             <input name="search_resellers" class="form-control" placeholder="Search..." type="text"/>
                                             <span class="input-group-btn">
