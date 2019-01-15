@@ -166,6 +166,52 @@ class Main(http.Controller):
         _logger.warn(len(res))
         return res
 
+    # Return result of resellers with postcode, domain searching
+    def get_resellers(self, words, domain, search_partner):
+        # Split words and try to get postcode first
+        word_list = words.split(' ')
+        partner_ids = []
+        post_codes = []
+        strings = []
+        resellers = request.env['res.partner'].sudo().browse()
+        for w in word_list:
+            if len(w) == 5:
+                try:
+                    int(w)
+                    # Got a keyword is postcode
+                    post_codes.append(w)
+                except:
+                    # Got a keyword is not postcode
+                    strings.append(w)
+            else:
+                strings.append(w)
+        if len(post_codes) > 0:
+            # Search each postcode and get the closest reseller inside 0.5 degree
+            for p in post_codes:
+                partner_ids += request.env['res.partner'].sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain, distance=0.5, limit=10)
+        if len(strings) > 0:
+            # Search keyword
+            for s in strings:
+                resellers |= search_partner(s)
+        if len(partner_ids) > 0:
+            if len(resellers) > 0:
+                # Filter resellers with specified postcode
+                resellers = resellers.with_context(partner_ids=partner_ids).filtered(lambda r: r.id in r._context.get('partner_ids'))
+            else:
+                # Reseller only with specified postcode
+                resellers = request.env['res.partner'].sudo().browse(partner_ids)
+        # If there's no reseller found. Redo search with unlimited distance
+        if len(resellers) == 0:
+            partner_ids = []
+            if len(post_codes) > 0:
+                for p in post_codes:
+                    partner_ids += request.env['res.partner'].sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain, distance=25, limit=3)
+                if len(partner_ids) > 0:
+                    if len(partner_ids) > 3:
+                        partner_ids = partner_ids[:3]
+                    resellers = request.env['res.partner'].sudo().browse(partner_ids)
+        return resellers
+
     @http.route(['/resellers/competence/<model("res.partner.category"):competence>',], type='http', auth="public", website=True)
     def reseller_competence(self, competence, **post):
         context = {'competence': competence}
@@ -192,33 +238,7 @@ class Main(http.Controller):
 
         words = post.get('search_resellers')
         if words and words != '':
-            # split words and try to get postcode first
-            word_list = words.split(' ')
-            partner_ids = []
-            post_codes = []
-            strings = []
-            resellers = request.env['res.partner'].sudo().browse()
-            for w in word_list:
-                if len(w) == 5:
-                    try:
-                        int(w)
-                        post_codes.append(w)
-                    except:
-                        strings.append(w)
-                else:
-                    strings.append(w)
-            if len(post_codes) > 0:
-                for p in post_codes:
-                    partner_ids += request.env['res.partner'].sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit'), ('child_competence_ids', '=', competence.id)], distance=0.5, limit=10)
-            if len(strings) > 0:
-                for s in strings:
-                    resellers |= search_partner(s)
-            if len(partner_ids) > 0:
-                if len(resellers) > 0:
-                    resellers = resellers.with_context(partner_ids=partner_ids).filtered(lambda r: r.id in r._context.get('partner_ids'))
-                else:
-                    resellers = request.env['res.partner'].sudo().browse(partner_ids)
-            context['resellers'] = resellers
+            context['resellers'] = self.get_resellers(words, [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit'), ('child_competence_ids', '=', competence.id)], search_partner)
         else:
             matching_visit_ids = [p['id'] for p in request.env['res.partner'].sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
             context['resellers'] = request.env['res.partner'].sudo().search([
@@ -259,32 +279,7 @@ class Main(http.Controller):
         if not partner:
             words = post.get('search_resellers')
             if words and words != '':
-                # split words and try to get postcode first
-                word_list = words.split(' ')
-                partner_ids = []
-                post_codes = []
-                strings = []
-                resellers = request.env['res.partner'].sudo().browse()
-                for w in word_list:
-                    if len(w) == 5:
-                        try:
-                            int(w)
-                            post_codes.append(w)
-                        except:
-                            strings.append(w)
-                    else:
-                        strings.append(w)
-                if len(post_codes) > 0:
-                    for p in post_codes:
-                        partner_ids += request.env['res.partner'].sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')], distance=0.5, limit=10)
-                if len(strings) > 0:
-                    for s in strings:
-                        resellers |= search_partner(s)
-                if len(partner_ids) > 0:
-                    if len(resellers) > 0:
-                        resellers = resellers.with_context(partner_ids=partner_ids).filtered(lambda r: r.id in r._context.get('partner_ids'))
-                    else:
-                        resellers = request.env['res.partner'].sudo().browse(partner_ids)
+                resellers = self.get_resellers(words, [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')], search_partner)
                 return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
             else:
                 # ~ closest_ids = request.env['res.partner'].geoip_search('position', request.httprequest.remote_addr, 10)
@@ -347,32 +342,7 @@ class Main(http.Controller):
                 ('child_ids', 'in', all_visit_ids),
             ]
             if words and words != '' and (post.get('salon') or post.get('webshop')):
-                # split words and try to get postcode first
-                word_list = words.split(' ')
-                partner_ids = []
-                post_codes = []
-                strings = []
-                resellers = partner_obj.sudo().browse()
-                for w in word_list:
-                    if len(w) == 5:
-                        try:
-                            int(w)
-                            post_codes.append(w)
-                        except:
-                            strings.append(w)
-                    else:
-                        strings.append(w)
-                if len(post_codes) > 0:
-                    for p in post_codes:
-                        partner_ids += request.env['res.partner'].sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain, distance=0.5, limit=10)
-                if len(strings) > 0:
-                    for s in strings:
-                        resellers |= search_partner(s)
-                if len(partner_ids) > 0:
-                    if len(resellers) > 0:
-                        resellers = resellers.with_context(partner_ids=partner_ids).filtered(lambda r: r.id in r._context.get('partner_ids'))
-                    else:
-                        resellers = request.env['res.partner'].sudo().browse(partner_ids)
+                resellers = self.get_resellers(words, domain, search_partner)
                 return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'link_type': 'salon' if salon else 'webshop', 'not_found_msg': _('No reseller found') if len(resellers) == 0 else ''})
             else: # without searching term, do ip localize search
                 # ~ user_ip = request.httprequest.environ['REMOTE_ADDR']
