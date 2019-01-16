@@ -367,14 +367,27 @@ class Main(http.Controller):
                     resellers = self.get_resellers(words, domain, search_partner, webshop=False)
                 return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'salon_webshop': salon_webshop, 'not_found_msg': _('No reseller found') if len(resellers) == 0 else ''})
             else: # without searching term, geo/IP search
-                if post.get('pos_lng') and post.get('pos_lat'): # Geo search
-                    resellers = self.get_resellers_without_keyword(domain, tuple((float(post.get('pos_lng')), float(post.get('pos_lat')))), webshop=True if salon_webshop == 'webshop' else False)
-                elif post.get('client_ip'): # IP search
-                    resellers = partner_obj.sudo().browse(partner_obj.sudo().geoip_search('position', post.get('client_ip'), domain))
+                if request.session.get('geoip') and request.session.get('geoip').get('longitude') and request.session.get('geoip').get('latitude'): # Geo search
+                    resellers = self.get_resellers_without_keyword(domain, tuple((float(request.session.get('geoip').get('longitude')), float(request.session.get('geoip').get('latitude')))), webshop=True if salon_webshop == 'webshop' else False)
+                elif request.session.get('geoip') and request.session.get('geoip').get('ip'): # IP search
+                    resellers = partner_obj.sudo().browse(partner_obj.sudo().geoip_search('position', request.session.get('geoip').get('ip'), domain))
                 else:
                     resellers = partner_obj.sudo().browse(partner_obj.sudo().geoip_search('position', request.httprequest.remote_addr, domain))
                 return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'salon_webshop': salon_webshop, 'not_found_msg': _('No reseller found') if len(resellers) == 0 else ''})
         return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': [], 'product': product})
+
+    @http.route(['/website_set_location'], type='json', auth="public", website=True)
+    def website_set_location(self, longitude, latitude, **kwags):
+        if request.session.get('geoip'):
+            if not request.session.get('geoip').get('longitude') or longitude != request.session.get('geoip').get('longitude'):
+                request.session['geoip']['longitude'] = longitude
+            if not request.session.get('geoip').get('latitude') or latitude != request.session.get('geoip').get('latitude'):
+                request.session['geoip']['latitude'] = latitude
+        else:
+            request.session['geoip'] = {}
+            request.session['geoip']['longitude'] = longitude
+            request.session['geoip']['latitude'] = latitude
+        return None
 
         #~ if partner:
             #~ return request.website.render('reseller_dermanord.reseller', {

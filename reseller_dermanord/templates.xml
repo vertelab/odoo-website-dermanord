@@ -267,9 +267,9 @@
                             <div class="col-md-12 col-sm-12 col-xs-12 mb16">
                                 <form t-att-action="'/resellers/search/%s' % product.id" method="post" class="pagination form-inline col-md-12 col-sm-12 col-xs-12 mb16">
                                     <div class="container text-center">
-                                        <input id="pos_lng" type="hidden" name="pos_lng" value="" />
-                                        <input id="pos_lat" type="hidden" name="pos_lat" value="" />
+<!--
                                         <input id="client_ip" type="hidden" name="client_ip" value="" />
+-->
                                         <div class="input-group">
                                             <input name="search_resellers" class="form-control" placeholder="Search..." type="text"/>
                                             <span class="input-group-btn">
