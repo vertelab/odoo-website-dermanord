@@ -167,7 +167,7 @@ class Main(http.Controller):
         return res
 
     # Return result of resellers with postcode, domain searching
-    def get_resellers(self, words, domain, search_partner, webshop=None):
+    def get_resellers(self, words, domain, search_partner, webshop=False):
         # Split words and try to get postcode first
         word_list = words.split(' ')
         partner_ids = []
@@ -310,10 +310,12 @@ class Main(http.Controller):
 
     @http.route(['/resellers/search/<model("product.product"):product>'], type='http', auth="public", website=True)
     def resellers_search(self, product, **post):
-        salon = post.get('salon')
+        salon_webshop = post.get('salon_webshop')
+        if not salon_webshop:
+            salon_webshop = 'salon'
         def search_partner(word):
             matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('zip', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
-            if post.get('salon'):
+            if salon_webshop == 'salon':
                 res = partner_obj.sudo().search([
                     ('is_company', '=', True),
                     ('is_reseller', '=', True),
@@ -358,20 +360,20 @@ class Main(http.Controller):
                 ('child_ids.type', '=', 'visit'),
                 ('child_ids', 'in', all_visit_ids),
             ]
-            if words and words != '' and (post.get('salon') or post.get('webshop')):
-                resellers = self.get_resellers(words, domain, search_partner, webshop=post.get('webshop') and not salon)
-                return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'link_type': 'salon' if salon else 'webshop', 'not_found_msg': _('No reseller found') if len(resellers) == 0 else ''})
-            else: # without searching term, geo localize search
-                # ~ user_ip = request.httprequest.environ['REMOTE_ADDR']
-                # ~ user_ip = '81.170.222.15'
-                # ~ resellers = partner_obj.sudo().browse(partner_obj.geoip_search('position', user_ip, domain, limit=10))
-                if post.get('lng') and post.get('lat'):
-                    resellers = self.get_resellers_without_keyword(domain, tuple((float(post.get('lng')), float(post.get('lat')))), webshop=post.get('webshop') and not salon)
-                    geo_accepted = True
+            if words and words != '':
+                if salon_webshop == 'webshop':
+                    resellers = self.get_resellers(words, domain, search_partner, webshop=True)
                 else:
-                    resellers = request.env['res.partner'].sudo().browse()
-                    geo_accepted = False
-                return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'geo_accepted': geo_accepted, 'product': product, 'link_type': 'salon', 'not_found_msg': _('No reseller found') if len(resellers) == 0 else ''})
+                    resellers = self.get_resellers(words, domain, search_partner, webshop=False)
+                return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'salon_webshop': salon_webshop, 'not_found_msg': _('No reseller found') if len(resellers) == 0 else ''})
+            else: # without searching term, geo/IP search
+                if post.get('pos_lng') and post.get('pos_lat'): # Geo search
+                    resellers = self.get_resellers_without_keyword(domain, tuple((float(post.get('pos_lng')), float(post.get('pos_lat')))), webshop=True if salon_webshop == 'webshop' else False)
+                elif post.get('client_ip'): # IP search
+                    resellers = partner_obj.sudo().browse(partner_obj.sudo().geoip_search('position', post.get('client_ip'), domain))
+                else:
+                    resellers = partner_obj.sudo().browse(partner_obj.sudo().geoip_search('position', request.httprequest.remote_addr, domain))
+                return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'salon_webshop': salon_webshop, 'not_found_msg': _('No reseller found') if len(resellers) == 0 else ''})
         return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': [], 'product': product})
 
         #~ if partner:

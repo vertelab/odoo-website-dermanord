@@ -267,28 +267,9 @@
                             <div class="col-md-12 col-sm-12 col-xs-12 mb16">
                                 <form t-att-action="'/resellers/search/%s' % product.id" method="post" class="pagination form-inline col-md-12 col-sm-12 col-xs-12 mb16">
                                     <div class="container text-center">
-<!--
-                                        <t t-if="geo_accepted">
-                                            <p id="geo_accepted" value="1"/>
-                                        </t>
-                                        <t t-if="not geo_accepted">
-                                            <p id="geo_accepted" value="0"/>
-                                        </t>
--->
-                                        <input id="pos_lng" type="hidden" name="lng" value="17.8419718" />
-                                        <input id="pos_lat" type="hidden" name="lat" value="59.3260668" />
-                                        <script>
-                                            getLocation();
-                                            function getLocation() {
-                                                if (navigator.geolocation) {
-                                                    navigator.geolocation.getCurrentPosition(setPosition);
-                                                }
-                                            }
-                                            function setPosition(position) {
-                                                $("input#pos_lng").val(position.coords.longitude);
-                                                $("input#pos_lat").val(position.coords.latitude);
-                                            }
-                                        </script>
+                                        <input id="pos_lng" type="hidden" name="pos_lng" value="" />
+                                        <input id="pos_lat" type="hidden" name="pos_lat" value="" />
+                                        <input id="client_ip" type="hidden" name="client_ip" value="" />
                                         <div class="input-group">
                                             <input name="search_resellers" class="form-control" placeholder="Search..." type="text"/>
                                             <span class="input-group-btn">
@@ -298,13 +279,11 @@
                                             </span>
                                         </div>
                                         <div class="input-group">
-                                            <div class="checkbox">
-                                                <label><input name="salon" type="checkbox" value="1"/>Salon</label>
+                                            <div class="radio">
+                                                <label><input type="radio" name="salon_webshop" value="salon" t-att="{'checked': 'checked'} if salon_webshop == 'salon' or not salon_webshop else {}"/>Salon</label>
                                             </div>
-                                        </div>
-                                        <div class="input-group">
-                                            <div class="checkbox">
-                                                <label><input name="webshop" type="checkbox" value="1"/>Webshop</label>
+                                            <div class="radio">
+                                                <label><input type="radio" name="salon_webshop" value="webshop" t-att="{'checked': 'checked'} if salon_webshop == 'webshop' else {}"/>Webshop</label>
                                             </div>
                                         </div>
                                     </div>
@@ -325,10 +304,10 @@
                                                             <td t-esc="reseller.name"/>
                                                             <td t-esc="visit.city"/>
                                                             <td>
-                                                                <t t-if="link_type == 'salon'">
+                                                                <t t-if="salon_webshop == 'salon'">
                                                                     <a t-att-href="'/reseller/%s' %reseller.id">Go to reseller</a>
                                                                 </t>
-                                                                <t t-if="link_type == 'webshop'">
+                                                                <t t-if="salon_webshop == 'webshop'">
                                                                     <t t-if="reseller.has_webshop">
                                                                         <a t-if="reseller.webshop_website" t-att-href="'http://%s' %reseller.webshop_website" target="_blank">Go to reseller</a>
                                                                     </t>
