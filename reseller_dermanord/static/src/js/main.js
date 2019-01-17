@@ -15,6 +15,8 @@ $(document).ready(function() {
             }
         });
     });
+    getLocation();
+    //~ getClientIP();
 });
 
 function reseller_restore_filter() {
@@ -27,6 +29,27 @@ function reseller_restore_filter() {
     );
 }
 
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(setPosition);
+    }
+}
+function setPosition(position) {
+    $("input#pos_lng").val(position.coords.longitude);
+    $("input#pos_lat").val(position.coords.latitude);
+
+    openerp.jsonRpc("/website_set_location", "call", {
+        'longitude': position.coords.longitude,
+        'latitude': position.coords.latitude
+    }).done(function(data){
+        console.log("Location set.");
+    });
+}
+//~ function getClientIP() {
+    //~ $.getJSON("https://ipapi.co/json/", function(data) {
+        //~ $("input#client_ip").val(data['ip']);
+    //~ });
+//~ }
 
 //~ var $el, $ps, $up, totalHeight;
 
