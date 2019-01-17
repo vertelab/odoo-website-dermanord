@@ -214,8 +214,8 @@ class Main(http.Controller):
         return resellers
 
     def get_resellers_without_keyword(self, domain, position, distance=None, limit=10, webshop=False):
-        def get_partner_ids(distance, limit):
-            return request.env['res.partner'].sudo().geo_search('position', position, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=distance, limit=limit)
+        def get_partner_ids(d, l):
+            return request.env['res.partner'].sudo().geo_search('position', position, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=d, limit=l)
         if webshop:
             partner_ids = get_partner_ids(0.5, 5)
             if len(partner_ids) == 0:
@@ -223,7 +223,7 @@ class Main(http.Controller):
         else:
             partner_ids = get_partner_ids(0.5, 10)
             if len(partner_ids) == 0:
-                partner_ids = get_partner_ids(360, 10)
+                partner_ids = get_partner_ids(360, 3)
         if len(partner_ids) > 0:
             return request.env['res.partner'].sudo().browse(partner_ids)
         else:
