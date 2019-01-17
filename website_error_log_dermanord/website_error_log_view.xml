@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<openerp>
+<data>
+    
+    <record id="website_error_log_form" model="ir.ui.view">
+        <field name="name">Website Error Log Form Dermanord</field>
+        <field name="model">website.error.log</field>
+        <field name="inherit_id" ref="website_error_log.website_error_log_form"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="access_group_ids" widget="many2many_tags"/>
+            </field>
+        </field>
+    </record>
+    
+    <record id="website_error_log_tree" model="ir.ui.view">
+        <field name="name">Website Error Log Tree Dermanord</field>
+        <field name="model">website.error.log</field>
+        <field name="inherit_id" ref="website_error_log.website_error_log_tree"/>
+        <field name="arch" type="xml">     
+            <field name="user_id" position="after">
+                <field name="access_group_ids"/>
+            </field>
+        </field>
+    </record>
+    
+</data>
+</openerp>

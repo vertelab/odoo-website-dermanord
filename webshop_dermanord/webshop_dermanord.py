@@ -1216,7 +1216,14 @@ class WebsiteSale(website_sale):
                 'auto_delete': True,
                 'email_to': 'support@dermanord.se',
             })
-            return request.website.render('website.404', {'dn_404_message': _("You are not allowed to see this product.")})
+            html = request.website._render(
+                'website.404',
+                {
+                    'dn_404_message': _("You are not allowed to see this product."),
+                    'status_code': 404,
+                    'status_message': werkzeug.http.HTTP_STATUS_CODES[404]
+                })
+            return werkzeug.wrappers.Response(html, status=404, content_type='text/html;charset=utf-8')
         values = {
             'url': request.session.get('url'),
             'detail': request.env['product.product'].get_product_detail(product, product.get_default_variant().id or product.product_variant_ids[0].id),
