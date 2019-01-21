@@ -648,7 +648,7 @@ class product_product(models.Model):
 
     # Product detail view with all variants
     @api.model
-    def get_product_detail(self, product, variant_id):
+    def get_product_detail(self,product, variant_id, nbr=0):
         # right side product.description, directly after stock_status
         webshop_version = self.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version')
         def html_product_detail_desc( variant, partner, pricelist):
@@ -811,7 +811,7 @@ class product_product(models.Model):
         pricelist = partner.property_product_pricelist
         flush_type = 'get_product_detail'
         key_raw = 'product_detail %s %s %s %s %s %s %s %s' % (
-            self.env.cr.dbname, flush_type, variant_id, pricelist.id, self.env.lang,
+            self.env.cr.dbname, flush_type, product.id, pricelist.id, self.env.lang,
             request.session.get('device_type', 'md'),
             self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
             ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))
@@ -1014,11 +1014,45 @@ class product_product(models.Model):
         try:
             return page_dict.get('page','').decode('base64').format(**stock)
         except:
-            new_stock = {}
-            for key in stock.keys():
-                if key in page_dict.get('page','').decode('base64'):
-                    new_stock[key] = stock[key]
-            return page_dict.get('page','').decode('base64').format(**new_stock)
+            if nbr == 0:
+                nbr = 1
+                website.remove_page_dict(key_raw)
+                return self.env[product.product].browse(variant_id).get_product_detail(product, variant_id, nbr=nbr)
+            else:
+                user = request.env.user
+                if not user:
+                    user = request.env['res.users'].with_context(active_test=False).browse(request.env.uid).sudo()
+                _logger.warn('Get_product_detail: %s (%s) has variants missing in: %s for user %s' %(product.name, product.id, stock,user.login))
+                subject = u'Felaktig konfiguration av %s' % product.name
+                body = u'Användaren %s (%s) har varianter i visningen som saknas %s (%s): %s.' % (user.login, user.id, product.name, product.id,stock)
+                body += u'Access Groups: %s' % ', '.join(user.commercial_partner_id.access_group_ids.mapped('name'))
+                author = request.env.ref('base.partner_root').sudo()
+                request.env['mail.message'].sudo().create({
+                    'subject': subject,
+                    'body': body,
+                    'author_id': author.id,
+                    'res_id': product.id,
+                    'model': product._name,
+                    'type': 'notification',
+                    'partner_ids': [(4, pid) for pid in product.message_follower_ids.mapped('id')],
+                })
+                request.env['mail.mail'].sudo().create({
+                    'subject': subject,
+                    'body_html': body,
+                    'author_id': author.id,
+                    'email_from': author.email,
+                    'type': 'email',
+                    'auto_delete': True,
+                    'email_to': 'support@dermanord.se',
+                })
+                html = request.website._render(
+                    'website.404',
+                    {
+                        'dn_404_message': _("Missmatch variants and stock."),
+                        'status_code': 404,
+                        'status_message': werkzeug.http.HTTP_STATUS_CODES[404]
+                    })
+                return werkzeug.wrappers.Response(html, status=404, content_type='text/html;charset=utf-8')
 
 
 class Website(models.Model):
@@ -1080,3 +1114,9 @@ class Website(models.Model):
             }
         # ~ MEMCACHED.mc_save(key, page_dict,24 * 60 * 60 * 7)  # One week
         memcached.mc_save(key, page_dict,60*60*24*7)  # One week
+
+    @api.model
+    def remove_page_dict(self, key_raw):
+        key = str(memcached.MEMCACHED_HASH(key_raw.encode('latin-1')))
+        # ~ MEMCACHED.mc_save(key, page_dict,24 * 60 * 60 * 7)  # One week
+        memcached.mc_delete(key)  # One week
