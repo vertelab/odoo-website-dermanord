@@ -138,33 +138,35 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="website_sale_order.website_order_line" t-as="line">
-                                    <td colspan="2" t-if="not line.product_id.product_tmpl_id" />
-                                    <td align="center" t-if="line.product_id.product_tmpl_id">
-                                        <img class="img img-responsive img_payment" style="width: 64px;" t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id" />
-                                    </td>
-                                    <td t-if="line.product_id.product_tmpl_id">
-                                        <div>
-                                            <a t-att-href="('/event/%s' % slug(line.event_id)) if line.event_id else ('/dn_shop/variant/%s' % slug(line.product_id))">
-                                                <strong t-if="line.product_id.default_code">
-                                                    [<t t-esc="line.product_id.default_code" />]
-                                                </strong>
-                                                <strong t-esc="line.product_id.with_context(display_default_code=False).display_name" />
-                                                <t t-if="line.event_id">
-                                                    <br/><strong>Begin: <span t-field="line.event_id.with_context(tz=line.event_id.date_tz).date_begin" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong><br/>
-                                                    <strong>End: <span t-field="line.event_id.with_context(tz=line.event_id.date_tz).date_end" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong>
-                                                </t>
-                                            </a>
-                                        </div>
-                                        <div class="text-muted" t-esc="'\n'.join(line.name.splitlines()[1:])"/>
-                                    </td>
-                                    <td class="text-center">
-                                        <span t-field="line.price_unit" style="white-space: nowrap;" t-field-options="{                                  &quot;widget&quot;: &quot;monetary&quot;,                                  &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                                  &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                              }" />
-                                    </td>
-                                    <td class="text-center">
-                                        <div t-esc="line.product_uom_qty" />
-                                    </td>
-                                </tr>
+                                <t t-if="website_sale_order">
+                                    <tr t-foreach="website_sale_order.website_order_line" t-as="line">
+                                        <td colspan="2" t-if="not line.product_id.product_tmpl_id" />
+                                        <td align="center" t-if="line.product_id.product_tmpl_id">
+                                            <img class="img img-responsive img_payment" style="width: 64px;" t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id" />
+                                        </td>
+                                        <td t-if="line.product_id.product_tmpl_id">
+                                            <div>
+                                                <a t-att-href="('/event/%s' % slug(line.event_id)) if line.event_id else ('/dn_shop/variant/%s' % slug(line.product_id))">
+                                                    <strong t-if="line.product_id.default_code">
+                                                        [<t t-esc="line.product_id.default_code" />]
+                                                    </strong>
+                                                    <strong t-esc="line.product_id.with_context(display_default_code=False).display_name" />
+                                                    <t t-if="line.event_id">
+                                                        <br/><strong>Begin: <span t-field="line.event_id.with_context(tz=line.event_id.date_tz).date_begin" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong><br/>
+                                                        <strong>End: <span t-field="line.event_id.with_context(tz=line.event_id.date_tz).date_end" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong>
+                                                    </t>
+                                                </a>
+                                            </div>
+                                            <div class="text-muted" t-esc="'\n'.join(line.name.splitlines()[1:])"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-field="line.price_unit" style="white-space: nowrap;" t-field-options="{                                  &quot;widget&quot;: &quot;monetary&quot;,                                  &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                                  &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                              }" />
+                                        </td>
+                                        <td class="text-center">
+                                            <div t-esc="line.product_uom_qty" />
+                                        </td>
+                                    </tr>
+                                </t>
                             </tbody>
                         </table>
 

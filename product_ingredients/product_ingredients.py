@@ -27,9 +27,10 @@ _logger = logging.getLogger(__name__)
 
 class WebsiteIngredients(http.Controller):
 
-    @http.route(['/product_ingredients/ingredient', '/product_ingredients/ingredient/<model("product.ingredient"):ingredient>',], type='http', auth="public", website=True)
-    def repord(self, ingredient=None, **post):
-        return request.website.render("product_ingredients.page", {'ingredient': ingredient})
+    # Page has been removed. Disabling controller as well.
+    # ~ @http.route(['/product_ingredients/ingredient', '/product_ingredients/ingredient/<model("product.ingredient"):ingredient>',], type='http', auth="public", website=True)
+    # ~ def repord(self, ingredient=None, **post):
+        # ~ return request.website.render("product_ingredients.page", {'ingredient': ingredient})
     
     @http.route(['/product_ingredients/get_ingredients/<model("product.template"):product>',], type='json', auth="public", website=True)
     def get_ingredients(self, product=None, **post):

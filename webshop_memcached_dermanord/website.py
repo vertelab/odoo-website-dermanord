@@ -116,8 +116,9 @@ class reseller_register(reseller_register):
         res = super(reseller_register, self).reseller_register_new(issue_id=issue_id, action=action, **post)
         if issue_id and post:
             issue = self.get_issue(issue_id, post.get('token'))
-            for key in memcached.get_keys(path='/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image' % issue.partner_id.id):
-                memcached.mc_delete(key)
+            if issue:
+                for key in memcached.get_keys(path='/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image' % issue.partner_id.id):
+                    memcached.mc_delete(key)
         return res
 
     # flush memcached contact image
