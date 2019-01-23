@@ -313,13 +313,24 @@ class Main(http.Controller):
         salon_webshop = post.get('salon_webshop')
         if not salon_webshop:
             salon_webshop = 'salon'
+        all_parent_categories = []
+        def get_all_parent_categories(category):
+            if category.id not in all_parent_categories:
+                all_parent_categories.append(category.id)
+            if category.parent_id:
+                get_all_parent_categories(category.parent_id)
+            else:
+                if category.id not in all_parent_categories:
+                    all_parent_categories.append(category.id)
+        for c in product.public_categ_ids:
+            get_all_parent_categories(c)
         def search_partner(word):
             matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('zip', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
             if salon_webshop == 'salon':
                 res = partner_obj.sudo().search([
                     ('is_company', '=', True),
                     ('is_reseller', '=', True),
-                    ('webshop_category_ids', 'in', product.public_categ_ids.mapped('id')),
+                    ('webshop_category_ids', 'in', all_parent_categories),
                     ('child_ids.type', '=', 'visit'),
                     ('child_ids', 'in', all_visit_ids),
                     '|', '|', '|',
@@ -336,7 +347,7 @@ class Main(http.Controller):
                     ('is_reseller', '=', True),
                     ('has_webshop', '=', True),
                     ('webshop_website', '!=', ''),
-                    ('webshop_category_ids', 'in', product.public_categ_ids.mapped('id')),
+                    ('webshop_category_ids', 'in', all_parent_categories),
                     ('child_ids.type', '=', 'visit'),
                     ('child_ids', 'in', all_visit_ids),
                     '|', '|', '|',
@@ -356,7 +367,7 @@ class Main(http.Controller):
             domain = [
                 ('is_company', '=', True),
                 ('is_reseller', '=', True),
-                ('webshop_category_ids', 'in', product.public_categ_ids.mapped('id')),
+                ('webshop_category_ids', 'in', all_parent_categories),
                 ('child_ids.type', '=', 'visit'),
                 ('child_ids', 'in', all_visit_ids),
             ]
