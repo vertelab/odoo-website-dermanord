@@ -174,22 +174,29 @@ class Main(http.Controller):
         post_codes = []
         strings = []
         limit = 5 if webshop else 10
+        found = False
+        for i in range(len(word_list)):
+            if len(word_list[i]) == 3 and word_list[i].isdigit():
+                found = True
+                continue
+            elif found and len(word_list[i]) == 2 and word_list[i].isdigit():
+                post_codes.append('%s%s' %(word_list[i-1], word_list[i]))
+            found = False
         resellers = request.env['res.partner'].sudo().browse()
         for w in word_list:
-            if len(w) == 5:
-                try:
-                    int(w)
-                    # Got a keyword is postcode
-                    post_codes.append(w)
-                except:
-                    # Got a keyword is not postcode
-                    strings.append(w)
+            if len(w) == 5 and w.isdigit():
+                # Got a keyword is postcode
+                post_codes.append(w)
             else:
+                # Got a keyword is not postcode
                 strings.append(w)
         if len(post_codes) > 0:
             # Search each postcode and get the closest reseller inside 0.5 degree
             for p in post_codes:
                 partner_ids += request.env['res.partner'].sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit) # this suppose to be a limited distance
+        if not partner_ids:
+            for s in strings:
+                partner_ids += request.env['res.partner'].sudo().geo_city_search('position', 'SE', s, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit)
         if len(strings) > 0:
             # Search keyword
             for s in strings:
