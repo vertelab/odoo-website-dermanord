@@ -189,7 +189,7 @@ class Main(http.Controller):
         if len(post_codes) > 0:
             # Search each postcode and get the closest reseller inside 0.5 degree
             for p in post_codes:
-                partner_ids += request.env['res.partner'].sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=0.5, limit=limit)
+                partner_ids += request.env['res.partner'].sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit) # this suppose to be a limited distance
         if len(strings) > 0:
             # Search keyword
             for s in strings:
@@ -217,13 +217,13 @@ class Main(http.Controller):
         def get_partner_ids(d, l):
             return request.env['res.partner'].sudo().geo_search('position', position, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=d, limit=l)
         if webshop:
-            partner_ids = get_partner_ids(0.5, 5)
-            if len(partner_ids) == 0:
-                partner_ids = get_partner_ids(360, 5)
+            # ~ partner_ids = get_partner_ids(0.5, 5)
+            # ~ if len(partner_ids) == 0:
+            partner_ids = get_partner_ids(360, 5)
         else:
-            partner_ids = get_partner_ids(0.5, 10)
-            if len(partner_ids) == 0:
-                partner_ids = get_partner_ids(360, 3)
+            # ~ partner_ids = get_partner_ids(0.5, 10)
+            # ~ if len(partner_ids) == 0:
+            partner_ids = get_partner_ids(360, 10)
         if len(partner_ids) > 0:
             return request.env['res.partner'].sudo().browse(partner_ids)
         else:
