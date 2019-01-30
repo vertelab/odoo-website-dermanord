@@ -1016,7 +1016,7 @@ class product_product(models.Model):
         except:
             if nbr == 0:
                 nbr = 1
-                website.remove_page_dict(key_raw)
+                request.website.remove_page_dict(key_raw)
                 return self.env[product.product].browse(variant_id).get_product_detail(product, variant_id, nbr=nbr)
             else:
                 user = request.env.user
