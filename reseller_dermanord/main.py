@@ -197,17 +197,13 @@ class Main(http.Controller):
         if not partner_ids:
             for s in strings:
                 partner_ids += request.env['res.partner'].sudo().geo_city_search('position', 'SE', s, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit)
-        if len(strings) > 0:
             # Search keyword
             for s in strings:
                 resellers |= search_partner(s)
-        if len(partner_ids) > 0:
-            if len(resellers) > 0:
-                # Filter resellers with specified postcode
-                resellers = resellers.with_context(partner_ids=partner_ids).filtered(lambda r: r.id in r._context.get('partner_ids'))
-            else:
-                # Reseller only with specified postcode
-                resellers = request.env['res.partner'].sudo().browse(partner_ids)
+            if len(partner_ids) > 0:
+                resellers = request.env['res.partner'].sudo().browse(partner_ids).with_context(resellers=resellers.mapped('id')).filtered(lambda r: r.id in r._context.get('resellers'))
+                if len(resellers) == 0:
+                    resellers = request.env['res.partner'].sudo().browse(partner_ids)
         # If there's no reseller found. Redo search with unlimited distance
         if len(resellers) == 0:
             partner_ids = []
