@@ -174,33 +174,36 @@ class Main(http.Controller):
         post_codes = []
         strings = []
         limit = 5 if webshop else 10
+        found = False
+        for i in range(len(word_list)):
+            if len(word_list[i]) == 3 and word_list[i].isdigit():
+                found = True
+                continue
+            elif found and len(word_list[i]) == 2 and word_list[i].isdigit():
+                post_codes.append('%s%s' %(word_list[i-1], word_list[i]))
+            found = False
         resellers = request.env['res.partner'].sudo().browse()
         for w in word_list:
-            if len(w) == 5:
-                try:
-                    int(w)
-                    # Got a keyword is postcode
-                    post_codes.append(w)
-                except:
-                    # Got a keyword is not postcode
-                    strings.append(w)
+            if len(w) == 5 and w.isdigit():
+                # Got a keyword is postcode
+                post_codes.append(w)
             else:
+                # Got a keyword is not postcode
                 strings.append(w)
         if len(post_codes) > 0:
             # Search each postcode and get the closest reseller inside 0.5 degree
             for p in post_codes:
-                partner_ids += request.env['res.partner'].sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=0.5, limit=limit)
-        if len(strings) > 0:
+                partner_ids += request.env['res.partner'].sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit) # this suppose to be a limited distance
+        if not partner_ids:
+            for s in strings:
+                partner_ids += request.env['res.partner'].sudo().geo_city_search('position', 'SE', s, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit)
             # Search keyword
             for s in strings:
                 resellers |= search_partner(s)
-        if len(partner_ids) > 0:
-            if len(resellers) > 0:
-                # Filter resellers with specified postcode
-                resellers = resellers.with_context(partner_ids=partner_ids).filtered(lambda r: r.id in r._context.get('partner_ids'))
-            else:
-                # Reseller only with specified postcode
-                resellers = request.env['res.partner'].sudo().browse(partner_ids)
+            if len(partner_ids) > 0:
+                resellers = request.env['res.partner'].sudo().browse(partner_ids).with_context(resellers=resellers.mapped('id')).filtered(lambda r: r.id in r._context.get('resellers'))
+                if len(resellers) == 0:
+                    resellers = request.env['res.partner'].sudo().browse(partner_ids)
         # If there's no reseller found. Redo search with unlimited distance
         if len(resellers) == 0:
             partner_ids = []
@@ -217,13 +220,13 @@ class Main(http.Controller):
         def get_partner_ids(d, l):
             return request.env['res.partner'].sudo().geo_search('position', position, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=d, limit=l)
         if webshop:
-            partner_ids = get_partner_ids(0.5, 5)
-            if len(partner_ids) == 0:
-                partner_ids = get_partner_ids(360, 5)
+            # ~ partner_ids = get_partner_ids(0.5, 5)
+            # ~ if len(partner_ids) == 0:
+            partner_ids = get_partner_ids(360, 5)
         else:
-            partner_ids = get_partner_ids(0.5, 10)
-            if len(partner_ids) == 0:
-                partner_ids = get_partner_ids(360, 3)
+            # ~ partner_ids = get_partner_ids(0.5, 10)
+            # ~ if len(partner_ids) == 0:
+            partner_ids = get_partner_ids(360, 10)
         if len(partner_ids) > 0:
             return request.env['res.partner'].sudo().browse(partner_ids)
         else:
@@ -313,13 +316,24 @@ class Main(http.Controller):
         salon_webshop = post.get('salon_webshop')
         if not salon_webshop:
             salon_webshop = 'salon'
+        all_parent_categories = []
+        def get_all_parent_categories(category):
+            if category.id not in all_parent_categories:
+                all_parent_categories.append(category.id)
+            if category.parent_id:
+                get_all_parent_categories(category.parent_id)
+            else:
+                if category.id not in all_parent_categories:
+                    all_parent_categories.append(category.id)
+        for c in product.public_categ_ids:
+            get_all_parent_categories(c)
         def search_partner(word):
             matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('zip', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
             if salon_webshop == 'salon':
                 res = partner_obj.sudo().search([
                     ('is_company', '=', True),
                     ('is_reseller', '=', True),
-                    ('webshop_category_ids', 'in', product.public_categ_ids.mapped('id')),
+                    ('webshop_category_ids', 'in', all_parent_categories),
                     ('child_ids.type', '=', 'visit'),
                     ('child_ids', 'in', all_visit_ids),
                     '|', '|', '|',
@@ -336,7 +350,7 @@ class Main(http.Controller):
                     ('is_reseller', '=', True),
                     ('has_webshop', '=', True),
                     ('webshop_website', '!=', ''),
-                    ('webshop_category_ids', 'in', product.public_categ_ids.mapped('id')),
+                    ('webshop_category_ids', 'in', all_parent_categories),
                     ('child_ids.type', '=', 'visit'),
                     ('child_ids', 'in', all_visit_ids),
                     '|', '|', '|',
@@ -356,7 +370,7 @@ class Main(http.Controller):
             domain = [
                 ('is_company', '=', True),
                 ('is_reseller', '=', True),
-                ('webshop_category_ids', 'in', product.public_categ_ids.mapped('id')),
+                ('webshop_category_ids', 'in', all_parent_categories),
                 ('child_ids.type', '=', 'visit'),
                 ('child_ids', 'in', all_visit_ids),
             ]
