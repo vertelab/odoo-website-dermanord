@@ -1189,6 +1189,9 @@ class WebsiteSale(website_sale):
 
     @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
     def dn_product(self, product, category='', search='', **post):
+        if not request.env.user:
+            # TODO: Find the real bug that causes this and flatten it to a gooey paste
+            return request.redirect(request.httprequest.path)
         if len(product.product_variant_ids) == 0:
             user = request.env.user
             if not user:
@@ -1235,6 +1238,9 @@ class WebsiteSale(website_sale):
         '/dn_shop/variant/<model("product.product"):variant>'
     ], type='http', auth="public", website=True)
     def dn_product_variant(self, variant, category='', search='', **post):
+        if not request.env.user:
+            # TODO: Find the real bug that causes this and flatten it to a gooey paste
+            return request.redirect(request.httprequest.path)
         product = variant.sudo().product_tmpl_id
         values = {
             'url': request.session.get('url'),
@@ -1410,7 +1416,9 @@ class WebsiteSale(website_sale):
         ], type='http', auth="public", website=True)
     def webshop(self, page=0, category=None, search='', **post):
         # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\nform_values: %s\n' % (request.session.get('current_order'), request.session.get('current_domain'), request.session.get('form_values')))
-
+        if not request.env.user:
+            # TODO: Find the real bug that causes this and flatten it to a gooey paste
+            return request.redirect(request.httprequest.path)
         if not request.env.user.webshop_type or request.env.user.webshop_type not in ['dn_shop', 'dn_list']: # first time use filter
             if request.env.user.commercial_partner_id.property_product_pricelist.for_reseller: # reseller
                 request.env.user.webshop_type = 'dn_list'
