@@ -22,6 +22,7 @@
 from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
+from openerp.tools.misc import file_open
 from datetime import datetime
 from lxml import html
 import werkzeug
@@ -243,6 +244,13 @@ class ThemeDermanord(http.Controller):
         response = werkzeug.wrappers.Response()
         return request.registry['website']._image(request.cr, request.uid, 'res.company', user.company_id.id, 'logo',
                                                   response, max_width=1024, max_height=None, )
+
+    @http.route(['/favicon.ico'], type='http', auth="public", cors="*")
+    def favicon_ico(self):
+        favicon = file_open('theme_dermanord/static/ico/favicon.ico')
+        favicon_mimetype = 'image/x-icon'
+        return http.request.make_response(
+            favicon.read(), [('Content-Type', favicon_mimetype)])
 
 
 class ResCompany(models.Model):
