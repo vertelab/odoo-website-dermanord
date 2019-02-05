@@ -391,16 +391,15 @@ class Main(http.Controller):
 
     @http.route(['/website_set_location'], type='json', auth="public", website=True)
     def website_set_location(self, longitude, latitude, **kwags):
-        if request.session.get('geoip'):
-            if not request.session.get('geoip').get('longitude') or longitude != request.session.get('geoip').get('longitude'):
+        if not 'geoip' in request.session:
+            request.session['geoip'] = {}
+        if request.session.get('geoip').get('longitude') and request.session.get('geoip').get('latitude'):
+            if abs(longitude - request.session.get('geoip').get('longitude')) > 0.001 or abs(latitude - request.session.get('geoip').get('latitude')) > 0.001:
                 request.session['geoip']['longitude'] = longitude
-            if not request.session.get('geoip').get('latitude') or latitude != request.session.get('geoip').get('latitude'):
                 request.session['geoip']['latitude'] = latitude
         else:
-            request.session['geoip'] = {}
             request.session['geoip']['longitude'] = longitude
             request.session['geoip']['latitude'] = latitude
-        return None
 
         #~ if partner:
             #~ return request.website.render('reseller_dermanord.reseller', {
