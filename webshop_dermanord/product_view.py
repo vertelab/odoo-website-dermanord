@@ -1108,7 +1108,7 @@ class Website(models.Model):
             'page':     base64.b64encode(page),
             # ~ 'date':     http_date(),
             'module':   'webshop_dermanord',
-            'status_code': '200 ok',
+            'status_code': 200,
             'flush_type': flush_type,
             # ~ 'headers': [],
             }
