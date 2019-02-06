@@ -259,6 +259,20 @@ class ThemeDermanord(http.Controller):
         return http.request.make_response(
             icon.read(), [('Content-Type', icon_mimetype)])
 
+    @http.route(['/apple-touch-icon-120x120.png', '/apple-touch-icon-120x120-precomposed.png'], type='http', auth='public', cors="*")
+    def apple_touch_icon_120x120(self):
+        icon = file_open('theme_dermanord/static/ico/apple-touch-icon-120x120.png')
+        icon_mimetype = 'image/x-icon'
+        return http.request.make_response(
+            icon.read(), [('Content-Type', icon_mimetype)])
+
+    @http.route(['/apple-touch-icon-152x152.png', '/apple-touch-icon-152x152-precomposed.png'], type='http', auth='public', cors="*")
+    def apple_touch_icon_152x152(self):
+        icon = file_open('theme_dermanord/static/ico/apple-touch-icon-152x152.png')
+        icon_mimetype = 'image/x-icon'
+        return http.request.make_response(
+            icon.read(), [('Content-Type', icon_mimetype)])
+
 
 class ResCompany(models.Model):
     _inherit = 'res.company'
