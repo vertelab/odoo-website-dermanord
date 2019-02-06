@@ -128,15 +128,15 @@ class product_template(models.Model):
     def _auto_init(self, cr, context=None):
         """Install custom sorting functions."""
         res = super(product_template, self)._auto_init(cr, context)
-        cr.execute("""CREATE OR REPLACE FUNCTION dn_product_template_price_chart_sort(int, int) RETURNS float 
+        cr.execute("""CREATE OR REPLACE FUNCTION dn_product_template_price_chart_sort(int, int) RETURNS float
 LANGUAGE sql
 AS
 $$
-    
+
     SELECT price FROM product_pricelist_chart WHERE pricelist_chart_id = $2 AND product_id IN (SELECT id FROM product_product WHERE product_tmpl_id = $1 AND sale_ok = true and active = true AND website_published = true) ORDER BY price LIMIT 1;
 $$;""")
         return res
-    
+
     def _generate_order_by_inner(self, alias, order_spec, query, reverse_direction=False, seen=None):
         """Handle sort by functions.
         dn_price_chart_sort_{pricelist_chart_id} = sort by prices for the given chart.
@@ -160,11 +160,11 @@ $$;""")
             order_spec = ','.join(new_order)
         if order_spec:
             order_by_elements = super(product_template, self)._generate_order_by_inner(alias, order_spec, query, reverse_direction=reverse_direction, seen=seen)
-        
+
         for order in special_order:
             order_by_elements.append('dn_product_template_price_chart_sort("%s"."id", %s) %s' % (alias, order[0], order[1]))
         return order_by_elements
-    
+
     @api.multi
     def get_default_variant(self):
         self.ensure_one()
@@ -210,23 +210,23 @@ class product_product(models.Model):
     #~ so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')  # performance hog, do we need it?
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
-    
+
     @api.one
     def _fullname(self):
         self.fullname = '%s %s' % (self.name, ', '.join(self.attribute_value_ids.mapped('name')))
     fullname = fields.Char(compute='_fullname')
-    
+
     def _auto_init(self, cr, context=None):
         """Install custom sorting functions."""
         res = super(product_product, self)._auto_init(cr, context)
-        cr.execute("""CREATE OR REPLACE FUNCTION dn_product_product_price_chart_sort(int, int) RETURNS float 
+        cr.execute("""CREATE OR REPLACE FUNCTION dn_product_product_price_chart_sort(int, int) RETURNS float
 LANGUAGE sql
 AS
 $$
     SELECT price FROM product_pricelist_chart WHERE pricelist_chart_id = $2 AND product_id = $1 LIMIT 1;
 $$;""")
         return res
-    
+
     def _generate_order_by_inner(self, alias, order_spec, query, reverse_direction=False, seen=None):
         """Handle sort by functions.
         dn_price_chart_sort_{pricelist_chart_type_id} = sort by prices for the given chart.
@@ -250,11 +250,11 @@ $$;""")
             order_spec = ','.join(new_order)
         if order_spec:
             order_by_elements = super(product_product, self)._generate_order_by_inner(alias, order_spec, query, reverse_direction=reverse_direction, seen=seen)
-        
+
         for order in special_order:
             order_by_elements.append('dn_product_product_price_chart_sort("%s"."id", %s) %s' % (alias, order[0], order[1]))
         return order_by_elements
-    
+
     @api.model
     def update_sold_qty(self):
         self._cr.execute('UPDATE product_template SET sold_qty = 0')
@@ -775,7 +775,7 @@ class Website(models.Model):
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
         if post:
             request.session['form_values']['current_ingredient'] = post.get('current_ingredient')
-            request.session['current_ingredient'] = post.get('current_ingredient')
+            request.session['current_ingredient'] = int(post.get('current_ingredient', 0) or 0)
             domain = self.get_domain_append(model, post)
         else:
             domain = self.get_domain_append(model, request.session.get('form_values', {}))
@@ -1157,7 +1157,7 @@ class WebsiteSale(website_sale):
             'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
             'url': url,
             'webshop_type': 'dn_shop',
-            'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
+            'current_ingredient': request.env['product.ingredient'].browse(int(post.get('current_ingredient', 0) or 0) or int(request.session.get('current_ingredient', 0) or 0)),
             'shop_footer': True,
             'page_lang': request.env.lang,
             'no_product_message': no_product_message,
@@ -1284,7 +1284,7 @@ class WebsiteSale(website_sale):
             # ~ 'compute_currency': compute_currency,
             'url': url,
             'webshop_type': 'dn_list',
-            'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
+            'current_ingredient': request.env['product.ingredient'].browse(int(post.get('current_ingredient', 0) or 0) or int(request.session.get('current_ingredient', 0) or 0)),
             'shop_footer': True,
             'no_product_message': no_product_message,
             'all_products_loaded': True if len(products) < PPG else False,
@@ -1372,7 +1372,7 @@ class WebsiteSale(website_sale):
                 # ~ 'compute_currency': compute_currency,
                 'url': '/dn_list',
                 'webshop_type': 'dn_list',
-                'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
+                'current_ingredient': request.env['product.ingredient'].browse(int(post.get('current_ingredient', 0) or 0) or int(request.session.get('current_ingredient', 0) or 0)),
                 'shop_footer': True,
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products) < PPG else False,
@@ -1391,7 +1391,7 @@ class WebsiteSale(website_sale):
                 'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
                 'url': '/dn_shop',
                 'webshop_type': 'dn_shop',
-                'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
+                'current_ingredient': request.env['product.ingredient'].browse(int(post.get('current_ingredient', 0) or 0) or int(request.session.get('current_ingredient', 0) or 0)),
                 'shop_footer': True,
                 'page_lang': request.env.lang,
                 'no_product_message': no_product_message,
@@ -1490,7 +1490,7 @@ class WebsiteSale(website_sale):
                 'rows': PPR,
                 'url': '/webshop',
                 'webshop_type': 'dn_list',
-                'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
+                'current_ingredient': request.env['product.ingredient'].browse(int(post.get('current_ingredient', 0) or 0) or int(request.session.get('current_ingredient', 0) or 0)),
                 'shop_footer': True,
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products) < PPG else False,
@@ -1506,7 +1506,7 @@ class WebsiteSale(website_sale):
                 'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
                 'url': '/webshop',
                 'webshop_type': 'dn_shop',
-                'current_ingredient': request.env['product.ingredient'].browse(post.get('current_ingredient') or request.session.get('current_ingredient')),
+                'current_ingredient': request.env['product.ingredient'].browse(int(post.get('current_ingredient', 0) or 0) or int(request.session.get('current_ingredient', 0) or 0)),
                 'shop_footer': True,
                 'page_lang': request.env.lang,
                 'no_product_message': no_product_message,
