@@ -245,12 +245,19 @@ class ThemeDermanord(http.Controller):
         return request.registry['website']._image(request.cr, request.uid, 'res.company', user.company_id.id, 'logo',
                                                   response, max_width=1024, max_height=None, )
 
-    @http.route(['/favicon.ico'], type='http', auth="public", cors="*")
+    @http.route(['/favicon.ico'], type='http', auth='public', cors="*")
     def favicon_ico(self):
         favicon = file_open('theme_dermanord/static/ico/favicon.ico')
         favicon_mimetype = 'image/x-icon'
         return http.request.make_response(
             favicon.read(), [('Content-Type', favicon_mimetype)])
+
+    @http.route(['/apple-touch-icon.png', '/apple-touch-icon-precomposed.png'], type='http', auth='public', cors="*")
+    def apple_touch_icon(self):
+        icon = file_open('theme_dermanord/static/ico/apple-touch-icon.png')
+        icon_mimetype = 'image/x-icon'
+        return http.request.make_response(
+            icon.read(), [('Content-Type', icon_mimetype)])
 
 
 class ResCompany(models.Model):
