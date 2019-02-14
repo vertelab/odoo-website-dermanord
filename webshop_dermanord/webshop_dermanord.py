@@ -532,6 +532,18 @@ class sale_order(models.Model):
     _inherit='sale.order'
 
     @api.multi
+    def onchange_delivery_id(self, company_id, partner_id, delivery_id, fiscal_position):
+        """Get the carrier from the delivery address."""
+        result = super(sale_order, self).onchange_delivery_id(company_id, partner_id, delivery_id, fiscal_position)
+        if partner_id:
+            dtype = self.env['res.partner'].browse(delivery_id).property_delivery_carrier.id
+            if not dtype:
+                dtype = self.env['res.partner'].browse(partner_id).property_delivery_carrier.id
+            if dtype:
+                result['value']['carrier_id'] = dtype
+        return result
+
+    @api.multi
     def _cart_update(self, product_id=None, line_id=None, add_qty=0, set_qty=0, **kwargs):
         """ Add or set product quantity, add_qty can be negative """
         self.ensure_one()
@@ -943,6 +955,7 @@ class WebsiteSale(website_sale):
                 shipping_partner_id = order.partner_shipping_id.id
             else:
                 shipping_partner_id = order.partner_invoice_id.id
+            order.onchange_delivery_id(order.company_id.id, order.partner_id.id, order.partner_shipping_id.id, order.fiscal_position.id)
             order.delivery_set()
         values = {
             'order': order.sudo()
