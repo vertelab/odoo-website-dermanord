@@ -582,6 +582,7 @@ class website_sale_home(website_sale_home):
                     'phone': post.get('visit_phone', ''),
                 })
             visit.geo_localize() # update geo location
+            visit.commercial_partner_id.geo_localize() # update geo location
 
     def get_time_float(self, time):
         return (math.floor(float(time)) + (float(time)%1)/0.6) if time else 0.0
