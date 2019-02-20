@@ -567,10 +567,11 @@ class sale_order(models.Model):
             values = self.env['sale.order.line'].sudo().product_id_change(
                         pricelist=self.pricelist_id.id,
                         product=product.id,
-                        partner_id=self.partner_id.id,
+                        partner_id=self.partner_id.id,  # TODO: IS this really needed? Looks like it has to do with the tickets below.
                         fiscal_position=self.fiscal_position.id,
                         qty=set_qty or add_qty,
                     )['value']
+            values['agents'] = self.env['sale.order.line'].sudo().with_context(partner_id=self.partner_id.id)._default_agents()
             values['name'] = product.description_sale and "%s\n%s" % (product.display_name, product.description_sale) or product.display_name
             values['product_id'] = product.id
             values['order_id'] = self.id
