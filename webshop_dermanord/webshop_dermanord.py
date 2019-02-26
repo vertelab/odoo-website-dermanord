@@ -1244,6 +1244,7 @@ class WebsiteSale(website_sale):
         values = {
             'url': request.session.get('url'),
             'detail': request.env['product.product'].get_product_detail(product, product.get_default_variant().id or product.product_variant_ids[0].id),
+            'additional_title': product.name.upper(),
             'shop_footer': True,
         }
         return request.website.render("webshop_dermanord.product_detail_view", values)
@@ -1259,6 +1260,7 @@ class WebsiteSale(website_sale):
         values = {
             'url': request.session.get('url'),
             'detail': request.env['product.product'].get_product_detail(product, variant.id),
+            'additional_title': variant.name.upper(),
             'shop_footer': True,
         }
         return request.website.render("webshop_dermanord.product_detail_view", values)
