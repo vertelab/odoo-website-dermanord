@@ -216,13 +216,27 @@
                                 </p>
                                 <hr/>
                                 <h4 class="dn_uppercase">Opening hours</h4>
-                                    <p>Mon: <span t-esc="reseller.opening_hours_ids[0].opening_hours if len(reseller.opening_hours_ids) &gt; 0 else None"/></p>
-                                    <p>Tue: <span t-esc="reseller.opening_hours_ids[1].opening_hours if len(reseller.opening_hours_ids) &gt; 1 else None"/></p>
-                                    <p>Wed: <span t-esc="reseller.opening_hours_ids[2].opening_hours if len(reseller.opening_hours_ids) &gt; 2 else None"/></p>
-                                    <p>Thu: <span t-esc="reseller.opening_hours_ids[3].opening_hours if len(reseller.opening_hours_ids) &gt; 3 else None"/></p>
-                                    <p>Fri: <span t-esc="reseller.opening_hours_ids[4].opening_hours if len(reseller.opening_hours_ids) &gt; 4 else None"/></p>
-                                    <p>Sat: <span t-esc="reseller.opening_hours_ids[5].opening_hours if len(reseller.opening_hours_ids) &gt; 5 else None"/></p>
-                                    <p>Sun: <span t-esc="reseller.opening_hours_ids[6].opening_hours if len(reseller.opening_hours_ids) &gt; 6 else None"/></p>
+                                <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[0].open_time != 0.0 and reseller.opening_hours_ids[0].close_time != 0.0 or reseller.opening_hours_ids[0].close">
+                                    <p>Mon: <span t-esc="reseller.opening_hours_ids[0].opening_hours"/></p>
+                                </t>
+                                <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[1].open_time != 0.0 and reseller.opening_hours_ids[1].close_time != 0.0 or reseller.opening_hours_ids[1].close">
+                                    <p>Tue: <span t-esc="reseller.opening_hours_ids[1].opening_hours"/></p>
+                                </t>
+                                <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[2].open_time != 0.0 and reseller.opening_hours_ids[2].close_time != 0.0 or reseller.opening_hours_ids[2].close">
+                                    <p>Wed: <span t-esc="reseller.opening_hours_ids[2].opening_hours"/></p>
+                                </t>
+                                <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[3].open_time != 0.0 and reseller.opening_hours_ids[3].close_time != 0.0 or reseller.opening_hours_ids[3].close">
+                                    <p>Thu: <span t-esc="reseller.opening_hours_ids[3].opening_hours"/></p>
+                                </t>
+                                <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[4].open_time != 0.0 and reseller.opening_hours_ids[4].close_time != 0.0 or reseller.opening_hours_ids[4].close">
+                                    <p>Fri: <span t-esc="reseller.opening_hours_ids[4].opening_hours"/></p>
+                                </t>
+                                <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[5].open_time != 0.0 and reseller.opening_hours_ids[5].close_time != 0.0 or reseller.opening_hours_ids[5].close">
+                                    <p>Sat: <span t-esc="reseller.opening_hours_ids[5].opening_hours"/></p>
+                                </t>
+                                <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[6].open_time != 0.0 and reseller.opening_hours_ids[6].close_time != 0.0 or reseller.opening_hours_ids[6].close">
+                                    <p>Sun: <span t-esc="reseller.opening_hours_ids[6].opening_hours"/></p>
+                                </t>
                                     <t t-if="reseller.opening_hours_exceptions">
                                         <div>
                                             <h4>Exceptions</h4>
