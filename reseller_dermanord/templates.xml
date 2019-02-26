@@ -216,34 +216,11 @@
                                 </p>
                                 <hr/>
                                 <h4 class="dn_uppercase">Opening hours</h4>
-                                <t t-foreach="(('Mon', 0), ('Tue', 1), ('Wed', 2), ('Thu', 3), ('Fri', 4), ('Sat', 5), ('Sun', 6))" t-as="oh_day">
-                                    <t t-if="reseller.opening_hours_ids and (reseller.opening_hours_ids[oh_day[1]].open_time != 0.0 and reseller.opening_hours_ids[oh_day[1]].close_time != 0.0 or reseller.opening_hours_ids[oh_day[1]].close)">
-                                        <p><t t-esc="oh_day[0]"/>: <span t-esc="reseller.opening_hours_ids[oh_day[1]].opening_hours"/></p>
+                                <t t-foreach="range(7)" t-as="oh_day">
+                                    <t t-if="reseller.opening_hours_ids and (reseller.opening_hours_ids[oh_day].open_time != 0.0 and reseller.opening_hours_ids[oh_day].close_time != 0.0 or reseller.opening_hours_ids[oh_day].close)">
+                                        <p><span t-field="reseller.opening_hours_ids[oh_day].dayofweek_short"/>: <span t-esc="reseller.opening_hours_ids[oh_day].opening_hours"/></p>
                                     </t>
                                 </t>
-<!--
-                                <t t-if="reseller.opening_hours_ids and (reseller.opening_hours_ids[0].open_time != 0.0 and reseller.opening_hours_ids[0].close_time != 0.0 or reseller.opening_hours_ids[0].close)">
-                                    <p>Mon: <span t-esc="reseller.opening_hours_ids[0].opening_hours"/></p>
-                                </t>
-                                <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[1].open_time != 0.0 and reseller.opening_hours_ids[1].close_time != 0.0 or reseller.opening_hours_ids[1].close">
-                                    <p>Tue: <span t-esc="reseller.opening_hours_ids[1].opening_hours"/></p>
-                                </t>
-                                <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[2].open_time != 0.0 and reseller.opening_hours_ids[2].close_time != 0.0 or reseller.opening_hours_ids[2].close">
-                                    <p>Wed: <span t-esc="reseller.opening_hours_ids[2].opening_hours"/></p>
-                                </t>
-                                <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[3].open_time != 0.0 and reseller.opening_hours_ids[3].close_time != 0.0 or reseller.opening_hours_ids[3].close">
-                                    <p>Thu: <span t-esc="reseller.opening_hours_ids[3].opening_hours"/></p>
-                                </t>
-                                <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[4].open_time != 0.0 and reseller.opening_hours_ids[4].close_time != 0.0 or reseller.opening_hours_ids[4].close">
-                                    <p>Fri: <span t-esc="reseller.opening_hours_ids[4].opening_hours"/></p>
-                                </t>
-                                <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[5].open_time != 0.0 and reseller.opening_hours_ids[5].close_time != 0.0 or reseller.opening_hours_ids[5].close">
-                                    <p>Sat: <span t-esc="reseller.opening_hours_ids[5].opening_hours"/></p>
-                                </t>
-                                <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[6].open_time != 0.0 and reseller.opening_hours_ids[6].close_time != 0.0 or reseller.opening_hours_ids[6].close">
-                                    <p>Sun: <span t-esc="reseller.opening_hours_ids[6].opening_hours"/></p>
-                                </t>
--->
                                     <t t-if="reseller.opening_hours_exceptions">
                                         <div>
                                             <h4>Exceptions</h4>
