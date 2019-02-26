@@ -216,7 +216,13 @@
                                 </p>
                                 <hr/>
                                 <h4 class="dn_uppercase">Opening hours</h4>
-                                <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[0].open_time != 0.0 and reseller.opening_hours_ids[0].close_time != 0.0 or reseller.opening_hours_ids[0].close">
+                                <t t-foreach="(('Mon', 0), ('Tue', 1), ('Wed', 2), ('Thu', 3), ('Fri', 4), ('Sat', 5), ('Sun', 6))" t-as="oh_day">
+                                    <t t-if="reseller.opening_hours_ids and (reseller.opening_hours_ids[oh_day[1]].open_time != 0.0 and reseller.opening_hours_ids[oh_day[1]].close_time != 0.0 or reseller.opening_hours_ids[oh_day[1]].close)">
+                                        <p><t t-esc="oh_day[0]"/>: <span t-esc="reseller.opening_hours_ids[oh_day[1]].opening_hours"/></p>
+                                    </t>
+                                </t>
+<!--
+                                <t t-if="reseller.opening_hours_ids and (reseller.opening_hours_ids[0].open_time != 0.0 and reseller.opening_hours_ids[0].close_time != 0.0 or reseller.opening_hours_ids[0].close)">
                                     <p>Mon: <span t-esc="reseller.opening_hours_ids[0].opening_hours"/></p>
                                 </t>
                                 <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[1].open_time != 0.0 and reseller.opening_hours_ids[1].close_time != 0.0 or reseller.opening_hours_ids[1].close">
@@ -237,6 +243,7 @@
                                 <t t-if="len(reseller.opening_hours_ids) &gt; 0 and reseller.opening_hours_ids[6].open_time != 0.0 and reseller.opening_hours_ids[6].close_time != 0.0 or reseller.opening_hours_ids[6].close">
                                     <p>Sun: <span t-esc="reseller.opening_hours_ids[6].opening_hours"/></p>
                                 </t>
+-->
                                     <t t-if="reseller.opening_hours_exceptions">
                                         <div>
                                             <h4>Exceptions</h4>
