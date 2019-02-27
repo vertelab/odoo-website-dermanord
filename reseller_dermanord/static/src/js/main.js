@@ -47,16 +47,9 @@ function setPosition(position) {
 }
 
 $(function() {
-    //~ $(".placeholder + input").keyup(function() {
-        //~ if($(this).val().length) {
-            //~ $(this).prev('.placeholder').hide();
-        //~ } else {
-            //~ $(this).prev('.placeholder').show();
-        //~ }
-    //~ });
     $(".placeholder").click(function() {
-        //~ $(this).next().focus();
         $(this).hide();
+        $(this).next().focus();
     });
     $("input[name='search_resellers']").click(function() {
         $(this).prev('.placeholder').hide();
