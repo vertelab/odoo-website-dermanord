@@ -301,7 +301,7 @@
                                                     <tr>
                                                         <t t-set="visit" t-value="reseller.child_ids.filtered(lambda c: c.type == 'visit')"/>
                                                         <t t-if="visit">
-                                                            <td><span t-esc="reseller.name"/> <a t-att-href="'/reseller/%s' %reseller.id" style="padding-left: 10px;"><i class="fa fa-info-circle"/></a></td>
+                                                            <td><span t-esc="reseller.brand_name or reseller.name"/> <a t-att-href="'/reseller/%s' %reseller.id" style="padding-left: 10px;"><i class="fa fa-info-circle"/></a></td>
                                                             <td t-esc="visit.city"/>
                                                             <td>
                                                                 <t t-if="reseller.has_webshop">
