@@ -167,14 +167,13 @@ class Main(http.Controller):
         return res
 
     # Return result of resellers with postcode, domain searching
-    def get_resellers(self, words, domain, search_partner, webshop=False):
+    def get_resellers(self, words, domain, search_partner, webshop=False, limit=99):
         partner_obj = request.env['res.partner']
         # Split words and try to get postcode first
         word_list = words.split(' ')
         partner_ids = []
         post_codes = []
         strings = []
-        limit = 5 if webshop else 10
         found = False
         for i in range(len(word_list)):
             if len(word_list[i]) == 3 and word_list[i].isdigit():
@@ -201,6 +200,8 @@ class Main(http.Controller):
             # Search keyword
             for s in strings:
                 resellers |= search_partner(s)
+            if len(resellers) > limit:
+                resellers = resellers[:limit]
             if len(partner_ids) > 0:
                 resellers = partner_obj.sudo().browse(partner_ids).with_context(resellers=resellers.mapped('id')).filtered(lambda r: r.id in r._context.get('resellers'))
                 if len(resellers) == 0:
@@ -380,13 +381,13 @@ class Main(http.Controller):
                 domain += [('has_webshop', '=', True), ('webshop_website', '!=', '')]
             if words and words != '':
                 if has_webshop and has_webshop == 'has_webshop':
-                    resellers = self.get_resellers(words, domain, search_partner, webshop=True)
+                    resellers = self.get_resellers(words, domain, search_partner, webshop=True, limit=5)
                 else:
-                    resellers = self.get_resellers(words, domain, search_partner, webshop=False)
+                    resellers = self.get_resellers(words, domain, search_partner, webshop=False, limit=10)
                 return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'has_webshop': has_webshop, 'not_found_msg': _('No reseller found') if len(resellers) == 0 else '', 'input': words})
             else: # without searching term, geo/IP search
                 if request.session.get('geoip') and request.session.get('geoip', {}).get('longitude') and request.session.get('geoip', {}).get('latitude'): # Geo search
-                    resellers = self.get_resellers_without_keyword(domain, tuple((float(request.session.get('geoip').get('longitude')), float(request.session.get('geoip').get('latitude')))), webshop=True if has_webshop == 'has_webshop' else False)
+                    resellers = self.get_resellers_without_keyword(domain, tuple((float(request.session.get('geoip').get('longitude')), float(request.session.get('geoip').get('latitude')))), webshop=True if (has_webshop and has_webshop == 'has_webshop') else False, limit=5 if (has_webshop and has_webshop == 'has_webshop') else 10)
                 else:
                     resellers = partner_obj.browse()
                 # ~ resellers = partner_obj.sudo().browse(partner_obj.sudo().geoip_search('position', request.httprequest.remote_addr, domain))
