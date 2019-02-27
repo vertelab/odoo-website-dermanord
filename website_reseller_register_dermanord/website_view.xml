@@ -54,6 +54,23 @@
             </div>
         </template>
         <template id="register_form" inherit_id="website_reseller_register.register_form" name="Website Reseller Register Form Dermanord">
+            
+            <xpath expr="//div[@class='oe_structure oe_empty']" position="inside">
+                <section class="mb16">
+                    <div class="container">
+                      <div>
+                        <div class="readable">
+                          <h3 class="text-left">
+                            <span style="color: inherit;">Existing reseller?</span>
+                          </h3>
+                          <p>Are you an already existing reseller? In the menu above, you can log in to see your account. 
+            Is this your first time visiting the webpage? Please, contact us to receive login details: <a href="mailto:mailto:support@dermanord.se">support@dermanord.se</a></p>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+            </xpath>
+      
             <xpath expr="//div[@class='oe_structure oe_empty']" position="before">
                 <t t-call="website_reseller_register_dermanord.menu_header"/>
             </xpath>
