@@ -379,14 +379,14 @@ class Main(http.Controller):
                     resellers = self.get_resellers(words, domain, search_partner, webshop=True)
                 else:
                     resellers = self.get_resellers(words, domain, search_partner, webshop=False)
-                return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'has_webshop': has_webshop, 'not_found_msg': _('No reseller found') if len(resellers) == 0 else ''})
+                return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'has_webshop': has_webshop, 'not_found_msg': _('No reseller found') if len(resellers) == 0 else '', 'input': words})
             else: # without searching term, geo/IP search
                 if request.session.get('geoip') and request.session.get('geoip', {}).get('longitude') and request.session.get('geoip', {}).get('latitude'): # Geo search
                     resellers = self.get_resellers_without_keyword(domain, tuple((float(request.session.get('geoip').get('longitude')), float(request.session.get('geoip').get('latitude')))), webshop=True if has_webshop == 'has_webshop' else False)
                 else:
                     resellers = partner_obj.browse()
                 # ~ resellers = partner_obj.sudo().browse(partner_obj.sudo().geoip_search('position', request.httprequest.remote_addr, domain))
-                return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'has_webshop': has_webshop, 'not_found_msg': _('No reseller found') if len(resellers) == 0 else ''})
+                return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': resellers, 'product': product, 'has_webshop': has_webshop, 'not_found_msg': _('No reseller found') if len(resellers) == 0 else '', 'placeholder': '*'})
         return request.website.render('reseller_dermanord.resellers_search_cosumer', {'resellers': [], 'product': product})
 
     @http.route(['/website_set_location'], type='json', auth="public", website=True)
