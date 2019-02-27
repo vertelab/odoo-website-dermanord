@@ -277,11 +277,8 @@
                                             </span>
                                         </div>
                                         <div class="input-group">
-                                            <div class="radio">
-                                                <label><input type="radio" name="salon_webshop" value="salon" t-att="{'checked': 'checked'} if salon_webshop == 'salon' or not salon_webshop else {}"/>Salon</label>
-                                            </div>
-                                            <div class="radio">
-                                                <label><input type="radio" name="salon_webshop" value="webshop" t-att="{'checked': 'checked'} if salon_webshop == 'webshop' else {}"/>Webshop</label>
+                                            <div>
+                                                <label><input type="checkbox" name="has_webshop" value="has_webshop" t-att="{'checked': 'checked'} if has_webshop else {}"/>Has webshop</label>
                                             </div>
                                         </div>
                                     </div>
@@ -299,19 +296,12 @@
                                                     <tr>
                                                         <t t-set="visit" t-value="reseller.child_ids.filtered(lambda c: c.type == 'visit')"/>
                                                         <t t-if="visit">
-                                                            <td t-esc="reseller.name"/>
+                                                            <td><span t-esc="reseller.name"/> <a t-att-href="'/reseller/%s' %reseller.id" style="padding-left: 10px;"><i class="fa fa-info-circle"/></a></td>
                                                             <td t-esc="visit.city"/>
                                                             <td>
-                                                                <t t-if="salon_webshop == 'salon'">
-                                                                    <a t-att-href="'/reseller/%s' %reseller.id">Go to reseller</a>
-                                                                </t>
-                                                                <t t-if="salon_webshop == 'webshop'">
-                                                                    <t t-if="reseller.has_webshop">
-                                                                        <a t-if="reseller.webshop_website" t-att-href="'http://%s' %reseller.webshop_website" target="_blank">Go to reseller</a>
-                                                                    </t>
-                                                                    <t t-if="not reseller.has_webshop">
-                                                                        <a t-if="reseller.website" t-att-href="'http://%s' %reseller.website" target="_blank">Go to reseller</a>
-                                                                    </t>
+                                                                <t t-if="reseller.has_webshop">
+                                                                    <a t-att-href="'http://%s' %reseller.webshop_website" target="_blank"><i class="fa fa-globe"/></a>
+                                                                    <a t-att-href="'http://%s' %reseller.webshop_website" target="_blank" style="padding-left: 10px;"><i class="fa fa-shopping-cart"/></a>
                                                                 </t>
                                                             </td>
                                                         </t>
