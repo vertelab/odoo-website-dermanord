@@ -211,6 +211,7 @@ msgstr "Lördag:"
 
 #. module: reseller_dermanord
 #: view:website:reseller_dermanord.resellers
+#: view:website:reseller_dermanord.resellers_search_cosumer
 msgid "Search..."
 msgstr "Sök..."
 
@@ -351,3 +352,13 @@ msgstr "Om gatan inte är ifylld visas din salong inte i återförsäljaresökni
 #, python-format
 msgid "Notice: This image will be cut to 1366x450 px."
 msgstr "OBS. Den här bilden kommer att skäras till 1366x450 px."
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers_search_cosumer
+msgid "My position"
+msgstr "Min position"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers_search_cosumer
+msgid "Has webshop"
+msgstr "Har webbutik"

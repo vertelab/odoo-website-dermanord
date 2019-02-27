@@ -143,6 +143,15 @@ i#remove_img {
     text-shadow: 0px 0px 2px #fff;
 }
 
+.placeholder {
+    position: absolute;
+    margin: 7px 10px;
+    color: #A3A3A3;
+    cursor: auto;
+    font-size: 11pt;
+    z-index: 3;
+}
+
 @media (max-width: 768px) {
     input[type="checkbox"] {
         margin-left: -25px !important;

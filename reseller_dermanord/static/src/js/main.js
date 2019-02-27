@@ -45,6 +45,24 @@ function setPosition(position) {
         console.log("Location set.");
     });
 }
+
+$(function() {
+    $(".placeholder").click(function() {
+        $(this).hide();
+        $(this).next().focus();
+    });
+    $("input[name='search_resellers']").click(function() {
+        $(this).prev('.placeholder').hide();
+    });
+    $("input[name='search_resellers']").blur(function() {
+        if($(this).val().length) {
+            $(this).prev('.placeholder').hide();
+        } else {
+            $(this).prev('.placeholder').show();
+        }
+    });
+});
+
 //~ function getClientIP() {
     //~ $.getJSON("https://ipapi.co/json/", function(data) {
         //~ $("input#client_ip").val(data['ip']);
