@@ -957,7 +957,52 @@ class WebsiteSale(website_sale):
             else:
                 shipping_partner_id = order.partner_invoice_id.id
             order.onchange_delivery_id(order.company_id.id, order.partner_id.id, order.partner_shipping_id.id, order.fiscal_position.id)
-            order.delivery_set()
+            try:
+                order.delivery_set()
+            except except_orm as e:
+                # Couldn't use the customers carrier. Find one that works and report the error.
+                original = order.carrier_id
+                replacement = None
+                for carrier in request.env['delivery.carrier'].browse(order._get_delivery_methods(order)):
+                    try:
+                        order.carrier_id = carrier
+                        order.delivery_set()
+                        replacement = carrier
+                        break
+                    except except_orm:
+                        pass
+                subject = u"Kunde ej använda %ss leveransmetod på %s" % (order.partner_id.name, order.name)
+                body = u"Kund: %s (id %s)\n"\
+                       u"Leveransadress: %s (id %s)\n"\
+                       u"Leveransmetod: %s (id %s)" % (
+                            order.partner_id.name, order.partner_id.id,
+                            order.partner_shipping_id.name, order.partner_shipping_id.id,
+                            original.name, original.id,
+                        )
+                if replacement:
+                    body += u"\n\nPå order %s har leveransmetoden ersatts med %s (id %s)." % (
+                        order.name, replacement.name, replacement.id)
+                else:
+                    body += u"\n\nKunde ej hitta en fungerande leveransmetod för order %s!" % order.name
+                author = request.env.ref('base.partner_root').sudo()
+                request.env['mail.message'].sudo().create({
+                    'subject': subject,
+                    'body': body.replace('\n', '<BR/>'),
+                    'author_id': author.id,
+                    'res_id': order.partner_id.id,
+                    'model': order.partner_id._name,
+                    'type': 'notification',
+                    'partner_ids': [(4, pid) for pid in order.partner_id.message_follower_ids.mapped('id')],
+                })
+                request.env['mail.mail'].sudo().create({
+                    'subject': subject,
+                    'body_html': body,
+                    'author_id': author.id,
+                    'email_from': author.email,
+                    'type': 'email',
+                    'auto_delete': True,
+                    'email_to': 'support@dermanord.se',
+                })    
         values = {
             'order': order.sudo()
         }
