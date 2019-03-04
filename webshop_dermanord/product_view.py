@@ -947,7 +947,8 @@ class product_product(models.Model):
                     </div>
                     <a id="add_to_cart" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center {hide_add_to_cart}" groups="base.group_user,base.group_portal" disable="1">{add_to_cart}</a>
                     <!-- <input id="sale_ok" name="sale_ok" type="hidden" t-att-value="product.sale_ok" /> -->
-                    <a id="add_to_cart_consumer" href="/resellers/search/{variant_id}" class="dn_btn dn_primary mt8 text-center {hide_add_to_cart_consumer}">{buy}</a>
+                    <button id="add_to_cart_consumer" type="button" class="dn_btn dn_primary mt8 text-center {hide_add_to_cart_consumer}" data-toggle="modal" data-target="#reseller_search">{buy}</button>
+                    <!-- <a id="add_to_cart_consumer" href="/resellers/search/{variant_id}" class="dn_btn dn_primary mt8 text-center {hide_add_to_cart_consumer}">{buy}</a> -->
                     <h5>
                         <div>
                             <span>{product_startdate}</span>&nbsp;<span>{product_stopdate}</span>

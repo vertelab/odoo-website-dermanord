@@ -1243,6 +1243,7 @@ class WebsiteSale(website_sale):
             return werkzeug.wrappers.Response(html, status=404, content_type='text/html;charset=utf-8')
         values = {
             'url': request.session.get('url'),
+            'product': product.get_default_variant() or product.product_variant_ids[0],
             'detail': request.env['product.product'].get_product_detail(product, product.get_default_variant().id or product.product_variant_ids[0].id),
             'additional_title': product.name.upper(),
             'shop_footer': True,
@@ -1259,6 +1260,7 @@ class WebsiteSale(website_sale):
         product = variant.sudo().product_tmpl_id
         values = {
             'url': request.session.get('url'),
+            'product': variant,
             'detail': request.env['product.product'].get_product_detail(product, variant.id),
             'additional_title': variant.name.upper(),
             'shop_footer': True,
