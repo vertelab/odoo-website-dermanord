@@ -23,12 +23,14 @@ from openerp import models, fields, api
 from datetime import datetime, date, timedelta
 from openerp.addons.website_memcached import memcached
 import base64
+import werkzeug
 
 from openerp import http
 from openerp.http import request
 
 from timeit import default_timer as timer
 import sys, traceback
+import json
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -648,9 +650,67 @@ class product_product(models.Model):
 
     # Product detail view with all variants
     @api.model
-    def get_product_detail(self,product, variant_id, nbr=0):
+    def get_product_detail(self, product, variant_id, nbr=0):
         # right side product.description, directly after stock_status
         webshop_version = self.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version')
+        
+        ## https://developers.google.com/search/docs/data-types/product
+        ## https://schema.org/
+        ## J-son code for product placement in google-index.
+        # ~ def product_json_images(variant, partner):
+            # ~ product_images = variant.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
+            # ~ if len(product_images) > 0:
+                # ~ return "https://mariaakerberg.com/imagefield/ir.attachment/datas/%s/ref/website_sale_product_gallery.img_product_detail/image/large.jpeg" % variant.id
+
+            # ~ json_images = ''
+            # ~ if len(product_images) > 0:
+                # ~ json_images += json_images + "https://mariaakerberg.com/imagefield/ir.attachment/datas/%s/ref/website_sale_product_gallery.img_product_thumbnail/image/thumbnail.jpeg " % product_images.id
+                # ~ json_images += json_images + "https://mariaakerberg.com/imagefield/ir.attachment/datas/%s/ref/website_sale_product_gallery.img_product_detail/image/large.jpeg" % product_images.id
+            # ~ return json_images
+
+
+            # ~ if len(product_images) > 0:
+                # ~ for idx, image in enumerate(product_images):
+                    # ~ product_images_html += '<div id="image_%s_%s" class="tab-pane fade%s">%s%s<img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' %(variant.id, image.id, ' active in' if idx == 0 else '', offer_wrapper, ribbon_wrapper, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_detail'))
+            # ~ else:
+                # ~ product_images_html += '<div id="image_%s" class="tab-pane fade active in">%s%s<img class="img img-responsive product_detail_img" style="margin: auto; width: 500px; height: 500px;" src="/web/static/src/img/placeholder.png"/></div>' %(variant.id, offer_wrapper, ribbon_wrapper)
+                # ~ product_images_nav_html = '<li class="active"><a data-toggle="tab" href="#image_%s"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></a></li>' %variant.id
+
+
+        def product_json_desc(variant, product, pricelist):
+            product_images = variant.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
+            jsonPageData = u"""<script type="application/ld+json">%s</script>""" % json.dumps(
+            {
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            "name": product.name,
+            "image": [
+                "https://mariaakerberg.com/imagefield/ir.attachment/datas/%s/ref/website_sale_product_gallery.img_product_thumbnail/image/thumb.jpeg" % product_images[0].id ,
+                "https://mariaakerberg.com/imagefield/ir.attachment/datas/%s/ref/website_sale_product_gallery.img_product_detail/image/large.jpeg" % product_images[0].id
+                ],
+            "description": product.description,
+            "sku": product.default_code,
+            "brand": { 
+                "@type": "Brand",
+                "name": "Maria &Aring;kerberg"
+            },
+            "offers": {
+                "@type": "Offer",
+                "url": "https://mariaakerberg.com/dn_shop/variant/%s" % product.id,
+                "priceCurrency": "SEK",
+                "price": variant.sudo().pricelist_chart_ids.with_context(pricelist = pricelist).filtered(lambda p: p.pricelist_chart_id.pricelist == p._context.get('pricelist')).price,
+                "itemCondition": "https://schema.org/UsedCondition",
+                "availability": u"$LEFT_MASVINGE$%s$RIGHT_MASVINGE$" % ('%s_google_stock_status' % variant.id),
+                "seller": {
+                    "@type": "Organization", 
+                    "name": "Maria &Aring;kerberg"
+                    }
+                }
+            })
+            # ~ _logger.warn(jsonPageData)
+            # 2019-03-08 replace curly braces in two step: 1. to escape curly braces. 2. to parse code using curly braces.
+            return jsonPageData.replace('{', '{{').replace('}', '}}').replace(u'$LEFT_MASVINGE$', u'{').replace(u'$RIGHT_MASVINGE$', u'}')
+            
         def html_product_detail_desc( variant, partner, pricelist):
             is_reseller = False
             if pricelist and pricelist.for_reseller:
@@ -965,8 +1025,10 @@ class product_product(models.Model):
     {html_product_ingredients_mobile}
 </section>
 {website_description}
+{html_product_json_desc}
 <!-- key {key} key_raw {key_raw} render_time {render_time} -->
-<!-- http:/mcpage/{key} http:/mcpage/{key}/delete  http:/mcmeta/{key} -->""".format(
+<!-- http:/mcpage/{key} http:/mcpage/{key}/delete  http:/mcmeta/{key} -->
+""".format(
                     attribute_value = '_'.join([str(v.id) for v in variant.attribute_value_ids.sorted(lambda key: key.id)]),
                     product_id = product.id,
                     variant_id = variant.id,
@@ -995,26 +1057,41 @@ class product_product(models.Model):
                     stock_status = '{%s_stock_status}' % variant.id,
                     html_product_detail_desc = html_product_detail_desc(variant, partner, pricelist),
                     html_product_detail_image = html_product_detail_image(variant, partner),
+                    # 2019-03-08 json https://schema.org/ImageObject
+                    # https://developers.google.com/search/docs/data-types/product
+                    html_product_json_desc = product_json_desc(variant, variant.product_tmpl_id, pricelist),
                     html_product_ingredients_mobile = html_product_ingredients_mobile(variant, partner),
                     website_description = u'<div itemprop="description" class="oe_structure mt16" id="product_full_description">%s</div>' %variant.website_description if variant.website_description else '',
                     key_raw=key_raw,
                     key=key,
-                    render_time='%s' % (timer() - render_start)
+                    render_time='%s' % (timer() - render_start),
                 ).encode('utf-8')
             page += "\n<!-- render_time_total %s -->\n" % (timer() - render_start_tot)
             self.env['website'].put_page_dict(key_raw, flush_type, page, '%s,%s' % (product._model, product.id))
             page_dict['page'] = base64.b64encode(page)
         stock = {}
         for variant in product.product_variant_ids:
-            stock['%s_in_stock' %variant.id],in_stock_state,stock['%s_stock_status' % variant.id] = self.get_stock_info(variant.id)
+            #{
+            #    '123_in_stock': True / False, 
+            #    '123_in_stock_state': 'short' / 'few' / 'in',
+            #    '123_stock_status': 'Slut' / 'Fåtal' / 'I lager',
+            #    '123_google_stock_status': 'https://schema.org/InStock' / 'https://schema.org/LimitedAvailability' / 'https://schema.org/OutOfStock'
+            #} 
+            # https://schema.org/InStock
+            # https://schema.org/LimitedAvailability
+            # https://schema.org/OutOfStock
+            stock['%s_in_stock' %variant.id], stock['%s_in_stock_state' %variant.id], stock['%s_stock_status' % variant.id] = self.get_stock_info(variant.id)
+            stock['%s_google_stock_status' %variant.id] = {'short': 'https://schema.org/OutOfStock', 'few': 'https://schema.org/LimitedAvailability', 'in': 'https://schema.org/InStock'}[stock['%s_in_stock_state' %variant.id]]
             if not pricelist.for_reseller:
                 stock['%s_stock_status' % variant.id] = ''
                 stock['%s_hide_add_to_cart' % variant.id] = 'hidden'
             else:
                 stock['%s_hide_add_to_cart' % variant.id] = '' if (stock['%s_in_stock' %variant.id] and variant.sale_ok) else 'hidden'
         try:
+            _logger.warn(stock)
             return page_dict.get('page','').decode('base64').format(**stock)
         except:
+            _logger.warn(traceback.format_exc())
             if nbr == 0:
                 nbr = 1
                 request.website.remove_page_dict(key_raw)
