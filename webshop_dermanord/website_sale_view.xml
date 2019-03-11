@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <template id="website.robots">
+User-agent: *
+Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
+</template>
         <template id="website.404">
             <t t-call="website.layout">
                 <div id="wrap">

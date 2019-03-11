@@ -1248,9 +1248,6 @@ class WebsiteSale(website_sale):
 
     @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
     def dn_product(self, product, category='', search='', **post):
-        if not request.env.user:
-            # TODO: Find the real bug that causes this and flatten it to a gooey paste
-            return request.redirect(request.httprequest.path)
         if len(product.product_variant_ids) == 0:
             user = request.env.user
             if not user:

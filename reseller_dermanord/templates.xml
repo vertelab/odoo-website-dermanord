@@ -123,6 +123,7 @@
 
         <template id="reseller" name="Reseller">
             <t t-call="website.layout">
+                <t t-set="additional_title" t-value="reseller.brand_name or reseller.name" />
                 <div id="wrap">
                     <div class="oe_structure"/>
                     <div class="col-md-12 col-sm-12 col-xs-12" style="background-color: #000;">
