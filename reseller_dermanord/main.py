@@ -211,10 +211,10 @@ class Main(http.Controller):
             partner_ids = []
             if len(post_codes) > 0:
                 for p in post_codes:
-                    partner_ids += partner_obj.sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain, distance=360, limit=3)
+                    partner_ids += partner_obj.sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain, distance=360, limit=limit)
                 if len(partner_ids) > 0:
-                    if len(partner_ids) > 3:
-                        partner_ids = partner_ids[:3]
+                    if len(partner_ids) > limit:
+                        partner_ids = partner_ids[:limit]
                     resellers = partner_obj.sudo().browse(partner_ids)
         return resellers
 
@@ -241,7 +241,7 @@ class Main(http.Controller):
         context = {'competence': competence}
         def search_partner(word):
             # Find all matching visit addresses
-            matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
+            matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
             all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
             res = partner_obj.sudo().search([
                 ('is_company', '=', True),
@@ -283,7 +283,7 @@ class Main(http.Controller):
         partner_obj = request.env['res.partner']
         def search_partner(word):
             # Find all matching visit addresses
-            matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
+            matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
             all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
             # Find (partners that have a matching visit address OR brand name OR child category)
             res = partner_obj.sudo().search([
