@@ -653,7 +653,7 @@ class product_product(models.Model):
     def get_product_detail(self, product, variant_id, nbr=0):
         # right side product.description, directly after stock_status
         webshop_version = self.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version')
-        
+
         ## https://developers.google.com/search/docs/data-types/product
         ## https://schema.org/
         ## J-son code for product placement in google-index.
@@ -690,7 +690,7 @@ class product_product(models.Model):
                 ],
             "description": product.description,
             "sku": product.default_code,
-            "brand": { 
+            "brand": {
                 "@type": "Brand",
                 "name": "Maria &Aring;kerberg"
             },
@@ -702,7 +702,7 @@ class product_product(models.Model):
                 "itemCondition": "https://schema.org/UsedCondition",
                 "availability": u"$LEFT_MASVINGE$%s$RIGHT_MASVINGE$" % ('%s_google_stock_status' % variant.id),
                 "seller": {
-                    "@type": "Organization", 
+                    "@type": "Organization",
                     "name": "Maria &Aring;kerberg"
                     }
                 }
@@ -710,7 +710,7 @@ class product_product(models.Model):
             # ~ _logger.warn(jsonPageData)
             # 2019-03-08 replace curly braces in two step: 1. to escape curly braces. 2. to parse code using curly braces.
             return jsonPageData.replace('{', '{{').replace('}', '}}').replace(u'$LEFT_MASVINGE$', u'{').replace(u'$RIGHT_MASVINGE$', u'}')
-            
+
         def html_product_detail_desc( variant, partner, pricelist):
             is_reseller = False
             if pricelist and pricelist.for_reseller:
@@ -1050,7 +1050,7 @@ class product_product(models.Model):
                     hide_add_to_cart = '{%s_hide_add_to_cart}' % variant.id,
                     hide_add_to_cart_consumer = '' if self.env.user == self.env.ref('base.public_user') else 'hidden',
                     # ~ hide_add_to_cart_consumer = 'hidden',
-                    buy = _('Buy'),
+                    buy = _('Find Reseller'),
                     add_to_cart = _('Add to cart'),
                     product_startdate = _('Available on %s') %campaign.date_start if campaign and campaign.date_start else '',
                     product_stopdate = _('to %s') %campaign.date_stop if campaign and campaign.date_stop else '',
@@ -1072,11 +1072,11 @@ class product_product(models.Model):
         stock = {}
         for variant in product.product_variant_ids:
             #{
-            #    '123_in_stock': True / False, 
+            #    '123_in_stock': True / False,
             #    '123_in_stock_state': 'short' / 'few' / 'in',
             #    '123_stock_status': 'Slut' / 'Fåtal' / 'I lager',
             #    '123_google_stock_status': 'https://schema.org/InStock' / 'https://schema.org/LimitedAvailability' / 'https://schema.org/OutOfStock'
-            #} 
+            #}
             # https://schema.org/InStock
             # https://schema.org/LimitedAvailability
             # https://schema.org/OutOfStock

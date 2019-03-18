@@ -371,3 +371,9 @@ msgstr "Erbjudanden"
 #, python-format
 msgid "News"
 msgstr "Nyheter"
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/product_view.py:1053
+#, python-format
+msgid "Find Reseller"
+msgstr "Hitta ÅF"
