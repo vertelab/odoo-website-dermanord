@@ -516,6 +516,8 @@ class product_product(models.Model):
         state = None
         if product.get('force_out_of_stock', False):
             state = 'short'
+        elif product.get('type', False) != 'product':
+            state = 'in'
         elif product.get('is_offer', False):
             # Can produce strange results if there's more than one active BoM. Probably not an issue.
             states = ['short', 'few', 'in']
@@ -528,13 +530,13 @@ class product_product(models.Model):
                     state = child_state
                 # Default if there is no BoM
                 state = state or 'short'
-        elif product.get('type', False) != 'product' or product.get('virtual_available_days', 0) > 5:
+        elif product.get('virtual_available_days', 0) > 5:
             state = 'in'
         elif product.get('virtual_available_days', 0.0) >= 1.0:
             state = 'few'
         state = state or 'short'
-        return (state in ['in', 'few'], state, {'in': _('In stock'), 'few': _('Few in stock'), 'short': _('Shortage')}[state].encode('utf-8'))  # in_stock,state,info
-
+        return (state in ['in', 'few'], state, '' if  product.get('type') == 'consu' else {'in': _('In stock'), 'few': _('Few in stock'), 'short': _('Shortage')}[state].encode('utf-8'))  # in_stock,state,info
+    
     @api.model
     def get_list_row(self,domain,pricelist,limit=21,order='',offset=0):
         if isinstance(pricelist,int):
