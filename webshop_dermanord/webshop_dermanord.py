@@ -548,6 +548,7 @@ class sale_order(models.Model):
         """ Add or set product quantity, add_qty can be negative """
         self.ensure_one()
 
+        product = 0
         quantity = 0
         if self.state != 'draft':
             request.session['sale_order_id'] = None
@@ -596,6 +597,14 @@ class sale_order(models.Model):
         # Remove zero of negative lines
         if quantity <= 0:
             line.unlink()
+            
+        # Make sure we have a product
+        if not product:
+            product = self.env['product.product'].browse(product_id)
+             
+        # Do not allow more than 5 if educational purchase    
+        if product.is_edu_purchase() and (quantity > 5):
+            quantity = 5
 
         elif quantity != line.product_uom_qty:
             line.product_uom_qty = quantity
@@ -1610,7 +1619,6 @@ class WebsiteSale(website_sale):
 
     @http.route(['/shop/cart/update'], type='json', auth="public", website=True)
     def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
-
         start = timer()
         locked = True
         while not self.dn_cart_lock.acquire(False):

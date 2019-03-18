@@ -142,6 +142,8 @@ THUMBNAIL = u"""
 class product_template(models.Model):
     _inherit = 'product.template'
 
+    edu_purchases = fields.Boolean(string='Educational Purchases', help='')
+
     # ~ @api.one
     # ~ @api.depends('product_variant_ids.active')
     # ~ def _compute_product_variant_count(self):
@@ -399,7 +401,13 @@ class product_template(models.Model):
 
 class product_product(models.Model):
     _inherit = 'product.product'
-
+    
+    edu_purchases = fields.Boolean(string='Educational Purchases', help='')
+    
+    @api.multi
+    def is_edu_purchase(self):
+        return self.edu_purchases or self.product_tmpl_id.edu_purchases
+    
     @api.multi
     def dn_clear_cache(self):
         for key in memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self]):
@@ -558,6 +566,7 @@ class product_product(models.Model):
                 else:
                     if product['is_offer_product_consumer'] or template['is_offer_product_consumer']:
                         product_ribbon_offer  = True
+                product_obj = self.env['product.product'].browse(product['id'])
                 page = u"""<tr class="tr_lst ">
                                 <td class="td_lst">
                                     <div class="lst-ribbon-wrapper">{product_ribbon_offer}{product_ribbon_promo}{product_ribbon_limited}</div>
@@ -607,14 +616,17 @@ class product_product(models.Model):
                                                             <i class="fa fa-minus"></i>
                                                         </a>
                                                     </span>
-                                                    <input class="js_quantity form-control" data-min="1" name="add_qty" value="1" type="text">
+                                                    <input class="js_quantity form-control" data-min="1" data-max="{edu_max}" data-edu-purchase="{edu_purchase}" name="add_qty" value="1" type="text">
                                                     <span class="input-group-addon">
                                                         <a href="#" class="mb8 float_left js_add_cart_json">
                                                             <i class="fa fa-plus"></i>
                                                         </a>
                                                     </span>
                                                 </div>
-                                                <a class="btn btn-default dn_list_add_to_cart" href="javascript:void(0);">
+                                                <a class="btn btn-default dn_list_add_to_cart {hide_add_to_cart}" href="javascript:void(0);">
+                                                    <i class="fa fa-shopping-cart" style="color: #839794;"></i>
+                                                </a>
+                                                <a class="btn btn-default dn_list_add_to_cart_edu {hide_add_to_cart_edu}" href="javascript:void(0);">
                                                     <i class="fa fa-shopping-cart" style="color: #839794;"></i>
                                                 </a>
                                             </div>
@@ -634,10 +646,14 @@ class product_product(models.Model):
                     shop_widget='{shop_widget}',
                     product_stock='{product_stock}',
                     product_name=product['fullname'],
-                    product_price = self.env['product.product'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_short(),
+                    product_price = product_obj.get_pricelist_chart_line(pricelist).get_html_price_short(),
                     product_ribbon_offer = product_ribbon_offer and ('<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer')) or '',
                     product_ribbon_promo = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.id in (product['website_style_ids'] + product['website_style_ids_variant']) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.id in product['website_style_ids_variant'] else '',
+                    hide_add_to_cart= 'hidden' if product_obj.is_edu_purchase() else '',
+                    hide_add_to_cart_edu= '' if product_obj.is_edu_purchase() else 'hidden',
+                    edu_max= '5' if product_obj.is_edu_purchase() else '',
+                    edu_purchase= int(product_obj.is_edu_purchase()),
                     key_raw=key_raw,
                     key=key,
                     render_time='%s' % (timer() - render_start),
@@ -949,7 +965,8 @@ class product_product(models.Model):
                     # ~ price += _("No price available")
                 pricelist_line = variant.get_pricelist_chart_line(pricelist)
                 campaign = variant.campaign_ids[0] if variant.campaign_ids else None
-                page += u"""<section id="section_{attribute_value}" class="product_detail container mt8 oe_website_sale discount {hide_variant}">
+                page += u"""<t t-set="title" t-value="{product_name}"/>
+    <section id="section_{attribute_value}" class="product_detail container mt8 oe_website_sale discount {hide_variant}">
     <div class="row">
         <div class="col-sm-4 {publisher_manager}">
             <div groups="base.group_website_publisher" class="pull-right css_editable_mode_hidden" style="">
@@ -992,13 +1009,13 @@ class product_product(models.Model):
                             {product_price}
                         </p>
                     </div>
-                    <div class="css_quantity input-group oe_website_spinner {hide_add_to_cart}">
+                    <div class="css_quantity input-group oe_website_spinner {hide_add_to_cart_spinner}">
                         <span class="input-group-addon">
                             <a href="#" class="mb8 js_add_cart_json">
                                 <i class="fa fa-minus"></i>
                             </a>
                         </span>
-                        <input class="js_quantity form-control" data-min="1" name="add_qty" value="1" type="text"/>
+                        <input class="js_quantity form-control" data-min="1" data-max="{edu_max}" data-edu-purchase="{edu_purchase}" name="add_qty" value="1" type="text"/>
                         <span class="input-group-addon">
                             <a href="#" class="mb8 float_left js_add_cart_json">
                                 <i class="fa fa-plus"></i>
@@ -1009,6 +1026,7 @@ class product_product(models.Model):
                     <!-- <input id="sale_ok" name="sale_ok" type="hidden" t-att-value="product.sale_ok" /> -->
                     <button type="button" class="add_to_cart_consumer dn_btn dn_primary mt8 text-center {hide_add_to_cart_consumer}" data-toggle="modal" data-target="#reseller_search">{buy}</button>
                     <!-- <a id="add_to_cart_consumer" href="/resellers/search/{variant_id}" class="dn_btn dn_primary mt8 text-center {hide_add_to_cart_consumer}">{buy}</a> -->
+                    <a id="add_to_cart_edu" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center {hide_add_to_cart_edu}" groups="base.group_user,base.group_portal" disable="1">{add_to_cart}</a>
                     <h5>
                         <div>
                             <span>{product_startdate}</span>&nbsp;<span>{product_stopdate}</span>
@@ -1048,9 +1066,13 @@ class product_product(models.Model):
                     decimal_precision = decimal_precision,
                     product_price = pricelist_line.get_html_price_long(),
                     hide_add_to_cart = '{%s_hide_add_to_cart}' % variant.id,
-                    hide_add_to_cart_consumer = '' if self.env.user == self.env.ref('base.public_user') else 'hidden',
+                    hide_add_to_cart_spinner = '{%s_hide_add_to_cart_spinner}' % variant.id,
+                    # ~ hide_add_to_cart_consumer = 'visable',
+                    hide_add_to_cart_consumer = '' if self.env.user == self.env.ref('base.public_user') else 'hidden', 
                     # ~ hide_add_to_cart_consumer = 'hidden',
                     buy = _('Buy'),
+                    edu_max= '5' if variant.is_edu_purchase() else '',
+                    hide_add_to_cart_edu = '{%s_hide_add_to_cart_edu}' % variant.id, 
                     add_to_cart = _('Add to cart'),
                     product_startdate = _('Available on %s') %campaign.date_start if campaign and campaign.date_start else '',
                     product_stopdate = _('to %s') %campaign.date_stop if campaign and campaign.date_stop else '',
@@ -1062,6 +1084,7 @@ class product_product(models.Model):
                     html_product_json_desc = product_json_desc(variant, variant.product_tmpl_id, pricelist),
                     html_product_ingredients_mobile = html_product_ingredients_mobile(variant, partner),
                     website_description = u'<div itemprop="description" class="oe_structure mt16" id="product_full_description">%s</div>' %variant.website_description if variant.website_description else '',
+                    edu_purchase = int(variant.is_edu_purchase()),
                     key_raw=key_raw,
                     key=key,
                     render_time='%s' % (timer() - render_start),
@@ -1085,8 +1108,21 @@ class product_product(models.Model):
             if not pricelist.for_reseller:
                 stock['%s_stock_status' % variant.id] = ''
                 stock['%s_hide_add_to_cart' % variant.id] = 'hidden'
-            else:
-                stock['%s_hide_add_to_cart' % variant.id] = '' if (stock['%s_in_stock' %variant.id] and variant.sale_ok) else 'hidden'
+                stock['%s_hide_add_to_cart_spinner' % variant.id] = 'hidden'
+                stock['%s_hide_add_to_cart_edu' % variant.id] = 'hidden'
+            elif (stock['%s_in_stock' %variant.id] and variant.sale_ok):
+                stock['%s_hide_add_to_cart_spinner' % variant.id] = ''
+                if variant.is_edu_purchase():
+                   stock['%s_hide_add_to_cart' % variant.id] = 'hidden'
+                   stock['%s_hide_add_to_cart_edu' % variant.id] = ''
+                else:
+                   stock['%s_hide_add_to_cart_edu' % variant.id] = 'hidden'
+                   stock['%s_hide_add_to_cart' % variant.id] = ''
+            else:       
+                stock['%s_hide_add_to_cart' % variant.id] = 'hidden'
+                stock['%s_hide_add_to_cart_spinner' % variant.id] = 'hidden'
+                stock['%s_hide_add_to_cart_edu' % variant.id] = 'hidden'
+                
         try:
             _logger.warn(stock)
             return page_dict.get('page','').decode('base64').format(**stock)
