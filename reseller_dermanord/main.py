@@ -20,6 +20,7 @@
 ##############################################################################
 
 from openerp import models, fields, api, _
+from openerp.exceptions import except_orm, Warning, RedirectWarning
 from openerp import http
 from openerp.http import request
 import urllib
@@ -100,6 +101,20 @@ class res_partner(models.Model):
     def searchable_reseller_cron(self):
         for partner in self.env['res.partner'].search([('is_company', '=', True), ('customer', '=', True)]):
             partner.searchable_reseller()
+
+    @api.model
+    def highest_sales_resellers_cron(self):
+        domain = [('date_order', '>', '%s%s' %(str(int(fields.Datetime.now()[:4])-1), fields.Datetime.now()[4:])), ('date_order', '<=', fields.Datetime.now()), ('partner_id.is_reseller', '=', True), ('partner_id.is_company', '=', True), ('partner_id.has_webshop', '=', True), ('state', '=', 'done')]
+        sos = self.env['sale.order'].search(domain)
+        partners = sos.mapped('partner_id')
+        d = {}
+        for partner in partners:
+            d[partner.id] = sum(self.env['sale.order'].search(domain + [('partner_id', '=', partner.id)]).mapped('amount_total'))
+        sorted_d = sorted(d.items(), key=lambda x: x[1], reverse=True)
+        partner_ids = [p[0] for p in sorted_d]
+        lst = partner_ids[:10] if len(partner_ids) > 10 else partner_ids
+        self.env['ir.config_parameter'].set_param(key='reseller_dermanord.highest_sales_resellers', value=str(lst))
+
 
 class Main(http.Controller):
 

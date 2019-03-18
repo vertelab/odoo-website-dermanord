@@ -109,6 +109,22 @@ else:
             <field name="recipe_id" ref="reseller_dermanord.reseller_contact_img"/>
         </record>
 
+        <record id="highest_sales_resellers" model="ir.config_parameter">
+            <field name="key">reseller_dermanord.highest_sales_resellers</field>
+            <field name="value">[]</field>
+        </record>
+
+        <record id="highest_sales_resellers_cron" model="ir.cron">
+            <field name="name">Get 10 highest sales resellers (monthly)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="nextcall" eval="time.strftime('%s-%0d-%0d 00:00:00' %(DateTime.today().year, DateTime.today().month, DateTime.today().day))"/>
+            <field name="docall" eval="True"/>
+            <field name="numbercall">-1</field>
+            <field name="model">res.partner</field>
+            <field name="function">highest_sales_resellers_cron</field>
+        </record>
+
     </data>
 
     <data noupdate="1">
