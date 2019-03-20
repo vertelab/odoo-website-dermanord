@@ -594,18 +594,14 @@ class sale_order(models.Model):
         elif add_qty != None:
             quantity = line.product_uom_qty + (add_qty or 0)
 
+        # Do not allow more than 5 if educational purchase    
+        if line.product_id.is_edu_purchase() and (quantity > 5):
+            quantity = 5
+
         # Remove zero of negative lines
         if quantity <= 0:
             line.unlink()
             
-        # Make sure we have a product
-        if not product:
-            product = self.env['product.product'].browse(product_id)
-             
-        # Do not allow more than 5 if educational purchase    
-        if product.is_edu_purchase() and (quantity > 5):
-            quantity = 5
-
         elif quantity != line.product_uom_qty:
             line.product_uom_qty = quantity
 
@@ -760,7 +756,7 @@ class Website(models.Model):
                 append_domain(domain_current, ['|', ('product_tmpl_id.website_style_ids', '=', promo_id), ('website_style_ids_variant', '=', promo_id)])
         for offer_type in ['current_offer']:
             if offer_type in dic:
-                reseller = request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller
+                reseller = request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller or False
                 # TODO: This looks like a lot of browses. Should be possible to shorten it considerably.
                 if model == 'product.template':
                     #get product.template that have variants are in current offer
@@ -1485,9 +1481,6 @@ class WebsiteSale(website_sale):
         ], type='http', auth="public", website=True)
     def webshop(self, page=0, category=None, search='', **post):
         # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\nform_values: %s\n' % (request.session.get('current_order'), request.session.get('current_domain'), request.session.get('form_values')))
-        if not request.env.user:
-            # TODO: Find the real bug that causes this and flatten it to a gooey paste
-            return request.redirect(request.httprequest.path)
         if not request.env.user.webshop_type or request.env.user.webshop_type not in ['dn_shop', 'dn_list']: # first time use filter
             if request.env.user.commercial_partner_id.property_product_pricelist.for_reseller: # reseller
                 request.env.user.webshop_type = 'dn_list'

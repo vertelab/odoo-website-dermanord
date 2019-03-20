@@ -398,7 +398,6 @@ class product_template(models.Model):
             thumbnail.append(page_dict.get('page', '').decode('base64'))
         return thumbnail
 
-
 class product_product(models.Model):
     _inherit = 'product.product'
     
@@ -554,7 +553,6 @@ class product_product(models.Model):
         for product in self.env['product.product'].search_read(domain, fields=['id','fullname', 'default_code','type', 'is_offer_product_reseller', 'is_offer_product_consumer', 'product_tmpl_id', 'sale_ok','campaign_ids', 'website_style_ids', 'website_style_ids_variant'], limit=limit, order=order,offset=offset):
             key_raw = 'list_row %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,product['id'],pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
             key,page_dict = self.env['website'].get_page_dict(key_raw)
-            # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
             if not page_dict:
                 render_start = timer()
                 campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
