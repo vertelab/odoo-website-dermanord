@@ -353,7 +353,26 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                     <t t-raw="request.env['product.product'].get_packaging_info(line.product_id.id)"/>
                 </td>
             </xpath>
-
+            
+            <!-- Added infobox for educational purchases in cart -->
+            <xpath expr="//td[@name='price']" position="after">
+                <td>
+                    <t t-if="line.product_id.is_edu_purchase()">
+                        <div class="dn-tooltip text-centered"><i class="fa fa-info-circle"></i>
+                            <div class="dn-tooltiptext">
+                                <b>For training</b><br/>
+                                This product is sold as an educational product. Only for personal use.
+                            </div>
+                        </div>
+                    </t>
+                </td>
+            </xpath>
+            
+            <!-- Added attribute to check if purchase is educational -->
+            <xpath expr="//input[hasclass('js_quantity')]" position="attributes">
+                <attribute name="t-att-data-edu-purchase">int(line.product_id.is_edu_purchase())</attribute>
+            </xpath>
+            
             <xpath expr="//table[@id='cart_products']/thead/tr" position="inside">
                 <th/>
             </xpath>
@@ -393,6 +412,16 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                                        }' />
                                     </div>
                                 </div>
+                                <!-- Added infobox for educational purchases in cart -->
+                                <t t-if="line.product_id.is_edu_purchase()">
+                                    <div class="text-center">
+                                        <i class="fa fa-info-circle" rel="popover" data-placement="bottom" t-att-data-popover-content="'#dn-edu-info_%s' %line.id" onclick="show_popover($(this));"></i>
+                                        <div t-att-id="'dn-edu-info_%s' %line.id" class="hide" style="font-family: futura-pt-medium;">
+                                            <b>For training</b><br/>
+                                            This product is sold as an educational product. Only for personal use.
+                                        </div>
+                                    </div>
+                                </t>
                                 <t t-foreach="line.product_id.packaging_ids" t-as="packaging">
                                     <div class="text-center">
                                         <i class="fa fa-cube" rel="popover" data-placement="bottom" t-att-data-popover-content="'#packaging_popover_%s' %packaging.id" onclick="show_popover($(this));"/>
@@ -429,7 +458,7 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                                             <i class="fa fa-minus text-primary"/>
                                         </a>
                                     </span>
-                                    <input t-if="not line.event_id" type="text" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty)" t-att="{'disabled': 'disabled'} if line.event_id else {}"/>
+                                    <input t-if="not line.event_id" type="text" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-data-edu-purchase="int(line.product_id.is_edu_purchase())" t-att-value="int(line.product_uom_qty)" t-att="{'disabled': 'disabled'} if line.event_id else {}"/>
                                     <t t-if="line.event_id">
                                         <input type="text" style="max-width: 127px;" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty)" disabled="disabled"/>
                                     </t>
