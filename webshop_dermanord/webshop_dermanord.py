@@ -617,6 +617,16 @@ class sale_order(models.Model):
         return super(sale_order, self).action_button_confirm()
 
 
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+    
+    @api.multi
+    def write(self, values):
+        if 'message_follower_ids' in values:
+            _logger.warn('\n\nmessage_follower_ids: %s\n%s' % (values['message_follower_ids'], ''.join(traceback.format_stack())))
+        return super(SaleOrder, self).write(values)
+
+
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
