@@ -104,7 +104,7 @@ class res_partner(models.Model):
 
     @api.model
     def highest_sales_resellers_cron(self):
-        domain = [('date_order', '>', '%s%s' %(str(int(fields.Datetime.now()[:4])-1), fields.Datetime.now()[4:])), ('date_order', '<=', fields.Datetime.now()), ('partner_id.is_reseller', '=', True), ('partner_id.is_company', '=', True), ('partner_id.has_webshop', '=', True), ('state', '=', 'done')]
+        domain = [('date_order', '>', '%s%s' %(str(int(fields.Datetime.now()[:4])-1), fields.Datetime.now()[4:])), ('date_order', '<=', fields.Datetime.now()), ('partner_id.is_reseller', '=', True), ('partner_id.is_company', '=', True), ('partner_id.is_reseller', '=', True), ('partner_id.has_webshop', '=', True), ('state', '=', 'done')]
         sos = self.env['sale.order'].search(domain)
         partners = sos.mapped('partner_id')
         d = {}
