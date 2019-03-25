@@ -292,7 +292,7 @@ class Main(http.Controller):
             matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
             domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids', 'in', matching_visit_ids), ('child_competence_ids', '=', competence.id)]
             if request.session.get('geoip') and request.session.get('geoip', {}).get('longitude') and request.session.get('geoip', {}).get('latitude'): # Geo search
-                context['resellers'] = self.get_resellers_without_keyword(domain, tuple((float(request.session.get('geoip').get('longitude')), float(request.session.get('geoip').get('latitude')))), limit=100)
+                context['resellers'] = self.resellers_filter(self.get_resellers_without_keyword(domain, tuple((float(request.session.get('geoip').get('longitude')), float(request.session.get('geoip').get('latitude')))), limit=100))
         return request.website.render('reseller_dermanord.resellers', context)
 
     @http.route([
