@@ -240,11 +240,11 @@ class Main(http.Controller):
         if webshop:
             # ~ partner_ids = get_partner_ids(0.5, 5)
             # ~ if len(partner_ids) == 0:
-            partner_ids = get_partner_ids(360, limit if not limit else 5)
+            partner_ids = get_partner_ids(360, limit if limit else 5)
         else:
             # ~ partner_ids = get_partner_ids(0.5, 10)
             # ~ if len(partner_ids) == 0:
-            partner_ids = get_partner_ids(360, limit if not limit else 10)
+            partner_ids = get_partner_ids(360, limit if limit else 10)
         if len(partner_ids) > 0:
             return partner_obj.sudo().browse(partner_ids)
         else:
