@@ -263,7 +263,6 @@ class Main(http.Controller):
     @http.route(['/resellers/competence/<model("res.partner.category"):competence>',], type='http', auth="public", website=True)
     def reseller_competence(self, competence, **post):
         partner_obj = request.env['res.partner']
-        context = {'competence': competence}
         def search_partner(word):
             # Find all matching visit addresses
             matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
@@ -287,13 +286,23 @@ class Main(http.Controller):
 
         words = post.get('search_resellers')
         if words and words != '':
-            context['resellers'] = self.resellers_filter(self.get_resellers(words, [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit'), ('child_competence_ids', '=', competence.id)], search_partner, limit=100))
+            return request.website.render('reseller_dermanord.resellers', {
+                'competence': competence,
+                'search_resellers': words,
+                'resellers': self.resellers_filter(self.get_resellers(words, [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit'), ('child_competence_ids', '=', competence.id)], search_partner, limit=100)),
+                'placeholder': ''
+            })
         else:
             matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
             domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids', 'in', matching_visit_ids), ('child_competence_ids', '=', competence.id)]
             if request.session.get('geoip') and request.session.get('geoip', {}).get('longitude') and request.session.get('geoip', {}).get('latitude'): # Geo search
-                context['resellers'] = self.resellers_filter(self.get_resellers_without_keyword(domain, tuple((float(request.session.get('geoip').get('longitude')), float(request.session.get('geoip').get('latitude')))), limit=100))
-        return request.website.render('reseller_dermanord.resellers', context)
+                return request.website.render('reseller_dermanord.resellers', {
+                    'competence': competence,
+                    'search_resellers': '',
+                    'resellers': self.resellers_filter(self.get_resellers_without_keyword(domain, tuple((float(request.session.get('geoip').get('longitude')), float(request.session.get('geoip').get('latitude')))), limit=100)),
+                    'placeholder': _('<i class="fa fa-map-marker"></i> <span style="padding-left: 5px;">My position</span>')
+                })
+        return request.website.render('reseller_dermanord.resellers', {'competence': competence, 'resellers': [], 'placeholder': _('<span>Search...</span>')})
 
     @http.route([
         '/resellers',
@@ -328,11 +337,11 @@ class Main(http.Controller):
             words = post.get('search_resellers')
             if words and words != '':
                 resellers = self.get_resellers(words, [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')], search_partner)
-                return request.website.render('reseller_dermanord.resellers', {'resellers': self.resellers_filter(resellers)})
+                return request.website.render('reseller_dermanord.resellers', {'resellers': self.resellers_filter(resellers), 'search_resellers': words, 'placeholder': ''})
             else:
                 # ~ closest_ids = partner_obj.geoip_search('position', request.httprequest.remote_addr, 10)
                 # ~ resellers = partner_obj.sudo().search([('is_reseller', '=', True), ('child_ids.type', '=', 'visit')])
-                return request.website.render('reseller_dermanord.resellers', {'resellers': []})
+                return request.website.render('reseller_dermanord.resellers', {'resellers': [], 'search_resellers': '', 'placeholder': _('<span>Search...</span>')})
         else:
             partner = partner_obj.sudo().search([('id', '=', int(partner)), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')])
             return request.website.render('reseller_dermanord.reseller', {
