@@ -112,8 +112,12 @@ class res_partner(models.Model):
             d[partner.id] = sum(self.env['sale.order'].search(domain + [('partner_id', '=', partner.id)]).mapped('amount_total'))
         sorted_d = sorted(d.items(), key=lambda x: x[1], reverse=True)
         partner_ids = [p[0] for p in sorted_d]
-        lst = partner_ids[:10] if len(partner_ids) > 10 else partner_ids
-        self.env['ir.config_parameter'].set_param(key='reseller_dermanord.highest_sales_resellers', value=str(lst))
+        lst = partner_ids[:25] if len(partner_ids) > 25 else partner_ids
+        partner_lst = []
+        for l in lst:
+            p = self.env['res.partner'].browse(l)
+            partner_lst.append([l, p.webshop_category_ids.mapped('id')])
+        self.env['ir.config_parameter'].set_param(key='reseller_dermanord.highest_sales_resellers', value=str(partner_lst))
 
 
 class Main(http.Controller):
