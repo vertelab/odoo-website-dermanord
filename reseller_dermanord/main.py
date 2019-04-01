@@ -222,9 +222,28 @@ class Main(http.Controller):
             if len(resellers) > limit:
                 resellers = resellers[:limit]
             if len(partner_ids) > 0:
-                resellers = partner_obj.sudo().browse(partner_ids).with_context(resellers=resellers.mapped('id')).filtered(lambda r: r.id in r._context.get('resellers'))
-                if len(resellers) == 0:
-                    resellers = partner_obj.sudo().browse(partner_ids)
+                ids = []
+                for id in partner_ids:
+                    if id in resellers.mapped('id'):
+                        ids.append(id)
+                if not ids:
+                    ids = partner_ids
+                else:
+                    for id in partner_ids:
+                        if len(ids) >= limit:
+                            break
+                        if id not in ids:
+                            ids.append(id)
+                resellers = partner_obj.sudo().browse(ids)
+                # ~ resellers = partner_obj.sudo().browse(partner_ids).with_context(resellers=resellers.mapped('id')).filtered(lambda r: r.id in r._context.get('resellers'))
+                # ~ if len(resellers) == 0:
+                    # ~ resellers = partner_obj.sudo().browse(partner_ids)
+                # ~ else:
+                    # ~ new_partner_ids = []
+                    # ~ for p in partner_ids:
+                        # ~ if p not in resellers._ids:
+                            # ~ new_partner_ids.append(p)
+                    # ~ resellers += partner_obj.sudo().browse(new_partner_ids)
         # If there's no reseller found. Redo search with unlimited distance
         if len(resellers) == 0:
             partner_ids = []
