@@ -346,7 +346,7 @@ class Main(http.Controller):
             resellers = self.get_resellers(words, domain, search_partner_name)
             if len(resellers) < 100:
                 matched_reseller_ids = resellers.mapped('id')
-                resellers = partner_obj.sudo().browse(resellers.mapped('id') + self.get_resellers(words, domain + [('id', 'not in', matched_reseller_ids)], search_partner, webshop=False, limit=100-len(resellers)).mapped('id'))
+                resellers = partner_obj.sudo().browse(list(set(resellers.mapped('id') + self.get_resellers(words, domain + [('id', 'not in', matched_reseller_ids)], search_partner, webshop=False, limit=100-len(resellers)).mapped('id'))))
             return request.website.render('reseller_dermanord.resellers', {
                 'competence': competence,
                 'search_resellers': words,
@@ -427,7 +427,7 @@ class Main(http.Controller):
                 resellers = self.get_resellers(words, domain, search_partner_name)
                 if len(resellers) < 100:
                     matched_reseller_ids = resellers.mapped('id')
-                    resellers = partner_obj.sudo().browse(resellers.mapped('id') + self.get_resellers(words, domain + [('id', 'not in', matched_reseller_ids)], search_partner, webshop=False, limit=100-len(resellers)).mapped('id'))
+                    resellers = partner_obj.sudo().browse(list(set(resellers.mapped('id') + self.get_resellers(words, domain + [('id', 'not in', matched_reseller_ids)], search_partner, webshop=False, limit=100-len(resellers)).mapped('id'))))
                 return request.website.render('reseller_dermanord.resellers', {'resellers': self.resellers_filter(resellers), 'search_resellers': words, 'placeholder': ''})
             else:
                 # ~ closest_ids = partner_obj.geoip_search('position', request.httprequest.remote_addr, 10)
