@@ -1521,12 +1521,12 @@ class WebsiteSale(website_sale):
             # ~ if not found_public_categ_ids:
                 # ~ request.session['current_domain'].append(tuple((domain_field, 'in', public_categ_ids))) # add categories in the first time
 
-        # ~ if request.env.user.webshop_type == 'dn_list':
-            # ~ request.website.dn_shop_set_session('product.product', post, '/webshop')
+        if request.env.user.webshop_type == 'dn_list':
+            request.website.dn_shop_set_session('product.product', post, '/webshop')
             # ~ if category:
                 # ~ update_current_domain('product.product')
-        # ~ else:
-            # ~ request.website.dn_shop_set_session('product.template', post, '/webshop')
+        else:
+            request.website.dn_shop_set_session('product.template', post, '/webshop')
             # ~ if category:
                 # ~ update_current_domain('product.template')
 
