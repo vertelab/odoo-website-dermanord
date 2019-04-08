@@ -159,7 +159,7 @@
                                 </t>
                                 <t t-if="reseller.website">
                                     <h3>Our Webshop</h3>
-                                    <a t-att-href="reseller.website"><span t-esc="reseller.website.replace('http://', '')"/></a>
+                                    <a t-att-href="'/goto/%s/website' %reseller.id"><span t-esc="reseller.website.replace('http://', '')"/></a>
                                 </t>
                             </div>
                             <div class="col-md-4 col-sm-4 col-xs-12 mt16 mb16">
@@ -192,7 +192,7 @@
                                     </t>
                                     <t t-if="reseller.website">
                                         <h3>Our Webshop</h3>
-                                        <a t-att-href="reseller.website"><span t-esc="reseller.website.replace('http://', '')"/></a>
+                                        <a t-att-href="'/goto/%s/website' %reseller.id"><span t-esc="reseller.website.replace('http://', '')"/></a>
                                     </t>
                                 </div>
                                 <!-- Google maps -->
@@ -236,7 +236,7 @@
                                 <p>
                                     <t t-if="visit.phone">Telephone: <a t-att-href="'tel:%s' %visit.phone"><span t-esc="visit.phone"/></a><br/></t>
                                     <t t-if="visit.email">Email: <a t-att-href="'mailto:%s' %visit.email"><span t-esc="visit.email"/></a><br/></t>
-                                    <t t-if="reseller.website">Website: <a t-att-href="reseller.website"><span t-esc="reseller.website.replace('http://', '')"/></a></t>
+                                    <t t-if="reseller.website">Website: <a t-att-href="'/goto/%s/website' %reseller.id"><span t-esc="reseller.website.replace('http://', '')"/></a></t>
                                 </p>
                             </div>
                         </div>
