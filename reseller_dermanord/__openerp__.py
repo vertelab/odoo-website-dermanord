@@ -41,7 +41,6 @@ Resellers Page
         'event_participant_dermanord',
         'website_sale_home',
         'website_partner_opening_hours',
-        'website_url_tracker',
     ],
     'data': [
         'data.xml',
