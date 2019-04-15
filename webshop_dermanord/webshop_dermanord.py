@@ -634,7 +634,13 @@ class SaleOrder(models.Model):
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
-
+    
+    def check_product_lang(self):
+        for avi in self.product_id.attribute_value_ids:
+            if avi.attribute_id == self.env.ref("__export__.product_attribute_290"):
+                if avi.color not in self.order_id.partner_shipping_id.country_id and self.order_id.partner_shipping_id.country_id.code.split() or []:
+                    return _("%s appears to not be in your preferred language. Are you sure this is the correct product?")%self.product_id.name
+    
     @api.multi
     def sale_home_confirm_copy(self):
         if self.is_delivery or self.is_min_order_fee:

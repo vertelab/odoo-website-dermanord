@@ -16,6 +16,12 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: webshop_dermanord
+#: code:addons/webshop_dermanord/webshop_dermanord.py:642
+#, python-format
+msgid "%s appears to not be in your preferred language. Are you sure this is the correct product?"
+msgstr ""
+
+#. module: webshop_dermanord
 #: view:website:website.layout
 msgid "&times;"
 msgstr ""
@@ -91,6 +97,11 @@ msgstr ""
 #: view:website:webshop_dermanord.dn_filter_navigator
 #: view:website:website_sale.product
 msgid "Categories"
+msgstr ""
+
+#. module: webshop_dermanord
+#: view:website:website_sale.cart
+msgid "Check language"
 msgstr ""
 
 #. module: webshop_dermanord
