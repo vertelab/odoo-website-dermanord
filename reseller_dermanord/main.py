@@ -112,8 +112,12 @@ class res_partner(models.Model):
             d[partner.id] = sum(self.env['sale.order'].search(domain + [('partner_id', '=', partner.id)]).mapped('amount_total'))
         sorted_d = sorted(d.items(), key=lambda x: x[1], reverse=True)
         partner_ids = [p[0] for p in sorted_d]
-        lst = partner_ids[:10] if len(partner_ids) > 10 else partner_ids
-        self.env['ir.config_parameter'].set_param(key='reseller_dermanord.highest_sales_resellers', value=str(lst))
+        lst = partner_ids[:25] if len(partner_ids) > 25 else partner_ids
+        partner_lst = []
+        for l in lst:
+            p = self.env['res.partner'].browse(l)
+            partner_lst.append([l, p.webshop_category_ids.mapped('id')])
+        self.env['ir.config_parameter'].set_param(key='reseller_dermanord.highest_sales_resellers', value=str(partner_lst))
 
 
 class Main(http.Controller):
@@ -218,9 +222,28 @@ class Main(http.Controller):
             if len(resellers) > limit:
                 resellers = resellers[:limit]
             if len(partner_ids) > 0:
-                resellers = partner_obj.sudo().browse(partner_ids).with_context(resellers=resellers.mapped('id')).filtered(lambda r: r.id in r._context.get('resellers'))
-                if len(resellers) == 0:
-                    resellers = partner_obj.sudo().browse(partner_ids)
+                ids = []
+                for id in partner_ids:
+                    if id in resellers.mapped('id'):
+                        ids.append(id)
+                if not ids:
+                    ids = partner_ids
+                else:
+                    for id in partner_ids:
+                        if len(ids) >= limit:
+                            break
+                        if id not in ids:
+                            ids.append(id)
+                resellers = partner_obj.sudo().browse(ids)
+                # ~ resellers = partner_obj.sudo().browse(partner_ids).with_context(resellers=resellers.mapped('id')).filtered(lambda r: r.id in r._context.get('resellers'))
+                # ~ if len(resellers) == 0:
+                    # ~ resellers = partner_obj.sudo().browse(partner_ids)
+                # ~ else:
+                    # ~ new_partner_ids = []
+                    # ~ for p in partner_ids:
+                        # ~ if p not in resellers._ids:
+                            # ~ new_partner_ids.append(p)
+                    # ~ resellers += partner_obj.sudo().browse(new_partner_ids)
         # If there's no reseller found. Redo search with unlimited distance
         if len(resellers) == 0:
             partner_ids = []
@@ -323,7 +346,7 @@ class Main(http.Controller):
             resellers = self.get_resellers(words, domain, search_partner_name)
             if len(resellers) < 100:
                 matched_reseller_ids = resellers.mapped('id')
-                resellers = partner_obj.sudo().browse(resellers.mapped('id') + self.get_resellers(words, domain + [('id', 'not in', matched_reseller_ids)], search_partner, webshop=False, limit=100-len(resellers)).mapped('id'))
+                resellers = partner_obj.sudo().browse(list(set(resellers.mapped('id') + self.get_resellers(words, domain + [('id', 'not in', matched_reseller_ids)], search_partner, webshop=False, limit=100-len(resellers)).mapped('id'))))
             return request.website.render('reseller_dermanord.resellers', {
                 'competence': competence,
                 'search_resellers': words,
@@ -404,7 +427,7 @@ class Main(http.Controller):
                 resellers = self.get_resellers(words, domain, search_partner_name)
                 if len(resellers) < 100:
                     matched_reseller_ids = resellers.mapped('id')
-                    resellers = partner_obj.sudo().browse(resellers.mapped('id') + self.get_resellers(words, domain + [('id', 'not in', matched_reseller_ids)], search_partner, webshop=False, limit=100-len(resellers)).mapped('id'))
+                    resellers = partner_obj.sudo().browse(list(set(resellers.mapped('id') + self.get_resellers(words, domain + [('id', 'not in', matched_reseller_ids)], search_partner, webshop=False, limit=100-len(resellers)).mapped('id'))))
                 return request.website.render('reseller_dermanord.resellers', {'resellers': self.resellers_filter(resellers), 'search_resellers': words, 'placeholder': ''})
             else:
                 # ~ closest_ids = partner_obj.geoip_search('position', request.httprequest.remote_addr, 10)

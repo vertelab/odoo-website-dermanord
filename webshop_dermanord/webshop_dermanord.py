@@ -1485,11 +1485,9 @@ class WebsiteSale(website_sale):
 
     @http.route([
         '/webshop',
-        '/webshop/page/<int:page>',
         '/webshop/category/<model("product.public.category"):category>',
-        '/webshop/category/<model("product.public.category"):category>/page/<int:page>',
         ], type='http', auth="public", website=True)
-    def webshop(self, page=0, category=None, search='', **post):
+    def webshop(self, category=None, search='', **post):
         # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\nform_values: %s\n' % (request.session.get('current_order'), request.session.get('current_domain'), request.session.get('form_values')))
         if not request.env.user.webshop_type or request.env.user.webshop_type not in ['dn_shop', 'dn_list']: # first time use filter
             if request.env.user.commercial_partner_id.property_product_pricelist.for_reseller: # reseller
@@ -1521,12 +1519,12 @@ class WebsiteSale(website_sale):
             # ~ if not found_public_categ_ids:
                 # ~ request.session['current_domain'].append(tuple((domain_field, 'in', public_categ_ids))) # add categories in the first time
 
-        # ~ if request.env.user.webshop_type == 'dn_list':
-            # ~ request.website.dn_shop_set_session('product.product', post, '/webshop')
+        if request.env.user.webshop_type == 'dn_list':
+            request.website.dn_shop_set_session('product.product', post, '/webshop')
             # ~ if category:
                 # ~ update_current_domain('product.product')
-        # ~ else:
-            # ~ request.website.dn_shop_set_session('product.template', post, '/webshop')
+        else:
+            request.website.dn_shop_set_session('product.template', post, '/webshop')
             # ~ if category:
                 # ~ update_current_domain('product.template')
 
