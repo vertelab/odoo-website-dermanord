@@ -404,15 +404,15 @@ class product_product(models.Model):
     @api.multi
     def is_edu_purchase(self):
         """ Checks if a product should be available as an educational purchase for the active user. Returns True/False """
-        user = request.env.user
+        partner = request.env.user.partner_id.commercial_partner_id
         
         variant_groups = self.access_group_ids | self.product_tmpl_id.access_group_ids
 
         # Match product and user groups.
-        if (variant_groups & user.groups_id):
+        if (variant_groups & partner.access_group_ids):
             return False
         else:
-            # TODO: Implement check that an edu purchase REALLY is allowed.
+            # TODO: Implement check that an edu purchase REALLY is allowed?
             return True
 
     @api.multi

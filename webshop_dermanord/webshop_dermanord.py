@@ -1312,7 +1312,6 @@ class WebsiteSale(website_sale):
     ], type='http', auth="public", website=True)
     def dn_product_variant(self, variant, category='', search='', **post):
         if not request.env.user:
-            # TODO: Find the real bug that causes this and flatten it to a gooey paste
             return request.redirect(request.httprequest.path)
         product = variant.sudo().product_tmpl_id
         values = {
