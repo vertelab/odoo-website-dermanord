@@ -249,8 +249,8 @@
                                     I Agree with the
                                     <a href="#" onclick="window.open('/page/terms-and-conditions', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>
                                     <t t-if="website_sale_order.website_order_line.filtered(lambda l: l.product_id.is_edu_purchase())">
-                                        and confirm that I understand that some products in my order are intended only for educational purposes.
-                                    </t> 
+                                        and confirm that I understand that some products in my order are intended only for educational purposes
+                                    </t>
                                 </label>
                             </div>
                         </div>

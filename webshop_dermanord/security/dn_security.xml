@@ -27,5 +27,10 @@
             <field name="category_id" ref="module_category_dn_webshop"/>
         </record>
         
+        <record model="res.groups" id="group_dn_salon">
+            <field name="name">Salong</field>
+            <field name="category_id" ref="module_category_dn_webshop"/>
+        </record>
+        
     </data>
 </openerp>
