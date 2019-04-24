@@ -4,9 +4,25 @@
         <template id="report_saleorder_document" inherit_id="sale.report_saleorder_document" name="Report Saleorder Document Inherited website_saleorder_report_sdermanord">
             <xpath expr="//h2/span[2]" position="replace">
                 <span t-if="o.state in ['draft','sent']">
-                    <t t-if="o.section_id == request.env.ref('website.salesteam_website_sales')">Order N° </t>
-                    <t t-if="o.section_id != request.env.ref('website.salesteam_website_sales')">Quotation N° </t>
+                    <t t-if="o.section_id == request.env.ref('website.salesteam_website_sales')">Order N°</t>
+                    <t t-if="o.section_id != request.env.ref('website.salesteam_website_sales')">Quotation N°</t>
                 </span>
+            </xpath>
+            <xpath expr="//div[@t-if='o.user_id.name']" position="attributes">
+                <attribute name="t-if">o.user_id.name and o.state not in ['draft']</attribute>
+            </xpath>
+            <xpath expr="//div[@t-if='o.payment_term']" position="after">
+                <p t-if="o.state in ['draft']">
+                    <strong>NOTE! This is no invoice only pay this invoice if your payment term is Prepaid!</strong>
+                </p>
+            </xpath>
+            <xpath expr="//p[@t-if='o.payment_term.note']" position="after">
+                <p t-if="o.state in ['draft']">
+                    <strong>NOTE! This is no invoice only pay this invoice if your payment term is Prepaid!</strong>
+                </p>
+            </xpath>
+            <xpath expr="//p[@t-if='o.payment_term.note']" position="attributes">
+                <attribute name="t-if">o.user_id.name and o.state not in ['draft']</attribute>
             </xpath>
         </template>
     </data>
