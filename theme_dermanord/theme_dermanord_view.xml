@@ -192,14 +192,7 @@
                             <div id="shop_cart_div" class="col-xs-2" groups="base.group_user,__export__.res_groups_283">
                                 <div class="hidden-lg hidden-md hidden-sm">
                                     <a href="/shop/cart" style="color: #000;"><i class="fa fa-shopping-cart fa-2x"/>
-                                        <t t-if="website_sale_order">
-                                            <sup t-attf-class="my_cart_quantity label label-primary dn_cart_qty_sm" t-esc="website_sale_order and website_sale_order.cart_quantity or ''"/>
-                                        </t>
-                                        <t t-if="not website_sale_order">
-                                            <t t-if="request.website.sale_get_order()">
-                                                <sup class="my_cart_quantity label label-primary dn_cart_qty_sm" t-esc="int(sum(request.website.sale_get_order().mapped('order_line').mapped('product_uom_qty')))"/>
-                                            </t>
-                                        </t>
+                                        <sup class="my_cart_quantity label label-primary dn_cart_qty_sm"/>
                                     </a>
                                 </div>
                             </div>
