@@ -405,10 +405,8 @@ class product_product(models.Model):
     def is_edu_purchase(self):
         """ Checks if a product should be available as an educational purchase for the active user. Returns True/False """
         partner = request.env.user.partner_id.commercial_partner_id
-        
         variant_groups = self.access_group_ids | self.product_tmpl_id.access_group_ids
 
-        # Match product and user groups.
         if (variant_groups & partner.access_group_ids):
             return False
         else:

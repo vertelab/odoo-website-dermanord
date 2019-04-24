@@ -352,7 +352,7 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                 <td>
                     <!-- Added infobox for educational purchases in cart -->
                     <t t-if="line.product_id.is_edu_purchase()">
-                        <div class="dn-tooltip text-centered"><i class="fa fa-info-circle"></i>
+                        <div class="dn-tooltip text-centered"><i class="fa fa-info-circle" style="color: darkblue"></i>
                             <div class="dn-tooltiptext">
                                 <b>For training</b><br/>
                                 This product is sold as an educational product. Only for personal use.
@@ -361,7 +361,7 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                     </t>
                     <t t-set="product_country_warning" t-value="line.check_product_lang()"/>
                     <t t-if="product_country_warning" >
-                        <div class="dn-tooltip text-centered"><i class="fa fa-exclamation-triangle"></i>
+                        <div class="dn-tooltip text-centered"><i class="fa fa-exclamation-triangle" style="color: darkred"></i>
                             <div class="dn-tooltiptext">
                                 <b>Check language</b><br/>
                                 <t t-esc="product_country_warning"/>
@@ -420,7 +420,7 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                                 <!-- Added infobox for educational purchases in cart -->
                                 <t t-if="line.product_id.is_edu_purchase()">
                                     <div class="text-center">
-                                        <i class="fa fa-info-circle" rel="popover" data-placement="bottom" t-att-data-popover-content="'#dn-edu-info_%s' %line.id" onclick="show_popover($(this));"></i>
+                                        <i class="fa fa-info-circle" rel="popover" data-placement="bottom" style="color: darkblue" t-att-data-popover-content="'#dn-edu-info_%s' %line.id" onclick="show_popover($(this));"></i>
                                         <div t-att-id="'dn-edu-info_%s' %line.id" class="hide" style="font-family: futura-pt-medium;">
                                             <b>For training</b><br/>
                                             This product is sold as an educational product. Only for personal use.
@@ -432,7 +432,7 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                                  <t t-set="product_country_warning" t-value="line.check_product_lang()"/>
                                  <t t-if="product_country_warning" >
                                     <div class="text-center">
-                                        <i class="fa fa-exclamation-triangle" rel="popover" data-placement="bottom" t-att-data-popover-content="'#dn-lang-info_%s' %line.id" onclick="show_popover($(this));"></i>
+                                        <i class="fa fa-exclamation-triangle" rel="popover" data-placement="bottom" style="color: darkred" t-att-data-popover-content="'#dn-lang-info_%s' %line.id" onclick="show_popover($(this));"></i>
                                         <div t-att-id="'dn-lang-info_%s' %line.id" class="hide" style="font-family: futura-pt-medium;">
                                             <b>Check language</b><br/>
                                             <t t-esc="product_country_warning"/>

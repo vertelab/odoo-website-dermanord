@@ -820,7 +820,7 @@ class Website(models.Model):
         env = api.Environment(cr, uid, context)
         sale_order_obj = env['sale.order']
         sale_order_id = request.session.get('sale_order_id')
-
+        
         #~ if sale_order_id: # Check if order has been tampered on backoffice
             #~ sale_order = sale_order_obj.sudo().browse(sale_order_id)
             #~ if sale_order and sale_order.order_line.filtered(lambda l: l.state not in ['draft']):
