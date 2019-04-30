@@ -1,6 +1,17 @@
 ﻿/*=============================================================
                     Webshop Dermanord
  ============================================================ */
+
+input.js_quantity::-webkit-inner-spin-button, 
+input.js_quantity::-webkit-outer-spin-button { 
+	-webkit-appearance: none; 
+	margin: 0; 
+}
+
+input.js_quantity {
+    -moz-appearance:textfield;
+}
+
 body {}
 
 #view_switcher {

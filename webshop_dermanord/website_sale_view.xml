@@ -330,8 +330,12 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
 
             <xpath expr="//div[@class='input-group oe_website_spinner']" position="after">
                 <div t-if="line.event_id" class="input-group oe_website_spinner">
-                    <input type="text" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty)" disabled="disabled"/>
+                    <input type="number" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty)" disabled="disabled"/>
                 </div>
+            </xpath>
+            
+            <xpath expr="//input[@t-att-value='int(line.product_uom_qty)']" position="attributes">
+				<attribute name="type">number</attribute>
             </xpath>
 
             <xpath expr="//th[@width='100']" position="attributes">
@@ -475,9 +479,9 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                                             <i class="fa fa-minus text-primary"/>
                                         </a>
                                     </span>
-                                    <input t-if="not line.event_id" type="text" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-data-edu-purchase="int(line.product_id.is_edu_purchase())" t-att-value="int(line.product_uom_qty)" t-att="{'disabled': 'disabled'} if line.event_id else {}"/>
+                                    <input t-if="not line.event_id" type="number" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-data-edu-purchase="int(line.product_id.is_edu_purchase())" t-att-value="int(line.product_uom_qty)" t-att="{'disabled': 'disabled'} if line.event_id else {}"/>
                                     <t t-if="line.event_id">
-                                        <input type="text" style="max-width: 127px;" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty)" disabled="disabled"/>
+                                        <input type="number" style="max-width: 127px;" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty)" disabled="disabled"/>
                                     </t>
                                     <span t-if="not line.event_id" class="input-group-addon">
                                         <a t-attf-href="#" class="mb8 float_left js_add_cart_json" data-no-instant="">
