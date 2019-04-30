@@ -193,7 +193,7 @@ $(document).ready(function(){
                 }
             });
             if (input_checked_count != 0) {
-                $h4.append('<span class="filter_match">' + input_checked_count + '</span>');
+                $h4.find("span").append('<span class="filter_match">' + input_checked_count + '</span>');
                 $submenu_div.addClass("in");
             }
         });
