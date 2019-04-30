@@ -377,9 +377,9 @@ class product_public_category(models.Model):
                     parent_categ_bg = 'background-color: %s; border: 1px solid #ddd; %s' %(category.bg_hex or '#fff', '' if last else 'border-bottom: none;')
                     parent_categ_text = 'color: %s;' %category.text_hex
                 return u"""<div class="panel-heading {category_heading_level}" style="{parent_categ_bg}">
-    <h4 class="panel-title parent_category_panel_title">
-        <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox" data-category="{desktop_category}" data-parent_category="{desktop_parent_category}" {category_checked}/>
-        <span class="{category_title_level}" style="cursor: pointer; {parent_categ_text}">
+    <h4 class="panel-title parent_category_panel_title container">
+        <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox {category_heading_parents_col}" data-category="{desktop_category}" data-parent_category="{desktop_parent_category}" {category_checked}/>
+        <span class="{category_title_level}" style="padding-left: 3px; cursor: pointer; {parent_categ_text}">
             {desktop_category_name}
         </span>
         {desktop_category_collapse}
@@ -389,14 +389,15 @@ class product_public_category(models.Model):
     parent_categ_bg = parent_categ_bg,
     parent_categ_text = parent_categ_text,
     category_heading_level = 'category_heading_parents' if parent_categ else 'category_heading_children',
+    category_heading_parents_col = 'col-md-1 col-sm-1' if parent_categ else '',
     category_name = 'category_%s' %category.id,
     category_value = '%s' %category.id,
     desktop_category = '%s_category_%s' %('mobile' if mobile else 'desktop', category.id),
     desktop_parent_category = get_last_parent_id(category),
     category_checked = 'checked="checked"' if category.id in category_checked else '',
-    category_title_level = 'category_parents_style onclick_category' if parent_categ else 'category_children_style onclick_category',
+    category_title_level = 'category_parents_style onclick_category col-md-10 col-sm-10' if parent_categ else 'category_children_style onclick_category',
     desktop_category_name = category.name,
-    desktop_category_collapse = ('<a data-toggle="collapse" href="#%s_category_%s" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a>' %('mobile' if mobile else 'desktop', category.id)) if len(get_child_categs(category)) > 0 else '',
+    desktop_category_collapse = ('<a data-toggle="collapse" href="#%s_category_%s" class="pull-right %s" style="%s"><i class="desktop_angle fa fa-angle-down"></i></a>' %('mobile' if mobile else 'desktop', category.id, 'col-md-1 col-sm-1' if parent_categ else '', 'padding:0px;' if parent_categ else 'padding: 5px 0px 0px 0px;')) if len(get_child_categs(category)) > 0 else '',
     desktop_category_filter_match = ''
 )
             else:
@@ -476,7 +477,7 @@ class product_public_category(models.Model):
             chosen_facet = request.session.get('form_values').get('facet_%s_%s' %(facet_value.facet_id.id, facet_value.id), False)
             if chosen_facet and chosen_facet == str(facet_value.id):
                 checked = 'checked="checked"'
-            return '<div class="panel-heading" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox" name="facet_%s_%s" value="%s" %s/><span class="onrs_style" style="cursor: pointer; margin-left: 4px;" onclick="onclick_submit($(this));">%s</span></h4></div>' %('' if last else 'border-bottom: none;', facet_value.facet_id.id, facet_value.id, facet_value.id, checked, facet_value.name)
+            return '<div class="panel-heading" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title container"><input type="checkbox" class="facet_heading_checkbox col-md-1 col-sm-1" name="facet_%s_%s" value="%s" %s/><span class="onrs_style col-md-11 col-sm-11" style="padding-left: 3px; cursor: pointer;" onclick="onclick_submit($(this));">%s</span></h4></div>' %('' if last else 'border-bottom: none;', facet_value.facet_id.id, facet_value.id, facet_value.id, checked, facet_value.name)
         if af:
             spec_vals = spec_facet_values
         else:
