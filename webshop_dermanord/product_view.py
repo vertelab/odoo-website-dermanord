@@ -657,26 +657,6 @@ class product_product(models.Model):
         ## https://developers.google.com/search/docs/data-types/product
         ## https://schema.org/
         ## J-son code for product placement in google-index.
-        # ~ def product_json_images(variant, partner):
-            # ~ product_images = variant.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
-            # ~ if len(product_images) > 0:
-                # ~ return "https://mariaakerberg.com/imagefield/ir.attachment/datas/%s/ref/website_sale_product_gallery.img_product_detail/image/large.jpeg" % variant.id
-
-            # ~ json_images = ''
-            # ~ if len(product_images) > 0:
-                # ~ json_images += json_images + "https://mariaakerberg.com/imagefield/ir.attachment/datas/%s/ref/website_sale_product_gallery.img_product_thumbnail/image/thumbnail.jpeg " % product_images.id
-                # ~ json_images += json_images + "https://mariaakerberg.com/imagefield/ir.attachment/datas/%s/ref/website_sale_product_gallery.img_product_detail/image/large.jpeg" % product_images.id
-            # ~ return json_images
-
-
-            # ~ if len(product_images) > 0:
-                # ~ for idx, image in enumerate(product_images):
-                    # ~ product_images_html += '<div id="image_%s_%s" class="tab-pane fade%s">%s%s<img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' %(variant.id, image.id, ' active in' if idx == 0 else '', offer_wrapper, ribbon_wrapper, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_detail'))
-            # ~ else:
-                # ~ product_images_html += '<div id="image_%s" class="tab-pane fade active in">%s%s<img class="img img-responsive product_detail_img" style="margin: auto; width: 500px; height: 500px;" src="/web/static/src/img/placeholder.png"/></div>' %(variant.id, offer_wrapper, ribbon_wrapper)
-                # ~ product_images_nav_html = '<li class="active"><a data-toggle="tab" href="#image_%s"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></a></li>' %variant.id
-
-
         def product_json_desc(variant, product, pricelist):
             product_images = variant.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
             jsonPageData = u"""<script type="application/ld+json">%s</script>""" % json.dumps(
@@ -685,8 +665,8 @@ class product_product(models.Model):
             "@type": "Product",
             "name": product.name,
             "image": [
-                "https://mariaakerberg.com/imagefield/ir.attachment/datas/%s/ref/website_sale_product_gallery.img_product_thumbnail/image/thumb.jpeg" % product_images[0].id ,
-                "https://mariaakerberg.com/imagefield/ir.attachment/datas/%s/ref/website_sale_product_gallery.img_product_detail/image/large.jpeg" % product_images[0].id
+                self.env['website'].imagefield_hash('ir.attachment', 'datas', product_images[0].id, 'website_sale_product_gallery.img_product_thumbnail') ,
+                self.env['website'].imagefield_hash('ir.attachment', 'datas', product_images[0].id, 'website_sale_product_gallery.img_product_detail')
                 ],
             "description": product.description,
             "sku": product.default_code,
@@ -708,7 +688,7 @@ class product_product(models.Model):
                 }
             })
             # ~ _logger.warn(jsonPageData)
-            # 2019-03-08 replace curly braces in two step: 1. to escape curly braces. 2. to parse code using curly braces.
+            # 2019-03-08 Replace curly braces in two step: 1. To escape curly braces. 2. To parse code using curly braces.
             return jsonPageData.replace('{', '{{').replace('}', '}}').replace(u'$LEFT_MASVINGE$', u'{').replace(u'$RIGHT_MASVINGE$', u'}')
             
         def html_product_detail_desc( variant, partner, pricelist):

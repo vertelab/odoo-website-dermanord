@@ -27,6 +27,7 @@ from openerp import http
 from openerp.http import request
 from openerp.addons.website.controllers.main import Website
 from openerp.addons.website_memcached import memcached
+from openerp.addons.website.models.website import slug
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -52,9 +53,9 @@ class Website(Website):
             blog_posts = request.env['blog.post'].sudo(user=request.website.user_id.id).search([('website_published', '=', True)])
             menus = request.env['website.menu'].sudo(user=request.website.user_id.id).search([('url', 'ilike', '/page/')])
             for p in products:
-                yield {'loc': '/dn_shop/variant/%s' %(p.id)}
+                yield {'loc': '/dn_shop/variant/%s' %slug(p)}
             for p in blog_posts:
-                yield {'loc': '/blog/%s/post/%s' %(p.blog_id.id, p.id)}
+                yield {'loc': '/blog/%s/post/%s' %(slug(p.blog_id), slug(p))}
             for m in menus:
                 yield {'loc': m.url}
 
@@ -149,3 +150,83 @@ class Website(Website):
             create_sitemap('/sitemap.xml', content)
 
         return request.make_response(content, [('Content-Type', mimetype)])
+        
+
+    # ~ @http.route('/test.xml', type='http', auth="public", website=True)
+    # ~ def sitemap_xml_index_product(self):
+            # ~ return request.make_response('someting', [('Content-Type', 'application/xml;charset=utf-8')])
+        
+    @http.route('/sitemap_product_SE.xml', type='http', auth="public", website=True)
+    def sitemap_xml_index_product_SE(self):
+        content = """<?xml version="1.0" encoding="UTF-8"?>
+        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">"""
+        for product in request.env['product.template'].sudo(user=request.website.user_id.id).search([('sale_ok', '=', True)]):
+            # ~ _logger.warn('CONTENT : %s', product)
+            content += """<url><loc>{loc}</loc>
+            <lastmod>{lastmod}</lastmod>
+            <changefreq>{changefreq}</changefreq>
+            <priority>{priority}</priority>
+            </url>""".format(loc='%s/sv_SE/dn_shop/product/%s' % (request.env['ir.config_parameter'].get_param('web.base.url'), slug(product)), lastmod='%s' % product.create_date[:10] , changefreq='monthly', priority='0.7')
+     
+        content += "</urlset>"
+        return request.make_response(content, [('Content-Type', 'application/xml;charset=utf-8')])
+
+    @http.route('/sitemap_blog_SE.xml', type='http', auth="public", website=True)
+    def sitemap_xml_index_blog_SE(self):
+        # ~ blog_posts = request.env['blog.post'].sudo(user=request.website.user_id.id).search([('website_published', '=', True)])
+        content = """<?xml version="1.0" encoding="UTF-8"?>
+        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">"""
+        for blog in request.env['blog.post'].sudo(user=request.website.user_id.id).search([('website_published', '=', True)]):
+            # ~ _logger.warn('CONTENT : %s', content)
+            content += """<url><loc>{loc}</loc>
+            <lastmod>{lastmod}</lastmod>
+            <changefreq>{changefreq}</changefreq>
+            <priority>{priority}</priority>
+            </url>""".format(loc='%s/sv_SE/blog/%s/post/%s' % (request.env['ir.config_parameter'].get_param('web.base.url'), slug(blog.blog_id), slug(blog)), lastmod='%s' % blog.write_date[:10] , changefreq='monthly', priority='0.7')
+
+        content += "</urlset>"
+        
+        # ~ _logger.debug('CONTENT : %s', content)
+        return request.make_response(content, [('Content-Type', 'application/xml;charset=utf-8')])
+
+    @http.route('/sitemap_page_SE.xml', type='http', auth="public", website=True)
+    def sitemap_xml_index_page_SE(self):
+        # ~ menus = request.env['website.menu'].sudo(user=request.website.user_id.id).search([('url', 'ilike', '/page/')])
+        content = """<?xml version="1.0" encoding="UTF-8"?>
+        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">"""
+        for menu in request.env['website.menu'].sudo(user=request.website.user_id.id).search([('url', 'ilike', '/page/')]):
+            # ~ _logger.warn('CONTENT : %s', content)
+            content += """<url><loc>{loc}</loc>
+            <lastmod>{lastmod}</lastmod>
+            <changefreq>{changefreq}</changefreq>
+            <priority>{priority}</priority>
+            </url>""".format(loc='%s/sv_SE/page/%s' % (request.env['ir.config_parameter'].get_param('web.base.url'), slug(name)), lastmod='%s' % menu.write_date[:10] , changefreq='yearly', priority='0.7')
+
+        content += "</urlset>"
+        
+        # ~ _logger.debug('CONTENT : %s', content)
+        return request.make_response(content, [('Content-Type', 'application/xml;charset=utf-8')])
+
+    # ~ @http.route('/sitemap_reseller_SE.xml', type='http', auth="public", website=True)
+    # ~ def sitemap_xml_index_reseller_SE(self):
+        # ~ menus = request.env['website.menu'].sudo(user=request.website.user_id.id).search([('url', 'ilike', '/page/')])
+        # ~ content = """<?xml version="1.0" encoding="UTF-8"?>
+        # ~ <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">"""
+        # ~ for reseller in request.env['res.partner'].sudo().search([('is_reseller', '=', True), ('is_company', '=', True)]):
+            # ~ _logger.warn('CONTENT : %s', content)
+            # ~ content += """<url><loc>{loc}</loc>
+            # ~ <lastmod>{lastmod}</lastmod>
+            # ~ <changefreq>{changefreq}</changefreq>
+            # ~ <priority>{priority}</priority>
+            # ~ </url>""".format(
+                # ~ loc='%s/sv_SE/reseller/%s' % (request.env['ir.config_parameter'].get_param('web.base.url'), reseller.id),
+                # ~ lastmod='%s' % reseller.write_date[:10],
+                # ~ changefreq='yearly',
+                # ~ priority='0.7')
+
+        # ~ content += "</urlset>"
+        
+        # ~ _logger.debug('CONTENT : %s', content)
+        # ~ return request.make_response(content, [('Content-Type', 'application/xml;charset=utf-8')])
+
+
