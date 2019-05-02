@@ -20,6 +20,7 @@
 ##############################################################################
 
 from openerp import models, fields, api, _
+from openerp.exceptions import except_orm, Warning, RedirectWarning
 from openerp import http
 from openerp.http import request
 import urllib
@@ -100,6 +101,24 @@ class res_partner(models.Model):
     def searchable_reseller_cron(self):
         for partner in self.env['res.partner'].search([('is_company', '=', True), ('customer', '=', True)]):
             partner.searchable_reseller()
+
+    @api.model
+    def highest_sales_resellers_cron(self):
+        domain = [('date_order', '>', '%s%s' %(str(int(fields.Datetime.now()[:4])-1), fields.Datetime.now()[4:])), ('date_order', '<=', fields.Datetime.now()), ('partner_id.is_reseller', '=', True), ('partner_id.is_company', '=', True), ('partner_id.is_reseller', '=', True), ('partner_id.has_webshop', '=', True), ('state', '=', 'done')]
+        sos = self.env['sale.order'].search(domain)
+        partners = sos.mapped('partner_id')
+        d = {}
+        for partner in partners:
+            d[partner.id] = sum(self.env['sale.order'].search(domain + [('partner_id', '=', partner.id)]).mapped('amount_total'))
+        sorted_d = sorted(d.items(), key=lambda x: x[1], reverse=True)
+        partner_ids = [p[0] for p in sorted_d]
+        lst = partner_ids[:25] if len(partner_ids) > 25 else partner_ids
+        partner_lst = []
+        for l in lst:
+            p = self.env['res.partner'].browse(l)
+            partner_lst.append([l, p.webshop_category_ids.mapped('id')])
+        self.env['ir.config_parameter'].set_param(key='reseller_dermanord.highest_sales_resellers', value=str(partner_lst))
+
 
 class Main(http.Controller):
 
@@ -203,18 +222,37 @@ class Main(http.Controller):
             if len(resellers) > limit:
                 resellers = resellers[:limit]
             if len(partner_ids) > 0:
-                resellers = partner_obj.sudo().browse(partner_ids).with_context(resellers=resellers.mapped('id')).filtered(lambda r: r.id in r._context.get('resellers'))
-                if len(resellers) == 0:
-                    resellers = partner_obj.sudo().browse(partner_ids)
+                ids = []
+                for id in partner_ids:
+                    if id in resellers.mapped('id'):
+                        ids.append(id)
+                if not ids:
+                    ids = partner_ids
+                else:
+                    for id in partner_ids:
+                        if len(ids) >= limit:
+                            break
+                        if id not in ids:
+                            ids.append(id)
+                resellers = partner_obj.sudo().browse(ids)
+                # ~ resellers = partner_obj.sudo().browse(partner_ids).with_context(resellers=resellers.mapped('id')).filtered(lambda r: r.id in r._context.get('resellers'))
+                # ~ if len(resellers) == 0:
+                    # ~ resellers = partner_obj.sudo().browse(partner_ids)
+                # ~ else:
+                    # ~ new_partner_ids = []
+                    # ~ for p in partner_ids:
+                        # ~ if p not in resellers._ids:
+                            # ~ new_partner_ids.append(p)
+                    # ~ resellers += partner_obj.sudo().browse(new_partner_ids)
         # If there's no reseller found. Redo search with unlimited distance
         if len(resellers) == 0:
             partner_ids = []
             if len(post_codes) > 0:
                 for p in post_codes:
-                    partner_ids += partner_obj.sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain, distance=360, limit=3)
+                    partner_ids += partner_obj.sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain, distance=360, limit=limit)
                 if len(partner_ids) > 0:
-                    if len(partner_ids) > 3:
-                        partner_ids = partner_ids[:3]
+                    if len(partner_ids) > limit:
+                        partner_ids = partner_ids[:limit]
                     resellers = partner_obj.sudo().browse(partner_ids)
         return resellers
 
@@ -225,23 +263,69 @@ class Main(http.Controller):
         if webshop:
             # ~ partner_ids = get_partner_ids(0.5, 5)
             # ~ if len(partner_ids) == 0:
-            partner_ids = get_partner_ids(360, 5)
+            partner_ids = get_partner_ids(360, limit if limit else 5)
         else:
             # ~ partner_ids = get_partner_ids(0.5, 10)
             # ~ if len(partner_ids) == 0:
-            partner_ids = get_partner_ids(360, 10)
+            partner_ids = get_partner_ids(360, limit if limit else 10)
         if len(partner_ids) > 0:
             return partner_obj.sudo().browse(partner_ids)
         else:
             return partner_obj.sudo().browse()
 
+    # remove resellers has not street or street2
+    def resellers_filter(self, resellers):
+        res = []
+        for r in resellers:
+            visit = r.child_ids.filtered(lambda c: c.type == 'visit')
+            if len(visit) > 0:
+                if visit[0].street != '' or visit[0].street2 != '':
+                    res.append(r)
+        return res
+
     @http.route(['/resellers/competence/<model("res.partner.category"):competence>',], type='http', auth="public", website=True)
     def reseller_competence(self, competence, **post):
         partner_obj = request.env['res.partner']
-        context = {'competence': competence}
+        # ~ def search_partner(word):
+            # ~ # Find all matching visit addresses
+            # ~ matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
+            # ~ all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
+            # ~ res = partner_obj.sudo().search([
+                # ~ ('is_company', '=', True),
+                # ~ ('is_reseller', '=', True),
+                # ~ ('child_ids.type', '=', 'visit'),
+                # ~ ('child_ids', 'in', all_visit_ids),
+                # ~ ('child_competence_ids', '=', competence.id),
+                # ~ '|', '|', '|', '|',
+                    # ~ ('child_ids', 'in', matching_visit_ids),
+                    # ~ ('child_category_ids.name', 'ilike', word),
+                    # ~ ('child_competence_ids.name', 'ilike', word),
+                    # ~ ('brand_name', 'ilike', word),
+                    # ~ '&',
+                        # ~ ('name', 'ilike', word),
+                        # ~ ('brand_name', '=', False),
+                    # ~ ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
+            # ~ return res
+
+        def search_partner_name(word):
+            all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
+            return partner_obj.sudo().search([
+                ('is_company', '=', True),
+                ('is_reseller', '=', True),
+                ('child_ids.type', '=', 'visit'),
+                ('child_ids', 'in', all_visit_ids),
+                ('child_competence_ids', '=', competence.id),
+                '|', '|', '|',
+                    ('child_category_ids.name', 'ilike', word),
+                    ('child_competence_ids.name', 'ilike', word),
+                    ('brand_name', 'ilike', word),
+                    '&',
+                        ('name', 'ilike', word),
+                        ('brand_name', '=', False),
+                ], limit=100).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
+
         def search_partner(word):
-            # Find all matching visit addresses
-            matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
+            matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
             all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
             res = partner_obj.sudo().search([
                 ('is_company', '=', True),
@@ -249,67 +333,106 @@ class Main(http.Controller):
                 ('child_ids.type', '=', 'visit'),
                 ('child_ids', 'in', all_visit_ids),
                 ('child_competence_ids', '=', competence.id),
-                '|', '|', '|', '|',
+                '|', '|',
                     ('child_ids', 'in', matching_visit_ids),
                     ('child_category_ids.name', 'ilike', word),
                     ('child_competence_ids.name', 'ilike', word),
-                    ('brand_name', 'ilike', word),
-                    '&',
-                        ('name', 'ilike', word),
-                        ('brand_name', '=', False),
-                    ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
+                ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
             return res
 
         words = post.get('search_resellers')
         if words and words != '':
-            context['resellers'] = self.get_resellers(words, [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit'), ('child_competence_ids', '=', competence.id)], search_partner)
+            domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit'), ('child_competence_ids', '=', competence.id)]
+            resellers = self.get_resellers(words, domain, search_partner_name)
+            if len(resellers) < 100:
+                matched_reseller_ids = resellers.mapped('id')
+                resellers = partner_obj.sudo().browse(list(set(resellers.mapped('id') + self.get_resellers(words, domain + [('id', 'not in', matched_reseller_ids)], search_partner, webshop=False, limit=100-len(resellers)).mapped('id'))))
+            return request.website.render('reseller_dermanord.resellers', {
+                'competence': competence,
+                'search_resellers': words,
+                'resellers': resellers,
+                'placeholder': ''
+            })
         else:
             matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
-            context['resellers'] = partner_obj.sudo().search([
-                ('is_company', '=', True),
-                ('is_reseller', '=', True),
-                ('child_ids', 'in', matching_visit_ids),
-                ('child_competence_ids', '=', competence.id)]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
-        return request.website.render('reseller_dermanord.resellers', context)
+            domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids', 'in', matching_visit_ids), ('child_competence_ids', '=', competence.id)]
+            if request.session.get('geoip') and request.session.get('geoip', {}).get('longitude') and request.session.get('geoip', {}).get('latitude'): # Geo search
+                return request.website.render('reseller_dermanord.resellers', {
+                    'competence': competence,
+                    'search_resellers': '',
+                    'resellers': self.resellers_filter(self.get_resellers_without_keyword(domain, tuple((float(request.session.get('geoip').get('longitude')), float(request.session.get('geoip').get('latitude')))), limit=100)),
+                    'placeholder': _('<i class="fa fa-map-marker"></i> <span style="padding-left: 5px;">My position</span>')
+                })
+        return request.website.render('reseller_dermanord.resellers', {'competence': competence, 'resellers': [], 'placeholder': _('<span>Search...</span>')})
 
     @http.route([
         '/resellers',
-        #~ '/resellers/country/<model("res.country"):country>',
-        #~ '/resellers/city/<string:city>',
-        #~ '/resellers/competence/<model("res.partner.category"):competence>',
         '/reseller/<int:partner>',
     ], type='http', auth="public", website=True)
     def reseller(self, partner=None, country=None, city='', competence=None, **post):
         partner_obj = request.env['res.partner']
-        def search_partner(word):
-            # Find all matching visit addresses
-            matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('city', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
+        # ~ def search_partner_name(word):
+            # ~ # Find all matching visit addresses
+            # ~ matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
+            # ~ all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
+            # ~ # Find (partners that have a matching visit address OR brand name OR child category)
+            # ~ res = partner_obj.sudo().search([
+                # ~ ('is_company', '=', True),
+                # ~ ('is_reseller', '=', True),
+                # ~ ('child_ids.type', '=', 'visit'),
+                # ~ ('child_ids', 'in', all_visit_ids),
+                # ~ '|', '|', '|',
+                    # ~ ('child_ids', 'in', matching_visit_ids),
+                    # ~ ('child_category_ids.name', 'ilike', word),
+                    # ~ ('brand_name', 'ilike', word),
+                    # ~ '&',
+                        # ~ ('name', 'ilike', word),
+                        # ~ ('brand_name', '=', False),
+                    # ~ ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
+            # ~ return res
+
+        def search_partner_name(word):
             all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
-            # Find (partners that have a matching visit address OR brand name OR child category)
+            return partner_obj.sudo().search([
+                ('is_company', '=', True),
+                ('is_reseller', '=', True),
+                ('child_ids.type', '=', 'visit'),
+                ('child_ids', 'in', all_visit_ids),
+                '|', '|',
+                    ('child_category_ids.name', 'ilike', word),
+                    ('brand_name', 'ilike', word),
+                    '&',
+                        ('name', 'ilike', word),
+                        ('brand_name', '=', False),
+                ], limit=100).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
+
+        def search_partner(word):
+            matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('zip', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
+            all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
             res = partner_obj.sudo().search([
                 ('is_company', '=', True),
                 ('is_reseller', '=', True),
                 ('child_ids.type', '=', 'visit'),
                 ('child_ids', 'in', all_visit_ids),
-                '|', '|', '|',
+                '|',
                     ('child_ids', 'in', matching_visit_ids),
-                    ('child_category_ids.name', 'ilike', word),
-                    ('brand_name', 'ilike', word),
-                    '&',
-                        ('name', 'ilike', word),
-                        ('brand_name', '=', False),
-                    ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
+                    ('child_category_ids.name', 'ilike', word)
+                ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
             return res
 
         if not partner:
+            domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')]
             words = post.get('search_resellers')
             if words and words != '':
-                resellers = self.get_resellers(words, [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')], search_partner)
-                return request.website.render('reseller_dermanord.resellers', {'resellers': resellers})
+                resellers = self.get_resellers(words, domain, search_partner_name)
+                if len(resellers) < 100:
+                    matched_reseller_ids = resellers.mapped('id')
+                    resellers = partner_obj.sudo().browse(list(set(resellers.mapped('id') + self.get_resellers(words, domain + [('id', 'not in', matched_reseller_ids)], search_partner, webshop=False, limit=100-len(resellers)).mapped('id'))))
+                return request.website.render('reseller_dermanord.resellers', {'resellers': self.resellers_filter(resellers), 'search_resellers': words, 'placeholder': ''})
             else:
                 # ~ closest_ids = partner_obj.geoip_search('position', request.httprequest.remote_addr, 10)
                 # ~ resellers = partner_obj.sudo().search([('is_reseller', '=', True), ('child_ids.type', '=', 'visit')])
-                return request.website.render('reseller_dermanord.resellers', {'resellers': []})
+                return request.website.render('reseller_dermanord.resellers', {'resellers': [], 'search_resellers': '', 'placeholder': _('<span>Search...</span>')})
         else:
             partner = partner_obj.sudo().search([('id', '=', int(partner)), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')])
             return request.website.render('reseller_dermanord.reseller', {

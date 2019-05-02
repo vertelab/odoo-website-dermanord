@@ -193,7 +193,7 @@ $(document).ready(function(){
                 }
             });
             if (input_checked_count != 0) {
-                $h4.append('<span class="filter_match">' + input_checked_count + '</span>');
+                $h4.find("span").append('<span class="filter_match">' + input_checked_count + '</span>');
                 $submenu_div.addClass("in");
             }
         });
@@ -359,6 +359,19 @@ $(document).ready(function(){
             //~ });
             product_ids.push($product_dom.data("attribute_value_ids"));
             var qty = $product_dom.find('input[name="add_qty"]').val();
+            var $input = $product_dom.find('input[name="add_qty"]');
+
+            // Make sure quantity is not > 5 if it's an educational purchase
+            if ($input.data('edu-purchase') == '1') {
+                if (qty > 5) {
+                    qty = 5;
+                    $input.val(parseInt(qty));
+                }
+            }
+            
+            // TODO: Next row causes type 200 error to be thrown. [product_ids[0]] or product_ids[0] both cause errors.
+            // product_ids[0] throws error on product list page.
+            // [product_ids[0]] throws error on product page.
             openerp.jsonRpc("/shop/get_unit_price", 'call', {'product_ids': product_ids[0], 'add_qty': parseInt(qty)})
             .then(function (data) {
                 var current = $product_dom.data("attribute_value_ids");
@@ -390,6 +403,12 @@ $(document).ready(function(){
                 product_ids.push($(this).find('span[data-product-id]').data('product-id'));
             });
             if (isNaN(value)) value = 0;
+            if ($input.data('edu-purchase') == '1') {
+                if (value > 5) {
+                    value = 5;
+                    $input.val(value);
+                } 
+            }
             $input.data('update_change', true);
             openerp.jsonRpc("/shop/get_unit_price", 'call', {
                 'product_ids': product_ids,
@@ -451,7 +470,7 @@ $(document).ready(function(){
             });
         });
 
-        // hack to add and rome from cart with json
+        // hack to add and remove from cart with json
         $(oe_website_sale).on('click', 'a.js_add_cart_json', function (ev) {
             ev.preventDefault();
             var $link = $(ev.currentTarget);
@@ -532,7 +551,7 @@ $(document).ready(function(){
             return false;
         });
 
-        $('.oe_website_sale .a-submit:not(.dn_list_add_to_cart, #add_to_cart.a-submit), #comment .a-submit').off('click').on('click', function () {
+        $('.oe_website_sale .a-submit:not(.dn_list_add_to_cart, .dn_list_add_to_cart_edu, #add_to_cart.a-submit, #add_to_cart_edu.a-submit), #comment .a-submit').off('click').on('click', function () {
             $(this).closest('form').submit();
         });
 
@@ -838,7 +857,7 @@ $(document).on('click', '.dn_js_options ul[name="style"] a', function (event) {
 // This method called by "add_to_cart" button in both dn_shop and dn_list.
 // Method does a calculation according to the product unit_price * quantity and update the cart total amount.
 // Method does a RPC-call, after response update cart again with current order total amount.
-$(document).on('click', '.dn_list_add_to_cart, #add_to_cart.a-submit', function (event) {
+$(document).on('click', '.dn_list_add_to_cart, .dn_list_add_to_cart_edu, #add_to_cart.a-submit, #add_to_cart_edu.a-submit', function (event) {
     var self = $(this);
     var my_cart_total = $(".my_cart_total");
     my_cart_total.closest("a").css({"pointer-events": "none", "cursor": "default"});
@@ -890,7 +909,7 @@ $(document).on('click', '.dn_list_add_to_cart, #add_to_cart.a-submit', function 
     }).done(function(data){
         if($.isArray(data)){
             self.attr("data-finished", "done");
-            if ($(".dn_list_add_to_cart[data-finished='']").length == 0) {
+            if ($(".dn_list_add_to_cart[data-finished='']").length == 0 || $(".dn_list_add_to_cart_edu[data-finished='']").length == 0) {
                 setCartPriceQuantity(data[0], data[1], data[2]);
                 my_cart_total.closest("a").css({"pointer-events": "", "cursor": ""});
                 my_cart_total.closest("a").attr("id", "cart_updated");

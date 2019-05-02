@@ -377,9 +377,9 @@ class product_public_category(models.Model):
                     parent_categ_bg = 'background-color: %s; border: 1px solid #ddd; %s' %(category.bg_hex or '#fff', '' if last else 'border-bottom: none;')
                     parent_categ_text = 'color: %s;' %category.text_hex
                 return u"""<div class="panel-heading {category_heading_level}" style="{parent_categ_bg}">
-    <h4 class="panel-title parent_category_panel_title">
-        <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox" data-category="{desktop_category}" data-parent_category="{desktop_parent_category}" {category_checked}/>
-        <span class="{category_title_level}" style="cursor: pointer; {parent_categ_text}">
+    <h4 class="panel-title parent_category_panel_title container">
+        <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox {category_heading_parents_col}" data-category="{desktop_category}" data-parent_category="{desktop_parent_category}" {category_checked}/>
+        <span class="{category_title_level}" style="padding-left: 3px; cursor: pointer; {parent_categ_text}">
             {desktop_category_name}
         </span>
         {desktop_category_collapse}
@@ -389,14 +389,15 @@ class product_public_category(models.Model):
     parent_categ_bg = parent_categ_bg,
     parent_categ_text = parent_categ_text,
     category_heading_level = 'category_heading_parents' if parent_categ else 'category_heading_children',
+    category_heading_parents_col = 'col-md-1 col-sm-1' if parent_categ else '',
     category_name = 'category_%s' %category.id,
     category_value = '%s' %category.id,
     desktop_category = '%s_category_%s' %('mobile' if mobile else 'desktop', category.id),
     desktop_parent_category = get_last_parent_id(category),
     category_checked = 'checked="checked"' if category.id in category_checked else '',
-    category_title_level = 'category_parents_style onclick_category' if parent_categ else 'category_children_style onclick_category',
+    category_title_level = 'category_parents_style onclick_category col-md-10 col-sm-10' if parent_categ else 'category_children_style onclick_category',
     desktop_category_name = category.name,
-    desktop_category_collapse = ('<a data-toggle="collapse" href="#%s_category_%s" class="pull-right"><i class="desktop_angle fa fa-angle-down"></i></a>' %('mobile' if mobile else 'desktop', category.id)) if len(get_child_categs(category)) > 0 else '',
+    desktop_category_collapse = ('<a data-toggle="collapse" href="#%s_category_%s" class="pull-right %s" style="%s"><i class="desktop_angle fa fa-angle-down"></i></a>' %('mobile' if mobile else 'desktop', category.id, 'col-md-1 col-sm-1' if parent_categ else '', 'padding:0px;' if parent_categ else 'padding: 5px 0px 0px 0px;')) if len(get_child_categs(category)) > 0 else '',
     desktop_category_filter_match = ''
 )
             else:
@@ -476,7 +477,7 @@ class product_public_category(models.Model):
             chosen_facet = request.session.get('form_values').get('facet_%s_%s' %(facet_value.facet_id.id, facet_value.id), False)
             if chosen_facet and chosen_facet == str(facet_value.id):
                 checked = 'checked="checked"'
-            return '<div class="panel-heading" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title"><input type="checkbox" class="facet_heading_checkbox" name="facet_%s_%s" value="%s" %s/><span class="onrs_style" style="cursor: pointer; margin-left: 4px;" onclick="onclick_submit($(this));">%s</span></h4></div>' %('' if last else 'border-bottom: none;', facet_value.facet_id.id, facet_value.id, facet_value.id, checked, facet_value.name)
+            return '<div class="panel-heading" style="border: 1px solid #ddd; %s background-color: #fff;"><h4 class="panel-title container"><input type="checkbox" class="facet_heading_checkbox col-md-1 col-sm-1" name="facet_%s_%s" value="%s" %s/><span class="onrs_style col-md-11 col-sm-11" style="padding-left: 3px; cursor: pointer;" onclick="onclick_submit($(this));">%s</span></h4></div>' %('' if last else 'border-bottom: none;', facet_value.facet_id.id, facet_value.id, facet_value.id, checked, facet_value.name)
         if af:
             spec_vals = spec_facet_values
         else:
@@ -548,6 +549,7 @@ class sale_order(models.Model):
         """ Add or set product quantity, add_qty can be negative """
         self.ensure_one()
 
+        product = 0
         quantity = 0
         if self.state != 'draft':
             request.session['sale_order_id'] = None
@@ -593,10 +595,14 @@ class sale_order(models.Model):
         elif add_qty != None:
             quantity = line.product_uom_qty + (add_qty or 0)
 
+        # Do not allow more than 5 if educational purchase    
+        if line.product_id.is_edu_purchase() and (quantity > 5):
+            quantity = 5
+
         # Remove zero of negative lines
         if quantity <= 0:
             line.unlink()
-
+            
         elif quantity != line.product_uom_qty:
             line.product_uom_qty = quantity
 
@@ -617,9 +623,25 @@ class sale_order(models.Model):
         return super(sale_order, self).action_button_confirm()
 
 
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+    
+    @api.multi
+    def write(self, values):
+        if 'message_follower_ids' in values:
+            _logger.warn('\n\nmessage_follower_ids: %s\n%s' % (values['message_follower_ids'], ''.join(traceback.format_stack())))
+        return super(SaleOrder, self).write(values)
+
+
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
-
+    
+    def check_product_lang(self):
+        for avi in self.product_id.attribute_value_ids:
+            if avi.attribute_id == self.env.ref("__export__.product_attribute_290"):
+                if avi.color not in self.order_id.partner_shipping_id.country_id and self.order_id.partner_shipping_id.country_id.code.split() or []:
+                    return _("%s appears to not be in your preferred language. Are you sure this is the correct product?")%self.product_id.name
+    
     @api.multi
     def sale_home_confirm_copy(self):
         if self.is_delivery or self.is_min_order_fee:
@@ -751,7 +773,7 @@ class Website(models.Model):
                 append_domain(domain_current, ['|', ('product_tmpl_id.website_style_ids', '=', promo_id), ('website_style_ids_variant', '=', promo_id)])
         for offer_type in ['current_offer']:
             if offer_type in dic:
-                reseller = request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller
+                reseller = request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller or False
                 # TODO: This looks like a lot of browses. Should be possible to shorten it considerably.
                 if model == 'product.template':
                     #get product.template that have variants are in current offer
@@ -799,7 +821,7 @@ class Website(models.Model):
         env = api.Environment(cr, uid, context)
         sale_order_obj = env['sale.order']
         sale_order_id = request.session.get('sale_order_id')
-
+        
         #~ if sale_order_id: # Check if order has been tampered on backoffice
             #~ sale_order = sale_order_obj.sudo().browse(sale_order_id)
             #~ if sale_order and sale_order.order_line.filtered(lambda l: l.state not in ['draft']):
@@ -1297,7 +1319,6 @@ class WebsiteSale(website_sale):
     ], type='http', auth="public", website=True)
     def dn_product_variant(self, variant, category='', search='', **post):
         if not request.env.user:
-            # TODO: Find the real bug that causes this and flatten it to a gooey paste
             return request.redirect(request.httprequest.path)
         product = variant.sudo().product_tmpl_id
         values = {
@@ -1470,15 +1491,10 @@ class WebsiteSale(website_sale):
 
     @http.route([
         '/webshop',
-        '/webshop/page/<int:page>',
         '/webshop/category/<model("product.public.category"):category>',
-        '/webshop/category/<model("product.public.category"):category>/page/<int:page>',
         ], type='http', auth="public", website=True)
-    def webshop(self, page=0, category=None, search='', **post):
+    def webshop(self, category=None, search='', **post):
         # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\nform_values: %s\n' % (request.session.get('current_order'), request.session.get('current_domain'), request.session.get('form_values')))
-        if not request.env.user:
-            # TODO: Find the real bug that causes this and flatten it to a gooey paste
-            return request.redirect(request.httprequest.path)
         if not request.env.user.webshop_type or request.env.user.webshop_type not in ['dn_shop', 'dn_list']: # first time use filter
             if request.env.user.commercial_partner_id.property_product_pricelist.for_reseller: # reseller
                 request.env.user.webshop_type = 'dn_list'
@@ -1509,12 +1525,12 @@ class WebsiteSale(website_sale):
             # ~ if not found_public_categ_ids:
                 # ~ request.session['current_domain'].append(tuple((domain_field, 'in', public_categ_ids))) # add categories in the first time
 
-        # ~ if request.env.user.webshop_type == 'dn_list':
-            # ~ request.website.dn_shop_set_session('product.product', post, '/webshop')
+        if request.env.user.webshop_type == 'dn_list':
+            request.website.dn_shop_set_session('product.product', post, '/webshop')
             # ~ if category:
                 # ~ update_current_domain('product.product')
-        # ~ else:
-            # ~ request.website.dn_shop_set_session('product.template', post, '/webshop')
+        else:
+            request.website.dn_shop_set_session('product.template', post, '/webshop')
             # ~ if category:
                 # ~ update_current_domain('product.template')
 
@@ -1610,7 +1626,6 @@ class WebsiteSale(website_sale):
 
     @http.route(['/shop/cart/update'], type='json', auth="public", website=True)
     def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
-
         start = timer()
         locked = True
         while not self.dn_cart_lock.acquire(False):

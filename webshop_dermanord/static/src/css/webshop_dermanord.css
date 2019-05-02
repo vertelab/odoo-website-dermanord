@@ -1,6 +1,17 @@
 ﻿/*=============================================================
                     Webshop Dermanord
  ============================================================ */
+
+input.js_quantity::-webkit-inner-spin-button, 
+input.js_quantity::-webkit-outer-spin-button { 
+	-webkit-appearance: none; 
+	margin: 0; 
+}
+
+input.js_quantity {
+    -moz-appearance:textfield;
+}
+
 body {}
 
 #view_switcher {
@@ -529,6 +540,7 @@ select.dn_selection_dropdown + i.fa {
 #desktop_product_navigator_filter h4, .category_parents_style, #mobile_product_navigator_filter h4, .facet_parents_style, .onrs_style {
     font-family: futura-pt-medium, sans-serif !important;
     font-size: 16px !important;
+    padding: 0px;
 }
 
 .category_children_style.onclick_category {
@@ -553,7 +565,11 @@ select.dn_selection_dropdown + i.fa {
 }
 
 #desktop_product_navigator_filter input[type="checkbox"], #mobile_product_navigator_filter input[type="checkbox"] {
-    margin-right: 10px;
+    margin-right: 0px;
+}
+
+.heading_checkbox, facet_heading_checkbox {
+	padding: 0px;
 }
 
 .desktop_angle {

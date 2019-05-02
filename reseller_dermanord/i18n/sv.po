@@ -362,3 +362,16 @@ msgstr "Min position"
 #: view:website:reseller_dermanord.resellers_search_cosumer
 msgid "Has webshop"
 msgstr "Har webbutik"
+
+#. module: reseller_dermanord
+#: code:addons/reseller_dermanord/main.py:303
+#, python-format
+msgid "<i class=\"fa fa-map-marker\"></i> <span style=\"padding-left: 5px;\">My position</span>"
+msgstr "<i class=\"fa fa-map-marker\"></i> <span style=\"padding-left: 5px;\">Min position</span>"
+
+#. module: reseller_dermanord
+#: code:addons/reseller_dermanord/main.py:305
+#: code:addons/reseller_dermanord/main.py:344
+#, python-format
+msgid "<span>Search...</span>"
+msgstr "<span>Sök...</span>"
