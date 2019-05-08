@@ -33,7 +33,6 @@ A sitemap for mariaakerberg.com
     'website': 'http://www.vertel.se',
     'depends': ['website_memcached'],
     'data': [
-        'website_view.xml',
     ],
     'qweb': [],
     'application': False,
