@@ -262,13 +262,6 @@ class product_template(models.Model):
         # ~ domain = d2
         user = self.env.ref('base.public_user')
 
-        _logger.warn('Anders user --------> %s user %s %s %s ' % (self.env.ref('base.public_user'),self.env.user,self._uid,user))
-
-
-
-        _logger.warn('Anders domain --------> %s limit %s order %s offset %s' % (domain, limit, order,offset))
-        _logger.warn('Anders search --------> %s ' % (len(self.env['product.template'].search(domain,limit=limit, order=order,offset=offset))))
-        # ~ _logger.warn('get_thumbnail_default_variant search --------> %s ' % (self.env['product.template'].sudo(self.env.ref('base.public_user')).search_read(domain,['name'])))
         # ~ domain += [('website_published','=',True),('event_ok','=',False),('sale_ok','=',True),('access_group_ids','in',[286])]
 
         # ~ for product in self.env['product.template'].sudo().search_read([('website_published','=',True),('event_ok','=',False),('sale_ok','=',True),('access_group_ids','in',[286])],['name']):
@@ -343,7 +336,7 @@ class product_template(models.Model):
 
         user = self.env.ref('base.public_user')
 
-        _logger.warn('Anders get_thunmb2 --------> %s user %s %s %s ' % (self.env.ref('base.public_user'),self.env.user,self._uid,user))
+        _logger.warn('Notice get_thunmb2 --------> %s user %s %s %s ' % (self.env.ref('base.public_user'),self.env.user,self._uid,user))
 
         for product in product_ids:
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
@@ -705,20 +698,20 @@ class product_product(models.Model):
             {
             "@context": "https://schema.org/",
             "@type": "Product",
-            "name": product.name,
+            "name": variant.name,
             "image": [
                 self.env['website'].imagefield_hash('ir.attachment', 'datas', product_images[0].id, 'website_sale_product_gallery.img_product_thumbnail') ,
                 self.env['website'].imagefield_hash('ir.attachment', 'datas', product_images[0].id, 'website_sale_product_gallery.img_product_detail')
                 ],
-            "description": product.description,
-            "sku": product.default_code,
+            "description": variant.public_desc,
+            "sku": variant.default_code,
             "brand": {
                 "@type": "Brand",
                 "name": "Maria &Aring;kerberg"
             },
             "offers": {
                 "@type": "Offer",
-                "url": "https://mariaakerberg.com/dn_shop/variant/%s" % product.id,
+                "url": "https://mariaakerberg.com/dn_shop/variant/%s" % variant.id,
                 "priceCurrency": "SEK",
                 "price": variant.sudo().pricelist_chart_ids.with_context(pricelist = pricelist).filtered(lambda p: p.pricelist_chart_id.pricelist == p._context.get('pricelist')).price,
                 "itemCondition": "https://schema.org/UsedCondition",
@@ -730,6 +723,7 @@ class product_product(models.Model):
                 }
             })
             # ~ _logger.warn(jsonPageData)
+            # ~ https://schema.org/Product
             # 2019-03-08 Replace curly braces in two step: 1. To escape curly braces. 2. To parse code using curly braces.
             return jsonPageData.replace('{', '{{').replace('}', '}}').replace(u'$LEFT_MASVINGE$', u'{').replace(u'$RIGHT_MASVINGE$', u'}')
 
