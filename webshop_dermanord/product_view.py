@@ -694,15 +694,16 @@ class product_product(models.Model):
         ## J-son code for product placement in google-index.
         def product_json_desc(variant, product, pricelist):
             product_images = variant.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
+            images = []
+            for i in product_images:
+                images.append(self.env['website'].imagefield_hash('ir.attachment', 'datas', i.id, 'website_sale_product_gallery.img_product_thumbnail'))
+                images.append(self.env['website'].imagefield_hash('ir.attachment', 'datas', i.id, 'website_sale_product_gallery.img_product_detail'))
             jsonPageData = u"""<script type="application/ld+json">%s</script>""" % json.dumps(
             {
             "@context": "https://schema.org/",
             "@type": "Product",
             "name": variant.name,
-            "image": [
-                self.env['website'].imagefield_hash('ir.attachment', 'datas', product_images[0].id, 'website_sale_product_gallery.img_product_thumbnail') ,
-                self.env['website'].imagefield_hash('ir.attachment', 'datas', product_images[0].id, 'website_sale_product_gallery.img_product_detail')
-                ],
+            "image": images,
             "description": variant.public_desc,
             "sku": variant.default_code,
             "brand": {
