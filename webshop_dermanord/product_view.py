@@ -405,21 +405,53 @@ class product_product(models.Model):
     def is_edu_purchase(self):
         """ Checks if a product should be available as an educational purchase for the active user. Returns True/False """
         partner = request.env.user.partner_id.commercial_partner_id
-        variant_groups = self.access_group_ids | self.product_tmpl_id.access_group_ids
-
-        if (variant_groups & partner.access_group_ids):
-            return False
+        variant_groups = self.access_group_ids or self.product_tmpl_id.access_group_ids
+        
+        sk  = self.env.ref('webshop_dermanord.group_dn_sk')     # id: 286
+        af  = self.env.ref('webshop_dermanord.group_dn_af')     # id: 283
+        spa = self.env.ref('webshop_dermanord.group_dn_spa')    # id: 285
+        ht  = self.env.ref('webshop_dermanord.group_dn_ht')     # id: 284
+        
+        if sk in partner.access_group_ids:
+            # partner är slutkonsument
+            ret = False  
+        elif (len(partner.access_group_ids) == 1 and af in partner.access_group_ids) and (sk in variant_groups and af not in variant_groups):
+            # partner är _endast_ återförsäljare
+            # produkt är slutkonsument och _inte_ återförsäljare 
+            ret = True
+        elif ((af | spa <= partner.access_group_ids) and (ht not in partner.access_group_ids)) and ((sk | ht <= variant_groups) and (af not in variant_groups and spa not in variant_groups)):
+            # partner är återförsäljare, spa-terapeut och _inte_ hudterapeut
+            # produkt är slutkonsument, hudterapeut och _inte_ (spa_terapeut eller återförsäljare )
+            ret = True
         else:
-            # TODO: Implement check that an edu purchase REALLY is allowed?
-            return True
+            # andra kombinationer är ej eduköp
+            ret = False
+        
+        # ~ _logger.warn('\n\n\nPartner: %s\nVariant: %s\nProdukt: %s\nReturn: %s\n\n' % (partner.access_group_ids, self.access_group_ids, self.product_tmpl_id.access_group_ids, ret))
+        return ret
 
     @api.multi
-    def get_add_to_cart_buttons(self, is_edu_purchase=False):
+    def get_add_to_cart_buttons(self):
         """ Returns a dict with the relevant kinds of 'add to cart' buttons """
         res = {}
+        is_edu_purchase = self.is_edu_purchase()
+        
+        partner = request.env.user.partner_id.commercial_partner_id
+        variant_groups = self.access_group_ids or self.product_tmpl_id.access_group_ids
+        
+        sk  = self.env.ref('webshop_dermanord.group_dn_sk')     # id: 286
+        af  = self.env.ref('webshop_dermanord.group_dn_af')     # id: 283
+        spa = self.env.ref('webshop_dermanord.group_dn_spa')    # id: 285
+        ht  = self.env.ref('webshop_dermanord.group_dn_ht')     # id: 284
+        
+        # TODO: FORTSÄTT HÄR!!!!
         
         # If user is NOT logged in
-        if self.env.user == self.env.ref('base.public_user'):
+        if (self.env.user == self.env.ref('base.public_user')) or\
+            ((len(partner.access_group_ids) == 1 and af in partner.access_group_ids) and (af not in variant_groups and sk not in variant_groups)) or\
+            ((af | spa <= partner.access_group_ids) and (af not in variant_groups and sk not in variant_groups and spa not in variant_groups)):
+            # partner är af, variant har _inte_ (af eller sk)
+            # partner är af och spa, variant har _inte_ (af, spa eller sk) 
             res['list_view'] = u"""""" # There is never a reseller button on the list view. 
             res['product_view'] = u"""<button type="button" class="add_to_cart_consumer dn_btn dn_primary mt8 text-center {buy_button_hidden}" data-toggle="modal" data-target="#reseller_search">{text}</button>""".format(
                 buy_button_hidden = '',
@@ -598,7 +630,7 @@ class product_product(models.Model):
                         product_ribbon_offer  = True
                 product_obj = self.env['product.product'].browse(product['id'])
                 is_edu_purchase = product_obj.is_edu_purchase()
-                buttons = product_obj.get_add_to_cart_buttons(is_edu_purchase)
+                buttons = product_obj.get_add_to_cart_buttons()
                 page = u"""<tr class="tr_lst ">
                                 <td class="td_lst">
                                     <div class="lst-ribbon-wrapper">{product_ribbon_offer}{product_ribbon_promo}{product_ribbon_limited}</div>
@@ -909,7 +941,7 @@ class product_product(models.Model):
                 attr_sel = ''
                 product_variant = self.browse(variant_id)
                 is_edu_purchase = variant.is_edu_purchase()
-                buttons = product_variant.get_add_to_cart_buttons(is_edu_purchase)
+                buttons = product_variant.get_add_to_cart_buttons()
                 for attribute in variant.attribute_value_ids.sorted(key=lambda a: a.id):
                     attr_sel += '<li><strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">%s</strong><select class="form-control js_variant_change attr_sel" name="attribute-%s-%s">' %(attribute.attribute_id.name, product.id, attribute.attribute_id.id)
                     for att in variants.mapped('attribute_value_ids').with_context(attribute_id=attribute.attribute_id.id).filtered(lambda a: a.attribute_id.id == a.env.context.get('attribute_id')):
