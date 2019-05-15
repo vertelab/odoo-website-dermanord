@@ -1085,6 +1085,7 @@ class WebsiteSale(website_sale):
                     ('type', "=", 'invoice'),
                     ('type', "=", 'default')
             ]) | partner.commercial_partner_id
+            _logger.warn('\n\ninvoicings: %s\n' % invoicings)
             shippings = request.env['res.partner'].sudo().with_context(show_address=True).search([
                 ("parent_id", "=", partner.commercial_partner_id.id),
                 '|',
@@ -1117,6 +1118,7 @@ class WebsiteSale(website_sale):
             res['checkout']['invoicing_id'] = invoicing_id
             res['checkout']['shipping_id'] = shipping_id
         # ~ _logger.warn('checkout_values: %s' % (timer() - start))
+        _logger.warn('\n\nres["invoicings"]: %s\n' % res['invoicings'])
         return res
 
     def checkout_form_save(self, checkout):
@@ -1320,9 +1322,9 @@ class WebsiteSale(website_sale):
     def dn_product_variant(self, variant, category='', search='', **post):
         if not request.env.user:
             return request.redirect(request.httprequest.path)
-        product = variant.sudo().product_tmpl_id
+        product = variant.sudo().product_tmpl_id #5509 variant: 5575
         values = {
-            'url': request.session.get('url'),
+            'url': request.session.get('url'), #None
             'product': variant,
             'detail': request.env['product.product'].get_product_detail(product, variant.id),
             'additional_title': variant.name.upper(),

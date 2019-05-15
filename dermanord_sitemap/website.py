@@ -52,39 +52,82 @@ class Website(Website):
             products = request.env['product.product'].sudo(user=request.website.user_id.id).search([('sale_ok', '=', True)])
             blog_posts = request.env['blog.post'].sudo(user=request.website.user_id.id).search([('website_published', '=', True)])
             menus = request.env['website.menu'].sudo(user=request.website.user_id.id).search([('url', 'ilike', '/page/')])
+            translations = {'en_US': 'en'}
             for p in products:
-                yield {'loc': '/dn_shop/variant/%s' %slug(p)}
+				# ~ EXAMPLE PRODUCT:
+				# ~ https://mariaakerberg.com/sv_SE/dn_shop/product/24-7-plus-set-8781
+				# ~ IN GOOGLE, ABOUT LANGUAGES:
+				# ~ https://support.google.com/webmasters/answer/189077?hl=en
+                res = {
+					'loc': '/sv_SE/dn_shop/product/%s' %slug(p.with_context(lang='sv_SE')),
+					'alternates': {}
+				}
+                for lang, google_lang in translations.iteritems():
+					res['alternates'][google_lang] = '/%s/dn_shop/product/%s' %(lang, slug(p.with_context(lang=lang)))
+                yield res
+                
             for p in blog_posts:
-                yield {'loc': '/blog/%s/post/%s' %(slug(p.blog_id), slug(p))}
+				# ~ p = p.with_context(lang='en_US')
+                # ~ yield {'loc': '/blog/%s/post/%s' %(slug(p.blog_id), slug(p))}
+                
+                res = {
+					'loc': '/sv_SE/blog/%s/post/%s' %(slug(p.blog_id), slug(p.with_context(lang='sv_SE')) ),
+					'alternates': {}
+				}
+                for lang, google_lang in translations.iteritems():
+					res['alternates'][google_lang] = '/%s/blog/post/%s' %(lang, slug(p.with_context(lang=lang)))
+                yield res
+                
             for m in menus:
-                yield {'loc': m.url}
+                # ~ yield {'loc': m.url}
+                res = {
+					# ~ 'loc': '/sv_SE/page/%s' %(slug(m.with_context(lang='en_US')) ),
+					'loc': '/sv_SE%s' %(m.url),
+					'alternates': {}
+				}
+                for lang, google_lang in translations.iteritems():
+					res['alternates'][google_lang] = '/%s%s' %(lang, m.url)
+                yield res
 
         locs = get_locs()
+        # ~ _logger.warn('------------> sitemap %s ' % [l for l in locs])
+        content = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+"""
+        for locs in get_locs():
+            content += """<url>
+    <loc>{host}{loc}</loc>
+    <xhtml:link 
+		   rel="alternate"
+		   hreflang="en"
+		   href="{host}{alternates_en}"/>
+    </url>""".format( host = 'https://mariaakerberg.com', loc = locs['loc'], alternates_en = locs.get('alternates', {'en':''})['en'] )
+			
+			
+        # ~ while True:
+            # ~ values = {
+                # ~ 'locs': islice(locs, 0, LOC_PER_SITEMAP),
+                # ~ 'url_root': router,
+            # ~ }
+            # ~ urls = iuv.render(cr, uid, 'website.sitemap_locs', values, context=context)
+            # ~ if urls.strip():
+                # ~ page = iuv.render(cr, uid, 'website.sitemap_xml', dict(content=urls), context=context)
+                # ~ if not first_page:
+                    # ~ first_page = page
+                # ~ pages += 1
+            # ~ else:
+                # ~ break
+        # ~ if not pages:
+            # ~ return request.not_found()
+        # ~ elif pages == 1:
+            # ~ content = first_page
+        # ~ else:
+            # ~ content = iuv.render(cr, uid, 'website.sitemap_index_xml', dict(
+                # ~ pages=range(1, pages + 1),
+                # ~ url_root=request.httprequest.url_root,
+            # ~ ), context=context)
 
-        while True:
-            values = {
-                'locs': islice(locs, 0, LOC_PER_SITEMAP),
-                'url_root': router,
-            }
-            urls = iuv.render(cr, uid, 'website.sitemap_locs', values, context=context)
-            if urls.strip():
-                page = iuv.render(cr, uid, 'website.sitemap_xml', dict(content=urls), context=context)
-                if not first_page:
-                    first_page = page
-                pages += 1
-            else:
-                break
-        if not pages:
-            return request.not_found()
-        elif pages == 1:
-            content = first_page
-        else:
-            content = iuv.render(cr, uid, 'website.sitemap_index_xml', dict(
-                pages=range(1, pages + 1),
-                url_root=request.httprequest.url_root,
-            ), context=context)
-
-        return request.make_response(content, [('Content-Type', mimetype)])
+        return request.make_response(content + '</urlset>', [('Content-Type', mimetype)])
     
     # 2019-03-06 multiple sitemaps.
     # Blogg, News Room, Press, Page

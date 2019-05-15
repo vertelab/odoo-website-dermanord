@@ -27,34 +27,62 @@
             <field name="category_id" ref="module_category_dn_webshop"/>
         </record>
         
-        <record model="res.groups" id="group_dn_salon">
-            <field name="name">Salong</field>
-            <field name="category_id" ref="module_category_dn_webshop"/>
-        </record>
-        
     </data>
     <data>
+
         <record id="product_private.rule_product_template" model="ir.rule">
             <field name="name">Product Template Groups Restriction</field>
             <field name="model_id" ref="product.model_product_template"/>
             <field name="domain_force">[('website_published', '=', True), ("sale_ok", "=", True), ('product_variant_ids.active', '=', True),
-     '|', '|',
-         ('access_group_ids', '=', False),
-         '!', ('access_group_ids', '=', user.env.ref("webshop_dermanord.group_dn_salon").id),
-         ('access_group_ids', 'in', [g.id for g in user.partner_id.commercial_partner_id.access_group_ids.filtered(lambda group: group == user.env.ref("webshop_dermanord.group_dn_salon"))])]</field>
+    '&amp;',
+        '&amp;',
+            ('access_group_ids', '=', user.env.ref('webshop_dermanord.group_dn_sk').id),
+            '!', ('access_group_ids', 'in', [user.env.ref('webshop_dermanord.group_dn_af').id, user.env.ref('webshop_dermanord.group_dn_ht').id, user.env.ref('webshop_dermanord.group_dn_spa').id]),
+        '&amp;',
+            ('variant_access_group_ids', '=', user.env.ref('webshop_dermanord.group_dn_sk').id),
+            '!', ('variant_access_group_ids', 'in', [user.env.ref('webshop_dermanord.group_dn_af').id, user.env.ref('webshop_dermanord.group_dn_ht').id, user.env.ref('webshop_dermanord.group_dn_spa').id])]</field>
         </record>
 
         <record id="product_private.rule_product_product" model="ir.rule">
+            <field name="name">Product Groups RestrictionPublic</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="domain_force">[('website_published', '=', True), ("sale_ok", "=", True), ('active', '=', True), ('product_tmpl_id.active', '=', True),
+    '&amp;',
+        '!', '&amp;',
+            ('access_group_ids', '=', user.env.ref('webshop_dermanord.group_dn_sk').id),
+            '!', ('access_group_ids', 'in', [user.env.ref('webshop_dermanord.group_dn_af').id, user.env.ref('webshop_dermanord.group_dn_ht').id, user.env.ref('webshop_dermanord.group_dn_spa').id]),
+        '!',  '&amp;',
+            ('access_group_ids', '=', user.env.ref('webshop_dermanord.group_dn_sk').id),
+            '!', ('access_group_ids', 'in', [user.env.ref('webshop_dermanord.group_dn_af').id, user.env.ref('webshop_dermanord.group_dn_ht').id, user.env.ref('webshop_dermanord.group_dn_spa').id])]</field>
+        </record>
+        
+        <record id="rule_product_template_public" model="ir.rule">
+            <field name="name">Product Template Groups Restriction</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="groups" eval="[(6, 0, [ref('group_dn_sk')])]"/>
+            <field name="domain_force">[('website_published', '=', True), ("sale_ok", "=", True), ('product_variant_ids.active', '=', True),
+  '&amp;',
+     '|',
+         ('access_group_ids', '=', False),
+         ('access_group_ids', '=', user.env.ref('webshop_dermanord.group_dn_sk').id),
+     '|',
+         ('variant_access_group_ids', '=', False),
+         ('variant_access_group_ids', '=', user.env.ref('webshop_dermanord.group_dn_sk').id)]</field>
+        </record>
+        
+        <record id="rule_product_product_public" model="ir.rule">
             <field name="name">Product Groups Restriction</field>
             <field name="model_id" ref="product.model_product_product"/>
-            <field name="domain_force">[('website_published', '=', True), ("sale_ok", "=", True), '|', '|',
-    ('access_group_ids', '=', False),
-    '!', ('access_group_ids', '=', user.env.ref("webshop_dermanord.group_dn_salon").id),
-    ('access_group_ids', 'in', [g.id for g in user.partner_id.commercial_partner_id.access_group_ids.filtered(lambda group: group == user.env.ref("webshop_dermanord.group_dn_salon"))]),
-'|', '|',
-    ('product_tmpl_id.access_group_ids', '=', False),
-    '!', ('product_tmpl_id.access_group_ids', '=', user.env.ref("webshop_dermanord.group_dn_salon").id),
-    ('product_tmpl_id.access_group_ids', 'in', [g.id for g in user.partner_id.commercial_partner_id.access_group_ids.filtered(lambda group: group == user.env.ref("webshop_dermanord.group_dn_salon"))])]</field>
+            <field name="groups" eval="[(6, 0, [ref('group_dn_sk')])]"/>
+            <field name="domain_force">[('website_published', '=', True), ("sale_ok", "=", True), ('product_tmpl_id.active', '=', True),
+  '&amp;',
+    '|',
+       ('access_group_ids', '=', False),
+       ('access_group_ids', '=', user.env.ref('webshop_dermanord.group_dn_sk').id]),
+    '|',
+       ('product_tmpl_id.access_group_ids', '=', False),
+       ('product_tmpl_id.access_group_ids', '=', user.env.ref('webshop_dermanord.group_dn_sk').id)]</field>
         </record>
+        
     </data>
 </openerp>
