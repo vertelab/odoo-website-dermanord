@@ -161,7 +161,7 @@
                                         </td>
                                         <td>
                                             <!-- Added infobox for educational purchases in checkout -->
-                                            <t t-if="line.product_id.is_edu_purchase()">
+                                            <t t-if="line.product_id.purchase_type == 'edu'">
                                                 <div class="dn-tooltip text-centered" style="color: darkblue" t-att-id="'dn-edu-info_%s' %line.id"><i class="fa fa-info-circle"></i>
                                                     <div class="dn-tooltiptext">
                                                         <b>For training</b><br/>
@@ -196,7 +196,7 @@
                                     </div>
                                     <!-- Added infobox for educational purchases in checkout -->
                                     <div class="col-xs-1">
-                                        <div t-if="line.product_id.is_edu_purchase()" class="text-center">
+                                        <div t-if="line.product_id.purchase_type == 'edu'" class="text-center">
                                             <i class="fa fa-info-circle" rel="popover" data-placement="bottom" style="color: darkblue" t-att-data-popover-content="'#dn-edu-info_mobile_%s' %line.id" onclick="show_popover($(this));"></i>
                                             <div t-att-id="'dn-edu-info_mobile_%s' %line.id" class="hide" style="font-family: futura-pt-medium;">
                                                 <b>For training</b><br/>
@@ -256,7 +256,7 @@
                                     <input type="checkbox" id='terms_and_conditions' />
                                     I Agree with the
                                     <a href="#" onclick="window.open('/page/terms-and-conditions', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>
-                                    <t t-if="website_sale_order.website_order_line.filtered(lambda l: l.product_id.is_edu_purchase())">
+                                    <t t-if="website_sale_order.website_order_line.filtered(lambda l: l.product_id.purchase_type == 'edu')">
                                         and confirm that <u>I understand that some products in my order are intended only for educational purposes</u>
                                     </t>
                                 </label>
