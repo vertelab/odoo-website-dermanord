@@ -440,7 +440,7 @@ class product_product(models.Model):
                     return 'buy'
                 elif check_groups(sk):
                     # Utb
-                    return 'utb'
+                    return 'edu'
             elif af in partner.access_group_ids:
                 # Återförsäljare
                 #   Köp:    ÅF
@@ -450,7 +450,7 @@ class product_product(models.Model):
                     return 'buy'
                 elif check_groups(sk):
                     # Utb
-                    return 'utb'
+                    return 'edu'
             return 'none'
             
         self.purchase_type = get_purchase_type()
