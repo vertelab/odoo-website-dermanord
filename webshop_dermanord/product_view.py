@@ -503,8 +503,14 @@ class product_product(models.Model):
             self.is_offer_product_consumer = self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False)
     is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
     is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
-    force_out_of_stock = fields.Boolean(string='Out of Stock', help="Forces this product to display as out of stock in the webshop.")
-
+    # ~ force_out_of_stock = fields.Boolean(string='Out of Stock', help="Forces this product to display as out of stock in the webshop.")
+    inventory_availability = fields.Selection([
+        ('never', 'Never sell'),
+        ('always', 'Sell regardless of inventory'),
+        ('threshold', 'Only prevent sales if not enough stock'),
+    ], string='Inventory Availability', help='Adds an inventory availability status on the web product page.', default='threshold')
+    
+    
     @api.model
     def get_thumbnail_variant(self,domain,pricelist,limit=21,offset=0,order=''):
         thumbnail = []
@@ -594,15 +600,18 @@ class product_product(models.Model):
 
     @api.model
     def get_stock_info(self, product_id):
-        product = self.env['product.product'].sudo().search_read([('id', '=', product_id)], ['virtual_available_days', 'type', 'force_out_of_stock', 'is_offer'])
+        # ~ product = self.env['product.product'].sudo().search_read([('id', '=', product_id)], ['virtual_available_days', 'type', 'force_out_of_stock', 'is_offer'])
+        product = self.env['product.product'].sudo().search_read([('id', '=', product_id)], ['virtual_available_days', 'type', 'inventory_availability', 'is_offer'])
         if len(product) > 0:
             product = product[0]
         else:
             product = {}
         state = None
-        if product.get('force_out_of_stock', False):
+        # ~ if product.get('force_out_of_stock', False):
+        if product['inventory_availability'] == 'never':
             state = 'short'
-        elif product.get('type', False) != 'product':
+        # ~ elif product.get('type', False) != 'product':
+        elif product.get('type', False) != 'product' or product['inventory_availability'] == 'always':
             state = 'in'
         elif product.get('is_offer', False):
             # Can produce strange results if there's more than one active BoM. Probably not an issue.
