@@ -596,7 +596,7 @@ class sale_order(models.Model):
             quantity = line.product_uom_qty + (add_qty or 0)
 
         # Do not allow more than 5 if educational purchase    
-        if line.product_id.is_edu_purchase() and (quantity > 5):
+        if (line.product_id.purchase_type == 'edu') and (quantity > 5):
             quantity = 5
 
         # Remove zero of negative lines

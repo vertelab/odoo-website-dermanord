@@ -142,8 +142,6 @@ THUMBNAIL = u"""
 class product_template(models.Model):
     _inherit = 'product.template'
 
-    edu_purchases = fields.Boolean(string='Educational Purchases', help='')
-
     # ~ @api.one
     # ~ @api.depends('product_variant_ids.active')
     # ~ def _compute_product_variant_count(self):
@@ -392,40 +390,98 @@ class product_template(models.Model):
 class product_product(models.Model):
     _inherit = 'product.product'
     
-    edu_purchases = fields.Boolean(string='Educational Purchases', help='')
+    purchase_type = fields.Selection(selection=[('none', 'None'), ('consumer', 'Consumer Purchase'), ('buy', 'Purchase'), ('edu', 'Educational Purchase')], string='Purchase Type', compute='_compute_purchase_type', help="Purchase type for active user.")
+    
+    @api.one
+    def _compute_purchase_type(self):
+        """ Checks what kind of purchase the given product should have for the active user."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        def check_groups(*groups):
+            for group in groups:
+                if group in self.access_group_ids:
+                    return True
+            return False
+        
+        sk  = self.env.ref('webshop_dermanord.group_dn_sk')     # id: 286
+        af  = self.env.ref('webshop_dermanord.group_dn_af')     # id: 283
+        spa = self.env.ref('webshop_dermanord.group_dn_spa')    # id: 285
+        ht  = self.env.ref('webshop_dermanord.group_dn_ht')     # id: 284
+        
+        #                       1   2   3       4   5   6       7   8   9       10  11  12
+        #    Kundtyp            Slutkonsument   Återförsäljare  Spa-terapeut    Hud-terapeut
+        #    -------------------------------------------------------------------------------
+        #    Produktgrupper  |  Se  Utb Köp     Se  Utb Köp     Se  Utb Köp     Se  Utb Köp
+        # A  SK              |  x       x                                              
+        # B  SK, ÅF          |  x       x       x       x       x       x       x       x
+        # C  SK, SPA, HT     |  x       x       x   x           x       x       x       x
+        # D  SK, HT          |  x       x       x   x           x   x           x       x
+        # E  SPA, HT         |                  x               x       x       x       x
+        # F  ÅF              |                  x       x       x       x       x       x
+        # G  SPA             |                  x               x       x       x       x
+        # H  HT              |                  x               x               x       x
+        
+        def get_purchase_type():
+            if sk in partner.access_group_ids:
+                # Slutkonsument
+                return 'consumer'
+            elif ht in partner.access_group_ids:
+                # Hudterapeut
+                #   Köp:    HT or SPA or ÅF
+                #   Utb:
+                if check_groups(ht, spa, af):
+                    # Köp
+                    return 'buy'
+            elif spa in partner.access_group_ids:
+                # SPA-terapeut
+                #   Köp:    SPA or ÅF
+                #   Utb:    SK and not SPA
+                if check_groups(spa, af):
+                    # Köp
+                    return 'buy'
+                elif check_groups(sk):
+                    # Utb
+                    return 'edu'
+            elif af in partner.access_group_ids:
+                # Återförsäljare
+                #   Köp:    ÅF
+                #   Utb:    SK and not ÅF
+                if check_groups(af):
+                    # Köp
+                    return 'buy'
+                elif check_groups(sk):
+                    # Utb
+                    return 'edu'
+            return 'none'
+            
+        self.purchase_type = get_purchase_type()
     
     @api.multi
-    def is_edu_purchase(self):
-        """ Checks if a product should be available as an educational purchase for the active user. Returns True/False """
-        partner = request.env.user.partner_id.commercial_partner_id
-        variant_groups = self.access_group_ids | self.product_tmpl_id.access_group_ids
-
-        if (variant_groups & partner.access_group_ids):
-            return False
-        else:
-            # TODO: Implement check that an edu purchase REALLY is allowed?
-            return True
-
-    @api.multi
-    def get_add_to_cart_buttons(self, is_edu_purchase=False):
+    def get_add_to_cart_buttons(self):
         """ Returns a dict with the relevant kinds of 'add to cart' buttons """
         res = {}
         
-        # If user is NOT logged in
-        if self.env.user == self.env.ref('base.public_user'):
+        if self.purchase_type == 'none':
+            res['list_view'] = u"""""" # There is never a reseller button on the list view. 
+            res['product_view'] = u""""""
+        elif self.purchase_type == 'consumer':
             res['list_view'] = u"""""" # There is never a reseller button on the list view. 
             res['product_view'] = u"""<button type="button" class="add_to_cart_consumer dn_btn dn_primary mt8 text-center {buy_button_hidden}" data-toggle="modal" data-target="#reseller_search">{text}</button>""".format(
                 buy_button_hidden = '',
                 text = _('Find Reseller')
             )
-        # If user is logged in 
-        else:
-            res['list_view'] = u"""<a class="btn btn-default dn_list_add_to_cart{edu_cart}" href="javascript:void(0);"><i class="fa fa-shopping-cart" style="color: #839794;"></i></a>""".format(
-                edu_cart = '_edu' if is_edu_purchase else '',
+        elif self.purchase_type == 'edu':
+            res['list_view'] = u"""<a class="btn btn-default dn_list_add_to_cart_edu" href="javascript:void(0);"><i class="fa fa-shopping-cart" style="color: #839794;"></i></a>""".format(
                 text = _('Add to cart')
             )
-            res['product_view'] = u"""<a id="add_to_cart{edu_cart}" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center {buy_button_hidden}" groups="base.group_user,base.group_portal" disable="1">{text}</a>""".format(
-                edu_cart = '_edu' if is_edu_purchase else '',
+            res['product_view'] = u"""<a id="add_to_cart_edu" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center {buy_button_hidden}" groups="base.group_user,base.group_portal" disable="1">{text}</a>""".format(
+                buy_button_hidden = '{%s_buy_button_hidden}' % self.id,
+                text = _('Add to cart')
+            )
+        elif self.purchase_type == 'buy':
+            res['list_view'] = u"""<a class="btn btn-default dn_list_add_to_cart" href="javascript:void(0);"><i class="fa fa-shopping-cart" style="color: #839794;"></i></a>""".format(
+                text = _('Add to cart')
+            )
+            res['product_view'] = u"""<a id="add_to_cart" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center {buy_button_hidden}" groups="base.group_user,base.group_portal" disable="1">{text}</a>""".format(
                 buy_button_hidden = '{%s_buy_button_hidden}' % self.id,
                 text = _('Add to cart')
             )
@@ -447,8 +503,14 @@ class product_product(models.Model):
             self.is_offer_product_consumer = self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False)
     is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
     is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
-    force_out_of_stock = fields.Boolean(string='Out of Stock', help="Forces this product to display as out of stock in the webshop.")
-
+    # ~ force_out_of_stock = fields.Boolean(string='Out of Stock', help="Forces this product to display as out of stock in the webshop.")
+    inventory_availability = fields.Selection([
+        ('never', 'Never sell'),
+        ('always', 'Sell regardless of inventory'),
+        ('threshold', 'Only prevent sales if not enough stock'),
+    ], string='Inventory Availability', help='Adds an inventory availability status on the web product page.', default='threshold')
+    
+    
     @api.model
     def get_thumbnail_variant(self,domain,pricelist,limit=21,offset=0,order=''):
         thumbnail = []
@@ -538,15 +600,18 @@ class product_product(models.Model):
 
     @api.model
     def get_stock_info(self, product_id):
-        product = self.env['product.product'].sudo().search_read([('id', '=', product_id)], ['virtual_available_days', 'type', 'force_out_of_stock', 'is_offer'])
+        # ~ product = self.env['product.product'].sudo().search_read([('id', '=', product_id)], ['virtual_available_days', 'type', 'force_out_of_stock', 'is_offer'])
+        product = self.env['product.product'].sudo().search_read([('id', '=', product_id)], ['virtual_available_days', 'type', 'inventory_availability', 'is_offer'])
         if len(product) > 0:
             product = product[0]
         else:
             product = {}
         state = None
-        if product.get('force_out_of_stock', False):
+        # ~ if product.get('force_out_of_stock', False):
+        if product['inventory_availability'] == 'never':
             state = 'short'
-        elif product.get('type', False) != 'product':
+        # ~ elif product.get('type', False) != 'product':
+        elif product.get('type', False) != 'product' or product['inventory_availability'] == 'always':
             state = 'in'
         elif product.get('is_offer', False):
             # Can produce strange results if there's more than one active BoM. Probably not an issue.
@@ -590,8 +655,8 @@ class product_product(models.Model):
                     if product['is_offer_product_consumer'] or template['is_offer_product_consumer']:
                         product_ribbon_offer  = True
                 product_obj = self.env['product.product'].browse(product['id'])
-                is_edu_purchase = product_obj.is_edu_purchase()
-                buttons = product_obj.get_add_to_cart_buttons(is_edu_purchase)
+                is_edu_purchase = product_obj.purchase_type == 'edu'
+                buttons = product_obj.get_add_to_cart_buttons()
                 page = u"""<tr class="tr_lst ">
                                 <td class="td_lst">
                                     <div class="lst-ribbon-wrapper">{product_ribbon_offer}{product_ribbon_promo}{product_ribbon_limited}</div>
@@ -903,8 +968,8 @@ class product_product(models.Model):
                 render_start = timer()
                 attr_sel = ''
                 product_variant = self.browse(variant_id)
-                is_edu_purchase = variant.is_edu_purchase()
-                buttons = product_variant.get_add_to_cart_buttons(is_edu_purchase)
+                is_edu_purchase = variant.purchase_type == 'edu'
+                buttons = product_variant.get_add_to_cart_buttons()
                 for attribute in variant.attribute_value_ids.sorted(key=lambda a: a.id):
                     attr_sel += '<li><strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">%s</strong><select class="form-control js_variant_change attr_sel" name="attribute-%s-%s">' %(attribute.attribute_id.name, product.id, attribute.attribute_id.id)
                     for att in variants.mapped('attribute_value_ids').with_context(attribute_id=attribute.attribute_id.id).filtered(lambda a: a.attribute_id.id == a.env.context.get('attribute_id')):
