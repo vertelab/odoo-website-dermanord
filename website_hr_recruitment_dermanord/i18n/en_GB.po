@@ -1,0 +1,44 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * website_hr_recruitment
+# 
+# Translators:
+#. module: website_hr_recruitment_dermanord
+#: view:website:website_hr_recruitment.apply
+msgid "Apply for job"
+msgstr ""
+
+#. module: website_hr_recruitment_dermanord
+#: view:website:website_hr_recruitment.apply
+msgid "Education"
+msgstr ""
+
+#. module: website_hr_recruitment_dermanord
+#: view:website:website_hr_recruitment.apply
+msgid "Period Of Notice"
+msgstr ""
+
+#. module: website_hr_recruitment_dermanord
+#: view:website:website_hr_recruitment.apply
+msgid "Expected Salary"
+msgstr ""
+
+#. module: website_hr_recruitment_dermanord
+#: view:website:website_hr_recruitment.apply
+msgid "Primary school"
+msgstr ""
+
+#. module: website_hr_recruitment_dermanord
+#: view:website:website_hr_recruitment.apply
+msgid "High school"
+msgstr ""
+
+#. module: website_hr_recruitment_dermanord
+#: view:website:website_hr_recruitment.apply
+msgid "University"
+msgstr ""
+
+#. module: website_hr_recruitment_dermanord
+#: view:website:website_hr_recruitment.apply
+msgid "Source of information"
+msgstr ""

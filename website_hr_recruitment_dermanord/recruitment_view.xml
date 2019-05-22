@@ -62,6 +62,7 @@
             <field name="model">hr.job</field>
             <field name="inherit_id" ref="hr.view_hr_job_form"/>
             <field name="arch" type="xml">
+                <group name="employee_data" position="inside"><field name="is_spontaneous"/></group>
                 <div attrs="{'invisible': [('state', '!=', 'recruit')]}" position="replace">
                     <div>
                         <label for="description"/>
@@ -124,7 +125,58 @@
         </template>
         
         <template id="apply" inherit_id="website_hr_recruitment.apply">
-            <xpath expr="//input[@name='ufile']/../.." position="after">
+            <xpath expr="//input[@name='job_id']" position="attributes">
+                <attribute name="t-if">job != request.env.ref('website_hr_recruitment_dermanord.spontaneous_job_application')</attribute>
+            </xpath>
+            <xpath expr="//input[@name='partner_name']/../.." position="before">
+                        <t t-if="job == request.env.ref('website_hr_recruitment_dermanord.spontaneous_job_application')">
+                            <div t-attf-class="form-group #{error.get('job_id') and 'has-error' or ''}">
+                                <label class="col-md-3 col-sm-4 control-label" for="job_id">Apply for job</label>
+                                <div class="col-md-7 col-sm-8">
+                                    <select name="job_id" class="form-control">
+                                        <t t-foreach="request.env['hr.job'].sudo().search([('is_spontaneous','=',True)])" t-as="spontaneous_job">
+                                            <option t-att-value="spontaneous_job.id" t-esc="spontaneous_job.display_name"/>
+                                        </t>
+                                    </select> 
+                                </div>
+                            </div>
+                        </t>
+            </xpath>
+            <xpath expr="//textarea[@name='description']/../.." position="after">
+                            <div t-attf-class="form-group #{error.get('type_id') and 'has-error' or ''}">
+                                <label class="col-md-3 col-sm-4 control-label" for="type_id">Education</label>
+                                <div class="col-md-7 col-sm-8">
+                                    <select name="type_id" class="form-control">
+                                        <t t-foreach="request.env['hr.recruitment.degree'].sudo().search([])" t-as="degree">
+                                            <option t-att-value="degree.id" t-esc="degree.display_name"/>
+                                        </t>
+                                    </select> 
+                                </div>
+                            </div>
+                            <div t-attf-class="form-group #{error.get('availability') and 'has-error' or ''}">
+                                <label class="col-md-3 col-sm-4 control-label" for="availability">Period Of Notice</label>
+                                <div class="col-md-7 col-sm-8">
+                                    <input type="number" t-att-value="default.get('availability')" class="form-control" name="availability" required="True"/>
+                                </div>
+                            </div>
+                            <div t-attf-class="form-group #{error.get('salary_expected') and 'has-error' or ''}">
+                                <label class="col-md-3 col-sm-4 control-label" for="salary_expected">Expected Salary</label>
+                                <div class="col-md-7 col-sm-8">
+                                    <input type="number" t-att-value="default.get('salary_expected')" class="form-control" name="salary_expected" required="True"/>
+                                </div>
+                            </div>
+                            <div t-attf-class="form-group #{error.get('source_id') and 'has-error' or ''}">
+                                <label class="col-md-3 col-sm-4 control-label" for="source_id">Source of information</label>
+                                <div class="col-md-7 col-sm-8">
+                                    <select name="source_id" class="form-control">
+                                        <t t-foreach="request.env['hr.recruitment.source'].sudo().search([])" t-as="source">
+                                            <option t-att-value="source.id" t-esc="source.display_name"/>
+                                        </t>
+                                    </select> 
+                                </div>
+                            </div>
+            </xpath>
+           <xpath expr="//input[@name='ufile']/../.." position="after">
                             <div class="form-group">
                                 <label class="col-md-3 col-sm-4 control-label" for="letter_file">Letter</label>
                                 <div class="col-md-7 col-sm-8">
