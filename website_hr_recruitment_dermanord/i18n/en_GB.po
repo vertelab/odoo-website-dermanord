@@ -15,12 +15,12 @@ msgstr ""
 
 #. module: website_hr_recruitment_dermanord
 #: view:website:website_hr_recruitment.apply
-msgid "Period Of Notice"
+msgid "Period Of Notice (days)"
 msgstr ""
 
 #. module: website_hr_recruitment_dermanord
 #: view:website:website_hr_recruitment.apply
-msgid "Expected Salary"
+msgid "Expected Salary (SEK)"
 msgstr ""
 
 #. module: website_hr_recruitment_dermanord

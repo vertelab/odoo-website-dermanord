@@ -154,13 +154,13 @@
                                 </div>
                             </div>
                             <div t-attf-class="form-group #{error.get('availability') and 'has-error' or ''}">
-                                <label class="col-md-3 col-sm-4 control-label" for="availability">Period Of Notice</label>
+                                <label class="col-md-3 col-sm-4 control-label" for="availability">Period Of Notice (days)</label>
                                 <div class="col-md-7 col-sm-8">
                                     <input type="number" t-att-value="default.get('availability')" class="form-control" name="availability" required="True"/>
                                 </div>
                             </div>
                             <div t-attf-class="form-group #{error.get('salary_expected') and 'has-error' or ''}">
-                                <label class="col-md-3 col-sm-4 control-label" for="salary_expected">Expected Salary</label>
+                                <label class="col-md-3 col-sm-4 control-label" for="salary_expected">Expected Salary (SEK)</label>
                                 <div class="col-md-7 col-sm-8">
                                     <input type="number" t-att-value="default.get('salary_expected')" class="form-control" name="salary_expected" required="True"/>
                                 </div>

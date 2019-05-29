@@ -15,13 +15,13 @@ msgstr "Utbildning"
 
 #. module: website_hr_recruitment_dermanord
 #: view:website:website_hr_recruitment.apply
-msgid "Period Of Notice"
-msgstr "Tillgänglighet"
+msgid "Period Of Notice (days)"
+msgstr "Tillgänglighet (dagar)"
 
 #. module: website_hr_recruitment_dermanord
 #: view:website:website_hr_recruitment.apply
-msgid "Expected Salary"
-msgstr "Förväntad lön"
+msgid "Expected Salary (SEK)"
+msgstr "Förväntad lön (SEK)"
 
 #. module: website_hr_recruitment_dermanord
 #: view:website:website_hr_recruitment.apply
