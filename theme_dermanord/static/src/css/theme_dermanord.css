@@ -720,6 +720,10 @@ address span {
     #jobs_grid, .readable, section#forms {
         padding: 0px 15px;
     }
+    
+    h6 {
+        font-size: 50px;
+    }
 }
 
 @media (max-width: 1200px) and (min-width: 992px) {
