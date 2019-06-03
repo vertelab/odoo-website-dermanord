@@ -696,11 +696,11 @@ class product_product(models.Model):
                                 </td>
                                 <td>
                                     <div class="{shop_widget}">
-                                        <form action="/shop/cart/update" class="oe_dn_list" data-attribute_value_ids="{product_id}" method="POST">
+                                        <form action="/shop/cart/update" class="oe_dn_list {hide_spinner}" data-attribute_value_ids="{product_id}" method="POST">
                                             <div class="product_shop" style="margin: 0px;">
                                                 <input class="product_id" name="product_id" value="{product_id}" type="hidden">
                                                 <input name="return_url" value="{return_url}" type="hidden">
-                                                <div class="css_quantity input-group oe_website_spinner {hide_spinner}">
+                                                <div class="css_quantity input-group oe_website_spinner">
                                                     <span class="input-group-addon">
                                                         <a href="#" class="mb8 js_add_cart_json">
                                                             <i class="fa fa-minus"></i>
@@ -717,7 +717,7 @@ class product_product(models.Model):
                                             </div>
                                         </form>
                                     </div>
-                                    <span class="dn_list_instock {hide_spinner}">{product_stock}</span>
+                                    <span class="dn_list_instock">{product_stock}</span>
                                     <!-- key {key} key_raw {key_raw} render_time {render_time} -->
                                     <!-- http:/mcpage/{key} http:/mcpage/{key}/delete  http:/mcmeta/{key} -->
                                 </td>
@@ -735,7 +735,7 @@ class product_product(models.Model):
                     product_ribbon_offer = product_ribbon_offer and ('<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer')) or '',
                     product_ribbon_promo = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.id in (product['website_style_ids'] + product['website_style_ids_variant']) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.id in product['website_style_ids_variant'] else '',
-                    hide_spinner = 'hiddden' if product_obj.purchase_type == 'none' else '',
+                    hide_spinner = 'hidden' if product_obj.purchase_type == 'none' else '',
                     edu_max= '5' if is_edu_purchase else '',
                     edu_purchase= int(is_edu_purchase),
                     buy_button = buttons['list_view'],
