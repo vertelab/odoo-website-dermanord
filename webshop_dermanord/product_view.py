@@ -706,7 +706,7 @@ class product_product(models.Model):
                                                             <i class="fa fa-minus"></i>
                                                         </a>
                                                     </span>
-                                                    <input class="js_quantity form-control" data-min="1" data-max="{edu_max}" data-edu-purchase="{edu_purchase}" name="add_qty" value="1" type="number">
+                                                    <input class="js_quantity form-control {hide_spinner}" data-min="1" data-max="{edu_max}" data-edu-purchase="{edu_purchase}" name="add_qty" value="1" type="number">
                                                     <span class="input-group-addon">
                                                         <a href="#" class="mb8 float_left js_add_cart_json">
                                                             <i class="fa fa-plus"></i>
@@ -735,6 +735,7 @@ class product_product(models.Model):
                     product_ribbon_offer = product_ribbon_offer and ('<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer')) or '',
                     product_ribbon_promo = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.id in (product['website_style_ids'] + product['website_style_ids_variant']) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.id in product['website_style_ids_variant'] else '',
+                    hide_spinner = 'hiddden' if product_obj.purchase_type == 'none' else '' 
                     edu_max= '5' if is_edu_purchase else '',
                     edu_purchase= int(is_edu_purchase),
                     buy_button = buttons['list_view'],
@@ -964,12 +965,12 @@ class product_product(models.Model):
             visible_attrs = set(l.attribute_id.id for l in product.attribute_line_ids if len(l.value_ids) > 1)
             decimal_precision = pricelist.currency_id.rounding
             variants = self.env['product.product'].search([('id', 'in', product.product_variant_ids.mapped('id'))])
+            product_variant = self.browse(variant_id)
             for variant in variants:
                 render_start = timer()
                 attr_sel = ''
-                product_variant = self.browse(variant_id)
                 is_edu_purchase = variant.purchase_type == 'edu'
-                buttons = product_variant.get_add_to_cart_buttons()
+                buttons = variant.get_add_to_cart_buttons()
                 for attribute in variant.attribute_value_ids.sorted(key=lambda a: a.id):
                     attr_sel += '<li><strong style="font-family: futura-pt-light, sans-serif; font-size: 18px;">%s</strong><select class="form-control js_variant_change attr_sel" name="attribute-%s-%s">' %(attribute.attribute_id.name, product.id, attribute.attribute_id.id)
                     for att in variants.mapped('attribute_value_ids').with_context(attribute_id=attribute.attribute_id.id).filtered(lambda a: a.attribute_id.id == a.env.context.get('attribute_id')):
@@ -1167,7 +1168,7 @@ class product_product(models.Model):
             if not pricelist.for_reseller:
                 stock['%s_stock_status' % variant.id] = ''
                 stock['%s_buy_button_hidden' % variant.id] = 'hidden'
-            elif (stock['%s_in_stock' %variant.id] and variant.sale_ok):
+            elif (stock['%s_in_stock' %variant.id] and variant.sale_ok and variant.purchase_type != 'none'):
                 stock['%s_buy_button_hidden' % variant.id] = ''
             else:       
                 stock['%s_buy_button_hidden' % variant.id] = 'hidden'
