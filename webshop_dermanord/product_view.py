@@ -700,13 +700,13 @@ class product_product(models.Model):
                                             <div class="product_shop" style="margin: 0px;">
                                                 <input class="product_id" name="product_id" value="{product_id}" type="hidden">
                                                 <input name="return_url" value="{return_url}" type="hidden">
-                                                <div class="css_quantity input-group oe_website_spinner">
+                                                <div class="css_quantity input-group oe_website_spinner {hide_spinner}">
                                                     <span class="input-group-addon">
                                                         <a href="#" class="mb8 js_add_cart_json">
                                                             <i class="fa fa-minus"></i>
                                                         </a>
                                                     </span>
-                                                    <input class="js_quantity form-control {hide_spinner}" data-min="1" data-max="{edu_max}" data-edu-purchase="{edu_purchase}" name="add_qty" value="1" type="number">
+                                                    <input class="js_quantity form-control" data-min="1" data-max="{edu_max}" data-edu-purchase="{edu_purchase}" name="add_qty" value="1" type="number">
                                                     <span class="input-group-addon">
                                                         <a href="#" class="mb8 float_left js_add_cart_json">
                                                             <i class="fa fa-plus"></i>
@@ -717,7 +717,7 @@ class product_product(models.Model):
                                             </div>
                                         </form>
                                     </div>
-                                    <span class="dn_list_instock">{product_stock}</span>
+                                    <span class="dn_list_instock {hide_spinner}">{product_stock}</span>
                                     <!-- key {key} key_raw {key_raw} render_time {render_time} -->
                                     <!-- http:/mcpage/{key} http:/mcpage/{key}/delete  http:/mcmeta/{key} -->
                                 </td>
