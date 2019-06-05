@@ -24,6 +24,7 @@ from datetime import datetime, date, timedelta
 from openerp.addons.website_memcached import memcached
 import base64
 import werkzeug
+from openerp.addons.website.models.website import slug 
 
 from openerp import http
 from openerp.http import request
@@ -150,11 +151,34 @@ class product_template(models.Model):
 
     @api.multi
     def dn_clear_cache(self):
-        for key in memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self]):
+        
+        
+        _logger.warn('\n\nHEJ HEJ HEJ\n')
+        _logger.warn('%s' % [('%s,%s' % (p._model, p.id)) for p in self])
+        db_name = self.env.cr.dbname
+        website = self.env.ref('website.default_website')
+        
+        for key in memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self], db=db_name):
             memcached.mc_delete(key)
         for p in self:
-           for key in memcached.get_keys(path=[('%s,%s' % (v._model, v.id)) for v in p.product_variant_ids]):
+            for lang in website.language_ids:
+                for key in memcached.get_keys(path=['/dn_shop/product/%s' % slug(p.with_context(lang=lang.code))], db=db_name):
+                    _logger.warn('/dn_shop/product/-keys: %s' % key)
+                    memcached.mc_delete(key)
+            
+        for p in self:
+            for key in memcached.get_keys(path=[('%s,%s' % (v._model, v.id)) for v in p.product_variant_ids], db=db_name):
+                _logger.warn('\n\n TAR BORT VARIANTER\n\n')
                 memcached.mc_delete(key)
+            for v in p.product_variant_ids:
+                for lang in website.language_ids:
+                    for key in memcached.get_keys(path=['/dn_shop/variant/%s' % slug(v.with_context(lang=lang.code))], db=db_name):
+                        _logger.warn('/dn_shop/variant/-keys: %s' % key)
+                        memcached.mc_delete(key)
+        
+        for key in memcached.get_keys(flush_type='webshop', db=db_name):
+            _logger.warn('Webshop-keys: %s' % key)
+            memcached.mc_delete(key)
 
     @api.multi
     @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.datas', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_attachment_ids.datas', 'product_variant_ids.image_medium', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids', 'sale_ok', 'product_variant_ids.sale_ok')
@@ -491,6 +515,7 @@ class product_product(models.Model):
     def dn_clear_cache(self):
         for key in memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self]):
             memcached.mc_delete(key)
+            
 
     @api.one
     @api.depends('product_tmpl_id.campaign_changed')
