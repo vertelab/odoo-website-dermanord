@@ -153,8 +153,6 @@ class product_template(models.Model):
     def dn_clear_cache(self):
         
         
-        _logger.warn('\n\nHEJ HEJ HEJ\n')
-        _logger.warn('%s' % [('%s,%s' % (p._model, p.id)) for p in self])
         db_name = self.env.cr.dbname
         website = self.env.ref('website.default_website')
         
@@ -163,21 +161,17 @@ class product_template(models.Model):
         for p in self:
             for lang in website.language_ids:
                 for key in memcached.get_keys(path=['/dn_shop/product/%s' % slug(p.with_context(lang=lang.code))], db=db_name):
-                    _logger.warn('/dn_shop/product/-keys: %s' % key)
                     memcached.mc_delete(key)
             
         for p in self:
             for key in memcached.get_keys(path=[('%s,%s' % (v._model, v.id)) for v in p.product_variant_ids], db=db_name):
-                _logger.warn('\n\n TAR BORT VARIANTER\n\n')
                 memcached.mc_delete(key)
             for v in p.product_variant_ids:
                 for lang in website.language_ids:
                     for key in memcached.get_keys(path=['/dn_shop/variant/%s' % slug(v.with_context(lang=lang.code))], db=db_name):
-                        _logger.warn('/dn_shop/variant/-keys: %s' % key)
                         memcached.mc_delete(key)
         
         for key in memcached.get_keys(flush_type='webshop', db=db_name):
-            _logger.warn('Webshop-keys: %s' % key)
             memcached.mc_delete(key)
 
     @api.multi
