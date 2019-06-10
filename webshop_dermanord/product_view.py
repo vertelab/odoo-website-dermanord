@@ -1074,7 +1074,7 @@ class product_product(models.Model):
                     html_product_detail_image = html_product_detail_image(variant, partner),
                     # 2019-03-08 json https://schema.org/ImageObject
                     # https://developers.google.com/search/docs/data-types/product
-                    html_product_json_desc = product_json_desc(variant, variant.product_tmpl_id, pricelist),
+                     html_product_json_desc = product_json_desc(variant, variant.product_tmpl_id, pricelist),
                     html_product_ingredients_mobile = html_product_ingredients_mobile(variant, partner),
                     website_description = u'<div itemprop="description" class="oe_structure mt16" id="product_full_description">%s</div>' %variant.website_description if variant.website_description else '',
                     key_raw=key_raw,
