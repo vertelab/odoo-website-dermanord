@@ -596,7 +596,7 @@ class sale_order(models.Model):
             quantity = line.product_uom_qty + (add_qty or 0)
 
         # Do not allow more than 5 if educational purchase    
-        if line.product_id.is_edu_purchase() and (quantity > 5):
+        if (line.product_id.purchase_type == 'edu') and (quantity > 5):
             quantity = 5
 
         # Remove zero of negative lines
@@ -1322,9 +1322,9 @@ class WebsiteSale(website_sale):
     def dn_product_variant(self, variant, category='', search='', **post):
         if not request.env.user:
             return request.redirect(request.httprequest.path)
-        product = variant.sudo().product_tmpl_id
+        product = variant.sudo().product_tmpl_id #5509 variant: 5575
         values = {
-            'url': request.session.get('url'),
+            'url': request.session.get('url'), #None
             'product': variant,
             'detail': request.env['product.product'].get_product_detail(product, variant.id),
             'additional_title': variant.name.upper(),

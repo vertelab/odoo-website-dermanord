@@ -78,7 +78,7 @@
   '&amp;',
     '|',
        ('access_group_ids', '=', False),
-       ('access_group_ids', '=', user.env.ref('webshop_dermanord.group_dn_sk').id]),
+       ('access_group_ids', '=', user.env.ref('webshop_dermanord.group_dn_sk').id),
     '|',
        ('product_tmpl_id.access_group_ids', '=', False),
        ('product_tmpl_id.access_group_ids', '=', user.env.ref('webshop_dermanord.group_dn_sk').id)]</field>

@@ -43,6 +43,10 @@ class HrDepartment(models.Model):
     #~ website_published = fields.Boolean('Published')
     #~ website_description = fields.html('Website Description', translate=True)
     #~ sequence = fields.Integer('Sequence')
+class HrJob(models.Model):
+    _inherit = 'hr.job'
+    is_spontaneous = fields.Boolean('Spontaneous')
+    
 
 class WebsiteRecruitment(website_hr_recruitment):
 
@@ -79,5 +83,19 @@ class WebsiteRecruitment(website_hr_recruitment):
                 #~ 'employees': employees,
             })
 
+# added debugging
+    @http.route([
+        '/jobs/apply/<model("hr.job"):job>',
+    ], type='http', auth="public", website=True)
+    def jobs_apply(self, job, **post):
+        return super(WebsiteRecruitment, self).jobs_apply(job)
+
+
     def _get_applicant_files_fields(self):
         return super(WebsiteRecruitment, self)._get_applicant_files_fields() + ['letter_file']
+        
+    def _get_applicant_relational_fields(self):
+        return super(WebsiteRecruitment, self)._get_applicant_relational_fields() + ['type_id', 'source_id', 'job_id']
+
+    def _get_applicant_char_fields(self):
+        return super(WebsiteRecruitment, self)._get_applicant_char_fields() + ['availability', 'salary_expected']
