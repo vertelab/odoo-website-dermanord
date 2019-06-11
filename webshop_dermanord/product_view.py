@@ -918,7 +918,10 @@ class product_product(models.Model):
             </span>
         </p>
     </div>
-</div>""".format(
+</div>
+{html_alternative_products}
+{html_accessory_products}
+""".format(
                 product_images_html = product_images_html,
                 product_images_nav_html = product_images_nav_html,
                 ingredients_title = _('made from all-natural ingredients') if len(product_ingredients) > 0 else '',
@@ -926,8 +929,90 @@ class product_product(models.Model):
                 current_product_id = variant.id,
                 hide_ingredients_desc = '' if variant.ingredients else 'hidden',
                 ingredients = _('ingredients:'),
-                ingredients_desc = variant.ingredients.replace('\n', '<br/>') if variant.ingredients else ''
+                ingredients_desc = variant.ingredients.replace('\n', '<br/>') if variant.ingredients else '',
+                html_alternative_products = generate_alternative_products(variant, partner),
+                html_accessory_products =  generate_accessory_products(variant, partner),
             )
+            
+            return page
+
+        def generate_alternative_products(variant, partner):
+            if variant.alternative_product_ids:
+
+                page = """<div id="alternatives_div">
+            <div class="container hidden-xs">
+                <h2 class="text-center dn_uppercase mt32 mb32">Suggested alternatives:</h2>"""
+        
+                alternative_html = ""
+                for alternative_product in variant.alternative_product_ids:
+                    
+                    product_images = variant.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
+                    product_images_html = ''
+                    product_images_nav_html = ''
+                    if len(product_images) > 0:
+                        for idx, image in enumerate(product_images):
+                            product_images_html += '<div id="image_%s_%s" class="tab-pane fade%s"><img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' %(variant.id, image.id, ' active in' if idx == 0 else '', self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_thumbnail'))
+                    else:
+                        product_images_html += '<div id="image_%s" class="tab-pane fade active in"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></div>' % variant.id
+                    
+                    alternative_html += """<a href="/shop/variant/{slug_product}">
+            <div class="col-md-3 col-sm-3 thumbnail" style="padding: 0px;">
+                {product_image}
+                <h5 class="text-center text-primary" style="padding: 0px; margin-top: 0px;">
+                    <span itemprop="name">{product_name}</span>
+                </h5>
+            </div>
+        </a>""".format(
+                    product_image = product_images_html,
+                    slug_product = slug(alternative_product),
+                    product_name = alternative_product.name,
+                )
+                
+                page += alternative_html + """    </div>
+</div>"""
+                
+            else:
+                page = """"""
+            
+            return page
+            
+        def generate_accessory_products(variant, partner):
+            if variant.accessory_product_ids:
+                page = """<div id="accessory_div">
+            <div class="container hidden-xs">
+                <h2 class="text-center dn_uppercase mt32 mb32">Suggested accessories:</h2>"""
+        
+                accessory_html = ""
+                for accessory_product in variant.accessory_product_ids:
+                    
+                    product_images = variant.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
+                    product_images_html = ''
+                    product_images_nav_html = ''
+                    if len(product_images) > 0:
+                        for idx, image in enumerate(product_images):
+                            product_images_html += '<div id="image_%s_%s" class="tab-pane fade%s"><img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' %(variant.id, image.id, ' active in' if idx == 0 else '', self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_thumbnail'))
+                    else:
+                        product_images_html += '<div id="image_%s" class="tab-pane fade active in"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></div>' % variant.id
+                        
+                    accessory_html += """<a href="/shop/variant/{slug_product}">
+            <div class="col-md-3 col-sm-3 thumbnail" style="padding: 0px;">
+                {product_image}
+                <h5 class="text-center text-primary" style="padding: 0px; margin-top: 0px;">
+                    <span itemprop="name">{product_name}</span>
+                </h5>
+            </div>
+        </a>""".format(
+                    product_image = product_images_html,
+                    slug_product = slug(accessory_product),
+                    product_name = accessory_product.name,
+                )
+                
+                page += accessory_html + """    </div>
+</div>"""
+                
+            else:
+                page = """"""
+            
             return page
 
         # product ingredients in mobile, directly after <section id="product_detail"></section>
