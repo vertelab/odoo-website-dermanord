@@ -951,7 +951,7 @@ class product_product(models.Model):
                     alternative_html += """<a href="/dn_shop/product/{slug_product}">
             <div class="col-md-3 col-sm-3 thumbnail" style="padding: 0px;">
                 {product_image}
-                <h5 class="text-center text-primary" style="padding: 0px; margin-top: 0px;">
+                <h5 class="text-center text-primary" style="padding: 0px; margin-top: 0px; overflow: hidden; height: 2.5em;">
                     <span itemprop="name">{product_name}</span>
                 </h5>
             </div>
@@ -961,8 +961,8 @@ class product_product(models.Model):
                     product_name = alternative_product.name,
                 )
                 
-                page += alternative_html + """    </div>
-</div>"""
+                page += alternative_html + """</div>
+                </div>"""
                 
             else:
                 page = """"""
@@ -983,7 +983,7 @@ class product_product(models.Model):
                     accessory_html += """<a href="/dn_shop/variant/{slug_product}">
             <div class="col-md-3 col-sm-3 thumbnail" style="padding: 0px;">
                 {product_image}
-                <h5 class="text-center text-primary" style="padding: 0px; margin-top: 0px;">
+                <h5 class="text-center text-primary" style="padding: 0px; margin-top: 0px; overflow: hidden; height: 2.5em;">
                     <span itemprop="name">{product_name}</span>
                 </h5>
             </div>
