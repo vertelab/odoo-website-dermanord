@@ -59,11 +59,11 @@ class Website(Website):
 				# ~ IN GOOGLE, ABOUT LANGUAGES:
 				# ~ https://support.google.com/webmasters/answer/189077?hl=en
                 res = {
-					'loc': '/sv_SE/dn_shop/product/%s' %slug(p.with_context(lang='sv_SE')),
+					'loc': '/sv_SE/dn_shop/variant/%s' %slug(p.with_context(lang='sv_SE')),
 					'alternates': {}
 				}
                 for lang, google_lang in translations.iteritems():
-					res['alternates'][google_lang] = '/%s/dn_shop/product/%s' %(lang, slug(p.with_context(lang=lang)))
+					res['alternates'][google_lang] = '/%s/dn_shop/variant/%s' %(lang, slug(p.with_context(lang=lang)))
                 yield res
                 
             for p in blog_posts:
