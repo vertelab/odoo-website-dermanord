@@ -946,14 +946,7 @@ class product_product(models.Model):
                 alternative_html = ""
                 for alternative_product in variant.alternative_product_ids:
                     
-                    product_images = alternative_product.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
-                    product_images_html = ''
-                    product_images_nav_html = ''
-                    if len(product_images) > 0:
-                        for idx, image in enumerate(product_images):
-                            product_images_html += '<div id="image_%s_%s" class="tab-pane fade%s"><img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' %(variant.id, image.id, ' active in' if idx == 0 else '', self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_thumbnail'))
-                    else:
-                        product_images_html += '<div id="image_%s" class="tab-pane fade active in"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></div>' % variant.id
+                    product_images_html = '<div><img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' % self.env['website'].imagefield_hash('product.template', 'image_small', alternative_product.id, 'website_sale_product_gallery.img_product_thumbnail')
                     
                     alternative_html += """<a href="/dn_shop/product/{slug_product}">
             <div class="col-md-3 col-sm-3 thumbnail" style="padding: 0px;">
@@ -985,14 +978,7 @@ class product_product(models.Model):
                 accessory_html = ""
                 for accessory_product in variant.accessory_product_ids:
                     
-                    product_images = accessory_product.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
-                    product_images_html = ''
-                    product_images_nav_html = ''
-                    if len(product_images) > 0:
-                        for idx, image in enumerate(product_images):
-                            product_images_html += '<div id="image_%s_%s" class="tab-pane fade%s"><img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' %(variant.id, image.id, ' active in' if idx == 0 else '', self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_thumbnail'))
-                    else:
-                        product_images_html += '<div id="image_%s" class="tab-pane fade active in"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></div>' % variant.id
+                    product_images_html = '<div><img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' % self.env['website'].imagefield_hash('product.product', 'image_small', accessory_product.id, 'website_sale_product_gallery.img_product_thumbnail')
                         
                     accessory_html += """<a href="/dn_shop/variant/{slug_product}">
             <div class="col-md-3 col-sm-3 thumbnail" style="padding: 0px;">
