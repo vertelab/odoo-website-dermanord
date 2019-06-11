@@ -946,7 +946,7 @@ class product_product(models.Model):
                 alternative_html = ""
                 for alternative_product in variant.alternative_product_ids:
                     
-                    product_images = variant.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
+                    product_images = alternative_product.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
                     product_images_html = ''
                     product_images_nav_html = ''
                     if len(product_images) > 0:
@@ -955,7 +955,7 @@ class product_product(models.Model):
                     else:
                         product_images_html += '<div id="image_%s" class="tab-pane fade active in"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></div>' % variant.id
                     
-                    alternative_html += """<a href="/shop/variant/{slug_product}">
+                    alternative_html += """<a href="/dn_shop/product/{slug_product}">
             <div class="col-md-3 col-sm-3 thumbnail" style="padding: 0px;">
                 {product_image}
                 <h5 class="text-center text-primary" style="padding: 0px; margin-top: 0px;">
@@ -985,7 +985,7 @@ class product_product(models.Model):
                 accessory_html = ""
                 for accessory_product in variant.accessory_product_ids:
                     
-                    product_images = variant.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
+                    product_images = accessory_product.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
                     product_images_html = ''
                     product_images_nav_html = ''
                     if len(product_images) > 0:
@@ -994,7 +994,7 @@ class product_product(models.Model):
                     else:
                         product_images_html += '<div id="image_%s" class="tab-pane fade active in"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></div>' % variant.id
                         
-                    accessory_html += """<a href="/shop/variant/{slug_product}">
+                    accessory_html += """<a href="/dn_shop/variant/{slug_product}">
             <div class="col-md-3 col-sm-3 thumbnail" style="padding: 0px;">
                 {product_image}
                 <h5 class="text-center text-primary" style="padding: 0px; margin-top: 0px;">
