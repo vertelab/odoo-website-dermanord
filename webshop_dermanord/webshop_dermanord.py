@@ -637,10 +637,15 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
     
     def check_product_lang(self):
-        for avi in self.product_id.attribute_value_ids:
-            if avi.attribute_id == self.env.ref("__export__.product_attribute_290"):
-                if avi.color not in self.order_id.partner_shipping_id.country_id and self.order_id.partner_shipping_id.country_id.code.split() or []:
-                    return _("%s appears to not be in your preferred language. Are you sure this is the correct product?")%self.product_id.name
+        for value in self.product_id.attribute_value_ids:
+            lang_attr = self.env.ref("__export__.product_attribute_290")
+            if value.attribute_id == lang_attr:
+                partner_country = self.order_id.partner_shipping_id.country_id and self.order_id.partner_shipping_id.country_id.code or '*'
+                # Check if partners country is tied to an attribute. Otherwise we want to match with the wildcard (*).
+                if partner_country not in ' '.join([c for c in lang_attr.value_ids.mapped('color') if c]).split():
+                    partner_country = '*'
+                if partner_country not in (value.color or '').split():
+                    return _("%s appears to not be in your preferred language. Are you sure this is the correct product?") % self.product_id.name
     
     @api.multi
     def sale_home_confirm_copy(self):
