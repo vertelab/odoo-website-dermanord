@@ -77,9 +77,13 @@ div.shipping-address, div.invoicing-address {
     padding: 15px;
 }
 
+.product_detail_img {
+    max-height: 505px;
+}
+
 #image_big {
-    max-height: 500px;
-    max-width: 500px;
+    max-height: 505px;
+    max-width: 505px;
     margin: auto;
 }
 

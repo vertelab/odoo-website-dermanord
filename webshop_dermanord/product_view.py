@@ -889,7 +889,7 @@ class product_product(models.Model):
                     product_images_html += '<div id="image_%s_%s" class="tab-pane fade%s">%s%s<img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' %(variant.id, image.id, ' active in' if idx == 0 else '', offer_wrapper, ribbon_wrapper, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_detail'))
                     product_images_nav_html += '<li class="%s"><a data-toggle="tab" href="#image_%s_%s"><img class="img img-responsive" src="%s"/></a></li>' %('active' if idx == 0 else '', variant.id, image.id, self.env['website'].imagefield_hash('ir.attachment', 'datas', image[0].id, 'website_sale_product_gallery.img_product_thumbnail'))
             else:
-                product_images_html += '<div id="image_%s" class="tab-pane fade active in">%s%s<img class="img img-responsive product_detail_img" style="margin: auto; width: 500px; height: 500px;" src="/web/static/src/img/placeholder.png"/></div>' %(variant.id, offer_wrapper, ribbon_wrapper)
+                product_images_html += '<div id="image_%s" class="tab-pane fade active in">%s%s<img class="img img-responsive product_detail_img" style="margin: auto; width: 505px; height: 505px;" src="/web/static/src/img/placeholder.png"/></div>' %(variant.id, offer_wrapper, ribbon_wrapper)
                 product_images_nav_html = '<li class="active"><a data-toggle="tab" href="#image_%s"><img class="img img-responsive" src="/web/static/src/img/placeholder.png"/></a></li>' %variant.id
             ingredients_images_nav_html = ''
             product_ingredients = self.env['product.ingredient'].search([('product_ids', 'in', variant.id)], order='sequence')
