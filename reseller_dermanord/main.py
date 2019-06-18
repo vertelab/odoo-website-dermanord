@@ -45,6 +45,20 @@ class res_partner(models.Model):
     type = fields.Selection(selection_add=[('visit', 'Visit')])
     webshop_category_ids = fields.Many2many(comodel_name='product.public.category', string='Product Categories', domain=[('website_published', '=', True)])
     website_short_description = fields.Text(string='Website Partner Short Description', translate=True)
+    
+    # ~ visit_city = fields.Char(string='Visit Adress City', compute='_compute_visit_city', store=True)
+    
+    # ~ #env['res.partner'].search([('is_reseller', 's=', True), ('child_ids.type', '=', 'visit')])._compute_visit_city()
+    # ~ @api.one
+    # ~ @api.depends('child_ids.type', 'child_ids.city', 'child_ids.active')
+    # ~ def _compute_visit_city(self):
+        # ~ pass
+        # ~ _logger.warn('\n\n%s._compute_visit_city()' % self)
+        # ~ visit = self.child_ids.filtered(lambda c: c.active == True and c.type == 'visit' and c.city)
+        # ~ if visit:
+            # ~ self.visit_city = visit[0].city
+        # ~ else:
+            # ~ self.visit_city = False
 
     #~ @api.one
     #~ def _is_reseller(self):
@@ -180,80 +194,154 @@ class Main(http.Controller):
         return [sort_name, sort_order]
 
     def sort_reseller(self, resellers):
-        _logger.warn(len(resellers))
+        # ~ _logger.warn(len(resellers))
         res = resellers.sorted(key=lambda p: p.child_ids.filtered(lambda c: c.type == 'visit').city)
-        _logger.warn(len(res))
+        # ~ _logger.warn(len(res))
         return res
 
-    # Return result of resellers with postcode, domain searching
-    def get_resellers(self, words, domain, search_partner, webshop=False, limit=99):
-        partner_obj = request.env['res.partner']
-        # Split words and try to get postcode first
-        word_list = words.split(' ')
-        partner_ids = []
-        post_codes = []
-        strings = []
-        found = False
+    def restore_original_order(self, records, order):
+        def sorter(record):
+            try:
+                # Check index in original list
+                return order.index(record.id)
+            except:
+                # Not in the original list. Position last.
+                return len(order)
+        records.sorted(sorter)
+    
+    def check_for_city(self, country, word_list):
+        """Check if the given word is a city. Deletes the first found city from word_list.
+        :returns: city name or None."""
+        # ~ _logger.warn('\n\ncheck_for_city: %s, %s\n' % (country, word_list))
         for i in range(len(word_list)):
-            if len(word_list[i]) == 3 and word_list[i].isdigit():
-                found = True
-                continue
-            elif found and len(word_list[i]) == 2 and word_list[i].isdigit():
-                post_codes.append('%s%s' %(word_list[i-1], word_list[i]))
-            found = False
-        resellers = partner_obj.sudo().browse()
-        for w in word_list:
-            if len(w) == 5 and w.isdigit():
-                # Got a keyword is postcode
-                post_codes.append(w)
-            else:
-                # Got a keyword is not postcode
-                strings.append(w)
-        if len(post_codes) > 0:
-            # Search each postcode and get the closest reseller inside 0.5 degree
-            for p in post_codes:
-                partner_ids += partner_obj.sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit) # this suppose to be a limited distance
-        if not partner_ids:
-            for s in strings:
-                partner_ids += partner_obj.sudo().geo_city_search('position', 'SE', s, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit)
-            # Search keyword
-            for s in strings:
-                resellers |= search_partner(s)
-            if len(resellers) > limit:
-                resellers = resellers[:limit]
-            if len(partner_ids) > 0:
-                ids = []
-                for id in partner_ids:
-                    if id in resellers.mapped('id'):
-                        ids.append(id)
-                if not ids:
-                    ids = partner_ids
-                else:
-                    for id in partner_ids:
-                        if len(ids) >= limit:
-                            break
-                        if id not in ids:
-                            ids.append(id)
-                resellers = partner_obj.sudo().browse(ids)
-                # ~ resellers = partner_obj.sudo().browse(partner_ids).with_context(resellers=resellers.mapped('id')).filtered(lambda r: r.id in r._context.get('resellers'))
-                # ~ if len(resellers) == 0:
-                    # ~ resellers = partner_obj.sudo().browse(partner_ids)
-                # ~ else:
-                    # ~ new_partner_ids = []
-                    # ~ for p in partner_ids:
-                        # ~ if p not in resellers._ids:
-                            # ~ new_partner_ids.append(p)
-                    # ~ resellers += partner_obj.sudo().browse(new_partner_ids)
-        # If there's no reseller found. Redo search with unlimited distance
-        if len(resellers) == 0:
-            partner_ids = []
-            if len(post_codes) > 0:
-                for p in post_codes:
-                    partner_ids += partner_obj.sudo().geo_zip_search('position', 'SE', '%s %s' %(p[:3], p[3:]), domain, distance=360, limit=limit)
-                if len(partner_ids) > 0:
-                    if len(partner_ids) > limit:
-                        partner_ids = partner_ids[:limit]
-                    resellers = partner_obj.sudo().browse(partner_ids)
+            word = word_list[i]
+            request.env.cr.execute("""
+                    select city
+                        from location_zcs l
+                        where country=%s AND city ilike %s limit 1
+                """, (country, word))
+            city = request.env.cr.dictfetchone()
+            # ~ _logger.warn(city)
+            if city:
+                # Its a city
+                del word_list[i]
+                return city['city']
+    
+    def check_for_postal_code(self, country, word_list):
+        """Check word_list for a postal code. Deletes the first found code from word_list.
+        :returns: postal code or None."""
+        # TODO: Implement postal codes for other countries
+        if country == 'SE':
+            # Swedish postal codes
+            first_part = None
+            # Check for correct formatting first.
+            for i in range(len(word_list)):
+                word = word_list[i]
+                if len(word) == 3 and word.isdigit():
+                    # Found possible first half
+                    first_part = word
+                    continue
+                elif first_part and len(word) == 2 and word.isdigit():
+                    # Possible match. Check if its an actual postal code.
+                    request.env.cr.execute("""
+                            select postalcode
+                                from location_zcs l
+                                where country=%s AND postalcode = %s limit 1
+                        """, (country, '%s %s' % (first_part, word)))
+                    code = request.env.cr.dictfetchone()
+                    if code:
+                        del word_list[i]
+                        del word_list[i-1]
+                        return code['postalcode']
+                first_part = None
+            # Check for postal codes without space.
+            for i in range(len(word_list)):
+                word = word_list[i]
+                if len(word) == 5 and word.isdigit():
+                    # Possible match. Check if its an actual postal code.
+                    request.env.cr.execute("""
+                            select postalcode
+                                from location_zcs l
+                                where country=%s AND postalcode = %s limit 1
+                        """, (country, '%s %s' % (word[:3], word[3:])))
+                    code = request.env.cr.dictfetchone()
+                    if code:
+                        del word_list[i]
+                        return code['postalcode']
+    
+    # Return result of resellers with postcode, domain searching
+    def get_resellers(self, words, domain, search_partner, params=None, webshop=False, limit=99):
+        """Find resellers.
+        
+        :param words: Search terms.
+        :param domain: Extra domain values to use.
+        :param search_partner: Search function to use for text values.
+        :param params: Extra parameters to send to search_partner.
+        :param webshop: Webshop True/False. ??? Not used at all
+        :param limit: Limit when searching.
+        """
+        # ~ _logger.warn('\n\nwords: %s\ndomain: %s\nsearch_partner: %s\nwebshop: %s\nlimit: %s' % (words, domain, search_partner, webshop, limit))
+        params = params or {}
+        words = words or ''
+        partner_obj = request.env['res.partner'].sudo()
+        resellers = partner_obj.browse()
+        partner_ids = []
+        country = request.session.get('geoip', {}).get('country_code', 'SE') # Country to use in postal code search
+        city = None
+        
+        word_list = words.split()
+        if word_list:
+            # Identify country in search terms to use in postal code search
+            for i in range(len(word_list)):
+                c = request.env['res.country'].search([('name', 'ilike', word_list[i])])
+                if c:
+                    country = c.code
+                    # Leave country to be used as search term.
+                    #del word_list[i]
+                    break
+                    # TODO: country search has been broken.
+            # Check for a postal code and city.
+            postal_code = self.check_for_postal_code(country, word_list)
+            city = self.check_for_city(country, word_list)
+            # ~ _logger.warn('\nword_list: %s\npostal_code: %s\n' % (word_list, postal_code))
+            
+            if postal_code:
+                # Search the postal code and get the closest reseller inside 0.5 degree
+                partner_ids += partner_obj.geo_zip_search('position', 'SE', postal_code, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit) # this is supposed to be a limited distance
+                if len(partner_ids) < limit:
+                    # Fill up to limit with unlimited range.
+                    partner_ids += partner_obj.geo_zip_search('position', 'SE', postal_code, domain + [('id', 'not in', partner_ids), ('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit - len(partner_ids)) # this is supposed to be a limited distance
+            
+            if not partner_ids and city:
+                # Perform city search
+                partner_ids = partner_obj.geo_city_search('position', country, city, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit)
+                # ~ _logger.warn('city search %s %s' % (city, partner_ids))
+            
+            if partner_ids:
+                resellers = partner_obj.browse(partner_ids)
+            
+            # Search using search terms
+            # Should this be combined with geo search results?
+            if not partner_ids:
+                # Search keyword
+                for s in word_list:
+                    if not resellers:
+                        # First keyword search
+                        resellers = search_partner(s, **params)
+                    else:
+                        # Restrict further for every keyword
+                        resellers &= search_partner(s, **params)
+                
+                self.restore_original_order(resellers, partner_ids)
+                if len(resellers) > limit:
+                    resellers = resellers[:limit]
+        else:
+            # No search terms. Perform geo search.
+            position = request.session.get('geoip', {})
+            # ~ _logger.warn('\n\nposition: %s\n' % str(position))
+            if 'latitude' in position and 'longitude' in position:
+                position = (position['longitude'], position['latitude'])
+                resellers = partner_obj.browse(partner_obj.geo_search('position', position, domain=domain, distance=360, limit=limit))
         return resellers
 
     def get_resellers_without_keyword(self, domain, position, distance=None, limit=10, webshop=False):
@@ -286,29 +374,8 @@ class Main(http.Controller):
     @http.route(['/resellers/competence/<model("res.partner.category"):competence>',], type='http', auth="public", website=True)
     def reseller_competence(self, competence, **post):
         partner_obj = request.env['res.partner']
-        # ~ def search_partner(word):
-            # ~ # Find all matching visit addresses
-            # ~ matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
-            # ~ all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
-            # ~ res = partner_obj.sudo().search([
-                # ~ ('is_company', '=', True),
-                # ~ ('is_reseller', '=', True),
-                # ~ ('child_ids.type', '=', 'visit'),
-                # ~ ('child_ids', 'in', all_visit_ids),
-                # ~ ('child_competence_ids', '=', competence.id),
-                # ~ '|', '|', '|', '|',
-                    # ~ ('child_ids', 'in', matching_visit_ids),
-                    # ~ ('child_category_ids.name', 'ilike', word),
-                    # ~ ('child_competence_ids.name', 'ilike', word),
-                    # ~ ('brand_name', 'ilike', word),
-                    # ~ '&',
-                        # ~ ('name', 'ilike', word),
-                        # ~ ('brand_name', '=', False),
-                    # ~ ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
-            # ~ return res
 
-        def search_partner_name(word):
-            all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
+        def search_partner_name(word, all_visit_ids):
             return partner_obj.sudo().search([
                 ('is_company', '=', True),
                 ('is_reseller', '=', True),
@@ -324,9 +391,8 @@ class Main(http.Controller):
                         ('brand_name', '=', False),
                 ], limit=100).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
 
-        def search_partner(word):
+        def search_partner(word, all_visit_ids):
             matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
-            all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
             res = partner_obj.sudo().search([
                 ('is_company', '=', True),
                 ('is_reseller', '=', True),
@@ -342,11 +408,18 @@ class Main(http.Controller):
 
         words = post.get('search_resellers')
         if words and words != '':
+            all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
             domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit'), ('child_competence_ids', '=', competence.id)]
-            resellers = self.get_resellers(words, domain, search_partner_name)
+            resellers = self.get_resellers(words, domain, search_partner_name, params={'all_visit_ids': all_visit_ids})
             if len(resellers) < 100:
                 matched_reseller_ids = resellers.mapped('id')
-                resellers = partner_obj.sudo().browse(list(set(resellers.mapped('id') + self.get_resellers(words, domain + [('id', 'not in', matched_reseller_ids)], search_partner, webshop=False, limit=100-len(resellers)).mapped('id'))))
+                resellers += self.get_resellers(
+                        words,
+                        domain + [('id', 'not in', matched_reseller_ids)],
+                        search_partner,
+                        params={'all_visit_ids': all_visit_ids},
+                        webshop=False,
+                        limit=100 - len(resellers))
             return request.website.render('reseller_dermanord.resellers', {
                 'competence': competence,
                 'search_resellers': words,
@@ -360,43 +433,19 @@ class Main(http.Controller):
                 return request.website.render('reseller_dermanord.resellers', {
                     'competence': competence,
                     'search_resellers': '',
-                    'resellers': self.resellers_filter(self.get_resellers_without_keyword(domain, tuple((float(request.session.get('geoip').get('longitude')), float(request.session.get('geoip').get('latitude')))), limit=100)),
+                    'resellers': self.get_resellers_without_keyword(domain, tuple((float(request.session.get('geoip').get('longitude')), float(request.session.get('geoip').get('latitude')))), limit=100),
                     'placeholder': _('<i class="fa fa-map-marker"></i> <span style="padding-left: 5px;">My position</span>')
                 })
         return request.website.render('reseller_dermanord.resellers', {'competence': competence, 'resellers': [], 'placeholder': _('<span>Search...</span>')})
 
-    @http.route([
-        '/resellers',
-        '/reseller/<int:partner>',
-    ], type='http', auth="public", website=True)
-    def reseller(self, partner=None, country=None, city='', competence=None, **post):
+    @http.route(['/resellers'], type='http', auth="public", website=True)
+    def reseller(self, country=None, city='', competence=None, **post):
         partner_obj = request.env['res.partner']
-        # ~ def search_partner_name(word):
-            # ~ # Find all matching visit addresses
-            # ~ matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
-            # ~ all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
-            # ~ # Find (partners that have a matching visit address OR brand name OR child category)
-            # ~ res = partner_obj.sudo().search([
-                # ~ ('is_company', '=', True),
-                # ~ ('is_reseller', '=', True),
-                # ~ ('child_ids.type', '=', 'visit'),
-                # ~ ('child_ids', 'in', all_visit_ids),
-                # ~ '|', '|', '|',
-                    # ~ ('child_ids', 'in', matching_visit_ids),
-                    # ~ ('child_category_ids.name', 'ilike', word),
-                    # ~ ('brand_name', 'ilike', word),
-                    # ~ '&',
-                        # ~ ('name', 'ilike', word),
-                        # ~ ('brand_name', '=', False),
-                    # ~ ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
-            # ~ return res
-
-        def search_partner_name(word):
-            all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
+        
+        def search_partner_name(word, all_visit_ids):
             return partner_obj.sudo().search([
                 ('is_company', '=', True),
                 ('is_reseller', '=', True),
-                ('child_ids.type', '=', 'visit'),
                 ('child_ids', 'in', all_visit_ids),
                 '|', '|',
                     ('child_category_ids.name', 'ilike', word),
@@ -405,39 +454,40 @@ class Main(http.Controller):
                         ('name', 'ilike', word),
                         ('brand_name', '=', False),
                 ], limit=100).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
-
-        def search_partner(word):
+        
+        def search_partner(word, all_visit_ids):
             matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('zip', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
-            all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
             res = partner_obj.sudo().search([
                 ('is_company', '=', True),
                 ('is_reseller', '=', True),
-                ('child_ids.type', '=', 'visit'),
                 ('child_ids', 'in', all_visit_ids),
                 '|',
                     ('child_ids', 'in', matching_visit_ids),
                     ('child_category_ids.name', 'ilike', word)
                 ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
             return res
-
-        if not partner:
-            domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')]
-            words = post.get('search_resellers')
-            if words and words != '':
-                resellers = self.get_resellers(words, domain, search_partner_name)
-                if len(resellers) < 100:
-                    matched_reseller_ids = resellers.mapped('id')
-                    resellers = partner_obj.sudo().browse(list(set(resellers.mapped('id') + self.get_resellers(words, domain + [('id', 'not in', matched_reseller_ids)], search_partner, webshop=False, limit=100-len(resellers)).mapped('id'))))
-                return request.website.render('reseller_dermanord.resellers', {'resellers': self.resellers_filter(resellers), 'search_resellers': words, 'placeholder': ''})
-            else:
-                # ~ closest_ids = partner_obj.geoip_search('position', request.httprequest.remote_addr, 10)
-                # ~ resellers = partner_obj.sudo().search([('is_reseller', '=', True), ('child_ids.type', '=', 'visit')])
-                return request.website.render('reseller_dermanord.resellers', {'resellers': [], 'search_resellers': '', 'placeholder': _('<span>Search...</span>')})
-        else:
-            partner = partner_obj.sudo().search([('id', '=', int(partner)), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')])
-            return request.website.render('reseller_dermanord.reseller', {
-                'reseller': partner,
-            })
+        
+        all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
+        domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids', 'in', all_visit_ids)]
+        words = post.get('search_resellers')
+        resellers = self.get_resellers(words, domain, search_partner_name, params={'all_visit_ids': all_visit_ids}, limit=30)
+        if len(resellers) < 30:
+            matched_reseller_ids = resellers.mapped('id')
+            resellers += self.get_resellers(
+                words,
+                domain + [('id', 'not in', matched_reseller_ids)],
+                search_partner,
+                params={'all_visit_ids': all_visit_ids},
+                webshop=False,
+                limit=30 - len(resellers))
+        return request.website.render('reseller_dermanord.resellers', {'resellers': resellers, 'search_resellers': words, 'placeholder': '<span>Search...</span>'})
+        
+    @http.route(['/reseller/<int:partner_id>',], type='http', auth="public", website=True)
+    def reseller_page(self, partner_id=None, **post):
+        partner = request.env['res.partner'].sudo().search([('id', '=', partner_id), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')])
+        return request.website.render('reseller_dermanord.reseller', {
+            'reseller': partner,
+        })
 
     @http.route(['/website_set_location'], type='json', auth="public", website=True)
     def website_set_location(self, longitude, latitude, **kwags):
