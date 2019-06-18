@@ -470,7 +470,7 @@ class Main(http.Controller):
         all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
         domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids', 'in', all_visit_ids)]
         words = post.get('search_resellers')
-        resellers = self.get_resellers(words, domain, search_partner_name, params={'all_visit_ids': all_visit_ids}, limit=100)
+        resellers = self.get_resellers(words, domain, search_partner_name, params={'all_visit_ids': all_visit_ids}, limit=30)
         if len(resellers) < 100:
             matched_reseller_ids = resellers.mapped('id')
             resellers += self.get_resellers(
