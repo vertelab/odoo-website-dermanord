@@ -471,7 +471,7 @@ class Main(http.Controller):
         domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids', 'in', all_visit_ids)]
         words = post.get('search_resellers')
         resellers = self.get_resellers(words, domain, search_partner_name, params={'all_visit_ids': all_visit_ids}, limit=30)
-        if len(resellers) < 100:
+        if len(resellers) < 30:
             matched_reseller_ids = resellers.mapped('id')
             resellers += self.get_resellers(
                 words,
@@ -479,7 +479,7 @@ class Main(http.Controller):
                 search_partner,
                 params={'all_visit_ids': all_visit_ids},
                 webshop=False,
-                limit=100 - len(resellers))
+                limit=30 - len(resellers))
         return request.website.render('reseller_dermanord.resellers', {'resellers': resellers, 'search_resellers': words, 'placeholder': '<span>Search...</span>'})
         
     @http.route(['/reseller/<int:partner_id>',], type='http', auth="public", website=True)
