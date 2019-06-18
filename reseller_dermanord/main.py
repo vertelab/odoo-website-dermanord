@@ -467,9 +467,9 @@ class Main(http.Controller):
                 ]).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
             return res
         
-        domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')]
-        words = post.get('search_resellers')
         all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
+        domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids', 'in', all_visit_ids)]
+        words = post.get('search_resellers')
         resellers = self.get_resellers(words, domain, search_partner_name, params={'all_visit_ids': all_visit_ids}, limit=100)
         if len(resellers) < 100:
             matched_reseller_ids = resellers.mapped('id')
