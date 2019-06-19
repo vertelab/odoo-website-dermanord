@@ -461,7 +461,7 @@ class product_template(models.Model):
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (variant['dv_ribbon'] and (ribbon_limited.html_class in variant['dv_ribbon'])) else '',
                     key_raw=key_raw,
                     key=key,
-                    view_type='product',
+                    view_type='variant',
                     render_time='%s' % (timer() - render_start),
                     price_from=_('Price From'),
                 ).encode('utf-8')
