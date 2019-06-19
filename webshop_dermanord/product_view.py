@@ -422,7 +422,7 @@ class product_template(models.Model):
 
         for variant in variant_ids:
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
-            key_raw = 'thumbnail_default_variant %s %s %s %s %s %s %s %s' % (
+            key_raw = 'thumbnail_variant %s %s %s %s %s %s %s %s' % (
                 self.env.cr.dbname, flush_type, variant['id'], pricelist.id,
                 self.env.lang, request.session.get('device_type','md'),
                 self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
@@ -1005,37 +1005,16 @@ class product_product(models.Model):
         def generate_alternative_products(variant, partner):
             if variant.alternative_product_ids:
 
-                thumb_list = self.product_tmpl_id.get_thumbnail_default_variant2(partner.property_product_pricelist.id, variant.alternative_product_ids.read(['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',]))
+                
                 page = u"""<div id="alternatives_div">
-                            <h2 class="text-center dn_uppercase mt32 mb32">Suggested alternatives:</h2>"""
+                            <div class="container hidden-xs">
+                                <h2 class="text-center dn_uppercase mt32 mb32">Suggested alternatives:</h2>"""
+                
+                thumb_list = self.product_tmpl_id.get_thumbnail_default_variant2(partner.property_product_pricelist.id, variant.alternative_product_ids.read(['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',]))
                 for th in thumb_list:
-                    page += th.decode('utf-8')
+                    page += th.decode('utf-8').replace("col-md-4", "col-md-6", 1)
                 
-                # ~ _logger.warn("hej")
-                
-                # ~ page = """<div id="alternatives_div">
-            # ~ <div class="container hidden-xs">
-                # ~ <h2 class="text-center dn_uppercase mt32 mb32">Suggested alternatives:</h2>"""
-        
-                # ~ alternative_html = ""
-                # ~ for alternative_product in variant.alternative_product_ids:
-                    
-                    # ~ product_images_html = '<div><img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' % self.env['website'].imagefield_hash('product.template', 'image_small', alternative_product.id, 'website_sale_product_gallery.img_product_thumbnail')
-                    
-                    # ~ alternative_html += """<a href="/dn_shop/product/{slug_product}">
-            # ~ <div class="col-md-3 col-sm-3 thumbnail" style="padding: 0px;">
-                # ~ {product_image}
-                # ~ <h5 class="text-center text-primary" style="padding: 0px; margin-top: 0px; overflow: hidden; height: 2.5em;">
-                    # ~ <span itemprop="name">{product_name}</span>
-                # ~ </h5>
-            # ~ </div>
-        # ~ </a>""".format(
-                    # ~ product_image = product_images_html,
-                    # ~ slug_product = slug(alternative_product),
-                    # ~ product_name = alternative_product.name,
-                # ~ )
-                
-                page += """</div>"""
+                page += """</div></div>"""
                 
             else:
                 page = u""""""
@@ -1044,35 +1023,16 @@ class product_product(models.Model):
             
         def generate_accessory_products(variant, partner):
             if variant.accessory_product_ids:
-                thumb_list = self.product_tmpl_id.get_thumbnail_variant(partner.property_product_pricelist.id, variant.accessory_product_ids.read(['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',]))
-                page = u"""<div id="accessory_div">
-                            <h2 class="text-center dn_uppercase mt32 mb32">Suggested accessories:</h2>"""
-                for th in thumb_list:
-                    page += th.decode('utf-8')
-                    
-                # ~ page = u"""<div id="accessory_div">
-            # ~ <div class="container hidden-xs">
-                # ~ <h2 class="text-center dn_uppercase mt32 mb32">Suggested accessories:</h2>"""
-        
-                # ~ accessory_html = ""
-                # ~ for accessory_product in variant.accessory_product_ids:
-                    
-                    # ~ product_images_html = '<div><img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' % self.env['website'].imagefield_hash('product.product', 'image_small', accessory_product.id, 'website_sale_product_gallery.img_product_thumbnail')
-                        
-                    # ~ accessory_html += u"""<a href="/dn_shop/variant/{slug_product}">
-            # ~ <div class="col-md-3 col-sm-3 thumbnail" style="padding: 0px;">
-                # ~ {product_image}
-                # ~ <h5 class="text-center text-primary" style="padding: 0px; margin-top: 0px; overflow: hidden; height: 2.5em;">
-                    # ~ <span itemprop="name">{product_name}</span>
-                # ~ </h5>
-            # ~ </div>
-        # ~ </a>""".format(
-                    # ~ product_image = product_images_html,
-                    # ~ slug_product = slug(accessory_product),
-                    # ~ product_name = accessory_product.name,
-                # ~ )
                 
-                page += u"""</div>"""
+                page = u"""<div id="accessory_div">
+                            <div class="container hidden-xs">
+                                <h2 class="text-center dn_uppercase mt32 mb32">Suggested accessories:</h2>"""
+                
+                thumb_list = self.product_tmpl_id.get_thumbnail_variant(partner.property_product_pricelist.id, variant.accessory_product_ids.read(['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',]))
+                for th in thumb_list:
+                    page += th.decode('utf-8').replace("col-md-4", "col-md-6", 1)
+                
+                page += u"""</div></div>"""
                 
             else:
                 page = u""""""
