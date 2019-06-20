@@ -424,7 +424,7 @@ class Main(http.Controller):
             'competence': competence,
             'search_resellers': words,
             'resellers': resellers,
-            'placeholder': _('<span>Search...</span>'),
+            'placeholder': _('Search...'),
         })
 
     @http.route(['/resellers'], type='http', auth="public", website=True)
