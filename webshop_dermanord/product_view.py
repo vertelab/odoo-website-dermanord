@@ -361,7 +361,7 @@ class product_template(models.Model):
                 self.env.lang, request.session.get('device_type','md'),
                 self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
                 ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))  # db flush_type produkt prislista språk webeditor kundgrupper,
-            key,page_dict = self.env['website'].get_page_dict(key_raw)
+            key, page_dict = self.env['website'].get_page_dict(key_raw)
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
             if not page_dict:
                 render_start = timer()
@@ -401,6 +401,72 @@ class product_template(models.Model):
                 ).encode('utf-8')
                 # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
                 self.env['website'].put_page_dict(key_raw, flush_type, page, 'product.template,%s' % product['id'])
+                page_dict['page'] = base64.b64encode(page)
+            thumbnail.append(page_dict.get('page', '').decode('base64'))
+        return thumbnail
+        
+    @api.model
+    def get_thumbnail_variant(self,pricelist,variant_ids):
+        if isinstance(pricelist,int):
+            pricelist = self.env['product.pricelist'].sudo().browse(pricelist)
+        # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % ('Start'))
+        # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % self.env['product.template'].search_read(domain, fields=['id','name', 'dv_ribbon' ,'is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=limit, order=order,offset=offset))
+        thumbnail = []
+        flush_type = 'thumbnail_variant'
+        ribbon_promo = None
+        ribbon_limited = None
+
+        user = self.env.ref('base.public_user')
+
+        _logger.warn('Notice get_thunmb2 --------> %s user %s %s %s ' % (self.env.ref('base.public_user'),self.env.user,self._uid,user))
+
+        for variant in variant_ids:
+            # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
+            key_raw = 'thumbnail_variant %s %s %s %s %s %s %s %s' % (
+                self.env.cr.dbname, flush_type, variant['id'], pricelist.id,
+                self.env.lang, request.session.get('device_type','md'),
+                self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
+                ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))  # db flush_type produkt prislista språk webeditor kundgrupper,
+            key, page_dict = self.env['website'].get_page_dict(key_raw)
+            # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
+            if not page_dict:
+                render_start = timer()
+                if not ribbon_limited:
+                    ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
+                    ribbon_promo   = request.env.ref('website_sale.image_promo')
+
+                #
+                # TODO: get_html_price_long(pricelist) and variant.image_main_id[0].id  dv_ribbon
+                #
+
+                # ~ product = self.env['product.template'].browse(pid['id'])
+                # ~ if not product.product_variant_ids:
+                    # ~ continue
+                # ~ variant = product.product_variant_ids[0]
+                # ~ variant = product.get_default_variant()
+                # ~ if not variant:
+                    # ~ continue
+
+                page = THUMBNAIL.format(
+                    details=_('DETAILS'),
+                    product_id=variant['id'],
+                    # ~ product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0].id, 'snippet_dermanord.img_product') if variant.image_main_id else '',
+                    product_image=variant['dv_image_src'],
+                    product_name=variant['name'],
+                    product_price = self.env['product.product'].sudo().browse(variant['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
+                    product_ribbon=variant['dv_ribbon'],
+                    # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (variant['is_offer_product_reseller'] and pricelist.for_reseller == True) or (variant['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
+                    product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (variant['dv_ribbon'] and (ribbon_promo.html_class in variant['dv_ribbon'])) else '',
+                    product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (variant['dv_ribbon'] and (ribbon_limited.html_class in variant['dv_ribbon'])) else '',
+                    key_raw=key_raw,
+                    key=key,
+                    view_type='variant',
+                    render_time='%s' % (timer() - render_start),
+                    price_from=_('Price From'),
+                ).encode('utf-8')
+                # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
+                self.env['website'].put_page_dict(key_raw, flush_type, page, 'product.variant,%s' % variant['id'])
                 page_dict['page'] = base64.b64encode(page)
             thumbnail.append(page_dict.get('page', '').decode('base64'))
         return thumbnail
@@ -939,65 +1005,37 @@ class product_product(models.Model):
         def generate_alternative_products(variant, partner):
             if variant.alternative_product_ids:
 
-                page = """<div id="alternatives_div">
-            <div class="container hidden-xs">
-                <h2 class="text-center dn_uppercase mt32 mb32">Suggested alternatives:</h2>"""
-        
-                alternative_html = ""
-                for alternative_product in variant.alternative_product_ids:
-                    
-                    product_images_html = '<div><img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' % self.env['website'].imagefield_hash('product.template', 'image_small', alternative_product.id, 'website_sale_product_gallery.img_product_thumbnail')
-                    
-                    alternative_html += """<a href="/dn_shop/product/{slug_product}">
-            <div class="col-md-3 col-sm-3 thumbnail" style="padding: 0px;">
-                {product_image}
-                <h5 class="text-center text-primary" style="padding: 0px; margin-top: 0px; overflow: hidden; height: 2.5em;">
-                    <span itemprop="name">{product_name}</span>
-                </h5>
-            </div>
-        </a>""".format(
-                    product_image = product_images_html,
-                    slug_product = slug(alternative_product),
-                    product_name = alternative_product.name,
-                )
                 
-                page += alternative_html + """</div>
-                </div>"""
+                page = u"""<div id="alternatives_div">
+                            <div class="container hidden-xs">
+                                <h2 class="text-center dn_uppercase mt32 mb32">Suggested alternatives:</h2>"""
+                
+                thumb_list = self.product_tmpl_id.get_thumbnail_default_variant2(partner.property_product_pricelist.id, variant.alternative_product_ids.read(['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',]))
+                for th in thumb_list:
+                    page += th.decode('utf-8').replace("col-md-4", "col-md-6", 1)
+                
+                page += """</div></div>"""
                 
             else:
-                page = """"""
+                page = u""""""
             
             return page
             
         def generate_accessory_products(variant, partner):
             if variant.accessory_product_ids:
-                page = """<div id="accessory_div">
-            <div class="container hidden-xs">
-                <h2 class="text-center dn_uppercase mt32 mb32">Suggested accessories:</h2>"""
-        
-                accessory_html = ""
-                for accessory_product in variant.accessory_product_ids:
-                    
-                    product_images_html = '<div><img class="img img-responsive product_detail_img" style="margin: auto;" src="%s"/></div>' % self.env['website'].imagefield_hash('product.product', 'image_small', accessory_product.id, 'website_sale_product_gallery.img_product_thumbnail')
-                        
-                    accessory_html += """<a href="/dn_shop/variant/{slug_product}">
-            <div class="col-md-3 col-sm-3 thumbnail" style="padding: 0px;">
-                {product_image}
-                <h5 class="text-center text-primary" style="padding: 0px; margin-top: 0px; overflow: hidden; height: 2.5em;">
-                    <span itemprop="name">{product_name}</span>
-                </h5>
-            </div>
-        </a>""".format(
-                    product_image = product_images_html,
-                    slug_product = slug(accessory_product),
-                    product_name = accessory_product.name,
-                )
                 
-                page += accessory_html + """    </div>
-</div>"""
+                page = u"""<div id="accessory_div">
+                            <div class="container hidden-xs">
+                                <h2 class="text-center dn_uppercase mt32 mb32">Suggested accessories:</h2>"""
+                
+                thumb_list = self.product_tmpl_id.get_thumbnail_variant(partner.property_product_pricelist.id, variant.accessory_product_ids.read(['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',]))
+                for th in thumb_list:
+                    page += th.decode('utf-8').replace("col-md-4", "col-md-6", 1)
+                
+                page += u"""</div></div>"""
                 
             else:
-                page = """"""
+                page = u""""""
             
             return page
 
