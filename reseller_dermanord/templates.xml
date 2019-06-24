@@ -67,8 +67,7 @@
                                 <form t-att-action="('/resellers/competence/%s' % competence.id) if competence else '/resellers'" method="post" class="pagination form-inline col-md-12 col-sm-12 col-xs-12 mb16">
                                     <div class="container text-center">
                                         <div class="input-group">
-                                            <div class="placeholder"><t t-raw="placeholder"/></div>
-                                            <input name="search_resellers" class="form-control" t-att-value="search_resellers or ''" type="text"/>
+                                            <input name="search_resellers" class="form-control" t-att-value="search_resellers or ''" t-att-placeholder="placeholder or ''" type="text"/>
                                             <span class="input-group-btn">
                                                 <button type="submit" class="btn btn-default">
                                                     <i class="fa fa-search" />
