@@ -472,7 +472,7 @@ class Main(http.Controller):
                 params={'all_visit_ids': all_visit_ids},
                 webshop=False,
                 limit=limit - len(resellers))
-        return request.website.render('reseller_dermanord.resellers', {'resellers': resellers, 'search_resellers': words, 'placeholder': '<span>Search...</span>'})
+        return request.website.render('reseller_dermanord.resellers', {'resellers': resellers, 'search_resellers': words, 'placeholder': 'Search...'})
         
     @http.route(['/reseller/<int:partner_id>',], type='http', auth="public", website=True)
     def reseller_page(self, partner_id=None, **post):
