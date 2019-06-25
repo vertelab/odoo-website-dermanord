@@ -25,6 +25,7 @@
     width: 100%;
     background-repeat: no-repeat;
     background-size: cover;
+    background-position: top;
 }
 
 .sp_div .col-lg-4.col-md-4.col-sm-4 {
