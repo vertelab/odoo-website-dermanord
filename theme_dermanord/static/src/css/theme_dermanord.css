@@ -909,3 +909,12 @@ address span {
 .nav-pills > li.active > a {
     border-color: #839794;
 }
+
+/* Remove input spinners */
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
