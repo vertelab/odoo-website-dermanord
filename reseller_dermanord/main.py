@@ -270,7 +270,7 @@ class Main(http.Controller):
                         return code['postalcode']
     
     # Return result of resellers with postcode, domain searching
-    def get_resellers(self, words, domain, search_partner, params=None, webshop=False, limit=99):
+    def get_resellers(self, words, domain, search_partner, sort_partners, params=None, webshop=False, limit=99):
         """Find resellers.
         
         :param words: Search terms.
@@ -331,12 +331,13 @@ class Main(http.Controller):
             # Search using search terms
             # Should this be combined with geo search results?
             if not partner_ids:
-                # Search keywords
+                # Search keywords. bit of a mess atm
                 # ~ _logger.warn('\n\nkeyword search\n')
                 search_type = 'keywords'
+                resellers = [i for i in partner_ids]
                 for s in word_list:
                     # Search additional hits within the last domain
-                    resellers_next = search_partner(s, limit=limit, previous_hits=resellers._ids, **params)
+                    resellers_next = search_partner(s, limit=None, previous_hits=resellers, **params)
                     # ~ _logger.warn('\nresellers_next: %s\nresellers: %s' % (resellers_next, resellers))
                     if resellers_next:
                         # We got matches.
@@ -344,10 +345,13 @@ class Main(http.Controller):
                     else:
                         # Ignore keywords without hits.
                         excluded.append(s)
-                self.restore_original_order(resellers, partner_ids)
-                # ~ _logger.warn('\nresellers: %s' % resellers)
+                # Apply limit
                 if len(resellers) > limit:
                     resellers = resellers[:limit]
+                resellers = partner_obj.browse(resellers).sorted(sort_partners)
+                self.restore_original_order(resellers, partner_ids)
+                # ~ _logger.warn('\nresellers: %s' % resellers)
+                
         else:
             # No search terms. Perform geo search.
             search_type = 'geo'
@@ -411,11 +415,20 @@ class Main(http.Controller):
             ]
             if previous_hits:
                 domain.append(('id', 'in', previous_hits))
-            return partner_obj.sudo().search(domain, limit=limit).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
+            return [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'], limit=limit)]
 
         def search_partner(word, all_visit_ids=None, limit=None, previous_hits=None):
             all_visit_ids = all_visit_ids or []
-            matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('id', 'in', all_visit_ids), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
+            domain = [
+                ('id', 'in', all_visit_ids),
+                '|', '|', '|',
+                    ('street', 'ilike', word),
+                    ('street2', 'ilike', word),
+                    ('state_id.name', 'ilike', word),
+                    ('country_id.name', 'ilike', word)]
+            if previous_hits:
+                domain.append(('parent_id', 'in', previous_hits))
+            matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'])]
             domain = [
                 ('is_company', '=', True),
                 ('is_reseller', '=', True),
@@ -428,20 +441,27 @@ class Main(http.Controller):
             ]
             if previous_hits:
                 domain.append(('id', 'in', previous_hits))
-            res = partner_obj.sudo().search(domain, limit=limit).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
-            return res
+            return [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'], limit=limit)]
 
         words = post.get('search_resellers')
         limit = 30
         all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
         domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_competence_ids', '=', competence.id), ('child_ids', 'in', all_visit_ids)]
-        resellers = self.get_resellers(words, domain, search_partner_name, params={'all_visit_ids': all_visit_ids})
+        resellers = self.get_resellers(
+            words,
+            domain,
+            search_partner_name,
+            lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name),
+            params={'all_visit_ids': all_visit_ids},
+            webshop=False,
+            limit=limit)
         if len(resellers) < limit:
             matched_reseller_ids = resellers.mapped('id')
             resellers += self.get_resellers(
                     words,
                     domain + [('id', 'not in', matched_reseller_ids)],
                     search_partner,
+                    lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name),
                     params={'all_visit_ids': all_visit_ids},
                     webshop=False,
                     limit=limit - len(resellers))
@@ -471,11 +491,23 @@ class Main(http.Controller):
             ]
             if previous_hits:
                 domain.append(('id', 'in', previous_hits))
-            return partner_obj.sudo().search(domain, limit=limit).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
+            # ~ return partner_obj.sudo().search(domain, limit=limit).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
+            return [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'], limit=limit)]
         
         def search_partner(word, all_visit_ids=None, limit=None, previous_hits=None):
             all_visit_ids = all_visit_ids or []
-            matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', ''), '|', ('street', 'ilike', word), '|', ('street2', 'ilike', word), '|', ('zip', 'ilike', word), '|', ('state_id.name', 'ilike', word), ('country_id.name', 'ilike', word)], ['id'])]
+            domain = [
+                '|', '|', '|', '|',
+                    ('id', 'in', all_visit_ids),
+                    ('street', 'ilike', word),
+                    ('street2', 'ilike', word),
+                    ('zip', 'ilike', word),
+                    ('state_id.name', 'ilike', word),
+                    ('country_id.name', 'ilike', word)
+            ]
+            if previous_hits:
+                domain.append(('parent_id', 'in', previous_hits))
+            matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'])]
             domain = [
                 ('is_company', '=', True),
                 ('is_reseller', '=', True),
@@ -486,20 +518,28 @@ class Main(http.Controller):
             ]
             if previous_hits:
                 domain.append(('id', 'in', previous_hits))
-            res = partner_obj.sudo().search(domain, limit=limit).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
+            # ~ res = partner_obj.sudo().search(domain, limit=limit).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
+            res = [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'], limit=limit)]
             return res
         
         all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
         domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids', 'in', all_visit_ids)]
         words = post.get('search_resellers')
         limit = 30
-        resellers = self.get_resellers(words, domain, search_partner_name, params={'all_visit_ids': all_visit_ids}, limit=limit)
+        resellers = self.get_resellers(
+            words,
+            domain,
+            search_partner_name,
+            lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name),
+            params={'all_visit_ids': all_visit_ids},
+            limit=limit)
         if len(resellers) < limit:
             matched_reseller_ids = resellers.mapped('id')
             resellers += self.get_resellers(
                 words,
                 domain + [('id', 'not in', matched_reseller_ids)],
                 search_partner,
+                lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name),
                 params={'all_visit_ids': all_visit_ids},
                 webshop=False,
                 limit=limit - len(resellers))
