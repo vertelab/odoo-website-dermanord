@@ -452,7 +452,7 @@ class product_template(models.Model):
                     product_id=variant['id'],
                     # ~ product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0].id, 'snippet_dermanord.img_product') if variant.image_main_id else '',
                     product_image=variant['dv_image_src'],
-                    product_name=variant['name'],
+                    product_name=variant['display_name'][0] == '[' and variant['display_name'].split('] ', 1)[1] or variant['display_name'],
                     product_price = self.env['product.product'].sudo().browse(variant['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=variant['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
@@ -1028,7 +1028,7 @@ class product_product(models.Model):
                             <div class="container hidden-xs">
                                 <h2 class="text-center dn_uppercase mt32 mb32">Suggested accessories:</h2>"""
                 
-                thumb_list = self.product_tmpl_id.get_thumbnail_variant(partner.property_product_pricelist.id, variant.accessory_product_ids.read(['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',]))
+                thumb_list = self.product_tmpl_id.get_thumbnail_variant(partner.property_product_pricelist.id, variant.accessory_product_ids.read(['display_name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',]))
                 for th in thumb_list:
                     page += th.decode('utf-8').replace("col-md-4", "col-md-6", 1)
                 

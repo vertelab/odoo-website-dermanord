@@ -118,7 +118,10 @@ else:
 
         <record id="sp_one_two_param_vertical" model="image.recipe.param">
             <field name="name">vertical</field>
+<!--
             <field name="value">2.1</field>
+-->
+            <field name="value">2</field>
             <field name="recipe_id" ref="sale_promotions.sp_one_two"/>
         </record>
 
@@ -172,7 +175,10 @@ else:
 
         <record id="sp_two_one_param_horizontal" model="image.recipe.param">
             <field name="name">horizontal</field>
+<!--
             <field name="value">2.07</field>
+-->
+            <field name="value">2</field>
             <field name="recipe_id" ref="sale_promotions.sp_two_one"/>
         </record>
 
