@@ -26,10 +26,12 @@ $(document).ready(function(){
     function update_sale_promotions(div, style){
         if (div!==undefined && style!==undefined) {
             var sp_id = style.split("/")[4];
+            var tclass = div.attr("class");
             openerp.jsonRpc("/get_sale_promotion", "call", {
-                'sp_id': sp_id
+                'sp_id': sp_id,
+                'target_class': tclass
             }).done(function(data){
-                var img_src = "background-image: url('" + data['image'] + "sale_promotions." + div.attr("class") + "');";
+                var img_src = "background-image: url('" + data['image'] + "');";
                 div.html('<a href="' + data['url'] + '"><div class="img img-responsive sale_promotions_img" style="' + img_src +'"></div></a>');
             });
         }

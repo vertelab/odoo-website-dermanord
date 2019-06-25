@@ -12,12 +12,15 @@ website.snippet.options.sale_promotions_option = website.snippet.Option.extend({
     get_sp: function get_sale_promotions(sp_id){
         if (sp_id != "") {
             var self = this;
+            var tclass = self.$target.attr("class");
             openerp.jsonRpc("/get_sale_promotion", "call", {
-                'sp_id': sp_id
+                'sp_id': sp_id,
+                //~ 'target_class': self.$target.attr("class")
+                'target_class': tclass
             }).done(function(data){
                 var content = openerp.qweb.render('sale_promotions_content', {
                     'sp_url': data['url'],
-                    'sp_image': "background-image: url('" + data['image'] + "sale_promotions." + self.$target.attr("class") + "');",
+                    'sp_image': "background-image: url('" + data['image'] + "');",
                     //~ 'sp_name': data['name'],
                     //~ 'sp_description': data['description'],
                 });

@@ -47,13 +47,13 @@ class SalePromotions(models.Model):
 
 class SalePromotions(http.Controller):
     @http.route(['/get_sale_promotion'], type='json', auth='public', website=True)
-    def get_sale_promotion(self, sp_id=None, **kw):
+    def get_sale_promotion(self, sp_id=None, target_class=None, **kw):
         image = 'image_sv' if request.context.get('lang') == 'sv_SE' else 'image_en'
         sp = request.env['sale.promotion'].sudo().browse(int(sp_id))
         sale_promotion = {}
         sale_promotion['_id'] = sp.id
         sale_promotion['name'] = sp.name
         sale_promotion['description'] = sp.description
-        sale_promotion['image'] = '/imagefield/sale.promotion/%s/%s/ref/' %(image, sp.id)
+        sale_promotion['image'] = request.env['website'].imagefield_hash('sale.promotion', image, sp.id, 'sale_promotions.' + target_class)
         sale_promotion['url'] = sp.url
         return sale_promotion
