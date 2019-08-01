@@ -1220,6 +1220,7 @@ class product_product(models.Model):
                         </span>
                     </div>
                     {buy_button}
+                    {stock_notify_button}
                     <h5>
                         <div>
                             <span>{product_startdate}</span>&nbsp;<span>{product_stopdate}</span>
@@ -1262,6 +1263,7 @@ class product_product(models.Model):
                     edu_max= '5' if is_edu_purchase else '',
                     edu_purchase = int(is_edu_purchase),
                     buy_button = buttons['product_view'],
+                    stock_notify_button = '<button type="button" class="stock_notify_button dn_btn dn_primary mt8 text-center {%s_notify_stock_button_hidden}" data-toggle="modal" data-variant-id="%s" data-target="#">%s</button>' % (variant.id, variant.id, _('Notify me when item is back in stock')),
                     product_startdate = _('Available on %s') %campaign.date_start if campaign and campaign.date_start else '',
                     product_stopdate = _('to %s') %campaign.date_stop if campaign and campaign.date_stop else '',
                     stock_status = '{%s_stock_status}' % variant.id,
@@ -1293,13 +1295,25 @@ class product_product(models.Model):
             # https://schema.org/OutOfStock
             stock['%s_in_stock' %variant.id], stock['%s_in_stock_state' %variant.id], stock['%s_stock_status' % variant.id] = self.get_stock_info(variant.id)
             stock['%s_google_stock_status' %variant.id] = {'short': 'https://schema.org/OutOfStock', 'few': 'https://schema.org/LimitedAvailability', 'in': 'https://schema.org/InStock'}[stock['%s_in_stock_state' %variant.id]]
+            stock['%s_buy_button_hidden' % variant.id] = ''
+            stock['%s_notify_stock_button_hidden' % variant.id] = ''
             if not pricelist.for_reseller:
+				#Customers is consumer
                 stock['%s_stock_status' % variant.id] = ''
                 stock['%s_buy_button_hidden' % variant.id] = 'hidden'
-            elif (stock['%s_in_stock' %variant.id] and variant.sale_ok and variant.purchase_type != 'none'):
-                stock['%s_buy_button_hidden' % variant.id] = ''
-            else:       
-                stock['%s_buy_button_hidden' % variant.id] = 'hidden'
+                stock['%s_notify_stock_button_hidden' % variant.id] = 'hidden'
+            else:
+				#Customers is reseller
+				if not (variant.sale_ok and variant.purchase_type != 'none'): 
+					#Product is not sellable
+					stock['%s_buy_button_hidden' % variant.id] = 'hidden'
+					stock['%s_notify_stock_button_hidden' % variant.id] = 'hidden'
+				elif stock['%s_in_stock' %variant.id]:
+					# Product is in stock
+					stock['%s_notify_stock_button_hidden' % variant.id] = 'hidden'
+				else:   
+					# Product is not in stock    
+					stock['%s_buy_button_hidden' % variant.id] = 'hidden'
                 
         try:
             # ~ _logger.warn(stock)

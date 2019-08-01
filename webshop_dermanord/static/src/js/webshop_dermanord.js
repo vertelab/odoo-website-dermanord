@@ -130,6 +130,19 @@ $(document).ready(function(){
         check_in_check_out_parent();
         $input.closest("form").submit();
     });
+    
+     $(".stock_notify_button").click(function() {
+		
+         var $this = $(this);
+         var variant_id = parseInt($this.data('variant-id'));
+    
+			 openerp.jsonRpc("/webshop_dermanord/stock/notify", 'call', {'product_id': variant_id})
+            .then(function (data) {
+           
+               alert(data);
+            });	
+	});
+
 
     function category_checkbox_onchange($e) {
         var $self = $e;

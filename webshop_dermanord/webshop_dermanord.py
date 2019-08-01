@@ -49,6 +49,55 @@ _logger = logging.getLogger(__name__)
 PPG = 21 # Products Per Page
 PPR = 3  # Products Per Row
 
+class stock_notification(models.Model):
+	_name = 'stock.notification'
+	_inherit = ['mail.thread']
+	
+	product_id = fields.Many2one(comodel_name='product.product', string='Product')
+	partner_id = fields.Many2one(comodel_name='res.partner', string='Partner')
+	
+	@api.multi
+	def send_notification(self):
+		author = self.env.ref('base.main_partner').sudo()
+		mail = self.env['mail.mail'].sudo()
+		template = self.env.ref('webshop_dermanord.stock_notify_message', False)
+
+		for notify in self:
+			# ~ mail.create({
+					# ~ 'subject': subject,
+					# ~ 'body_html': body,
+					# ~ 'author_id': author.id,
+					# ~ 'email_from': author.email,
+					# ~ 'type': 'email',
+					# ~ 'auto_delete': True,
+					# ~ 'email_to': notify.partner_id.email,
+				# ~ })
+				
+			ctx = {
+				'default_model': 'stock.notification',
+				'default_res_id': notify.id,
+				'default_use_template': True,
+				'default_template_id': template.id,
+				'default_composition_mode': 'comment',
+				'lang': self.partner_id.lang,
+			}
+			composer = self.env['mail.compose.message'].sudo().with_context(ctx).create({})
+			composer.send_mail()
+		
+		self.unlink()
+
+	@api.model
+	def cron_notify(self):
+		notifications = self.search([])
+		products = notifications.mapped('product_id')
+		to_send = self.browse()
+		for product in products:
+			if product.get_stock_info(product.id)[0]:
+				 to_send |= notifications.filtered(lambda n: n.product_id == product)
+		if to_send:
+			to_send.send_notification()
+		
+
 class blog_post(models.Model):
     _inherit = 'blog.post'
 
@@ -922,6 +971,16 @@ class WebsiteSale(website_sale):
     FACETS = {}  # Static variable
     dn_cart_lock = Lock()
 
+    @http.route('/webshop_dermanord/stock/notify', type='json', auth="user", website=True)
+    def stock_notify(self, product_id=None, **post):
+		notify = request.env['stock.notification'].sudo()
+		partner = request.env.user.partner_id
+		product = request.env['product.product'].browse(product_id)
+		if not notify.search([('product_id', '=', product_id), ('partner_id', '=', partner.id)]):
+			notify.create({'product_id':product_id, 'partner_id': partner.id})
+			return _("A mail will be sent to %s, when %s is back in stock") % (partner.email, product.display_name)
+		return _("Your mail is already registered for notifications on this product")
+			
     @http.route('/shop/payment/validate', type='http', auth="public", website=True)
     def payment_validate(self, transaction_id=None, sale_order_id=None, **post):
         if sale_order_id is None:
