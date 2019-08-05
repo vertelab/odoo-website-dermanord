@@ -16,7 +16,7 @@ $(document).ready(function() {
         });
     });
 
-    getLocation();
+    //~ getLocation(); // removed 2019-08-05
     //~ getClientIP();
 });
 
