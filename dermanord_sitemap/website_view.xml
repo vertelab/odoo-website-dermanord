@@ -19,5 +19,13 @@
 				<changefreq t-esc="page['changefreq']"/></t>
 			</url>
 		</template>
+        
+<template id="robots">
+User-agent: *
+Disallow: /shop/
+Disallow: /sv_SE/shop/
+Disallow: /en_US/shop/
+Sitemap: <t t-esc="url_root"/>sitemap.xml
+</template>
     </data>
 </openerp>

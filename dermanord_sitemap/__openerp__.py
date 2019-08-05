@@ -20,19 +20,20 @@
 ##############################################################################
 
 {
-    'name': 'Dermanord Sitmap',
+    'name': 'Dermanord Sitemap',
     'version': '1.1',
     'category': 'website',
     'summary': 'Sitemap',
     'description': """
-A sitemap for mariaakerberg.com
-===============================
+Sitemap settings + robots.txt
+=============================
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['website_memcached'],
     'data': [
+    'website_view.xml'
     ],
     'qweb': [],
     'application': False,
