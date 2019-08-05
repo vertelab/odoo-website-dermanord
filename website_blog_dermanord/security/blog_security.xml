@@ -18,7 +18,9 @@
                             ('security_type','=',False),
                         '&amp;',
                             ('security_type','=','private'),
-                            ('group_ids','in',[g.id for g in user.partner_id.commercial_partner_id.access_group_ids])
+                            '|',
+                                ('group_ids', 'in', [g.id for g in user.partner_id.access_group_ids]),   
+                                ('group_ids','in',[g.id for g in user.partner_id.commercial_partner_id.access_group_ids])
                 ]</field>
         </record>
         <record model="ir.rule" id="website_blog_private.website_blog_post_private">
