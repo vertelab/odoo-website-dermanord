@@ -18,9 +18,7 @@
                             ('security_type','=',False),
                         '&amp;',
                             ('security_type','=','private'),
-                            '|',
-                                ('group_ids', 'in', [g.id for g in user.partner_id.access_group_ids]),   
-                                ('group_ids','in',[g.id for g in user.partner_id.commercial_partner_id.access_group_ids])
+                            ('group_ids','in',[g.id for g in user.partner_id.commercial_partner_id.access_group_ids] + [g.id for g in user.partner_id.access_group_ids] + [g.id for g in user.groups_id])
                 ]</field>
         </record>
         <record model="ir.rule" id="website_blog_private.website_blog_post_private">
@@ -34,18 +32,14 @@
                                 ('blog_id.security_type', '=', False),
                             '&amp;',
                                 ('blog_id.security_type', '=', 'private'),
-                                '|',
-                                    ('blog_id.group_ids', 'in', [g.id for g in user.partner_id.access_group_ids]),
-                                    ('blog_id.group_ids', 'in', [g.id for g in user.partner_id.parent_id.access_group_ids]),
+                                ('blog_id.group_ids', 'in', [g.id for g in user.partner_id.parent_id.access_group_ids] + [g.id for g in user.partner_id.access_group_ids] + [g.id for g in user.groups_id]),
                         '|',
                             '|',
                                 ('security_type', '=', 'public'),
                                 ('security_type', '=', False),
                             '&amp;',
                                 ('security_type', '=', 'private'),
-                                '|',
-                                    ('group_ids', 'in', [g.id for g in user.partner_id.access_group_ids]),   
-                                    ('group_ids', 'in', [g.id for g in user.partner_id.parent_id.access_group_ids]),   
+                                ('group_ids', 'in', [g.id for g in user.partner_id.parent_id.access_group_ids] + [g.id for g in user.partner_id.access_group_ids] + [g.id for g in user.groups_id]),
                 ]</field>
         </record>
         
