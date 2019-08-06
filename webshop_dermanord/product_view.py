@@ -19,7 +19,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from openerp import models, fields, api, _
 from datetime import datetime, date, timedelta
 from openerp.addons.website_memcached import memcached
 import base64
@@ -1006,9 +1006,9 @@ class product_product(models.Model):
             if variant.alternative_product_ids:
 
                 
-                page = u"""<div id="alternatives_div">
+                page = _(u"""<div id="alternatives_div">
                             <div class="container hidden-xs">
-                                <h2 class="text-center dn_uppercase mt32 mb32">Suggested alternatives:</h2>"""
+                                <h2 class="text-center dn_uppercase mt32 mb32">Suggested alternatives:</h2>""")
                 
                 thumb_list = self.product_tmpl_id.get_thumbnail_default_variant2(partner.property_product_pricelist.id, variant.alternative_product_ids.read(['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',]))
                 for th in thumb_list:
@@ -1024,9 +1024,9 @@ class product_product(models.Model):
         def generate_accessory_products(variant, partner):
             if variant.accessory_product_ids:
                 
-                page = u"""<div id="accessory_div">
+                page = _(u"""<div id="accessory_div">
                             <div class="container hidden-xs">
-                                <h2 class="text-center dn_uppercase mt32 mb32">Suggested accessories:</h2>"""
+                                <h2 class="text-center dn_uppercase mt32 mb32">Suggested accessories:</h2>""")
                 
                 thumb_list = self.product_tmpl_id.get_thumbnail_variant(partner.property_product_pricelist.id, variant.accessory_product_ids.read(['display_name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',]))
                 for th in thumb_list:
