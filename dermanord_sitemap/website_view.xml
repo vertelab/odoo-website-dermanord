@@ -25,6 +25,9 @@ User-agent: *
 Disallow: /shop/
 Disallow: /sv_SE/shop/
 Disallow: /en_US/shop/
+Disallow: /event/
+Disallow: /sv_SE/event/
+Disallow: /en_US/event/
 Sitemap: <t t-esc="url_root"/>sitemap.xml
 </template>
     </data>
