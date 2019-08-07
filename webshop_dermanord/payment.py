@@ -36,9 +36,7 @@ class PaymentTransaction(models.Model):
         res = super(WebsiteSalePaymentTransaction, self).form_feedback(data, acquirer_name)
 
         # fetch the tx, check its state, confirm the potential SO
-        
-        # ~ try:
-        if True:
+        try:
             tx_find_method_name = '_%s_form_get_tx_from_data' % acquirer_name
             if hasattr(self, tx_find_method_name):
                 tx = getattr(self, tx_find_method_name)(data)
@@ -95,6 +93,6 @@ class PaymentTransaction(models.Model):
                     _logger.warning('<%s> transaction MISMATCH for order %s (ID %s)', acquirer_name, order.name, order.id)
                 
  
-        # ~ except Exception:
-            # ~ _logger.exception('Fail to confirm the order or send the confirmation email%s', tx and ' for the transaction %s' % tx.reference or '')
+        except Exception:
+            _logger.exception('Fail to confirm the order or send the confirmation email%s', tx and ' for the transaction %s' % tx.reference or '')
         return res
