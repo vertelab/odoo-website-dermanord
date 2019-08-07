@@ -37,6 +37,10 @@ SITEMAP_CACHE_TIME = datetime.timedelta(hours=12)
 
 class Website(Website):
 
+    @http.route(['/robots.txt'], type='http', auth="public")
+    def robots(self):
+        return request.render('dermanord_sitemap.robots', {'url_root': request.httprequest.url_root}, mimetype='text/plain')
+
     @memcached.route(key=lambda kw:'db: {db} path: sitemap.xml', flush_type=lambda kw: 'sitemap', no_cache=True, cache_age=31536000, max_age=31536000, s_maxage=43200)
     def sitemap_xml_index(self):
         cr, uid, context = request.cr, openerp.SUPERUSER_ID, request.context
