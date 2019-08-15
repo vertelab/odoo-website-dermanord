@@ -11,16 +11,21 @@
                 </field>
             </field>
         </record>
+-->
 
         <record id="product_normal_form_view" model="ir.ui.view">
-            <field name="name">product.product.form.inherited.website_product_private</field>
+            <field name="name">product.product.form.inherited.webshop_dermanord</field>
             <field name="model">product.product</field>
-            <field name="inherit_id" ref="product_private.product_normal_form_view" />
+            <field name="inherit_id" ref="product.product_normal_form_view" />
             <field name="arch" type="xml">
-                <field name="access_group_ids" position="after">
-                </field>
+                <group name="sale" position="after">
+                    <group name="dn_tester" string="Tester">
+                        <field name="has_tester"/>
+                        <field name="tester_product_id" attrs="{'invisible': [('has_tester', '=', False)]}"/>
+                        <field name="tester_min" attrs="{'invisible': [('has_tester', '=', False)]}"/>
+                    </group>
+                </group>
             </field>
         </record>
--->
     </data>
 </openerp>

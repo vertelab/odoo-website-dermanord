@@ -114,7 +114,45 @@ function setCartPriceQuantity(price, quantity, price_float) {
     $(".my_cart_quantity").data("price", price_float);
 }
 
-$(document).ready(function(){
+$(function(){
+    
+    $(".add_tester").click(function(){
+    var $this = $(this);
+    var product_id = parseInt($this.parents("td.text-center").find("input[type='number']").data('product-id'));
+    var quantity =   parseInt($this.parents("td.text-center").find("input[type='number']").val());
+    var mini_value = parseInt($this.parents("td.text-center").find("div.add_tester").data('min-tester'));
+    
+    if (quantity < mini_value) {
+        alert (_.str.sprintf(openerp._t("You have to buy at least %s products to get a tester"), mini_value));
+    }
+    else{
+        alert (openerp._t("A tester has been added to your cart"));
+       
+        parseInt($this.parents("td.text-center").find("div.add_tester").addClass("hidden"));
+        parseInt($this.parents("td.text-center").find("div.remove_tester").removeClass("hidden"));
+        
+        openerp.jsonRpc("/webshop_dermanord/add_tester", 'call', {'product_id': product_id})
+       .then(function (data){
+        alert(data);
+        });
+    }
+
+});
+    
+    $(".remove_tester").click(function(){
+        var $this = $(this);
+        var product_id = parseInt($this.parents("td.text-center").find("input[type='number']").data('product-id'));
+        
+        alert (openerp._t("A tester has been removed from your cart"));
+        parseInt($this.parents("td.text-center").find("div.add_tester").removeClass('hidden'));
+        parseInt($this.parents("td.text-center").find("div.remove_tester").addClass('hidden'));
+             
+        openerp.jsonRpc("/webshop_dermanord/add_tester", 'call', {'product_id': product_id})
+       .then(function (data){
+        alert(data);
+        });
+        
+});
 
     $("input.category_checkbox").change(function() {
         category_checkbox_onchange($(this));

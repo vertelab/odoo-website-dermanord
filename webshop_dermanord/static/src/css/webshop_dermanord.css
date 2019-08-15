@@ -740,6 +740,19 @@ tr.tr_lst td {
     position: relative;
 }
 
+.add_tester p{
+    font-size: 16px;
+    padding-top: 3%;
+}
+.remove_tester p{
+    font-size: 16px;
+    padding-top: 3%;
+}
+
+.hidden{
+    display: none;
+}
+
 /* Override original css when max-width equals 500px */
 @media (max-width: 500px) {
     .oe_cart table thead, #modal_optional_products table thead {

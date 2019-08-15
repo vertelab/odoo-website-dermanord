@@ -259,6 +259,9 @@ class product_product(models.Model):
     #~ so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')  # performance hog, do we need it?
     sold_qty = fields.Integer(string='Sold', default=0)
     website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
+    has_tester = fields.Boolean(string='Has Tester')
+    tester_product_id = fields.Many2one(comodel_name='product.product', string='Tester Product')
+    tester_min = fields.Float(string='Minimum Quantity', default=6)
 
     @api.one
     def _fullname(self):
@@ -701,6 +704,11 @@ class SaleOrderLine(models.Model):
         if self.is_delivery or self.is_min_order_fee:
             return False
         return super(SaleOrderLine, self).sale_home_confirm_copy()
+    
+    @api.multi
+    def check_for_tester(self):
+        # TODO: Check if tester already is on order
+        return False
 
 dn_cart_update = {}
 
@@ -970,6 +978,28 @@ class WebsiteSale(website_sale):
 
     FACETS = {}  # Static variable
     dn_cart_lock = Lock()
+
+    @http.route('/webshop_dermanord/add_tester', type='json', auth="user", website=True)
+    def add_tester(self, product_id=None, **post):
+        product = request.env['product.product'].sudo().browse('product_id')
+        # Kontrollera och addera tester
+        return {
+            'product_ids': product.product_templ_id.product_ids._ids, # Lista med de produkter vi adderat tester för
+            'message': _("Hej hopp!"),
+        }
+
+    @http.route('/webshop_dermanord/remove_tester', type='json', auth="user", website=True)
+    def remove_tester(self, product_id=None, **post):
+        product = request.env['product.product'].sudo().browse('product_id')
+        # Kontrollera och ta bort tester
+        return {
+            'product_ids': product.product_templ_id.product_ids._ids, # Lista med de produkter vi adderat tester för
+            'message': _("Hej hopp!"),
+        }
+        
+        # ~ return _("You need to buy at least 6 products to get a tester")
+		# ~ return _("One tester has been put in your cart.")
+        
 
     @http.route('/webshop_dermanord/stock/notify', type='json', auth="user", website=True)
     def stock_notify(self, product_id=None, **post):
