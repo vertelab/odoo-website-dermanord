@@ -63,7 +63,7 @@ class PaymentTransaction(models.Model):
                             order.state = 'sent'
                             return res  
                             
-                        order.action_button_confirm()
+                        order.with_context(send_email=True).action_button_confirm()
                         for picking in order.picking_ids:
                             picking.action_assign()
           

@@ -405,9 +405,9 @@ class WebsiteBlog(WebsiteBlog):
         if not (blog_post.id in request.session[request.session_id]):
             request.session[request.session_id].append(blog_post.id)
             # Increase counter
-            blog_post_obj.write(cr, SUPERUSER_ID, [blog_post.id], {
-                'visits': blog_post.visits+1,
-            },context=context)
+            # ~ blog_post_obj.write(cr, SUPERUSER_ID, [blog_post.id], {
+                # ~ 'visits': blog_post.visits+1,
+            # ~ },context=context)
         if blog.post_complete:
             #~ try:
             return request.website.render(blog.post_complete.xml_id, values)
