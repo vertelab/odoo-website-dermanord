@@ -1421,7 +1421,7 @@ msgstr "Status"
 #. module: webshop_dermanord
 #: model:ir.actions.act_window,name:webshop_dermanord.action_stock_noftification
 msgid "Stock notification"
-msgstr "Stock notification"
+msgstr "Lagernotifieringar"
 
 #. module: webshop_dermanord
 #: model:ir.ui.menu,name:webshop_dermanord.action_menu_stock_noftification
