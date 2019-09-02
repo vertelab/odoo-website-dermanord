@@ -245,20 +245,6 @@ class product_template(models.Model):
     dv_ribbon = fields.Char(compute='_get_all_variant_data', store=True)
 
 
-    @api.one
-    @api.depends('campaign_changed', 'product_variant_ids.campaign_changed')
-    def _is_offer_product(self):
-        self.is_offer_product_reseller = self in self.get_campaign_tmpl(for_reseller=True)
-        if not self.is_offer_product_reseller:
-            self.is_offer_product_reseller = bool(self.product_variant_ids & self.get_campaign_variants(for_reseller=True))
-        self.is_offer_product_consumer = self in self.get_campaign_tmpl(for_reseller=False)
-        if not self.is_offer_product_consumer:
-            self.is_offer_product_consumer = bool(self.product_variant_ids & self.get_campaign_variants(for_reseller=False))
-    is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
-    is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
-
-
-
     @api.model
     def get_thumbnail_default_variant(self,domain,pricelist,limit=21,order='',offset=0):
         if isinstance(pricelist,int):
@@ -576,19 +562,6 @@ class product_product(models.Model):
         for key in memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self]):
             memcached.mc_delete(key)
             
-
-    @api.one
-    @api.depends('product_tmpl_id.campaign_changed')
-    def _is_offer_product(self):
-        self.is_offer_product_reseller = self in self.get_campaign_variants(for_reseller=True)
-        if not self.is_offer_product_reseller:
-            self.is_offer_product_reseller = self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=True)
-        self.is_offer_product_consumer = self in self.get_campaign_variants(for_reseller=False)
-        if not self.is_offer_product_consumer:
-            self.is_offer_product_consumer = self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False)
-    is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
-    is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
-    # ~ force_out_of_stock = fields.Boolean(string='Out of Stock', help="Forces this product to display as out of stock in the webshop.")
     inventory_availability = fields.Selection([
         ('never', 'Never sell'),
         ('always', 'Sell regardless of inventory'),
@@ -947,6 +920,7 @@ class product_product(models.Model):
                 elif variant.product_tmpl_id.website_style_ids[0] == ribbon_limited:
                     ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('Limited Edition')
             offer_wrapper = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">%s</div></div>' %_('Offer') if variant.is_offer_product_reseller or variant.is_offer_product_consumer else ''
+            # ~ offer_wrapper = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">%s</div></div>' %_('Offer') if variant._is_offer_product() else ''
             product_images = variant.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
             product_images_html = ''
             product_images_nav_html = ''

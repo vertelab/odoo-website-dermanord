@@ -71,7 +71,7 @@ class WebsiteSale(WebsiteSale):
     #~ @http.route([
         #~ '/dn_shop/variant/<model("product.product"):variant>'
     #~ ], type='http', auth="public", website=True)
-    @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} groups: %s' % request.website.get_dn_groups(), flush_type=lambda kw: 'dn_shop', no_cache=True, cache_age=43200, max_age=43200, s_maxage=600)
+    @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} groups: %s' % request.website.get_dn_groups(), flush_type=lambda kw: 'dn_shop', no_cache=True, cache_age=43200, max_age=43200, s_maxage=600)
     def dn_product_variant(self, variant, category='', search='', **kwargs):
         return super(WebsiteSale, self).dn_product_variant(variant, category, search, **kwargs)
 

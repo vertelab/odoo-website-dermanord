@@ -838,16 +838,7 @@ class Website(models.Model):
         for offer_type in ['current_offer']:
             if offer_type in dic:
                 reseller = request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller or False
-                # TODO: This looks like a lot of browses. Should be possible to shorten it considerably.
-                if model == 'product.template':
-                    #get product.template that have variants are in current offer
-                    campaign_product_ids = list(set(
-                        request.env[model].get_campaign_tmpl(for_reseller=reseller).mapped('id') +
-                        request.env['product.product'].get_campaign_variants(for_reseller=reseller).mapped('product_tmpl_id').mapped('id')))
-                if model == 'product.product':
-                    campaign_product_ids = list(set(
-                        request.env[model].get_campaign_variants(for_reseller=reseller).mapped('id') +
-                        request.env['product.product'].search([('product_tmpl_id.id', 'in', request.env['product.template'].get_campaign_tmpl(for_reseller=reseller).mapped('id'))]).mapped('id')))
+                campaign_product_ids = self.env['crm.tracking.campaign.helper'].sudo().search([('for_reseller', '=', reseller), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)]).mapped(lambda r: r.product_id.mapped('id') + r.variant_id.mapped('id'))
                 if campaign_product_ids:
                     append_domain(domain_current, [('id', 'in', campaign_product_ids)])
                 else:
