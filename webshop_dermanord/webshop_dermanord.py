@@ -61,7 +61,7 @@ class stock_notification(models.Model):
     @api.multi
     def send_notification(self):
         author = self.env.ref('base.main_partner').sudo()
-        mail = self.env['mail.mail'].sudo()
+        # ~ mail = self.env['mail.mail'].sudo()
         template = self.env.ref('webshop_dermanord.stock_notify_message', False)
         
         for notify in self:
@@ -81,12 +81,12 @@ class stock_notification(models.Model):
                 'default_use_template': True,
                 'default_template_id': template.id,
                 'default_composition_mode': 'comment',
-                'lang': self.partner_id.lang,
+                'lang': notify.partner_id.lang,
             }
             composer = self.env['mail.compose.message'].sudo().with_context(ctx).create({})
             composer.send_mail()
         
-        self.status = 'sent'
+        self.write({'status' : 'sent'})
 
     @api.model
     def cron_notify(self):
@@ -98,6 +98,8 @@ class stock_notification(models.Model):
                  to_send |= notifications.filtered(lambda n: n.product_id == product and n.status == 'pending')
         if to_send:
             to_send.send_notification()
+            
+        self.search([('status', '=', 'sent'), ('message_last_post', '<', fields.Datetime.to_string(datetime.now() + timedelta(days=-7)))]).unlink()
         
 
 class blog_post(models.Model):
@@ -999,7 +1001,7 @@ class WebsiteSale(website_sale):
         notify = request.env['stock.notification'].sudo()
         partner = request.env.user.partner_id
         product = request.env['product.product'].browse(product_id)
-        if not notify.search([('product_id', '=', product_id), ('partner_id', '=', partner.id)]):
+        if not notify.search([('product_id', '=', product_id), ('partner_id', '=', partner.id), ('status', '=', 'pending')]):
             notify.create({'product_id':product_id, 'partner_id': partner.id})
             return _("A mail will be sent to %s, when %s is back in stock") % (partner.email, product.display_name)
         return _("Your mail is already registered for notifications on this product")
