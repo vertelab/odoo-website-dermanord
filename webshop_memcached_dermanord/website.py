@@ -64,7 +64,7 @@ class WebsiteSale(WebsiteSale):
         return super(WebsiteSale, self).webshop(category, search, **post)
 
     #~ @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
-    @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} groups: %s' % request.website.get_dn_groups(), flush_type=lambda kw: 'dn_shop', no_cache=True, cache_age=43200, max_age=43200, s_maxage=600)
+    @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} groups: %s' % request.website.get_dn_groups(), flush_type=lambda kw: 'dn_shop', no_cache=True, cache_age=43200, max_age=43200, s_maxage=600)
     def dn_product(self, product, category='', search='', **post):
         return super(WebsiteSale, self).dn_product(product, category, search, **post)
 
