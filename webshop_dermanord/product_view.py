@@ -829,6 +829,7 @@ class product_product(models.Model):
             "name": variant.name,
             "image": images,
             "description": variant.public_desc,
+            "gtin13": variant.ean13,
             "sku": variant.default_code,
             "brand": {
                 "@type": "Brand",
