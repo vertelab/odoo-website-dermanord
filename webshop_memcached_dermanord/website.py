@@ -58,7 +58,7 @@ class WebsiteSale(WebsiteSale):
         # ~ '/webshop',
         # ~ '/webshop/category/<model("product.public.category"):category>',
     #~ ], type='http', auth="public", website=True)
-    @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang}%s groups: %s webshop_type: %s' % (request.website.get_search_values(kw), request.website.get_dn_groups(), request.website.get_webshop_type()), flush_type=lambda kw: 'webshop', no_cache=True, cache_age=43200, max_age=43200, s_maxage=600)
+    @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country}%s groups: %s webshop_type: %s' % (request.website.get_search_values(kw), request.website.get_dn_groups(), request.website.get_webshop_type()), flush_type=lambda kw: 'webshop', no_cache=True, cache_age=43200, max_age=43200, s_maxage=600)
     def webshop(self, category=None, search='', **post):
         request.website.dn_shop_set_session('product.template', post, '/webshop')
         return super(WebsiteSale, self).webshop(category, search, **post)
