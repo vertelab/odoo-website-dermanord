@@ -840,7 +840,12 @@ class Website(models.Model):
         for offer_type in ['current_offer']:
             if offer_type in dic:
                 reseller = request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller or False
-                campaign_product_ids = self.env['crm.tracking.campaign.helper'].sudo().search([('for_reseller', '=', reseller), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)]).mapped(lambda r: r.product_id.mapped('id') + r.variant_id.mapped('id'))
+                if model == 'product.template':
+                    campaign_product_ids = [v['product_id'][0] for v in self.env['crm.tracking.campaign.helper'].sudo().search_read([('for_reseller', '=', reseller), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)], ['product_id',]) if v['product_id']]
+                if model == 'product.product':
+                    campaign_product_ids = [v['variant_id'][0] for v in self.env['crm.tracking.campaign.helper'].sudo().search_read([('for_reseller', '=', reseller), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)], ['variant_id',]) if v['variant_id']]
+                    for t in self.env['crm.tracking.campaign.helper'].sudo().search([('for_reseller', '=', reseller), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)]):
+                        campaign_product_ids = campaign_product_ids + t.product_id.product_variant_ids.mapped('id')
                 if campaign_product_ids:
                     append_domain(domain_current, [('id', 'in', campaign_product_ids)])
                 else:
@@ -1644,7 +1649,6 @@ class WebsiteSale(website_sale):
             products=request.env['product.product'].get_list_row(request.session.get('current_domain'),request.context['pricelist'],limit=PPG, order=request.session.get('current_order'))
         else:
             product_ids = request.env['product.template'].sudo(user).search_read(request.session.get('current_domain'), fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=PPG, order=request.session.get('current_order'),offset=0)
-
             products=request.env['product.template'].get_thumbnail_default_variant2(request.context['pricelist'],product_ids)
         if len(products) == 0:
             no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
