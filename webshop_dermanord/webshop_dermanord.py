@@ -842,6 +842,8 @@ class Website(models.Model):
                 reseller = request.env.user.partner_id.property_product_pricelist and request.env.user.partner_id.property_product_pricelist.for_reseller or False
                 if model == 'product.template':
                     campaign_product_ids = [v['product_id'][0] for v in self.env['crm.tracking.campaign.helper'].sudo().search_read([('for_reseller', '=', reseller), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)], ['product_id',]) if v['product_id']]
+                    for t in self.env['crm.tracking.campaign.helper'].sudo().search([('for_reseller', '=', reseller), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)]):
+                        campaign_product_ids = campaign_product_ids + t.variant_id.product_tmpl_id.mapped('id')
                 if model == 'product.product':
                     campaign_product_ids = [v['variant_id'][0] for v in self.env['crm.tracking.campaign.helper'].sudo().search_read([('for_reseller', '=', reseller), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)], ['variant_id',]) if v['variant_id']]
                     for t in self.env['crm.tracking.campaign.helper'].sudo().search([('for_reseller', '=', reseller), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)]):
