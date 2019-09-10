@@ -264,9 +264,6 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
                                 <h4>Hi ${object.partner_id.name}</h4>
                                 <p>An item you requested is unfortunately no longer available for sale. ${object.product_id.display_name}</p>
                                 <img src="${object.env['ir.config_parameter'].get_param('web.base.url')}${object.product_id.dv_image_src}"/>
-                               <td bgcolor="#788A87" style="padding: 12px 18px 12px 18px; border-radius:3px" align="center">
-                               <a href="${object.env['ir.config_parameter'].get_param('web.base.url')}/dn_shop/variant/${object.product_id.id}" target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; display: inline-block;">Get one now &rarr;</a>
-                               </td>
                             </tr>
                           </table>
                         </td>
