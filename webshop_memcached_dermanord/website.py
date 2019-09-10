@@ -38,7 +38,12 @@ class Website(models.Model):
     def get_dn_groups(self):
         return [g.id for g in request.env.user.commercial_partner_id.access_group_ids]
 
-    def get_webshop_type(self):
+    def get_webshop_type(self, post):
+        if post.get('webshop_type'):
+            if post.get('webshop_type') == 'dn_shop': # use imageview in view switcher
+                request.env.user.webshop_type = 'dn_shop'
+            elif post.get('webshop_type') == 'dn_list': # use listview in view switcher
+                request.env.user.webshop_type = 'dn_list'
         return request.env.user.webshop_type
 
     def get_search_values(self, kw=None):
@@ -58,7 +63,7 @@ class WebsiteSale(WebsiteSale):
         # ~ '/webshop',
         # ~ '/webshop/category/<model("product.public.category"):category>',
     #~ ], type='http', auth="public", website=True)
-    @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country}%s groups: %s webshop_type: %s' % (request.website.get_search_values(kw), request.website.get_dn_groups(), request.website.get_webshop_type()), flush_type=lambda kw: 'webshop', no_cache=True, cache_age=43200, max_age=43200, s_maxage=600)
+    @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country}%s groups: %s webshop_type: %s' % (request.website.get_search_values(kw), request.website.get_dn_groups(), request.website.get_webshop_type(kw)), flush_type=lambda kw: 'webshop', no_cache=True, cache_age=43200, max_age=43200, s_maxage=600)
     def webshop(self, category=None, search='', **post):
         request.website.dn_shop_set_session('product.template', post, '/webshop')
         return super(WebsiteSale, self).webshop(category, search, **post)
