@@ -128,8 +128,8 @@ class product_template(models.Model):
     
     @api.one
     def _is_offer_product(self):
-        self.is_offer_product_reseller = bool(self.env['crm.tracking.campaign.helper'].sudo().search([('product_id' , '=', self.id), ('for_reseller', '=', True), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)]))
-        self.is_offer_product_consumer = bool(self.env['crm.tracking.campaign.helper'].sudo().search([('product_id' , '=', self.id), ('for_reseller', '=', False), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)]))
+        self.is_offer_product_reseller = bool(self.env['crm.tracking.campaign.helper'].sudo().search(['|',('product_id' , '=', self.id), ('variant_id', 'in', self.product_variant_ids.mapped('id')), ('for_reseller', '=', True), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)]))
+        self.is_offer_product_consumer = bool(self.env['crm.tracking.campaign.helper'].sudo().search(['|',('product_id' , '=', self.id), ('variant_id', 'in', self.product_variant_ids.mapped('id')), ('for_reseller', '=', False), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)]))
 
     @api.model
     def _search_is_offer_product_reseller(self, op, value):

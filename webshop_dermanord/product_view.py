@@ -366,7 +366,7 @@ class product_template(models.Model):
                 # ~ variant = product.get_default_variant()
                 # ~ if not variant:
                     # ~ continue
-
+                
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
                     product_id=product['id'],
