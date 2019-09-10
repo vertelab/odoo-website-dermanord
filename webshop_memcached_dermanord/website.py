@@ -39,11 +39,17 @@ class Website(models.Model):
         return [g.id for g in request.env.user.commercial_partner_id.access_group_ids]
 
     def get_webshop_type(self, post):
-        if post.get('webshop_type'):
-            if post.get('webshop_type') == 'dn_shop': # use imageview in view switcher
-                request.env.user.webshop_type = 'dn_shop'
-            elif post.get('webshop_type') == 'dn_list': # use listview in view switcher
+        if not request.env.user.webshop_type or request.env.user.webshop_type not in ['dn_shop', 'dn_list']: # first time use filter
+            if request.env.user.commercial_partner_id.property_product_pricelist.for_reseller: # reseller
                 request.env.user.webshop_type = 'dn_list'
+            else: # public user / not reseller
+                request.env.user.webshop_type = 'dn_shop'
+        else:
+            if post.get('webshop_type'):
+                if post.get('webshop_type') == 'dn_shop': # use imageview in view switcher
+                    request.env.user.webshop_type = 'dn_shop'
+                elif post.get('webshop_type') == 'dn_list': # use listview in view switcher
+                    request.env.user.webshop_type = 'dn_list'
         return request.env.user.webshop_type
 
     def get_search_values(self, kw=None):
