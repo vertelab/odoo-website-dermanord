@@ -666,7 +666,7 @@ class product_product(models.Model):
             product = {}
         state = None
         # ~ if product.get('force_out_of_stock', False):
-        if product['inventory_availability'] == 'never':
+        if product.get('inventory_availability', False) == 'never':
             state = 'short'
         # ~ elif product.get('type', False) != 'product':
         elif product.get('type', False) != 'product' or product['inventory_availability'] == 'always':

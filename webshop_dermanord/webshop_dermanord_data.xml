@@ -219,7 +219,7 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
             <field name="doall" eval="True"/>
         </record>
         
-		 <record id="stock_notify_message" model="email.template">
+        <record id="stock_notify_message" model="email.template">
             <field name="name">Stock Notify</field>
             <field name="email_from">${object.env.ref('base.main_partner').sudo().email or ''}</field>
             <field name="subject">${object.product_id.display_name + ' is back in stock'}</field>
@@ -235,6 +235,34 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
                             <tr>
                                 <h4>Hi ${object.partner_id.name}</h4>
                                 <p>An item you requested is now back in stock. ${object.product_id.display_name}</p>
+                                <img src="${object.env['ir.config_parameter'].get_param('web.base.url')}${object.product_id.dv_image_src}"/>
+                               <td bgcolor="#788A87" style="padding: 12px 18px 12px 18px; border-radius:3px" align="center">
+                               <a href="${object.env['ir.config_parameter'].get_param('web.base.url')}/dn_shop/variant/${object.product_id.id}" target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; display: inline-block;">Get one now &rarr;</a>
+                               </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                ]]>
+            </field>
+        </record>
+        <record id="stock_notify_inactive_message" model="email.template">
+            <field name="name">Stock Notify Inactive</field>
+            <field name="email_from">${object.env.ref('base.main_partner').sudo().email or ''}</field>
+            <field name="subject">${object.product_id.display_name + ' is no longer available for sale'}</field>
+            <field name="model_id" ref="webshop_dermanord.model_stock_notification"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="body_html">
+                  <![CDATA[
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td>
+                          <table border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <h4>Hi ${object.partner_id.name}</h4>
+                                <p>An item you requested is unfortunately no longer available for sale. ${object.product_id.display_name}</p>
                                 <img src="${object.env['ir.config_parameter'].get_param('web.base.url')}${object.product_id.dv_image_src}"/>
                                <td bgcolor="#788A87" style="padding: 12px 18px 12px 18px; border-radius:3px" align="center">
                                <a href="${object.env['ir.config_parameter'].get_param('web.base.url')}/dn_shop/variant/${object.product_id.id}" target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; display: inline-block;">Get one now &rarr;</a>

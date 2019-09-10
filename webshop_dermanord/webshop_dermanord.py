@@ -61,20 +61,10 @@ class stock_notification(models.Model):
     @api.multi
     def send_notification(self):
         author = self.env.ref('base.main_partner').sudo()
-        # ~ mail = self.env['mail.mail'].sudo()
         template = self.env.ref('webshop_dermanord.stock_notify_message', False)
         
         for notify in self:
-            # ~ mail.create({
-                    # ~ 'subject': subject,
-                    # ~ 'body_html': body,
-                    # ~ 'author_id': author.id,
-                    # ~ 'email_from': author.email,
-                    # ~ 'type': 'email',
-                    # ~ 'auto_delete': True,
-                    # ~ 'email_to': notify.partner_id.email,
-                # ~ })
-                
+               
             ctx = {
                 'default_model': 'stock.notification',
                 'default_res_id': notify.id,
@@ -88,16 +78,42 @@ class stock_notification(models.Model):
         
         self.write({'status' : 'sent'})
 
+    @api.multi
+    def send_inactive_notification(self):
+        author = self.env.ref('base.main_partner').sudo()
+        template = self.env.ref('webshop_dermanord.stock_notify_inactive_message', False)
+        
+        for notify in self:
+               
+            ctx = {
+                'default_model': 'stock.notification',
+                'default_res_id': notify.id,
+                'default_use_template': True,
+                'default_template_id': template.id,
+                'default_composition_mode': 'comment',
+                'lang': notify.partner_id.lang,
+            }
+            composer = self.env['mail.compose.message'].sudo().with_context(ctx).create({})
+            composer.send_mail()
+        
+        self.write({'status' : 'sent'})
+        
     @api.model
     def cron_notify(self):
         notifications = self.search([])
+        notifications_inactive = self.search([])
         products = notifications.mapped('product_id')
         to_send = self.browse()
-        for product in products:
+        to_send_inactive = self.browse()
+        for product in products.filtered('active'):
             if product.get_stock_info(product.id)[0]:
                  to_send |= notifications.filtered(lambda n: n.product_id == product and n.status == 'pending')
+        for product in products.filtered(lambda n: not n.active):
+            to_send_inactive |= notifications_inactive.filtered(lambda n: n.product_id == product and n.status == 'pending')
         if to_send:
             to_send.send_notification()
+        if to_send_inactive:
+            to_send_inactive.send_inactive_notification()
             
         self.search([('status', '=', 'sent'), ('message_last_post', '<', fields.Datetime.to_string(datetime.now() + timedelta(days=-7)))]).unlink()
         
