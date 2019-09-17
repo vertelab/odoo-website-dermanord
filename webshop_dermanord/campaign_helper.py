@@ -37,7 +37,9 @@ class crm_tracking_campaign_helper(models.Model):
     @api.model
     def cron_daily_update(self):
         self.env['crm.tracking.campaign.helper'].search([]).unlink() # clear old records
-        campaigns = self.env['crm.tracking.campaign'].search([('website_published', '=', True)]) # get all published campaigns
+        # This line was removed since "website_published" on campaigns only is used to decide wheter to show the campaign on the front page or not.
+        # campaigns = self.env['crm.tracking.campaign'].search([('state', '=', 'open'), ('website_published', '=', True)]) # get all published campaigns
+        campaigns = self.env['crm.tracking.campaign'].search([('state', '=', 'open')]) # get all campaigns
         
         for campaign in campaigns:
             self.update_campaign_helper(campaign)
