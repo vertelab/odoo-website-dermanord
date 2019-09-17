@@ -69,20 +69,38 @@ class WebsiteSale(WebsiteSale):
         # ~ '/webshop',
         # ~ '/webshop/category/<model("product.public.category"):category>',
     #~ ], type='http', auth="public", website=True)
-    @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country}%s groups: %s webshop_type: %s' % (request.website.get_search_values(kw), request.website.get_dn_groups(), request.website.get_webshop_type(kw)), flush_type=lambda kw: 'webshop', no_cache=True, cache_age=43200, max_age=43200, s_maxage=600)
+    @memcached.route(
+        key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country}%s groups: %s webshop_type: %s' % (request.website.get_search_values(kw), request.website.get_dn_groups(), request.website.get_webshop_type(kw)),
+        flush_type=lambda kw: 'webshop',
+        no_cache=True,
+        cache_age=43200,
+        max_age=43200,
+        s_maxage=600)
     def webshop(self, category=None, search='', **post):
         request.website.dn_shop_set_session('product.template', post, '/webshop')
         return super(WebsiteSale, self).webshop(category, search, **post)
 
     #~ @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
-    @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} groups: %s' % request.website.get_dn_groups(), flush_type=lambda kw: 'dn_shop', no_cache=True, cache_age=43200, max_age=43200, s_maxage=600)
+    @memcached.route(
+        key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} groups: %s' % request.website.get_dn_groups(),
+        flush_type=lambda kw: 'dn_shop',
+        no_cache=True,
+        cache_age=43200,
+        max_age=43200,
+        s_maxage=600)
     def dn_product(self, product, category='', search='', **post):
         return super(WebsiteSale, self).dn_product(product, category, search, **post)
 
     #~ @http.route([
         #~ '/dn_shop/variant/<model("product.product"):variant>'
     #~ ], type='http', auth="public", website=True)
-    @memcached.route(key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} groups: %s' % request.website.get_dn_groups(), flush_type=lambda kw: 'dn_shop', no_cache=True, cache_age=43200, max_age=43200, s_maxage=600)
+    @memcached.route(
+        key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} groups: %s' % request.website.get_dn_groups(),
+        flush_type=lambda kw: 'dn_shop',
+        no_cache=True,
+        cache_age=43200,
+        max_age=43200,
+        s_maxage=600)
     def dn_product_variant(self, variant, category='', search='', **kwargs):
         return super(WebsiteSale, self).dn_product_variant(variant, category, search, **kwargs)
 
@@ -103,8 +121,8 @@ class WebsiteSaleHome(website_sale_home):
     def info_update(self, home_user=None, **post):
         res = super(WebsiteSaleHome, self).info_update(home_user=home_user, **post)
         if home_user and post:
-            for key in memcached.get_keys(path='/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image' % home_user.partner_id.commercial_partner_id.id):
-                memcached.mc_delete(key)
+            keys = memcached.get_keys(path='/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image' % home_user.partner_id.commercial_partner_id.id)
+            memcached.mc_delete(keys)
         return res
 
     # flush memcached contact image
@@ -112,8 +130,8 @@ class WebsiteSaleHome(website_sale_home):
     def contact_page(self, home_user=None, partner=None, **post):
         res = super(WebsiteSaleHome, self).contact_page(home_user=home_user, partner=partner, **post)
         if partner and post:
-            for key in memcached.get_keys(path='/imagefield/res.partner/image/%s/ref/reseller_dermanord.reseller_contact_img' % partner.id):
-                memcached.mc_delete(key)
+            keys = memcached.get_keys(path='/imagefield/res.partner/image/%s/ref/reseller_dermanord.reseller_contact_img' % partner.id)
+            memcached.mc_delete(keys)
         return res
 
 
@@ -126,8 +144,8 @@ class reseller_register(reseller_register):
         if issue_id and post:
             issue = self.get_issue(issue_id, post.get('token'))
             if issue:
-                for key in memcached.get_keys(path='/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image' % issue.partner_id.id):
-                    memcached.mc_delete(key)
+                keys = memcached.get_keys(path='/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image' % issue.partner_id.id)
+                memcached.mc_delete(keys)
         return res
 
     # flush memcached contact image
@@ -136,6 +154,6 @@ class reseller_register(reseller_register):
         res = super(reseller_register, self).reseller_contact_new(issue_id=issue_id, contact=contact, **post)
         if contact and contact != 0 and post:
             contact = request.env['res.partner'].sudo().browse(contact)
-            for key in memcached.get_keys(path='/imagefield/res.partner/image/%s/ref/reseller_dermanord.reseller_contact_img' % contact.id):
-                memcached.mc_delete(key)
+            keys = memcached.get_keys(path='/imagefield/res.partner/image/%s/ref/reseller_dermanord.reseller_contact_img' % contact.id)
+            memcached.mc_delete(keys)
         return res

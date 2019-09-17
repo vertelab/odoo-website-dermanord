@@ -151,28 +151,30 @@ class product_template(models.Model):
 
     @api.multi
     def dn_clear_cache(self):
-        
-        
         db_name = self.env.cr.dbname
         website = self.env.ref('website.default_website')
-        
-        for key in memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self], db=db_name):
-            memcached.mc_delete(key)
-        for p in self:
-            for lang in website.language_ids:
-                for key in memcached.get_keys(path=['/dn_shop/product/%s' % slug(p.with_context(lang=lang.code))], db=db_name):
-                    memcached.mc_delete(key)
-            
-        for p in self:
-            for key in memcached.get_keys(path=[('%s,%s' % (v._model, v.id)) for v in p.product_variant_ids], db=db_name):
-                memcached.mc_delete(key)
-            for v in p.product_variant_ids:
-                for lang in website.language_ids:
-                    for key in memcached.get_keys(path=['/dn_shop/variant/%s' % slug(v.with_context(lang=lang.code))], db=db_name):
-                        memcached.mc_delete(key)
-        
-        for key in memcached.get_keys(flush_type='webshop', db=db_name):
-            memcached.mc_delete(key)
+        paths = []
+        keys = memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self], db=db_name)
+        first = True
+        for lang in website.language_ids:
+            for p in self.with_context(lang=lang.code):
+                # These keys lack language context. No need to repeat for every language.
+                if first:
+                    # product.template,1234     thumbnail_product
+                    paths.append(('%s,%s' % (p._model, p.id)))
+                    # product.product,1234      product_list_row
+                    paths +=[('%s,%s' % (v._model, v.id)) for v in p.product_variant_ids]
+                # These keys are language sensitive
+                # /dn_shop/product/produktens_namn-1234     dn_shop
+                paths.append('/dn_shop/product/%s' % slug(p))
+                for v in p.product_variant_ids:
+                    # /dn_shop/variant/variantens_namn-1234     dn_shop
+                    paths.append('/dn_shop/variant/%s' % slug(v))
+            first = False
+        paths = list(set(paths))
+        keys = memcached.get_keys(flush_type='webshop', path=paths, db=db_name, match_any=True)
+        # ~ _logger.warn('\n\npaths: %s\nkeys: %s\n' % (paths, keys))
+        memcached.mc_delete(keys)
 
     @api.multi
     @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.datas', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_attachment_ids.datas', 'product_variant_ids.image_medium', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids', 'sale_ok', 'product_variant_ids.sale_ok')
@@ -559,8 +561,10 @@ class product_product(models.Model):
     
     @api.multi
     def dn_clear_cache(self):
-        for key in memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self]):
-            memcached.mc_delete(key)
+        # We need to clear the exact same stuff as for the template,
+        # since the variant data comes into play on the template pages,
+        # and the other variant pages as well.
+        self.mapped('product_tmpl_id').dn_clear_cache()
             
     inventory_availability = fields.Selection([
         ('never', 'Never sell'),
