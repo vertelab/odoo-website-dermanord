@@ -30,12 +30,13 @@ function reseller_restore_filter() {
     );
 }
 
-function getLocation() {
+function getLocation(doneFunction) {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(setPosition);
+        navigator.geolocation.getCurrentPosition(function(position) {setPosition(position, doneFunction)});
     }
 }
-function setPosition(position) {
+
+function setPosition(position, doneFunction) {
     $("input#pos_lng").val(position.coords.longitude);
     $("input#pos_lat").val(position.coords.latitude);
 
@@ -44,6 +45,9 @@ function setPosition(position) {
         'latitude': position.coords.latitude
     }).done(function(data){
         console.log("Location set.");
+        if(doneFunction) {
+            doneFunction();
+        }
     });
 }
 

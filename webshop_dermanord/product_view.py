@@ -549,7 +549,7 @@ class product_product(models.Model):
             res['product_view'] = u""""""
         elif self.purchase_type == 'consumer':
             res['list_view'] = u"""""" # There is never a reseller button on the list view. 
-            res['product_view'] = u"""<button type="button" class="add_to_cart_consumer dn_btn dn_primary mt8 text-center {buy_button_hidden}" data-toggle="modal" data-target="#reseller_search">{text}</button>""".format(
+            res['product_view'] = u"""<button type="button" class="add_to_cart_consumer dn_btn dn_primary mt8 text-center {buy_button_hidden}" data-toggle="modal" data-target="#reseller_search" ">{text}</button>""".format(
                 buy_button_hidden = '',
                 text = _('Find Reseller')
             )

@@ -1553,7 +1553,7 @@ msgstr "js_payment mb64 row col-lg-8 col-sm-9"
 #: code:addons/webshop_dermanord/product_view.py:1073
 #, python-format
 msgid "made from all-natural ingredients"
-msgstr "made from all-natural ingredients"
+msgstr "tillverkad av naturliga ingredienser"
 
 #. module: webshop_dermanord
 #. openerp-web

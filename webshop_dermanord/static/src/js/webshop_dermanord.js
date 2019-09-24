@@ -971,3 +971,25 @@ $(document).on('click', '.dn_list_add_to_cart, .dn_list_add_to_cart_edu, #add_to
         }
     });
 });
+
+$(function(){
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else { 
+    alert("Geolocation is not supported by this browser.");
+  }
+}
+
+function showPosition(position) {
+  alert( "Latitude: " + position.coords.latitude + 
+  "<br>Longitude: " + position.coords.longitude);
+}
+
+$(".add_to_cart_cunsumer").click(function(){
+        getLocation()
+    
+});
+});
+
