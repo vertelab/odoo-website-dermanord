@@ -151,28 +151,30 @@ class product_template(models.Model):
 
     @api.multi
     def dn_clear_cache(self):
-        
-        
         db_name = self.env.cr.dbname
         website = self.env.ref('website.default_website')
-        
-        for key in memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self], db=db_name):
-            memcached.mc_delete(key)
-        for p in self:
-            for lang in website.language_ids:
-                for key in memcached.get_keys(path=['/dn_shop/product/%s' % slug(p.with_context(lang=lang.code))], db=db_name):
-                    memcached.mc_delete(key)
-            
-        for p in self:
-            for key in memcached.get_keys(path=[('%s,%s' % (v._model, v.id)) for v in p.product_variant_ids], db=db_name):
-                memcached.mc_delete(key)
-            for v in p.product_variant_ids:
-                for lang in website.language_ids:
-                    for key in memcached.get_keys(path=['/dn_shop/variant/%s' % slug(v.with_context(lang=lang.code))], db=db_name):
-                        memcached.mc_delete(key)
-        
-        for key in memcached.get_keys(flush_type='webshop', db=db_name):
-            memcached.mc_delete(key)
+        paths = []
+        keys = memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self], db=db_name)
+        first = True
+        for lang in website.language_ids:
+            for p in self.with_context(lang=lang.code):
+                # These keys lack language context. No need to repeat for every language.
+                if first:
+                    # product.template,1234     thumbnail_product
+                    paths.append(('%s,%s' % (p._model, p.id)))
+                    # product.product,1234      product_list_row
+                    paths +=[('%s,%s' % (v._model, v.id)) for v in p.product_variant_ids]
+                # These keys are language sensitive
+                # /dn_shop/product/produktens_namn-1234     dn_shop
+                paths.append('/dn_shop/product/%s' % slug(p))
+                for v in p.product_variant_ids:
+                    # /dn_shop/variant/variantens_namn-1234     dn_shop
+                    paths.append('/dn_shop/variant/%s' % slug(v))
+            first = False
+        paths = list(set(paths))
+        keys = memcached.get_keys(flush_type='webshop', path=paths, db=db_name, match_any=True)
+        # ~ _logger.warn('\n\npaths: %s\nkeys: %s\n' % (paths, keys))
+        memcached.mc_delete(keys)
 
     @api.multi
     @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.datas', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_attachment_ids.datas', 'product_variant_ids.image_medium', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids', 'sale_ok', 'product_variant_ids.sale_ok')
@@ -243,20 +245,6 @@ class product_template(models.Model):
     dv_image_src = fields.Char(compute='_get_all_variant_data', store=True)
     dv_name = fields.Char(compute='_get_all_variant_data', store=True)
     dv_ribbon = fields.Char(compute='_get_all_variant_data', store=True)
-
-
-    @api.one
-    @api.depends('campaign_changed', 'product_variant_ids.campaign_changed')
-    def _is_offer_product(self):
-        self.is_offer_product_reseller = self in self.get_campaign_tmpl(for_reseller=True)
-        if not self.is_offer_product_reseller:
-            self.is_offer_product_reseller = bool(self.product_variant_ids & self.get_campaign_variants(for_reseller=True))
-        self.is_offer_product_consumer = self in self.get_campaign_tmpl(for_reseller=False)
-        if not self.is_offer_product_consumer:
-            self.is_offer_product_consumer = bool(self.product_variant_ids & self.get_campaign_variants(for_reseller=False))
-    is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
-    is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
-
 
 
     @api.model
@@ -380,7 +368,7 @@ class product_template(models.Model):
                 # ~ variant = product.get_default_variant()
                 # ~ if not variant:
                     # ~ continue
-
+                
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
                     product_id=product['id'],
@@ -573,22 +561,11 @@ class product_product(models.Model):
     
     @api.multi
     def dn_clear_cache(self):
-        for key in memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self]):
-            memcached.mc_delete(key)
+        # We need to clear the exact same stuff as for the template,
+        # since the variant data comes into play on the template pages,
+        # and the other variant pages as well.
+        self.mapped('product_tmpl_id').dn_clear_cache()
             
-
-    @api.one
-    @api.depends('product_tmpl_id.campaign_changed')
-    def _is_offer_product(self):
-        self.is_offer_product_reseller = self in self.get_campaign_variants(for_reseller=True)
-        if not self.is_offer_product_reseller:
-            self.is_offer_product_reseller = self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=True)
-        self.is_offer_product_consumer = self in self.get_campaign_variants(for_reseller=False)
-        if not self.is_offer_product_consumer:
-            self.is_offer_product_consumer = self.product_tmpl_id in self.product_tmpl_id.get_campaign_tmpl(for_reseller=False)
-    is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', store=True)
-    is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', store=True)
-    # ~ force_out_of_stock = fields.Boolean(string='Out of Stock', help="Forces this product to display as out of stock in the webshop.")
     inventory_availability = fields.Selection([
         ('never', 'Never sell'),
         ('always', 'Sell regardless of inventory'),
@@ -693,7 +670,7 @@ class product_product(models.Model):
             product = {}
         state = None
         # ~ if product.get('force_out_of_stock', False):
-        if product['inventory_availability'] == 'never':
+        if product.get('inventory_availability', False) == 'never':
             state = 'short'
         # ~ elif product.get('type', False) != 'product':
         elif product.get('type', False) != 'product' or product['inventory_availability'] == 'always':
@@ -856,6 +833,7 @@ class product_product(models.Model):
             "name": variant.name,
             "image": images,
             "description": variant.public_desc,
+            "gtin13": variant.ean13,
             "sku": variant.default_code,
             "brand": {
                 "@type": "Brand",
@@ -947,6 +925,7 @@ class product_product(models.Model):
                 elif variant.product_tmpl_id.website_style_ids[0] == ribbon_limited:
                     ribbon_wrapper = '<div class="ribbon-wrapper"><div class="ribbon_news btn btn-primary">%s</div></div>' %_('Limited Edition')
             offer_wrapper = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">%s</div></div>' %_('Offer') if variant.is_offer_product_reseller or variant.is_offer_product_consumer else ''
+            # ~ offer_wrapper = '<div class="offer-wrapper"><div class="ribbon ribbon_offer btn btn-primary">%s</div></div>' %_('Offer') if variant._is_offer_product() else ''
             product_images = variant.sudo().image_attachment_ids.sorted(key=lambda a: a.sequence)
             product_images_html = ''
             product_images_nav_html = ''
