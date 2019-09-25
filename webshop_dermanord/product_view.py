@@ -1060,8 +1060,8 @@ class product_product(models.Model):
         partner = self.env.user.partner_id.commercial_partner_id
         pricelist = partner.property_product_pricelist
         flush_type = 'get_product_detail'
-        key_raw = 'product_detail %s %s %s %s %s %s %s %s' % (
-            self.env.cr.dbname, flush_type, product.id, pricelist.id, self.env.lang,
+        key_raw = 'product_detail %s %s %s %s %s %s %s %s %s' % (
+            self.env.cr.dbname, flush_type, product.id, variant_id, pricelist.id, self.env.lang,
             request.session.get('device_type', 'md'),
             self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
             ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))
@@ -1072,7 +1072,8 @@ class product_product(models.Model):
             visible_attrs = set(l.attribute_id.id for l in product.attribute_line_ids if len(l.value_ids) > 1)
             decimal_precision = pricelist.currency_id.rounding
             variants = self.env['product.product'].search([('id', 'in', product.product_variant_ids.mapped('id'))])
-            product_variant = self.browse(variant_id)
+            product_variant = variants.filtered(lambda v: v.id == variant_id)
+            # ~ product_variant = self.browse(variant_id)
             for variant in variants:
                 render_start = timer()
                 attr_sel = ''
