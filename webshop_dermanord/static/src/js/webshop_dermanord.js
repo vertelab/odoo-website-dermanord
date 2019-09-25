@@ -972,24 +972,33 @@ $(document).on('click', '.dn_list_add_to_cart, .dn_list_add_to_cart_edu, #add_to
     });
 });
 
+function getLocation(doneFunction) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {setPosition(position, doneFunction)});
+    }
+}
+
+function setPosition(position, doneFunction) {
+    $("input#pos_lng").val(position.coords.longitude);
+    $("input#pos_lat").val(position.coords.latitude);
+
+    openerp.jsonRpc("/website_set_location", "call", {
+        'longitude': position.coords.longitude,
+        'latitude': position.coords.latitude
+    }).done(function(data){
+        console.log("Location set.");
+        if(doneFunction) {
+            doneFunction();
+        }
+    });
+}
+
 $(function(){
 
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else { 
-    alert("Geolocation is not supported by this browser.");
-  }
-}
+    $(".add_to_cart_consumer").click(function(){
+            getLocation( function(){
+                $("#btn_reseller_search").trigger('click');
+            })
+    });
 
-function showPosition(position) {
-  alert( "Latitude: " + position.coords.latitude + 
-  "<br>Longitude: " + position.coords.longitude);
-}
-
-$(".add_to_cart_cunsumer").click(function(){
-        getLocation()
-    
 });
-});
-
