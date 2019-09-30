@@ -42,6 +42,7 @@ class PaymentTransaction(models.Model):
         
         def log_outcome(order, message, subject=u"Order ej godkänd automatiskt"):
             order.message_post(body=message.replace('\n', '<br/>'), subject=subject, type='comment')
+        
         def send_email(subject, body, email_to='sales@dermanord.se'):
             author = self.env.ref('base.partner_root').sudo()
             self.env['mail.mail'].sudo().create({
@@ -53,6 +54,7 @@ class PaymentTransaction(models.Model):
                 'auto_delete': True,
                 'email_to': email_to,
             })
+        
         # fetch the tx, check its state, confirm the potential SO
         try:
             tx_find_method_name = '_%s_form_get_tx_from_data' % acquirer_name
@@ -69,23 +71,32 @@ class PaymentTransaction(models.Model):
                         prepay = self.env.ref('account:5246172e-b698-11e0-9d76-12313b063acc.account_payment_term-A8mv0J2HfLvs')
                         sale_team = self.env.ref('website.salesteam_website_sales')
                         msg = []
+                        warnings = []
                         if order.payment_term == prepay:
                             msg.append(u"Betalningsvillkor är %s." % prepay.name)
                         if order.section_id != sale_team:
                             msg.append(u"Säljlag ej satt till %s." % sale_team.name)
                         if order.note:
-                            msg.append(u"Ordern har en notering.")
+                            msg.append(u"Ordern har en kommentar.")
                         if order.partner_id.sale_warn in ('warning', 'block'):
-                            msg.append(u"Kunden har en varning (%s)" % order.partner_id.sale_warn_msg)
+                            msg.append(u"Kunden har en varning:\n%s\n" % order.partner_id.sale_warn_msg)
+                            warnings.append((order.partner_id.sale_warn_msg, u"Kunden har en varning"))
+                        elif order.partner_id.commercial_partner_id.sale_warn in ('warning', 'block'):
+                            msg.append(u"Kunden har en varning:\n%s\n" % order.partner_id.commercial_partner_id.sale_warn_msg)
+                            warnings.append((order.partner_id.commercial_partner_id.sale_warn_msg, u"Kunden har en varning"))
                         for product in order.order_line.filtered(lambda l: l.product_id and l.product_id.sale_line_warn in ('warning', 'block')).mapped('product_id'):
-                            msg.append(u"%s har en varning (%s)" % (product.display_name, product.sale_line_warn_msg))
+                            msg.append(u"%s har en varning:\n%s\n" % (product.display_name, product.sale_line_warn_msg))
+                            warnings.append((product.sale_line_warn_msg, u"%s har en varning" % product.display_name))
                         try:
                             order.check_order_stock()
                         except Exception as e:
                             msg.append('\n%s' % e.message)
-                        if msg:
+                        if msg or warnings:
                             order.state = 'sent'
-                            log_outcome(order, u'\n'.join(msg))
+                            if msg:
+                                log_outcome(order, u'\n'.join(msg))
+                            for w in warnings:
+                                log_outcome(order, *w)
                             return res
                         order.with_context(send_email=True).action_button_confirm()
                         for picking in order.picking_ids:
