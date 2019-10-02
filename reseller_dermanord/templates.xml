@@ -451,6 +451,9 @@
                     </a>
                 </li>
             </xpath>
+            <!--
+                 ## ADMIN INTERFACE
+            -->
             <xpath expr="//div[@id='contact']" position="after">
                 <div id="opening_hours" class="tab-pane fade" t-if="home_user.partner_id.commercial_partner_id.is_reseller">
                     <table class="table table-striped">
