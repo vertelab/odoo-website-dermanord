@@ -324,6 +324,7 @@
                                     </t>
                                 </p>
                                 <div>
+                                    <!-- [1593] Hitta ÅF - Länkar till sociala medier -->
                                     <!-- ## SOCIAL MEDIA ** PUBLIC RESELLER WEBPAGE -->
                                     <!-- ## https://mariaakerberg.com/sv_SE/reseller/5522-->
                                     <t t-if="reseller.social_facebook">
@@ -752,6 +753,10 @@
                 <div class="oe_structure" />
             </t>
         </template>
+        <!-- [2134] Mitt konto - Redigera sociala medielänkar backend -->
+        <template id="resellers_social_media" name="Resellers Social Media">
+            <t t-call="website.layout" />
+        </template>
         <template id="resellers_country" name="Resellers Country">
             <t t-call="website.layout">
                 <div id="wrap">
@@ -792,5 +797,19 @@
                 <script type="text/javascript" src="/reseller_dermanord/static/src/js/main.js" />
             </xpath>
         </template>
+        <!-- [2134] Mitt konto - Redigera sociala medielänkar backend -->
+        <record id="view_partner_form" model="ir.ui.view">
+            <field name="name">res.partner.social_media.reseller_dermanord.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                <field name="website" position="after">
+                    <field name="social_facebook" />
+                    <field name="social_instagram" />
+                    <field name="social_youtube" />
+                    <field name="social_twitter" />
+                </field>
+            </field>
+        </record>
     </data>
 </openerp>

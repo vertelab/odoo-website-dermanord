@@ -37,11 +37,12 @@ _logger = logging.getLogger(__name__)
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
-
-    social_facebook = fields.Char(string='Social Media Facebook')
-    social_instagram = fields.Char(string='Social Media Instagram')
-    social_youtube = fields.Char(string='Social Media Youtube')
-    social_twitter = fields.Char(string='Social Media Twitter')
+    
+    # ~ [1593] Hitta ÅF - Länkar till sociala medier
+    social_facebook = fields.Char(string='Facebook link')
+    social_instagram = fields.Char(string='Instagram link')
+    social_youtube = fields.Char(string='Youtube link')
+    social_twitter = fields.Char(string='Twitter link')
     brand_name = fields.Char(string='Brand Name')
     is_reseller = fields.Boolean(string='Show Reseller in websearch')
     always_searchable = fields.Boolean(string='Always searchable', help='When checked. Reseller is always searchable.')
