@@ -268,6 +268,28 @@ class Main(http.Controller):
                     if code:
                         del word_list[i]
                         return code['postalcode']
+        if country == 'NL':
+            # Netherlands postal codes
+            first_part = None
+            for i in range(len(word_list)):
+                word = word_list[i]
+                if len(word) == 4 and word.isdigit():
+                    # Found possible first half
+                    first_part = word
+                    continue
+                elif first_part and len(word) == 2 and word.isalpha():
+                    # Possible match. Check if its an actual postal code.
+                    request.env.cr.execute("""
+                            select postalcode
+                                from location_zcs l
+                                where country=%s AND postalcode = %s limit 1
+                        """, (country, '%s %s' % (first_part, word)))
+                    code = request.env.cr.dictfetchone()
+                    if code:
+                        del word_list[i]
+                        del word_list[i-1]
+                        return code['postalcode']
+                first_part = None
     
     # Return result of resellers with postcode, domain searching
     def get_resellers(self, words, domain, search_partner, sort_partners, params=None, webshop=False, limit=99):
@@ -286,7 +308,7 @@ class Main(http.Controller):
         partner_obj = request.env['res.partner'].sudo()
         resellers = partner_obj.browse()
         partner_ids = []
-        country = request.session.get('geoip', {}).get('country_code', 'SE') # Country to use in postal code search
+        country = request.session.get('geoip', {}).get('country_code') or 'SE' # Country to use in postal code search
         postal_code = city = position = search_type = None
         excluded = []
         
@@ -311,10 +333,10 @@ class Main(http.Controller):
             
             if postal_code:
                 # Search the postal code and get the closest reseller inside 0.5 degree
-                partner_ids += partner_obj.geo_zip_search('position', 'SE', postal_code, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit) # this is supposed to be a limited distance
+                partner_ids += partner_obj.geo_zip_search('position', country.code, postal_code, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit) # this is supposed to be a limited distance
                 if len(partner_ids) < limit:
                     # Fill up to limit with unlimited range.
-                    partner_ids += partner_obj.geo_zip_search('position', 'SE', postal_code, domain + [('id', 'not in', partner_ids), ('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit - len(partner_ids)) # this is supposed to be a limited distance
+                    partner_ids += partner_obj.geo_zip_search('position', country.code, postal_code, domain + [('id', 'not in', partner_ids), ('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit - len(partner_ids)) # this is supposed to be a limited distance
                 if partner_ids:
                     search_type = 'postal'
             
@@ -360,8 +382,6 @@ class Main(http.Controller):
             if 'latitude' in position and 'longitude' in position:
                 position = (position['longitude'], position['latitude'])
                 resellers = partner_obj.browse(partner_obj.geo_search('position', position, domain=domain, distance=360, limit=limit))
-        if isinstance(country, basestring):
-            country = request.env['res.country'].search([('code', '=', country)]) or request.env.ref('base.se')
         # Data describing how the search was made. Can be used to generate feedback to the user.
         # ~ search_data = {'excluded': excluded, 'country': country, 'postal_code': postal_code, 'city': city, 'search_type': search_type}
         return resellers
