@@ -694,17 +694,6 @@ class sale_order(models.Model):
             self.client_order_ref = '%s (%s)' %(self.partner_id.name, self.name)
         return super(sale_order, self).action_button_confirm()
 
-
-class SaleOrder(models.Model):
-    _inherit = 'sale.order'
-    
-    @api.multi
-    def write(self, values):
-        if 'message_follower_ids' in values:
-            _logger.warn('\n\nmessage_follower_ids: %s\n%s' % (values['message_follower_ids'], ''.join(traceback.format_stack())))
-        return super(SaleOrder, self).write(values)
-
-
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
     
@@ -1061,7 +1050,7 @@ class WebsiteSale(website_sale):
         self.checkout_form_save(values["checkout"])
         request.session['sale_last_order_id'] = order.id
         request.website.sale_get_order(update_pricelist=True)
-        _logger.warn('Partner_id (confirm) %s shipping %s invoice %s' % (order.partner_id,order.partner_shipping_id,order.partner_invoice_id))
+        _logger.warn('Partner_id (confirm) %s shipping %s invoice %s carrier_id %s' % (order.partner_id,order.partner_shipping_id,order.partner_invoice_id, order.carrier_id))
         return request.redirect("/shop/payment")
 
     @http.route(['/shop/payment'], type='http', auth="public", website=True)
@@ -1091,8 +1080,18 @@ class WebsiteSale(website_sale):
             else:
                 shipping_partner_id = order.partner_invoice_id.id
             order.onchange_delivery_id(order.company_id.id, order.partner_id.id, order.partner_shipping_id.id, order.fiscal_position.id)
+            # ~ [1614] NO SHIPPING WHEN ORDERING ONLY EVENT // COURSES
+            _logger.warn('order_info[carrier_id] 1085  :%s' % ( order.carrier_id ))
+            _logger.warn('\n\n\n <<<<<<< listan ........ 1085 :%s %s' % ( [line.product_id and line.product_id.type == 'service' for line in order.order_line],all([line.product_id and line.product_id.type == 'service' for line in order.order_line]) ) )
+            if all([line.product_id and line.product_id.type == 'service' for line in order.order_line]):
+                # ~ REMOVE ALL PRODUCTS OF CATEGORY "Alla / Tjänst / Frakt"
+                order.order_line.filtered(lambda line: line.product_id.categ_id == request.env.ref('__export__.product_category_9')).unlink()
+                order.carrier_id = False
             try:
-                order.delivery_set()
+            # ~ _logger.warn('order_info[carrier_id] 1085  :%s' % ( order.carrier_id )
+    
+                if order.carrier_id:
+                    order.delivery_set()
             except except_orm as e:
                 # Couldn't use the customers carrier. Find one that works and report the error.
                 original = order.carrier_id
@@ -1279,6 +1278,16 @@ class WebsiteSale(website_sale):
                 order_info.update(fiscal_update)
         if 'user_id' in order_info:
             order_info.pop('user_id')
+        # ~ [1614] NO SHIPPING WHEN ORDERING ONLY EVENT // COURSES
+        # ~ if len( order.order_line.filtered(lambda line: line.product_id.event_ok ) ) == len(order_info.order_line):
+        _logger.warn('order_info[carrier_id] 1280 :%s' % ( order_info['carrier_id'] ) )
+        _logger.warn('\n\n\n <<<<<<< listan ........ 1280 :%s' % ( [line.product_id and line.product_id.type == 'service' for line in order.order_line] ) )
+        if all([line.product_id and line.product_id.type == 'service' for line in order.order_line ]):
+            # ~ REMOVE ALL PRODUCTS OF CATEGORY "Alla / Tjänst / Frakt"
+            order.order_line.filtered(lambda line: line.product_id.categ_id == request.env.ref('__export__.product_category_9')).unlink()
+            order_info['carrier_id'] = False
+        _logger.warn('order_info[carrier_id] 1280 :%s' % ( order_info['carrier_id'] ) )
+
         order.sudo().write(order_info)
 
         #super(WebsiteSale, self).checkout_form_save(checkout)

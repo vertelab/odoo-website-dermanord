@@ -323,6 +323,31 @@
                                         </a>
                                     </t>
                                 </p>
+                                <div>
+                                    <!-- [1593] Hitta ÅF - Länkar till sociala medier -->
+                                    <!-- ## SOCIAL MEDIA ** PUBLIC RESELLER WEBPAGE -->
+                                    <!-- ## https://mariaakerberg.com/sv_SE/reseller/5522-->
+                                    <t t-if="reseller.social_facebook">
+                                        <a t-att-href="'/goto/%s/social_facebook' %reseller.id" target="_blank">
+                                            <i style="margin: 5px;" class="fa fa-facebook-square fa-2x" />
+                                        </a>
+                                    </t>
+                                    <t t-if="reseller.social_instagram">
+                                        <a t-att-href="'/goto/%s/social_instagram' %reseller.id" target="_blank">
+                                            <i style="margin: 5px;" class="fa fa-instagram fa-2x" />
+                                        </a>
+                                    </t>
+                                    <t t-if="reseller.social_youtube">
+                                        <a t-att-href="'/goto/%s/social_youtube' %reseller.id" target="_blank">
+                                            <i style="margin: 5px;" class="fa fa-youtube-square fa-2x" />
+                                        </a>
+                                    </t>
+                                    <t t-if="reseller.social_twitter">
+                                        <a t-att-href="'/goto/%s/social_twitter' %reseller.id" target="_blank">
+                                            <i style="margin: 5px;" class="fa fa-twitter-square fa-2x" />
+                                        </a>
+                                    </t>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -451,6 +476,9 @@
                     </a>
                 </li>
             </xpath>
+            <!--
+                 ## ADMIN INTERFACE
+            -->
             <xpath expr="//div[@id='contact']" position="after">
                 <div id="opening_hours" class="tab-pane fade" t-if="home_user.partner_id.commercial_partner_id.is_reseller">
                     <table class="table table-striped">
@@ -724,6 +752,10 @@
                 </div>
                 <div class="oe_structure" />
             </t>
+        </template>
+        <!-- [2134] Mitt konto - Redigera sociala medielänkar backend -->
+        <template id="resellers_social_media" name="Resellers Social Media">
+            <t t-call="website.layout" />
         </template>
         <template id="resellers_country" name="Resellers Country">
             <t t-call="website.layout">
