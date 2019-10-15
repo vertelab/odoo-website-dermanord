@@ -7,8 +7,18 @@ access_sale_commission_portal,sale.commission - Portal,sale_commission.model_sal
 access_sale_commission_section_portal,sale.commission.section - Portal,sale_commission.model_sale_commission_section,base.group_portal,1,0,0,0
 -->
 
+    <record id="rule_res_partner_agent_portal" model="ir.rule">
+        <field name="name">res.partner - Agent Portal</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="groups" eval="[(6, 0, [ref('base.group_portal')])]"/>
+        <field name="domain_force">[('commercial_partner_id.agents.id', 'child_of', user.commercial_partner_id.id)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
     <record id="rule_sale_commission_settlement_portal" model="ir.rule">
-        <field name="name">sale.commission.settlement - Portal</field>
+        <field name="name">sale.commission.settlement - Agent Portal</field>
         <field name="model_id" ref="sale_commission.model_sale_commission_settlement"/>
         <field name="groups" eval="[(6, 0, [ref('base.group_portal')])]"/>
         <field name="domain_force">[('agent', 'child_of', user.commercial_partner_id.id)]</field>
@@ -18,7 +28,7 @@ access_sale_commission_section_portal,sale.commission.section - Portal,sale_comm
     </record>
     
     <record id="rule_sale_order_line_agent_portal" model="ir.rule">
-        <field name="name">sale.order.line.agent - Portal</field>
+        <field name="name">sale.order.line.agent - Agent Portal</field>
         <field name="model_id" ref="sale_commission.model_sale_order_line_agent"/>
         <field name="groups" eval="[(6, 0, [ref('base.group_portal')])]"/>
         <field name="domain_force">[('agent', 'child_of', user.commercial_partner_id.id)]</field>
@@ -28,7 +38,7 @@ access_sale_commission_section_portal,sale.commission.section - Portal,sale_comm
     </record>
     
     <record id="rule_account_invoice_line_agent_portal" model="ir.rule">
-        <field name="name">account.invoice.line.agent - Portal</field>
+        <field name="name">account.invoice.line.agent - Agent Portal</field>
         <field name="model_id" ref="sale_commission.model_account_invoice_line_agent"/>
         <field name="groups" eval="[(6, 0, [ref('base.group_portal')])]"/>
         <field name="domain_force">[('agent', 'child_of', user.commercial_partner_id.id)]</field>

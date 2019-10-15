@@ -20,8 +20,32 @@
 ##############################################################################
 
 from openerp import models, fields, api, _
-from openerp.exceptions import except_orm, Warning, RedirectWarning
+# ~ from openerp1.exceptions import except_orm, Warning, RedirectWarning
 
 import logging
 _logger = logging.getLogger(__name__)
 
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+    
+    my_customer = fields.Boolean(string='My Customer', compute='_compute_my_customer', search='_search_my_customer')
+    
+    @api.multi
+    def _compute_my_customer(self):
+        pass
+        # ~ parent = self.env.user.commercial_partner_id
+        # ~ for partner in self:
+            # ~ partner.my_customer = self.search_count([('id', '=', partner.id), ('commercial_partner_id.agents', 'child_of', parent.id)]) > 0
+    
+    @api.model
+    def _search_my_customer(self, op, value):
+        _logger.warn('op: %s\nvalue: %s\n%s\n%s' % (op, value, self.env.uid, self.env.context))
+        # ~ assert value in (True, False, None), "Search for my_customer is only implemented for True, False and None values."
+        # ~ assert op in ('=', '!='), "Search for my_customer is only implemented for '=' and '!=' operators."
+        if op == '!=':
+            value = not value
+        domain = [('commercial_partner_id.agents.id', 'child_of', self.env.user.commercial_partner_id.id)]
+        if not value:
+            domain.insert(0, '!')
+        _logger.warn(domain)
+        return domain
