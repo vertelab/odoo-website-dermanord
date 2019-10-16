@@ -408,7 +408,7 @@
         <t t-if="not no_breadcrumb and website">
           <ol class="breadcrumb dn_breadcrumb">
             <t t-raw="website.get_breadcrumb(request.httprequest.path, product=product, blog=blog, blog_post=blog_post, job=job)" />
-            <t t-set="master_language" t-value="[]" />
+            <t t-set="master_languages" t-value="[]" />
             <t t-set="other_languages" t-value="[]" />
             <t t-foreach="languages" t-as="lg">
               <t t-if="lg[0] in ('ma_ST', 'no_NO', 'nl_NL')">
