@@ -1,552 +1,576 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
-
-        <!-- footer_menu: used for menu in header -->
-        <record id="footer_menu" model="website.menu">
-            <field name="name">Footer Menu</field>
-            <field name="sequence">99</field>
-            <field name="url">/</field>
-            <field name="parent_id" ref="website.main_menu" />
-        </record>
-
-    </data>
-
-<!--
-    <data>
-        <record id="view_company_form" model="ir.ui.view">
-            <field name="name">res.company.form.logo.website</field>
-            <field name="model">res.company</field>
-            <field name="inherit_id" ref="base.view_company_form"/>
-            <field name="arch" type="xml">
-                <notebook position="inside">
-                    <page string="Logo For Website">
-                        <field name="logo_website" widget="image"/>
-                    </page>
-                </notebook>
-            </field>
-        </record>
-    </data>
--->
-
-    <data>
-
+  <data noupdate="0">
+    <!-- footer_menu: used for menu in header -->
+    <record id="footer_menu" model="website.menu">
+      <field name="name">Footer Menu</field>
+      <field name="sequence">99</field>
+      <field name="url">/</field>
+      <field name="parent_id" ref="website.main_menu" />
+    </record>
+  </data>
+  <!--
+       <data>
+       <record id="view_company_form" model="ir.ui.view">
+       <field name="name">res.company.form.logo.website</field>
+       <field name="model">res.company</field>
+       <field name="inherit_id" ref="base.view_company_form"/>
+       <field name="arch" type="xml">
+       <notebook position="inside">
+       <page string="Logo For Website">
+       <field name="logo_website" widget="image"/>
+       </page>
+       </notebook>
+       </field>
+       </record>
+       </data>
+  -->
+  <data>
     <template id="contactus" name="Dermanord Contact" inherit_id="website.contactus">
-        <xpath expr="//div[@name='mail_button']" position="attributes">
-            <attribute name="class">text-center mt64 mb64 hidden</attribute>
-        </xpath>
+      <xpath expr="//div[@name='mail_button']" position="attributes">
+        <attribute name="class">text-center mt64 mb64 hidden</attribute>
+      </xpath>
     </template>
-
     <template id="company_description" name="Dermanord Company Description" inherit_id="website.company_description">
-        <xpath expr="//address" position="replace"></xpath>
-        <xpath expr="//a" position="after">
-            <address class="mt16" itemscope="itemscope" itemtype="http://schema.org/Organization">
-                <!-- TODO widget contact must add itemprop attributes -->
-                <div t-field="res_company.partner_id" t-field-options='{
+      <xpath expr="//address" position="replace" />
+      <xpath expr="//a" position="after">
+        <address class="mt16" itemscope="itemscope" itemtype="http://schema.org/Organization">
+          <!-- TODO widget contact must add itemprop attributes -->
+          <div t-field="res_company.partner_id" t-field-options='{
                     "widget": "contact",
                     "no_marker": 1,
-                    "fields": ["name", "address", "phone", "mobile", "fax", "email"]}'/>
-            </address>
-        </xpath>
-        <xpath expr="//a[@t-att-href='res_company.google_map_link()']" position="replace">
-            <t t-call="website_partner_google_maps.google_maps">
-                <t t-set="div_class" t-value="'mt16'"/>
-                <t t-set="width" t-value="'100%'"/>
-                <t t-set="height" t-value="'400px'"/>
-                <t t-set="zoom" t-value="12"/>
-                <t t-set="center" t-value="res_company.partner_id"/>
-                <t t-set="partners" t-value="res_company.partner_id"/>
-                <t t-set="icon" t-value="'/reseller_dermanord/static/src/img/dn_maps_marker.png'"/>
-                <t t-set="api_key" t-value="request.env['ir.config_parameter'].get_param('google_maps_api')"/>
-            </t>
-        </xpath>
-<!--
-        <xpath expr="//img" position="attributes">
-            <attribute name="class">img-responsive</attribute>
-        </xpath>
-
-        <xpath expr="//img" position="replace">
-            <img class="thumbnail img-responsive" t-att-src="res_company.google_map_img(marker={'icon': request.env['ir.config_parameter'].get_param('dermanord_map_marker','http://wiggum.vertel.se/dn_maps_marker.png')})" />
-        </xpath>
--->
+                    "fields": ["name", "address", "phone", "mobile", "fax", "email"]}' />
+        </address>
+      </xpath>
+      <xpath expr="//a[@t-att-href='res_company.google_map_link()']" position="replace">
+        <t t-call="website_partner_google_maps.google_maps">
+          <t t-set="div_class" t-value="'mt16'" />
+          <t t-set="width" t-value="'100%'" />
+          <t t-set="height" t-value="'400px'" />
+          <t t-set="zoom" t-value="12" />
+          <t t-set="center" t-value="res_company.partner_id" />
+          <t t-set="partners" t-value="res_company.partner_id" />
+          <t t-set="icon" t-value="'/reseller_dermanord/static/src/img/dn_maps_marker.png'" />
+          <t t-set="api_key" t-value="request.env['ir.config_parameter'].get_param('google_maps_api')" />
+        </t>
+      </xpath>
+      <!--
+           <xpath expr="//img" position="attributes">
+           <attribute name="class">img-responsive</attribute>
+           </xpath>
+           
+           <xpath expr="//img" position="replace">
+           <img class="thumbnail img-responsive" t-att-src="res_company.google_map_img(marker={'icon': request.env['ir.config_parameter'].get_param('dermanord_map_marker','http://wiggum.vertel.se/dn_maps_marker.png')})" />
+           </xpath>
+      -->
     </template>
-
     <record id="view_website_config_settings_sc_i" model="ir.ui.view">
       <field name="name">Website settings snapchat and instagram</field>
       <field name="model">website.config.settings</field>
-      <field name="inherit_id" ref="website.view_website_config_settings"/>
+      <field name="inherit_id" ref="website.view_website_config_settings" />
       <field name="arch" type="xml">
         <div name="social_facebook" position="after">
-          <label for="social_instagram"/>
+          <label for="social_instagram" />
           <div name="social_instagram">
-              <div class="oe_inline">
-                  <field name="social_instagram" placeholder="https://instagram.com/openerp"/>
-              </div>
+            <div class="oe_inline">
+              <field name="social_instagram" placeholder="https://instagram.com/openerp" />
+            </div>
           </div>
-          <label for="social_snapchat"/>
+          <label for="social_snapchat" />
           <div name="social_snapchat">
-              <div class="oe_inline">
-                  <field name="social_snapchat" placeholder="https://snapchat.com/download"/>
-              </div>
+            <div class="oe_inline">
+              <field name="social_snapchat" placeholder="https://snapchat.com/download" />
+            </div>
           </div>
         </div>
       </field>
     </record>
-
-        <!-- Theme Dermanord -->
-        <template id="theme_dermanord" inherit_id="website.layout" customize_show="True" active="False" name="Theme Dermanord" priority="99">
-            <xpath expr="//head" position="inside">  // Favicon
-                    <link rel="apple-touch-icon" sizes="180x180" href="/theme_dermanord/static/ico/apple-touch-icon.png"/>
-                    <link rel="icon" type="image/png" sizes="32x32" href="/theme_dermanord/static/ico/favicon-32x32.png"/>
-                    <link rel="icon" type="image/png" sizes="16x16" href="/theme_dermanord/static/ico/favicon-16x16.png"/>
-                    <link rel="manifest" href="/theme_dermanord/static/ico/site.webmanifest"/>
-                    <meta name="msapplication-TileColor" content="#da532c"/>
-                    <meta name="theme-color" content="#ffffff"/>
-            </xpath>
-            <xpath expr="//meta[@name='viewport']" position="attributes">
-                <attribute name="content">initial-scale=1, width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no</attribute>
-            </xpath>
-            <xpath expr="//t[@t-if='not title']" position="replace">
-                <t t-if="not title">
-                    <t t-if="additional_title in ['Butik', 'Shop']">
-                        <t t-set="title"><t t-if="additional_title"><t t-raw="additional_title"/></t></t>
-                    </t>
-                    <t t-if="additional_title not in ['Butik', 'Shop']">
-                        <t t-set="title"><t t-if="additional_title"><t t-raw="additional_title"/> | </t>MARIA ÅKERBERG</t>
-                    </t>
+    <!-- Theme Dermanord -->
+    <template id="theme_dermanord" inherit_id="website.layout" customize_show="True" active="False" name="Theme Dermanord" priority="99">
+      <xpath expr="//head" position="inside">
+        // Favicon
+        <link rel="apple-touch-icon" sizes="180x180" href="/theme_dermanord/static/ico/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/theme_dermanord/static/ico/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/theme_dermanord/static/ico/favicon-16x16.png" />
+        <link rel="manifest" href="/theme_dermanord/static/ico/site.webmanifest" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#ffffff" />
+      </xpath>
+      <xpath expr="//meta[@name='viewport']" position="attributes">
+        <attribute name="content">initial-scale=1, width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no</attribute>
+      </xpath>
+      <xpath expr="//t[@t-if='not title']" position="replace">
+        <t t-if="not title">
+          <t t-if="additional_title in ['Butik', 'Shop']">
+            <t t-set="title">
+              <t t-if="additional_title">
+                <t t-raw="additional_title" />
+              </t>
+            </t>
+          </t>
+          <t t-if="additional_title not in ['Butik', 'Shop']">
+            <t t-set="title">
+              <t t-if="additional_title">
+                <t t-raw="additional_title" />
+                |
+              </t>
+              MARIA ÅKERBERG
+            </t>
+          </t>
+        </t>
+      </xpath>
+      <xpath expr="//div[@id='wrapwrap']/header/div[@class='navbar navbar-default navbar-static-top']/div[@class='container']/div[@class='navbar-header']" position="replace">
+        <div class="container">
+          <div id="header_left_menu" class="col-md-2 col-sm-2 hidden-xs">
+            <button id="site_lang" t-att-data-lang="lang" class="btn dropdown-toggle futura_pt_m" type="button" data-toggle="dropdown" style="background: none;">
+              <t t-foreach="languages" t-as="lg">
+                <t t-if="lg[0] == lang">
+                  <t t-esc="lg[1]" />
                 </t>
-            </xpath>
-            <xpath expr="//div[@id='wrapwrap']/header/div[@class='navbar navbar-default navbar-static-top']/div[@class='container']/div[@class='navbar-header']" position="replace">
-                <div class="container">
-                    <div id="header_left_menu" class="col-md-2 col-sm-2 hidden-xs">
-                        <button id="site_lang" t-att-data-lang="lang" class="btn dropdown-toggle futura_pt_m" type="button" data-toggle="dropdown" style="background: none;">
-                            <t t-foreach="languages" t-as="lg">
-                                <t t-if="lg[0] == lang">
-                                    <t t-esc="lg[1]"/>
-                                </t>
-                            </t>
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu js_language_selector hidden-xs col-md-12 col-sm-12 col-xs-12 futura_pt_m" t-if="(request.website_multilang and len(languages) &gt; 1) or editable">
-                            <t t-set="master_language" t-value="None"/>
-                            <t t-set="other_languages" t-value="[]"/>
-                            <t t-foreach="languages" t-as="lg">
-                                <t t-if="lg[0] == 'ma_ST'">
-                                    <t t-set="master_language" t-value="lg"/>
-                                </t>
-                                <t t-if="lg[0] != 'ma_ST'">
-                                    <t t-set="other_languages" t-value="other_languages + [lg]"/>
-                                </t>
-                            </t>
-                            <t t-if="master_language">
-                                <li groups="base.group_website_publisher">
-                                    <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=master_language[0])" t-att-data-default-lang="editable and 'true' if master_language[0] == website.default_lang_code else None" t-att-data-lang="master_language[0]" class="js_change_lang">
-                                        <t t-esc="master_language[1].split('/').pop()"/>
-                                    </a>
-                                </li>
-                            </t>
-                            <li t-foreach="other_languages" t-as="lg">
-                                <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
-                                    <t t-esc="lg[1].split('/').pop()"/>
-                                </a>
-                            </li>
-                            <li groups="base.group_website_publisher">
-                                <t t-set="url_return" t-value="url_for('', '[lang]') + '?' + keep_query()"/>
-                                <a t-attf-href="/web#action=base.action_view_base_language_install&amp;website_id=#{website.id}&amp;url_return=#{url_return}">
-                                    <i class="fa fa-plus-circle"/>
-                                        Add a language...
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div id="header_middle_menu" class="col-md-8 col-sm-8 col-xs-12">
-                        <div class="navbar-header" style="width: 100%;">
-                            <div class="col-md-12 col-sm-12">
-                                <a id="desktop_logo" class="navbar-brand logo text-center hidden-xs" href="/" style="width: 100%;">
-                                    <img src="/logo.png" />
-                                </a>
-                            </div>
-                            <div id="menu_div" class="col-xs-2">
-                                <button type="button" id="menu-btn" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-top-collapse">
-                                    <span class="sr-only">Toggle navigation</span>
-                                    <span class="icon-bar"/>
-                                    <span class="icon-bar"/>
-                                    <span class="icon-bar"/>
-                                </button>
-                            </div>
-                            <div id="search_div" class="col-xs-2">
-                                <div class="hidden-lg hidden-md hidden-sm">
-                                    <a href="#" id="search-btn-modal" data-toggle="modal" data-target="#search_modal" style="color: #000;"><i class="fa fa-search fa-2x"/></a>
-                                </div>
-                            </div>
-                            <div id="logo_div" class="col-xs-4">
-                                <a id="mobile_logo" class="navbar-brand logo text-center hidden-lg hidden-md hidden-sm" href="/" style="width: 100%;">
-                                    <img src="/website_logo.png"/>
-                                </a>
-                            </div>
-                            <div id="my_page_div" class="col-xs-2">
-                                <div class="hidden-lg hidden-md hidden-sm">
-                                    <a href="/home" role="menuitem" style="color: #000;"><i class="fa fa-user fa-2x"/></a>
-                                </div>
-                            </div>
-                            <div id="shop_cart_div" class="col-xs-2" groups="base.group_user,__export__.res_groups_283">
-                                <div class="hidden-lg hidden-md hidden-sm">
-                                    <a href="/shop/cart" style="color: #000;"><i class="fa fa-shopping-cart fa-2x"/>
-                                        <sup class="my_cart_quantity label label-primary dn_cart_qty_sm"/>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="header_right_menu" class="col-md-2 col-sm-2 hidden-xs pull-right">
-                        <div class="col-md-12 col-sm-12 hidden-xs">
-                            <a href="#" id="search-btn-modal" data-toggle="modal" data-target="#search_modal" style="color: #000;" class="pull-right"><h5 class="dn_uppercase">Search <i class="fa fa-search"/></h5></a>
-                        </div>
-                        <div class="col-md-12 col-sm-12 hidden-xs" groups="base.group_user,__export__.res_groups_283">
-                            <t t-set="website_sale_order" t-value="website_sale_order or website.sale_get_order()"/>
-                            <a href="/shop/cart" class="pull-right kepler_std_i" style="color: #000;">
-                                <i class="fa fa-shopping-cart"/>
-                                <i>Bag:</i>
-                                <i class="my_cart_total">
-                                    &amp;nbsp;
-                                    <span class="my_cart_currency" style="white-space: nowrap;"/>
-                                    <span class="oe_currency_value"/>
-                                </i>
-                                <i class="my_cart_quantity"></i>
-                            </a>
-<!--
-                                  My cart <sup t-attf-class="my_cart_quantity label label-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or ''"/>
--->
-                        </div>
-                    </div>
-                </div>
-            </xpath>
-            <xpath expr="//div[@class='navbar navbar-default navbar-static-top']" position="attributes">
-                <attribute name="style">position: fixed; top: 0px; width: 100%;</attribute>
-            </xpath>
-            <xpath expr="//ul[@id='top_menu']" position="before">
-                <div id="header_line"/>
-            </xpath>
-            <xpath expr="//ul[@id='top_menu']" position="attributes">
-                <attribute name="class">nav navbar-nav</attribute>
-            </xpath>
-            <xpath expr="//t[@t-foreach='website.menu_id.child_id']" position="after">
-                <li class="dropdown" id="more_dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <span>More</span> <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <t t-foreach="website.menu_id.child_id" t-as="submenu">
-                            <li t-if="submenu != request.env.ref('theme_dermanord.footer_menu')">
-                                <a t-att-href="submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
-                                    <span t-field="submenu.name"/>
-                                </a>
-                            </li>
-                        </t>
-                    </ul>
+              </t>
+              <span class="caret" />
+            </button>
+            <ul class="dropdown-menu js_language_selector hidden-xs col-md-12 col-sm-12 col-xs-12 futura_pt_m" t-if="(request.website_multilang and len(languages) &gt; 1) or editable">
+              <t t-set="master_languages" t-value="[]" />
+              <t t-set="other_languages" t-value="[]" />
+              <t t-foreach="languages" t-as="lg">
+                <t t-if="lg[0] in ('ma_ST', 'no_NO', 'nl_NL')">
+                  <t t-set="master_languages" t-value="master_languages + [lg]" />
+                </t>
+                <t t-if="lg[0] not in ('ma_ST', 'no_NO', 'nl_NL')">
+                  <t t-set="other_languages" t-value="other_languages + [lg]" />
+                </t>
+              </t>
+              <t t-foreach="master_languages" t-as="master_language">
+                <li groups="base.group_website_publisher">
+                  <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=master_language[0])" t-att-data-default-lang="editable and 'true' if master_language[0] == website.default_lang_code else None" t-att-data-lang="master_language[0]" class="js_change_lang">
+                    <t t-esc="master_language[1].split('/').pop()" />
+                  </a>
                 </li>
-            </xpath>
-            <!-- Hide footer -->
-            <xpath expr="//footer/div" position="attributes">
-                <attribute name="class">hidden</attribute>
-            </xpath>
-            <!-- Override footer -->
-            <xpath expr="//footer" position="inside">
-                <t t-if="not shop_footer">
-                    <div class="container hidden-print text-center">
-                        <div class="row dn_footer_row">
-                            <div class="col-xs-12 col-md-4 col-lg-4 mt32 mb32" style="text-align: left;">
-                                <ul class="dn_footer_menu col-xs-12 col-md-12 col-lg-12">
-                                    <t t-if="len(website.env.ref('theme_dermanord.footer_menu')) &gt; 0">
-                                        <t t-foreach="request.env.ref('theme_dermanord.footer_menu').child_id" t-as="submenu">
-                                            <li>
-                                                <a t-att-href="(website.menu_id.child_id[0] == submenu) and '/' or submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
-                                                    <span t-field="submenu.name" />
-                                                </a>
-                                            </li>
-                                        </t>
-                                    </t>
-                                </ul>
-                            </div>
-                            <div class="dn_footer_col col-xs-12 col-md-4 col-lg-4 mt32" style="text-align: left;">
-                                <div t-field="res_company.partner_id" t-field-options='{
+              </t>
+              <li t-foreach="other_languages" t-as="lg">
+                <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
+                  <t t-esc="lg[1].split('/').pop()" />
+                </a>
+              </li>
+              <li groups="base.group_website_publisher">
+                <t t-set="url_return" t-value="url_for('', '[lang]') + '?' + keep_query()" />
+                <a t-attf-href="/web#action=base.action_view_base_language_install&amp;website_id=#{website.id}&amp;url_return=#{url_return}">
+                  <i class="fa fa-plus-circle" />
+                  Add a language...
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div id="header_middle_menu" class="col-md-8 col-sm-8 col-xs-12">
+            <div class="navbar-header" style="width: 100%;">
+              <div class="col-md-12 col-sm-12">
+                <a id="desktop_logo" class="navbar-brand logo text-center hidden-xs" href="/" style="width: 100%;">
+                  <img src="/logo.png" />
+                </a>
+              </div>
+              <div id="menu_div" class="col-xs-2">
+                <button type="button" id="menu-btn" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-top-collapse">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar" />
+                  <span class="icon-bar" />
+                  <span class="icon-bar" />
+                </button>
+              </div>
+              <div id="search_div" class="col-xs-2">
+                <div class="hidden-lg hidden-md hidden-sm">
+                  <a href="#" id="search-btn-modal" data-toggle="modal" data-target="#search_modal" style="color: #000;">
+                    <i class="fa fa-search fa-2x" />
+                  </a>
+                </div>
+              </div>
+              <div id="logo_div" class="col-xs-4">
+                <a id="mobile_logo" class="navbar-brand logo text-center hidden-lg hidden-md hidden-sm" href="/" style="width: 100%;">
+                  <img src="/website_logo.png" />
+                </a>
+              </div>
+              <div id="my_page_div" class="col-xs-2">
+                <div class="hidden-lg hidden-md hidden-sm">
+                  <a href="/home" role="menuitem" style="color: #000;">
+                    <i class="fa fa-user fa-2x" />
+                  </a>
+                </div>
+              </div>
+              <div id="shop_cart_div" class="col-xs-2" groups="base.group_user,__export__.res_groups_283">
+                <div class="hidden-lg hidden-md hidden-sm">
+                  <a href="/shop/cart" style="color: #000;">
+                    <i class="fa fa-shopping-cart fa-2x" />
+                    <sup class="my_cart_quantity label label-primary dn_cart_qty_sm" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="header_right_menu" class="col-md-2 col-sm-2 hidden-xs pull-right">
+            <div class="col-md-12 col-sm-12 hidden-xs">
+              <a href="#" id="search-btn-modal" data-toggle="modal" data-target="#search_modal" style="color: #000;" class="pull-right">
+                <h5 class="dn_uppercase">
+                  Search
+                  <i class="fa fa-search" />
+                </h5>
+              </a>
+            </div>
+            <div class="col-md-12 col-sm-12 hidden-xs" groups="base.group_user,__export__.res_groups_283">
+              <t t-set="website_sale_order" t-value="website_sale_order or website.sale_get_order()" />
+              <a href="/shop/cart" class="pull-right kepler_std_i" style="color: #000;">
+                <i class="fa fa-shopping-cart" />
+                <i>Bag:</i>
+                <i class="my_cart_total">
+                  &amp;nbsp;
+                  <span class="my_cart_currency" style="white-space: nowrap;" />
+                  <span class="oe_currency_value" />
+                </i>
+                <i class="my_cart_quantity" />
+              </a>
+              <!--
+                   My cart <sup t-attf-class="my_cart_quantity label label-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or ''"/>
+              -->
+            </div>
+          </div>
+        </div>
+      </xpath>
+      <xpath expr="//div[@class='navbar navbar-default navbar-static-top']" position="attributes">
+        <attribute name="style">position: fixed; top: 0px; width: 100%;</attribute>
+      </xpath>
+      <xpath expr="//ul[@id='top_menu']" position="before">
+        <div id="header_line" />
+      </xpath>
+      <xpath expr="//ul[@id='top_menu']" position="attributes">
+        <attribute name="class">nav navbar-nav</attribute>
+      </xpath>
+      <xpath expr="//t[@t-foreach='website.menu_id.child_id']" position="after">
+        <li class="dropdown" id="more_dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            <span>More</span>
+            <span class="caret" />
+          </a>
+          <ul class="dropdown-menu">
+            <t t-foreach="website.menu_id.child_id" t-as="submenu">
+              <li t-if="submenu != request.env.ref('theme_dermanord.footer_menu')">
+                <a t-att-href="submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
+                  <span t-field="submenu.name" />
+                </a>
+              </li>
+            </t>
+          </ul>
+        </li>
+      </xpath>
+      <!-- Hide footer -->
+      <xpath expr="//footer/div" position="attributes">
+        <attribute name="class">hidden</attribute>
+      </xpath>
+      <!-- Override footer -->
+      <xpath expr="//footer" position="inside">
+        <t t-if="not shop_footer">
+          <div class="container hidden-print text-center">
+            <div class="row dn_footer_row">
+              <div class="col-xs-12 col-md-4 col-lg-4 mt32 mb32" style="text-align: left;">
+                <ul class="dn_footer_menu col-xs-12 col-md-12 col-lg-12">
+                  <t t-if="len(website.env.ref('theme_dermanord.footer_menu')) &gt; 0">
+                    <t t-foreach="request.env.ref('theme_dermanord.footer_menu').child_id" t-as="submenu">
+                      <li>
+                        <a t-att-href="(website.menu_id.child_id[0] == submenu) and '/' or submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
+                          <span t-field="submenu.name" />
+                        </a>
+                      </li>
+                    </t>
+                  </t>
+                </ul>
+              </div>
+              <div class="dn_footer_col col-xs-12 col-md-4 col-lg-4 mt32" style="text-align: left;">
+                <div t-field="res_company.partner_id" t-field-options='{
                                     "no_marker": 1,
                                     "widget": "contact",
-                                    "fields": ["name", "address", "phone", "mobile", "fax", "email"]}'/>
-                                <div class="container hidden-print mt16 mb16">
-                                    <div class="row">
-                                        <div class="dn-social-button" t-if="website.social_facebook">
-                                            <a t-att-href="website.social_facebook" target="_blank">
-                                                <i class="fa fa-facebook fa-2x" />
-                                            </a>
-                                        </div>
-                                        <div class="dn-social-button" t-if="website.social_instagram">
-                                            <a t-att-href="website.social_instagram" target="_blank">
-                                                <i class="fa fa-instagram fa-2x" />
-                                            </a>
-                                        </div>
-                                        <div class="dn-social-button" t-if="website.social_twitter">
-                                            <a t-att-href="website.social_twitter" target="_blank">
-                                                <i class="fa fa-twitter fa-2x" />
-                                            </a>
-                                        </div>
-                                        <div class="dn-social-button" t-if="website.social_youtube">
-                                            <a t-att-href="website.social_youtube" target="_blank" rel="publisher">
-                                                <i class="fa fa-youtube fa-2x" />
-                                            </a>
-                                        </div>
-                                        <div class="dn-social-button" t-if="website.social_snapchat">
-                                            <a t-att-href="website.social_snapchat" target="_blank">
-                                                <i class="fa fa-snapchat-ghost fa-2x" />
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="dn_footer_col col-xs-12 col-md-4 col-lg-4 mt32 mb32">
-                                <img class="mb32" src="/theme_dermanord/static/src/img/maria_white.png" style="height: 120px;"/>
-                                <div class="col-xs-12 col-md-12 col-lg-12" style="left: 0px; right: 0px;">
-                                    <center>
-                                        <h4 style="margin-top: 0px; margin-bottom: 0px;">MADE IN SWEDEN</h4>
-                                    </center>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: left;">
-                            &amp;copy; <t t-esc="time.strftime('%Y')"/> MARIA ÅKERBERG
-                        </div>
+                                    "fields": ["name", "address", "phone", "mobile", "fax", "email"]}' />
+                <div class="container hidden-print mt16 mb16">
+                  <div class="row">
+                    <div class="dn-social-button" t-if="website.social_facebook">
+                      <a t-att-href="website.social_facebook" target="_blank">
+                        <i class="fa fa-facebook fa-2x" />
+                      </a>
                     </div>
+                    <div class="dn-social-button" t-if="website.social_instagram">
+                      <a t-att-href="website.social_instagram" target="_blank">
+                        <i class="fa fa-instagram fa-2x" />
+                      </a>
+                    </div>
+                    <div class="dn-social-button" t-if="website.social_twitter">
+                      <a t-att-href="website.social_twitter" target="_blank">
+                        <i class="fa fa-twitter fa-2x" />
+                      </a>
+                    </div>
+                    <div class="dn-social-button" t-if="website.social_youtube">
+                      <a t-att-href="website.social_youtube" target="_blank" rel="publisher">
+                        <i class="fa fa-youtube fa-2x" />
+                      </a>
+                    </div>
+                    <div class="dn-social-button" t-if="website.social_snapchat">
+                      <a t-att-href="website.social_snapchat" target="_blank">
+                        <i class="fa fa-snapchat-ghost fa-2x" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="dn_footer_col col-xs-12 col-md-4 col-lg-4 mt32 mb32">
+                <img class="mb32" src="/theme_dermanord/static/src/img/maria_white.png" style="height: 120px;" />
+                <div class="col-xs-12 col-md-12 col-lg-12" style="left: 0px; right: 0px;">
+                  <center>
+                    <h4 style="margin-top: 0px; margin-bottom: 0px;">MADE IN SWEDEN</h4>
+                  </center>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: left;">
+              &amp;copy;
+              <t t-esc="time.strftime('%Y')" />
+              MARIA ÅKERBERG
+            </div>
+          </div>
+        </t>
+      </xpath>
+    </template>
+    <!-- Customize javascript -->
+    <template id="assets_frontend" inherit_id="website.assets_frontend">
+      <xpath expr="/t" position="inside">
+        <link href="/theme_dermanord/static/src/css/theme_dermanord.css" rel="stylesheet" />
+        <link href="/theme_dermanord/static/src/fonts/stylesheet.css" rel="stylesheet" />
+        <script type="text/javascript" src="/theme_dermanord/static/src/js/theme_dermanord.js" />
+      </xpath>
+    </template>
+    <!--
+         <record id="website_sale.header" model="ir.ui.view">
+         <field name="active" eval="False"/>
+         </record>
+    -->
+    <template id="user_navbar" inherit_id="website.user_navbar">
+      <xpath expr="//nav[@id='oe_main_menu_navbar']" position="attributes">
+        <attribute name="groups">base.group_erp_manager,base.group_user</attribute>
+      </xpath>
+    </template>
+    <template id="hidden_xs_my_page" inherit_id="website.layout">
+      <xpath expr="//a[@href='/web']/.." position="attributes">
+        <attribute name="class">hidden-xs</attribute>
+      </xpath>
+    </template>
+    <!-- inherit submenu template
+         Desktorp mode: when menu's parent is footer_menu, it will apprear in top but not in main menu.
+         Mobile mode: when menu's parent is footer_menu, it will not apprear in top but in toggle menu (without parent menu dropdown).
+    -->
+    <template id="submenu_inherit" inherit_id="website.submenu" name="Submenu Inherit">
+      <xpath expr="//li[@t-if='not submenu.child_id']" position="replace">
+        <li t-if="not submenu.child_id and submenu != request.env.ref('theme_dermanord.footer_menu')" t-att-class="'active' if submenu.url and submenu.url != '/' and request.httprequest.path == submenu.url.replace('/page/website.', '/page/') else None">
+          <a t-att-href="submenu.url or '/'" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
+            <span t-field="submenu.name" />
+          </a>
+        </li>
+      </xpath>
+      <xpath expr="//li[@t-if='submenu.child_id']" position="replace">
+        <li t-if="submenu.child_id and submenu != submenu.env.ref('theme_dermanord.footer_menu')" t-att-class="'active' if submenu.url and submenu.url != '/' and request.httprequest.path == submenu.url.replace('/page/website.', '/page/') else None">
+          <a t-att-href="submenu.url or '/'" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
+            <span t-field="submenu.name" />
+          </a>
+        </li>
+      </xpath>
+      <!--
+           <xpath expr="//li[@t-if='not submenu.child_id']" position="attributes">
+           <attribute name="t-if">not submenu.child_id and submenu.parent_id != submenu.env.ref('theme_dermanord.footer_menu')</attribute>
+           </xpath>
+           <xpath expr="//li[1]" position="after">
+           <li t-if="not submenu.child_id and submenu.parent_id == submenu.env.ref('theme_dermanord.footer_menu')" t-att-class="'active footer_menu' if submenu.url and submenu.url != '/' and request.httprequest.path == submenu.url.replace('/page/website.', '/page/') else 'footer_menu'">
+           <a t-att-href="(website.menu_id.child_id[0] == submenu) and '/' or submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
+           <span t-field="submenu.name" />
+           </a>
+           </li>
+           </xpath>
+           <xpath expr="//li[@t-if='submenu.child_id']" position="attributes">
+           <attribute name="t-if">submenu.child_id and submenu != submenu.env.ref('theme_dermanord.footer_menu')</attribute>
+           </xpath>
+           <xpath expr="//li[last()]" position="after">
+           <li t-if="submenu.child_id and submenu == submenu.env.ref('theme_dermanord.footer_menu')" t-attf-class="footer_menu dropdown hidden-lg hidden-md hidden-sm #{(submenu.url and submenu.url != '/' and any([request.httprequest.path == child.url.replace('/page/website.', '/page/') for child in submenu.child_id if child.url]) or(submenu.url and request.httprequest.path == submenu.url.replace('/page/website.', '/page/'))) and 'active footer_menu'}">
+           <hr/>
+           <t t-foreach="submenu.child_id" t-as="submenu">
+           <a t-att-href="(website.menu_id.child_id[0] == submenu) and '/' or submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
+           <span t-field="submenu.name" />
+           </a>
+           </t>
+           </li>
+           </xpath>
+      -->
+    </template>
+    <template id="breadcrumb_dermanord" inherit_id="website.layout">
+      <xpath expr="//t[@t-raw='0']" position="before">
+        <t t-if="not no_breadcrumb and website">
+          <ol class="breadcrumb dn_breadcrumb">
+            <t t-raw="website.get_breadcrumb(request.httprequest.path, product=product, blog=blog, blog_post=blog_post, job=job)" />
+            <t t-set="master_language" t-value="[]" />
+            <t t-set="other_languages" t-value="[]" />
+            <t t-foreach="languages" t-as="lg">
+              <t t-if="lg[0] in ('ma_ST', 'no_NO', 'nl_NL')">
+                <t t-set="master_languages" t-value="master_languages + [lg]" />
+              </t>
+              <t t-if="lg[0] not in ('ma_ST', 'no_NO', 'nl_NL')">
+                <t t-set="other_languages" t-value="other_languages + [lg]" />
+              </t>
+            </t>
+            <div class="btn-group pull-right lg-flag hidden-lg hidden-md hidden-sm" style="padding: 0px 2px;">
+              <t t-foreach="master_languages" t-as="master_language">
+                <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=master_language[0])" t-att-data-default-lang="editable and 'true' if master_language[0] == website.default_lang_code else None" t-att-data-lang="master_language[0]" class="js_change_lang" groups="base.group_website_publisher">
+                  <span t-esc="master_language[0].split('_')[1]" />
+                </a>
+                <span groups="base.group_website_publisher">|</span>
+              </t>
+              <t t-foreach="other_languages" t-as="lg">
+                <span t-if="lg_index != (len(languages)-1) and lg_index != 0">|</span>
+                <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
+                  <!--
+                       <img t-att-src="'/web/binary/image?model=res.country&amp;id=%s&amp;field=image' %request.env['res.country'].search([('code', '=', lg[0].split('_')[1].lower())]).id" style="height: 20px;"/>
+                  -->
+                  <span t-if="lg[0] != 'en_US'">
+                    <t t-esc="lg[0].split('_')[1]" />
+                  </span>
+                  <span t-if="lg[0] == 'en_US'">EN</span>
+                </a>
+              </t>
+            </div>
+          </ol>
+        </t>
+      </xpath>
+    </template>
+    <template id="submenu_dermanord" name="Submenu dermanord">
+      <t t-call="website.layout">
+        <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path)" />
+        <t t-set="current_submenu" t-value="website.current_submenu(request.httprequest.path)" />
+        <div class="container dn_header">
+          <div t-if="current_submenu.child_id" class="col-md-12 col-sm-12 col-xs-12 dn_header_banner">
+            <t t-if="current_menu == current_submenu">
+              <script type="text/javascript">
+                window.location.replace("
+                <t t-esc="current_menu.child_id[0].url" />
+                ");
+              </script>
+            </t>
+            <div class="col-md-2 col-sm-2 col-xs-12 dn_header_nav">
+              <ul class="nav nav-pills nav-stacked">
+                <t t-foreach="current_submenu.child_id" t-as="submenu">
+                  <li t-att-class="'hidden-xs %s' %('active' if submenu == current_menu else '')">
+                    <a t-att-href="submenu.url" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
+                      <h5 class="dn_uppercase">
+                        <t t-esc="submenu.name" />
+                      </h5>
+                    </a>
+                  </li>
+                  <li t-att-class="'hidden-lg hidden-md hidden-sm %s' %('active' if submenu == current_menu else '')">
+                    <a t-att-href="submenu.url" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
+                      <h5 class="dn_uppercase">
+                        <t t-esc="submenu.name" />
+                      </h5>
+                    </a>
+                  </li>
                 </t>
-            </xpath>
-        </template>
-
-        <!-- Customize javascript -->
-        <template id="assets_frontend" inherit_id="website.assets_frontend">
-            <xpath expr="/t" position="inside">
-                <link href="/theme_dermanord/static/src/css/theme_dermanord.css" rel="stylesheet" />
-                <link href="/theme_dermanord/static/src/fonts/stylesheet.css" rel="stylesheet" />
-                <script type="text/javascript" src="/theme_dermanord/static/src/js/theme_dermanord.js" />
-            </xpath>
-        </template>
-
-<!--
-        <record id="website_sale.header" model="ir.ui.view">
-            <field name="active" eval="False"/>
-        </record>
--->
-
-        <template id="user_navbar" inherit_id="website.user_navbar">
-            <xpath expr="//nav[@id='oe_main_menu_navbar']" position="attributes">
-                <attribute name="groups">base.group_erp_manager,base.group_user</attribute>
-            </xpath>
-        </template>
-
-        <template id="hidden_xs_my_page" inherit_id="website.layout">
-            <xpath expr="//a[@href='/web']/.." position="attributes">
-                <attribute name="class">hidden-xs</attribute>
-            </xpath>
-        </template>
-
-        <!-- inherit submenu template
-        Desktorp mode: when menu's parent is footer_menu, it will apprear in top but not in main menu.
-        Mobile mode: when menu's parent is footer_menu, it will not apprear in top but in toggle menu (without parent menu dropdown).
-        -->
-        <template id="submenu_inherit" inherit_id="website.submenu" name="Submenu Inherit">
-            <xpath expr="//li[@t-if='not submenu.child_id']" position="replace">
-                <li t-if="not submenu.child_id and submenu != request.env.ref('theme_dermanord.footer_menu')" t-att-class="'active' if submenu.url and submenu.url != '/' and request.httprequest.path == submenu.url.replace('/page/website.', '/page/') else None">
-                    <a t-att-href="submenu.url or '/'" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
-                        <span t-field="submenu.name"/>
-                    </a>
-                </li>
-            </xpath>
-            <xpath expr="//li[@t-if='submenu.child_id']" position="replace">
-                <li t-if="submenu.child_id and submenu != submenu.env.ref('theme_dermanord.footer_menu')" t-att-class="'active' if submenu.url and submenu.url != '/' and request.httprequest.path == submenu.url.replace('/page/website.', '/page/') else None">
-                    <a t-att-href="submenu.url or '/'" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
-                        <span t-field="submenu.name"/>
-                    </a>
-                </li>
-            </xpath>
-<!--
-            <xpath expr="//li[@t-if='not submenu.child_id']" position="attributes">
-                <attribute name="t-if">not submenu.child_id and submenu.parent_id != submenu.env.ref('theme_dermanord.footer_menu')</attribute>
-            </xpath>
-            <xpath expr="//li[1]" position="after">
-                <li t-if="not submenu.child_id and submenu.parent_id == submenu.env.ref('theme_dermanord.footer_menu')" t-att-class="'active footer_menu' if submenu.url and submenu.url != '/' and request.httprequest.path == submenu.url.replace('/page/website.', '/page/') else 'footer_menu'">
-                    <a t-att-href="(website.menu_id.child_id[0] == submenu) and '/' or submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
-                        <span t-field="submenu.name" />
-                    </a>
-                </li>
-            </xpath>
-            <xpath expr="//li[@t-if='submenu.child_id']" position="attributes">
-                <attribute name="t-if">submenu.child_id and submenu != submenu.env.ref('theme_dermanord.footer_menu')</attribute>
-            </xpath>
-            <xpath expr="//li[last()]" position="after">
-                <li t-if="submenu.child_id and submenu == submenu.env.ref('theme_dermanord.footer_menu')" t-attf-class="footer_menu dropdown hidden-lg hidden-md hidden-sm #{(submenu.url and submenu.url != '/' and any([request.httprequest.path == child.url.replace('/page/website.', '/page/') for child in submenu.child_id if child.url]) or(submenu.url and request.httprequest.path == submenu.url.replace('/page/website.', '/page/'))) and 'active footer_menu'}">
-                    <hr/>
-                    <t t-foreach="submenu.child_id" t-as="submenu">
-                        <a t-att-href="(website.menu_id.child_id[0] == submenu) and '/' or submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
-                            <span t-field="submenu.name" />
-                        </a>
-                    </t>
-                </li>
-            </xpath>
--->
-        </template>
-
-        <template id="breadcrumb_dermanord" inherit_id="website.layout">
-            <xpath expr="//t[@t-raw='0']" position="before">
-                <t t-if="not no_breadcrumb and website">
-                    <ol class="breadcrumb dn_breadcrumb">
-                        <t t-raw="website.get_breadcrumb(request.httprequest.path, product=product, blog=blog, blog_post=blog_post, job=job)"/>
-                        <t t-set="master_language" t-value="None"/>
-                        <t t-set="other_languages" t-value="[]"/>
-                        <t t-foreach="languages" t-as="lg">
-                            <t t-if="lg[0] == 'ma_ST'">
-                                <t t-set="master_language" t-value="lg"/>
-                            </t>
-                            <t t-if="lg[0] != 'ma_ST'">
-                                <t t-set="other_languages" t-value="other_languages + [lg]"/>
-                            </t>
-                        </t>
-                        <div class="btn-group pull-right lg-flag hidden-lg hidden-md hidden-sm" style="padding: 0px 2px;">
-                            <t t-if="master_language">
-                                <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=master_language[0])" t-att-data-default-lang="editable and 'true' if master_language[0] == website.default_lang_code else None" t-att-data-lang="master_language[0]" class="js_change_lang" groups="base.group_website_publisher">
-                                    <span t-esc="master_language[0].split('_')[1]"/>
-                                </a>
-                                <span groups="base.group_website_publisher"> | </span>
-                            </t>
-                            <t t-foreach="other_languages" t-as="lg">
-                                <span t-if="lg_index != (len(languages)-1) and lg_index != 0"> | </span>
-                                <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
-<!--
-                                    <img t-att-src="'/web/binary/image?model=res.country&amp;id=%s&amp;field=image' %request.env['res.country'].search([('code', '=', lg[0].split('_')[1].lower())]).id" style="height: 20px;"/>
--->
-                                    <span t-if="lg[0] != 'en_US'">
-                                        <t t-esc="lg[0].split('_')[1]"/>
-                                    </span>
-                                    <span t-if="lg[0] == 'en_US'">EN</span>
-                                </a>
-                            </t>
-                        </div>
-                    </ol>
-                </t>
-            </xpath>
-        </template>
-
-        <template id="submenu_dermanord" name="Submenu dermanord">
-            <t t-call="website.layout">
-                <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path)"/>
-                <t t-set="current_submenu" t-value="website.current_submenu(request.httprequest.path)"/>
-                <div class="container dn_header">
-                    <div t-if="current_submenu.child_id" class="col-md-12 col-sm-12 col-xs-12 dn_header_banner">
-                        <t t-if="current_menu == current_submenu">
-                            <script type="text/javascript">
-                                window.location.replace("<t t-esc="current_menu.child_id[0].url"/>");
-                            </script>
-                        </t>
-                        <div class="col-md-2 col-sm-2 col-xs-12 dn_header_nav">
-                            <ul class="nav nav-pills nav-stacked">
-                                <t t-foreach="current_submenu.child_id" t-as="submenu">
-                                    <li t-att-class="'hidden-xs %s' %('active' if submenu == current_menu else '')">
-                                        <a t-att-href="submenu.url" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
-                                            <h5 class="dn_uppercase">
-                                                <t t-esc="submenu.name"/>
-                                            </h5>
-                                        </a>
-                                    </li>
-                                    <li t-att-class="'hidden-lg hidden-md hidden-sm %s' %('active' if submenu == current_menu else '')">
-                                        <a t-att-href="submenu.url" class="dn_header_nav_tab" style="padding: 5px 10px !important;">
-                                            <h5 class="dn_uppercase">
-                                                <t t-esc="submenu.name"/>
-                                            </h5>
-                                        </a>
-                                    </li>
-                                </t>
-                            </ul>
-                        </div>
-                        <div class="col-md-10 col-sm-10 hidden-xs" style="padding: 0px;">
-                            <div class="dn_header_container">
-                                <span itemprop="image" t-field="current_menu.image" t-field-options='{"widget": "image", "class": "css_non_editable_mode_hidden", "alt-field": "name"}'/>
-                                <img class="img img-responsive css_editable_mode_hidden" t-att-src="'/imagefield/website.menu/image/%s/ref/theme_dermanord.dn_header_img' %current_menu.id"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <t t-raw="0"/>
+              </ul>
+            </div>
+            <div class="col-md-10 col-sm-10 hidden-xs" style="padding: 0px;">
+              <div class="dn_header_container">
+                <span itemprop="image" t-field="current_menu.image" t-field-options='{"widget": "image", "class": "css_non_editable_mode_hidden", "alt-field": "name"}' />
+                <img class="img img-responsive css_editable_mode_hidden" t-att-src="'/imagefield/website.menu/image/%s/ref/theme_dermanord.dn_header_img' %current_menu.id" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <t t-raw="0" />
+      </t>
+    </template>
+    <template id="top_image" name="Top Image">
+      <t t-call="website.layout">
+        <div id="wrap">
+          <div class="oe_structure">
+            <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path) or None" />
+            <t t-if="current_menu">
+              <h3 class="css_non_editable_mode_hidden">
+                Page Title for
+                <b>
+                  "
+                  <t t-esc="current_menu.name" />
+                  "
+                </b>
+              </h3>
+              <!--
+                   <h3 class="css_non_editable_mode_hidden" t-field="current_menu.page_title"/>
+              -->
+              <div class="container oe_dermexp_div">
+                <span itemprop="image" t-field="current_menu.image" t-field-options='{"widget": "image", "class": "dn_page_header_img css_non_editable_mode_hidden", "alt-field": "name"}' />
+                <img class="img img-responsive css_editable_mode_hidden" t-att-src="'/imagefield/website.menu/image/%s/ref/theme_dermanord.dn_header_img' %current_menu.id" />
+                <!--
+                     <h6 class="oe_dermexp_content"><span t-field="current_menu.page_title"/></h6>
+                -->
+              </div>
             </t>
-        </template>
-
-        <template id="top_image" name="Top Image">
-            <t t-call="website.layout">
-                <div id="wrap">
-                    <div class="oe_structure">
-                        <t t-set="current_menu" t-value="website.current_menu(request.httprequest.path) or None"/>
-                        <t t-if="current_menu">
-                            <h3 class="css_non_editable_mode_hidden">Page Title for <b>"<t t-esc="current_menu.name"/>"</b></h3>
-<!--
-                            <h3 class="css_non_editable_mode_hidden" t-field="current_menu.page_title"/>
--->
-                            <div class="container oe_dermexp_div">
-                                <span itemprop="image" t-field="current_menu.image" t-field-options='{"widget": "image", "class": "dn_page_header_img css_non_editable_mode_hidden", "alt-field": "name"}'/>
-                                <img class="img img-responsive css_editable_mode_hidden" t-att-src="'/imagefield/website.menu/image/%s/ref/theme_dermanord.dn_header_img' %current_menu.id"/>
-<!--
-                                <h6 class="oe_dermexp_content"><span t-field="current_menu.page_title"/></h6>
--->
-                            </div>
-                        </t>
-                    </div>
+          </div>
+        </div>
+        <t t-raw="0" />
+      </t>
+    </template>
+    <template id="website.500" name="Dermanord 500">
+      <t t-call="website.layout">
+        <div id="wrap">
+          <t t-raw="0" />
+          <div class="oe_structure oe_empty">
+            <section class="para_large" style="height: 304px; overflow: hidden;">
+              <div class="container">
+                <div class="row">
+                  <div class="mt16 col-md-12" style="padding-left: 40px;">
+                    <img alt="Odoo image and text block" class="img img-responsive mb16 pull-right img-rounded" src="/theme_dermanord/static/src/img/500error.jpeg" style="animation-play-state: paused; transition: none;-webkit-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);-moz-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);-ms-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);-o-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8)" />
+                  </div>
                 </div>
-                <t t-raw="0"/>
-            </t>
-        </template>
-
-        <template id="website.500" name="Dermanord 500">
-            <t t-call="website.layout">
-                <div id="wrap">
-                    <t t-raw="0"/>
-                    <div class="oe_structure oe_empty">
-                        <section class="para_large" style="height: 304px; overflow: hidden;">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="mt16 col-md-12" style="padding-left: 40px;">
-                                        <img alt="Odoo image and text block" class="img img-responsive mb16 pull-right img-rounded" src="/theme_dermanord/static/src/img/500error.jpeg"  style="animation-play-state: paused; transition: none;-webkit-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);-moz-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);-ms-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);-o-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8)"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                        <section class="mt16 mb16 readable">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-12 text-center mt16 mb32">
-                                        <h6>Oh dear. It seems to be an error!</h6>
-                                    </div>
-                                    <div class="col-md-12 mb16 mt16">
-                                        <p><a href="javascript:history.back()">Gå tillbaka till föregående sida.</a></p>
-                                        <p><a href="/page/homepage">Gå till startsidan.</a></p>
-                                        <p><a href="/webshop">Gå till webshopen.</a></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                    <t t-if="request.debug">
-                        <t t-call="website.http_error_debug"/>
-                    </t>
+              </div>
+            </section>
+            <section class="mt16 mb16 readable">
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-12 text-center mt16 mb32">
+                    <h6>Oh dear. It seems to be an error!</h6>
+                  </div>
+                  <div class="col-md-12 mb16 mt16">
+                    <p>
+                      <a href="javascript:history.back()">Gå tillbaka till föregående sida.</a>
+                    </p>
+                    <p>
+                      <a href="/page/homepage">Gå till startsidan.</a>
+                    </p>
+                    <p>
+                      <a href="/webshop">Gå till webshopen.</a>
+                    </p>
+                  </div>
                 </div>
-            </t>
-        </template>
-
-        <template id="website_theme_overlay_menu" inherit_id="website_theme_overlay_menu.website_theme_overlay_menu" name="Website Theme Overlay Menu Inherited Theme Dermanord">
-            <xpath expr="//span[@t-esc='user_id.name']" position="replace">
-                <span>My Account</span>
-            </xpath>
-            <xpath expr="//a[@href='/web']/.." position="replace">
-                <li><a href="/home" role="menuitem">My Account</a></li>
-            </xpath>
-            <xpath expr="//div[@class='overlay-content']/ul/li[@class='dropdown']/ul[@class='dropdown-menu']/li[last()]" position="before">
-                <li><a href="/page/demo" groups="base.group_website_publisher,base.group_hr_user,base.user_root">Demo Page</a></li>
-            </xpath>
-        </template>
-
-    </data>
+              </div>
+            </section>
+          </div>
+          <t t-if="request.debug">
+            <t t-call="website.http_error_debug" />
+          </t>
+        </div>
+      </t>
+    </template>
+    <template id="website_theme_overlay_menu" inherit_id="website_theme_overlay_menu.website_theme_overlay_menu" name="Website Theme Overlay Menu Inherited Theme Dermanord">
+      <xpath expr="//span[@t-esc='user_id.name']" position="replace">
+        <span>My Account</span>
+      </xpath>
+      <xpath expr="//a[@href='/web']/.." position="replace">
+        <li>
+          <a href="/home" role="menuitem">My Account</a>
+        </li>
+      </xpath>
+      <xpath expr="//div[@class='overlay-content']/ul/li[@class='dropdown']/ul[@class='dropdown-menu']/li[last()]" position="before">
+        <li>
+          <a href="/page/demo" groups="base.group_website_publisher,base.group_hr_user,base.user_root">Demo Page</a>
+        </li>
+      </xpath>
+    </template>
+  </data>
 </openerp>
