@@ -94,6 +94,12 @@ dermanord_set_menu_margin = function() {
 }
 
 $(document).ready(function() {
+    openerp.jsonRpc('/theme_dermanord/is_agent', {}).done(
+        function(data){
+            if (data === true) {
+                $('li > a.dn-home-menu-option').parent().after('<li><a href="/web" role="menuitem">Agent Portal</a></li>')
+            }
+        });
     // hide shopping cart
     shop_cart.addClass("hidden");
     // hide divider

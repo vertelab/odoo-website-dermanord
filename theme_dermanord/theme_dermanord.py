@@ -222,7 +222,11 @@ class website_menu(models.Model):
 
 
 class ThemeDermanord(http.Controller):
-
+    
+    @http.route(['/theme_dermanord/is_agent'], type='json', auth="public", website=True)
+    def is_agent(self):
+        return request.env.user.commercial_partner_id.agent
+    
     @http.route(['/get_parent_menu'], type='json', auth="public", website=True)
     def get_parent_menu(self, url):
         return request.website.current_menu(url).parent_id.url
