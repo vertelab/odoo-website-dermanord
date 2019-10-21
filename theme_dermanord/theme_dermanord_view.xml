@@ -450,9 +450,7 @@
           <div t-if="current_submenu.child_id" class="col-md-12 col-sm-12 col-xs-12 dn_header_banner">
             <t t-if="current_menu == current_submenu">
               <script type="text/javascript">
-                window.location.replace("
-                <t t-esc="current_menu.child_id[0].url" />
-                ");
+                window.location.replace("<t t-esc="current_menu.child_id[0].url" />");
               </script>
             </t>
             <div class="col-md-2 col-sm-2 col-xs-12 dn_header_nav">
