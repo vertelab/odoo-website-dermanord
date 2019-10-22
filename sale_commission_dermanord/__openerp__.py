@@ -30,7 +30,7 @@
     'website': 'http://www.vertel.se',
     'depends': [
         'sale_commission',
-        'portal',
+        'portal_sale',
     ],
     'data': [
         'security/sale_commission_rules.xml',
