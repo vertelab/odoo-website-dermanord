@@ -33,11 +33,13 @@ class website_event(website_event):
     
     # '/event'
     @memcached.route(
-        key=lambda kw: '{db}/event{employee}{logged_in}{publisher}{designer}{lang}%s' % (
-            request.env['event.event'].search_read(
+        key=lambda kw: '{db},{path}?%s,{employee},{logged_in},{publisher},{designer},{lang}%s' % (
+            request.httprequest.query_string ,
+            (request.env['event.event'].search_read(
                 [('website_published', '=', True), ('memcached_time', '!=', False)],
                 ['memcached_time'], limit=1, order='memcached_time desc'
             ) or [{'memcached_time': ''}])[0]['memcached_time']
+        )
     )
     def events(self, page=1, **searches):
         return super(website_event, self).events(page, **searches)
