@@ -16,7 +16,7 @@
     <record id="view_res_partner_kanban_agents" model="ir.ui.view">
         <field name="name">res.partner.kanban - Agents</field>
         <field name="model">res.partner</field>
-        <field name="priority">0</field>
+        <field name="priority">1000</field>
         <field name="groups_id" eval="[(6, 0, [ref('base.group_portal')])]"/>
         <field name="arch" type="xml">
             <kanban create="false" edit="false" delete="false">
@@ -78,7 +78,7 @@
     <record id="view_res_partner_tree_agents" model="ir.ui.view">
         <field name="name">res.partner.tree - Agents</field>
         <field name="model">res.partner</field>
-        <field name="priority">0</field>
+        <field name="priority">1000</field>
         <field name="groups_id" eval="[(6, 0, [ref('base.group_portal')])]"/>
         <field name="arch" type="xml">
             <tree string="Contacts" create="false" edit="false" delete="false">
@@ -97,7 +97,7 @@
     <record id="view_res_partner_form_agents" model="ir.ui.view">
         <field name="name">res.partner.form - Agents</field>
         <field name="model">res.partner</field>
-        <field name="priority">0</field>
+        <field name="priority">1000</field>
         <field name="groups_id" eval="[(6, 0, [ref('base.group_portal')])]"/>
         <field name="arch" type="xml">
             <form create="false" edit="false" delete="false">
@@ -301,7 +301,7 @@
     <record id="view_res_partner_filter_agents" model="ir.ui.view">
         <field name="name">res.partner.select - Agents</field>
         <field name="model">res.partner</field>
-        <field name="priority">0</field>
+        <field name="priority">1000</field>
         <field name="groups_id" eval="[(6, 0, [ref('base.group_portal')])]"/>
         <field name="arch" type="xml">
             <search string="Search Partner">
@@ -366,7 +366,7 @@
     <record id="invoice_tree" model="ir.ui.view">
         <field name="name">account.invoice.tree - Agents</field>
         <field name="model">account.invoice</field>
-        <field name="priority">0</field>
+        <field name="priority">1000</field>
         <field name="groups_id" eval="[(6, 0, [ref('base.group_portal')])]"/>
         <field name="arch" type="xml">
             <tree colors="blue:state == 'draft';black:state in ('proforma','proforma2','open');gray:state == 'cancel'" string="Invoice">
@@ -398,7 +398,7 @@
     <record id="invoice_form" model="ir.ui.view">
         <field name="name">account.invoice.form - Agents</field>
         <field name="model">account.invoice</field>
-        <field name="priority">0</field>
+        <field name="priority">1000</field>
         <field name="groups_id" eval="[(6, 0, [ref('base.group_portal')])]"/>
         <field name="arch" type="xml">
             <form string="Invoice">
