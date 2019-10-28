@@ -37,6 +37,7 @@ Special theme for Dermanord AB
         'imagemagick_data.xml',
         'theme_dermanord_view.xml',
         'website_overwritten_templates.xml',
+        'views.xml',
     ],
     'qweb': ['static/src/xml/theme_dermanord.xml'],
     'application': False,
