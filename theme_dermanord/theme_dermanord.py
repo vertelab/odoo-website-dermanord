@@ -98,13 +98,13 @@ class website(models.Model):
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %('/jobs/', self.env.ref('website_hr_recruitment.menu_jobs').name))
                 breadcrumb.append('<li>%s</li>' %params.get('job').name)
                 return ''.join(breadcrumb)
-            elif path.startswith('/mass_mailing'): # url is on the user home page
+            elif path.startswith('/mass_mailing'): # [2223] Nyhetsbrev - Arkiv under Mitt konto till webbaserade nyhetsbrev
                 path = path.split('/')[1:]
                 home_menu = self.env.ref('website.menu_homepage')
                 breadcrumb = ['<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name)]
                 
                 if request.env.ref('base.public_user') != request.env.user:
-                    breadcrumb.append('<li><a href="/home?tab=mail_archive">%s</a></li>' % _('MY ACCOUNT'))
+                    breadcrumb.append('<li><a href="/home?tab=mail_archive">%s</a></li><li>Mail Archive</li>' % _('MY ACCOUNT'))
                 return ''.join(breadcrumb)
             elif path.startswith('/home'): # url is on the user home page
                 path = path.split('/')[1:]
