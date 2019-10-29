@@ -40,14 +40,6 @@ class product_template(models.Model):
     # ~ [2551] Webbshoppen - Förbättrad brödsmula
     default_public_categ_id = fields.Many2one( comodel_name='product.public.category', string='Default public category')
 
-class product_public_category(models.Model):
-    _inherit = 'product.public.category'
-    
-    @api.model
-    def name_search(self, name='', args=None, operator='ilike', limit=100):
-        # ~ _logger.warn('\n\nname_search\nname: %s\nargs: %s\noerator: %s\nlimit: %s\n' % (name, args, operator, limit))
-        return super(product_public_category, self).name_search(name=name, args=args, operator=operator, limit=limit)
-
 class website(models.Model):
     _inherit = 'website'
 
