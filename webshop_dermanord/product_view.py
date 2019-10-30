@@ -661,7 +661,7 @@ class product_product(models.Model):
         return html
 
     @api.model
-    def get_stock_info(self, product_id):
+    def get_stock_info(self, product_id, location_ids=None):
         # ~ product = self.env['product.product'].sudo().search_read([('id', '=', product_id)], ['virtual_available_days', 'type', 'force_out_of_stock', 'is_offer'])
         product = self.env['product.product'].sudo().search_read([('id', '=', product_id)], ['virtual_available_days', 'type', 'inventory_availability', 'is_offer'])
         if len(product) > 0:
