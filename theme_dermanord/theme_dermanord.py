@@ -35,11 +35,17 @@ _logger = logging.getLogger(__name__)
 
     #~ logo_website = fields.Binary(string='Logo For Website', help='This company logo shows only on website')
 
+class product_template(models.Model):
+    _inherit = 'product.template'
+    # ~ [2551] Webbshoppen - Förbättrad brödsmula
+    default_public_categ_id = fields.Many2one( comodel_name='product.public.category', string='Default public category')
+
 class website(models.Model):
     _inherit = 'website'
 
     social_instagram = fields.Char(string='Instagram')
     social_snapchat = fields.Char(string='Snapchat')
+   
 
     def current_menu(self, path):
         menu = self.env['website.menu'].search([('url', '=', path)])
@@ -64,8 +70,12 @@ class website(models.Model):
             breadcrumb = []
             if path.startswith('/dn_shop/product/') or path.startswith('/dn_shop/variant/'): # url is a product
                 product = params.get('product')
-                if product:
+                if product: ## [2551] Webbshoppen - Förbättrad brödsmula
                     breadcrumb.append('<li>%s</li>' % product.name)
+                    if product.default_public_categ_id:
+                        breadcrumb.append('<li><a href="/webshop/category/%s">%s</a></li>' % (product.default_public_categ_id.id, product.default_public_categ_id.display_name ) )
+                    elif len(product.public_categ_ids) > 0:
+                        breadcrumb.append('<li><a href="/webshop/category/%s">%s</a></li>' % (product.public_categ_ids.mapped('id')[0], product.public_categ_ids.mapped('display_name')[0] ) )
                 menu = self.env.ref('webshop_dermanord.menu_dn_shop')
                 home_menu = self.env.ref('website.menu_homepage')
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
@@ -97,6 +107,14 @@ class website(models.Model):
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %('/jobs/start/', self.env.ref('website_hr_recruitment_dermanord.jobs_start_menu').name))
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %('/jobs/', self.env.ref('website_hr_recruitment.menu_jobs').name))
                 breadcrumb.append('<li>%s</li>' %params.get('job').name)
+                return ''.join(breadcrumb)
+            elif path.startswith('/mass_mailing'): # [2223] Nyhetsbrev - Arkiv under Mitt konto till webbaserade nyhetsbrev
+                path = path.split('/')[1:]
+                home_menu = self.env.ref('website.menu_homepage')
+                breadcrumb = ['<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name)]
+                
+                if request.env.ref('base.public_user') != request.env.user:
+                    breadcrumb.append('<li><a href="/home?tab=mail_archive">%s</a></li><li>Mail Archive</li>' % _('MY ACCOUNT'))
                 return ''.join(breadcrumb)
             elif path.startswith('/home'): # url is on the user home page
                 path = path.split('/')[1:]

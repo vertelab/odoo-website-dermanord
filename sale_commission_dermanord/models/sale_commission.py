@@ -49,3 +49,39 @@ class ResPartner(models.Model):
             domain.insert(0, '!')
         _logger.warn(domain)
         return domain
+    
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        if self.env.user.has_group('base.group_portal'):
+            super(ResPartner, self.with_context(
+                form_view_ref='sale_commission_dermanord.view_res_partner_form_agents',
+                tree_view_ref='sale_commission_dermanord.view_res_partner_tree_agents',
+                kanban_view_ref='sale_commission_dermanord.view_res_partner_kanban_agents'
+            )).fields_view_get(view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+        return super(ResPartner, self).fields_view_get(view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+
+# ~ class SaleOrder(models.Model):
+    # ~ _inherit = 'sale.order'
+    
+    # ~ @api.model
+    # ~ def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        # ~ if self.env.user.has_group('base.group_portal'):
+            # ~ super(SaleOrder, self.with_context(
+                # ~ form_view_ref='sale_commission_dermanord.view_res_partner_form_agents',
+                # ~ tree_view_ref='sale_commission_dermanord.view_res_partner_tree_agents',
+                # ~ kanban_view_ref='sale_commission_dermanord.view_res_partner_kanban_agents'
+            # ~ )).fields_view_get(view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+        # ~ super(SaleOrder, self).fields_view_get(view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+
+class AccountInvoice(models.Model):
+    _inherit = 'account.invoice'
+    
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        if self.env.user.has_group('base.group_portal'):
+            super(AccountInvoice, self.with_context(
+                form_view_ref='sale_commission_dermanord.invoice_form',
+                tree_view_ref='sale_commission_dermanord.invoice_tree'
+            )).fields_view_get(view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+        return super(AccountInvoice, self).fields_view_get(view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+        

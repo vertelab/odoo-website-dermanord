@@ -7,7 +7,7 @@ $(document).ready(function(){
             openerp.jsonRpc("/search_suggestion", "call", {
                 search: $(this).val(),
                 res_model: ['product.template', 'product.product', 'product.public.category'], //, 'product.facet.line'],
-                limit: 5,
+                limit: 15, // [2554] Webbshop - Utöka antal sökträffar i toppsökning
                 offset: 0
             }).done(function(data){
                 var content_front = '<div class="result_suggestion">';

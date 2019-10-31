@@ -69,6 +69,7 @@ Special layout for Dermanord AB webshop
         'security/ir.model.access.csv',
         'stock_notification_view.xml',
         'campaign_helper_data.xml',
+        # ~ 'warehouse_data.xml',
     ],
     'qweb': ['static/src/xml/product.xml'],
     'application': False,
