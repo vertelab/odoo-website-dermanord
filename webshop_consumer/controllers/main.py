@@ -24,9 +24,12 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
+# ~ http://maria:8069/sv_SE/reseller/1213/consumer
+
 class Main(http.Controller):
     @http.route(['/reseller/<int:reseller>/consumer'], type='http', auth='public', website=True)
     def add_consumer(self, reseller):
+        # ~ return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':{request.env['res.partner'].sudo().browse('reseller')} })
         return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':request.env['res.partner'].sudo().browse(reseller) })
 
     @http.route('/consumer/detail', type='http', auth='public', website=True)
