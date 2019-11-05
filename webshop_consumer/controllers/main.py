@@ -24,13 +24,19 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-# ~ http://maria:8069/sv_SE/reseller/1213/consumer
+# ~ http://maria:8069/sv_SE/reseller/5522/consumer
 
 class Main(http.Controller):
     @http.route(['/reseller/<int:reseller>/consumer'], type='http', auth='public', website=True)
     def add_consumer(self, reseller):
         # ~ return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':{request.env['res.partner'].sudo().browse('reseller')} })
         return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':request.env['res.partner'].sudo().browse(reseller) })
+
+    @http.route(['/reseller/<int:reseller>/insert'], type='http', auth='public', website=True)
+    def insert_consumer(self, reseller):
+        return http.request.render('webshop_consumer.insert_consumer', {'help':{}, 'validate':{}, 'reseller':request.env['res.partner'].sudo().browse(reseller) })
+
+
 
     @http.route('/consumer/detail', type='http', auth='public', website=True)
     def navigate_to_detail_page(self):
@@ -41,6 +47,28 @@ class Main(http.Controller):
             'companies': companies})
 
 
+class addConsumer(models.Model):
+    _inherit="website"
 
+    @api.model
+    def addConsumer_get_data(self, reseller_ids, post):
+        return {
+            'company_ids': reseller_ids,
+            'contact_address': add,
+            'home_user': home_user,
+            'home_user': home_user,
+        }
 
+class website(models.Model):
+    _inherit="website"
+
+    @api.model
+    def sale_home_get_data(self, home_user, post):
+        return {
+            'home_user': home_user,
+            'tab': post.get('tab', 'settings'),
+            'validation': {},
+            'country_selection': [(country['id'], country['name']) for country in request.env['res.country'].search_read([], ['name'])],
+            'default_country': (home_user and home_user.country_id and home_user.country_id.id) or (request.website.company_id and request.website.company_id.country_id and request.website.company_id.country_id.id),
+        }
 
