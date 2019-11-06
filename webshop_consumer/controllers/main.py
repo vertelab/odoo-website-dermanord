@@ -28,47 +28,29 @@ _logger = logging.getLogger(__name__)
 
 class Main(http.Controller):
     @http.route(['/reseller/<int:reseller>/consumer'], type='http', auth='public', website=True)
-    def add_consumer(self, reseller):
+    def add_consumer(self, reseller, **post):
+        _logger.warn('\n\n\n\n\n\n\n\n FIRST NAME:')
         # ~ return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':{request.env['res.partner'].sudo().browse('reseller')} })
         return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':request.env['res.partner'].sudo().browse(reseller) })
 
-    @http.route(['/reseller/<int:reseller>/insert'], type='http', auth='public', website=True)
-    def insert_consumer(self, reseller):
-        return http.request.render('webshop_consumer.insert_consumer', {'help':{}, 'validate':{}, 'reseller':request.env['res.partner'].sudo().browse(reseller) })
 
+    @http.route(['/reseller/<int:reseller>/insert_consumer'], type='http', auth='public', website=True)
+    def insert_consumer(self, reseller, **post):
+        _logger.warn('\n\n\n\n\n\n\n\n greeting!!: %s' % post.get('name', ''))
 
-
-    @http.route('/consumer/detail', type='http', auth='public', website=True)
-    def navigate_to_detail_page(self):
-        # This will get all company details (in case of multicompany this are multiple records)
-        companies = http.request.env['res.company'].sudo().search([])
-        return http.request.render('webshop_consumer.detail_page', {
-            # pass company details to the webpage in a variable
-            'companies': companies})
-
-
-class addConsumer(models.Model):
-    _inherit="website"
-
-    @api.model
-    def addConsumer_get_data(self, reseller_ids, post):
-        return {
-            'company_ids': reseller_ids,
-            'contact_address': add,
-            'home_user': home_user,
-            'home_user': home_user,
-        }
-
-class website(models.Model):
-    _inherit="website"
-
-    @api.model
-    def sale_home_get_data(self, home_user, post):
-        return {
-            'home_user': home_user,
-            'tab': post.get('tab', 'settings'),
-            'validation': {},
-            'country_selection': [(country['id'], country['name']) for country in request.env['res.country'].search_read([], ['name'])],
-            'default_country': (home_user and home_user.country_id and home_user.country_id.id) or (request.website.company_id and request.website.company_id.country_id and request.website.company_id.country_id.id),
-        }
+        if post.get('name') and post.get('street') and post.get('zip') and post.get('city') and post.get('country') and post.get('email'):
+            ## INSERT NEW USER
+            request.env['res.users'].sudo().create({
+                'name': post.get('name', ''),
+                'street': post.get('street', ''),
+                'zip': post.get('zip', ''),
+                'city': post.get('city', ''),
+                'country': post.get('country', ''),
+                'login': post.get('email', ''),
+                'email': post.get('email', ''),
+            })
+            return http.request.render('webshop_consumer.insert_consumer', {'help':{}, 'validate':{}, 'reseller':request.env['res.partner'].sudo().browse(reseller) })
+        else:
+            ## ELSE RETURN TO PAGE FOR REGISTER
+            return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':request.env['res.partner'].sudo().browse(reseller) })
 
