@@ -1671,6 +1671,16 @@ class WebsiteSale(website_sale):
             post["search"] = search
         user = request.env['res.users'].browse(request.uid)
 
+        # Check URL.
+        ## Check för offer:
+        request.session['current_domain'] = [('dv_ribbon', 'in', request.env.ref('website_sale.image_promo').html_class )]
+        # ~ if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
+
+        ## Check för news:
+        request.session['current_domain'] = [('dv_ribbon', 'in', request.env.ref('website_sale.image_promo').html_class )]
+                    # ~ ribbon_promo   = request.env.ref('website_sale.image_promo')
+                    # ~ product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
+                  
         no_product_message = ''
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
             products=request.env['product.product'].get_list_row(request.session.get('current_domain'),request.context['pricelist'],limit=PPG, order=request.session.get('current_order'))
