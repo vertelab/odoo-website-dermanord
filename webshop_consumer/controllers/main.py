@@ -34,10 +34,14 @@ _logger = logging.getLogger(__name__)
 # todo: specifik template-användare (avvakta)
 
 class Main(http.Controller):
+    @http.route(['/reseller/edit/consumer_page'], type='http', auth='user', website=True)
+    def edit_consumer_page(self, **post):
+        return http.request.render('webshop_consumer.insert_consumer')
+        
     @http.route(['/reseller/<int:reseller_id>/consumer'], type='http', auth='public', website=True)
     def add_consumer(self, reseller_id, **post):
         reseller = request.env['res.partner'].sudo().browse(reseller_id)
-        countries = request.env['res.country'].sudo().search([])
+        countries = request.env['res.country'].sudo().search([('code', 'in', ['SE','NL','NO'])])
         if request.httprequest.method == 'GET':
             if reseller and reseller.is_reseller:
                 _logger.warn('\n\n\n\n\n\n\n\n RESELLER ID: %s' % reseller)
@@ -50,25 +54,29 @@ class Main(http.Controller):
             _logger.warn('\n\n\n\n\n\n\n\n reseller_id: %s' % reseller_id)
             if post.get('firstname') and post.get('lastname')  and post.get('street') and post.get('zip') and post.get('city') and post.get('country_id') and post.get('email'):
                 ## INSERT NEW USER
-                _logger.warn('\n\n\n\n\n\n\n\n Hello world!! :-)')
-                request.env['res.partner'].sudo().create({
-                    'name': post.get('firstname', '') + ' ' + post.get('lastname', ''),
-                    'login': post.get('email', ''),
-                    'email': post.get('email', ''),
-                    'reseller_id': reseller_id,
-                })
-                _logger.warn('\n\n\n\n\n\n\n\n Hello world!! 22222')
-                request.env['res.users'].sudo().signup({
-                    'name': post.get('firstname', '') + ' ' + post.get('lastname', ''),
-                    'street': post.get('street', ''),
-                    'zip': post.get('zip', ''),
-                    'city': post.get('city', ''),
-                    'country_id': post.get('country_id', ''),
-                    'login': post.get('email', ''),
-                    'email': post.get('email', ''),
-                    'reseller_id': reseller_id,
-                })
-                return http.request.render('webshop_consumer.insert_consumer', {'help':{}, 'validate':{}, 'reseller':reseller })
+                try:
+                    partner = request.env['res.partner'].sudo().create({
+                        'name': post.get('firstname', '') + ' ' + post.get('lastname', ''),
+                        'login': post.get('email', ''),
+                        'email': post.get('email', ''),
+                        'reseller_id': reseller_id,
+                    })
+                    request.env['res.users'].sudo().signup({
+                        'name': post.get('firstname', '') + ' ' + post.get('lastname', ''),
+                        'street': post.get('street', ''),
+                        'zip': post.get('zip', ''),
+                        'city': post.get('city', ''),
+                        'country_id': post.get('country_id', ''),
+                        'login': post.get('email', ''),
+                        'email': post.get('email', ''),
+                        'reseller_id': reseller_id,
+                        'partner_id': partner.id,
+                    })
+                    return http.request.render('webshop_consumer.insert_consumer', {'help':{}, 'validate':{}, 'reseller':reseller })
+                except Exception, e:
+                    # copy may failed if asked login is not available.
+                    # raise SignupError(ustr(e))
+                    return http.request.render('webshop_consumer.error', {'error':ustr(e) })
             else:
                 ## ELSE RETURN TO PAGE FOR REGISTER
                 return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':reseller, 'countries':countries })
