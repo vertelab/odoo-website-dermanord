@@ -1615,9 +1615,11 @@ class WebsiteSale(website_sale):
     @http.route([
         '/webshop',
         '/webshop/category/<model("product.public.category"):category>',
+        '/webshop/preset/<string:preset>',
         ], type='http', auth="public", website=True)
-    def webshop(self, category=None, search='', **post):
+    def webshop(self, category=None, search='', preset=None, **post):
         # ~ _logger.warn('\n\ncurrent_order: %s\ncurrent_comain: %s\nform_values: %s\n' % (request.session.get('current_order'), request.session.get('current_domain'), request.session.get('form_values')))
+        _logger.warn(post)
         if not request.env.user.webshop_type or request.env.user.webshop_type not in ['dn_shop', 'dn_list']: # first time use filter
             if request.env.user.commercial_partner_id.property_product_pricelist.for_reseller: # reseller
                 request.env.user.webshop_type = 'dn_list'
@@ -1657,6 +1659,16 @@ class WebsiteSale(website_sale):
             # ~ if category:
                 # ~ update_current_domain('product.template')
 
+        ## [3285] Erbjudande, set etc som controller
+        if preset:
+            if preset == 'offer':
+                post['current_offer'] = u'current_offer'
+            elif preset == 'news':
+                post['current_news'] = u'current_news'
+            elif preset == 'travel':
+                post['facet_44_329'] = u'329'
+            elif preset == 'set':
+                post['facet_44_331'] = u'331'
         if category:
             post['category_%s' % category.id] = category.id
         # ~ _logger.warn(post)
@@ -1671,15 +1683,6 @@ class WebsiteSale(website_sale):
             post["search"] = search
         user = request.env['res.users'].browse(request.uid)
 
-        # Check URL.
-        ## Check för offer:
-        request.session['current_domain'] = [('dv_ribbon', 'in', request.env.ref('website_sale.image_promo').html_class )]
-        # ~ if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
-
-        ## Check för news:
-        request.session['current_domain'] = [('dv_ribbon', 'in', request.env.ref('website_sale.image_promo').html_class )]
-                    # ~ ribbon_promo   = request.env.ref('website_sale.image_promo')
-                    # ~ product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                   
         no_product_message = ''
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):

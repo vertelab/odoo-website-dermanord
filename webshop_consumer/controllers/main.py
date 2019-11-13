@@ -21,6 +21,7 @@
 from openerp import http
 from openerp.http import request
 from openerp import api, models, fields, _
+
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -36,18 +37,28 @@ class Main(http.Controller):
     @http.route(['/reseller/<int:reseller_id>/consumer'], type='http', auth='public', website=True)
     def add_consumer(self, reseller_id, **post):
         reseller = request.env['res.partner'].sudo().browse(reseller_id)
+        countries = request.env['res.country'].sudo().search([])
         if request.httprequest.method == 'GET':
             if reseller and reseller.is_reseller:
-                _logger.warn('\n\n\n\n\n\n\n\n FIRST NAME:')
+                _logger.warn('\n\n\n\n\n\n\n\n RESELLER ID: %s' % reseller)
                 # ~ return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':{request.env['res.partner'].sudo().browse('reseller')} })
-                return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':request.env['res.partner'].sudo().browse(reseller_id), 'countries':request.env['res.country'].sudo().search([]) })
+                return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':request.env['res.partner'].sudo().browse(reseller_id), 'countries': countries })
             else:
                 return http.request.render('webshop_consumer.error',  {'help':{}, 'validate':{}, 'reseller':request.env['res.partner'].sudo().browse(reseller_id) })
         else:
-            _logger.warn('\n\n\n\n\n\n\n\n FIRST NAME %s:' % post.get('city'))
-            if post.get('firstname') and post.get('lastname')  and post.get('street') and post.get('zip') and post.get('city') and post.get('country') and post.get('email'):
+            _logger.warn('\n\n\n\n\n\n\n\n FIRST NAME: %s' % post.get('city'))
+            _logger.warn('\n\n\n\n\n\n\n\n reseller_id: %s' % reseller_id)
+            if post.get('firstname') and post.get('lastname')  and post.get('street') and post.get('zip') and post.get('city') and post.get('country_id') and post.get('email'):
                 ## INSERT NEW USER
-                request.env['res.users'].sudo().create({
+                _logger.warn('\n\n\n\n\n\n\n\n Hello world!! :-)')
+                request.env['res.partner'].sudo().create({
+                    'name': post.get('firstname', '') + ' ' + post.get('lastname', ''),
+                    'login': post.get('email', ''),
+                    'email': post.get('email', ''),
+                    'reseller_id': reseller_id,
+                })
+                _logger.warn('\n\n\n\n\n\n\n\n Hello world!! 22222')
+                request.env['res.users'].sudo().signup({
                     'name': post.get('firstname', '') + ' ' + post.get('lastname', ''),
                     'street': post.get('street', ''),
                     'zip': post.get('zip', ''),
@@ -57,10 +68,10 @@ class Main(http.Controller):
                     'email': post.get('email', ''),
                     'reseller_id': reseller_id,
                 })
-                return http.request.render('webshop_consumer.insert_consumer', {'help':{}, 'validate':{}, 'reseller':request.env['res.partner'].sudo().browse(reseller) })
+                return http.request.render('webshop_consumer.insert_consumer', {'help':{}, 'validate':{}, 'reseller':reseller })
             else:
                 ## ELSE RETURN TO PAGE FOR REGISTER
-                return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':request.env['res.partner'].sudo().browse(reseller) })
+                return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':reseller, 'countries':countries })
             
 class res_partner(models.Model):
     _inherit = 'res.partner'
