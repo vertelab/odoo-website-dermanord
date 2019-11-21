@@ -571,7 +571,7 @@
         </xpath>
     </template>
     <template id="website_theme_overlay_menu" inherit_id="website_theme_overlay_menu.website_theme_overlay_menu" name="Website Theme Overlay Menu Inherited Theme Dermanord">
-      <xpath expr="//span[@t-esc='user_id.name']" position="replace">
+      <xpath expr="//a[@t-esc='user_id.name']" position="replace">
         <span>My Account</span>
       </xpath>
       <xpath expr="//a[@href='/web']/.." position="replace">
