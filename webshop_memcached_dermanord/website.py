@@ -70,19 +70,19 @@ class WebsiteSale(WebsiteSale):
         # ~ '/webshop/category/<model("product.public.category"):category>',
     #~ ], type='http', auth="public", website=True)
     @memcached.route(
-        key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country}%s groups: %s webshop_type: %s' % (request.website.get_search_values(kw), request.website.get_dn_groups(), request.website.get_webshop_type(kw)),
+        key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country}%s groups: %s webshop_type: %s%s' % (request.website.get_search_values(kw), request.website.get_dn_groups(), request.website.get_webshop_type(kw), request.website.dn_handle_webshop_session(kw.get('category'), kw.get('preset'), {}, require_cat_preset=False) or ''),
         flush_type=lambda kw: 'webshop',
         no_cache=True,
         cache_age=43200,
         max_age=43200,
         s_maxage=600)
-    def webshop(self, category=None, search='', **post):
+    def webshop(self, category=None, search='', preset=None, **post):
         request.website.dn_shop_set_session('product.template', post, '/webshop')
-        return super(WebsiteSale, self).webshop(category, search, **post)
+        return super(WebsiteSale, self).webshop(category, search, preset=preset, **post)
 
     #~ @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
     @memcached.route(
-        key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} groups: %s' % request.website.get_dn_groups(),
+        key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} groups: %s memcached_time: %s' % (request.website.get_dn_groups(), (kw.get('product') and (kw['product'].id, kw['product'].memcached_time or ''))),
         flush_type=lambda kw: 'dn_shop',
         no_cache=True,
         cache_age=43200,
@@ -95,7 +95,7 @@ class WebsiteSale(WebsiteSale):
         #~ '/dn_shop/variant/<model("product.product"):variant>'
     #~ ], type='http', auth="public", website=True)
     @memcached.route(
-        key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} groups: %s' % request.website.get_dn_groups(),
+        key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} groups: %s memcached_time: %s' % (request.website.get_dn_groups(), (kw.get('variant') and (kw['variant'].id, kw['variant'].memcached_time or ''))),
         flush_type=lambda kw: 'dn_shop',
         no_cache=True,
         cache_age=43200,

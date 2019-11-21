@@ -143,38 +143,24 @@ THUMBNAIL = u"""
 class product_template(models.Model):
     _inherit = 'product.template'
 
-    # ~ @api.one
-    # ~ @api.depends('product_variant_ids.active')
-    # ~ def _compute_product_variant_count(self):
-        # ~ self.product_variant_count = len(self.product_variant_ids.filtered('active'))
-    # ~ product_variant_count = fields.Integer(string='# of Product Variants', compute='_compute_product_variant_count', store=True)
-
+    memcached_time = fields.Datetime(string='Memcached Timestamp', default=lambda *args, **kwargs: fields.Datetime.now(), help="Last modification relevant to memcached.")
+    
+    @api.model
+    def get_memcached_fields(self):
+        """Return a list of fields that should trigger an update of memcached."""
+        return ['name']
+    
+    @api.multi
+    def write(self, values):
+        for field in self.get_memcached_fields():
+            if field in values:
+                values['memcached_time'] = fields.Datetime.now()
+                break
+        return super(product_template, self).write(values)
+    
     @api.multi
     def dn_clear_cache(self):
-        db_name = self.env.cr.dbname
-        website = self.env.ref('website.default_website')
-        paths = []
-        keys = memcached.get_keys(path=[('%s,%s' % (p._model, p.id)) for p in self], db=db_name)
-        first = True
-        for lang in website.language_ids:
-            for p in self.with_context(lang=lang.code):
-                # These keys lack language context. No need to repeat for every language.
-                if first:
-                    # product.template,1234     thumbnail_product
-                    paths.append(('%s,%s' % (p._model, p.id)))
-                    # product.product,1234      product_list_row
-                    paths +=[('%s,%s' % (v._model, v.id)) for v in p.product_variant_ids]
-                # These keys are language sensitive
-                # /dn_shop/product/produktens_namn-1234     dn_shop
-                paths.append('/dn_shop/product/%s' % slug(p))
-                for v in p.product_variant_ids:
-                    # /dn_shop/variant/variantens_namn-1234     dn_shop
-                    paths.append('/dn_shop/variant/%s' % slug(v))
-            first = False
-        paths = list(set(paths))
-        keys = memcached.get_keys(flush_type='webshop', path=paths, db=db_name, match_any=True)
-        # ~ _logger.warn('\n\npaths: %s\nkeys: %s\n' % (paths, keys))
-        memcached.mc_delete(keys)
+        self.memcached_time = fields.Datetime.now()
 
     @api.multi
     @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.datas', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_attachment_ids.datas', 'product_variant_ids.image_medium', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids', 'sale_ok', 'product_variant_ids.sale_ok')
@@ -394,7 +380,7 @@ class product_template(models.Model):
         return thumbnail
         
     @api.model
-    def get_thumbnail_variant(self,pricelist,variant_ids):
+    def get_thumbnail_variant(self, pricelist, variant_ids):
         if isinstance(pricelist,int):
             pricelist = self.env['product.pricelist'].sudo().browse(pricelist)
         # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % ('Start'))
@@ -406,12 +392,12 @@ class product_template(models.Model):
 
         user = self.env.ref('base.public_user')
 
-        _logger.warn('Notice get_thunmb2 --------> %s user %s %s %s ' % (self.env.ref('base.public_user'),self.env.user,self._uid,user))
+        _logger.warn('Notice get_thunmb2 --------> %s user %s %s %s ' % (self.env.ref('base.public_user'), self.env.user, self._uid,user))
 
         for variant in variant_ids:
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
-            key_raw = 'thumbnail_variant %s %s %s %s %s %s %s %s' % (
-                self.env.cr.dbname, flush_type, variant['id'], pricelist.id,
+            key_raw = 'thumbnail_variant %s %s %s %s %s %s %s %s %s' % (
+                self.env.cr.dbname, flush_type, variant['id'], pricelist.id, variant['memcached_time'],
                 self.env.lang, request.session.get('device_type','md'),
                 self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
                 ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))  # db flush_type produkt prislista språk webeditor kundgrupper,
@@ -572,60 +558,6 @@ class product_product(models.Model):
         ('threshold', 'Only prevent sales if not enough stock'),
     ], string='Inventory Availability', help='Adds an inventory availability status on the web product page.', default='threshold')
     
-    
-    @api.model
-    def get_thumbnail_variant(self,domain,pricelist,limit=21,offset=0,order=''):
-        thumbnail = []
-        flush_type = 'thumbnail_variant'
-        for product in self.env['product.template'].search_read(domain, fields=['id','name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src'],limit=limit, order=order):
-            key_raw = 'dn_shop %s %s %s %s %s %s' % (self.env.cr.dbname,flush_type,product['id'],pricelist.id,self.env.lang,request.session.get('device_type','md'))  # db flush_type produkt prislista språk
-            key,page_dict = self.env['website'].get_page_dict(key_raw)
-            # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
-            ribbon_promo = None
-            ribbon_limited = None
-            if not page_dict:
-                render_start = timer()
-                if not ribbon_limited:
-                    ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
-                    ribbon_promo   = request.env.ref('website_sale.image_promo')
-
-                #
-                # TODO: get_html_price_long(pricelist) and variant.image_main_id[0].id  dv_ribbon
-                #
-
-                # ~ product = self.env['product.template'].browse(pid['id'])
-                # ~ if not product.product_variant_ids:
-                    # ~ continue
-                # ~ variant = product.product_variant_ids[0]
-                # ~ variant = product.get_default_variant()
-                # ~ if not variant:
-                    # ~ continue
-
-                page = THUMBNAIL.format(
-                    details=_('DETAILS'),
-                    product_id=product['id'],
-                    # ~ product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0].id, 'snippet_dermanord.img_product') if variant.image_main_id else '',
-                    product_image=product['dv_image_src'],
-                    product_name=product['name'],
-                    product_price = self.env['product.template'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
-                    product_ribbon=product['dv_ribbon'],
-                    # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
-                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
-                    product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.html_class in product['dv_ribbon'] else '',
-                    product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.html_class in product['dv_ribbon'] else '',
-                    key_raw=key_raw,
-                    key=key,
-                    view_type='variant',
-                    render_time='%s' % (timer() - render_start),
-                    price_from=_('Price From'),
-                ).encode('utf-8')
-                _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
-                self.env['website'].put_page_dict(key_raw, flush_type, page, 'product.template,%s' % product['id'])
-                page_dict['page'] = base64.b64encode(page)
-            thumbnail.append(page_dict.get('page', '').decode('base64'))
-            _logger.warn('get_thumbnail_default_variant (thiumnails)--------> %s' % (thumbnail))
-        return thumbnail
-
     @api.model
     def get_packaging_info(self, product_id):
         packaging_ids = self.env['product.product'].sudo().search_read([('id','=',product_id)],['packaging_ids'])
@@ -695,16 +627,16 @@ class product_product(models.Model):
         return (state in ['in', 'few'], state, '' if  product.get('type') == 'consu' else {'in': _('In stock'), 'few': _('Few in stock'), 'short': _('Shortage')}[state].encode('utf-8'))  # in_stock,state,info
     
     @api.model
-    def get_list_row(self,domain,pricelist,limit=21,order='',offset=0):
+    def get_list_row(self, domain, pricelist, limit=21, order='', offset=0):
         if isinstance(pricelist,int):
             pricelist = self.env['product.pricelist'].browse(pricelist)
         rows = []
         flush_type = 'product_list_row'
         ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
         ribbon_promo   = request.env.ref('website_sale.image_promo')
-        for product in self.env['product.product'].search_read(domain, fields=['id','fullname', 'default_code','type', 'is_offer_product_reseller', 'is_offer_product_consumer', 'product_tmpl_id', 'sale_ok','campaign_ids', 'website_style_ids', 'website_style_ids_variant'], limit=limit, order=order,offset=offset):
-            key_raw = 'list_row %s %s %s %s %s %s Groups: %s' % (self.env.cr.dbname,flush_type,product['id'],pricelist.id,self.env.lang,request.session.get('device_type','md'), request.website.get_dn_groups())  # db flush_type produkt prislista språk användargrupp
-            key,page_dict = self.env['website'].get_page_dict(key_raw)
+        for product in self.env['product.product'].search_read(domain, fields=['id','fullname', 'default_code','type', 'is_offer_product_reseller', 'is_offer_product_consumer', 'product_tmpl_id', 'sale_ok','campaign_ids', 'website_style_ids', 'website_style_ids_variant', 'memcached_time'], limit=limit, order=order,offset=offset):
+            key_raw = 'list_row %s %s %s %s %s %s %s Groups: %s' % (self.env.cr.dbname, flush_type, product['id'], pricelist.id, self.env.lang, request.session.get('device_type', 'md'), product['memcached_time'], request.website.get_dn_groups())  # db flush_type produkt prislista språk användargrupp
+            key, page_dict = self.env['website'].get_page_dict(key_raw)
             if not page_dict:
                 render_start = timer()
                 campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
@@ -1002,20 +934,15 @@ class product_product(models.Model):
             
         def generate_accessory_products(variant, partner):
             if variant.accessory_product_ids:
-                
                 page = _(u"""<div id="accessory_div">
                             <div class="container hidden-xs">
                                 <h2 class="text-center dn_uppercase mt32 mb32">Suggested accessories:</h2>""")
-                
-                thumb_list = self.product_tmpl_id.get_thumbnail_variant(partner.property_product_pricelist.id, variant.accessory_product_ids.read(['display_name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',]))
+                thumb_list = self.product_tmpl_id.get_thumbnail_variant(partner.property_product_pricelist.id, variant.accessory_product_ids.read(['display_name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'memcached_time']))
                 for th in thumb_list:
                     page += th.decode('utf-8').replace("col-md-4", "col-md-6", 1)
-                
                 page += u"""</div></div>"""
-                
             else:
                 page = u""""""
-            
             return page
 
         # product ingredients in mobile, directly after <section id="product_detail"></section>
@@ -1060,8 +987,10 @@ class product_product(models.Model):
         partner = self.env.user.partner_id.commercial_partner_id
         pricelist = partner.property_product_pricelist
         flush_type = 'get_product_detail'
-        key_raw = 'product_detail %s %s %s %s %s %s %s %s %s' % (
-            self.env.cr.dbname, flush_type, product.id, variant_id, pricelist.id, self.env.lang,
+        memcached_time = max([accessory.memcached_time for accessory in product.accessory_product_ids] + [product.memcached_time])
+        key_raw = 'product_detail %s %s %s %s %s %s %s %s %s %s' % (
+            self.env.cr.dbname, flush_type, product.id, variant_id,
+            pricelist.id, self.env.lang, memcached_time,
             request.session.get('device_type', 'md'),
             self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
             ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))
@@ -1347,7 +1276,7 @@ class Website(models.Model):
     @api.model
     def get_page_dict(self, key_raw):
         # ~ _logger.warn('get_page_dict %s' % key_raw)
-        key = str(memcached.MEMCACHED_HASH(key_raw.encode('latin-1')))
+        key = str(memcached.MEMCACHED_HASH(key_raw.encode('latin-1', 'replace')))
         # ~ page_dict = None
         # ~ return key,page_dict
         try:
@@ -1380,7 +1309,7 @@ class Website(models.Model):
 
     @api.model
     def put_page_dict(self, key_raw, flush_type, page, path):
-        key = str(memcached.MEMCACHED_HASH(key_raw.encode('latin-1')))
+        key = str(memcached.MEMCACHED_HASH(key_raw.encode('latin-1', 'replace')))
         page_dict = {
             # ~ 'ETag':     '%s' % MEMCACHED_HASH(page),
             # ~ 'max-age':  max_age,
@@ -1398,11 +1327,10 @@ class Website(models.Model):
             'flush_type': flush_type,
             # ~ 'headers': [],
             }
-        # ~ MEMCACHED.mc_save(key, page_dict,24 * 60 * 60 * 7)  # One week
-        memcached.mc_save(key, page_dict,60*60*24*7)  # One week
+        memcached.mc_save(key, page_dict, 60*60*24*7)  # One week
 
     @api.model
     def remove_page_dict(self, key_raw):
-        key = str(memcached.MEMCACHED_HASH(key_raw.encode('latin-1')))
+        key = str(memcached.MEMCACHED_HASH(key_raw.encode('latin-1', 'replace')))
         # ~ MEMCACHED.mc_save(key, page_dict,24 * 60 * 60 * 7)  # One week
         memcached.mc_delete(key)  # One week
