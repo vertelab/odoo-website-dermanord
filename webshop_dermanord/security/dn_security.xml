@@ -83,6 +83,17 @@
        ('product_tmpl_id.access_group_ids', '=', False),
        ('product_tmpl_id.access_group_ids', '=', user.env.ref('webshop_dermanord.group_dn_sk').id)]</field>
         </record>
+
+        <record id="rule_product_category_public" model="ir.rule">
+            <field name="name">Product Category Groups Restriction Public</field>
+            <field name="model_id" ref="website_sale.model_product_public_category"/>
+            <field name="groups" eval="[(6, 0, [ref('group_dn_af'), ref('group_dn_sk')])]"/>
+            <field name="domain_force">[('website_published', '=', True),
+'|',
+    ('group_ids', '=', False),
+    ('group_ids', 'in', [g.id for g in user.partner_id.commercial_partner_id.access_group_ids])]</field>
+        </record>
+        
         
     </data>
 </openerp>
