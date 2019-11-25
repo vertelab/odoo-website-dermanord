@@ -69,6 +69,7 @@ class Main(http.Controller):
                         'country_id': post.get('country_id', ''),
                         'login': post.get('email', ''),
                         'email': post.get('email', ''),
+                        'phone': post.get('phone', ''),
                         'reseller_id': reseller_id,
                         'partner_id': partner.id,
                     })

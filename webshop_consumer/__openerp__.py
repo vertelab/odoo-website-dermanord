@@ -27,7 +27,8 @@
     'description': """
 Special layout for Dermanord AB webshop
 ====================
-Consumer related features
+ - Consumer related features.
+ - Wizard for showing invitation URL.
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
@@ -37,6 +38,7 @@ Consumer related features
         ],
     'data': [
         'views/consumer_template.xml',
+        'wizard/invite_url_view.xml',
     ],
     'application': False,
 }

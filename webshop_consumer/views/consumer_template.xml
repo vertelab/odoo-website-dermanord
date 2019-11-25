@@ -127,6 +127,13 @@
                                     </div>
                                 </div>
                                 <div class="row">
+                                    <div t-att-class="'form-group %s' %validate.get('phone')">
+                                        <label class="control-label" for="phone">Phone *</label>
+                                        <input type="text" class="form-control" name="phone" placeholder="Phone (required)" required="true" />
+                                        <small t-esc="help.get('Phone', '')" />
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <input name="view" value="map" type="hidden" />
                                     <button class="mt16 dn_btn dn_primary" type="submit" value="Save" title="Save">
                                         <i class="icon-save" />
