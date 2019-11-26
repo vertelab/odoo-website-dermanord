@@ -4,7 +4,6 @@
         <record model="ir.ui.view" id="invite_url_wizard_form">
             <field name="name">URL to share with consumer</field>
             <field name="model">consumer.invite.url</field>
-            <field name="model_id" ref="base.model_res_partner" />
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Show Invitation URL">
@@ -21,19 +20,12 @@
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
-        <record id="invite_url_action" model="ir.actions.server">
-            <field name="name">URL to share with consumer</field>
-            <field name="model_id" ref="base.model_res_partner" />
-            <field name="state">code</field>
-            <field name="code">
-action = { 'name':'Show invite URL','res_model':'consumer.invite.url','view_model':'form','view_mode':'form','target':'new','type':'ir.actions.act_window'  }</field>
-        </record>
         <record model="ir.values" id="invite_url_menu_action">
             <field name="name">URL to share with consumer</field>
             <field name="model">res.partner</field>
             <field name="model_id" ref="base.model_res_partner" />
             <field name="key2">client_action_multi</field>
-            <field name="value" eval="'ir.actions.server,%d' % invite_url_action" />
+            <field name="value" eval="'ir.actions.act_window,%d' % show_invite_url_wizard_form_act" />
         </record>
     </data>
 </openerp>

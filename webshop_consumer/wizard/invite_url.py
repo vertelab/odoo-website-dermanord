@@ -30,16 +30,23 @@ _logger = logging.getLogger(__name__)
 class invite_url_wizard(models.TransientModel):
     _name = "consumer.invite.url"
     
-    invite_url_field = fields.Char(string='Invite URL, for consumers', compute='create_invite_url')
-
     # ~ [3859] ÅF sälja till slutkonsument - Länk för att addera kund till ÅF
-    # ~ skogsrospa = #5522
+    # ~ kund_id = #5522
     # ~ maria:8069/sv_SE/reseller/5522/consumer
-    @api.one
-    def create_invite_url(self):
-        company_id = self._context.get('partner_id')
-
-        if company_id.is_reseller:
-            self.invite_url_field = '/reseller/%s/consumer/' % (company_id.id )
+    @api.model
+    def _invite_url(self):
+        
+        partner_id = self.env['res.partner'].browse( self._context.get('active_id', []) )
+        _logger.warn("partner_id: %s" % partner_id)
+        _logger.warn("partner_id.is_reseller: %s" % partner_id.is_reseller)
+        _logger.warn("context.get: %s" % self._context.get('active_id', []))
+        
+        if partner_id.is_reseller:
+            return '%s/reseller/%s/consumer/' % ( self.env['ir.config_parameter'].sudo().get_param('web.base.url'), partner_id.id )
+            
         else:
-            self.invite_url_field = u'Hoppla! Sökbar ÅF på webbsidan ska vara markerad!'
+            return u'Oj...! Rubriken \'Sökbar ÅF på webbsidan\' mmåste vara markerad!'
+
+    invite_url_field = fields.Char(string='Invite URL', default=_invite_url, help='Invite URL, for consumers' )
+
+
