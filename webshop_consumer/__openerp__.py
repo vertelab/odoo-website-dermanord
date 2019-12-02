@@ -29,6 +29,7 @@ Special layout for Dermanord AB webshop
 ====================
  - Consumer related features.
  - Wizard for showing invitation URL.
+ - Backoffice >> View & Edit resellers clients.
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
