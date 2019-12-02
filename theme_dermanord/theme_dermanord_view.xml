@@ -435,7 +435,7 @@
                 <span t-if="lg_index != (len(languages)-1) and lg_index != 0">|</span>
                 <a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" class="js_change_lang">
                   
-                       <img t-att-src="'/web/binary/image?model=res.country&amp;id=%s&amp;field=image' %request.env['res.country'].search([('code', '=', lg[0].split('_')[1].lower())]).id" style="height: 20px;"/>
+           <!--             <img t-att-src="'/web/binary/image?model=res.country&amp;id=%s&amp;field=image' %request.env['res.country'].search([('code', '=', lg[0].split('_')[1].lower())]).id" style="height: 20px;"/> -->
                 
 
                   <span t-if="lg[0] != 'en_US'">
