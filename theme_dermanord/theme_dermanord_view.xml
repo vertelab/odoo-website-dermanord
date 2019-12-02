@@ -575,12 +575,20 @@
         <span>My Account</span>
       </xpath>
       <xpath expr="//a[@href='/web']/.." position="replace">
-        <li>
-          <a class="dn-home-menu-option" href="/home" role="menuitem">My Account</a>
-        </li>
+        <div class="product_children">
+          <label>
+          <li>
+            <a class="dn-home-menu-option" href="/home" role="menuitem">My Account</a>
+          </li>
+        </label>
+    </div>
+    <div class="product_children">
+      <label>
         <li>
           <a href="/page/demo" groups="base.group_website_publisher,base.group_hr_user,base.user_root">Demo Page</a>
         </li>
+      </label>
+    </div>
       </xpath>
     </template>
   </data>
