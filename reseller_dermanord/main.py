@@ -316,7 +316,13 @@ class Main(http.Controller):
         country = request.session.get('geoip', {}).get('country_code') or 'SE' # Country to use in postal code search
         postal_code = city = position = search_type = None
         excluded = []
-        
+
+        all_visit_ids = params.get('all_visit_ids')
+        if all_visit_ids:
+            domain_visit = [('parent_id.is_company', '=', True), ('parent_id.is_reseller', '=', True), ('id', 'in', all_visit_ids)]
+        else:
+            domain_visit = []
+
         word_list = words.split()
         if word_list:
             # Identify country in search terms to use in postal code search
@@ -338,16 +344,16 @@ class Main(http.Controller):
             
             if postal_code:
                 # Search the postal code and get the closest reseller inside 0.5 degree
-                partner_ids += partner_obj.geo_zip_search('position', country.code, postal_code, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit) # this is supposed to be a limited distance
+                partner_ids += partner_obj.geo_zip_search('position', country.code, postal_code, domain_visit + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit) # this is supposed to be a limited distance
                 if len(partner_ids) < limit:
                     # Fill up to limit with unlimited range.
-                    partner_ids += partner_obj.geo_zip_search('position', country.code, postal_code, domain + [('id', 'not in', partner_ids), ('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit - len(partner_ids)) # this is supposed to be a limited distance
+                    partner_ids += partner_obj.geo_zip_search('position', country.code, postal_code, domain_visit + [('id', 'not in', partner_ids), ('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit - len(partner_ids)) # this is supposed to be a limited distance
                 if partner_ids:
                     search_type = 'postal'
             
             if not partner_ids and city:
                 # Perform city search
-                partner_ids = partner_obj.geo_city_search('position', country.code, city, domain + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit)
+                partner_ids = partner_obj.geo_city_search('position', country.code, city, domain_visit + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit)
                 # ~ _logger.warn('city search %s %s' % (city, partner_ids))
                 if partner_ids:
                     search_type = 'city'
@@ -386,7 +392,7 @@ class Main(http.Controller):
             # ~ _logger.warn('\n\nposition: %s\n' % str(position))
             if 'latitude' in position and 'longitude' in position:
                 position = (position['longitude'], position['latitude'])
-                resellers = partner_obj.browse(partner_obj.geo_search('position', position, domain=domain, distance=360, limit=limit))
+                resellers = partner_obj.browse(partner_obj.geo_search('position', position, domain=domain_visit, distance=360, limit=limit))
         # Data describing how the search was made. Can be used to generate feedback to the user.
         # ~ search_data = {'excluded': excluded, 'country': country, 'postal_code': postal_code, 'city': city, 'search_type': search_type}
         return resellers
