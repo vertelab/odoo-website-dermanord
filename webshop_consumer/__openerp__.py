@@ -36,10 +36,11 @@ Special layout for Dermanord AB webshop
     'website': 'http://www.vertel.se',
     'depends': [
         'website',
+        'auth_signup',
         ],
     'data': [
         'views/consumer_template.xml',
-        'wizard/res_partner_view.xml',
+        'views/res_partner_view.xml',
         'wizard/invite_url_view.xml',
     ],
     'application': False,

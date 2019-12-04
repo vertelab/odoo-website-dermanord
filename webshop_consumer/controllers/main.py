@@ -82,10 +82,6 @@ class Main(http.Controller):
                 ## ELSE RETURN TO PAGE FOR REGISTER
                 return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':reseller, 'countries':countries })
             
-class res_partner(models.Model):
-    _inherit = 'res.partner'
 
-    customer_ids = fields.One2many(comodel_name='res.partner', string='Customer', inverse_name='reseller_id')
-    reseller_id = fields.Many2one(comodel_name='res.partner', string='Reseller')
     
     
