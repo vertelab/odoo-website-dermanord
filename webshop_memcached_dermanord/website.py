@@ -31,6 +31,10 @@ from openerp.addons.website_sale.controllers.main import get_pricelist
 import logging
 _logger = logging.getLogger(__name__)
 
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+    
+    memcached_time = fields.Datetime(string='Memcached Timestamp', default=lambda *args, **kwargs: fields.Datetime.now(), help="Last modification relevant to memcached.")
 
 class Website(models.Model):
     _inherit = 'website'
@@ -121,8 +125,7 @@ class WebsiteSaleHome(website_sale_home):
     def info_update(self, home_user=None, **post):
         res = super(WebsiteSaleHome, self).info_update(home_user=home_user, **post)
         if home_user and post:
-            keys = memcached.get_keys(path='/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image' % home_user.partner_id.commercial_partner_id.id)
-            memcached.mc_delete(keys)
+            home_user.sudo().partner_id.commercial_partner_id.memcached_time = fields.Datetime.now()
         return res
 
     # flush memcached contact image
@@ -130,8 +133,7 @@ class WebsiteSaleHome(website_sale_home):
     def contact_page(self, home_user=None, partner=None, **post):
         res = super(WebsiteSaleHome, self).contact_page(home_user=home_user, partner=partner, **post)
         if partner and post:
-            keys = memcached.get_keys(path='/imagefield/res.partner/image/%s/ref/reseller_dermanord.reseller_contact_img' % partner.id)
-            memcached.mc_delete(keys)
+            partner.sudo().memcached_time = fields.Datetime.now()
         return res
 
 
@@ -144,8 +146,7 @@ class reseller_register(reseller_register):
         if issue_id and post:
             issue = self.get_issue(issue_id, post.get('token'))
             if issue:
-                keys = memcached.get_keys(path='/imagefield/res.partner/top_image/%s/ref/reseller_dermanord.reseller_top_image' % issue.partner_id.id)
-                memcached.mc_delete(keys)
+                issue.sudo().partner_id.memcached_time = fields.Datetime.now()
         return res
 
     # flush memcached contact image
@@ -154,6 +155,5 @@ class reseller_register(reseller_register):
         res = super(reseller_register, self).reseller_contact_new(issue_id=issue_id, contact=contact, **post)
         if contact and contact != 0 and post:
             contact = request.env['res.partner'].sudo().browse(contact)
-            keys = memcached.get_keys(path='/imagefield/res.partner/image/%s/ref/reseller_dermanord.reseller_contact_img' % contact.id)
-            memcached.mc_delete(keys)
+            contact.memcached_time = fields.Datetime.now()
         return res
