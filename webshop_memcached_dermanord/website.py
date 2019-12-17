@@ -77,8 +77,8 @@ class WebsiteSale(WebsiteSale):
         key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country}%s groups: %s webshop_type: %s%s' % (request.website.get_search_values(kw), request.website.get_dn_groups(), request.website.get_webshop_type(kw), request.website.dn_handle_webshop_session(kw.get('category'), kw.get('preset'), {}, require_cat_preset=False) or ''),
         flush_type=lambda kw: 'webshop',
         no_cache=True,
-        cache_age=43200,
-        max_age=43200,
+        cache_age=86400,  # Memcached    43200 (12 tim)  86400 (24 tim)  31536000 (1 år)
+        max_age=31536000, # Webbläsare
         s_maxage=600)
     def webshop(self, category=None, search='', preset=None, **post):
         request.website.dn_shop_set_session('product.template', post, '/webshop')
@@ -89,8 +89,8 @@ class WebsiteSale(WebsiteSale):
         key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} groups: %s memcached_time: %s' % (request.website.get_dn_groups(), (kw.get('product') and (kw['product'].id, kw['product'].memcached_time or ''))),
         flush_type=lambda kw: 'dn_shop',
         no_cache=True,
-        cache_age=43200,
-        max_age=43200,
+        cache_age=86400,    # Memcached    43200 (12 tim)  86400 (24 tim)  31536000 (1 år)
+        max_age=31536000,   # Webbläsare
         s_maxage=600)
     def dn_product(self, product, category='', search='', **post):
         return super(WebsiteSale, self).dn_product(product, category, search, **post)
@@ -102,8 +102,8 @@ class WebsiteSale(WebsiteSale):
         key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} groups: %s memcached_time: %s' % (request.website.get_dn_groups(), (kw.get('variant') and (kw['variant'].id, kw['variant'].memcached_time or ''))),
         flush_type=lambda kw: 'dn_shop',
         no_cache=True,
-        cache_age=43200,
-        max_age=43200,
+        cache_age=86400,   # Memcached    43200 (12 tim)  86400 (24 tim)  31536000 (1 år)
+        max_age=31536000,  # Webbläsare
         s_maxage=600)
     def dn_product_variant(self, variant, category='', search='', **kwargs):
         return super(WebsiteSale, self).dn_product_variant(variant, category, search, **kwargs)
