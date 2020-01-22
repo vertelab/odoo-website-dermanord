@@ -37,6 +37,7 @@ class Main(http.Controller):
     @http.route(['/reseller/edit/consumer_page'], type='http', auth='user', website=True)
     def edit_consumer_page(self, **post):
         return http.request.render('webshop_consumer.insert_consumer')
+        # ~ http://maria:8069/reseller/edit/consumer_page
         
     @http.route(['/reseller/<int:reseller_id>/consumer'], type='http', auth='public', website=True)
     def add_consumer(self, reseller_id, **post):
@@ -75,11 +76,11 @@ class Main(http.Controller):
                     })
                     return http.request.render('webshop_consumer.insert_consumer', {'help':{}, 'validate':{}, 'reseller':reseller })
                 except Exception, e:
-                    # copy may failed if asked login is not available.
-                    # raise SignupError(ustr(e))
+                    ## copy may failed if asked login is not available.
+                    # ~ raise SignupError(ustr(e))
                     return http.request.render('webshop_consumer.error', {'error':ustr(e) })
             else:
-                ## ELSE RETURN TO PAGE FOR REGISTER
+                ## ELSE... RETURN TO PAGE FOR REGISTER
                 return http.request.render('webshop_consumer.add_consumer', {'help':{}, 'validate':{}, 'reseller':reseller, 'countries':countries })
             
 
