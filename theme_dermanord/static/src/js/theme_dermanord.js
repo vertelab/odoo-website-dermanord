@@ -136,6 +136,20 @@ $(document).ready(function() {
             }
         });
     });
+
+    $("#selectedCase").change(function () {
+        $(this).find("option:selected").each(function () {
+        let optionValue = $(this).attr("name");
+        if (optionValue) {
+            $(".case").not("." + optionValue).hide();
+            $("." + optionValue).show();
+        } else {
+            $(".case").hide();
+        }
+        });
+    }).change();
+    
+
 });
 
 $(window).resize(function() {
