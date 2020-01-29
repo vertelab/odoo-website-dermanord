@@ -513,7 +513,7 @@
               -->
               <div class="container oe_dermexp_div">
                 <span itemprop="image" t-field="current_menu.image" t-field-options='{"widget": "image", "class": "dn_page_header_img css_non_editable_mode_hidden", "alt-field": "name"}' />
-                <img class="img img-responsive css_editable_mode_hidden" t-att-src="'/imagefield/website.menu/image/%s/ref/theme_dermanord.dn_header_img' %current_menu.id" />
+                <img class="img img-responsive css_editable_mbreadode_hidden" t-att-src="'/imagefield/website.menu/image/%s/ref/theme_dermanord.dn_header_img' %current_menu.id" />
                 <!--
                      <h6 class="oe_dermexp_content"><span t-field="current_menu.page_title"/></h6>
                 -->
@@ -575,13 +575,7 @@
         <span>My Account</span>
       </xpath>
       <xpath expr="//a[@href='/web']/.." position="replace">
-        <div class="product_children">
-          <label>
-          <li>
-            <a class="dn-home-menu-option" href="/home" role="menuitem">My Account</a>
-          </li>
-        </label>
-    </div>
+
     <div class="product_children">
       <label>
         <li>
@@ -589,6 +583,7 @@
         </li>
       </label>
     </div>
+
       </xpath>
     </template>
   </data>
