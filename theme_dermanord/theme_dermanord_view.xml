@@ -25,11 +25,13 @@
        </data>
   -->
   <data>
-    <template id="contactus" name="Dermanord Contact" inherit_id="website.contactus">
-      <xpath expr="//div[@name='mail_button']" position="attributes">
-        <attribute name="class">text-center mt64 mb64 hidden</attribute>
-      </xpath>
+
+    <template id="contactus_response" name="Dermanord Contact Us Response">
+      <t t-call="website.layout">
+        <div class="oe_structure"></div>
+      </t>
     </template>
+
     <template id="company_description" name="Dermanord Company Description" inherit_id="website.company_description">
       <xpath expr="//address" position="replace" />
       <xpath expr="//a" position="after">

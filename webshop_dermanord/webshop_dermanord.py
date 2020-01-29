@@ -879,7 +879,8 @@ class Website(models.Model):
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
         if post:
             request.session['form_values']['current_ingredient'] = post.get('current_ingredient')
-            request.session['current_ingredient'] = int(post.get('current_ingredient', 0) or 0)
+            current_ingredient = post.get('current_ingredient', '0')
+            request.session['current_ingredient'] = current_ingredient.isdigit() and int(current_ingredient) or 0
             domain = self.get_domain_append(model, post)
         else:
             domain = self.get_domain_append(model, request.session.get('form_values', {}))

@@ -392,7 +392,7 @@ class Main(http.Controller):
             # ~ _logger.warn('\n\nposition: %s\n' % str(position))
             if 'latitude' in position and 'longitude' in position:
                 position = (position['longitude'], position['latitude'])
-                resellers = partner_obj.browse(partner_obj.geo_search('position', position, domain=domain_visit, distance=360, limit=limit))
+                resellers = partner_obj.search([('child_ids', 'in', partner_obj.geo_search('position', position, domain=domain_visit, distance=360, limit=limit))])
         # Data describing how the search was made. Can be used to generate feedback to the user.
         # ~ search_data = {'excluded': excluded, 'country': country, 'postal_code': postal_code, 'city': city, 'search_type': search_type}
         return resellers
