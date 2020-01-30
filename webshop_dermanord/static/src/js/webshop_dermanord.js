@@ -164,23 +164,36 @@ $(function(){
             $(this).attr("checked", false);
         });
         $input.attr("checked", true);
+        uncheck_other_categories($input);
         category_checkbox_onchange($input);
         check_in_check_out_parent();
         $input.closest("form").submit();
     });
     
      $(".stock_notify_button").click(function() {
-		
+        
          var $this = $(this);
          var variant_id = parseInt($this.data('variant-id'));
     
-			 openerp.jsonRpc("/webshop_dermanord/stock/notify", 'call', {'product_id': variant_id})
+             openerp.jsonRpc("/webshop_dermanord/stock/notify", 'call', {'product_id': variant_id})
             .then(function (data) {
            
                alert(data);
-            });	
-	});
+            }); 
+    });
 
+
+    function uncheck_other_categories($e) {
+        var $self = $e;
+        var categ_id = $self.data("category");
+        console.log("DAER!")
+        if (categ_id != "") {
+            $.each($self.closest("div.panel").find("div#category_checkbox input[type='checkbox']"), function() {
+                $(this).attr("checked", false);
+            });
+            activate_facet();
+        }
+    }
 
     function category_checkbox_onchange($e) {
         var $self = $e;
