@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <template id="website.contactus" name="Contact us" page="True">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                    <div class="container">
+                        <h1/>
+                        <div class="row">
+                            
+                                    <section class="mb16 readable mt0">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-md-12 text-center mt0 mb0">
+                                                    <h6 style="text-align: left;">
+                                                        <em>Kontakta oss!</em>
+                                                    </h6>
+                                                    <h3 class="text-muted"/>
+                                                </div>
+
+                                                <div class="col-md-12 mb16 mt0">
+                                                    <p>Vad kan vi hjälpa till med? Använd rätt kontaktväg så får du rätt hjälp, snabbast möjligt! Vi ser fram emot att höra från dig.</p>
+                                                    <p>Är du redan återförsäljade och för att underlätta vår behandling av ditt ärende ber vi dig alltid uppge kundnummer eller den mejladress du använder vid inloggning. Uppge även ditt för- och efternamn.</p>
+                                                    <p>Gäller ärendet nya kontakter eller ny leverans- och/eller fakturaadress behöver vi ett godkännande från ägaren eller behörig chef på den salong du arbetar (administratör). Den person som är administratör hittar du under Mitt Konto på vår hemsida, mariaakerberg.com.&amp;nbsp;&amp;nbsp;</p>
+                                                    <p/>
+                                                    
+                                                    <div class="case-choice">
+
+
+<!--
+                                                        <t t-foreach="request.env['project.project'].search([('use_contact_form', '=', True)])" t-as="project">
+                                                            <t t-if="project">
+                                                                <div t-att-class="project.name">
+
+                                                                    <div class="Websupport case">
+                                                                        <h3 style="color: rgb(51, 51, 51);">
+                                                                            <em t-field = 'project.name'/>
+&amp;nbsp;   
+                                                                        </h3>
+                                                                        <p t-field = 'project.contact_form_description'/>
+                                                                    </div>
+                                                                </div>
+                                                            </t>
+                                                        </t>
+-->
+													</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div> 
+                                
+                                
+                   
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </template>
+
+
+    </data>
+</openerp>
