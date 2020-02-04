@@ -39,7 +39,8 @@ Resellers Page
         'postgres_geo_fields',
         'partner_geolocalize',
         'event_participant_dermanord',
-        'website_sale_home',
+        #'website_sale_home',
+        'website_portal_sale_1028',
         'website_partner_opening_hours',
     ],
     'data': [

@@ -30,7 +30,8 @@ import base64
 import math
 from datetime import date
 from dateutil.relativedelta import relativedelta
-from openerp.addons.website_sale_home.website_sale import website_sale_home
+#from openerp.addons.website_sale_home.website_sale import website_sale_home
+from openerp.addons.website_portal_1028.controllers.main import website_account as website_sale_home
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -724,6 +725,12 @@ class website(models.Model):
 
     def sale_home_get_data(self, home_user, post):
         values = super(website, self).sale_home_get_data(home_user, post)
+        values['webshop_category_ids'] = [(category['id'], category['name']) for category in request.env['product.public.category'].search_read([('website_published', '=', True), ('parent_id', '=', False), ('id', 'not in', [1])], ['name'])]
+        # id 1 är Ovrigt
+        return values
+
+    def my_orders_get_data(self, home_user, post):
+        values = super(website, self).my_orders_get_data(home_user, post)
         values['webshop_category_ids'] = [(category['id'], category['name']) for category in request.env['product.public.category'].search_read([('website_published', '=', True), ('parent_id', '=', False), ('id', 'not in', [1])], ['name'])]
         # id 1 är Ovrigt
         return values
