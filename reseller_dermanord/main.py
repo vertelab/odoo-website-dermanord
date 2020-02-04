@@ -317,6 +317,7 @@ class Main(http.Controller):
         country = request.session.get('geoip', {}).get('country_code') or 'SE' # Country to use in postal code search
         postal_code = city = position = search_type = None
         excluded = []
+        domain_resellers = []
 
         all_visit_ids = params.get('all_visit_ids')
         if all_visit_ids:
@@ -342,24 +343,26 @@ class Main(http.Controller):
             postal_code = self.check_for_postal_code(country.code, word_list)
             city = self.check_for_city(country.code, word_list)
             # ~ _logger.warn('\nword_list: %s\ncountry: %s\npostal_code: %s\ncity: %s\n' % (word_list, country, postal_code, city))
-            
+
+            if postal_code or city:
+                # populate list of all partners in domain to filter on later
+                domain_resellers = [p['id'] for p in partner_obj.search_read(domain, ['id',])]
+
             if postal_code:
-                # Search the postal code and get the closest reseller inside 0.5 degree
-                partner_ids += partner_obj.geo_zip_search('position', country.code, postal_code, domain_visit + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit) # this is supposed to be a limited distance
-                if len(partner_ids) < limit:
-                    # Fill up to limit with unlimited range.
-                    partner_ids += partner_obj.geo_zip_search('position', country.code, postal_code, domain_visit + [('id', 'not in', partner_ids), ('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit - len(partner_ids)) # this is supposed to be a limited distance
+                # Search the postal code and sort on the closest resellers
+                partner_ids += partner_obj.geo_zip_search('position', country.code, postal_code, domain_visit + [('parent_id', 'in', domain_resellers), ('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit) # this is supposed to be a limited distance
                 if partner_ids:
                     search_type = 'postal'
             
             if not partner_ids and city:
                 # Perform city search
-                partner_ids = partner_obj.geo_city_search('position', country.code, city, domain_visit + [('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit)
+                partner_ids = partner_obj.geo_city_search('position', country.code, city, domain_visit + [('parent_id', 'in', domain_resellers), ('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit)
                 # ~ _logger.warn('city search %s %s' % (city, partner_ids))
                 if partner_ids:
                     search_type = 'city'
             
             if partner_ids:
+                # get objects from list of ids
                 resellers = partner_obj.browse(partner_ids)
                 
             # Search using search terms
@@ -392,8 +395,11 @@ class Main(http.Controller):
             position = request.session.get('geoip', {})
             # ~ _logger.warn('\n\nposition: %s\n' % str(position))
             if 'latitude' in position and 'longitude' in position:
+                # if we dont already have it, create it here:
+                if not domain_resellers:
+                    domain_resellers = [p['id'] for p in partner_obj.search_read(domain, ['id',])]
                 position = (position['longitude'], position['latitude'])
-                resellers = partner_obj.search([('child_ids', 'in', partner_obj.geo_search('position', position, domain=domain_visit, distance=360, limit=limit))])
+                resellers = partner_obj.search([('child_ids', 'in', partner_obj.geo_search('position', position, domain=domain_visit + [('parent_id', 'in', domain_resellers)], distance=360, limit=limit))])
         # Data describing how the search was made. Can be used to generate feedback to the user.
         # ~ search_data = {'excluded': excluded, 'country': country, 'postal_code': postal_code, 'city': city, 'search_type': search_type}
         return resellers

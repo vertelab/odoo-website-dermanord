@@ -122,7 +122,7 @@
     </a>
 </template>
 
-<template id="website.contactus" name="Contact us" page="True">
+<!-- <template id="website.contactus" name="Contact us" page="True">
     <t t-call="website.layout">
         <div id="wrap">
             <div class="oe_structure"/>
@@ -315,7 +315,7 @@
             </div>
             <div class="oe_structure"/></div>
     </t>
-</template>
+</template> -->
 <template id="website.aboutus" name="About us" page="True">
     <t t-call="website.layout">
         <div id="wrap">

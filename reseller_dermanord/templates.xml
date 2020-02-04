@@ -93,9 +93,13 @@
                                             <t t-foreach="resellers" t-as="reseller">
                                                 <div class="reseller_cell col-md-4 col-sm-4 col-xs-12">
                                                     <t t-set="visit" t-value="reseller.child_ids.filtered(lambda c: c.type == 'visit')" />
+                                                    <t t-if="len(visit) > 1">
+                                                        <t t-set="visit" t-value="visit[0]" />
+                                                    </t>
                                                     <t t-if="not visit">
                                                         <t t-set="visit" t-value="reseller.commercial_partner_id" />
                                                     </t>
+                                                    
                                                     <a t-att-href="'/reseller/%s' %reseller.id">
                                                         <h4>
                                                             <strong>
