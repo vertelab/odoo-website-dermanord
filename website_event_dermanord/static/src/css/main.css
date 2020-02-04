@@ -3,5 +3,5 @@
 }
 
 ul#comment.media-list {
-    display: none;
+    display: none !important;
 }
