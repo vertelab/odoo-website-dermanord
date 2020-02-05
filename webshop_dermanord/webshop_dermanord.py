@@ -674,9 +674,10 @@ class sale_order(models.Model):
         # Remove zero of negative lines
         if quantity <= 0:
             line.unlink()
-            
-        elif quantity != line.product_uom_qty:
-            line.product_uom_qty = quantity
+        else:
+            values = self._website_product_id_change(line.order_id.id, line.product_id.id, qty=quantity, line_id=line.id)
+            values['product_uom_qty'] = quantity
+            line.write(values)
 
         return {
                 'name': self.name,
@@ -930,48 +931,47 @@ class Website(models.Model):
 
         #~ sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
 
-        # TODO: Fix code and and update_pricelist
+        if code and code != sale_order.pricelist_id.code:
+            # _logger.warn("DAER code: %s" % code)
+            pricelist_ids = self.pool['product.pricelist'].search(cr, SUPERUSER_ID, [('code', '=', code)], context=context)
+            if pricelist_ids:
+                pricelist_id = pricelist_ids[0]
+                request.session['sale_order_code_pricelist_id'] = pricelist_id
+                update_pricelist = True
 
-        #~ if code and code != sale_order.pricelist_id.code:
-                #~ pricelist_ids = self.pool['product.pricelist'].search(cr, SUPERUSER_ID, [('code', '=', code)], context=context)
-                #~ if pricelist_ids:
-                    #~ pricelist_id = pricelist_ids[0]
-                    #~ request.session['sale_order_code_pricelist_id'] = pricelist_id
-                    #~ update_pricelist = True
+            pricelist_id = request.session.get('sale_order_code_pricelist_id') or env.user.partner_id.property_product_pricelist.id
 
-            #~ pricelist_id = request.session.get('sale_order_code_pricelist_id') or partner.property_product_pricelist.id
+            # check for change of partner_id ie after signup
+            if sale_order.partner_id.id != env.user.partner_id.id and request.website.partner_id.id != env.user.partner_id.id:
+                flag_pricelist = False
+                if pricelist_id != sale_order.pricelist_id.id:
+                    flag_pricelist = True
+                fiscal_position = sale_order.fiscal_position and sale_order.fiscal_position.id or False
 
-            #~ # check for change of partner_id ie after signup
-            #~ if sale_order.partner_id.id != partner.id and request.website.partner_id.id != partner.id:
-                #~ flag_pricelist = False
-                #~ if pricelist_id != sale_order.pricelist_id.id:
-                    #~ flag_pricelist = True
-                #~ fiscal_position = sale_order.fiscal_position and sale_order.fiscal_position.id or False
+                values = sale_order_obj.onchange_partner_id(cr, SUPERUSER_ID, [sale_order_id], env.user.partner_id.id, context=context)['value']
+                if values.get('fiscal_position'):
+                    order_lines = map(int,sale_order.order_line)
+                    values.update(sale_order_obj.onchange_fiscal_position(cr, SUPERUSER_ID, [],
+                        values['fiscal_position'], [[6, 0, order_lines]], context=context)['value'])
 
-                #~ values = sale_order_obj.onchange_partner_id(cr, SUPERUSER_ID, [sale_order_id], partner.id, context=context)['value']
-                #~ if values.get('fiscal_position'):
-                    #~ order_lines = map(int,sale_order.order_line)
-                    #~ values.update(sale_order_obj.onchange_fiscal_position(cr, SUPERUSER_ID, [],
-                        #~ values['fiscal_position'], [[6, 0, order_lines]], context=context)['value'])
+                values['partner_id'] = env.user.partner_id.id
+                sale_order_obj.write(cr, SUPERUSER_ID, [sale_order_id], values, context=context)
 
-                #~ values['partner_id'] = partner.id
-                #~ sale_order_obj.write(cr, SUPERUSER_ID, [sale_order_id], values, context=context)
+                if flag_pricelist or values.get('fiscal_position', False) != fiscal_position:
+                    update_pricelist = True
 
-                #~ if flag_pricelist or values.get('fiscal_position', False) != fiscal_position:
-                    #~ update_pricelist = True
+            # update the pricelist
+            if update_pricelist:
+                values = {'pricelist_id': pricelist_id}
+                values.update(sale_order.onchange_pricelist_id(pricelist_id, None)['value'])
+                sale_order.write(values)
+                for line in sale_order.order_line:
+                    if line.exists():
+                        sale_order._cart_update(product_id=line.product_id.id, line_id=line.id, add_qty=0)
 
-            #~ # update the pricelist
-            #~ if update_pricelist:
-                #~ values = {'pricelist_id': pricelist_id}
-                #~ values.update(sale_order.onchange_pricelist_id(pricelist_id, None)['value'])
-                #~ sale_order.write(values)
-                #~ for line in sale_order.order_line:
-                    #~ if line.exists():
-                        #~ sale_order._cart_update(product_id=line.product_id.id, line_id=line.id, add_qty=0)
-
-            #~ # update browse record
-            #~ if (code and code != sale_order.pricelist_id.code) or sale_order.partner_id.id !=  partner.id:
-                #~ sale_order = sale_order_obj.browse(cr, SUPERUSER_ID, sale_order.id, context=context)
+            # update browse record
+            if (code and code != sale_order.pricelist_id.code) or sale_order.partner_id.id !=  env.user.partner_id.id:
+                sale_order = sale_order_obj.browse(cr, SUPERUSER_ID, sale_order.id, context=context)
 
         return sale_order
 
