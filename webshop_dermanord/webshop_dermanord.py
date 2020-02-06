@@ -389,11 +389,12 @@ class product_pricelist(models.Model):
 
     rec_pricelist_id = fields.Many2one(comodel_name='product.pricelist', string='Recommended Pricelist')
     for_reseller = fields.Boolean(string='For Reseller')
+    code_partner_ids = fields.Many2many(comodel_name='res.partner', inverse_name='pricelist_id', string='Customers', help='Customers who has used this offer code')
+    code_unlimited = fields.Boolean(string='Unlimited use', default=False, help='Check if the code should be reusable for customers')
 
     # ~ @api.multi
     # ~ def price_get(self, prod_id, qty, partner=None):
         # ~ return super(product_pricelist, self).price_get(prod_id, qty, partner)
-
 
 class product_public_category(models.Model):
     _inherit = 'product.public.category'
@@ -932,12 +933,18 @@ class Website(models.Model):
         #~ sale_order = super(Website, self).sale_get_order(cr, uid, ids, force_create, code, update_pricelist, context)
 
         if code and code != sale_order.pricelist_id.code:
-            # _logger.warn("DAER code: %s" % code)
             pricelist_ids = self.pool['product.pricelist'].search(cr, SUPERUSER_ID, [('code', '=', code)], context=context)
             if pricelist_ids:
                 pricelist_id = pricelist_ids[0]
-                request.session['sale_order_code_pricelist_id'] = pricelist_id
-                update_pricelist = True
+                code_pricelist = env['product.pricelist'].sudo().browse(pricelist_id) # why do i have to do this?
+                # check if coupon is reusable or make sure that the partner has not already used it
+                if code_pricelist.code_unlimited or not (env.user.partner_id in code_pricelist.code_partner_ids):
+                    request.session['sale_order_code_pricelist_id'] = pricelist_id
+                    # add record of partner using coupon
+                    # TODO: add removal of coupon record in case partner changes from this code to other?
+                    if not code_pricelist.code_unlimited:
+                        code_pricelist.code_partner_ids += env.user.partner_id
+                    update_pricelist = True
 
             pricelist_id = request.session.get('sale_order_code_pricelist_id') or env.user.partner_id.property_product_pricelist.id
 
@@ -971,7 +978,8 @@ class Website(models.Model):
 
             # update browse record
             if (code and code != sale_order.pricelist_id.code) or sale_order.partner_id.id !=  env.user.partner_id.id:
-                sale_order = sale_order_obj.browse(cr, SUPERUSER_ID, sale_order.id, context=context)
+                # sale_order = sale_order_obj.browse(cr, SUPERUSER_ID, sale_order.id, context=context)
+                sale_order = sale_order_obj.browse(sale_order.id)
 
         return sale_order
 
