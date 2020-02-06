@@ -116,43 +116,86 @@ function setCartPriceQuantity(price, quantity, price_float) {
 
 $(function(){
     
-    $(".add_tester").click(function(){
-    var $this = $(this);
-    var product_id = parseInt($this.parents("td.text-center").find("input[type='number']").data('product-id'));
-    var quantity =   parseInt($this.parents("td.text-center").find("input[type='number']").val());
-    var mini_value = parseInt($this.parents("td.text-center").find("div.add_tester").data('min-tester'));
-    
-    if (quantity < mini_value) {
-        alert (_.str.sprintf(openerp._t("You have to buy at least %s products to get a tester"), mini_value));
-    }
-    else{
-        alert (openerp._t("A tester has been added to your cart"));
-       
-        parseInt($this.parents("td.text-center").find("div.add_tester").addClass("hidden"));
-        parseInt($this.parents("td.text-center").find("div.remove_tester").removeClass("hidden"));
+    function check_tester_buttons(buttons){
+        // Show/hide correct tester buttons
+        console.log('check_tester_buttons');
+        console.log(buttons);
         
-        openerp.jsonRpc("/webshop_dermanord/add_tester", 'call', {'product_id': product_id})
-       .then(function (data){
-        alert(data);
-        });
-    }
-
-});
+        buttons.each(function(i, button_vanilla){
+            let button = $(button_vanilla);
+            let quantity = parseInt(button.parents("td").find("input[type='number']").val());
+            let min_value  = parseInt(button.data('tester-min'));
+            let added = parseInt(button.data('tester-added'));
+            console.log(quantity);
+            console.log(min_value);
+            console.log(added);
+            if (! added && (quantity >= min_value)) {
+                // Show add button
+                button.find('.add-tester').removeClass('hidden');
+                button.find('.remove-tester').addClass('hidden');
+            } else if (added) {
+                // Show remove button
+                button.find('.add-tester').addClass('hidden');
+                button.find('.remove-tester').removeClass('hidden');
+            } else {
+                // Hide both buttons
+                button.find('.add-tester').addClass('hidden');
+                button.find('.remove-tester').addClass('hidden');
+            }
+        })
+    };
     
-    $(".remove_tester").click(function(){
+    $(".add-tester").click(function(){
+        let $this = $(this);
+        let product_id = parseInt($this.parents("td").find("input[type='number']").data('product-id'));
+        let quantity   = parseInt($this.parents("td").find("input[type='number']").val());
+        let min_value  = parseInt($this.parent().data('tester-min'));
+        
+        if (quantity < min_value) {
+            alert (_.str.sprintf(openerp._t("You have to buy at least %s products to get a tester"), min_value));
+        }
+        else {
+            openerp.jsonRpc("/webshop_dermanord/add_tester", 'call', {'product_id': product_id})
+                .then(function (data){
+                    console.log(data);
+                    // {
+                    //     message: Error message to display
+                    //     not_ready: integer (id of tester that wasn't added because it's not ready.)
+                    //     added: integer (id of tester that was added)
+                    // }
+                    if (data.message !== undefined) {
+                        alert(data.message);
+                    }
+                    if (data.added !== undefined) {
+                        let buttons = $("div.tester-buttons[data-tester-id='" + data.added + "']");
+                        buttons.data('tester-added', '1');
+                        check_tester_buttons(buttons);
+                    }
+                });
+        }
+    });
+    
+    $(".remove-tester").click(function(){
         var $this = $(this);
-        var product_id = parseInt($this.parents("td.text-center").find("input[type='number']").data('product-id'));
+        var product_id = parseInt($this.parents("td").find("input[type='number']").data('product-id'));
+        openerp.jsonRpc("/webshop_dermanord/remove_tester", 'call', {'product_id': product_id})
+            .then(function (data){
+                console.log(data);
+                    // {
+                    //     message: Error message to display
+                    //     removed: integer (id of tester that was removed)
+                    // }
+                    if (data.message !== undefined) {
+                        alert(data.message);
+                    }
+                    if (data.removed !== undefined) {
+                        let buttons = $("div.tester-buttons[data-tester-id='" + data.removed + "']");
+                        buttons.data('tester-added', '0');
+                        check_tester_buttons(buttons);
+                    }
+            });
         
-        alert (openerp._t("A tester has been removed from your cart"));
-        parseInt($this.parents("td.text-center").find("div.add_tester").removeClass('hidden'));
-        parseInt($this.parents("td.text-center").find("div.remove_tester").addClass('hidden'));
-             
-        openerp.jsonRpc("/webshop_dermanord/add_tester", 'call', {'product_id': product_id})
-       .then(function (data){
-        alert(data);
-        });
-        
-});
+    });
 
     $("input.category_checkbox").change(function() {
         category_checkbox_onchange($(this));
@@ -472,6 +515,12 @@ $(function(){
                     value = 5;
                     $input.val(value);
                 } 
+            }
+            // Handle testers
+            let tester = $input.parents('td').find('.tester-buttons');
+            console.log(tester);
+            if (tester.length > 0) {
+                check_tester_buttons(tester);
             }
             $input.data('update_change', true);
             openerp.jsonRpc("/shop/get_unit_price", 'call', {
