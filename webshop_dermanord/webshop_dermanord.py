@@ -273,7 +273,7 @@ $$;""")
         return res
 
 
-class product_product(models.Model):
+class ProductProduct(models.Model):
     _inherit = 'product.product'
 
     #~ so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')  # performance hog, do we need it?
@@ -290,7 +290,7 @@ class product_product(models.Model):
 
     def _auto_init(self, cr, context=None):
         """Install custom sorting functions."""
-        res = super(product_product, self)._auto_init(cr, context)
+        res = super(ProductProduct, self)._auto_init(cr, context)
         cr.execute("""CREATE OR REPLACE FUNCTION dn_product_product_price_chart_sort(int, int) RETURNS float
 LANGUAGE sql
 AS
@@ -321,7 +321,7 @@ $$;""")
                     new_order.append(expr.strip())
             order_spec = ','.join(new_order)
         if order_spec:
-            order_by_elements = super(product_product, self)._generate_order_by_inner(alias, order_spec, query, reverse_direction=reverse_direction, seen=seen)
+            order_by_elements = super(ProductProduct, self)._generate_order_by_inner(alias, order_spec, query, reverse_direction=reverse_direction, seen=seen)
 
         for order in special_order:
             order_by_elements.append('dn_product_product_price_chart_sort("%s"."id", %s) %s' % (alias, order[0], order[1]))
@@ -354,7 +354,7 @@ $$;""")
         """
         Return a search result for search_suggestion.
         """
-        res = super(product_product, self).fts_search_suggestion()
+        res = super(ProductProduct, self).fts_search_suggestion()
         res['event_type_id'] = self.event_type_id and self.event_type_id.id or False
         return res
 
@@ -602,13 +602,43 @@ class ResPartner(models.Model):
         return HTMLSafe(html)
 
 
-class sale_order(models.Model):
+class SaleOrder(models.Model):
     _inherit='sale.order'
-
+    
+    website_order_line = fields.One2many(domain=[('is_delivery', '=', False), ('is_min_order_fee', '=', False), ('is_tester', '=', False)])
+    
+    @api.one
+    def verify_testers(self):
+        """Remove any tester products that are invalid."""
+        def tester_ok(products, tester):
+            for product in products:
+                if self.tester_ready(product):
+                    return True
+            return False
+        wol = self.website_order_line
+        for tester_line in self.order_line.filtered(lambda l: l.is_tester):
+            tester = tester_line.product_id
+            products = wol.filtered(lambda l: l.product_id.has_tester and l.product_id.tester_product_id == tester).mapped('product_id')
+            if not tester_ok(products, tester):
+                tester_line.unlink()
+    @api.multi
+    def has_tester(self, product):
+        """Check if this order contains a tester for the given product."""
+        if self.order_line.filtered(lambda l: l.is_tester and l.product_id == product.tester_product_id):
+            return True
+        return False
+    
+    @api.multi
+    def tester_ready(self, product):
+        """Check if we're ready to add the tester for this product."""
+        minimum = product.tester_min
+        quantity = sum(self.order_line.filtered(lambda l: l.product_id == product and not l.is_tester).mapped('product_uom_qty'))
+        return quantity >= minimum
+    
     @api.multi
     def onchange_delivery_id(self, company_id, partner_id, delivery_id, fiscal_position):
         """Get the carrier from the delivery address."""
-        result = super(sale_order, self).onchange_delivery_id(company_id, partner_id, delivery_id, fiscal_position)
+        result = super(SaleOrder, self).onchange_delivery_id(company_id, partner_id, delivery_id, fiscal_position)
         if partner_id:
             dtype = self.env['res.partner'].browse(delivery_id).property_delivery_carrier.id
             if not dtype:
@@ -618,7 +648,7 @@ class sale_order(models.Model):
         return result
 
     @api.multi
-    def _cart_update(self, product_id=None, line_id=None, add_qty=0, set_qty=0, **kwargs):
+    def _cart_update(self, product_id=None, line_id=None, add_qty=0, set_qty=0, tester=False, **kwargs):
         """ Add or set product quantity, add_qty can be negative """
         self.ensure_one()
 
@@ -629,7 +659,14 @@ class sale_order(models.Model):
             raise Warning(_('It is forbidden to modify a sale order which is not in draft status'))
 
         ticket_id = self.env.context.get("event_ticket_id")
-        line = self.order_line.filtered(lambda l: ((line_id == l.id) if line_id else (l.product_id.id == product_id)) and (not ticket_id or l.event_ticket_id.id == ticket_id))
+        # Maybe use website_order_line instead?
+        if tester:
+            line = self.order_line.filtered(lambda l: ((l.product_id.id == product_id)) and l.is_tester)
+        else:
+            line = self.order_line.filtered(
+                lambda l:   ((line_id == l.id) if line_id else (l.product_id.id == product_id)) \
+                            and (not ticket_id or l.event_ticket_id.id == ticket_id) \
+                            and not l.is_tester)
         line = line and line[0]
 
         # Create line if no line with product_id can be located
@@ -651,6 +688,11 @@ class sale_order(models.Model):
             values['product_id'] = product.id
             values['order_id'] = self.id
             values['product_uom_qty'] = set_qty or add_qty
+            if tester:
+                values.update({
+                    'is_tester': True,
+                    'discount': 100,
+                })
             if ticket_id:
                 values['event_id'] = ticket.event_id.id
                 values['event_ticket_id'] = ticket.id
@@ -694,10 +736,34 @@ class sale_order(models.Model):
         self.ensure_one()
         if not self.client_order_ref:
             self.client_order_ref = '%s (%s)' %(self.partner_id.name, self.name)
-        return super(sale_order, self).action_button_confirm()
+        return super(SaleOrder, self).action_button_confirm()
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
+    
+    is_tester = fields.Boolean(string='Tester', help="This line contains a tester product.")
+    
+    @api.multi
+    def tester_html_attributes(self):
+        """Build HTML attributes for the Add / Remove Tester buttons."""
+        res = {
+            'data-tester-min': int(self.product_id.tester_min),
+            'data-tester-id': self.product_id.tester_product_id.id,
+            'data-tester-added': int(self.order_id.has_tester(self.product_id)),
+        }
+        result = { 'buttons': res }
+        # Show/hide add and remove buttons
+        result['add'] = 'add-tester'
+        if res['data-tester-added'] or not self.order_id.tester_ready(self.product_id):
+            result['add'] += ' hidden'
+        result['remove'] = 'remove-tester'
+        if not res['data-tester-added']:
+            result['remove'] += ' hidden'
+        # Convert to string, because in the XML we lose the attributes
+        # when the value evalutes as False (0 in this case)
+        for key, value in res.iteritems():
+            res[key] = '%s' % value
+        return result
     
     def check_product_lang(self):
         for value in self.product_id.attribute_value_ids:
@@ -715,11 +781,6 @@ class SaleOrderLine(models.Model):
         if self.is_delivery or self.is_min_order_fee:
             return False
         return super(SaleOrderLine, self).sale_home_confirm_copy()
-    
-    @api.multi
-    def check_for_tester(self):
-        # TODO: Check if tester already is on order
-        return False
 
 dn_cart_update = {}
 
@@ -881,8 +942,12 @@ class Website(models.Model):
         request.session['chosen_filter_qty'] = self.get_chosen_filter_qty(self.get_form_values())
         if post:
             request.session['form_values']['current_ingredient'] = post.get('current_ingredient')
-            current_ingredient = post.get('current_ingredient', '0')
-            request.session['current_ingredient'] = current_ingredient.isdigit() and int(current_ingredient) or 0
+            try:
+                current_ingredient = post.get('current_ingredient', '0') or '0'
+                current_ingredient = current_ingredient.isdigit() and int(current_ingredient) or 0
+            except:
+                current_ingredient = 0
+            request.session['current_ingredient'] = current_ingredient
             domain = self.get_domain_append(model, post)
         else:
             domain = self.get_domain_append(model, request.session.get('form_values', {}))
@@ -1016,25 +1081,36 @@ class WebsiteSale(website_sale):
 
     @http.route('/webshop_dermanord/add_tester', type='json', auth="user", website=True)
     def add_tester(self, product_id=None, **post):
-        product = request.env['product.product'].sudo().browse('product_id')
+        """Add a tester product to the customers cart."""
+        product = request.env['product.product'].sudo().browse(product_id)
+        order = request.website.sale_get_order()
         # Kontrollera och addera tester
-        return {
-            'product_ids': product.product_templ_id.product_ids._ids, # Lista med de produkter vi adderat tester för
-            'message': _("Hej hopp!"),
-        }
+        res = {}
+        if not (product.has_tester and product.tester_product_id):
+            res['message'] = _(u"This product doesn't have a tester.")
+            return res
+        if not order.tester_ready(product):
+            res['not_ready'] = product.tester_product_id.id
+            res['message'] = _(u"You need to buy at least %s to order a tester.") % product.tester_min
+            return res
+        res['added'] = product.tester_product_id.id
+        if order.has_tester(product):
+            res['message'] = _(u"You have already added a tester for this product.")
+            return res
+        order._cart_update(product_id=product.tester_product_id.id, set_qty=1, tester=True)
+        return res
 
     @http.route('/webshop_dermanord/remove_tester', type='json', auth="user", website=True)
     def remove_tester(self, product_id=None, **post):
-        product = request.env['product.product'].sudo().browse('product_id')
-        # Kontrollera och ta bort tester
-        return {
-            'product_ids': product.product_templ_id.product_ids._ids, # Lista med de produkter vi adderat tester för
-            'message': _("Hej hopp!"),
-        }
-        
-        # ~ return _("You need to buy at least 6 products to get a tester")
-        # ~ return _("One tester has been put in your cart.")
-        
+        """Remove a tester product from the customers cart."""
+        product = request.env['product.product'].sudo().browse(product_id)
+        order = request.website.sale_get_order()
+        if not (product.has_tester and product.tester_product_id):
+            return {'message': _(u"This product doesn't have a tester.")}
+        tester_lines = order.order_line.filtered(lambda l: l.is_tester and l.product_id == product.tester_product_id)
+        if tester_lines:
+            tester_lines.unlink()
+        return {'removed': product.tester_product_id.id}
 
     @http.route('/webshop_dermanord/stock/notify', type='json', auth="user", website=True)
     def stock_notify(self, product_id=None, **post):
@@ -1103,6 +1179,7 @@ class WebsiteSale(website_sale):
 
         shipping_partner_id = False
         if order:
+            order.verify_testers()
             if order.partner_shipping_id.id:
                 shipping_partner_id = order.partner_shipping_id.id
             else:
