@@ -338,7 +338,6 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
             </xpath>
             
             <xpath expr="//div[@id='right_column']" position="attributes">
-				<attribute name="t-if">False</attribute>
 				<attribute name="class">col-lg-3 col-lg-offset-1 col-sm-3 col-md-3 text-muted</attribute>
             </xpath>
             
