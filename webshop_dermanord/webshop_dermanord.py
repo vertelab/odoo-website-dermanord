@@ -392,6 +392,9 @@ class product_pricelist(models.Model):
     code_partner_ids = fields.Many2many(comodel_name='res.partner', inverse_name='pricelist_id', string='Customers', help='Customers who has used this offer code')
     code_unlimited = fields.Boolean(string='Unlimited use', default=False, help='Check if the code should be reusable for customers')
 
+    _sql_constraints = [
+         ('unique_code', 'unique (code)','Code must be unique!')]
+
     # ~ @api.multi
     # ~ def price_get(self, prod_id, qty, partner=None):
         # ~ return super(product_pricelist, self).price_get(prod_id, qty, partner)
