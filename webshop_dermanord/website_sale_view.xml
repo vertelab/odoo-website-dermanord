@@ -279,6 +279,23 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
             </t>
         </template>
 
+        <template id="coupon_payment_dermanord" name="Payment Dermanord" inherit_id="website_sale.payment">
+            <xpath expr="//div[@id='right_column']" position="inside">
+                <h4>Coupon Code</h4>
+                <p>
+                    Have a coupon code? Fill in this field and apply.
+                </p>
+                <form t-if="website_sale_order and website_sale_order.website_order_line" action="/shop/pricelist" method="post" class="mb32">
+                    <div class="input-group">
+                        <input name="promo" class='form-control' type="text" placeholder="code..." t-att-value="website_sale_order.pricelist_id.code or ''"/>
+                        <div class="input-group-btn">
+                            <a class="btn btn-default a-submit">Apply</a>
+                        </div>
+                    </div>
+                </form>
+            </xpath>
+        </template>
+
         <template id="cart" name="Cart Dermanord" inherit_id="website_sale.cart">
             <!-- Navigation bar -->
             <xpath expr="//ul[@class='wizard pull-right']/li[2]" position="replace">

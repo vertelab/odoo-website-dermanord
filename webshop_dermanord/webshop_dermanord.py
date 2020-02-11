@@ -1079,6 +1079,12 @@ class WebsiteSale(website_sale):
     FACETS = {}  # Static variable
     dn_cart_lock = Lock()
 
+    @http.route(['/shop/pricelist'], type='http', auth="public", website=True)
+    def pricelist(self, promo, **post):
+        cr, uid, context = request.cr, request.uid, request.context
+        request.website.sale_get_order(code=promo, context=context)
+        return request.redirect(request.httprequest.referrer or '/shop/cart')
+
     @http.route('/webshop_dermanord/add_tester', type='json', auth="user", website=True)
     def add_tester(self, product_id=None, **post):
         """Add a tester product to the customers cart."""
