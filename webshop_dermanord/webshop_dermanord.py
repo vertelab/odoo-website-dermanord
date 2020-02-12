@@ -739,6 +739,29 @@ class SaleOrder(models.Model):
         self.ensure_one()
         if not self.client_order_ref:
             self.client_order_ref = '%s (%s)' %(self.partner_id.name, self.name)
+
+        # If we are using a coupon code
+        if self.pricelist_id.code:
+            coupon_anal_account = self.env.ref('webshop_dermanord.account_coupons')
+            anal_journal_sale = self.env.ref('account.cose_journal_sale')
+
+            for line in self.website_order_line:
+                vals = {
+                    'account_id': coupon_anal_account.id,
+                    'name': "%s - %s" % (line.product_id.name, self.pricelist_id.code),
+                    'journal_id': anal_journal_sale.id,
+                    'product_id': line.product_id.id,
+                    'unit_amount': line.product_uom_qty,
+                    'amount': line.price_unit * line.product_uom_qty,
+                    'company_id': self.company_id.id,
+                    'general_account_id': self.product_id.property_account_income.id if self.product_id.property_account_income.id else self.product_id.categ_id.property_account_income_categ.id,
+                    'date': self.date_order,
+                    'user_id': self.user_id.id,
+                    'ref': self.name,
+                }
+                # create analytic transactions
+                coupon_anal_line = self.env['account.analytic.line'].create(vals)
+
         return super(SaleOrder, self).action_button_confirm()
 
 class SaleOrderLine(models.Model):
@@ -1012,6 +1035,10 @@ class Website(models.Model):
                     # TODO: add removal of coupon record in case partner changes from this code to other?
                     if not code_pricelist.code_unlimited:
                         code_pricelist.code_partner_ids += env.user.partner_id
+                    if sale_order.note:
+                        sale_order.note += "\n Coupon used: %s \n" % code_pricelist.code
+                    else:
+                        sale_order.note = "Coupon used: %s" % code_pricelist.code
                     update_pricelist = True
 
             pricelist_id = request.session.get('sale_order_code_pricelist_id') or env.user.partner_id.property_product_pricelist.id
