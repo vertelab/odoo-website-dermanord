@@ -3,14 +3,7 @@
   <data>
 
     <template id="checkout_dermanord" name="Checkout Dermanord" inherit_id="website_sale.checkout">
-      <!-- Move t-set for website_sale_order to the start of the view -->
-<!--
-      <xpath expr="//t[@t-set='website_sale_order']" position="replace"/>
-      <xpath expr="//t[@t-set='additional_title']" position="after">
-        <t t-set="website_sale_order" t-value="website.sale_get_order()"/>
-      </xpath>
--->
-
+    
       <xpath expr="//select[@name='shipping_id']/option[@value='0']" position="replace"/>
       
       <xpath expr="//div[@class='js_shipping row mb16']" position="after">

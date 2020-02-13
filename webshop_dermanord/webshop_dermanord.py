@@ -604,7 +604,6 @@ class ResPartner(models.Model):
 
         return HTMLSafe(html)
 
-
 class SaleOrder(models.Model):
     _inherit='sale.order'
     
@@ -651,10 +650,10 @@ class SaleOrder(models.Model):
         return result
 
     @api.multi
-    def _cart_update(self, product_id=None, line_id=None, add_qty=0, set_qty=0, tester=False, **kwargs):
+    def _cart_update(self, product_id=None, line_id=None, add_qty=0, set_qty=0, **kwargs):
         """ Add or set product quantity, add_qty can be negative """
         self.ensure_one()
-
+        tester = kwargs.get('tester')
         product = 0
         quantity = 0
         if self.state != 'draft':
@@ -695,6 +694,7 @@ class SaleOrder(models.Model):
                 values.update({
                     'is_tester': True,
                     'discount': 100,
+                    'name': '%s (TESTER)' % values['name']
                 })
             if ticket_id:
                 values['event_id'] = ticket.event_id.id
@@ -768,6 +768,16 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
     
     is_tester = fields.Boolean(string='Tester', help="This line contains a tester product.")
+    
+    @api.multi
+    def get_tester_line(self):
+        """Get the tester line that belongs to this order line."""
+        if not self.product_id and self.product_id.has_tester and self.product_id.tester_product_id:
+            return
+        tester = self.product_id.tester_product_id
+        line = self.order_id.order_line.filtered(lambda l: l.is_tester and l.product_id == tester)
+        if line:
+            return line[0]
     
     @api.multi
     def tester_html_attributes(self):
