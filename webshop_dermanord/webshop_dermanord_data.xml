@@ -293,4 +293,10 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
         
     </data>
 
+    <data>
+        <record id="account_coupons" model="account.analytic.account">
+            <field name="name">Coupons</field>
+        </record>
+    </data>
+
 </openerp>

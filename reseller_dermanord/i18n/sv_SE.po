@@ -1,0 +1,400 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* reseller_dermanord
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-10 10:46+0000\n"
+"PO-Revision-Date: 2020-02-10 10:46+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.portal_my_salon
+msgid "&nbsp;"
+msgstr "&nbsp;"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "*To make changes, contact Maria Åkerberg below"
+msgstr "*För ändring kontakta Maria Åkerberg nedan"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Address"
+msgstr "Adress"
+
+#. module: reseller_dermanord
+#: field:res.partner,always_searchable:0
+msgid "Always searchable"
+msgstr "Alltid sökbar på webbsidan"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Använd sökfältet nedan för att hitta en återförsäljare i din närhet. Klicka på återförsäljaren för att se öppettider, besöksadress och annan information om salongen."
+msgstr "Använd sökfältet nedan för att hitta en återförsäljare i din närhet. Klicka på återförsäljaren för att se öppettider, besöksadress och annan information om salongen."
+
+#. module: reseller_dermanord
+#: view:res.partner:reseller_dermanord.view_partner_form
+#: field:res.partner,brand_name:0
+#: view:website:website_portal_sale_1028.portal_my_salon
+msgid "Brand Name"
+msgstr "Varumärke"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.portal_my_salon
+msgid "Brand Name..."
+msgstr "Varumärke..."
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "City"
+msgstr "Stad"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Closed"
+msgstr "Stängt"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Closing Time"
+msgstr "Stänger"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.contact_form
+#: view:website:website_portal_sale_1028.portal_my_salon
+msgid "Competences"
+msgstr "Kompetenser"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Contact"
+msgstr "Kontakt"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Country"
+msgstr "Land<br>"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.contact_form
+msgid "Courses"
+msgstr "Kurser"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Du hittar MARIA ÅKERBERG hos välutbildade hud- och spaterapeuter och massörer, som både säljer våra produkter och använder dem i sina professionella behandlingar."
+msgstr "Du hittar MARIA ÅKERBERG hos välutbildade hud- och spaterapeuter och massörer, som både säljer våra produkter och använder dem i sina professionella behandlingar."
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Email"
+msgstr "E-post"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Email:"
+msgstr "E-post:"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Exceptions"
+msgstr "Undantag"
+
+#. module: reseller_dermanord
+#: field:res.partner,social_facebook:0
+msgid "Facebook link"
+msgstr "Facebook link"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Friday:"
+msgstr "Fredag:"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Hitta en återförsäljare nära dig"
+msgstr "Hitta en återförsäljare nära dig"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "I sökfältet kan du ange namn, stad och land."
+msgstr "I sökfältet kan du ange namn, stad och land."
+
+#. module: reseller_dermanord
+#: code:addons/reseller_dermanord/main.py:610
+#, python-format
+msgid "If the street is not filled in, your salon will not appear in reseller searching."
+msgstr "Om gatan inte är ifylld visas din salong inte i återförsäljaresökning."
+
+#. module: reseller_dermanord
+#: field:website.config.settings,find_reseller_top_img:0
+msgid "Image for \"Find Reseller Page\""
+msgstr "Image for \"Find Reseller Page\""
+
+#. module: reseller_dermanord
+#: field:res.partner,social_instagram:0
+msgid "Instagram link"
+msgstr "Instagram link"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Lunch End"
+msgstr "Stämmer"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Lunch Start"
+msgstr "Lunchstart"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Läs mer om hur vi samarbetar och anmäl ditt intresse här."
+msgstr "Läs mer om hur vi samarbetar och anmäl ditt intresse här."
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Monday:"
+msgstr "Måndag:"
+
+#. module: reseller_dermanord
+#: code:addons/reseller_dermanord/main.py:611
+#, python-format
+msgid "Notice: This image will be cut to 1366x450 px."
+msgstr "OBS. Den här bilden kommer att skäras till 1366x450 px."
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Odoo CMS - a big picture"
+msgstr "Odoo CMS - a big picture"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Opening Hours"
+msgstr "Öppettider"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Opening Time"
+msgstr "Öppnar"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Opening hours"
+msgstr "Öppettider"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Our Product Categories"
+msgstr "Vårt produktsortiment"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Our Webshop"
+msgstr "Vår webbutik"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Our competences"
+msgstr "Våra kompetenser"
+
+#. module: reseller_dermanord
+#: model:ir.model,name:reseller_dermanord.model_res_partner
+msgid "Partner"
+msgstr "Företag"
+
+#. module: reseller_dermanord
+#: code:addons/reseller_dermanord/main.py:115
+#, python-format
+msgid "Partner show reseller in websearch updated"
+msgstr "Partner show reseller in websearch updated"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Phone"
+msgstr "Telefone"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.portal_my_salon
+msgid "Product Access"
+msgstr "Produktbehörighet"
+
+#. module: reseller_dermanord
+#: field:res.partner,webshop_category_ids:0
+#: view:website:website_portal_sale_1028.portal_my_salon
+msgid "Product Categories"
+msgstr "Produktkategorier"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Read More"
+msgstr "Läs mer"
+
+#. module: reseller_dermanord
+#: model:res.partner.category,name:reseller_dermanord.reseller_tag
+#: view:website.config.settings:reseller_dermanord.view_website_config_settings
+msgid "Reseller"
+msgstr "Återförsäljare"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.portal_my_salon
+msgid "Reseller Description"
+msgstr "ÅFbeskrivning"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.portal_my_salon
+msgid "Reseller Description..."
+msgstr "ÅFbeskrivning..."
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Saturday:"
+msgstr "Lördag:"
+
+#. module: reseller_dermanord
+#: code:addons/reseller_dermanord/main.py:510
+#, python-format
+msgid "Search..."
+msgstr "Search..."
+
+#. module: reseller_dermanord
+#: model:ir.actions.server,name:reseller_dermanord.searchable_reseller
+msgid "Set Reseller"
+msgstr "Sätt Återförsäljare"
+
+#. module: reseller_dermanord
+#: field:res.partner,is_reseller:0
+msgid "Show Reseller in websearch"
+msgstr "Visa ÅF i webbsökningen"
+
+#. module: reseller_dermanord
+#: view:website.config.settings:reseller_dermanord.view_website_config_settings
+msgid "Social Media"
+msgstr "Sociala medier"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Street"
+msgstr "Gata"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Street row 2"
+msgstr "Gata rad 2"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Sunday:"
+msgstr "Söndag:"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Telephone:"
+msgstr "Telefon:"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "This field is used to print dates when the salon is closed and that are exceptions from the opening hours stated above. If this field isn't filled out it won't be shown in the salon's opening hours."
+msgstr "Detta fält används för att skriva ut dagar då salongen inte har öppet och som är undantag från öppettiderna ovan. Om detta fält är ifyllt kommer det att visas i anslutning till salongens öppettider."
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Thursday:"
+msgstr "Torsdag:"
+
+#. module: reseller_dermanord
+#: view:res.partner:reseller_dermanord.view_partner_form
+#: view:website:website_portal_sale_1028.portal_my_salon
+msgid "Top Image"
+msgstr "Toppbild"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Tuesday:"
+msgstr "Tisdag:"
+
+#. module: reseller_dermanord
+#: field:res.partner,social_twitter:0
+msgid "Twitter link"
+msgstr "Twitter link"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Vill du bli återförsäljare?"
+msgstr "Vill du bli återförsäljare?"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.resellers
+msgid "Vill du också använda och sälja MARIA ÅKERBERG?"
+msgstr "Vill du också använda och sälja MARIA ÅKERBERG?"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Visit Address"
+msgstr "Besöksadress"
+
+#. module: reseller_dermanord
+#: view:res.partner:reseller_dermanord.view_res_partner_filter_reseller_dermanord
+msgid "Webshop Category"
+msgstr "Webshop Category"
+
+#. module: reseller_dermanord
+#: model:ir.model,name:reseller_dermanord.model_website
+msgid "Website"
+msgstr "Website"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Website:"
+msgstr "Webbplats:"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Wednesday:"
+msgstr "Onsdag:"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Weekday"
+msgstr "Veckodag"
+
+#. module: reseller_dermanord
+#: view:website:reseller_dermanord.reseller
+msgid "Welcome"
+msgstr "Välkommen"
+
+#. module: reseller_dermanord
+#: help:res.partner,always_searchable:0
+msgid "When checked. Reseller is always searchable."
+msgstr "När den är i kyssade, ÅF är alltid sökbar på webbsidan."
+
+#. module: reseller_dermanord
+#: field:res.partner,social_youtube:0
+msgid "Youtube link"
+msgstr "Youtube link"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.company_info_form
+msgid "Zip"
+msgstr "Postnummer"
+
+#. module: reseller_dermanord
+#: view:website:website_portal_sale_1028.portal_my_salon
+msgid "not home_user.partner_id.commercial_partner_id.is_reseller"
+msgstr "not home_user.partner_id.commercial_partner_id.is_reseller"
+
+#. module: reseller_dermanord
+#: code:addons/reseller_dermanord/main.py:688
+#: code:addons/reseller_dermanord/main.py:701
+#, python-format
+msgid "visit"
+msgstr "besökare"
+

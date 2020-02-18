@@ -121,7 +121,7 @@ class WebsiteSale(WebsiteSale):
 class WebsiteSaleHome(website_sale_home):
 
     # flush memcached top_image
-    @http.route(['/home/<model("res.users"):home_user>/info_update'], type='http', auth="user", website=True)
+    @http.route(['/my/salon/<model("res.users"):home_user>/info_update'], type='http', auth="user", website=True)
     def info_update(self, home_user=None, **post):
         res = super(WebsiteSaleHome, self).info_update(home_user=home_user, **post)
         if home_user and post:
@@ -129,7 +129,7 @@ class WebsiteSaleHome(website_sale_home):
         return res
 
     # flush memcached contact image
-    @http.route(['/home/<model("res.users"):home_user>/contact/new', '/home/<model("res.users"):home_user>/contact/<model("res.partner"):partner>'], type='http', auth='user', website=True)
+    @http.route(['/my/salon/<model("res.users"):home_user>/contact/new', '/my/salon/<model("res.users"):home_user>/contact/<model("res.partner"):partner>'], type='http', auth='user', website=True)
     def contact_page(self, home_user=None, partner=None, **post):
         res = super(WebsiteSaleHome, self).contact_page(home_user=home_user, partner=partner, **post)
         if partner and post:
