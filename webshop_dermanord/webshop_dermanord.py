@@ -1068,6 +1068,8 @@ class Website(models.Model):
                 post['facet_44_329'] = u'329'
             elif preset == 'set':
                 post['facet_44_331'] = u'331'
+            elif preset =='spec':
+                post['facet_44_330'] = u'330'
         if category:
             post['category_%s' % category.id] = category.id
         if require_cat_preset and not (category or preset):
