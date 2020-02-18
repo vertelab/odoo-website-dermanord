@@ -31,7 +31,7 @@ import math
 from datetime import date
 from dateutil.relativedelta import relativedelta
 #from openerp.addons.website_sale_home.website_sale import website_sale_home
-from openerp.addons.website_portal_1028.controllers.main import website_account as website_sale_home
+from openerp.addons.website_portal_sale_1028.controllers.main import website_account as website_sale_home
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -624,16 +624,12 @@ class website_sale_home(website_sale_home):
         res.update({'visit': company.child_ids.filtered(lambda c: c.type == 'visit')[0] if company.child_ids.filtered(lambda c: c.type == 'visit') else None})
         return res
 
-    @http.route(['/home/<model("res.users"):home_user>/info_update',], type='http', auth="user", website=True)
+    @http.route(['/my/salon/<model("res.users"):home_user>/info_update'], type='http', auth="user", website=True)
     def info_update(self, home_user=None, **post):
         # update data for main partner
         self.validate_user(home_user)
         if home_user == request.env.user:
             home_user = home_user.sudo()
-        #~ home_user.email = post.get('email')
-        #~ home_user.login = post.get('login')
-        if post.get('confirm_password'):
-            home_user.password = post.get('password')
         if home_user.partner_id.commercial_partner_id.is_reseller:
             commercial_partner = home_user.partner_id.commercial_partner_id
             commercial_partner.brand_name = post.get('brand_name')
@@ -647,7 +643,7 @@ class website_sale_home(website_sale_home):
         self.update_info(home_user, post)
         # ~ SOCIAL MEDIA
         self.update_social_media(home_user, post)
-        return werkzeug.utils.redirect("/home/%s" % home_user.id)
+        return werkzeug.utils.redirect("/my/salon/")
 
     def update_opening_weekday(self, partner, weekday, post):
         day = partner.opening_hours_ids.filtered(lambda o: o.dayofweek == weekday)
@@ -729,8 +725,8 @@ class website(models.Model):
     def get_float_time(self, time):
         return ("%.2f" %(math.floor(float(time)) + (float(time)%1)*0.6)) if time else 0.0
 
-    def sale_home_get_data(self, home_user, post):
-        values = super(website, self).sale_home_get_data(home_user, post)
+    def portal_sale_get_data(self, home_user, post):
+        values = super(website, self).portal_sale_get_data(home_user, post)
         values['webshop_category_ids'] = [(category['id'], category['name']) for category in request.env['product.public.category'].search_read([('website_published', '=', True), ('parent_id', '=', False), ('id', 'not in', [1])], ['name'])]
         # id 1 är Ovrigt
         return values

@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
     //~ if ($("#reseller_description_div").height() > 300) {
         //~ $("#reseller_description_div").height(300);
         //~ $("#reseller_description_div").find(".read-more").removeClass("hidden");
