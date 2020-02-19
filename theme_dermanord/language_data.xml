@@ -2,7 +2,7 @@
 <openerp>
     <data noupdate="1">
 
-        <record id="master_language" model="res.lang">
+<!--         <record id="master_language" model="res.lang">
             <field name="name">Master</field>
             <field name="code">ma_ST</field>
             <field name="iso_code">ms</field>
@@ -14,7 +14,7 @@
             <field name="thousands_sep">.</field>
             <field name="active" eval="True"/>
             <field name="translatable" eval="True"/>
-        </record>
+        </record> -->
 
     </data>
 </openerp>
