@@ -1158,6 +1158,16 @@
                         <t t-raw="request.env['product.public.category'].get_dn_category_desktop_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True), ('group_ids', 'in', request.env.user.commercial_partner_id.access_group_ids.mapped('id'))]), mobile=mobile)" />
                     </div>
                 </div>
+
+                <div class="btn-group filter">
+                    <button class="mt32 dn_btn dn_success dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
+                    <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
+                        <i class="fa fa-trash-o" />
+                        Clear All
+                    </button>
+                    <t t-call="webshop_dermanord.dn_website_group_info" />
+                </div>
+
                 <div class="panel-group">
                     <div class="panel panel-default">
                         <div class="panel-heading" style="border: 1px solid #ddd; border-bottom: none; background-color: #fff;">
@@ -1282,6 +1292,7 @@
         </template>
         <template id="webshop_dermanord_desktop_product_filter_form" name="Webshop Dermanord Desktop Product Filter Form">
             <form action="/webshop" method="post">
+            <div id="filter_view">
                 <div class="col-md-7 col-sm-7 col-xs-7" style="padding: 0px;">
                     <select id="webshop_dermanord_desktop_sort_selector" name="order" class="form-control selectpicker dropdown dn_selection_dropdown" onchange="this.form.submit();">
                         <option value="name asc, default_code asc" t-att="{'selected': '1'} if request.session.get('current_order') == 'name asc, default_code asc' else {}">Name Ascending</option>
@@ -1294,13 +1305,6 @@
                 </div>
                 <input class="hidden" name="post_form" value="ok" />
                 <t t-call="webshop_dermanord.webshop_dermanord_view_switcher" />
-                <div class="btn-group">
-                    <button class="mt32 dn_btn dn_success dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
-                    <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
-                        <i class="fa fa-trash-o" />
-                        Clear All
-                    </button>
-                    <t t-call="webshop_dermanord.dn_website_group_info" />
                 </div>
                 <div class="container" style="padding: 0px;">
                     <t t-set="first_facet" t-value="0" />
@@ -1309,6 +1313,7 @@
                     </t>
                 </div>
                 <input type="hidden" name="order" t-att-value="request.session.get('form_values', {}).get('order') or 'name desc'" />
+            
             </form>
         </template>
         <!--

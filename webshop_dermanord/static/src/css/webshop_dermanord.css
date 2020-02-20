@@ -533,6 +533,14 @@ select.dn_selection_dropdown + i.fa {
     left: 17px;
 }
 
+.btn-group.filter {
+    margin-bottom: 20px;
+}
+
+#filter_view {
+    padding-bottom: 50px;
+}
+
 #desktop_product_navigator_filter .dn-tooltip > i, #mobile_product_navigator_filter .dn-tooltip > i, #filter_btn_group .dn-tooltip > i {
     font-size: 1.5em;
 }

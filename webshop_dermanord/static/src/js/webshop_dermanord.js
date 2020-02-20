@@ -198,19 +198,23 @@ $(function(){
     });
 
     $("input.category_checkbox").change(function() {
+        var $input = $(this);
+        webshop_restore_filter();
+        $input.attr("checked", true);
         category_checkbox_onchange($(this));
     });
 
     $(".onclick_category").click(function() {
-        var $input = $(this).prev();
-        $.each($input.closest("div.category_filter").find("input[class='category_checkbox']"), function() {
-            $(this).attr("checked", false);
-        });
-        $input.attr("checked", true);
-        uncheck_other_categories($input);
-        category_checkbox_onchange($input);
-        check_in_check_out_parent();
-        $input.closest("form").submit();
+        
+        // var $input = $(this).prev();
+        // $.each($input.closest("div.category_filter").find("input[class='category_checkbox']"), function() {
+        //     $(this).attr("checked", false);
+        // });
+        // $input.attr("checked", true);
+        // uncheck_other_categories($input);
+        // category_checkbox_onchange($input);
+        // check_in_check_out_parent();
+        // $input.closest("form").submit();
     });
     
      $(".stock_notify_button").click(function() {
@@ -282,29 +286,29 @@ $(function(){
         });
     });
 
-    function category_heading_parents() {
-        $.each($("div.panel-heading.category_heading_parents"), function() {
-            var $self = $(this);
-            var $h4 = $self.find("h4.panel-title.parent_category_panel_title");
-            var input_checked_count = 0;
-            if ($self.find("input.category_checkbox").first().is(":checked")) {
-                input_checked_count += 1;
-            }
-            var div_categories_id = $self.find("input.category_checkbox").data("category");
-            var $submenu_div = $self.closest("div.panel.panel-default").find("div#" + div_categories_id)
-            var $all_child_checkbox = $submenu_div.find("input.category_checkbox");
-            $.each($all_child_checkbox, function() {
-                if ($(this).is(":checked")) {
-                   input_checked_count += 1;
-                   $(this).closest("div.panel-collapse").addClass("in");
-                }
-            });
-            if (input_checked_count != 0) {
-                $h4.find("span").append('<span class="filter_match">' + input_checked_count + '</span>');
-                $submenu_div.addClass("in");
-            }
-        });
-    }
+    // function category_heading_parents() {
+    //     $.each($("div.panel-heading.category_heading_parents"), function() {
+    //         var $self = $(this);
+    //         var $h4 = $self.find("h4.panel-title.parent_category_panel_title");
+    //         var input_checked_count = 0;
+    //         if ($self.find("input.category_checkbox").first().is(":checked")) {
+    //             input_checked_count += 1;
+    //         }
+    //         var div_categories_id = $self.find("input.category_checkbox").data("category");
+    //         var $submenu_div = $self.closest("div.panel.panel-default").find("div#" + div_categories_id)
+    //         var $all_child_checkbox = $submenu_div.find("input.category_checkbox");
+    //         $.each($all_child_checkbox, function() {
+    //             if ($(this).is(":checked")) {
+    //                input_checked_count += 1;
+    //                $(this).closest("div.panel-collapse").addClass("in");
+    //             }
+    //         });
+    //         if (input_checked_count != 0) {
+    //             $h4.find("span").append('<span class="filter_match">' + input_checked_count + '</span>');
+    //             $submenu_div.addClass("in");
+    //         }
+    //     });
+    // }
 
     function facet_heading_parents() {
         $.each($("div.panel-heading.facet_panel_heading"), function() {
