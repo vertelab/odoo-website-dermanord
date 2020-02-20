@@ -1097,10 +1097,10 @@ class Website(models.Model):
                     # TODO: add removal of coupon record in case partner changes from this code to other?
                     if not code_pricelist.code_unlimited:
                         code_pricelist.code_partner_ids += env.user.partner_id
-                    if sale_order.note:
-                        sale_order.note += "\n Coupon used: %s \n" % code_pricelist.code
-                    else:
-                        sale_order.note = "Coupon used: %s" % code_pricelist.code
+                    # if sale_order.note:
+                    #     sale_order.note += "\n Coupon used: %s \n" % code_pricelist.code
+                    # else:
+                    #     sale_order.note = "Coupon used: %s" % code_pricelist.code
                     update_pricelist = True
 
             pricelist_id = request.session.get('sale_order_code_pricelist_id') or env.user.partner_id.property_product_pricelist.id
