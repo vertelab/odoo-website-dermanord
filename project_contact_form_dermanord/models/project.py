@@ -35,3 +35,7 @@ class Project_task(models.Model):
 	contact_name = fields.Char(string="Contact name")
 	email_from = fields.Char(string="Contact email")
 	contact_phone = fields.Char(string="Contact phone")
+
+#message_follower_ids
+#res.partner kolla efter emails, skapa användare som res.partner om den ej existerar
+#lägga till användaren som follower på aktiviteten 
