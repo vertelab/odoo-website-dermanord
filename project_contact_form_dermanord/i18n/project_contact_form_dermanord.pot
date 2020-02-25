@@ -1,0 +1,53 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* project_contact_form_dermanord
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-25 10:02+0000\n"
+"PO-Revision-Date: 2020-02-25 10:02+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: project_contact_form_dermanord
+#: view:project.project:project_contact_form_dermanord.edit_project
+#: field:project.project,use_contact_form:0
+msgid "Contact Form"
+msgstr ""
+
+#. module: project_contact_form_dermanord
+#: field:project.project,contact_form_description:0
+msgid "Contact Form Description"
+msgstr ""
+
+#. module: project_contact_form_dermanord
+#: field:project.task,email_from:0
+msgid "Contact email"
+msgstr ""
+
+#. module: project_contact_form_dermanord
+#: field:project.task,contact_name:0
+msgid "Contact name"
+msgstr ""
+
+#. module: project_contact_form_dermanord
+#: field:project.task,contact_phone:0
+msgid "Contact phone"
+msgstr ""
+
+#. module: project_contact_form_dermanord
+#: model:ir.model,name:project_contact_form_dermanord.model_project_project
+msgid "Project"
+msgstr ""
+
+#. module: project_contact_form_dermanord
+#: model:ir.model,name:project_contact_form_dermanord.model_project_task
+msgid "Tasks"
+msgstr ""
+

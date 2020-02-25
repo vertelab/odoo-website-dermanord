@@ -75,8 +75,16 @@ class ContactUs(http.Controller):
             'auto_delete': True,
             'email_to': email_to,
         })
-        mail.send()
-
+        # ~ mail.send()
+        request.env[project.alias_model].create({
+        'project_id': project.id,
+        'name': post.get('name'), 
+        'contact_name': post.get('contact_name'), 
+        'contact_phone': post.get('phone'), 
+        'email_from': post.get('email_from'), 
+        'description': post.get('description')
+        })
+        
         values = {}
         return request.website.render("theme_dermanord.contactus_response", values)
 
