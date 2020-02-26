@@ -233,7 +233,6 @@ $(function(){
     function uncheck_other_categories($e) {
         var $self = $e;
         var categ_id = $self.data("category");
-        console.log("DAER!")
         if (categ_id != "") {
             $.each($self.closest("div.panel").find("div#category_checkbox input[type='checkbox']"), function() {
                 $(this).attr("checked", false);
@@ -380,7 +379,7 @@ $(function(){
         }
     }
 
-    category_heading_parents();
+    // category_heading_parents();
     facet_heading_parents();
     activate_facet();
     mobile_filter_count();
