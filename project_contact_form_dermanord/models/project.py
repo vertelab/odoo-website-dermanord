@@ -29,12 +29,6 @@ class Project_project(models.Model):
     use_contact_form = fields.Boolean(string="Contact Form")
     contact_form_description = fields.Html(string="Contact Form Description", translate=True)
     
-class Project_task(models.Model):
-	_inherit = 'project.task'
-	
-	contact_name = fields.Char(string="Contact name")
-	email_from = fields.Char(string="Contact email")
-	contact_phone = fields.Char(string="Contact phone")
 
 #message_follower_ids
 #res.partner kolla efter emails, skapa användare som res.partner om den ej existerar

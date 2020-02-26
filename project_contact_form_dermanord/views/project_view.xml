@@ -9,19 +9,6 @@
                 <script type="text/javascript" src="/project_contact_form_dermanord/static/src/js/project_contact_form.js" />
             </xpath>
         </template>
-		
-        <record id="view_task_form2_inherited" model="ir.ui.view">
-            <field name="name">project.task.contact_form_dermanord.form</field>
-            <field name="model">project.task</field>
-            <field name="inherit_id" ref="project.view_task_form2" />
-            <field name="arch" type="xml">
-				<field name="project_id" position="before">
-					<field name="contact_name" attrs="{'invisible': [('contact_name', '=', False)]}"/>
-					<field name="contact_phone" attrs="{'invisible': [('contact_phone', '=', False)]}"/>
-					<field name="email_from" attrs="{'invisible': [('email_from', '=', False)]}"/>
-				</field>
-            </field>
-        </record>
         
         <record id="edit_project" model="ir.ui.view">
             <field name="name">project.project.form.customer.form</field>
