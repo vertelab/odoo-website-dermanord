@@ -29,11 +29,7 @@ from openerp.tools.translate import _
 
 import logging
 _logger = logging.getLogger(__name__)
-_logger = logging.getLogger(__name__)
-_logger = logging.getLogger(__name__)
-_logger = logging.getLogger(__name__)
-_logger = logging.getLogger(__name__)
-_logger = logging.getLogger(__name__)
+
 
 class ContactUs(http.Controller):
 
@@ -45,38 +41,16 @@ class ContactUs(http.Controller):
         project_id = int(post.get('case'))
         _logger.warn('Project_id: %s post: %s' %(project_id, post))
         project = request.env['project.project'].sudo().browse(project_id)
-        email_to = 'support@dermanord.se'
-        if project.alias_id and project.alias_id.alias_name and project.alias_id.alias_domain:
-            email_to = '%s@%s' % (project.alias_id.alias_name, project.alias_id.alias_domain)
-        """ if ((post['case']) == 'Web support'):
-            mail = "support@dermanord.se"
-        elif ((post['case']) == 'Orders'):
-            mail = "sales@dermanord.se"
-        elif ((post['case']) == 'Become a reseller'):
-            mail = "support@dermanord.se"
-        elif((post['case']) == 'Finance'):
-            mail = "invoice@dermanord.se"
-        elif((post['case']) == 'Career'):
-            mail = "job@dermanord.se"
-        elif((post['case']) == 'Press'):
-            mail = "press@dermanord.se"
-        elif((post['case']) == 'Complaints'):
-            mail = "claims@dermanord.se"
-        elif((post['case']) == 'Hints and advices'):
-            mail = "support@dermanord.se"
-        elif((post['case']) == 'Miscellaneous'):
-            mail = "info@dermanord.se" """
 
-        mail = request.env['mail.mail'].sudo().create({
-            'subject': post['name'],
-            'body_html':    u'Kontaktperson: %s\nTelefon: %s\nE-post: %s\nFråga: %s' % (post['contact_name'], post['phone'], post['email_from'], post['description']),
-            'email_from': post['email_from'],
-            'type': 'email',
-            'auto_delete': True,
-            'email_to': email_to,
+        request.env[project.alias_model].create({
+            'project_id': project.id,
+            'name': post.get('name'), 
+            'contact_name': post.get('contact_name'), 
+            'contact_phone': post.get('phone'), 
+            'email_from': post.get('email_from'), 
+            'description': post.get('description')
         })
-        mail.send()
-
+        
         values = {}
         return request.website.render("theme_dermanord.contactus_response", values)
 

@@ -73,7 +73,7 @@ class PaymentTransaction(models.Model):
                         msg = []
                         warnings = []
                         if not order.minimum_order_get_allowed():
-							msg.append(u"Uppfyller ej lägsta värde på ordern")
+                            msg.append(u"Uppfyller ej lägsta värde på ordern")
                         if order.payment_term == prepay:
                             msg.append(u"Betalningsvillkor är %s." % prepay.name)
                         if order.section_id != sale_team:
