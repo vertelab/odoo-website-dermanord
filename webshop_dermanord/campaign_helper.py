@@ -33,6 +33,13 @@ class crm_tracking_campaign_helper(models.Model):
     campaign_id         = fields.Many2one(comodel_name='crm.tracking.campaign', on_delete='cascade')
     campaign_phase_id   = fields.Many2one(comodel_name='crm.tracking.phase', on_delete='cascade')
     for_reseller        = fields.Boolean(related='campaign_phase_id.reseller_pricelist')
+    salon               = fields.Boolean(string='Salon', compute='compute_salon', store=True)
+    
+    @api.one
+    @api.depends('campaign_id.phase_ids.reseller_pricelist')
+    def compute_salon(self):
+        # Salon offers don't have a consumer phase
+        self.salon = not self.campaign_id.phase_ids.filtered(lambda p: not p.reseller_pricelist)
 
     @api.model
     def cron_daily_update(self):
