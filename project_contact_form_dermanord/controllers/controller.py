@@ -38,17 +38,30 @@ class ContactUs(http.Controller):
         subject = ""
         body = ""
         mail = ""
+
+        # To make sure the site does not crash while trying to editing theme_dermanord.contactus_response
+        if not post.get('case'):
+            values = {}
+            return request.website.render("theme_dermanord.contactus_response", values)
+
         project_id = int(post.get('case'))
         _logger.warn('Project_id: %s post: %s' %(project_id, post))
         project = request.env['project.project'].sudo().browse(project_id)
 
+        partner = request.env['res.partner'].search([('email', '=', post.get('email_from'))])
+        if not partner:
+            partner = request.env['res.partner'].create({
+                'name':post.get('contact_name'),
+                'email':post.get('email_from'),
+                'phone':post.get('phone')
+                })
+
         request.env[project.alias_model].create({
             'project_id': project.id,
+            'partner_id':partner.id,
             'name': post.get('name'), 
-            'contact_name': post.get('contact_name'), 
-            'contact_phone': post.get('phone'), 
-            'email_from': post.get('email_from'), 
-            'description': post.get('description')
+            'description': post.get('description'),
+            'message_follower_ids':[(4,partner.id)]
         })
         
         values = {}

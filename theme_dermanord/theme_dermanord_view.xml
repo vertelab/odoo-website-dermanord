@@ -28,7 +28,8 @@
 
     <template id="contactus_response" name="Dermanord Contact Us Response">
       <t t-call="website.layout">
-        <div class="oe_structure"></div>
+        <div class="oe_structure">
+        </div>
       </t>
     </template>
 
