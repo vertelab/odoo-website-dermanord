@@ -36,23 +36,34 @@ dermanord_resize_for_menu = function() {
         var max_li_width = $("#top_menu").width() - li_width_init;
         var li_width = 0;
         $.each(menu_items, function(index) {
-            more_menu_item = more_menu.find('a[href="' + $(this).find('a').attr('href') + '"]');
-            if (more_menu_item.length == 1){
-                li_width += $(this).width();
-                if (li_width > max_li_width) { // hide this menu item from menu bar and show it in more menu
-                    $(this).closest("li").css({"display": "none"});
-                    more_menu_item.css({"display": "block"});
-                }
-                else {  // show this menu item in menu bar again and hide it from more menu
-                    $(this).closest("li").css({"display": "block"});
-                    more_menu_item.css({"display": "none"});
+
+            if ($(this).find('a').attr('href') != "#")
+            {
+                more_menu_item = more_menu.find('a[href="' + $(this).find('a').attr('href') + '"]');
+
+                console.log($(this).find('a').attr('href'))
+                console.log($(this))
+
+                if (more_menu_item.length == 1){
+                    li_width += $(this).width();
+                    if (li_width > max_li_width) { // hide this menu item from menu bar and show it in more menu
+                        $(this).closest("li").css({"display": "none"});
+                        more_menu_item.css({"display": "block"});
+                    }
+                    else {  // show this menu item in menu bar again and hide it from more menu
+                        $(this).closest("li").css({"display": "block"});
+                        more_menu_item.css({"display": "none"});
+                    }
                 }
             }
         });
 
         // determine if more menu should show up or not
-        if (more_menu.prev().is(':visible')) { more_menu.addClass("hidden"); }
-        else { more_menu.removeClass("hidden") };
+        if (more_menu.prev().is(':visible')) { 
+            more_menu.addClass("hidden"); 
+        } else { 
+            more_menu.removeClass("hidden");
+        };
 
         //~ menu = $(".collapse.navbar-collapse.navbar-top-collapse");
         menu = $(".navbar.navbar-default.navbar-static-top");
