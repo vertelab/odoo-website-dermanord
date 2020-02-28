@@ -114,7 +114,7 @@ class PaymentTransaction(models.Model):
                     elif tx.state != 'cancel' and order.state == 'draft':
                         _logger.info('<%s> transaction pending, sending quote email for order %s (ID %s)', acquirer_name, order.name, order.id)
                         log_outcome(order, u"Betalningstransaktionens status är inte 'done' eller 'cancel': '%s'." % tx.state)
-                        order.sudo().force_quotation_send()
+                        order.state = 'sent'
                     else:
                         log_outcome(order, u"Betalningstransaktionens status är inte 'done': '%s'." % tx.state)
                 else:
