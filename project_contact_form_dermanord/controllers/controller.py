@@ -48,7 +48,7 @@ class ContactUs(http.Controller):
         _logger.warn('Project_id: %s post: %s' %(project_id, post))
         project = request.env['project.project'].sudo().browse(project_id)
 
-        partner = request.env['res.partner'].search([('email', '=', post.get('email_from'))])
+        partner = request.env['res.partner'].search([('email', '=', post.get('email_from'))], limit=1)
         if not partner:
             partner = request.env['res.partner'].create({
                 'name':post.get('contact_name'),
