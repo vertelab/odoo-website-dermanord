@@ -2615,7 +2615,7 @@ msgstr ""
 #. module: theme_dermanord
 #: view:website:website.layout
 msgid "My Account"
-msgstr "Mitt konto"
+msgstr "Mina sidor"
 
 #. module: theme_dermanord
 #: view:website:website.snippets
