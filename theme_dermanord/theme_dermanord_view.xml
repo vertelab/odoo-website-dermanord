@@ -569,11 +569,6 @@
         </div>
       </t>
     </template>
-  <template id="wsh_layout" inherit_id="website.layout">
-      <xpath expr="//a[@href='/home']" position="replace">
-        <a class="dn-home-menu-option" href="/my/home" role="menuitem">Aktuellt</a>
-      </xpath>
-    </template> 
     <template id="website_theme_overlay_menu" inherit_id="website_theme_overlay_menu.website_theme_overlay_menu" name="Website Theme Overlay Menu Inherited Theme Dermanord">
       <xpath expr="//a[@t-esc='user_id.name']" position="replace">
         <span>My Account</span>

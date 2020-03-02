@@ -32,6 +32,7 @@ Special theme for Dermanord AB
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': [
+        'website_sale',
         'website_logo',
         'website_imagemagick',
         'website_blog',

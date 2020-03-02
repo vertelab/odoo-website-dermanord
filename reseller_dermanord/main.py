@@ -628,6 +628,8 @@ class website_sale_home(website_sale_home):
     def info_update(self, home_user=None, **post):
         # update data for main partner
         self.validate_user(home_user)
+        if not self.check_admin_portal(home_user):
+            return request.website.render('website.403', {})
         if home_user == request.env.user:
             home_user = home_user.sudo()
         if home_user.partner_id.commercial_partner_id.is_reseller:
