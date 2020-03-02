@@ -205,16 +205,17 @@ $(function(){
     });
 
     $(".onclick_category").click(function() {
-        
-        // var $input = $(this).prev();
-        // $.each($input.closest("div.category_filter").find("input[class='category_checkbox']"), function() {
-        //     $(this).attr("checked", false);
-        // });
-        // $input.attr("checked", true);
-        // uncheck_other_categories($input);
-        // category_checkbox_onchange($input);
-        // check_in_check_out_parent();
-        // $input.closest("form").submit();
+        var $input = $(this);
+        webshop_restore_filter();
+        $input = $(this).prev();
+        $.each($input.closest("div.category_filter").find("input[class='category_checkbox']"), function() {
+            $(this).attr("checked", false);
+        });
+        $input.attr("checked", true);
+        uncheck_other_categories($input);
+        category_checkbox_onchange($input);
+        check_in_check_out_parent();
+        $input.closest("form").submit();
     });
     
      $(".stock_notify_button").click(function() {
