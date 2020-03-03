@@ -1510,6 +1510,21 @@ msgid "This product is sold as an educational product. Only for personal use."
 msgstr "Denna produkt säljs i utbildningssyfte. Endast för personligt bruk."
 
 #. module: webshop_dermanord
+#: view:website:website_sale.payment
+msgid "Have a coupon code? Fill in this field and apply."
+msgstr "Har du en kampanjkod? Fyll i detta fält och spara."
+
+#. module: webshop_dermanord
+#: view:website:website_sale.payment
+msgid "Coupon Code"
+msgstr "Kampanjkod"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.payment
+msgid "Apply"
+msgstr "Aktivera"
+
+#. module: webshop_dermanord
 #: view:website:website_sale.checkout
 msgid "Total To Pay:"
 msgstr "Att betala:"
