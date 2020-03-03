@@ -38,6 +38,7 @@ import math
 import time
 from multiprocessing import Lock
 import sys, traceback
+import urlparse
 
 from openerp import SUPERUSER_ID
 
@@ -1176,8 +1177,15 @@ class WebsiteSale(website_sale):
     @http.route(['/shop/pricelist'], type='http', auth="public", website=True)
     def pricelist(self, promo, **post):
         cr, uid, context = request.cr, request.uid, request.context
-        request.website.sale_get_order(code=promo, context=context)
-        return request.redirect(request.httprequest.referrer or '/shop/cart')
+        order = request.website.sale_get_order(code=promo, context=context)
+
+        if request.httprequest.referrer:
+            referer = request.httprequest.referrer.replace('?coupon_error=1', '')
+
+        if order.pricelist_id.code != promo:
+            return request.redirect(referer + '?coupon_error=1' or '/shop/cart?coupon_error=1')
+        
+        return request.redirect(referer or '/shop/cart')
 
     @http.route('/webshop_dermanord/add_tester', type='json', auth="user", website=True)
     def add_tester(self, product_id=None, **post):
@@ -1360,6 +1368,10 @@ class WebsiteSale(website_sale):
                         'return_url': '/shop/payment/validate',
                     })[0]
         _logger.warn('Partner_id (payment) %s shipping %s invoice %s res %s' % (order.partner_id,order.partner_shipping_id,order.partner_invoice_id,values))
+        
+        if post.get('coupon_error'):
+            values['coupon_error'] = post.get('coupon_error')
+        
         return request.website.render("website_sale.payment", values)
 
     mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
@@ -1781,6 +1793,7 @@ class WebsiteSale(website_sale):
             'compute_currency': compute_currency,
             'suggested_products': [],
             'url': request.session.get('url'),
+            'coupon_error': post.get('coupon_error')
         }
         if order:
             _order = order

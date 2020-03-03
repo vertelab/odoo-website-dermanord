@@ -1521,6 +1521,11 @@ msgstr "Kampanjkod"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.payment
+msgid "Unable to apply code."
+msgstr "Din kod gick inte att aktivera."
+
+#. module: webshop_dermanord
+#: view:website:website_sale.payment
 msgid "Apply"
 msgstr "Aktivera"
 

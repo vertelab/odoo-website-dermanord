@@ -292,6 +292,9 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                             <a class="btn btn-default a-submit">Apply</a>
                         </div>
                     </div>
+                    <p t-if="coupon_error == '1'" style="color: darkred">
+                        Unable to apply code.
+                    </p>
                 </form>
             </xpath>
         </template>
