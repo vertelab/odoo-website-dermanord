@@ -273,7 +273,7 @@ image.crop(width=int(float(16)/9*400), height=400, gravity='center')
             </field>
         </record>
         <record id="facet_specialforpackningar" model="product.facet">
-            <field name="name">Specialförpackningar</field>
+            <field name="name">Specialförpackningar1</field>
         </record>
         <record id="facet_value_reseforpackningar" model="product.facet.value">
             <field name="name">Reseförpackningar</field>
