@@ -1313,7 +1313,7 @@ msgstr "Related posts"
 
 #. module: webshop_dermanord
 #: model:product.facet.value,name:webshop_dermanord.facet_value_reseforpackningar
-msgid "Reseförpackningar"
+msgid "Travel sizes"
 msgstr "Reseförpackningar"
 
 #. module: webshop_dermanord
@@ -1333,7 +1333,7 @@ msgstr "Kundorderrad"
 
 #. module: webshop_dermanord
 #: model:product.facet.value,name:webshop_dermanord.facet_value_salongsprodukter
-msgid "Salongsprodukter"
+msgid "Professional products"
 msgstr "Salongsprodukter"
 
 #. module: webshop_dermanord
