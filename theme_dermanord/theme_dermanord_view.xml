@@ -245,7 +245,7 @@
       <xpath expr="//ul[@id='top_menu']" position="attributes">
         <attribute name="class">nav navbar-nav</attribute>
       </xpath>
-      <!-- <xpath expr="//t[@t-foreach='website.menu_id.child_id']" position="after">
+      <xpath expr="//t[@t-foreach='website.menu_id.child_id']" position="after">
         <li class="dropdown" id="more_dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
             <span>More</span>
@@ -253,7 +253,7 @@
           </a>
           <ul class="dropdown-menu">
             <t t-foreach="website.menu_id.child_id" t-as="submenu">
-              <li t-if="submenu != request.env.ref('theme_dermanord.footer_menu')">
+              <li t-att-id="'dn-website-menu-%s-more' % submenu.id" t-if="submenu != request.env.ref('theme_dermanord.footer_menu')">
                 <a t-att-href="submenu.url" t-ignore="true" t-att-target="'_blank' if submenu.new_window else None">
                   <span t-field="submenu.name" />
                 </a>
@@ -261,7 +261,7 @@
             </t>
           </ul>
         </li>
-      </xpath> -->
+      </xpath>
       <!-- Hide footer -->
       <xpath expr="//footer/div" position="attributes">
         <attribute name="class">hidden</attribute>
@@ -359,6 +359,15 @@
     <template id="hidden_xs_my_page" inherit_id="website.layout">
       <xpath expr="//a[@href='/web']/.." position="attributes">
         <attribute name="class">hidden-xs</attribute>
+      </xpath>
+    </template>
+
+    <template id="submenu_inherit" inherit_id="website.submenu">
+      <xpath expr="//li[@t-if='not submenu.child_id']" position="attributes">
+        <attribute name="t-att-id">'dn-website-menu-%s' % submenu.id</attribute>
+      </xpath>
+      <xpath expr="//li[@t-if='submenu.child_id']" position="attributes">
+        <attribute name="t-att-id">'dn-website-menu-%s' % submenu.id</attribute>
       </xpath>
     </template>
 
