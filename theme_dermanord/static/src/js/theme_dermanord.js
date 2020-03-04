@@ -108,7 +108,7 @@ $(document).ready(function() {
     openerp.jsonRpc('/theme_dermanord/is_agent', {}).done(
         function(data){
             if (data === true) {
-                $('li > a.dn-home-menu-option').parent().after('<li><a href="/web" role="menuitem">Agent Portal</a></li>')
+                $('.dropdown-menu.js_usermenu').append('<li><a href="/web">Agent Portal</a></li>')
             }
         });
     // hide shopping cart
