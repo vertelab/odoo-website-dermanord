@@ -32,28 +32,31 @@ dermanord_resize_for_menu = function() {
     //~ $("main").prevAll().each(function(){
         //~ total_height_before_main += $(this).height();
     //~ });
-    if($(window).width() > 758) {
+    if($(window).width() > 758) { // dont run while in mobile layout?
         var max_li_width = $("#top_menu").width() - li_width_init;
         var li_width = 0;
-        $.each(menu_items, function(index) {
+        $.each(menu_items, function(index, value) {
 
-            if ($(this).find('a').attr('href') != "#")
-            {
-                more_menu_item = more_menu.find('a[href="' + $(this).find('a').attr('href') + '"]');
+            // console.log(value.attr('id'))
 
-                console.log($(this).find('a').attr('href'))
-                console.log($(this))
+            // TODO: this code is not working. at all.
+            // Several links has href="#" and links are not the same in top menu and more menu
+            // TODO: add id to li-tags for menu options. Add id to a-tags in more-menu. Rewrite search 
+            // more_menu_item = more_menu.find('a[href="' + value.find('a').attr('href') + '"]');
+            more_menu_item = more_menu.find('li#' + value.attr('id') + '-more');
 
-                if (more_menu_item.length == 1){
-                    li_width += $(this).width();
-                    if (li_width > max_li_width) { // hide this menu item from menu bar and show it in more menu
-                        $(this).closest("li").css({"display": "none"});
-                        more_menu_item.css({"display": "block"});
-                    }
-                    else {  // show this menu item in menu bar again and hide it from more menu
-                        $(this).closest("li").css({"display": "block"});
-                        more_menu_item.css({"display": "none"});
-                    }
+            if (more_menu_item.length == 1) {
+                // li_width += $(this).width();
+                li_width += value.width();
+                if (li_width > max_li_width) { // hide this menu item from menu bar and show it in more menu
+                    // $(this).closest("li").css({"display": "none"});
+                    value.closest("li").css({"display": "none"});
+                    more_menu_item.css({"display": "block"});
+                }
+                else {  // show this menu item in menu bar again and hide it from more menu
+                    // $(this).closest("li").css({"display": "block"});
+                    value.closest("li").css({"display": "block"});
+                    more_menu_item.css({"display": "none"});
                 }
             }
         });
