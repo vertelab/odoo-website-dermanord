@@ -574,15 +574,6 @@
         <span>My Account</span>
       </xpath>
       <xpath expr="//a[@href='/web']/.." position="replace">
-
-    <div class="product_children">
-      <label>
-        <li>
-          <a href="/page/demo" groups="base.group_website_publisher,base.group_hr_user,base.user_root">Demo Page</a>
-        </li>
-      </label>
-    </div>
-
       </xpath>
     </template>
   </data>
