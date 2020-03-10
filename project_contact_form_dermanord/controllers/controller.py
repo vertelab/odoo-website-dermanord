@@ -45,7 +45,7 @@ class ContactUs(http.Controller):
             return request.website.render("theme_dermanord.contactus_response", values)
 
         project_id = int(post.get('case'))
-        _logger.warn('Project_id: %s post: %s' %(project_id, post))
+        # ~ _logger.warn('Project_id: %s post: %s' %(project_id, post))
         project = request.env['project.project'].sudo().browse(project_id)
 
         partner = request.env['res.partner'].search([('email', '=', post.get('email_from'))], limit=1)

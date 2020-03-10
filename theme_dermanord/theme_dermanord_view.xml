@@ -29,6 +29,10 @@
     <template id="contactus_response" name="Dermanord Contact Us Response">
       <t t-call="website.layout">
         <div class="oe_structure">
+			<div class="container">
+				<p>Tack för att du kontaktar oss!</p>
+				<p>Vi kommer återkomma med ett svar så snart som möjligt.</p>
+			</div>
         </div>
       </t>
     </template>

@@ -30,6 +30,3 @@ class Project_project(models.Model):
     contact_form_description = fields.Html(string="Contact Form Description", translate=True)
     
 
-#message_follower_ids
-#res.partner kolla efter emails, skapa användare som res.partner om den ej existerar
-#lägga till användaren som follower på aktiviteten 

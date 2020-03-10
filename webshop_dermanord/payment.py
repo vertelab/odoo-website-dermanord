@@ -100,6 +100,8 @@ class PaymentTransaction(models.Model):
                             for w in warnings:
                                 log_outcome(order, *w)
                             return res
+                        # ~ if order.amount_total = '0':
+                            # ~ order.with_context(send_email=True).action_button_confirm()
                         order.with_context(send_email=True).action_button_confirm()
                         for picking in order.picking_ids:
                             picking.action_assign()
