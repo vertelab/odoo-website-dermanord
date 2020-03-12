@@ -29,11 +29,22 @@
     <template id="contactus_response" name="Dermanord Contact Us Response">
       <t t-call="website.layout">
         <div class="oe_structure">
-			<div class="container">
-				<p>Tack för att du kontaktar oss!</p>
-				<p>Vi kommer återkomma med ett svar så snart som möjligt.</p>
-			</div>
+      <section class="mt16 mb16">
+        <div class="container">
+          <div class="row">
+			<div class="col-md-12">
+              <img alt="Odoo CMS - a big picture" class="img img-responsive" src="/website/image/ir.attachment/323043_f8f7c81/datas" style="margin: 0px auto; animation-play-state: paused; transition: none 0s ease 0s"/>
+            </div>
+            <div class="col-md-12 text-center mt16 mb32">
+              <h2>Tack för att du kontaktar oss!</h2>
+            </div>
+            <div class="col-md-12 mb16 mt16">
+              <p>Vi kommer att så snart som möjligt att återkomma med ett svar.</p>
+            </div>
+          </div>
         </div>
+      </section>
+      </div>
       </t>
     </template>
 
