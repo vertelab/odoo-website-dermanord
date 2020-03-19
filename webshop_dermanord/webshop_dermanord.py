@@ -457,7 +457,7 @@ class product_public_category(models.Model):
                 return u"""
                 <div class="panel-heading {category_heading_level}" style="{parent_categ_bg}">
                     <h4 class="panel-title parent_category_panel_title container">
-                        <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox hidden{category_heading_parents_col}" data-category="{desktop_category}" data-parent_category="{desktop_parent_category}" {category_checked}/>
+                        <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox hidden hidden{category_heading_parents_col}" data-category="{desktop_category}" data-parent_category="{desktop_parent_category}" {category_checked}/>
                         <span class="{category_title_level}" style="padding-left: 3px; cursor: pointer; {parent_categ_text}">
                             {desktop_category_name}
                             
@@ -546,7 +546,9 @@ class product_public_category(models.Model):
                 return ''
 
         current_domain = request.session.get('current_domain')
+
         form_values = request.session.get('form_values')
+        # _logger.warn(request.session)
         current_category = 0
         category_checked = []
         if current_domain:
