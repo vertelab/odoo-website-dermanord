@@ -39,9 +39,9 @@ Special layout for Dermanord AB webshop
         'auth_signup',
         ],
     'data': [
-        'views/consumer_template.xml',
+        # ~ 'views/consumer_template.xml', 
         'views/res_partner_view.xml',
-        'wizard/invite_url_view.xml',
+        # ~ 'wizard/invite_url_view.xml',
     ],
     'application': False,
 }

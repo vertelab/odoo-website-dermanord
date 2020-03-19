@@ -74,8 +74,18 @@ class website(models.Model):
                     breadcrumb.append('<li>%s</li>' % product.name)
                     if product.default_public_categ_id:
                         breadcrumb.append('<li><a href="/webshop/category/%s">%s</a></li>' % (product.default_public_categ_id.id, product.default_public_categ_id.display_name ) )
+                        _logger.info("Carl default_public_categ_id: %s"%product.default_public_categ_id.id)
                     elif len(product.public_categ_ids) > 0:
-                        breadcrumb.append('<li><a href="/webshop/category/%s">%s</a></li>' % (product.public_categ_ids.mapped('id')[0], product.public_categ_ids.mapped('display_name')[0] ) )
+                        categories = product.public_categ_ids.mapped('display_name')[0]
+                        # [18213] Webbshoppen -Brödsmulan detaljvyn
+                        # Checks if the categories are split into 2. Else sets category to the way it was before. TODO: Might need to test for 3 or more cases.
+                        try:
+                            category, subcategory = categories.split("/")
+                            breadcrumb.append('<li><a href="/webshop/category/%s">%s</a></li>' % (product.public_categ_ids.mapped('id')[0], subcategory) )
+                            breadcrumb.append('<li><a href="/webshop/category/%s">%s</a></li>' % (product.public_categ_ids.mapped('parent_id')[0].id, category) )
+                        except:
+                            breadcrumb.append('<li><a href="/webshop/category/%s">%s</a></li>' % (product.public_categ_ids.mapped('id')[0].id, category) )
+
                 menu = self.env.ref('webshop_dermanord.menu_dn_shop')
                 home_menu = self.env.ref('website.menu_homepage')
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
