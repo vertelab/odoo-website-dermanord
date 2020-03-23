@@ -326,14 +326,33 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                 <th class="hidden-xs"/>
             </xpath>
 
+     <!--        <xpath expr="//span[@t-field='line.product_id.image_small']" position="before">
+                <td class="hidden-xs"/>
+            </xpath> -->
+
             <xpath expr="//span[@t-field='line.product_id.image_small']" position="replace">
-                <img t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id" class="img_payment"/>
+                <img t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id" class="img_payment hidden-xs"/>
             </xpath>
+
+              <xpath expr="//table[@id='cart_products']/thead/tr" position="attributes">
+                <attributes class="hidden-xs"/>
+            </xpath>
+
+            <xpath expr="//table[@id='cart_products']/thead/tr/th[2]" position="attributes">
+                <attributes class="hidden-xs"/>
+            </xpath>
+
+
+             <xpath expr="//td[@t-if='line.product_id.product_tmpl_id']" position="replace">
+                <td class="hidden-xs"/>
+            </xpath>
+
+
 
             <xpath expr="//a[@t-attf-href='/shop/product/#{ slug(line.product_id.product_tmpl_id) }']" position="replace">
                 <a t-att-href="('/event/%s' % slug(line.event_id)) if line.event_id else ('/dn_shop/variant/%s' % slug(line.product_id))">
                     <strong t-if="line.product_id.default_code">
-                        [<t t-esc="line.product_id.default_code" />]
+                        <!-- [<t t-esc="line.product_id.default_code" />] -->
                     </strong>
                     <strong t-esc="line.product_id.with_context(display_default_code=False).display_name" />
                     <t t-if="line.event_id">
@@ -451,7 +470,7 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                     </t>
                     <t t-foreach="line.product_id.packaging_ids" t-as="packaging">
                         <div class="text-center">
-                            <i class="fa fa-cube" rel="popover" data-placement="bottom" t-att-data-popover-content="'#packaging_popover_%s' %packaging.id" onclick="show_popover($(this));"/>
+                            <i class="fa fa-cube hidden-xs" rel="popover" data-placement="bottom" t-att-data-popover-content="'#packaging_popover_%s' %packaging.id" onclick="show_popover($(this));"/>
                             <div t-att-id="'packaging_popover_%s' %packaging.id" class="hide" style="font-family: futura-pt-medium;">
                                 <b t-esc="packaging.ul.name"/><br/>
                                 <t t-if="packaging.qty">
@@ -496,28 +515,63 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                     </a>
                 </td>
             </xpath>
+
+             <xpath expr="//div/span[@class='input-group-addon'][2]" position="attributes">
+                 <attribute name="class">input-group-addon hidden-xs</attribute>
+             </xpath>
+            <xpath expr="//div/span[@class='input-group-addon'][1]" position="attributes">
+                 <attribute name="class">input-group-addon hidden-xs</attribute>
+             </xpath>
+       
+<!-- 
+            <xpath expr="//input[@class='js_quantity form-control']" position="attributes">
+                 <attribute name="class">hidden-xs</attribute>
+             </xpath>  -->
             
             <xpath expr="//table[@id='cart_products']/tbody/t/tr/td/div[@class='input-group oe_website_spinner']" position="after">
                 <t t-if="line.product_id.has_tester and line.product_id.tester_product_id">
                     <t t-set="tester_data" t-value="line.tester_html_attributes()"/>
                     <div class="tester-buttons" t-att="tester_data['buttons']">
-                        <a href="#" t-att-class="tester_data['add']">+ Add Tester</a>
-                        <a href="#" t-att-class="tester_data['remove']">- Remove Tester</a>
+                        <a href="#" t-att-class="tester_data['add']">+Add Tester</a>
+                        <a href="#" t-att-class="tester_data['remove']">-Remove Tester</a>
                     </div>
                 </t>
             </xpath>
-            
+
             <xpath expr="//table[@id='cart_products']/thead/tr/th[1]" position="attributes">
                 <attribute name="class">text-center hidden-xs</attribute>
             </xpath>
+            <xpath expr="//table[@id='cart_products']/thead/tr/th[2]" position="attributes">
+                <attribute name="class">text-center hidden-xs</attribute>
+            </xpath>
+             <xpath expr="//table[@id='cart_products']/thead/tr/th[3]" position="attributes">
+                <attribute name="class">text-center hidden-xs</attribute>
+            </xpath>
+            <xpath expr="//table[@id='cart_products']/thead/tr/th[4]" position="attributes">
+                <attribute name="class">text-center hidden-xs</attribute>
+            </xpath>
+
+
+        <!--       <xpath expr="//tbody/tr/td[1]" position="attribute">
+                <attributes name="class">hidden-xs</attributes>
+            </xpath> -->
+
             
             <!-- I don't understand why it must be 3 in this expr. Does it start to count on 2? Oh well. -->
             <xpath expr="//table[@id='cart_products']/tbody/t/tr/td[3]" position="attributes">
-                <attribute name="class">hidden-xs</attribute>
+                <attribute name="class"></attribute>
             </xpath>
             
             <xpath expr="//table[@id='cart_products']/thead/tr/th[1]" position="before">
-                <th width="100" class="text-center hidden-lg hidden-md hidden-sm">Product</th>
+                <th width="100" class="text-center hidden-lg hidden-md hidden-sm hidden-xs">Product</th>
+            </xpath>
+<!-- 
+            <xpath expr="//table[@id='cart_products']/thead/tr/tbody/tr/td[1]" position="replace">
+                <td align="center hidden-xs"/>
+            </xpath>
+ -->
+            <xpath expr="//table[@id='cart_products']/thead/tr/th" position="replace">
+                <th width="100" class="text-center hidden-xs"/>
             </xpath>
             
         </template>
@@ -536,7 +590,7 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                     <td>
                         <div>
                             <a t-attf-href="/dn_shop/variant/#{ slug(product) }">
-                                <strong t-field="product.display_name" />
+                                <strong t-field="product.dv_name" />
                             </a>
                         </div>
                         <div class="text-muted" t-field="product.description_sale" />
@@ -544,7 +598,7 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                     <td style="width: 200px;">
                         <t t-if="user_id.partner_id.property_product_pricelist and not user_id.partner_id.property_product_pricelist.for_reseller">
                             <span t-field="product.price" style="white-space: nowrap;" t-field-options='{
-                               "widget": "monetary",
+                               "widget": "monetary",s
                                "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
                            }' />
                         </t>

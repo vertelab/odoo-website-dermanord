@@ -6,6 +6,10 @@
 body {
 }
 
+    span.input-group-addon {
+    display: none;
+}
+
 body p, .dn_tags {
     font-family: futura-pt-light, sans-serif;
 }
@@ -917,4 +921,9 @@ input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-i
 }
 input[type="number"] {
     -moz-appearance: textfield;
+}
+
+
+.input-group-addon {
+    display: none;
 }
