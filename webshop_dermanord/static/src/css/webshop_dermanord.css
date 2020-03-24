@@ -764,7 +764,7 @@ tr.tr_lst td {
 /* Override original css when max-width equals 500px */
 @media (max-width: 500px) {
     .oe_cart table thead, #modal_optional_products table thead {
-        display: unset;
+        /*display: unset;*/
     }
     .oe_cart table td:first-child, #modal_optional_products table td:first-child {
         display: unset;
@@ -786,6 +786,10 @@ tr.tr_lst td {
     }
     a.js_remove_cart_json {
         float: right;
+    }
+
+    strong {
+        font-size: 16px;
     }
 }
 
@@ -854,7 +858,7 @@ tr.tr_lst td {
     }
 
     .oe_website_spinner {
-        min-width: 176px;
+        min-width: 150px;
         text-align: right;
     }
 
@@ -864,5 +868,30 @@ tr.tr_lst td {
 
     #view_switcher {
         padding: 0px;
+    }
+}
+
+@media (max-width: 500px){
+    .oe_cart table tr table td {
+        float: none !important;
+    }
+    .oe_cart table tr{
+        display: flex !important;
+    }
+    .table tbody tr td{
+        width: 30%;
+        border-top: none !important;
+    }
+    .oe_website_spinner {
+        min-width: 100px !important;
+        width: 120px !important;
+        padding-left: 10px;
+    }
+}
+
+@media (max-width: 350px){
+    .oe_website_spinner {
+        min-width: 90px !important;
+        width: 100px !important;
     }
 }

@@ -132,16 +132,16 @@
                         <table class="table table-striped table-condensed hidden-xs" id="cart_products" t-if="website_sale_order and website_sale_order.website_order_line">
                             <thead>
                                 <tr class="hidden-xs">
-                                    <th colspan="3" width="80" class="hidden-xs">Product</th>
-                                    <th width="100" class="text-center hidden-xs">Price</th>
-                                    <th width="120" class="text-center hidden-xs">Quantity</th>
+                                    <th colspan="2" width="100">Product</th>
+                                    <th colspan="2" width="120" class="text-center">Price</th>
+                                    <th width="120" class="text-center">Quantity</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <t t-if="website_sale_order">
-                                    <tr class="hidden-xs" t-foreach="website_sale_order.website_order_line" t-as="line">
+                                    <tr t-foreach="website_sale_order.website_order_line" t-as="line">
                                         <t t-set="tester_line" t-value="line.get_tester_line()"/>
-                                        <td colspan="2" t-if="not line.product_id.product_tmpl_id" />
+                                        <td colspan="3" t-if="not line.product_id.product_tmpl_id" />
                                         <td class="hidden-xs" align="center" t-if="line.product_id.product_tmpl_id">
                                             <img class="img img-responsive img_payment" style="width: 64px;" t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id" />
                                         </td>
