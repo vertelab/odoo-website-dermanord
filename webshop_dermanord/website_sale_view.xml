@@ -326,7 +326,6 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                 <img t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id" class="img_payment hidden-xs"/>
             </xpath>
 
-
             <xpath expr="//a[@t-attf-href='/shop/product/#{ slug(line.product_id.product_tmpl_id) }']" position="replace">
                 <a t-att-href="('/event/%s' % slug(line.event_id)) if line.event_id else ('/dn_shop/variant/%s' % slug(line.product_id))">
                     <strong class="hidden-xs" t-if="line.product_id.default_code">
@@ -335,7 +334,7 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                     </strong>
                     <strong t-esc="line.product_id.with_context(display_default_code=False).display_name" />
                     <t t-if="line.event_id">
-                        <br/><strong>Begin: <span t-field="line.event_sid.with_context(tz=line.event_id.date_tz).date_begin" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong><br/>
+                        <br/><strong>Begin: <span t-field="line.event_id.with_context(tz=line.event_id.date_tz).date_begin" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong><br/>
                         <strong>End: <span t-field="line.event_id.with_context(tz=line.event_id.date_tz).date_end" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong>
                     </t>
                 </a>
@@ -492,8 +491,6 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                         <i class="fa fa-trash-o mt8" />
                     </a>
                 </td>
-
-                
             </xpath>
 
              <xpath expr="//div/span[@class='input-group-addon'][2]" position="attributes">
@@ -627,16 +624,8 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
             </xpath>
         </template>
         <template id="dermanord_product_detail" inherit_id="website_sale.product">
-<!--
-            <a id="add_to_cart" position="after">
-                <input id="sale_ok" name="sale_ok" type="hidden" t-att-value="product.sale_ok" />
-                <p id="sale_start_info" class="hidden">
-                    Start:
-                    <span id="sale_start" />
-                </p>
-            </a>
--->
-            <xpath expr="//form[@class='js_add_cart_variants']" position="inside">
+
+      <xpath expr="//form[@class='js_add_cart_variants']" position="inside">
                 <input name="return_url" type="hidden" t-att-value="request.httprequest.url" />
             </xpath>
             <xpath expr="//ol[@class='breadcrumb']/.." position="replace" />
@@ -706,16 +695,7 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                                 <t t-foreach="product_product.facet_line_ids.mapped('facet_id')" t-as="facet">
 
                                     <h2 class="dn_uppercase" t-field="facet.name" />
-                                    <!-- <t t-raw="product_product.format_facets(facet)"/> -->
-                                    <!--
-                                    <t t-set="facet_value_ids" t-value="product_product.facet_line_ids.mapped('value_ids') &amp; facet.value_ids" />
-                                    <t t-foreach="facet_value_ids" t-as="value">
-                                        <a t-att-href="'/webshop/?facet_%s_%s=%s%s' %(facet.id, value.id, value.id, ('&amp;%s' %'&amp;'.join(['category_%s=%s' %(c.id, c.id) for c in product.public_categ_ids]) if len(product.public_categ_ids) &gt; 0 else ''))" class="text-muted">
-                                            <span t-field="value.name" />
-                                        </a>
-                                        <span t-if="value_index != len(facet_value_ids)-1">,</span>
-                                    </t>
-                                    -->
+                
                                 </t>
                             </div>
                         </t>
