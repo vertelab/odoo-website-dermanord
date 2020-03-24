@@ -201,16 +201,36 @@
                         <!-- in mobile -->
                         <div t-if="website_sale_order and website_sale_order.website_order_line" class="container hidden-lg hidden-md hidden-sm mb32" id="cart_products">
                             <div class="col-xs-12" style="padding: 0px;">
-                                <div class="col-xs-2"><strong>Product</strong></div>
+                                <div class="col-xs-5"><strong>Product</strong></div>
                                 <div class="col-xs-1"></div>
-                                <div class="col-xs-6 text-center"><strong>Price</strong></div>
-                                <div class="col-xs-3 text-center"><strong>Quantity</strong></div>
+                                <div class="col-xs-3 text-center"><strong>Price</strong></div>
+                                <div class="col-xs-2 text-center"><strong>Quantity</strong></div>
                             </div>
                             <t t-foreach="website_sale_order.website_order_line" t-as="line">
                                 <t t-set="tester_line" t-value="line.get_tester_line()"/>
                                 <div class="col-xs-12" t-att-style="'padding: 10px 0px; border-top: 1px solid #ddd; background-color: %s;' %('#f9f9f9' if line_index % 2 == 0 else 'none')">
-                                    <div align="center" t-if="line.product_id.product_tmpl_id" class="col-xs-2" style="padding: 0px;" data-toggle="collapse" t-att-data-target="'#collapse_%s' %line.id" t-att-aria-controls="'collapse_%s' %line.id">
-                                        <img t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id" class="img_payment" style="margin: auto; display: block;" />
+                                    <div align="center" t-if="line.product_id.product_tmpl_id" class="col-xs-5" style="padding: 0px;">
+
+                                       <div t-if="line.product_id.product_tmpl_id" class="col-xs-12 shop_table" t-att-style="'padding-bottom: 10px; background-color: %s;' %('#f9f9f9' if line_index % 2 == 0 else 'none')">
+                                        <a t-att-href="('/event/%s' % slug(line.event_id)) if line.event_id else ('/dn_shop/variant/%s' % slug(line.product_id))" class="text-primary">
+                                            <strong t-if="line.product_id.default_code">
+                                                [<t t-esc="line.product_id.default_code" />]
+                                            </strong>
+                                            <strong t-esc="line.product_id.with_context(display_default_code=False).display_name" />
+                                            <t t-if="line.event_id">
+                                                <br/><strong>Begin: <span t-field="line.event_id.with_context(tz=line.event_id.date_tz).date_begin" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong><br/>
+                                                <strong>End: <span t-field="line.eventid.with_context(tz=line.event_id.date_tz).date_end" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong>
+                                            </t>
+                                        </a>
+                                        <div class="text-muted" t-esc="'\n'.join(line.name.splitlines()[1:])" />
+                                        <t t-if="tester_line">
+                                            <strong t-if="tester_line.product_id.default_code">
+                                                [<t t-esc="tester_line.product_id.default_code" />]
+                                            </strong>
+                                            <strong t-esc="tester_line.product_id.with_context(display_default_code=False).display_name" />
+                                        </t>
+                                    </div>
+
                                     </div>
                                     <!-- Added infobox for educational purchases in checkout -->
                                     <div class="col-xs-1">
@@ -222,7 +242,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-6" style="padding: 0px 5px;">
+                                    <div class="col-xs-3" style="padding: 0px 5px;">
                                         <div class="text-center" name="price">
                                             <div style="font-family: futura-pt-medium;">
                                                 <span t-field="line.price_unit" style="white-space: nowrap;" t-field-options="{                                  &quot;widget&quot;: &quot;monetary&quot;,                                  &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                                  &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                              }" />
@@ -236,31 +256,10 @@
                                             </div>
                                         </t>
                                     </div>
-                                    <div class="col-xs-3 text-center" style="padding: 0px;">
+                                    <div class="col-xs-2 text-center" style="padding: 0px;">
                                         <div t-esc="line.product_uom_qty" />
                                         <t t-if="tester_line">
                                             <div t-esc="tester_line.product_uom_qty" />
-                                        </t>
-                                    </div>
-                                </div>
-                                <div t-att-id="'collapse_%s' %line.id" class="collapse mb16" t-att-aria-labelledby="'heading_%s' %line.id">
-                                    <div t-if="line.product_id.product_tmpl_id" class="col-xs-12" t-att-style="'padding-bottom: 10px; border-bottom: 1px solid #ddd; background-color: %s;' %('#f9f9f9' if line_index % 2 == 0 else 'none')">
-                                        <a t-att-href="('/event/%s' % slug(line.event_id)) if line.event_id else ('/dn_shop/variant/%s' % slug(line.product_id))" class="text-primary">
-                                            <strong t-if="line.product_id.default_code">
-                                                [<t t-esc="line.product_id.default_code" />]
-                                            </strong>
-                                            <strong t-esc="line.product_id.with_context(display_default_code=False).display_name" />
-                                            <t t-if="line.event_id">
-                                                <br/><strong>Begin: <span t-field="line.event_id.with_context(tz=line.event_id.date_tz).date_begin" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong><br/>
-                                                <strong>End: <span t-field="line.event_id.with_context(tz=line.event_id.date_tz).date_end" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong>
-                                            </t>
-                                        </a>
-                                        <div class="text-muted" t-esc="'\n'.join(line.name.splitlines()[1:])" />
-                                        <t t-if="tester_line">
-                                            <strong t-if="tester_line.product_id.default_code">
-                                                [<t t-esc="tester_line.product_id.default_code" />]
-                                            </strong>
-                                            <strong t-esc="tester_line.product_id.with_context(display_default_code=False).display_name" />
                                         </t>
                                     </div>
                                 </div>

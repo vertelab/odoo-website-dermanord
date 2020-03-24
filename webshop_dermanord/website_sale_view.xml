@@ -326,10 +326,11 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                 <img t-att-src="'/imagefield/product.product/image_small/%s/ref/webshop_dermanord.img_payment' %line.product_id.id" class="img_payment hidden-xs"/>
             </xpath>
 
-            <xpath expr="//a[@t-attf-href='/shop/product/#{ slug(line.product_id.product_tmpl_id) }']" position="replace">
+           <xpath expr="//td[3]" position="replace">
+            <td t-if="line.product_id.product_tmpl_id">
+                <div class="my_width">
                 <a t-att-href="('/event/%s' % slug(line.event_id)) if line.event_id else ('/dn_shop/variant/%s' % slug(line.product_id))">
                     <strong class="hidden-xs" t-if="line.product_id.default_code">
-
                          <t t-esc="line.product_id.default_code" />
                     </strong>
                     <strong t-esc="line.product_id.with_context(display_default_code=False).display_name" />
@@ -338,6 +339,8 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                         <strong>End: <span t-field="line.event_id.with_context(tz=line.event_id.date_tz).date_end" t-field-options="{&quot;hide_seconds&quot;:&quot;True&quot;}"/></strong>
                     </t>
                 </a>
+            </div>
+            </td>
             </xpath>
 
             <xpath expr="//div[@class='input-group oe_website_spinner']" position="attributes">
@@ -903,8 +906,8 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                                     </h4>
                                     <div>
                                         <t t-if="event.organizer_id">
-                                                            Organized by: <span t-field="event.organizer_id"> </span>
-                                                        </t>
+                                               Organized by: <span t-field="event.organizer_id"> </span>
+                                        </t>
                                     </div>
                                     <div>
                                         <i class="fa fa-clock-o"/>

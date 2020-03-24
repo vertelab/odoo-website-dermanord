@@ -789,8 +789,16 @@ tr.tr_lst td {
     }
 
     strong {
-        font-size: 16px;
+        font-size: 15px;
     }
+
+    .my_width {
+      width: 150px;
+}
+
+.input-group.oe_website_spinner {
+    max-width: 30px;
+}
 }
 
 .js_sale {
@@ -885,8 +893,12 @@ tr.tr_lst td {
     .oe_website_spinner {
         min-width: 100px !important;
         width: 120px !important;
-        padding-left: 10px;
     }
+
+    input.js_quantity.form-control {
+    width: 80% !important;
+    float: right !important;
+}
 }
 
 @media (max-width: 350px){
@@ -894,4 +906,8 @@ tr.tr_lst td {
         min-width: 90px !important;
         width: 100px !important;
     }
+}
+
+.shop_table{
+    padding: 0;
 }
