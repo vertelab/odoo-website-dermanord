@@ -799,6 +799,10 @@ tr.tr_lst td {
 .input-group.oe_website_spinner {
     max-width: 30px;
 }
+
+.oe_website_spinner {
+    width: 70px;
+}
 }
 
 .js_sale {
@@ -866,7 +870,7 @@ tr.tr_lst td {
     }
 
     .oe_website_spinner {
-        min-width: 150px;
+        min-width: 125px;
         text-align: right;
     }
 
@@ -891,21 +895,35 @@ tr.tr_lst td {
         border-top: none !important;
     }
     .oe_website_spinner {
-        min-width: 100px !important;
+        min-width: 120px !important;
         width: 120px !important;
     }
 
     input.js_quantity.form-control {
-    width: 80% !important;
+    width: 100% !important;
     float: right !important;
 }
 }
 
-@media (max-width: 350px){
+@media (max-width: 400px){
     .oe_website_spinner {
         min-width: 90px !important;
-        width: 100px !important;
+        width: 90px !important;
     }
+}
+
+@media (max-width: 380px){
+    .oe_website_spinner {
+        min-width: 80px !important;
+        width: 80px !important;
+    }
+}
+
+    @media (max-width: 360px){
+    .my_width{
+        width:110px;
+
+    }     
 }
 
 .shop_table{
