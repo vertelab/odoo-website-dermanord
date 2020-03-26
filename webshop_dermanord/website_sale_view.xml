@@ -250,9 +250,9 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                                     <thead>
                                         <tr>
                                             <th />
-                                            <th>Art. nr</th>
-                                            <th>Produkt</th>
-                                            <th>Säljstart kund</th>
+                                            <th class="hidden-xs">Art. nr</th>
+                                            <th >Produkt</th>
+                                            <th class="hidden-xs">Säljstart kund</th>
                                             <th style="min-width: 100px;">Ditt pris</th>
                                             <th />
                                             <th />

@@ -652,10 +652,10 @@ class product_product(models.Model):
                 is_edu_purchase = product_obj.purchase_type == 'edu'
                 buttons = product_obj.get_add_to_cart_buttons()
                 page = u"""<tr class="tr_lst ">
-                                <td class="td_lst">
-                                    <div class="lst-ribbon-wrapper">{product_ribbon_offer}{product_ribbon_promo}{product_ribbon_limited}</div>
+                                <td class="td_lst ribbon_responsive">
+                                    <div class="lst-ribbon-wrapper">{product_ribbon_offer}{product_ribbon_promo}{product_ribbon_promo_mobile}{product_ribbon_limited}</div>
                                 </td>
-                                <td>
+                                <td class="hidden-xs">
                                     <h5 class="list_product_name">
                                         <span>{product_default_code}</span>
                                     </h5>
@@ -671,7 +671,7 @@ class product_product(models.Model):
                                         </div>
                                     </h5>
                                 </td>
-                                <td>
+                                <td class="hidden-xs">
                                     <h5>
                                         <div class="text-center">
                                             <span>{product_startdate}</span>
@@ -680,15 +680,15 @@ class product_product(models.Model):
                                         </div>
                                     </h5>
                                 </td>
-                                <td>
+                                <td class="resonsive_price_column">
                                     {product_price}
                                 </td>
-                                <td>
+                                <td class ="hidden-xs">
                                     <div class="dn-tooltip text-centered">
                                     {product_dfp}
                                     </div>
                                 </td>
-                                <td>
+                                <td class="cart_responsive">
                                     <div class="{shop_widget}">
                                         <form action="/shop/cart/update" class="oe_dn_list {hide_spinner}" data-attribute_value_ids="{product_id}" method="POST">
                                             <div class="product_shop" style="margin: 0px;">
@@ -726,9 +726,11 @@ class product_product(models.Model):
                     product_stock='{product_stock}',
                     product_name=product['fullname'],
                     product_price = product_obj.get_pricelist_chart_line(pricelist).get_html_price_short(),
-                    product_ribbon_offer = product_ribbon_offer and ('<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer')) or '',
-                    product_ribbon_promo = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if ribbon_promo.id in (product['website_style_ids'] + product['website_style_ids_variant']) else '',
-                    product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.id in product['website_style_ids_variant'] else '',
+                    product_ribbon_offer = product_ribbon_offer and ('<div class="ribbon ribbon_offer hidden-xs btn btn-primary">%s</div>' % _('Offer')) or '',
+                    product_ribbon_promo = '<div class="ribbon ribbon_news hidden-xs btn btn-primary">' + _('New') + '</div>' if ribbon_promo.id in (product['website_style_ids'] + product['website_style_ids_variant']) else '',
+                    product_ribbon_promo_mobile = '<div class="ribbon ribbon_news hidden-ls hidden-md hidden-sm btn btn-primary">' + _('N') + '</div>' if ribbon_promo.id in (product['website_style_ids'] + product['website_style_ids_variant']) else '',
+                    product_ribbon_limited= '<div class="ribbon ribbon_limited hidden-xs btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.id in product['website_style_ids_variant'] else '',
+                    product_ribbon_limited_mobile= '<div class="ribbon ribbon_limited hidden-ls hidden-md hidden-sm btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.id in product['website_style_ids_variant'] else '',
                     hide_spinner = 'hidden' if product_obj.purchase_type == 'none' else '',
                     edu_max= '5' if is_edu_purchase else '',
                     edu_purchase= int(is_edu_purchase),
