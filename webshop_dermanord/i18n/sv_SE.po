@@ -964,6 +964,13 @@ msgid "New"
 msgstr "Nyhet"
 
 #. module: webshop_dermanord
+#. openerp-web
+#: code:addons/webshop_dermanord/product_view.py:733
+#, python-format
+msgid "O"
+msgstr "E"
+
+#. module: webshop_dermanord
 #: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_content
 msgid "News"
 msgstr "Nyheter"
