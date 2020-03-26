@@ -642,18 +642,21 @@ class product_product(models.Model):
                 campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
                 template = self.env['product.template'].search_read([('id', '=', product['product_tmpl_id'][0])], fields=['is_offer_product_reseller', 'is_offer_product_consumer'])[0]
                 product_ribbon_offer  = False
+                product_ribbon_offer_mobile  = False
                 if pricelist.for_reseller:
                     if product['is_offer_product_reseller'] or template['is_offer_product_reseller']:
                         product_ribbon_offer  = True
+                        product_ribbon_offer_mobile  = True
                 else:
                     if product['is_offer_product_consumer'] or template['is_offer_product_consumer']:
                         product_ribbon_offer  = True
+                        product_ribbon_offer_mobile  = True
                 product_obj = self.env['product.product'].browse(product['id'])
                 is_edu_purchase = product_obj.purchase_type == 'edu'
                 buttons = product_obj.get_add_to_cart_buttons()
                 page = u"""<tr class="tr_lst ">
                                 <td class="td_lst ribbon_responsive">
-                                    <div class="lst-ribbon-wrapper">{product_ribbon_offer}{product_ribbon_promo}{product_ribbon_promo_mobile}{product_ribbon_limited}</div>
+                                    <div class="lst-ribbon-wrapper">{product_ribbon_offer}{product_ribbon_offer_mobile}{product_ribbon_promo}{product_ribbon_promo_mobile}{product_ribbon_limited}{product_ribbon_limited_mobile}</div>
                                 </td>
                                 <td class="hidden-xs">
                                     <h5 class="list_product_name">
@@ -727,10 +730,11 @@ class product_product(models.Model):
                     product_name=product['fullname'],
                     product_price = product_obj.get_pricelist_chart_line(pricelist).get_html_price_short(),
                     product_ribbon_offer = product_ribbon_offer and ('<div class="ribbon ribbon_offer hidden-xs btn btn-primary">%s</div>' % _('Offer')) or '',
+                    product_ribbon_offer_mobile = product_ribbon_offer and ('<div class="ribbon ribbon_offer hidden-xl hidden-lg hidden-md hidden-sm hidden-ls btn btn-primary">%s</div>' % _('O')) or '',
                     product_ribbon_promo = '<div class="ribbon ribbon_news hidden-xs btn btn-primary">' + _('New') + '</div>' if ribbon_promo.id in (product['website_style_ids'] + product['website_style_ids_variant']) else '',
-                    product_ribbon_promo_mobile = '<div class="ribbon ribbon_news hidden-ls hidden-md hidden-sm btn btn-primary">' + _('N') + '</div>' if ribbon_promo.id in (product['website_style_ids'] + product['website_style_ids_variant']) else '',
+                    product_ribbon_promo_mobile = '<div class="ribbon ribbon_news hidden-ls hidden-lg hidden-xl hidden-md hidden-sm btn btn-primary">' + _('N') + '</div>' if ribbon_promo.id in (product['website_style_ids'] + product['website_style_ids_variant']) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited hidden-xs btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.id in product['website_style_ids_variant'] else '',
-                    product_ribbon_limited_mobile= '<div class="ribbon ribbon_limited hidden-ls hidden-md hidden-sm btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if ribbon_limited.id in product['website_style_ids_variant'] else '',
+                    product_ribbon_limited_mobile= '<div class="ribbon ribbon_limited hidden-ls hidden-md hidden-sm btn btn-primary">' + _('L<br/>E') + '</div>' if ribbon_limited.id in product['website_style_ids_variant'] else '',
                     hide_spinner = 'hidden' if product_obj.purchase_type == 'none' else '',
                     edu_max= '5' if is_edu_purchase else '',
                     edu_purchase= int(is_edu_purchase),

@@ -809,6 +809,12 @@ tr.tr_lst td {
     padding-bottom: 32px;
 }
 
+/*@media screen and (min-width: 1092px) {
+.ribbon.ribbon_news.hidden-ls.hidden-md.hidden-sm.btn.btn-primary {
+    display: none;
+}
+}*/
+
 @media screen and (min-width: 992px) and (max-width: 1199px) {
     #image_nav > li {
         width: 24.7% !important;
