@@ -950,6 +950,14 @@ text-align: center;
     padding: 5px;
 }
 
+.ribbon.ribbon_offer.hidden-xl.hidden-lg.hidden-md.hidden-sm.hidden-ls.btn.btn-primary {
+    padding: 5px;
+}
+
+.ribbon.ribbon_news.hidden-ls.hidden-lg.hidden-xl.hidden-md.hidden-sm.btn.btn-primary {
+    padding: 5px;
+}
+
 }
 
 @media (max-width: 400px){
