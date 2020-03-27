@@ -765,6 +765,7 @@ tr.tr_lst td {
 @media (max-width: 500px) {
     .oe_cart table thead, #modal_optional_products table thead {
         /*display: unset;*/
+        display: table-header-group;
     }
     .oe_cart table td:first-child, #modal_optional_products table td:first-child {
         display: unset;
