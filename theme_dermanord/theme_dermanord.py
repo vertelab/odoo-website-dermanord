@@ -124,7 +124,7 @@ class website(models.Model):
                 breadcrumb = ['<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name)]
                 
                 if request.env.ref('base.public_user') != request.env.user:
-                    breadcrumb.append('<li><a href="/home?tab=mail_archive">%s</a></li><li>Mail Archive</li>' % _('MY ACCOUNT'))
+                    breadcrumb.append('<li><a href="/my/mail?tab=mail_archive">%s</a></li><li>Mail Archive</li>' % _('MY ACCOUNT'))
                 return ''.join(breadcrumb)
             elif path.startswith('/home'): # url is on the user home page
                 path = path.split('/')[1:]
