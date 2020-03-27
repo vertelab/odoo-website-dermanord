@@ -335,6 +335,11 @@ msgid "Comment:"
 msgstr "Kommentar:"
 
 #. module: webshop_dermanord
+#: view:website:website_sale.payment
+msgid "Please observe that your order may be delayed if you leave a comment due to the order being handled manually."
+msgstr "Observera att din order kan fördröjas om du lämnar en kommentar ovan då dessa ordrar hanteras manuellt."
+
+#. module: webshop_dermanord
 #: view:sale.order:webshop_dermanord.view_sales_order_filter
 msgid "Confirmed Web Orders"
 msgstr "Bekräftade Webbordrar"

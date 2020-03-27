@@ -280,6 +280,7 @@
                     <div class="row form-group" id="order_comment">
                         <label for="note">Comment:</label>
                         <textarea class="form-control" rows="5" name="note" />
+                        <small>Please observe that your order may be delayed if you leave a comment due to the order being handled manually.</small>
                     </div>
                     <div class="row" id="terms_and_conditions">
                         <div class="col-lg-5 col-sm-6">
