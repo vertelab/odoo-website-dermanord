@@ -435,7 +435,6 @@ class Main(http.Controller):
     @http.route(['/resellers/competence/<model("res.partner.category"):competence>',], type='http', auth="public", website=True)
     def reseller_competence(self, competence, **post):
         partner_obj = request.env['res.partner']
-
         def search_partner_name(word, all_visit_ids=None, limit=None, previous_hits=None):
             all_visit_ids = all_visit_ids or []
             domain = [
