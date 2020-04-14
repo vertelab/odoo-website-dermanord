@@ -685,6 +685,49 @@ action = {
             </field>
         </record>
 
+        <template id="failed_vat_check" name="Failed Vat Check">
+            <t t-call="website.layout">
+                <div id="wrap">
+                  <t t-raw="0"/>
+                  <div class="oe_structure oe_empty">
+                    <section class="para_large" style="height: 304px; overflow: hidden;">
+                      <div class="container">
+                        <div class="row">
+                          <div class="mt16 col-md-12" style="padding-left: 40px;">
+                            <img alt="Odoo image and text block" class="img img-responsive mb16 pull-right img-rounded" src="/theme_dermanord/static/src/img/500error.jpeg" style="animation-play-state: paused; transition: none;-webkit-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);-moz-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);-ms-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);-o-transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8);transform: translateX(-1%)  translateY(-5.3%)  scaleX(0.8)  scaleY(0.8)"/>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                    <section class="mt16 mb16 readable">
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-md-12 text-center mt16 mb32">
+                            <h6>Oh dear. It seems to be an error!</h6>
+                            <p>Vi har hittat problem vid kontroll av ert momsregistreringsnummer som gör att vi inte kan hantera er order. Vänligen kontakta vår säljavdelning på telefon +46 340 27 00 00.</p>
+                          </div>
+                          <div class="col-md-12 mb16 mt16">
+                            <p>
+                              <a href="javascript:history.back()">Gå tillbaka till föregående sida.</a>
+                            </p>
+                            <p>
+                              <a href="/page/homepage">Gå till startsidan.</a>
+                            </p>
+                            <p>
+                              <a href="/webshop">Gå till webshopen.</a>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                  <t t-if="request.debug">
+                    <t t-call="website.http_error_debug"/>
+                  </t>
+                </div>
+              </t>
+        </template>
+
         <menuitem action="action_broken_products" id="menu_broken_products" parent="base.menu_product" sequence="100" />
 
     </data>
