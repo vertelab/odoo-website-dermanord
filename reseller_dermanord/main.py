@@ -612,10 +612,13 @@ class website_sale_home(website_sale_home):
 
     def get_address_type(self):
         res = super(website_sale_home, self).get_address_type()
-        res.append('visit')
+        if request.env.user.has_group('webshop_dermanord.group_dn_af'):
+            res.append('visit')
         return res
 
     def get_address_types_readonly(self):
+        if request.env.user.has_group('webshop_dermanord.group_dn_sk'):
+            return ['invoice']
         return ['delivery', 'invoice']
 
     def get_children_by_address_type(self, company):
