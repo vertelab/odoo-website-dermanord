@@ -1283,6 +1283,14 @@ class WebsiteSale(website_sale):
 
         order = request.website.sale_get_order()
         _logger.warn('Partner_id (before payment) %s shipping %s invoice %s' % (order.partner_id,order.partner_shipping_id,order.partner_invoice_id))
+
+        # if order.partner_id.user_id in base.group
+        if not request.env.user.has_group('base.group_user'):
+            vat_check = order.partner_id.check_vat()
+            if not vat_check[0]:
+                return request.website.render("webshop_dermanord.failed_vat_check")
+
+
         redirection = self.checkout_redirection(order)
         if redirection:
             return redirection
