@@ -6,44 +6,65 @@ $(document).ready(function(){
         } else if ($(this).val().trim().length > 2) {
             openerp.jsonRpc("/search_suggestion", "call", {
                 search: $(this).val(),
-                res_model: ['product.template', 'product.product', 'product.public.category'], //, 'product.facet.line'],
+                res_model: ['product.template', 'product.product', 'product.public.category', 'blog.post'], //, 'product.facet.line'],
                 limit: 15, // [2554] Webbshop - Utöka antal sökträffar i toppsökning
                 offset: 0
             }).done(function(data){
-                var content_front = '<div class="result_suggestion">';
-                var content_behind = '</div>';
-                var content = '';
+                //~ var content_front = '<div class="result_suggestion">';
+                //~ var content_behind = '</div>';
+                //~ var content = '';
+                let content = $('<div class="result_suggestion">');
+                
                 $.each(data, function(key, info) {
+                    let li = $('<li>');
+                    let a = $('<a>');
+                    let img = $('<img>');
+                    li.append(a);
+                    li.append(img);
+                    a.text(data[key]['name']);
+                    a.prepend(img);
+                    img.attr('src', '/imagefield/product.template/image_small/' + data[key]['res_id'] + '/ref/website_imagemagick.fts_image');
                     if (data[key]['model_record'] == 'product.template'){
                         if (data[key]['event_type_id']){
-                            var c = '<li><a href="/event/type/' + data[key]['event_type_id'] + '">' + data[key]['name'] + '</a></li>';
+                            a.attr('href', '/event/type/' + data[key]['event_type_id']);
+                            //~ var c = '<li><a href="/event/type/' + data[key]['event_type_id'] + '"><img src="/imagefield/product.template/image_small/' + data[key]['res_id'] + '/ref/website_imagemagick.fts_image' + '">' + data[key]['name'] + '</a></li>';
+                            //~ var c = '<li><a href="/event/type/' + data[key]['event_type_id'] + '">' + data[key]['name'] + '</a></li>';
                         } else {
-                            var c = '<li><a href="/dn_shop/product/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
+                            a.attr('href', '/dn_shop/product/' + data[key]['res_id']);
+                            //~ img.attr('src', '/imagefield/product.template/image_small/' + data[key]['res_id'] + '/ref/website_imagemagick.fts_image');
+                            //~ var c = '<li><a href="/dn_shop/product/' + data[key]['res_id'] + '"><img src="/imagefield/product.template/image_small/' + data[key]['res_id'] + '/ref/website_imagemagick.fts_image' + '">' + data[key]['name'] + '</a></li>';
+                            //var c = '<li><a href="/dn_shop/product/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
                         }
-                        content += c;
+                        content.append(li);
                     }
                     else if (data[key]['model_record'] == 'product.product'){
                         if (data[key]['event_type_id']){
-                            var c = '<li><a href="/event/type/' + data[key]['event_type_id'] + '">' + data[key]['name'] + '</a></li>';
+                            a.attr('href', '/event/type/' + data[key]['event_type_id']);
+                            //~ var c = '<li><a href="/event/type/' + data[key]['event_type_id'] + '">' + data[key]['name'] + '</a></li>';
                         } else {
-                            var c = '<li><a href="/dn_shop/variant/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
+                            a.attr('href', '/dn_shop/variant/' + data[key]['res_id']);
+                            //~ var c = '<li><a href="/dn_shop/variant/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
                         }
-                        content += c;
+                        content.append(li);
                     }
                     else if (data[key]['model_record'] == 'product.public.category'){
-                        var c = '<li><a href="/webshop/category/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
-                        content += c;
+                        a.attr('href', '/webshop/category/' + data[key]['res_id']);
+                        //~ var c = '<li><a href="/webshop/category/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
+                        content.append(li);
                     }
                     else if (data[key]['model_record'] == 'blog.post'){
-                        var c = '<li><a href="/blog/' + data[key]['blog_id'] + '/post/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
-                        content += c;
+                        a.attr('href', '/blog/' + data[key]['blog_id'] + '/post/' + data[key]['res_id']);
+                        //~ var c = '<li><a href="/blog/' + data[key]['blog_id'] + '/post/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
+                        content.append(li);
                     }
                     else if (data[key]['model_record'] == 'product.facet.line'){
-                        var c = '<li><a href="/dn_shop/product/' + data[key]['product_tmpl_id'] + '">' + data[key]['product_name'] + '</a></li>';
-                        content += c;
+                        a.attr('href', '/dn_shop/product/' + data[key]['product_tmpl_id'] + + data[key]['product_name']);
+                        //~ var c = '<li><a href="/dn_shop/product/' + data[key]['product_tmpl_id'] + '">' + data[key]['product_name'] + '</a></li>';
+                        content.append(li);
                     }
                 });
-                $(".result_suggestion").html(content_front + content + content_behind)
+                $(".result_suggestion").replaceWith(content)
+                //~ $(".result_suggestion").html(content_front + content + content_behind)
             });
         }
     });
