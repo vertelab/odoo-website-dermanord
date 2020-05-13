@@ -250,6 +250,7 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
                                     <thead>
                                         <tr>
                                             <th />
+                                            <th class="hidden-xs"></th>
                                             <th class="hidden-xs">Art. nr</th>
                                             <th >Produkt</th>
                                             <th class="hidden-xs">Säljstart kund</th>
@@ -550,11 +551,11 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
             </xpath>
             <xpath expr="//tr[@t-foreach='suggested_products']" position="replace">
                 <tr t-foreach="suggested_products" t-as="product">
-                    <td>
+              <!--       <td>
                         <a t-attf-href="/dn_shop/variant/#{ slug(product) }">
                             <span t-field="product.image_small" t-field-options='{"widget": "image", "class": "img-rounded"}' />
                         </a>
-                    </td>
+                    </td> -->
                     <td>
                         <div>
                             <a t-attf-href="/dn_shop/variant/#{ slug(product) }">

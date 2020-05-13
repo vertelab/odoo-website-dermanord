@@ -643,6 +643,7 @@ class product_product(models.Model):
                 template = self.env['product.template'].search_read([('id', '=', product['product_tmpl_id'][0])], fields=['is_offer_product_reseller', 'is_offer_product_consumer'])[0]
                 product_ribbon_offer  = False
                 product_ribbon_offer_mobile  = False
+
                 if pricelist.for_reseller:
                     if product['is_offer_product_reseller'] or template['is_offer_product_reseller']:
                         product_ribbon_offer  = True
@@ -652,11 +653,18 @@ class product_product(models.Model):
                         product_ribbon_offer  = True
                         product_ribbon_offer_mobile  = True
                 product_obj = self.env['product.product'].browse(product['id'])
+                
                 is_edu_purchase = product_obj.purchase_type == 'edu'
                 buttons = product_obj.get_add_to_cart_buttons()
                 page = u"""<tr class="tr_lst ">
+
                                 <td class="td_lst ribbon_responsive">
                                     <div class="lst-ribbon-wrapper">{product_ribbon_offer}{product_ribbon_offer_mobile}{product_ribbon_promo}{product_ribbon_promo_mobile}{product_ribbon_limited}{product_ribbon_limited_mobile}</div>
+                                </td>
+                                <td>
+                        
+                                 <img class="img img-responsive hidden-xs" style="width: 64px;" src="/imagefield/product.product/image_small/{product_id}/ref/webshop_dermanord.img_payment" />
+                            
                                 </td>
                                 <td class="hidden-xs">
                                     <h5 class="list_product_name">
@@ -728,6 +736,8 @@ class product_product(models.Model):
                     shop_widget='{shop_widget}',
                     product_stock='{product_stock}',
                     product_name=product['fullname'],
+        
+                    product_image=product_obj,
                     product_price = product_obj.get_pricelist_chart_line(pricelist).get_html_price_short(),
                     product_ribbon_offer = product_ribbon_offer and ('<div class="ribbon ribbon_offer hidden-xs btn btn-primary">%s</div>' % _('Offer')) or '',
                     product_ribbon_offer_mobile = product_ribbon_offer and ('<div class="ribbon ribbon_offer hidden-xl hidden-lg hidden-md hidden-sm hidden-ls btn btn-primary">%s</div>' % _('O')) or '',
