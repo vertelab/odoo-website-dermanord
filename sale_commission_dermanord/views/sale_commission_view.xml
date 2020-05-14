@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
   <data>
+    <record id="view_partner_form_agent" model="ir.ui.view">
+      <field name="name">res.partner.form.agent.dermanord</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="sale_commission.view_partner_form_agent" />
+      <field name="arch" type="xml">
+        <field name="commission" position="after">
+          <field name="agent_commission_required" invisible="1"/>
+          <field name="agent_commission_id" attrs="{'required': [('agent_commission_required', '=', True)]}"/>
+        </field>
+      </field>
+    </record>
     <record id="view_order_form_inherit" model="ir.ui.view">
       <field name="name">sale.order.form.sale.stock.sale_commission_dermanord</field>
       <field name="model">sale.order</field>
