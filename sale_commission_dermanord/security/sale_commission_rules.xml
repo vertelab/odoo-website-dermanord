@@ -67,6 +67,16 @@ access_sale_commission_section_portal,sale.commission.section - Portal,sale_comm
         <field name="perm_unlink" eval="False"/>
     </record>
     
+    <record id="rule_sale_commission_settlement_line_portal" model="ir.rule">
+        <field name="name">Agent Portal - sale.commission.settlement.line</field>
+        <field name="model_id" ref="sale_commission.model_sale_commission_settlement_line"/>
+        <field name="groups" eval="[(6, 0, [ref('base.group_portal')])]"/>
+        <field name="domain_force">[('agent', 'child_of', user.commercial_partner_id.id)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    
     <record id="rule_sale_order_line_agent_agent_portal" model="ir.rule">
         <field name="name">Agent Portal - sale.order.line.agent</field>
         <field name="model_id" ref="sale_commission.model_sale_order_line_agent"/>

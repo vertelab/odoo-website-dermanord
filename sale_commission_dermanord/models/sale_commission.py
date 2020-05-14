@@ -28,8 +28,18 @@ _logger = logging.getLogger(__name__)
 class ResPartner(models.Model):
     _inherit = 'res.partner'
     
+    agent_commission_id = fields.Many2one(
+        string="Agent Commission", comodel_name="sale.commission",
+        help="This is the default commission used to calculate the commission "
+             "for the agent of this reseller, on orders belonging to this resellers "
+             "customers.")
+    agent_commission_required = fields.Boolean(compute='_agent_commission_required')
     my_customer = fields.Boolean(string='My Customer', compute='_compute_my_customer', search='_search_my_customer')
-    
+
+    @api.one
+    def _agent_commission_required(self):
+        self.agent_commission_required = self.agents and self.agent or False
+
     @api.multi
     def _compute_my_customer(self):
         pass
@@ -39,7 +49,7 @@ class ResPartner(models.Model):
     
     @api.model
     def _search_my_customer(self, op, value):
-        _logger.warn('op: %s\nvalue: %s\n%s\n%s' % (op, value, self.env.uid, self.env.context))
+        # ~ _logger.warn('op: %s\nvalue: %s\n%s\n%s' % (op, value, self.env.uid, self.env.context))
         # ~ assert value in (True, False, None), "Search for my_customer is only implemented for True, False and None values."
         # ~ assert op in ('=', '!='), "Search for my_customer is only implemented for '=' and '!=' operators."
         if op == '!=':
@@ -47,7 +57,6 @@ class ResPartner(models.Model):
         domain = [('commercial_partner_id.agents.id', 'child_of', self.env.user.commercial_partner_id.id)]
         if not value:
             domain.insert(0, '!')
-        _logger.warn(domain)
         return domain
     
     @api.model
@@ -84,4 +93,53 @@ class AccountInvoice(models.Model):
                 tree_view_ref='sale_commission_dermanord.invoice_tree'
             )).fields_view_get(view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
         return super(AccountInvoice, self).fields_view_get(view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
-        
+
+class AccountInvoiceLine(models.Model):
+    _inherit = "account.invoice.line"
+
+    @api.model
+    def _default_agents(self):
+        """Add commission for the reseller's agent."""
+        res = super(AccountInvoiceLine, self)._default_agents()
+        if self.env.context.get('partner_id'):
+            partner = self.env['res.partner'].browse(
+                self.env.context['partner_id'])
+            for reseller in partner.agents:
+                for agent in reseller.agents:
+                    vals = {
+                        'agent': agent.id,
+                        'commission': reseller.agent_commission_id.id,
+                    }
+                    vals['display_name'] = self.env['account.invoice.line.agent']\
+                        .new(vals).display_name
+                    res.append((0, 0, vals))
+        return res
+
+    agents = fields.One2many(default=_default_agents)
+
+class SaleOrderLine(models.Model):
+    _inherit = "sale.order.line"
+
+    @api.model
+    def _default_agents(self):
+        res = super(SaleOrderLine, self)._default_agents()
+        agent_found = False
+        if self.env.context.get('partner_id'):
+            partner = self.env['res.partner'].browse(
+                self.env.context['partner_id'])
+            # Loop through partner hierarchy and check for agents
+            while partner and not agent_found:
+                for reseller in partner.agents:
+                    for agent in reseller.agents:
+                        vals = {
+                            'agent': agent.id,
+                            'commission': reseller.agent_commission_id.id,
+                        }
+                        vals['display_name'] = self.env['sale.order.line.agent']\
+                            .new(vals).display_name
+                        res.append((0, 0, vals))
+                        agent_found = True
+                partner = partner.parent_id
+        return res
+    
+    agents = fields.One2many(default=_default_agents)
