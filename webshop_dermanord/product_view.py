@@ -264,11 +264,10 @@ class product_template(models.Model):
 
         for product in self.env['product.template'].search_read(domain, fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=limit, order=order,offset=offset):
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
-            key_raw = 'thumbnail_default_variant %s %s %s %s %s' % (
+            key_raw = 'thumbnail_default_variant %s %s %s %s' % (
                 self.env.cr.dbname, 
                 product['id'], 
                 pricelist.id, 
-                product['memcached_time'],
                 self.env.lang)   # db produkt prislista språk
                 
             key,page_dict = self.env['website'].get_page_dict(key_raw)
@@ -332,11 +331,10 @@ class product_template(models.Model):
 
         for product in product_ids:
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
-            key_raw = 'thumbnail_default_variant %s %s %s %s %s' % (
+            key_raw = 'thumbnail_default_variant %s %s %s %s' % (
                 self.env.cr.dbname, 
                 product['id'], 
                 pricelist.id, 
-                product['memcached_time'],
                 self.env.lang)   # db produkt prislista språk
             key, page_dict = self.env['website'].get_page_dict(key_raw)
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
@@ -399,11 +397,10 @@ class product_template(models.Model):
 
         for variant in variant_ids:
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
-            key_raw = 'thumbnail_variant %s %s %s %s %s' % (
+            key_raw = 'thumbnail_variant %s %s %s %s' % (
                 self.env.cr.dbname, 
                 variant['id'], 
                 pricelist.id, 
-                variant['memcached_time'],
                 self.env.lang)  # db produkt prislista språk
 
             key, page_dict = self.env['website'].get_page_dict(key_raw)
