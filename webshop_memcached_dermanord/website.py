@@ -43,9 +43,9 @@ class Website(models.Model):
         groups = [g.id for g in request.env.user.commercial_partner_id.access_group_ids]
         if self.env.ref('__export__.res_groups_284').id in groups: # Webbplatsbehörigheter / Hudterapeut
             return 'hudterapeut'
-        elif self.env.ref('res_groups_283').id in groups: # Webbplatsbehörigheter / Återförsäljare
+        elif self.env.ref('__export__.res_groups_283').id in groups: # Webbplatsbehörigheter / Återförsäljare
             return 'Återförsäljare'
-        elif self.env.ref('res_groups_285') in groups: # Webbplatsbehörigheter / SPA-Terapeut
+        elif self.env.ref('__export__.res_groups_285').id in groups: # Webbplatsbehörigheter / SPA-Terapeut
             return 'SPA-terapeut'
         else:
             return ''
