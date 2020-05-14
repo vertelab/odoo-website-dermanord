@@ -264,11 +264,13 @@ class product_template(models.Model):
 
         for product in self.env['product.template'].search_read(domain, fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=limit, order=order,offset=offset):
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
-            key_raw = 'thumbnail_default_variant %s %s %s %s %s %s %s %s' % (
-                self.env.cr.dbname, flush_type, product['id'], pricelist.id,
-                self.env.lang, request.session.get('device_type','md'),
-                self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
-                ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))  # db flush_type produkt prislista språk webeditor kundgrupper,
+            key_raw = 'thumbnail_default_variant %s %s %s %s %s' % (
+                self.env.cr.dbname, 
+                product['id'], 
+                pricelist.id, 
+                product['memcached_time'],
+                self.env.lang)   # db produkt prislista språk
+                
             key,page_dict = self.env['website'].get_page_dict(key_raw)
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
             if not page_dict:
@@ -330,11 +332,12 @@ class product_template(models.Model):
 
         for product in product_ids:
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
-            key_raw = 'thumbnail_default_variant %s %s %s %s %s %s %s %s' % (
-                self.env.cr.dbname, flush_type, product['id'], pricelist.id,
-                self.env.lang, request.session.get('device_type','md'),
-                self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
-                ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))  # db flush_type produkt prislista språk webeditor kundgrupper,
+            key_raw = 'thumbnail_default_variant %s %s %s %s %s' % (
+                self.env.cr.dbname, 
+                product['id'], 
+                pricelist.id, 
+                product['memcached_time'],
+                self.env.lang)   # db produkt prislista språk
             key, page_dict = self.env['website'].get_page_dict(key_raw)
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
             if not page_dict:
@@ -396,12 +399,15 @@ class product_template(models.Model):
 
         for variant in variant_ids:
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
-            key_raw = 'thumbnail_variant %s %s %s %s %s %s %s %s %s' % (
-                self.env.cr.dbname, flush_type, variant['id'], pricelist.id, variant['memcached_time'],
-                self.env.lang, request.session.get('device_type','md'),
-                self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
-                ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))  # db flush_type produkt prislista språk webeditor kundgrupper,
+            key_raw = 'thumbnail_variant %s %s %s %s %s' % (
+                self.env.cr.dbname, 
+                variant['id'], 
+                pricelist.id, 
+                variant['memcached_time'],
+                self.env.lang)  # db produkt prislista språk
+
             key, page_dict = self.env['website'].get_page_dict(key_raw)
+
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
             if not page_dict:
                 render_start = timer()
@@ -635,7 +641,11 @@ class product_product(models.Model):
         ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
         ribbon_promo   = request.env.ref('website_sale.image_promo')
         for product in self.env['product.product'].search_read(domain, fields=['id','fullname', 'default_code','type', 'is_offer_product_reseller', 'is_offer_product_consumer', 'product_tmpl_id', 'sale_ok','campaign_ids', 'website_style_ids', 'website_style_ids_variant', 'memcached_time'], limit=limit, order=order,offset=offset):
-            key_raw = 'list_row %s %s %s %s %s %s %s Groups: %s' % (self.env.cr.dbname, flush_type, product['id'], pricelist.id, self.env.lang, request.session.get('device_type', 'md'), product['memcached_time'], request.website.get_dn_groups())  # db flush_type produkt prislista språk användargrupp
+            key_raw = 'list_row %s %s %s %s' % (
+            self.env.cr.dbname,  
+            pricelist.id, 
+            self.env.lang, 
+            product['memcached_time'])  # db produkt prislista språk
             key, page_dict = self.env['website'].get_page_dict(key_raw)
             if not page_dict:
                 render_start = timer()
@@ -994,13 +1004,17 @@ class product_product(models.Model):
         pricelist = partner.property_product_pricelist
         flush_type = 'get_product_detail'
         memcached_time = max([accessory.memcached_time for accessory in product.accessory_product_ids] + [product.memcached_time])
-        key_raw = 'product_detail %s %s %s %s %s %s %s %s %s %s' % (
-            self.env.cr.dbname, flush_type, product.id, variant_id,
-            pricelist.id, self.env.lang, memcached_time,
-            request.session.get('device_type', 'md'),
-            self.env.user in self.sudo().env.ref('base.group_website_publisher').users,
-            ','.join([str(id) for id in sorted(self.env.user.commercial_partner_id.access_group_ids._ids)]))
+        key_raw = 'product_detail %s %s %s %s %s %s %s' % (
+            self.env.cr.dbname, 
+            product.id, 
+            variant_id,
+            pricelist.id, 
+            self.env.lang, 
+            memcached_time,
+            self.env.user in self.sudo().env.ref('base.group_website_publisher').users)
+
         key, page_dict = self.env['website'].get_page_dict(key_raw)
+
         if not page_dict:
             render_start_tot = timer()
             page = ''
@@ -1301,7 +1315,7 @@ class Website(models.Model):
             _logger.warn(error)
         except MemcacheUnknownError as e:
             error = str(e)
-            _logger.warn("MemcacheUnknownError %s key: %s path: %s" % (eror, key, request.httprequest.path))
+            _logger.warn("MemcacheUnknownError %s key: %s path: %s" % (error, key, request.httprequest.path))
         except MemcacheUnexpectedCloseError as e:
             error = "MemcacheUnexpectedCloseError %s " % e
             _logger.warn(error)
