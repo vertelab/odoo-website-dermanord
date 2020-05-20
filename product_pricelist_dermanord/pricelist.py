@@ -28,6 +28,9 @@ class product_pricelist_dermanord(models.TransientModel):
     _name = 'product.pricelist.dermanord'
     _description = 'Product Pricelist Dermanord'
 
+    def compute_lang(self):
+        return self.env['res.lang'].search([('code', '=', 'sv_SE')])
+
     pricelist_title_one = fields.Char(string='Column Title 1', required=True)
     pricelist_title_two = fields.Char(string='Column Title 2')
     pricelist_id_one = fields.Many2one(comodel_name='product.pricelist', string='Pricelist 1', required=True)
@@ -35,9 +38,6 @@ class product_pricelist_dermanord(models.TransientModel):
     date = fields.Date(string='Date', required=True)
     fiscal_position_id_one = fields.Many2one(comodel_name='account.fiscal.position', string='Fiscal Position 1', required=True)
     fiscal_position_id_two = fields.Many2one(comodel_name='account.fiscal.position', string='Fiscal Position 2')
-
-    def compute_lang(self):
-        return self.env['res.lang'].search([('code', '=', 'sv_SE')])
     lang = fields.Many2one(comodel_name='res.lang', string='Language', default=compute_lang, required=True)
 
     @api.multi
@@ -52,7 +52,8 @@ class product_pricelist_dermanord(models.TransientModel):
             'categories': [],
             'pricelist_id': self.pricelist_id_one.id,
         }
-        domain = [('sale_ok', '=', True)]
+        # ~ write out products which are not in the list
+        domain = [('sale_ok', '=', True), ('id','not in', self.pricelist_id_one.product_ids._ids)]
         if self._context.get('active_ids'):
             domain.append(('id', 'in', self._context.get('active_ids')))
         all_products = self.env['product.product'].with_context(lang=self.lang.code).search(domain, order='default_code')
@@ -87,6 +88,12 @@ class product_pricelist_dermanord(models.TransientModel):
         else:
             return name_report if name_report else display_name
 
+
+class ProductPricelist(models.Model):
+    _inherit = 'product.pricelist'
+    # ~ creat the product list
+    product_ids = fields.Many2many(comodel_name="product.product", string="product ID")
+    
 
 class product_product(models.Model):
     _inherit = 'product.product'
