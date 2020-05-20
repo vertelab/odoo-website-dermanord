@@ -21,6 +21,7 @@
             <field name="inherit_id" ref="product.product_pricelist_view"/>
             <field name="arch" type="xml">
                 <field name="version_id" position="before">
+                    <strong>Exclude Products List</strong>
                     <field name="product_ids" />
                 </field>
             </field>

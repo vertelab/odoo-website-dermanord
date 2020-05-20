@@ -52,7 +52,7 @@ class product_pricelist_dermanord(models.TransientModel):
             'categories': [],
             'pricelist_id': self.pricelist_id_one.id,
         }
-        # ~ write out products which are not in the list
+        # ~ write out products which are not in the list(the list is for remove the product which should not be in the report)
         domain = [('sale_ok', '=', True), ('id','not in', self.pricelist_id_one.product_ids._ids)]
         if self._context.get('active_ids'):
             domain.append(('id', 'in', self._context.get('active_ids')))
