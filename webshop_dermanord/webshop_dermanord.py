@@ -1092,7 +1092,7 @@ class Website(models.Model):
             pricelist_ids = self.pool['product.pricelist'].search(cr, SUPERUSER_ID, [('code', '=', code)], context=context)
             if pricelist_ids:
                 pricelist_id = pricelist_ids[0]
-                code_pricelist = env['product.pricelist'].sudo().browse(pricelist_id) # why do i have to do this? because of 7.0 syntax
+                code_pricelist = env['product.pricelist'].sudo().browse(pricelist_id) # why do i have to do this? because v7.0 syntax
                 # check if coupon is reusable or make sure that the partner has not already used it
                 if code_pricelist.code_unlimited or not (env.user.partner_id in code_pricelist.code_partner_ids):
                     request.session['sale_order_code_pricelist_id'] = pricelist_id

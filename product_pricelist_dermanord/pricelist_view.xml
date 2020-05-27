@@ -14,6 +14,18 @@
                 </div>
             </field>
         </record>
+        
+        <record id="product_pricelist_view" model="ir.ui.view">
+            <field name="name">product.pricelist.form.product_pricelist_dermanord</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view"/>
+            <field name="arch" type="xml">
+                <field name="version_id" position="before">
+                    <strong>Exclude Products List</strong>
+                    <field name="product_ids" widget="many2many_tags" />
+                </field>
+            </field>
+        </record>
 
         <record id="view_product_pricelist_dermanord" model="ir.ui.view">
             <field name="name">Product Pricelist Dermanord</field>
