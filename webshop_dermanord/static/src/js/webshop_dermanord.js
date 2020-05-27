@@ -503,12 +503,15 @@ $(function(){
             if ($input.data('update_change')) {
                 return;
             }
+
             var value = parseInt($input.val(), 10);
             var $dom = $(this).closest('tr');
             var default_price = parseFloat($dom.find('.text-danger > span.oe_currency_value').text());
             var $dom_optional = $dom.nextUntil(':not(.optional_product.info)');
             var line_id = parseInt($input.data('line-id'),10);
             var product_id = parseInt($input.data('product-id'),10);
+            var product_name_data = $input.data('product-name');
+            var product_name = product_name_data;
             var product_ids = [product_id];
             $dom_optional.each(function(){
                 product_ids.push($(this).find('span[data-product-id]').data('product-id'));
@@ -532,6 +535,7 @@ $(function(){
                 'add_qty': value,
                 'use_order_pricelist': true,
                 'line_id': line_id})
+
             .then(function (res) {
                 //basic case
                 $dom.find('span.oe_currency_value').last().text(price_to_str(res[product_id]));
@@ -568,15 +572,42 @@ $(function(){
                     $input.val(data.quantity);
                     $('.js_quantity[data-line-id='+line_id+']').val(data.quantity).html(data.quantity);
                     $("#cart_total").replaceWith(data['website_sale.total']);
-                    $.ajax({
+                  $.ajax({
                         url: '/shop/allowed_order/?order=' + $("a#process_checkout").data("order"),
                         type: 'post',
                         data: {},
+
                         success: function(data) {
                             if (data == '1') {
                                 $("a#process_checkout").attr("disabled", false);
                                 $("tr#value_not_met").addClass("hidden");
                             }
+
+                            $.notify.addStyle('cart_notify', {
+                                html: "<div><span data-notify-text/></div>",
+                                classes: {
+                                    base: {
+                                        "white-space": "nowrap",
+                                        "background-color": "#839794",
+                                        "padding": "22px"
+
+                                    },
+                                    green_notify: {
+                                        "color": "white",
+                                        "font-size": "18px",
+                                        "font-weight": "normal",
+                                        "background-color": "#839794"
+                                    }
+                                }
+                            });
+
+                            
+                            $.notify(value + 'x ' + product_name + ' \n Has been added to the cart', {
+                                style: 'cart_notify',
+                                className: 'green_notify'
+
+                            });
+
                             if (data == '0') {
                                 $("a#process_checkout").attr("disabled", true);
                                 $("tr#value_not_met").removeClass("hidden");
@@ -922,6 +953,8 @@ var timer = function(name) {
     }
 };
 
+
+
 function webshop_restore_filter() {
     $("#dn_filter_modal").find(".modal-body").find("input[type=checkbox]").each(
         function() {
@@ -974,7 +1007,7 @@ $(document).on('click', '.dn_js_options ul[name="style"] a', function (event) {
 // This method called by "add_to_cart" button in both dn_shop and dn_list.
 // Method does a calculation according to the product unit_price * quantity and update the cart total amount.
 // Method does a RPC-call, after response update cart again with current order total amount.
-$(document).on('click', '.dn_list_add_to_cart, .dn_list_add_to_cart_edu, #add_to_cart.a-submit, #add_to_cart_edu.a-submit', function (event) {
+$(document).on('click', '.dn_list_add_to_cart, .oe_website_spinner, .dn_list_add_to_cart_edu, #add_to_cart.a-submit, #add_to_cart_edu.a-submit', function (event) {
     var self = $(this);
     var my_cart_total = $(".my_cart_total");
     my_cart_total.closest("a").css({"pointer-events": "none", "cursor": "default"});
@@ -1020,9 +1053,11 @@ $(document).on('click', '.dn_list_add_to_cart, .dn_list_add_to_cart_edu, #add_to
     var current_total = cart_total + unit_price * parseFloat(add_qty);
     setCartPriceQuantity(parseFloat(current_total).toFixed(2), '' + (parseInt(add_qty) + parseInt(cart_qty)), current_total);
 
-    openerp.jsonRpc("/shop/cart/update", "call", {
+
+   openerp.jsonRpc("/shop/cart/update", "call", {
         'product_id': product_id,
-        'add_qty': add_qty
+        'add_qty': add_qty,
+
     }).done(function(data){
         if($.isArray(data)){
             self.attr("data-finished", "done");
@@ -1030,8 +1065,32 @@ $(document).on('click', '.dn_list_add_to_cart, .dn_list_add_to_cart_edu, #add_to
                 setCartPriceQuantity(data[0], data[1], data[2]);
                 my_cart_total.closest("a").css({"pointer-events": "", "cursor": ""});
                 my_cart_total.closest("a").attr("id", "cart_updated");
+
+        $.notify.addStyle('cart_notify', {
+            html: "<div><span data-notify-text/></div>",
+            classes: {
+                base: {
+                    "white-space": "nowrap",
+                    "background-color": "#839794",
+                    "padding": "22px",
+                    "font-size": "16px",
+                },
+                green_notify: {
+                    "color": "white",
+                    "font-size": "18px",
+                    "font-weight": "normal",
+                    "background-color": "#839794"
+                }
+             }
+        });
+
+        $.notify(add_qty + 'x ' + data[3] + ' \n Has been added to the cart', {
+            style: 'cart_notify',
+            className: 'green_notify'
+        });
+
+          }
             }
-        }
         else {
             window.alert(data);
         }

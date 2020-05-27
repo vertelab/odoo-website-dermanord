@@ -508,7 +508,9 @@
             <!-- Customize css -->
             <xpath expr="." position="inside">
                 <link href="/webshop_dermanord/static/src/css/webshop_dermanord.css" rel="stylesheet" />
+                 <script type="text/javascript" src="/webshop_dermanord/static/src/js/notify.js" />
             </xpath>
+    
         </template>
         <template id="assets_frontend_override" inherit_id="website_sale.assets_frontend">
             <!-- Customize javascript -->
@@ -527,6 +529,7 @@
             <xpath expr="//script[@src='/website_fts/static/src/js/main.js']" position="replace">
                 <script type="text/javascript" src="/webshop_dermanord/static/src/js/fts_search.js" />
             </xpath>
+
         </template>
         <record id="product_pricelist_item_tree_view" model="ir.ui.view">
             <field name="name">product.pricelist.item.tree.surcharge</field>

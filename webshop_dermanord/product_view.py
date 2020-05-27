@@ -662,9 +662,7 @@ class product_product(models.Model):
                                     <div class="lst-ribbon-wrapper">{product_ribbon_offer}{product_ribbon_offer_mobile}{product_ribbon_promo}{product_ribbon_promo_mobile}{product_ribbon_limited}{product_ribbon_limited_mobile}</div>
                                 </td>
                                 <td>
-                        
                                  <img class="img img-responsive hidden-xs" style="width: 64px;" src="/imagefield/product.product/image_small/{product_id}/ref/webshop_dermanord.img_payment" />
-                            
                                 </td>
                                 <td class="hidden-xs">
                                     <h5 class="list_product_name">
@@ -720,6 +718,7 @@ class product_product(models.Model):
                                                 </div>
                                                 {buy_button}
                                             </div>
+                                   
                                         </form>
                                     </div>
                                     <span class="dn_list_instock">{product_stock}</span>
@@ -736,7 +735,6 @@ class product_product(models.Model):
                     shop_widget='{shop_widget}',
                     product_stock='{product_stock}',
                     product_name=product['fullname'],
-        
                     product_image=product_obj,
                     product_price = product_obj.get_pricelist_chart_line(pricelist).get_html_price_short(),
                     product_ribbon_offer = product_ribbon_offer and ('<div class="ribbon ribbon_offer hidden-xs btn btn-primary">%s</div>' % _('Offer')) or '',

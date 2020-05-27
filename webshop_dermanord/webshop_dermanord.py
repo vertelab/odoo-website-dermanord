@@ -1823,16 +1823,18 @@ class WebsiteSale(website_sale):
 
     @http.route(['/shop/cart/update'], type='json', auth="public", website=True)
     def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
+        product_id = int(product_id)
         start = timer()
         locked = True
         while not self.dn_cart_lock.acquire(False):
             if timer() - start > 2:
                 locked = False
                 break
-        res = request.website.sale_get_order(force_create=1)._cart_update(product_id=int(product_id), add_qty=float(add_qty), set_qty=float(set_qty))
+        res = request.website.sale_get_order(force_create=1)._cart_update(product_id=product_id, add_qty=float(add_qty), set_qty=float(set_qty))
         if locked:
             self.dn_cart_lock.release()
-        return [request.website.price_format(res['amount_untaxed']), res['cart_quantity'], res['amount_untaxed']]
+        product_name = request.env['product.product'].sudo().search_read([('id', '=', product_id)], ['name'])[0]['name']
+        return [request.website.price_format(res['amount_untaxed']), res['cart_quantity'], res['amount_untaxed'], product_name]
 
     @http.route(['/website_sale_update_cart'], type='json', auth="public", website=True)
     def website_sale_update_cart(self):

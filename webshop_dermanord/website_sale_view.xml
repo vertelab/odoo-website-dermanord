@@ -346,11 +346,16 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
 
             <xpath expr="//div[@class='input-group oe_website_spinner']" position="attributes">
                 <attribute name="t-if">not line.event_id</attribute>
+                <attribute name="t-att-data-product-name">line.name</attribute>
+            </xpath>
+
+            <xpath expr="//input" position="attributes">
+                <attribute name="t-att-data-product-name">line.name</attribute>
             </xpath>
 
             <xpath expr="//div[@class='input-group oe_website_spinner']" position="after">
                 <div t-if="line.event_id" class="input-group oe_website_spinner">
-                    <input type="number" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty)" disabled="disabled"/>
+                    <input type="number" class="js_quantity form-control" t-att-data-line-id="line.id" t-att-data-product-name="line.name" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty)" disabled="disabled"/>
                 </div>
             </xpath>
             
@@ -483,6 +488,7 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
             <!-- Added attribute to check if purchase is educational -->
             <xpath expr="//input[hasclass('js_quantity')]" position="attributes">
                 <attribute name="t-att-data-edu-purchase">int(line.product_id.purchase_type == 'edu')</attribute>
+                <attribute name="t-att-data-product-name">line.name</attribute>
             </xpath>
             
             <xpath expr="//table[@id='cart_products']/thead/tr" position="inside">
@@ -551,11 +557,6 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
             </xpath>
             <xpath expr="//tr[@t-foreach='suggested_products']" position="replace">
                 <tr t-foreach="suggested_products" t-as="product">
-              <!--       <td>
-                        <a t-attf-href="/dn_shop/variant/#{ slug(product) }">
-                            <span t-field="product.image_small" t-field-options='{"widget": "image", "class": "img-rounded"}' />
-                        </a>
-                    </td> -->
                     <td>
                         <div>
                             <a t-attf-href="/dn_shop/variant/#{ slug(product) }">
