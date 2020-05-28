@@ -594,7 +594,7 @@ $(function(){
                                     },
                                     green_notify: {
                                         "color": "white",
-                                        "font-size": "18px",
+                                        "font-size": "16px",
                                         "font-weight": "normal",
                                         "background-color": "#839794"
                                     }
@@ -1077,7 +1077,7 @@ $(document).on('click', '.dn_list_add_to_cart, .oe_website_spinner, .dn_list_add
                 },
                 green_notify: {
                     "color": "white",
-                    "font-size": "18px",
+                    "font-size": "16px",
                     "font-weight": "normal",
                     "background-color": "#839794"
                 }
