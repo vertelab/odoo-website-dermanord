@@ -638,11 +638,7 @@ class product_product(models.Model):
         ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
         ribbon_promo   = request.env.ref('website_sale.image_promo')
         for product in self.env['product.product'].search_read(domain, fields=['id','fullname', 'default_code','type', 'is_offer_product_reseller', 'is_offer_product_consumer', 'product_tmpl_id', 'sale_ok','campaign_ids', 'website_style_ids', 'website_style_ids_variant', 'memcached_time'], limit=limit, order=order,offset=offset):
-            key_raw = 'list_row %s %s %s %s' % (
-            self.env.cr.dbname,  
-            pricelist.id, 
-            self.env.lang, 
-            product['memcached_time'])  # db produkt prislista språk
+            key_raw = 'list_row %s %s %s %s %s %s %s Groups: %s' % (self.env.cr.dbname, flush_type, product['id'], pricelist.id, self.env.lang, request.session.get('device_type', 'md'), product['memcached_time'], request.website.get_dn_groups())  # db flush_type produkt prislista språk användargrupp
             key, page_dict = self.env['website'].get_page_dict(key_raw)
             if not page_dict:
                 render_start = timer()
