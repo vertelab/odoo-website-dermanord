@@ -440,7 +440,7 @@
       <xpath expr="//t[@t-raw='0']" position="before">
         <t t-if="not no_breadcrumb and website">
           <ol class="breadcrumb dn_breadcrumb">
-            <t t-raw="website.get_breadcrumb(request.httprequest.path, product=product, blog=blog, blog_post=blog_post, job=job)" />
+            <t t-raw="website.get_breadcrumb(request.httprequest.path, product=product, blog=blog, blog_post=blog_post, job=job, mail=mail)" />
             <t t-set="master_languages" t-value="[]" />
             <t t-set="other_languages" t-value="[]" />
             <t t-foreach="languages" t-as="lg">

@@ -66,6 +66,9 @@ class website(models.Model):
             return menu
 
     def get_breadcrumb(self, path, **params):
+        """Generates a breadcrumb.
+        Extra parameters can be supplied by setting the breadcrumb_params variable before rendering of website.layout.
+        """
         try:
             breadcrumb = []
             if path.startswith('/dn_shop/product/') or path.startswith('/dn_shop/variant/'): # url is a product
@@ -81,10 +84,7 @@ class website(models.Model):
                     while category:
                         breadcrumb.append('<li><a href="/webshop/category/%s">%s</a></li>' % (category.id, category.name))
                         category = category.parent_id
-
-
-
-
+            
                 menu = self.env.ref('webshop_dermanord.menu_dn_shop')
                 home_menu = self.env.ref('website.menu_homepage')
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
@@ -124,6 +124,8 @@ class website(models.Model):
                 
                 if request.env.ref('base.public_user') != request.env.user:
                     breadcrumb.append('<li><a href="/my/mail?tab=mail_archive">%s</a></li><li>Mail Archive</li>' % _('MY ACCOUNT'))
+                    breadcrumb.append('<li>%s</li>' %params.get('mail').name)
+
                 return ''.join(breadcrumb)
             elif path.startswith('/home'): # url is on the user home page
                 path = path.split('/')[1:]
@@ -177,6 +179,7 @@ class website(models.Model):
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
                 return ''.join(reversed(breadcrumb))
         except:
+            _logger.warning('Error in breadcrumb rendering', exc_info=True)
             return '<li><a href="/">Home</a></li>'
 
     def enumerate_pages(self, cr, uid, ids, query_string=None, context=None):
