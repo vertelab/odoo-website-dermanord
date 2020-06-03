@@ -347,6 +347,7 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
             <xpath expr="//div[@class='input-group oe_website_spinner']" position="attributes">
                 <attribute name="t-if">not line.event_id</attribute>
                 <attribute name="t-att-data-product-name">line.name</attribute>
+                <attribute name="t-att-data-product-attribute">line.product_id.attribute_value_ids</attribute>
             </xpath>
 
             <xpath expr="//input" position="attributes">
@@ -489,6 +490,7 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
             <xpath expr="//input[hasclass('js_quantity')]" position="attributes">
                 <attribute name="t-att-data-edu-purchase">int(line.product_id.purchase_type == 'edu')</attribute>
                 <attribute name="t-att-data-product-name">line.name</attribute>
+                <attribute name="t-att-data-product-attribute">line.product_id.attribute_value_ids</attribute>
             </xpath>
             
             <xpath expr="//table[@id='cart_products']/thead/tr" position="inside">

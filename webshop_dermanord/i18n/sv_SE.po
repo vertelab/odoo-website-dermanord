@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-26 11:27+0000\n"
-"PO-Revision-Date: 2019-08-26 11:27+0000\n"
+"POT-Creation-Date: 2020-06-03 12:26+0000\n"
+"PO-Revision-Date: 2020-06-03 12:26+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -40,16 +40,36 @@ msgid "\n"
 msgstr "\n"
 "                  \n"
 "                    <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n"
+"                      <tbody><tr>\n"
+"                        <td>\n"
+"                          <h4>Hej ${object.partner_id.name}!</h4><p>En artikel du efterfrågade finns åter i lager. ${object.product_id.display_name}</p><img src=\"${object.env['ir.config_parameter'].get_param('web.base.url')}${object.product_id.dv_image_src}\"><table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n"
+"                            <tbody><tr>\n"
+"                                \n"
+"                                \n"
+"                                \n"
+"                               <td bgcolor=\"#788A87\" style=\"padding: 12px 18px 12px 18px; border-radius:3px\" align=\"center\">\n"
+"                               <a href=\"${object.env['ir.config_parameter'].get_param('web.base.url')}/dn_shop/variant/${object.product_id.id}\" target=\"_blank\" style=\"font-size: 16px; font-family: Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; display: inline-block;\">Gå till produkt →</a>\n"
+"                               </td>\n"
+"                            </tr>\n"
+"                          </tbody></table>\n"
+"                        </td>\n"
+"                      </tr>\n"
+"                    </tbody></table>\n"
+"                \n"
+"            "
+
+#. module: webshop_dermanord
+#: model:email.template,body_html:webshop_dermanord.stock_notify_inactive_message
+msgid "\n"
+"                  \n"
+"                    <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n"
 "                      <tr>\n"
 "                        <td>\n"
 "                          <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n"
 "                            <tr>\n"
-"                                <h4>Hej! ${object.partner_id.name}</h4>\n"
-"                                <p>En artikel du efterfrågade finns åter i lager. ${object.product_id.display_name}</p>\n"
+"                                <h4>Hi ${object.partner_id.name}</h4>\n"
+"                                <p>An item you requested is unfortunately no longer available for sale. ${object.product_id.display_name}</p>\n"
 "                                <img src=\"${object.env['ir.config_parameter'].get_param('web.base.url')}${object.product_id.dv_image_src}\"/>\n"
-"                               <td bgcolor=\"#788A87\" style=\"padding: 12px 18px 12px 18px; border-radius:3px\" align=\"center\">\n"
-"                               <a href=\"${object.env['ir.config_parameter'].get_param('web.base.url')}/dn_shop/variant/${object.product_id.id}\" target=\"_blank\" style=\"font-size: 16px; font-family: Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; display: inline-block;\">Gå till produkt &rarr;</a>\n"
-"                               </td>\n"
 "                            </tr>\n"
 "                          </table>\n"
 "                        </td>\n"
@@ -57,6 +77,33 @@ msgstr "\n"
 "                    </table>\n"
 "                \n"
 "            "
+msgstr "\n"
+"                  \n"
+"                    <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n"
+"                      <tbody><tr>\n"
+"                        <td>\n"
+"                          <h4>Hi ${object.partner_id.name}!</h4><p>An item you requested is unfortunately no longer available for sale. ${object.product_id.display_name}</p><img src=\"${object.env['ir.config_parameter'].get_param('web.base.url')}${object.product_id.dv_image_src}\"><table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n"
+"                            <tbody><tr>\n"
+"                                \n"
+"                                \n"
+"                                \n"
+"                            </tr>\n"
+"                          </tbody></table>\n"
+"                        </td>\n"
+"                      </tr>\n"
+"                    </tbody></table>\n"
+"                \n"
+"            "
+
+#. module: webshop_dermanord
+#. openerp-web
+#: code:addons/webshop_dermanord/static/src/js/webshop_dermanord.js:516
+#: code:addons/webshop_dermanord/static/src/js/webshop_dermanord.js:1055
+#, python-format
+msgid " \n"
+" Has been added to the cart"
+msgstr " \n"
+" Har lagts till i varukorgen"
 
 #. module: webshop_dermanord
 #: view:product.public.category:webshop_dermanord.product_public_category_form_view
@@ -69,7 +116,12 @@ msgid "${object.product_id.display_name + ' is back in stock'}"
 msgstr "${object.product_id.display_name + ' är åter i lager'}"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/webshop_dermanord.py:702
+#: model:email.template,subject:webshop_dermanord.stock_notify_inactive_message
+msgid "${object.product_id.display_name + ' is no longer available for sale'}"
+msgstr "${object.product_id.display_name + ' is no longer available for sale'}"
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/webshop_dermanord.py:868
 #, python-format
 msgid "%s appears to not be in your preferred language. Are you sure this is the correct product?"
 msgstr "%s verkar inte vara på ditt föredragna språk. Är du säker på att det är rätt produkt?"
@@ -117,16 +169,16 @@ msgstr "(ditt exkl. moms)"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.cart
-msgid "+ Add Tester"
-msgstr "+ Add Tester"
+msgid "+Add Tester"
+msgstr "+Add Tester"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.cart
-msgid "- Remove Tester"
-msgstr "- Remove Tester"
+msgid "-Remove Tester"
+msgstr "-Remove Tester"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:1027
+#: code:addons/webshop_dermanord/product_view.py:954
 #, python-format
 msgid "<div id=\"accessory_div\">\n"
 "                            <div class=\"container hidden-xs\">\n"
@@ -136,7 +188,7 @@ msgstr "<div id=\"accessory_div\">\n"
 "                                <h2 class=\"text-center dn_uppercase mt32 mb32\">Tillbehör vi rekomenderar:</h2>"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:1009
+#: code:addons/webshop_dermanord/product_view.py:937
 #, python-format
 msgid "<div id=\"alternatives_div\">\n"
 "                            <div class=\"container hidden-xs\">\n"
@@ -146,24 +198,10 @@ msgstr "<div id=\"alternatives_div\">\n"
 "                                <h2 class=\"text-center dn_uppercase mt32 mb32\">Andra har även köpt:</h2>"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/webshop_dermanord.py:1013
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1232
 #, python-format
 msgid "A mail will be sent to %s, when %s is back in stock"
 msgstr "Ett meddelande kommer att skickas till %s, när %s är tillbaka i lager"
-
-#. module: webshop_dermanord
-#. openerp-web
-#: code:addons/webshop_dermanord/static/src/js/webshop_dermanord.js:129
-#, python-format
-msgid "A tester has been added to your cart"
-msgstr "A tester has been added to your cart"
-
-#. module: webshop_dermanord
-#. openerp-web
-#: code:addons/webshop_dermanord/static/src/js/webshop_dermanord.js:146
-#, python-format
-msgid "A tester has been removed from your cart"
-msgstr "A tester has been removed from your cart"
 
 #. module: webshop_dermanord
 #: field:product.template,access_group_ids:0
@@ -176,8 +214,8 @@ msgid "Access groups"
 msgstr "Access groups"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/webshop_dermanord.py:207
-#: code:addons/webshop_dermanord/webshop_dermanord.py:300
+#: code:addons/webshop_dermanord/webshop_dermanord.py:226
+#: code:addons/webshop_dermanord/webshop_dermanord.py:319
 #, python-format
 msgid "AccessError"
 msgstr "AccessError"
@@ -188,10 +226,10 @@ msgid "Add to Cart"
 msgstr "Lägg till kundvagnen"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:558
-#: code:addons/webshop_dermanord/product_view.py:562
-#: code:addons/webshop_dermanord/product_view.py:566
-#: code:addons/webshop_dermanord/product_view.py:570
+#: code:addons/webshop_dermanord/product_view.py:535
+#: code:addons/webshop_dermanord/product_view.py:539
+#: code:addons/webshop_dermanord/product_view.py:543
+#: code:addons/webshop_dermanord/product_view.py:547
 #, python-format
 msgid "Add to cart"
 msgstr "Lägg i kundvagnen"
@@ -212,14 +250,14 @@ msgid "Amount (excl. tax):"
 msgstr "Belopp (excl. moms):"
 
 #. module: webshop_dermanord
+#: view:website:website_sale.payment
+msgid "Apply"
+msgstr "Verkställ"
+
+#. module: webshop_dermanord
 #: view:website:webshop_dermanord.products_list_reseller_view
 msgid "Art. nr"
 msgstr "Art. nr"
-
-#. module: webshop_dermanord
-#: model:res.groups,comment:webshop_dermanord.group_dn_af
-msgid "As a Reseller, you have access to seeing and purchasing selected parts of our product range. To be able to see and purchase our facial care products, you must be an educated spa therapist or skin therapist."
-msgstr "Som Återförsäljare har du behörighet att se och köpa produkter från utvalda delar av vårt sortiment. För att få köpa in ansiktsvården behöver man vara utbildad Spaterapeut eller Hudterapeut. "
 
 #. module: webshop_dermanord
 #: model:res.groups,comment:webshop_dermanord.group_dn_ht
@@ -232,12 +270,12 @@ msgid "As a Spa Therapist, you have access to see and purchase products from all
 msgstr "Som Spaterapeut har du behörighet att se och köpa produkter från samtliga delar av vårt sortiment förutom AHA 20%."
 
 #. module: webshop_dermanord
-#: field:res.users,audit_ids:0
-msgid "Audit"
-msgstr "Audit"
+#: model:res.groups,comment:webshop_dermanord.group_dn_af
+msgid "As a reseller, you have access to seeing and purchasing selected parts of our product range depending on your specific area of work. For instance, to be able to view and purchase our facial care products, you must be an trained spa therapist or skincare therapist. You may order any product in the range for yourself to use for training purposes."
+msgstr "Som återförsäljare har du behörighet att se och köpa produkter från olika delar av vårt sortiment beroende vilket område du jobbar inom. För att få köpa in ansiktsvården behöver du t ex vara utbildad spaterapeut eller hudterapeut. Du får köpa in produkter från hela sortimentet för eget bruk i utbildningssyfte."
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:1267
+#: code:addons/webshop_dermanord/product_view.py:1197
 #, python-format
 msgid "Available on %s"
 msgstr "Säljstart %s"
@@ -251,11 +289,6 @@ msgstr "Background Color (Hex)"
 #: help:product.public.category,bg_hex:0
 msgid "Background Color in hex"
 msgstr "Background Color in hex"
-
-#. module: webshop_dermanord
-#: field:res.users,been_certified:0
-msgid "Been Certified"
-msgstr "Been Certified"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.cart
@@ -276,26 +309,6 @@ msgid "Butik"
 msgstr "Butik"
 
 #. module: webshop_dermanord
-#: help:res.users,gmp_vendor:0
-msgid "By checking this box, system will automatically generate initial audit for this vendor."
-msgstr "By checking this box, system will automatically generate initial audit for this vendor."
-
-#. module: webshop_dermanord
-#: field:res.users,coa_ids:0
-msgid "COA"
-msgstr "COA"
-
-#. module: webshop_dermanord
-#: field:res.users,coa_verification:0
-msgid "COA Verification"
-msgstr "COA Verification"
-
-#. module: webshop_dermanord
-#: field:res.users,coa_verification_required:0
-msgid "COA verification"
-msgstr "COA verification"
-
-#. module: webshop_dermanord
 #: model:ir.model,name:webshop_dermanord.model_crm_tracking_campaign
 msgid "Campaign"
 msgstr "Kampanj"
@@ -307,11 +320,26 @@ msgid "Campaign changed"
 msgstr "Campaign changed"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:927
+#: field:crm.tracking.campaign.helper,campaign_id:0
+msgid "Campaign id"
+msgstr "Campaign id"
+
+#. module: webshop_dermanord
+#: field:crm.tracking.campaign.helper,campaign_phase_id:0
+msgid "Campaign phase id"
+msgstr "Campaign phase id"
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/product_view.py:854
 #: view:website:website_sale.product
 #, python-format
 msgid "Categories"
 msgstr "Kategorier"
+
+#. module: webshop_dermanord
+#: help:product.pricelist,code_unlimited:0
+msgid "Check if the code should be reusable for customers"
+msgstr "Check if the code should be reusable for customers"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.cart
@@ -319,7 +347,7 @@ msgid "Check language"
 msgstr "Kontrollera språket"
 
 #. module: webshop_dermanord
-#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_form
+#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_content
 #: view:website:webshop_dermanord.webshop_dermanord_mobile_product_filter_form
 msgid "Clear All"
 msgstr "Rensa"
@@ -330,14 +358,14 @@ msgid "Close"
 msgstr "Stäng"
 
 #. module: webshop_dermanord
-#: view:website:website_sale.payment
-msgid "Comment:"
-msgstr "Kommentar:"
+#: sql_constraint:product.pricelist:0
+msgid "Code must be unique!"
+msgstr "Code must be unique!"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.payment
-msgid "Please observe that your order may be delayed if you leave a comment due to the order being handled manually."
-msgstr "Observera att din order kan fördröjas om du lämnar en kommentar ovan då dessa ordrar hanteras manuellt."
+msgid "Comment:"
+msgstr "Kommentar:"
 
 #. module: webshop_dermanord
 #: view:sale.order:webshop_dermanord.view_sales_order_filter
@@ -365,26 +393,57 @@ msgid "Continue Shopping"
 msgstr "Continue Shopping"
 
 #. module: webshop_dermanord
+#: field:crm.tracking.campaign.helper,country_id:0
+msgid "Country id"
+msgstr "Country id"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.payment
+msgid "Coupon Code"
+msgstr "Kupongkod"
+
+#. module: webshop_dermanord
 #: field:stock.notification,created_datetime:0
 msgid "Created"
 msgstr "Skapad"
 
 #. module: webshop_dermanord
+#: field:crm.tracking.campaign.helper,create_uid:0
 #: field:stock.notification,create_uid:0
 msgid "Created by"
-msgstr "Skapad av"
+msgstr "Created by"
 
 #. module: webshop_dermanord
+#: field:crm.tracking.campaign.helper,create_date:0
 #: field:stock.notification,create_date:0
 msgid "Created on"
-msgstr "Skapad"
+msgstr "Created on"
+
+#. module: webshop_dermanord
+#: field:res.users,customer_ids:0
+msgid "Customer"
+msgstr "Customer"
+
+#. module: webshop_dermanord
+#: field:res.users,customer_ids_count:0
+msgid "Customer ids count"
+msgstr "Customer ids count"
+
+#. module: webshop_dermanord
+#: field:product.pricelist,code_partner_ids:0
+msgid "Customers"
+msgstr "Customers"
+
+#. module: webshop_dermanord
+#: help:product.pricelist,code_partner_ids:0
+msgid "Customers who has used this offer code"
+msgstr "Customers who has used this offer code"
 
 #. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/product_view.py:319
-#: code:addons/webshop_dermanord/product_view.py:385
-#: code:addons/webshop_dermanord/product_view.py:451
-#: code:addons/webshop_dermanord/product_view.py:628
+#: code:addons/webshop_dermanord/product_view.py:294
+#: code:addons/webshop_dermanord/product_view.py:360
+#: code:addons/webshop_dermanord/product_view.py:428
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:59
 #, python-format
 msgid "DETAILS"
@@ -400,7 +459,7 @@ msgstr "DETALJER"
 #. module: webshop_dermanord
 #: help:stock.notification,message_last_post:0
 msgid "Date of the last message posted on the record."
-msgstr "Datum för senaste meddelande på raden."
+msgstr "Date of the last message posted on the record."
 
 #. module: webshop_dermanord
 #: view:stock.notification:webshop_dermanord.student_search_view
@@ -408,7 +467,12 @@ msgid "Day"
 msgstr "Dag"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:188
+#: field:product.product,default_public_categ_id:0
+msgid "Default public category"
+msgstr "Default public category"
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/product_view.py:176
 #, python-format
 msgid "Default variant on %s can not be sold"
 msgstr "Standardvariant på % s kan inte säljas"
@@ -436,16 +500,17 @@ msgid "Description"
 msgstr "Beskrivning"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:923
+#: code:addons/webshop_dermanord/product_view.py:850
 #: view:website:website_sale.product
 #, python-format
 msgid "Directions"
 msgstr "Användning"
 
 #. module: webshop_dermanord
+#: field:crm.tracking.campaign.helper,display_name:0
 #: field:stock.notification,display_name:0
 msgid "Display Name"
-msgstr "Namn"
+msgstr "Display Name"
 
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.products_list_reseller_view
@@ -510,7 +575,7 @@ msgstr "Dv ribbon"
 
 #. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/product_view.py:676
+#: code:addons/webshop_dermanord/product_view.py:588
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:173
 #: view:website:website_sale.cart
 #, python-format
@@ -523,7 +588,7 @@ msgid "EURO ÅF 45%"
 msgstr "EURO ÅF 45%"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:1254
+#: code:addons/webshop_dermanord/product_view.py:1184
 #, python-format
 msgid "Edit in backend"
 msgstr "Redigera i bankend"
@@ -570,12 +635,22 @@ msgid "Examples of products containing this ingredient"
 msgstr "Exempel på produkter som innehåller denna ingrediens"
 
 #. module: webshop_dermanord
+#: field:res.users,social_facebook:0
+msgid "Facebook link"
+msgstr "Facebook link"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.cart
+msgid "False"
+msgstr "False"
+
+#. module: webshop_dermanord
 #: view:product.template:webshop_dermanord.product_template_search_view
 msgid "Fel i webbshoppen"
 msgstr "Fel i webbshoppen"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:718
+#: code:addons/webshop_dermanord/product_view.py:630
 #, python-format
 msgid "Few in stock"
 msgstr "Fåtal i lager"
@@ -592,25 +667,15 @@ msgid "Filter"
 msgstr "Filtrera"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:554
+#: code:addons/webshop_dermanord/product_view.py:531
 #, python-format
 msgid "Find Reseller"
 msgstr "Hitta ÅF"
 
 #. module: webshop_dermanord
-#: field:res.users,followup_audit_required:0
-msgid "Follow up audits required?"
-msgstr "Follow up audits required?"
-
-#. module: webshop_dermanord
-#: field:res.users,followup_audit:0
-msgid "Follow-up Audit"
-msgstr "Follow-up Audit"
-
-#. module: webshop_dermanord
 #: field:stock.notification,message_follower_ids:0
 msgid "Followers"
-msgstr "Följare"
+msgstr "Followers"
 
 #. module: webshop_dermanord
 #: field:product.pricelist,for_reseller:0
@@ -618,7 +683,7 @@ msgid "For Reseller"
 msgstr "För återförsäljare"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:925
+#: code:addons/webshop_dermanord/product_view.py:852
 #: view:website:website_sale.product
 #, python-format
 msgid "For Resellers"
@@ -634,11 +699,6 @@ msgstr "For training"
 #: field:product.product,fullname:0
 msgid "Fullname"
 msgstr "Fullname"
-
-#. module: webshop_dermanord
-#: field:res.users,gmp_vendor:0
-msgid "GMP Vendor"
-msgstr "GMP Vendor"
 
 #. module: webshop_dermanord
 #: view:stock.notification:webshop_dermanord.student_search_view
@@ -671,6 +731,21 @@ msgid "Group notifications by year"
 msgstr "Gruppera per år"
 
 #. module: webshop_dermanord
+#: view:website:webshop_dermanord.failed_vat_check
+msgid "Gå till startsidan."
+msgstr "Gå till startsidan."
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.failed_vat_check
+msgid "Gå till webshopen."
+msgstr "Gå till webshopen."
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.failed_vat_check
+msgid "Gå tillbaka till föregående sida."
+msgstr "Gå tillbaka till föregående sida."
+
+#. module: webshop_dermanord
 #: field:product.product,has_tester:0
 msgid "Has Tester"
 msgstr "Has Tester"
@@ -681,20 +756,18 @@ msgid "Has Webshop"
 msgstr "Has Webshop"
 
 #. module: webshop_dermanord
+#: view:website:website_sale.payment
+msgid "Have a coupon code? Fill in this field and apply."
+msgstr "Har du en kupongkod? Fyll i detta fält och spara."
+
+#. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/product_view.py:679
+#: code:addons/webshop_dermanord/product_view.py:591
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:182
 #: view:website:website_sale.cart
 #, python-format
 msgid "Height:"
 msgstr "Höjd:"
-
-#. module: webshop_dermanord
-#: code:addons/webshop_dermanord/webshop_dermanord.py:990
-#: code:addons/webshop_dermanord/webshop_dermanord.py:999
-#, python-format
-msgid "Hej hopp!"
-msgstr "Hej hopp!"
 
 #. module: webshop_dermanord
 #: help:stock.notification,message_summary:0
@@ -709,9 +782,10 @@ msgstr "Jag godkänner"
 #. module: webshop_dermanord
 #: view:website:website_sale.payment
 msgid "I understand that some products in my order are intended only for educational purposes"
-msgstr " jag förstår att några av produkterna i min beställning endast säljs i utbildningssyfte"
+msgstr "I understand that some products in my order are intended only for educational purposes"
 
 #. module: webshop_dermanord
+#: field:crm.tracking.campaign.helper,id:0
 #: field:stock.notification,id:0
 msgid "ID"
 msgstr "ID"
@@ -732,7 +806,7 @@ msgid "Imageview"
 msgstr "Bildvy"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:718
+#: code:addons/webshop_dermanord/product_view.py:630
 #, python-format
 msgid "In stock"
 msgstr "I lager"
@@ -744,18 +818,13 @@ msgid "Ingredients"
 msgstr "Ingredienser"
 
 #. module: webshop_dermanord
-#: field:res.users,initial_audit:0
-msgid "Initial Audit"
-msgstr "Initial Audit"
+#: field:res.users,social_instagram:0
+msgid "Instagram link"
+msgstr "Instagram link"
 
 #. module: webshop_dermanord
-#: field:res.users,initial_audit_required:0
-msgid "Initial audit required?"
-msgstr "Initial audit required?"
-
-#. module: webshop_dermanord
-#: code:addons/webshop_dermanord/webshop_dermanord.py:207
-#: code:addons/webshop_dermanord/webshop_dermanord.py:300
+#: code:addons/webshop_dermanord/webshop_dermanord.py:226
+#: code:addons/webshop_dermanord/webshop_dermanord.py:319
 #, python-format
 msgid "Invalid \"order\" specified for dn_price_chart_sort_"
 msgstr "Invalid \"order\" specified for dn_price_chart_sort_"
@@ -788,10 +857,16 @@ msgid "Is offer product reseller"
 msgstr "Is offer product reseller"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/webshop_dermanord.py:610
+#: code:addons/webshop_dermanord/webshop_dermanord.py:716
 #, python-format
 msgid "It is forbidden to modify a sale order which is not in draft status"
 msgstr "Det är förbjudet att ändra en kundorder som inte är i status utkast"
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/product_view.py:748
+#, python-format
+msgid "L<br/>E"
+msgstr "L<br/>E"
 
 #. module: webshop_dermanord
 #: field:stock.notification,message_last_post:0
@@ -799,23 +874,32 @@ msgid "Last Message Date"
 msgstr "Last Message Date"
 
 #. module: webshop_dermanord
+#: field:crm.tracking.campaign.helper,__last_update:0
 #: field:stock.notification,__last_update:0
 msgid "Last Modified on"
 msgstr "Last Modified on"
 
 #. module: webshop_dermanord
+#: field:crm.tracking.campaign.helper,write_uid:0
 #: field:stock.notification,write_uid:0
 msgid "Last Updated by"
 msgstr "Last Updated by"
 
 #. module: webshop_dermanord
+#: field:crm.tracking.campaign.helper,write_date:0
 #: field:stock.notification,write_date:0
 msgid "Last Updated on"
 msgstr "Last Updated on"
 
 #. module: webshop_dermanord
+#: help:product.product,memcached_time:0
+#: help:product.template,memcached_time:0
+msgid "Last modification relevant to memcached."
+msgstr "Last modification relevant to memcached."
+
+#. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/product_view.py:678
+#: code:addons/webshop_dermanord/product_view.py:590
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:179
 #: view:website:website_sale.cart
 #, python-format
@@ -823,7 +907,7 @@ msgid "Length:"
 msgstr "Längd:"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:930
+#: code:addons/webshop_dermanord/product_view.py:857
 #: view:website:website_sale.product
 #, python-format
 msgid "Less info"
@@ -837,8 +921,8 @@ msgid "Limited"
 msgstr "Limited"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:943
-#: code:addons/webshop_dermanord/product_view.py:948
+#: code:addons/webshop_dermanord/product_view.py:870
+#: code:addons/webshop_dermanord/product_view.py:875
 #, python-format
 msgid "Limited Edition"
 msgstr "Limited Edition"
@@ -851,11 +935,10 @@ msgid "Limited&nbsp;Ed."
 msgstr "Limited&nbsp;Ed."
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:329
-#: code:addons/webshop_dermanord/product_view.py:395
-#: code:addons/webshop_dermanord/product_view.py:461
-#: code:addons/webshop_dermanord/product_view.py:638
-#: code:addons/webshop_dermanord/product_view.py:822
+#: code:addons/webshop_dermanord/product_view.py:304
+#: code:addons/webshop_dermanord/product_view.py:370
+#: code:addons/webshop_dermanord/product_view.py:438
+#: code:addons/webshop_dermanord/product_view.py:747
 #, python-format
 msgid "Limited<br/>Edition"
 msgstr "Limited<br/>Edition"
@@ -893,6 +976,12 @@ msgid "Medium image"
 msgstr "Medium image"
 
 #. module: webshop_dermanord
+#: field:product.product,memcached_time:0
+#: field:product.template,memcached_time:0
+msgid "Memcached Timestamp"
+msgstr "Memcached Timestamp"
+
+#. module: webshop_dermanord
 #: field:stock.notification,message_ids:0
 msgid "Messages"
 msgstr "Messages"
@@ -913,7 +1002,7 @@ msgid "Minimum order value is not met"
 msgstr "Uppfyller inte lägsta ordervärde"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:1357
+#: code:addons/webshop_dermanord/product_view.py:1287
 #, python-format
 msgid "Missmatch variants and stock."
 msgstr "Missmatch variants and stock."
@@ -924,7 +1013,7 @@ msgid "Month"
 msgstr "Månad"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:922
+#: code:addons/webshop_dermanord/product_view.py:849
 #: view:website:website_sale.product
 #, python-format
 msgid "More info"
@@ -935,6 +1024,11 @@ msgstr "Mer information"
 #: view:website:webshop_dermanord.webshop_dermanord_mobile_product_sort_form
 msgid "Most Sold"
 msgstr "Mest sålda"
+
+#. module: webshop_dermanord
+#: field:res.users,my_customer:0
+msgid "My Customer"
+msgstr "My Customer"
 
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_form
@@ -955,25 +1049,17 @@ msgstr "Sälj aldrig"
 
 #. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/product_view.py:328
-#: code:addons/webshop_dermanord/product_view.py:394
-#: code:addons/webshop_dermanord/product_view.py:460
-#: code:addons/webshop_dermanord/product_view.py:637
-#: code:addons/webshop_dermanord/product_view.py:821
-#: code:addons/webshop_dermanord/product_view.py:941
-#: code:addons/webshop_dermanord/product_view.py:946
+#: code:addons/webshop_dermanord/product_view.py:303
+#: code:addons/webshop_dermanord/product_view.py:369
+#: code:addons/webshop_dermanord/product_view.py:437
+#: code:addons/webshop_dermanord/product_view.py:745
+#: code:addons/webshop_dermanord/product_view.py:868
+#: code:addons/webshop_dermanord/product_view.py:873
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:29
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:110
 #, python-format
 msgid "New"
 msgstr "Nyhet"
-
-#. module: webshop_dermanord
-#. openerp-web
-#: code:addons/webshop_dermanord/product_view.py:733
-#, python-format
-msgid "O"
-msgstr "E"
 
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_content
@@ -986,7 +1072,7 @@ msgid "None"
 msgstr "None"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:1250
+#: code:addons/webshop_dermanord/product_view.py:1180
 #, python-format
 msgid "Not Published"
 msgstr "Ej publicerad"
@@ -1013,21 +1099,10 @@ msgid "Notifications"
 msgstr "Notifieringar"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:1266
+#: code:addons/webshop_dermanord/product_view.py:1196
 #, python-format
 msgid "Notify me when item is back in stock"
 msgstr "Meddela mig när varan finns i lager"
-
-#. module: webshop_dermanord
-#: field:res.users,followup_audit_freq:0
-#: field:res.users,number_of_coa:0
-msgid "Number of COA Verification Tests"
-msgstr "Number of COA Verification Tests"
-
-#. module: webshop_dermanord
-#: field:res.users,number_verified_coa:0
-msgid "Number of Verified COAs"
-msgstr "Number of Verified COAs"
 
 #. module: webshop_dermanord
 #. openerp-web
@@ -1038,13 +1113,17 @@ msgid "Nyhet"
 msgstr "Nyhet"
 
 #. module: webshop_dermanord
+#: view:website:webshop_dermanord.failed_vat_check
+msgid "Odoo image and text block"
+msgstr "Odoo image and text block"
+
+#. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/product_view.py:327
-#: code:addons/webshop_dermanord/product_view.py:393
-#: code:addons/webshop_dermanord/product_view.py:459
-#: code:addons/webshop_dermanord/product_view.py:636
-#: code:addons/webshop_dermanord/product_view.py:820
-#: code:addons/webshop_dermanord/product_view.py:949
+#: code:addons/webshop_dermanord/product_view.py:302
+#: code:addons/webshop_dermanord/product_view.py:368
+#: code:addons/webshop_dermanord/product_view.py:436
+#: code:addons/webshop_dermanord/product_view.py:743
+#: code:addons/webshop_dermanord/product_view.py:876
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:41
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:118
 #, python-format
@@ -1055,6 +1134,11 @@ msgstr "Erbjudande"
 #: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_content
 msgid "Offers"
 msgstr "Erbjudanden"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.failed_vat_check
+msgid "Oh dear. It seems to be an error!"
+msgstr "Oh dear. It seems to be an error!"
 
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.event_type_info
@@ -1121,10 +1205,15 @@ msgid "Pending notifications"
 msgstr "Utgående notifieringar"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/webshop_dermanord.py:1132
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1370
 #, python-format
 msgid "Place Order"
 msgstr "Lägg order"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.payment
+msgid "Please observe that your order may be delayed if you leave a comment due to the order being handled manually."
+msgstr "Observera att din order kan fördröjas om du lämnar en kommentar ovan då dessa ordrar hanteras manuellt."
 
 #. module: webshop_dermanord
 #: model:ir.model,name:webshop_dermanord.model_portal_wizard_user
@@ -1132,7 +1221,6 @@ msgid "Portal User Config"
 msgstr "Konfigurerings portalanvändare"
 
 #. module: webshop_dermanord
-#: view:website:website_sale.cart
 #: view:website:website_sale.payment
 msgid "Price"
 msgstr "Pris"
@@ -1150,10 +1238,9 @@ msgid "Price Descending"
 msgstr "Pris fallande"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:334
-#: code:addons/webshop_dermanord/product_view.py:400
-#: code:addons/webshop_dermanord/product_view.py:466
-#: code:addons/webshop_dermanord/product_view.py:643
+#: code:addons/webshop_dermanord/product_view.py:309
+#: code:addons/webshop_dermanord/product_view.py:375
+#: code:addons/webshop_dermanord/product_view.py:443
 #, python-format
 msgid "Price From"
 msgstr "Pris från"
@@ -1233,6 +1320,11 @@ msgid "Product Templates"
 msgstr "Produktmallar"
 
 #. module: webshop_dermanord
+#: field:crm.tracking.campaign.helper,product_id:0
+msgid "Product id"
+msgstr "Product id"
+
+#. module: webshop_dermanord
 #: view:website:webshop_dermanord.products_list_reseller_view
 msgid "Produkt"
 msgstr "Produkt"
@@ -1249,13 +1341,13 @@ msgid "Public Category"
 msgstr "Publik kategori"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:1253
+#: code:addons/webshop_dermanord/product_view.py:1183
 #, python-format
 msgid "Publish"
 msgstr "Publicera"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:1251
+#: code:addons/webshop_dermanord/product_view.py:1181
 #, python-format
 msgid "Published"
 msgstr "Publicerad"
@@ -1276,14 +1368,13 @@ msgid "Purchase type for active user."
 msgstr "Purchase type for active user."
 
 #. module: webshop_dermanord
-#: view:website:website_sale.cart
 #: view:website:website_sale.payment
 msgid "Quantity"
 msgstr "Antal"
 
 #. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/product_view.py:681
+#: code:addons/webshop_dermanord/product_view.py:593
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:186
 #: view:website:website_sale.cart
 #, python-format
@@ -1292,7 +1383,7 @@ msgstr "Antal (DFP):"
 
 #. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/product_view.py:682
+#: code:addons/webshop_dermanord/product_view.py:594
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:187
 #: view:website:website_sale.cart
 #, python-format
@@ -1301,7 +1392,7 @@ msgstr "Antal (KFP):"
 
 #. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/product_view.py:675
+#: code:addons/webshop_dermanord/product_view.py:587
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:170
 #: view:website:website_sale.cart
 #, python-format
@@ -1325,8 +1416,14 @@ msgstr "Related posts"
 
 #. module: webshop_dermanord
 #: model:product.facet.value,name:webshop_dermanord.facet_value_reseforpackningar
-msgid "Travel sizes"
+msgid "Reseförpackningar"
 msgstr "Reseförpackningar"
+
+#. module: webshop_dermanord
+#: field:crm.tracking.campaign.helper,for_reseller:0
+#: field:res.users,reseller_id:0
+msgid "Reseller"
+msgstr "Reseller"
 
 #. module: webshop_dermanord
 #: view:product.template:webshop_dermanord.product_template_search_view
@@ -1344,12 +1441,17 @@ msgid "Sale Order line"
 msgstr "Kundorderrad"
 
 #. module: webshop_dermanord
+#: field:crm.tracking.campaign.helper,salon:0
+msgid "Salon"
+msgstr "Salon"
+
+#. module: webshop_dermanord
 #: model:product.facet.value,name:webshop_dermanord.facet_value_salongsprodukter
-msgid "Professional products"
+msgid "Salongsprodukter"
 msgstr "Salongsprodukter"
 
 #. module: webshop_dermanord
-#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_form
+#: view:website:webshop_dermanord.webshop_dermanord_desktop_product_filter_content
 #: view:website:webshop_dermanord.webshop_dermanord_mobile_product_filter_form
 msgid "Search"
 msgstr "Sök"
@@ -1377,9 +1479,7 @@ msgid "Shipping Address"
 msgstr "Leveransadress"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/webshop_dermanord.py:1459
-#: code:addons/webshop_dermanord/webshop_dermanord.py:1547
-#: code:addons/webshop_dermanord/webshop_dermanord.py:1661
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1759
 #: view:website:webshop_dermanord.products
 #: view:website:webshop_dermanord.products_list_reseller_view
 #, python-format
@@ -1387,7 +1487,7 @@ msgid "Shop"
 msgstr "Butik"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:718
+#: code:addons/webshop_dermanord/product_view.py:630
 #, python-format
 msgid "Shortage"
 msgstr "Slut i lager"
@@ -1421,11 +1521,10 @@ msgstr "Special 20"
 
 #. module: webshop_dermanord
 #: model:product.facet,name:webshop_dermanord.facet_specialforpackningar
-msgid "Specialförpackningar"
-msgstr "Specialförpackningar"
+msgid "Specialförpackningar1"
+msgstr "Specialförpackningar1"
 
 #. module: webshop_dermanord
-#: field:res.users,qlf_status:0
 #: field:stock.notification,status:0
 msgid "Status"
 msgstr "Status"
@@ -1488,6 +1587,7 @@ msgstr "Köpvillkor"
 
 #. module: webshop_dermanord
 #: view:product.product:webshop_dermanord.product_normal_form_view
+#: field:sale.order.line,is_tester:0
 msgid "Tester"
 msgstr "Tester"
 
@@ -1507,13 +1607,16 @@ msgid "Text Color in hex"
 msgstr "Text Color in hex"
 
 #. module: webshop_dermanord
-#: help:res.users,qlf_status:0
-msgid "This field is not editable.\n"
-"                                                                        Vendor qualification status will change automatically \n"
-"                                                                        based to GMP settings and based on any records in system"
-msgstr "This field is not editable.\n"
-"                                                                        Vendor qualification status will change automatically \n"
-"                                                                        based to GMP settings and based on any records in system"
+#: help:sale.order.line,is_tester:0
+msgid "This line contains a tester product."
+msgstr "This line contains a tester product."
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1200
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1219
+#, python-format
+msgid "This product doesn't have a tester."
+msgstr "This product doesn't have a tester."
 
 #. module: webshop_dermanord
 #: view:website:website_sale.cart
@@ -1522,14 +1625,14 @@ msgid "This product is sold as an educational product. Only for personal use."
 msgstr "Denna produkt säljs i utbildningssyfte. Endast för personligt bruk."
 
 #. module: webshop_dermanord
-#: view:website:website_sale.payment
-msgid "Have a coupon code? Fill in this field and apply."
-msgstr "Har du en kampanjkod? Fyll i detta fält och spara."
+#: view:website:website_sale.checkout
+msgid "Total To Pay:"
+msgstr "Att betala:"
 
 #. module: webshop_dermanord
-#: view:website:website_sale.payment
-msgid "Coupon Code"
-msgstr "Kampanjkod"
+#: field:res.users,social_twitter:0
+msgid "Twitter link"
+msgstr "Twitter link"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.payment
@@ -1537,17 +1640,12 @@ msgid "Unable to apply code."
 msgstr "Din kod gick inte att aktivera."
 
 #. module: webshop_dermanord
-#: view:website:website_sale.payment
-msgid "Apply"
-msgstr "Aktivera"
+#: field:product.pricelist,code_unlimited:0
+msgid "Unlimited use"
+msgstr "Unlimited use"
 
 #. module: webshop_dermanord
-#: view:website:website_sale.checkout
-msgid "Total To Pay:"
-msgstr "Att betala:"
-
-#. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:1252
+#: code:addons/webshop_dermanord/product_view.py:1182
 #, python-format
 msgid "Unpublish"
 msgstr "Avpublicera"
@@ -1564,9 +1662,24 @@ msgid "Use Template Name"
 msgstr "Använd mall namn"
 
 #. module: webshop_dermanord
+#: help:crm.tracking.campaign.helper,for_reseller:0
+msgid "Use this pricelist for resellers, otherwise instead of default pricelist"
+msgstr "Use this pricelist for resellers, otherwise instead of default pricelist"
+
+#. module: webshop_dermanord
 #: field:res.users,vat_unchecked:0
 msgid "VAT Unchecked"
 msgstr "VAT Unchecked"
+
+#. module: webshop_dermanord
+#: field:crm.tracking.campaign.helper,variant_id:0
+msgid "Variant id"
+msgstr "Variant id"
+
+#. module: webshop_dermanord
+#: view:website:webshop_dermanord.failed_vat_check
+msgid "Vi har hittat problem vid kontroll av ert momsregistreringsnummer som gör att vi inte kan hantera er order. Vänligen kontakta vår säljavdelning på telefon +46 340 27 00 00."
+msgstr "Vi har hittat problem vid kontroll av ert momsregistreringsnummer som gör att vi inte kan hantera er order. Vänligen kontakta vår säljavdelning på telefon +46 340 27 00 00."
 
 #. module: webshop_dermanord
 #: view:sale.order:webshop_dermanord.view_sales_order_filter
@@ -1631,7 +1744,7 @@ msgstr "När ikryssad. Mallnamnet kommer att användas i webbshop"
 
 #. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/product_view.py:677
+#: code:addons/webshop_dermanord/product_view.py:589
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:176
 #: view:website:website_sale.cart
 #, python-format
@@ -1644,32 +1757,47 @@ msgid "Year"
 msgstr "År"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/webshop_dermanord.py:1401
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1653
 #, python-format
 msgid "You are not allowed to see this product."
 msgstr "Du har inte rättigheter att se denna produkt."
 
 #. module: webshop_dermanord
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1208
+#, python-format
+msgid "You have already added a tester for this product."
+msgstr "You have already added a tester for this product."
+
+#. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/static/src/js/webshop_dermanord.js:126
+#: code:addons/webshop_dermanord/static/src/js/webshop_dermanord.js:155
 #, python-format
 msgid "You have to buy at least %s products to get a tester"
 msgstr "You have to buy at least %s products to get a tester"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/webshop_dermanord.py:1324
-#: code:addons/webshop_dermanord/webshop_dermanord.py:1456
-#: code:addons/webshop_dermanord/webshop_dermanord.py:1544
-#: code:addons/webshop_dermanord/webshop_dermanord.py:1657
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1204
+#, python-format
+msgid "You need to buy at least %s to order a tester."
+msgstr "You need to buy at least %s to order a tester."
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1576
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1755
 #, python-format
 msgid "Your filtering did not match any results. Please choose something else and try again."
 msgstr "Din filtrering gav inga träffar. Vänligen välj något annat och försök igen."
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/webshop_dermanord.py:1014
+#: code:addons/webshop_dermanord/webshop_dermanord.py:1233
 #, python-format
 msgid "Your mail is already registered for notifications on this product"
 msgstr "Din mejladress är redan registrerad för notifikationer för denna produkt"
+
+#. module: webshop_dermanord
+#: field:res.users,social_youtube:0
+msgid "Youtube link"
+msgstr "Youtube link"
 
 #. module: webshop_dermanord
 #: view:website:website_fts.search_result
@@ -1689,7 +1817,7 @@ msgstr "[Facett]"
 #. module: webshop_dermanord
 #: model:product.pricelist,name:webshop_dermanord.pricelist_us
 msgid "[tmp] USA Reseller 65%"
-msgstr "[tmp] USA Reseller 65%"
+msgstr "USA Reseller 65%"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.variants
@@ -1699,7 +1827,7 @@ msgstr "accessable_value_ids.sorted(key=lambda r: r.sequence)"
 #. module: webshop_dermanord
 #: view:website:website_sale.payment
 msgid "and confirm that"
-msgstr "och bekräftar att"
+msgstr "and confirm that"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.product
@@ -1708,12 +1836,22 @@ msgstr "base.group_user,base.group_portal"
 
 #. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/product_view.py:681
+#: code:addons/webshop_dermanord/product_view.py:593
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:186
 #: view:website:website_sale.cart
 #, python-format
 msgid "boxes / pallet"
 msgstr "lådor / pall"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.payment
+msgid "code..."
+msgstr "kod..."
+
+#. module: webshop_dermanord
+#: view:website:website_sale.cart
+msgid "col-lg-3 col-lg-offset-1 col-sm-3 col-md-3 text-muted"
+msgstr "col-lg-3 col-lg-offset-1 col-sm-3 col-md-3 text-muted"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.total
@@ -1739,17 +1877,6 @@ msgstr "col-lg-7 col-sm-6"
 #: view:website:website_sale.product
 msgid "col-sm-3 hidden"
 msgstr "col-sm-3 hidden"
-
-#. module: webshop_dermanord
-#: view:website:website_sale.cart
-msgid "decimal_precision text-center"
-msgstr "decimal_precision text-center"
-
-#. module: webshop_dermanord
-#: model:ir.ui.view,website_meta_keywords:webshop_dermanord.products
-#: model:ir.ui.view,website_meta_keywords:webshop_dermanord.products_list_reseller_view
-msgid "dermanord – svensk hudvård ab"
-msgstr "dermanord – svensk hudvård ab"
 
 #. module: webshop_dermanord
 #: selection:res.users,webshop_type:0
@@ -1817,11 +1944,21 @@ msgid "handle"
 msgstr "handle"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:997
-#: code:addons/webshop_dermanord/product_view.py:1076
+#: view:website:website_sale.cart
+msgid "hidden-xs"
+msgstr "hidden-xs"
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/product_view.py:925
+#: code:addons/webshop_dermanord/product_view.py:999
 #, python-format
 msgid "ingredients:"
 msgstr "ingredienser:"
+
+#. module: webshop_dermanord
+#: view:website:website_sale.cart
+msgid "input-group-addon hidden-xs"
+msgstr "input-group-addon hidden-xs"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.cart
@@ -1834,11 +1971,22 @@ msgid "js_payment mb64 row col-lg-8 col-sm-9"
 msgstr "js_payment mb64 row col-lg-8 col-sm-9"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:993
-#: code:addons/webshop_dermanord/product_view.py:1073
+#: view:website:website_sale.cart
+msgid "line.name"
+msgstr "line.name"
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/product_view.py:921
+#: code:addons/webshop_dermanord/product_view.py:996
 #, python-format
 msgid "made from all-natural ingredients"
-msgstr "tillverkad av naturliga ingredienser"
+msgstr "made from all-natural ingredients"
+
+#. module: webshop_dermanord
+#: model:ir.ui.view,website_meta_keywords:webshop_dermanord.products
+#: model:ir.ui.view,website_meta_keywords:webshop_dermanord.products_list_reseller_view
+msgid "maria akerberg ab"
+msgstr "maria akerberg ab"
 
 #. module: webshop_dermanord
 #. openerp-web
@@ -1871,8 +2019,8 @@ msgstr "oe_sale_acquirer_button hidden"
 
 #. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/product_view.py:675
-#: code:addons/webshop_dermanord/product_view.py:676
+#: code:addons/webshop_dermanord/product_view.py:587
+#: code:addons/webshop_dermanord/product_view.py:588
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:170
 #: view:website:website_sale.cart
 #, python-format
@@ -1881,7 +2029,7 @@ msgstr "pcs / låda"
 
 #. module: webshop_dermanord
 #. openerp-web
-#: code:addons/webshop_dermanord/product_view.py:682
+#: code:addons/webshop_dermanord/product_view.py:594
 #: code:addons/webshop_dermanord/static/src/xml/product.xml:187
 #: view:website:website_sale.cart
 #, python-format
@@ -1895,13 +2043,13 @@ msgstr "table table-striped table-condensed hidden"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.cart
-msgid "table table-striped table-condensed hidden-xs"
-msgstr "table table-striped table-condensed hidden-xs"
+msgid "text-center"
+msgstr "text-center"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.cart
-msgid "text-center"
-msgstr "text-center"
+msgid "text-center hidden-xs"
+msgstr "text-center hidden-xs"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.product
@@ -1914,7 +2062,7 @@ msgid "to"
 msgstr "till"
 
 #. module: webshop_dermanord
-#: code:addons/webshop_dermanord/product_view.py:1268
+#: code:addons/webshop_dermanord/product_view.py:1198
 #, python-format
 msgid "to %s"
 msgstr "till %s"

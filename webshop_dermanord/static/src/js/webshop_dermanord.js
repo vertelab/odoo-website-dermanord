@@ -510,9 +510,10 @@ $(function(){
             var $dom_optional = $dom.nextUntil(':not(.optional_product.info)');
             var line_id = parseInt($input.data('line-id'),10);
             var product_id = parseInt($input.data('product-id'),10);
-            var product_name_data = $input.data('product-name');
-            var product_name = product_name_data;
+            var product_name = $input.data('product-name');
+            var product_attribute = $input.data('product-attribute');
             var product_ids = [product_id];
+            var notify_text = openerp._t(' \n Has been added to the cart');
             $dom_optional.each(function(){
                 product_ids.push($(this).find('span[data-product-id]').data('product-id'));
             });
@@ -600,9 +601,8 @@ $(function(){
                                     }
                                 }
                             });
-
                             
-                            $.notify(value + 'x ' + product_name + ' \n Has been added to the cart', {
+                            $.notify(value + 'x ' + product_name + notify_text, {
                                 style: 'cart_notify',
                                 className: 'green_notify'
 
@@ -1007,7 +1007,7 @@ $(document).on('click', '.dn_js_options ul[name="style"] a', function (event) {
 // This method called by "add_to_cart" button in both dn_shop and dn_list.
 // Method does a calculation according to the product unit_price * quantity and update the cart total amount.
 // Method does a RPC-call, after response update cart again with current order total amount.
-$(document).on('click', '.dn_list_add_to_cart, .oe_website_spinner, .dn_list_add_to_cart_edu, #add_to_cart.a-submit, #add_to_cart_edu.a-submit', function (event) {
+$(document).on('click', '.dn_list_add_to_cart, .dn_list_add_to_cart_edu, #add_to_cart.a-submit, #add_to_cart_edu.a-submit', function (event) {
     var self = $(this);
     var my_cart_total = $(".my_cart_total");
     my_cart_total.closest("a").css({"pointer-events": "none", "cursor": "default"});
@@ -1052,7 +1052,7 @@ $(document).on('click', '.dn_list_add_to_cart, .oe_website_spinner, .dn_list_add
     var cart_qty = cart_html.substring(cart_html.lastIndexOf("(")+1,cart_html.lastIndexOf(")"));
     var current_total = cart_total + unit_price * parseFloat(add_qty);
     setCartPriceQuantity(parseFloat(current_total).toFixed(2), '' + (parseInt(add_qty) + parseInt(cart_qty)), current_total);
-
+    var notify_text = openerp._t(' \n Has been added to the cart');
 
    openerp.jsonRpc("/shop/cart/update", "call", {
         'product_id': product_id,
@@ -1060,11 +1060,6 @@ $(document).on('click', '.dn_list_add_to_cart, .oe_website_spinner, .dn_list_add
 
     }).done(function(data){
         if($.isArray(data)){
-            self.attr("data-finished", "done");
-            if ($(".dn_list_add_to_cart[data-finished='']").length == 0 || $(".dn_list_add_to_cart_edu[data-finished='']").length == 0) {
-                setCartPriceQuantity(data[0], data[1], data[2]);
-                my_cart_total.closest("a").css({"pointer-events": "", "cursor": ""});
-                my_cart_total.closest("a").attr("id", "cart_updated");
 
         $.notify.addStyle('cart_notify', {
             html: "<div><span data-notify-text/></div>",
@@ -1084,10 +1079,18 @@ $(document).on('click', '.dn_list_add_to_cart, .oe_website_spinner, .dn_list_add
              }
         });
 
-        $.notify(add_qty + 'x ' + data[3] + ' \n Has been added to the cart', {
+
+        $.notify(add_qty + 'x ' + data[3] + notify_text, 
+        {
             style: 'cart_notify',
             className: 'green_notify'
         });
+
+           self.attr("data-finished", "done");
+            if ($(".dn_list_add_to_cart[data-finished='']").length == 0 || $(".dn_list_add_to_cart_edu[data-finished='']").length == 0) {
+                setCartPriceQuantity(data[0], data[1], data[2]);
+                my_cart_total.closest("a").css({"pointer-events": "", "cursor": ""});
+                my_cart_total.closest("a").attr("id", "cart_updated");
 
           }
             }
