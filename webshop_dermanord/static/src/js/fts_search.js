@@ -55,7 +55,9 @@ $(document).ready(function(){
                         content.append(li);
                     }
                     else if (data[key]['model_record'] == 'blog.post'){
-                        img.attr('src', '/imagefield/blog.post/image_small/' + data[key]['res_id'] + '/ref/webshop_dermanord.fts_image');
+                        if (data[key]['image_attachment_id']) {
+                            img.attr('src', '/imagefield/ir.attachment/datas/' + data[key]['image_attachment_id'] + '/ref/webshop_dermanord.fts_image');
+                        }
                         a.attr('href', '/blog/' + data[key]['blog_id'] + '/post/' + data[key]['res_id']);
                         //~ var c = '<li><a href="/blog/' + data[key]['blog_id'] + '/post/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
                         content.append(li);
