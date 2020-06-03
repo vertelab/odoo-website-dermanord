@@ -513,6 +513,7 @@ $(function(){
             var product_name = $input.data('product-name');
             var product_attribute = $input.data('product-attribute');
             var product_ids = [product_id];
+            var notify_text = openerp._t(' \n Has been added to the cart');
             $dom_optional.each(function(){
                 product_ids.push($(this).find('span[data-product-id]').data('product-id'));
             });
@@ -600,9 +601,8 @@ $(function(){
                                     }
                                 }
                             });
-
                             
-                            $.notify(value + 'x ' + product_name + ' \n Has been added to the cart', {
+                            $.notify(value + 'x ' + product_name + notify_text, {
                                 style: 'cart_notify',
                                 className: 'green_notify'
 
@@ -1052,7 +1052,7 @@ $(document).on('click', '.dn_list_add_to_cart, .dn_list_add_to_cart_edu, #add_to
     var cart_qty = cart_html.substring(cart_html.lastIndexOf("(")+1,cart_html.lastIndexOf(")"));
     var current_total = cart_total + unit_price * parseFloat(add_qty);
     setCartPriceQuantity(parseFloat(current_total).toFixed(2), '' + (parseInt(add_qty) + parseInt(cart_qty)), current_total);
-
+    var notify_text = openerp._t(' \n Has been added to the cart');
 
    openerp.jsonRpc("/shop/cart/update", "call", {
         'product_id': product_id,
@@ -1079,7 +1079,9 @@ $(document).on('click', '.dn_list_add_to_cart, .dn_list_add_to_cart_edu, #add_to
              }
         });
 
-        $.notify(add_qty + 'x ' + data[3] + ' \n Has been added to the cart', {
+
+        $.notify(add_qty + 'x ' + data[3] + notify_text, 
+        {
             style: 'cart_notify',
             className: 'green_notify'
         });
