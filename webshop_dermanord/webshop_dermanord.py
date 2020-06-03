@@ -1833,7 +1833,7 @@ class WebsiteSale(website_sale):
         res = request.website.sale_get_order(force_create=1)._cart_update(product_id=product_id, add_qty=float(add_qty), set_qty=float(set_qty))
         if locked:
             self.dn_cart_lock.release()
-        product_name = request.env['product.product'].sudo().search_read([('id', '=', product_id)], ['name'])[0]['name']
+        product_name = request.env['product.product'].sudo().search_read([('id', '=', product_id)], ['display_name'])[0]['display_name']
         return [request.website.price_format(res['amount_untaxed']), res['cart_quantity'], res['amount_untaxed'], product_name]
 
     @http.route(['/website_sale_update_cart'], type='json', auth="public", website=True)
