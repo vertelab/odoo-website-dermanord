@@ -24,7 +24,7 @@ $(document).ready(function(){
                     a.text(data[key]['name']);
                     a.prepend(img);
                     if (data[key]['model_record'] == 'product.template'){
-                        img.attr('src', '/imagefield/product.template/image_small/' + data[key]['res_id'] + '/ref/website_imagemagick.fts_image');
+                        img.attr('src', '/imagefield/product.template/image_small/' + data[key]['res_id'] + '/ref/webshop_dermanord.fts_image');
                         if (data[key]['event_type_id']){
                             a.attr('href', '/event/type/' + data[key]['event_type_id']);
                             //~ var c = '<li><a href="/event/type/' + data[key]['event_type_id'] + '"><img src="/imagefield/product.template/image_small/' + data[key]['res_id'] + '/ref/website_imagemagick.fts_image' + '">' + data[key]['name'] + '</a></li>';
@@ -38,7 +38,7 @@ $(document).ready(function(){
                         content.append(li);
                     }
                     else if (data[key]['model_record'] == 'product.product'){
-                        img.attr('src', '/imagefield/product.product/image_small/' + data[key]['res_id'] + '/ref/website_imagemagick.fts_image');
+                        img.attr('src', '/imagefield/product.product/image_small/' + data[key]['res_id'] + '/ref/webshop_dermanord.fts_image');
                         if (data[key]['event_type_id']){
                             a.attr('href', '/event/type/' + data[key]['event_type_id']);
                             //~ var c = '<li><a href="/event/type/' + data[key]['event_type_id'] + '">' + data[key]['name'] + '</a></li>';
@@ -49,19 +49,21 @@ $(document).ready(function(){
                         content.append(li);
                     }
                     else if (data[key]['model_record'] == 'product.public.category'){
-                        img.attr('src', '/imagefield/product.public.category/image_small/' + data[key]['res_id'] + '/ref/website_imagemagick.fts_image');
+                        img.attr('src', '/imagefield/product.public.category/image_small/' + data[key]['res_id'] + '/ref/webshop_dermanord.fts_image');
                         a.attr('href', '/webshop/category/' + data[key]['res_id']);
                         //~ var c = '<li><a href="/webshop/category/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
                         content.append(li);
                     }
                     else if (data[key]['model_record'] == 'blog.post'){
-                        img.attr('src', '/imagefield/blog.post/image_small/' + data[key]['res_id'] + '/ref/website_imagemagick.fts_image');
+                        if (data[key]['image_attachment_id']) {
+                            img.attr('src', '/imagefield/ir.attachment/datas/' + data[key]['image_attachment_id'] + '/ref/webshop_dermanord.fts_image');
+                        }
                         a.attr('href', '/blog/' + data[key]['blog_id'] + '/post/' + data[key]['res_id']);
                         //~ var c = '<li><a href="/blog/' + data[key]['blog_id'] + '/post/' + data[key]['res_id'] + '">' + data[key]['name'] + '</a></li>';
                         content.append(li);
                     }
                     else if (data[key]['model_record'] == 'product.facet.line'){
-                        img.attr('src', '/imagefield/product.facet.line/image_small/' + data[key]['res_id'] + '/ref/website_imagemagick.fts_image');
+                        img.attr('src', '/imagefield/product.facet.line/image_small/' + data[key]['res_id'] + '/ref/webshop_dermanord.fts_image');
                         a.attr('href', '/dn_shop/product/' + data[key]['product_tmpl_id'] + + data[key]['product_name']);
                         //~ var c = '<li><a href="/dn_shop/product/' + data[key]['product_tmpl_id'] + '">' + data[key]['product_name'] + '</a></li>';
                         content.append(li);
