@@ -23,7 +23,7 @@ from openerp import http
 from openerp.addons.web.http import request
 from openerp.addons.website_memcached import memcached
 
-from openerp.addons.webshop_dermanord.webshop_dermanord import WebsiteSale
+from openerp.addons.webshop_dermanord.models.webshop_dermanord import WebsiteSale
 from openerp.addons.reseller_dermanord.main import website_sale_home
 from openerp.addons.website_reseller_register_dermanord.website import reseller_register
 from openerp.addons.website_sale.controllers.main import get_pricelist
