@@ -659,7 +659,7 @@ msgstr "Fel i webbshoppen"
 #: code:addons/webshop_dermanord/models/product_view.py:630
 #, python-format
 msgid "Few in stock"
-msgstr "Few in stock"
+msgstr "Få i lager"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.payment
@@ -766,7 +766,7 @@ msgstr "Has Webshop"
 #: code:addons/webshop_dermanord/static/src/js/webshop_dermanord.js:516
 #: code:addons/webshop_dermanord/static/src/js/webshop_dermanord.js:1055
 #, python-format
-msgid "Has been added to the cart"
+msgid "Has beein added to the cart"
 msgstr "Has been added to the cart"
 
 #. module: webshop_dermanord
@@ -823,7 +823,7 @@ msgstr "Bildvy"
 #: code:addons/webshop_dermanord/models/product_view.py:630
 #, python-format
 msgid "In stock"
-msgstr "In stock"
+msgstr "Finns i lager"
 
 #. module: webshop_dermanord
 #: field:product.product,ingredient_ids:0
@@ -1116,7 +1116,7 @@ msgstr "Notifieringar"
 #: code:addons/webshop_dermanord/models/product_view.py:1196
 #, python-format
 msgid "Notify me when item is back in stock"
-msgstr "Notify me when item is back in stock"
+msgstr "Meddela mig när varan finns i lager"
 
 #. module: webshop_dermanord
 #. openerp-web
