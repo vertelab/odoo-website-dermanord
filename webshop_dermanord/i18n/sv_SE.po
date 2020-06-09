@@ -1504,7 +1504,7 @@ msgstr "Butik"
 #: code:addons/webshop_dermanord/models/product_view.py:630
 #, python-format
 msgid "Shortage"
-msgstr "Shortage"
+msgstr "Nästan slut"
 
 #. module: webshop_dermanord
 #: view:stock.notification:webshop_dermanord.student_search_view

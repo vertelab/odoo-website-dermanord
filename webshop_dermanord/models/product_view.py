@@ -646,15 +646,21 @@ class product_product(models.Model):
                 template = self.env['product.template'].search_read([('id', '=', product['product_tmpl_id'][0])], fields=['is_offer_product_reseller', 'is_offer_product_consumer'])[0]
                 product_ribbon_offer  = False
                 product_ribbon_offer_mobile  = False
+                product_startdate = False
+                product_stopdate = False
 
                 if pricelist.for_reseller:
                     if product['is_offer_product_reseller'] or template['is_offer_product_reseller']:
                         product_ribbon_offer  = True
                         product_ribbon_offer_mobile  = True
+                        product_startdate = True
+                        product_stopdate = True
                 else:
                     if product['is_offer_product_consumer'] or template['is_offer_product_consumer']:
                         product_ribbon_offer  = True
                         product_ribbon_offer_mobile  = True
+                        product_startdate = True
+                        product_stopdate = True
                 product_obj = self.env['product.product'].browse(product['id'])
                 
                 is_edu_purchase = product_obj.purchase_type == 'edu'
@@ -688,7 +694,10 @@ class product_product(models.Model):
                                         <div class="text-center">
                                             <span>{product_startdate}</span>
                                             <br>
+
+
                                             <span>{product_stopdate}</span>
+
                                         </div>
                                     </h5>
                                 </td>
