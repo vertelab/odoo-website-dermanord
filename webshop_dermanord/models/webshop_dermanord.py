@@ -878,6 +878,12 @@ dn_cart_update = {}
 class Website(models.Model):
     _inherit = 'website'
 
+    @api.model
+    def translate_extra_modules(self):
+        extra_mods = super(Website, self).translate_extra_modules()
+        extra_mods.append('webshop_dermanord')
+        return extra_mods
+
     def handle_error_403(self, path):
         """Emergency actions to perform if we run into an unexpected access error."""
         if path == '/dn_shop':

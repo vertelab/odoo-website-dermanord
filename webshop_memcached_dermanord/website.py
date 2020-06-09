@@ -42,13 +42,13 @@ class Website(models.Model):
     def get_dn_groups(self):
         groups = [g.id for g in request.env.user.commercial_partner_id.access_group_ids]
         if self.env.ref('__export__.res_groups_284').id in groups: # Webbplatsbehörigheter / Hudterapeut
-            return 'hudterapeut'
+            return u'hudterapeut'
         elif self.env.ref('__export__.res_groups_283').id in groups: # Webbplatsbehörigheter / Återförsäljare
-            return 'Återförsäljare'
+            return u'Återförsäljare'
         elif self.env.ref('__export__.res_groups_285').id in groups: # Webbplatsbehörigheter / SPA-Terapeut
-            return 'SPA-terapeut'
+            return u'SPA-terapeut'
         else:
-            return ''
+            return u''
 
     def get_webshop_type(self, post):
         if not request.env.user.webshop_type or request.env.user.webshop_type not in ['dn_shop', 'dn_list']: # first time use filter
@@ -82,7 +82,7 @@ class WebsiteSale(WebsiteSale):
         # ~ '/webshop/category/<model("product.public.category"):category>',
     #~ ], type='http', auth="public", website=True)
     @memcached.route(
-        key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country}%s group: %s webshop_type: %s%s' % (request.website.get_search_values(kw), request.website.get_dn_groups(), request.website.get_webshop_type(kw), request.website.dn_handle_webshop_session(kw.get('category'), kw.get('preset'), {}, require_cat_preset=False) or ''),
+        key=lambda kw: u'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country}%s group: %s webshop_type: %s%s' % (request.website.get_search_values(kw), request.website.get_dn_groups(), request.website.get_webshop_type(kw), request.website.dn_handle_webshop_session(kw.get('category'), kw.get('preset'), {}, require_cat_preset=False) or ''),
         flush_type=lambda kw: 'webshop',
         no_cache=True,
         cache_age=86400,  # Memcached    43200 (12 tim)  86400 (24 tim)  31536000 (1 år)
@@ -94,7 +94,7 @@ class WebsiteSale(WebsiteSale):
 
     #~ @http.route(['/dn_shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
     @memcached.route(
-        key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} group: %s memcached_time: %s' % 
+        key=lambda kw: u'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} group: %s memcached_time: %s' % 
                                 (request.website.get_dn_groups(), (kw.get('product') and (kw['product'].id, kw['product'].memcached_time or ''))),
         flush_type=lambda kw: 'dn_shop',
         no_cache=True,
@@ -108,7 +108,7 @@ class WebsiteSale(WebsiteSale):
         #~ '/dn_shop/variant/<model("product.product"):variant>'
     #~ ], type='http', auth="public", website=True)
     @memcached.route(
-        key=lambda kw:'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} groups: %s memcached_time: %s' % (request.website.get_dn_groups(), (kw.get('variant') and (kw['variant'].id, kw['variant'].memcached_time or ''))),
+        key=lambda kw: u'db: {db} base.group_website_publisher: {publisher} base.group_website_designer: {designer} path: {path} logged_in: {logged_in} lang: {lang} country: {country} groups: %s memcached_time: %s' % (request.website.get_dn_groups(), (kw.get('variant') and (kw['variant'].id, kw['variant'].memcached_time or ''))),
         flush_type=lambda kw: 'dn_shop',
         no_cache=True,
         cache_age=86400,   # Memcached    43200 (12 tim)  86400 (24 tim)  31536000 (1 år)
