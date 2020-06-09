@@ -646,8 +646,8 @@ class product_product(models.Model):
                 template = self.env['product.template'].search_read([('id', '=', product['product_tmpl_id'][0])], fields=['is_offer_product_reseller', 'is_offer_product_consumer'])[0]
                 product_ribbon_offer  = False
                 product_ribbon_offer_mobile  = False
-                product_startdate = False
-                product_stopdate = False
+                product_startdate = True
+                product_stopdate = True
 
                 if pricelist.for_reseller:
                     if product['is_offer_product_reseller'] or template['is_offer_product_reseller']:
@@ -741,8 +741,8 @@ class product_product(models.Model):
                     product_default_code=product['default_code'],
                     return_url='%s/dn_list' % 'https://mariaakerberg.com',
                     product_id=product['id'],
-                    product_startdate=campaign.date_start if campaign and campaign.date_start else '',
-                    product_stopdate =campaign.date_stop  if campaign and campaign.date_stop else '',
+                    product_startdate=campaign.date_start if campaign and campaign.date_start and not product_ribbon_offer == False else '',
+                    product_stopdate =campaign.date_stop  if campaign and campaign.date_stop and not product_ribbon_offer == False else '',
                     product_dfp=self.get_packaging_info(product['id']) or '',
                     shop_widget='{shop_widget}',
                     product_stock='{product_stock}',
@@ -766,6 +766,7 @@ class product_product(models.Model):
                 self.env['website'].put_page_dict(key_raw, flush_type, page, 'product.product,%s' % product['id'])
                 page_dict['page'] = base64.b64encode(page)
             stock_info = self.get_stock_info(product['id'])
+
             rows.append(page_dict.get('page', '').decode('base64').format(shop_widget='' if stock_info[0] else 'hidden', product_stock=stock_info[2]))
         return rows
 
