@@ -329,7 +329,7 @@ class product_template(models.Model):
 
         _logger.warn('Notice get_thunmb2 --------> %s user %s %s %s ' % (self.env.ref('base.public_user'),self.env.user,self._uid,user))
 
-        for product in product_ids.filtered(lambda p:p.id not in pricelist.product_ids._ids):
+        for product in product_ids:
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
             key_raw = 'thumbnail_default_variant %s %s %s %s' % (
                 self.env.cr.dbname, 
@@ -637,7 +637,7 @@ class product_product(models.Model):
         flush_type = 'product_list_row'
         ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
         ribbon_promo   = request.env.ref('website_sale.image_promo')
-        for product in self.env['product.product'].search_read(domain, fields=['id','fullname', 'default_code','type', 'is_offer_product_reseller', 'is_offer_product_consumer', 'product_tmpl_id', 'sale_ok','campaign_ids', 'website_style_ids', 'website_style_ids_variant', 'memcached_time'], limit=limit, order=order,offset=offset) if not in pricelist.product_ids._ids:
+        for product in self.env['product.product'].search_read(domain, fields=['id','fullname', 'default_code','type', 'is_offer_product_reseller', 'is_offer_product_consumer', 'product_tmpl_id', 'sale_ok','campaign_ids', 'website_style_ids', 'website_style_ids_variant', 'memcached_time'], limit=limit, order=order,offset=offset):
             key_raw = 'list_row %s %s %s %s %s %s %s Groups: %s' % (self.env.cr.dbname, flush_type, product['id'], pricelist.id, self.env.lang, request.session.get('device_type', 'md'), product['memcached_time'], request.website.get_dn_groups())  # db flush_type produkt prislista språk användargrupp
             key, page_dict = self.env['website'].get_page_dict(key_raw)
             if not page_dict:
@@ -646,21 +646,15 @@ class product_product(models.Model):
                 template = self.env['product.template'].search_read([('id', '=', product['product_tmpl_id'][0])], fields=['is_offer_product_reseller', 'is_offer_product_consumer'])[0]
                 product_ribbon_offer  = False
                 product_ribbon_offer_mobile  = False
-                product_startdate = True
-                product_stopdate = True
 
                 if pricelist.for_reseller:
                     if product['is_offer_product_reseller'] or template['is_offer_product_reseller']:
                         product_ribbon_offer  = True
                         product_ribbon_offer_mobile  = True
-                        product_startdate = True
-                        product_stopdate = True
                 else:
                     if product['is_offer_product_consumer'] or template['is_offer_product_consumer']:
                         product_ribbon_offer  = True
                         product_ribbon_offer_mobile  = True
-                        product_startdate = True
-                        product_stopdate = True
                 product_obj = self.env['product.product'].browse(product['id'])
                 
                 is_edu_purchase = product_obj.purchase_type == 'edu'
@@ -694,10 +688,7 @@ class product_product(models.Model):
                                         <div class="text-center">
                                             <span>{product_startdate}</span>
                                             <br>
-
-
                                             <span>{product_stopdate}</span>
-
                                         </div>
                                     </h5>
                                 </td>
@@ -741,8 +732,8 @@ class product_product(models.Model):
                     product_default_code=product['default_code'],
                     return_url='%s/dn_list' % 'https://mariaakerberg.com',
                     product_id=product['id'],
-                    product_startdate=campaign.date_start if campaign and campaign.date_start and not product_ribbon_offer == False else '',
-                    product_stopdate =campaign.date_stop  if campaign and campaign.date_stop and not product_ribbon_offer == False else '',
+                    product_startdate=campaign.date_start if campaign and campaign.date_start else '',
+                    product_stopdate =campaign.date_stop  if campaign and campaign.date_stop else '',
                     product_dfp=self.get_packaging_info(product['id']) or '',
                     shop_widget='{shop_widget}',
                     product_stock='{product_stock}',
@@ -766,7 +757,6 @@ class product_product(models.Model):
                 self.env['website'].put_page_dict(key_raw, flush_type, page, 'product.product,%s' % product['id'])
                 page_dict['page'] = base64.b64encode(page)
             stock_info = self.get_stock_info(product['id'])
-
             rows.append(page_dict.get('page', '').decode('base64').format(shop_widget='' if stock_info[0] else 'hidden', product_stock=stock_info[2]))
         return rows
 

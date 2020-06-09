@@ -58,7 +58,8 @@ Special layout for Dermanord AB webshop
         'calc_orderpoint',
         'reseller_dermanord',
         'mrp_dermanord',
-        'website_translate_extra_modules'
+        'website_translate_extra_modules',
+        'product_pricelist_dermanord'
         ],
     'data': [
         'views/webshop_dermanord_view.xml',
