@@ -100,10 +100,8 @@ msgstr "\n"
 #: code:addons/webshop_dermanord/static/src/js/webshop_dermanord.js:516
 #: code:addons/webshop_dermanord/static/src/js/webshop_dermanord.js:1055
 #, python-format
-msgid " \n"
-" Has been added to the cart"
-msgstr " \n"
-" Har lagts till i varukorgen"
+msgid " Has been added to the cart"
+msgstr " Har lagts till i varukorgen"
 
 #. module: webshop_dermanord
 #: view:product.public.category:webshop_dermanord.product_public_category_form_view
