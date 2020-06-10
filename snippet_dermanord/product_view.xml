@@ -53,6 +53,7 @@
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <field name="show_on_startpage" />
+                    <field name="show_on_my_home" />
                 </field>
             </field>
         </record>

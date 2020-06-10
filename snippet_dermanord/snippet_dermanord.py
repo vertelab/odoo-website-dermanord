@@ -51,6 +51,7 @@ class product_public_category(models.Model):
     _inherit = 'product.public.category'
 
     show_on_startpage = fields.Boolean(string='Show on Start Page', help="Check this box to make this category visible on the start page.")
+    show_on_my_home = fields.Boolean(string="Show on My Home", help="Check this box to make this category visible on my home.")
 
 class product_product(models.Model):
     _inherit = 'product.product'
