@@ -823,7 +823,7 @@ msgstr "Bildvy"
 #: code:addons/webshop_dermanord/models/product_view.py:630
 #, python-format
 msgid "In stock"
-msgstr "Finns i lager"
+msgstr "In stock"
 
 #. module: webshop_dermanord
 #: field:product.product,ingredient_ids:0
