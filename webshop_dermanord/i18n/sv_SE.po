@@ -822,8 +822,8 @@ msgstr "Bildvy"
 #. module: webshop_dermanord
 #: code:addons/webshop_dermanord/models/product_view.py:630
 #, python-format
-msgid "In stock"
-msgstr "In stock"
+msgid " "
+msgstr " "
 
 #. module: webshop_dermanord
 #: field:product.product,ingredient_ids:0

@@ -627,7 +627,7 @@ class product_product(models.Model):
         elif product.get('virtual_available_days', 0.0) >= 1.0:
             state = 'few'
         state = state or 'short'
-        return (state in ['in', 'few'], state, '' if  product.get('type') == 'consu' else {'in': _('In stock'), 'few': _('Few in stock'), 'short': _('Shortage')}[state].encode('utf-8'))  # in_stock,state,info
+        return (state in ['in', 'few'], state, '' if  product.get('type') == 'consu' else {'in': _(' '), 'few': _('Few in stock'), 'short': _('Shortage')}[state].encode('utf-8'))  # in_stock,state,info
     
     @api.model
     def get_list_row(self, domain, pricelist, limit=21, order='', offset=0):
