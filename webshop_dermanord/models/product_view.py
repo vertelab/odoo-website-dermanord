@@ -1197,14 +1197,14 @@ class product_product(models.Model):
                     edu_purchase = int(is_edu_purchase),
                     buy_button = buttons['product_view'],
                     stock_notify_button = '<button type="button" class="stock_notify_button dn_btn dn_primary mt8 text-center {%s_notify_stock_button_hidden}" data-toggle="modal" data-variant-id="%s" data-target="#">%s</button>' % (variant.id, variant.id, _('Notify me when item is back in stock')),
-                    product_startdate = _('Available on %s') %campaign.date_start if campaign and campaign.date_start else '',
-                    product_stopdate = _('to %s') %campaign.date_stop if campaign and campaign.date_stop else '',
+                    product_startdate = _('Available on %s') %campaign.date_start if campaign and campaign.date_start  and campaign.date_start <= str(date.today()) and campaign.date_stop >= str(date.today()) or not campaign.date_stop else '',
+                    product_stopdate = _('to %s') %campaign.date_stop if campaign and campaign.date_start and campaign.date_stop >= str(date.today()) else '',
                     stock_status = '{%s_stock_status}' % variant.id,
                     html_product_detail_desc = html_product_detail_desc(variant, partner, pricelist),
                     html_product_detail_image = html_product_detail_image(variant, partner),
                     # 2019-03-08 json https://schema.org/ImageObject
                     # https://developers.google.com/search/docs/data-types/product
-                     html_product_json_desc = product_json_desc(variant, variant.product_tmpl_id, pricelist),
+                    html_product_json_desc = product_json_desc(variant, variant.product_tmpl_id, pricelist),
                     html_product_ingredients_mobile = html_product_ingredients_mobile(variant, partner),
                     website_description = u'<div itemprop="description" class="oe_structure mt16" id="product_full_description">%s</div>' %variant.website_description if variant.website_description else '',
                     key_raw=key_raw,
