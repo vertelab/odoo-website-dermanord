@@ -649,12 +649,14 @@ class product_product(models.Model):
 
                 if pricelist.for_reseller:
                     if product['is_offer_product_reseller'] or template['is_offer_product_reseller']:
-                        product_ribbon_offer  = True
-                        product_ribbon_offer_mobile  = True
+                        if campaign.date_stop >= str(date.today()):
+                            product_ribbon_offer  = True
+                            product_ribbon_offer_mobile  = True
                 else:
                     if product['is_offer_product_consumer'] or template['is_offer_product_consumer']:
-                        product_ribbon_offer  = True
-                        product_ribbon_offer_mobile  = True
+                        if campaign.date_stop >= str(date.today()):
+                            product_ribbon_offer  = True
+                            product_ribbon_offer_mobile  = True
                 product_obj = self.env['product.product'].browse(product['id'])
                 
                 is_edu_purchase = product_obj.purchase_type == 'edu'
@@ -732,8 +734,8 @@ class product_product(models.Model):
                     product_default_code=product['default_code'],
                     return_url='%s/dn_list' % 'https://mariaakerberg.com',
                     product_id=product['id'],
-                    product_startdate=campaign.date_start if campaign and campaign.date_start and not product_ribbon_offer == False else '',
-                    product_stopdate =campaign.date_stop  if campaign and campaign.date_stop and not product_ribbon_offer == False else '',
+                    product_startdate=campaign.date_start if campaign and campaign.date_start and campaign.date_stop >= str(date.today()) and not product_ribbon_offer == False else '',
+                    product_stopdate =campaign.date_stop  if campaign and campaign.date_stop >= str(date.today()) and not product_ribbon_offer == False else '',
                     product_dfp=self.get_packaging_info(product['id']) or '',
                     shop_widget='{shop_widget}',
                     product_stock='{product_stock}',
