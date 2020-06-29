@@ -222,7 +222,7 @@ msgstr "Lägg till kundvagnen"
 #: code:addons/webshop_dermanord/models/product_view.py:547
 #, python-format
 msgid "Add to cart"
-msgstr "Add to cart"
+msgstr "Lägg till i kundvagnen"
 
 #. module: webshop_dermanord
 #: help:product.product,inventory_availability:0
@@ -278,7 +278,7 @@ msgstr "Som återförsäljare har du behörighet att se och köpa produkter frå
 #: code:addons/webshop_dermanord/models/product_view.py:1197
 #, python-format
 msgid "Available on %s"
-msgstr "Available on %s"
+msgstr "Tillgänglig den %s"
 
 #. module: webshop_dermanord
 #: field:product.public.category,bg_hex:0
