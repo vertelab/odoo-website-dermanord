@@ -160,12 +160,12 @@ msgstr "(ditt exkl. moms)"
 #. module: webshop_dermanord
 #: view:website:website_sale.cart
 msgid "+Add Tester"
-msgstr "+Add Tester"
+msgstr "+Lägg till gratisprov"
 
 #. module: webshop_dermanord
 #: view:website:website_sale.cart
 msgid "-Remove Tester"
-msgstr "-Remove Tester"
+msgstr "-Ta bort gratisprov"
 
 #. module: webshop_dermanord
 #: code:addons/webshop_dermanord/models/product_view.py:954
@@ -216,13 +216,18 @@ msgid "Add to Cart"
 msgstr "Lägg till kundvagnen"
 
 #. module: webshop_dermanord
+#: view:website:website_sale_view
+msgid "Add to Cart"
+msgstr "Lägg till kundvagnen"
+
+#. module: webshop_dermanord
 #: code:addons/webshop_dermanord/models/product_view.py:535
 #: code:addons/webshop_dermanord/models/product_view.py:539
 #: code:addons/webshop_dermanord/models/product_view.py:543
 #: code:addons/webshop_dermanord/models/product_view.py:547
 #, python-format
 msgid "Add to cart"
-msgstr "Lägg till i kundvagnen"
+msgstr "Lägg till kundvagnen"
 
 #. module: webshop_dermanord
 #: help:product.product,inventory_availability:0
@@ -257,7 +262,7 @@ msgstr "Verkställ"
 #. module: webshop_dermanord
 #: view:website:webshop_dermanord.products_list_reseller_view
 msgid "Art. nr"
-msgstr "Art. nr"
+msgstr "Artikelnr"
 
 #. module: webshop_dermanord
 #: model:res.groups,comment:webshop_dermanord.group_dn_ht
@@ -396,7 +401,7 @@ msgstr "Fortsätt"
 #. module: webshop_dermanord
 #: view:website:website_sale.cart
 msgid "Continue Shopping"
-msgstr "Continue Shopping"
+msgstr "Fortsätt handla"
 
 #. module: webshop_dermanord
 #: field:crm.tracking.campaign.helper,country_id:0
