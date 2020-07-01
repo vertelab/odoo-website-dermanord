@@ -151,10 +151,10 @@
               <t t-set="master_languages" t-value="[]" />
               <t t-set="other_languages" t-value="[]" />
               <t t-foreach="languages" t-as="lg">
-                <t t-if="lg[0] in ('ma_ST', 'no_NO', 'nl_NL')">
+                <t t-if="lg[0] in ('ma_ST', 'no_NO')">
                   <t t-set="master_languages" t-value="master_languages + [lg]" />
                 </t>
-                <t t-if="lg[0] not in ('ma_ST', 'no_NO', 'nl_NL')">
+                <t t-if="lg[0] not in ('ma_ST', 'no_NO')">
                   <t t-set="other_languages" t-value="other_languages + [lg]" />
                 </t>
               </t>
@@ -444,10 +444,10 @@
             <t t-set="master_languages" t-value="[]" />
             <t t-set="other_languages" t-value="[]" />
             <t t-foreach="languages" t-as="lg">
-              <t t-if="lg[0] in ('ma_ST', 'no_NO', 'nl_NL')">
+              <t t-if="lg[0] in ('ma_ST', 'no_NO' )">
                 <t t-set="master_languages" t-value="master_languages + [lg]" />
               </t>
-              <t t-if="lg[0] not in ('ma_ST', 'no_NO', 'nl_NL')">
+              <t t-if="lg[0] not in ('ma_ST', 'no_NO')">
                 <t t-set="other_languages" t-value="other_languages + [lg]" />
               </t>
             </t>
