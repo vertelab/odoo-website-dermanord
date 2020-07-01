@@ -51,12 +51,12 @@ class res_partner(models.Model):
     type = fields.Selection(selection_add=[('visit', 'Visit')])
     webshop_category_ids = fields.Many2many(comodel_name='product.public.category', string='Product Categories', domain=[('website_published', '=', True)])
     website_short_description = fields.Text(string='Website Partner Short Description', translate=True)
+    webshop_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Recommended Pricelist')
     
-    # ~ visit_city = fields.Char(string='Visit Adress City', compute='_compute_visit_city', store=True)
-    
+        # ~ visit_city = fields.Char(string='Visit Adress City', compute='_compute_visit_city', store=True)
+        
     # ~ #env['res.partner'].search([('is_reseller', 's=', True), ('child_ids.type', '=', 'visit')])._compute_visit_city()
     # ~ @api.one
-    # ~ @api.depends('child_ids.type', 'child_ids.city', 'child_ids.active')
     # ~ def _compute_visit_city(self):
         # ~ pass
         # ~ _logger.warn('\n\n%s._compute_visit_city()' % self)
