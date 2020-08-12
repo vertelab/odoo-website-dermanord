@@ -1197,8 +1197,8 @@ class product_product(models.Model):
                     edu_purchase = int(is_edu_purchase),
                     buy_button = buttons['product_view'],
                     stock_notify_button = '<button type="button" class="stock_notify_button dn_btn dn_primary mt8 text-center {%s_notify_stock_button_hidden}" data-toggle="modal" data-variant-id="%s" data-target="#">%s</button>' % (variant.id, variant.id, _('Notify me when item is back in stock')),
-                    product_startdate = _('Available on %s') %campaign.date_start if campaign and campaign.date_start and campaign.date_start <= str(date.today()) and campaign.date_stop >= str(date.today()) or not campaign.date_stop else '',
-                    product_stopdate = _('to %s') %campaign.date_stop if campaign and campaign.date_start and campaign.date_stop >= str(date.today()) else '',
+                    product_startdate = _('Available on %s') %campaign.date_start if campaign and campaign.date_start and campaign.date_start <= str(date.today()) and (not campaign.date_stop or campaign.date_stop >= str(date.today())) else '',
+                    product_stopdate = _('to %s') %campaign.date_stop if campaign and campaign.date_start and (campaign.date_stop >= str(date.today())) else '',
                     stock_status = '{%s_stock_status}' % variant.id,
                     html_product_detail_desc = html_product_detail_desc(variant, partner, pricelist),
                     html_product_detail_image = html_product_detail_image(variant, partner),
@@ -1211,6 +1211,8 @@ class product_product(models.Model):
                     key=key,
                     render_time='%s' % (timer() - render_start),
                 ).encode('utf-8')
+            
+
             page += "\n<!-- render_time_total %s -->\n" % (timer() - render_start_tot)
             self.env['website'].put_page_dict(key_raw, flush_type, page, '%s,%s' % (product._model, product.id))
             page_dict['page'] = base64.b64encode(page)

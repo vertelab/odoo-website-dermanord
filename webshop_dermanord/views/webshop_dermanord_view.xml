@@ -26,6 +26,19 @@
             </field>
         </record>
 
+        <record id="product_normal_form_view2" model="ir.ui.view">
+            <field name="name">product.product.form.product_size</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view" />
+            <field name="arch" type="xml">
+                <field name="weight_net" position="after">
+                    <field name="width"/>
+                    <field name="height"/>
+                    <field name="depth"/>
+                </field>
+            </field>
+        </record>
+
         <template id="website_sale.confirmation">
             <t t-call="website.layout">
                 <t t-set="additional_title">Shop - Confirmed</t>

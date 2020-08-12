@@ -31,6 +31,7 @@ from lxml import html
 from openerp.addons.website_sale.controllers.main import website_sale, QueryURL, table_compute
 from openerp.addons.website.models.website import slug
 from openerp.addons.website_fts.website_fts import WebsiteFullTextSearch
+import openerp.addons.decimal_precision as decpre
 from openerp.addons.base.ir.ir_qweb import HTMLSafe
 import werkzeug
 from heapq import nlargest
@@ -39,6 +40,15 @@ import time
 from multiprocessing import Lock
 import sys, traceback
 import urlparse
+
+from cStringIO import StringIO
+from openerp.report.report_sxw import report_sxw
+from openerp.api import Environment
+
+import logging
+_logger = logging.getLogger(__name__)
+
+# import xlsxwriter
 
 from openerp import SUPERUSER_ID
 
@@ -273,7 +283,6 @@ $$;""")
         res['event_type_id'] = self.event_type_id and self.event_type_id.id or False
         return res
 
-
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 
@@ -283,6 +292,9 @@ class ProductProduct(models.Model):
     has_tester = fields.Boolean(string='Has Tester')
     tester_product_id = fields.Many2one(comodel_name='product.product', string='Tester Product')
     tester_min = fields.Float(string='Minimum Quantity', default=6)
+    width = fields.Float('Width (cm)', digits_compute= decpre.get_precision('Product Unit of Measure'), help='Product width in cm')
+    height = fields.Float('Height (cm)', digits_compute= decpre.get_precision('Product Unit of Measure'), help='Product height in cm')
+    depth = fields.Float('Depth (cm)', digits_compute= decpre.get_precision('Product Unit of Measure'), help='Product depth in cm')
 
     @api.one
     def _fullname(self):
@@ -358,7 +370,6 @@ $$;""")
         res = super(ProductProduct, self).fts_search_suggestion()
         res['event_type_id'] = self.event_type_id and self.event_type_id.id or False
         return res
-
 
 class product_facet(models.Model):
     _inherit = 'product.facet'
