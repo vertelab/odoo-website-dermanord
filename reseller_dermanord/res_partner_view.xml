@@ -34,8 +34,8 @@
             </field>
         </record>
 
-        <record id="view_partner_form1" model="ir.ui.view">
-            <field name="name">res.partner.form.inherited.reseller_dermanord2</field>
+        <record id="view_partner_form_pricelist" model="ir.ui.view">
+            <field name="name">res.partner.form.inherited.reseller_dermanord_pricelist</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="product.view_partner_property_form"/>
             <field name="arch" type="xml">
