@@ -30,10 +30,20 @@
                     <field name="social_instagram" />
                     <field name="social_youtube" />
                     <field name="social_twitter" />
-                    <field name="webshop_pricelist" widget="many2one"/>
                 </field>
             </field>
         </record>
+
+        <record id="view_partner_form1" model="ir.ui.view">
+            <field name="name">res.partner.form.inherited.reseller_dermanord2</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="product.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <field name="property_product_pricelist" position="after">
+                    <field name="webshop_pricelist" widget="many2one"/>
+                </field>
+            </field>
+        </record>  
 
         <record id="view_res_partner_filter_reseller_dermanord" model="ir.ui.view">
             <field name="name">.res.partner.reseller.dermanord.select</field>
