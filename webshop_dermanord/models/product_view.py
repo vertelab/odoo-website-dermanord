@@ -520,8 +520,17 @@ class product_product(models.Model):
     def get_add_to_cart_buttons(self):
         """ Returns a dict with the relevant kinds of 'add to cart' buttons """
         res = {}
+       
+        if self.env.uid != self.env.ref('base.public_user').id and self.purchase_type == 'consumer':
+            res['list_view'] = u"""<a class="btn btn-default dn_list_add_to_cart" href="javascript:void(0);"><i class="fa fa-shopping-cart" style="color: #839794;"></i></a>""".format(
+                text = _('Add to cart')
+            )
+            res['product_view'] = u"""<a id="add_to_cart" href="#" class="dn_btn dn_primary mt8 js_check_product a-submit text-center {buy_button_hidden}" groups="base.group_user,base.group_portal" disable="1">{text}</a>""".format(
+                buy_button_hidden = '{%s_buy_button_hidden}' % self.id,
+                text = _('Add to cart')
+            )
         
-        if self.purchase_type == 'none':
+        elif self.purchase_type == 'none':
             res['list_view'] = u"""""" # There is never a reseller button on the list view. 
             res['product_view'] = u""""""
         elif self.purchase_type == 'consumer':
@@ -530,6 +539,7 @@ class product_product(models.Model):
                 buy_button_hidden = '',
                 text = _('Find Reseller')
             )
+
         elif self.purchase_type == 'edu':
             res['list_view'] = u"""<a class="btn btn-default dn_list_add_to_cart_edu" href="javascript:void(0);"><i class="fa fa-shopping-cart" style="color: #839794;"></i></a>""".format(
                 text = _('Add to cart')
@@ -1232,7 +1242,7 @@ class product_product(models.Model):
             stock['%s_google_stock_status' %variant.id] = {'short': 'https://schema.org/OutOfStock', 'few': 'https://schema.org/LimitedAvailability', 'in': 'https://schema.org/InStock'}[stock['%s_in_stock_state' %variant.id]]
             stock['%s_buy_button_hidden' % variant.id] = ''
             stock['%s_notify_stock_button_hidden' % variant.id] = ''
-            if not pricelist.for_reseller:
+            if not pricelist.for_reseller and not self.env.ref('webshop_dermanord.group_dn_sk'):
 				#Customers is consumer
                 stock['%s_stock_status' % variant.id] = ''
                 stock['%s_buy_button_hidden' % variant.id] = 'hidden'
