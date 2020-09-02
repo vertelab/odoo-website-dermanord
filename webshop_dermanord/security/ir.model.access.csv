@@ -4,5 +4,3 @@ access_stock_quant_portal,stock.quant.portal,stock.model_stock_quant,base.group_
 access_product_uom_portal,product.uom.portal,product.model_product_uom,base.group_portal,1,0,0,0
 access_crm_campaign_helper,crm.campaign.helper,model_crm_tracking_campaign_helper,base.group_portal,1,0,0,0
 access_crm_campaign_helper_user,crm.campaign.helper.user,model_crm_tracking_campaign_helper,base.group_sale_salesman,1,1,1,1
-access_sale_order_line_group_sk,sale.order.line ,sale.model_sale_order_line,group_dn_sk,1,1,1,1
-access_sale_order_group_sk,sale_order_group_sk,sale.model_sale_order,group_dn_sk,1,1,1,1
