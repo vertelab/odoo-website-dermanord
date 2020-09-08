@@ -207,13 +207,24 @@
                 </a>
               </div>
               <div id="my_page_div" class="col-xs-2">
+               
                 <div class="hidden-lg hidden-md hidden-sm">
                   <a href="/my/salon" role="menuitem" style="color: #000;">
                     <i class="fa fa-user fa-2x" />
                   </a>
                 </div>
+                
+<!--
+                <t t-if="not request.env.user.partner_id.parent_id">
+                    <div class="hidden-lg hidden-md hidden-sm">
+                      <a href="/my/salon" string="My Information" role="menuitem" style="color: #000;">
+                        <i class="fa fa-user fa-2x" />
+                      </a>
+                    </div>
+                </t>
+-->
               </div>
-              <div id="shop_cart_div" class="col-xs-2" groups="base.group_user,__export__.res_groups_283">
+              <div id="shop_cart_div" class="col-xs-2" groups="base.group_user,__export__.res_groups_283,__export__.res_groups_286">
                 <div class="hidden-lg hidden-md hidden-sm">
                   <a href="/shop/cart" style="color: #000;">
                     <i class="fa fa-shopping-cart fa-2x" />
@@ -232,7 +243,7 @@
                 </h5>
               </a>
             </div>
-            <div class="col-md-12 col-sm-12 hidden-xs" groups="base.group_user,__export__.res_groups_283">
+            <div class="col-md-12 col-sm-12 hidden-xs" groups="base.group_user,__export__.res_groups_283,__export__.res_groups_286">
               <t t-set="website_sale_order" t-value="website_sale_order or website.sale_get_order()" />
               <a href="/shop/cart" class="pull-right kepler_std_i" style="color: #000;">
                 <i class="fa fa-shopping-cart" />

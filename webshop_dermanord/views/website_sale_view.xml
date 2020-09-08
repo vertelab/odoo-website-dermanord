@@ -516,10 +516,12 @@ Sitemap: <t t-esc="url_root.replace('http://', 'https://', 1)"/>sitemap.xml
             <xpath expr="//table[@id='cart_products']/tbody/t/tr/td/div[@class='input-group oe_website_spinner']" position="after">
                 <t t-if="line.product_id.has_tester and line.product_id.tester_product_id">
                     <t t-set="tester_data" t-value="line.tester_html_attributes()"/>
-                    <div class="tester-buttons" t-att="tester_data['buttons']">
-                        <a href="#" t-att-class="tester_data['add']">+Add Tester</a>
-                        <a href="#" t-att-class="tester_data['remove']">-Remove Tester</a>
-                    </div>
+                    <t t-if="not request.env.user.has_group('webshop_dermanord.group_dn_sk')">
+                        <div class="tester-buttons" t-att="tester_data['buttons']">
+                            <a href="#" t-att-class="tester_data['add']">+Add Tester</a>
+                            <a href="#" t-att-class="tester_data['remove']">-Remove Tester</a>
+                        </div>
+                    </t>
                 </t>
             </xpath>
 
