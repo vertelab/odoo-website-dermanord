@@ -89,7 +89,13 @@
         <attribute name="t-att-style">'display:none'</attribute>
       </xpath>
       <xpath expr="//select[@name='shipping_id']/.." position="after">
+<!--
         <div class="form-group col-lg-12" t-if="user_id != website.env.ref('base.public_user')">
+-->
+        <div class="form-group col-lg-12" t-if="not request.env.user.has_group('webshop_dermanord.group_dn_sk')">
+<!--
+          <t t-if="not home_user.has_group('webshop_dermanord.group_dn_sk')">
+-->
           <h3 class="page-header mt16">Invoice Address</h3>
           <select name="invoicing_id" class="form-control">
             <t t-foreach="invoicings" t-as="invoicing">
