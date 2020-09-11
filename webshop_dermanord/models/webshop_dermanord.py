@@ -1919,3 +1919,14 @@ class WebsiteSale(website_sale):
                 # ~ else:
                     # ~ return []
         # ~ return []
+
+class delivery_carrier(models.Model):
+    _inherit = "delivery.carrier"
+    
+    is_company_delivery = fields.Boolean('Company Delivery')
+
+class stock_picking(models.Model):
+    _inherit = 'stock.picking'
+    
+    is_company_delivery = fields.Boolean(related='carrier_id.is_company_delivery')
+    

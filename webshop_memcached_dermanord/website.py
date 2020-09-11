@@ -22,6 +22,7 @@ from openerp import models, fields, api, _
 from openerp import http
 from openerp.addons.web.http import request
 from openerp.addons.website_memcached import memcached
+from openerp.addons.website.controllers.main import Website as WebsiteOld
 
 from openerp.addons.webshop_dermanord.models.webshop_dermanord import WebsiteSale
 from openerp.addons.reseller_dermanord.main import website_sale_home
@@ -41,14 +42,18 @@ class Website(models.Model):
 
     def get_dn_groups(self):
         groups = [g.id for g in request.env.user.commercial_partner_id.access_group_ids]
-        if self.env.ref('__export__.res_groups_284').id in groups: # Webbplatsbehörigheter / Hudterapeut
+        if self.env.ref('webshop_dermanord.group_dn_ht').id in groups: # Webbplatsbehörigheter / Hudterapeut
             return u'hudterapeut'
-        elif self.env.ref('__export__.res_groups_283').id in groups: # Webbplatsbehörigheter / Återförsäljare
-            return u'Återförsäljare'
-        elif self.env.ref('__export__.res_groups_285').id in groups: # Webbplatsbehörigheter / SPA-Terapeut
+        elif self.env.ref('webshop_dermanord.group_dn_spa').id in groups: # Webbplatsbehörigheter / SPA-Terapeut
             return u'SPA-terapeut'
+        elif self.env.ref('webshop_dermanord.group_dn_af').id in groups: # Webbplatsbehörigheter / Återförsäljare
+            return u'Återförsäljare'
+        elif self.env.ref('webshop_dermanord.group_dn_sk').id in groups: # Webbplatsbehörigheter / slutkonsument
+            return u'Slutkonsument'
         else:
             return u''
+            
+
 
     def get_webshop_type(self, post):
         if not request.env.user.webshop_type or request.env.user.webshop_type not in ['dn_shop', 'dn_list']: # first time use filter
@@ -145,6 +150,23 @@ class WebsiteSaleHome(website_sale_home):
             partner.sudo().memcached_time = fields.Datetime.now()
         return res
 
+class CachedWebsitePage(WebsiteOld):
+
+    # ~ @http.route('/page/<page:page>', type='http', auth="user", website=True)
+    @memcached.route(
+        flush_type=lambda kw: 'page',
+        key=lambda kw: '{db},/page/%s,{employee},{logged_in},{publisher},{designer},{lang} %s %s' % (
+            kw.get('page') or '',
+            request.website.memcached_get_page_timestamp(kw.get('page')), request.website.get_dn_groups()))
+    def page(self, page, **opt):
+        return super(CachedWebsitePage, self).page(page, **opt)
+        
+    @http.route(['/web/<model("res.users"):home_user>/info_update'], type='http', auth="user", website=True)
+    def info_update(self, home_user=None, **post):
+        res = super(CachedWebsitePage, self).info_update(home_user=home_user, **post)
+        if home_user and post:
+            home_user.sudo().partner_id.commercial_partner_id.memcached_time = fields.Datetime.now()
+        return res
 
 class reseller_register(reseller_register):
 

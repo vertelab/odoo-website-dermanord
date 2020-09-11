@@ -37,6 +37,7 @@ Special layout for Dermanord AB webshop
     'depends': [
         'website',
         'auth_signup',
+        'delivery',
         ],
     'data': [
         # ~ 'views/consumer_template.xml', 
