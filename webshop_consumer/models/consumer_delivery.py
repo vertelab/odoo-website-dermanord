@@ -19,36 +19,17 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, http, _
-from openerp.http import request
-import logging
-_logger = logging.getLogger(__name__)
+from openerp import models, fields, api, _
+from openerp.exceptions import Warning
+from openerp.tools import safe_eval
+import openerp.addons.decimal_precision as dp
+import requests
+from requests.auth import HTTPBasicAuth
+import json
+import base64
+from urllib import urlencode
+import traceback
 
-
-class res_partner(models.Model):
-    _inherit = 'res.partner'
-    
-    customer_ids = fields.One2many(comodel_name='res.partner', string='Customer', inverse_name='reseller_id')
-    reseller_id = fields.Many2one(comodel_name='res.partner', string='Reseller')
-    
-    customer_ids_count = fields.Integer(compute='reseller_clients_count')
-    
-    @api.multi
-    def reseller_clients_count(self):
-        for partner in self:
-            partner.customer_ids_count = len(partner.customer_ids)
-
-    @api.multi
-    def action_consumer_list(self):
-        return {
-            'name': 'Kundernas kunder / %s' % self.name ,
-            'res_model': 'res.partner',
-            'type': 'ir.actions.act_window',
-            'view_mode': 'kanban,tree,form',
-            'view_type': 'kanban,tree,form',
-            'domain': [('id', 'in', self.customer_ids.mapped('id'))],
-            'context': {'default_reseller_id': self.id },
-        }
 
 class delivery_carrier(models.Model):
     _inherit = "delivery.carrier"
@@ -61,4 +42,3 @@ class stock_picking(models.Model):
     is_consumer_delivery = fields.Boolean(related='carrier_id.is_consumer_delivery')
     
 
-            
