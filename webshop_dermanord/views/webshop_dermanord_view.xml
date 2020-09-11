@@ -336,6 +336,7 @@
                     </div>
                     <div class="clearfix" />
                     <div class="oe_structure" />
+                    <t t-if="not request.env.ref('webshop_dermanord.group_dn_sk')">
                     <div class="row form-group" id="client_order_ref">
                         <label for="client_order_ref">Reference:</label>
                         <input class="form-control" type="text" name="client_order_ref" t-att-value="request.website.sale_get_order().client_order_ref if request.website.sale_get_order() else ''" />
@@ -346,6 +347,7 @@
                         <textarea class="form-control" rows="5" name="note" />
                         <small>Please observe that your order may be delayed if you leave a comment due to the order being handled manually.</small>
                     </div>
+                   </t>
                     <div class="row" id="terms_and_conditions">
                         <div class="col-lg-5 col-sm-6">
                             <h4>Terms and Conditions</h4>
