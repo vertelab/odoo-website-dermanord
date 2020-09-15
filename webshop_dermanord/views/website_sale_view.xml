@@ -986,13 +986,19 @@
                     <t t-if="delivery.is_company_delivery">
                       <label>
                         <input t-att-value="delivery.id" type="radio" name="delivery_type" t-att-checked="order.carrier_id and order.carrier_id.id == delivery.id or False" />
-                        <span t-field="delivery.name" />
-                        <span class="badge" t-field="delivery.price" t-field-options='{
-                                                    "widget": "monetary",
-                                                    "from_currency": "delivery.product_id.company_id.currency_id",
-                                                    "display_currency": "website_sale_order.currency_id"
-                                                }' />
-                        <div t-field="delivery.website_description" class="text-muted" />
+                        <div class="container">
+                            <div class="col-md-3 col-sm-3 col-xs-3">
+                                <span t-field="delivery.website_image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}" />
+                            </div>
+                            <span t-field="delivery.name" />
+                            <span class="badge" t-field="delivery.price" t-field-options='{
+                                                        "widget": "monetary",
+                                                        "from_currency": "delivery.product_id.company_id.currency_id",
+                                                        "display_currency": "website_sale_order.currency_id"
+                                                    }' />
+                            <div t-field="delivery.website_description" class="text-muted delivery_website_description"/>
+                            <a t-att-href="delivery.website_description_link" target="_blank">read more</a>
+                        </div>
                       </label>
                     </t>
                 </li>
@@ -1002,13 +1008,19 @@
                     <t t-if="delivery.is_consumer_delivery">
                       <label>
                         <input t-att-value="delivery.id" type="radio" name="delivery_type" t-att-checked="order.carrier_id and order.carrier_id.id == delivery.id or False" />
-                        <span t-field="delivery.name" />
-                        <span class="badge" t-field="delivery.price" t-field-options='{
-                                                    "widget": "monetary",
-                                                    "from_currency": "delivery.product_id.company_id.currency_id",
-                                                    "display_currency": "website_sale_order.currency_id"
-                                                }' />
-                        <div t-field="delivery.website_description" class="text-muted" />
+                        <div class="container">
+                            <div class="col-md-3 col-sm-3 col-xs-3">
+                                <span t-field="delivery.website_image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}" />
+                            </div>
+                            <span t-field="delivery.name" />
+                            <span class="badge" t-field="delivery.price" t-field-options='{
+                                                        "widget": "monetary",
+                                                        "from_currency": "delivery.product_id.company_id.currency_id",
+                                                        "display_currency": "website_sale_order.currency_id"
+                                                    }' />
+                            <div t-field="delivery.website_description" class="text-muted delivery_website_description"/>
+                            <a t-att-href="delivery.website_description_link" target="_blank">read more</a>
+                        </div>
                       </label>
                     </t>
                 </li>
@@ -1017,6 +1029,26 @@
           </div>
         </div>
       </xpath>
+<!--
+      <xpath expr="//span[@t-field='delivery.name']" position="replace">
+                <div class="container">
+                    <div class="col-md-3 col-sm-3 col-xs-3">
+                        <span t-field="delivery.website_image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}" />
+                    </div>
+                    <div class="col-md-9 col-sm-9 col-xs-9">
+                        <span t-field="delivery.name" />
+                        <span class="badge" t-field="delivery.price"
+                            t-field-options='{
+                                "widget": "monetary",
+                                "from_currency": "delivery.product_id.company_id.currency_id",
+                                "display_currency": "website_sale_order.currency_id"
+                            }'/>
+                        <div t-field="delivery.website_description" class="text-muted delivery_website_description"/>
+                        <a t-att-href="delivery.website_description_link" target="_blank">read more</a>
+                    </div>
+                </div>
+            </xpath>
+-->
     </template>
   </data>
 </openerp>
