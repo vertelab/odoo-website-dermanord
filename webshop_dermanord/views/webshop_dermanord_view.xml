@@ -80,20 +80,30 @@
                                 <div class="oe_structure" />
                             </div>
                             <div class="col-md-3 col-md-offset-1 text-muted" id="right_column">
-                                <h4>Bill To:</h4>
-                                <div t-field="order.partner_invoice_id" t-field-options='{
-                    "widget": "contact",
-                    "fields": ["address", "name", "phone", "email"]
-                    }' />
-                                <t>
-                                    <h4 class="mt32">Ship To:</h4>
-                                    <t t-if="order.partner_shipping_id and order.partner_shipping_id.id != order.partner_invoice_id.id">
-                                        <div t-field="order.partner_shipping_id" t-field-options='{
-                        "widget": "contact",
-                        "fields": ["address", "name", "phone"]
-                        }' />
-                                    </t>
-                                    <address t-if="order.partner_shipping_id.id == order.partner_invoice_id.id">Ship to the same address</address>
+                                <t t-if="not request.env.user.has_group('webshop_dermanord.group_dn_sk')">
+                                  <h4>Bill To:</h4>
+                                  <div t-field="order.partner_invoice_id" t-field-options='{
+                                    "widget": "contact",
+                                    "fields": ["address", "name", "phone", "email"]
+                                    }' />
+                                </t>
+                                <h4 class="mt32">Ship To:</h4>
+                                <t t-if="not request.env.user.has_group('webshop_dermanord.group_dn_sk')">
+                                  <t t-if="order.partner_shipping_id and order.partner_shipping_id.id != order.partner_invoice_id.id">
+                                    <div t-field="order.partner_shipping_id" t-field-options='{
+                                            "widget": "contact",
+                                            "fields": ["address", "name", "phone"]
+                                            }' />
+                                  </t>
+                                  <address t-if="order.partner_shipping_id.id == order.partner_invoice_id.id">Ship to the same address</address>
+                                </t>
+                                <t t-if="request.env.user.has_group('webshop_dermanord.group_dn_sk')">
+                                  <t t-if="order.partner_shipping_id">
+                                    <div t-field="order.partner_shipping_id" t-field-options='{
+                                                "widget": "contact",
+                                                "fields": ["address", "name", "phone"]
+                                                }' />
+                                   </t>
                                 </t>
                             </div>
                         </div>
@@ -137,6 +147,47 @@
                     <span class="chevron" />
                 </li>
             </xpath>
+        <xpath expr="//div[@id='right_column']" position="replace">
+        <div class="col-lg-3 col-lg-offset-1 col-sm-3 text-muted" id="right_column">
+           <t t-if="not request.env.user.has_group('webshop_dermanord.group_dn_sk')">
+            <h4>Bill To:</h4>
+            <div t-field="order.partner_invoice_id" t-field-options='{
+                        "widget": "contact",
+                        "fields": ["address", "name", "phone", "email"]
+                        }' />
+            <div>
+              <a href="/shop/checkout">
+                <span class="fa fa-arrow-right" />
+                Change Address
+              </a>
+            </div>
+          </t>
+          <h4 class="mt32">Ship To:</h4>
+           <t t-if="not request.env.user.has_group('webshop_dermanord.group_dn_sk')">
+            <t t-if="website_sale_order.partner_shipping_id and website_sale_order.partner_shipping_id.id != website_sale_order.partner_invoice_id.id">
+              <div t-field="order.partner_shipping_id" t-field-options='{
+                            "widget": "contact",
+                            "fields": ["address", "name", "phone"]
+                            }' />
+            </t>
+            <address t-if="website_sale_order.partner_shipping_id.id == website_sale_order.partner_invoice_id.id">Ship to the same address</address>
+            <div class="mb32">
+              <a href="/shop/checkout">
+                <span class="fa fa-arrow-right" />
+                Change Address
+              </a>
+            </div>
+          </t>
+           <t t-if="request.env.user.has_group('webshop_dermanord.group_dn_sk')">
+            <t t-if="website_sale_order.partner_shipping_id">
+              <div t-field="order.partner_shipping_id" t-field-options='{
+                            "widget": "contact",
+                            "fields": ["address", "name", "phone"]
+                            }' />
+            </t>
+          </t>
+        </div>
+      </xpath>
             <!-- //Navigation bar -->
             <xpath expr="//div[@class='col-lg-8 col-sm-9 oe_cart']" position="replace">
                 <div class="col-lg-8 col-sm-9">
@@ -285,6 +336,7 @@
                     </div>
                     <div class="clearfix" />
                     <div class="oe_structure" />
+                    <t t-if="not request.env.user.has_group('webshop_dermanord.group_dn_sk')">
                     <div class="row form-group" id="client_order_ref">
                         <label for="client_order_ref">Reference:</label>
                         <input class="form-control" type="text" name="client_order_ref" t-att-value="request.website.sale_get_order().client_order_ref if request.website.sale_get_order() else ''" />
@@ -295,6 +347,7 @@
                         <textarea class="form-control" rows="5" name="note" />
                         <small>Please observe that your order may be delayed if you leave a comment due to the order being handled manually.</small>
                     </div>
+                   </t>
                     <div class="row" id="terms_and_conditions">
                         <div class="col-lg-5 col-sm-6">
                             <h4>Terms and Conditions</h4>
@@ -302,7 +355,13 @@
                                 <label>
                                     <input type="checkbox" id='terms_and_conditions' />
                                     I Agree with the
-                                    <a href="#" onclick="window.open('/page/terms-and-conditions', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>
+                                      <t t-if="not request.env.user.has_group('webshop_dermanord.group_dn_sk')">
+                                        <a href="#" onclick="window.open('/page/terms-and-conditions', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>
+                                      </t>
+                                       <t t-if="request.env.user.has_group('webshop_dermanord.group_dn_sk')">
+                                        <a href="#" onclick="window.open('/page/terms-and-conditions-sk', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>
+                                      </t>
+                                    
                                     <t t-if="website_sale_order.website_order_line.filtered(lambda l: l.product_id.purchase_type == 'edu')">
                                         and confirm that <u>I understand that some products in my order are intended only for educational purposes</u>
                                     </t>
