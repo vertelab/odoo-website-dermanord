@@ -1924,6 +1924,8 @@ class delivery_carrier(models.Model):
     _inherit = "delivery.carrier"
     
     is_company_delivery = fields.Boolean('Company Delivery')
+    
+
 
 class stock_picking(models.Model):
     _inherit = 'stock.picking'
