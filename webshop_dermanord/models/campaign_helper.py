@@ -24,6 +24,7 @@ from datetime import datetime, date, timedelta
 import logging
 _logger = logging.getLogger(__name__)
 
+
 class crm_tracking_campaign_helper(models.Model):
     _name = 'crm.tracking.campaign.helper'
 

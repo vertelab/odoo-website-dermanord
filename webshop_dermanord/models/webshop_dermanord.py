@@ -135,9 +135,9 @@ class blog_post(models.Model):
     product_public_categ_ids = fields.Many2many(comodel_name='product.public.category', string='Product Public Categories')
     product_tmpl_ids = fields.Many2many(comodel_name='product.template', string='Product Templates')
 
-
 class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
+
 
     @api.multi
     def write(self, vals):
