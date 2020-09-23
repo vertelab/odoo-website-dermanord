@@ -1298,9 +1298,8 @@ class WebsiteSale(website_sale):
         # if order.partner_id.user_id in base.group
         if not request.env.user.has_group('base.group_user'):
             vat_check = order.partner_id.check_vat()
-            if not vat_check[0]:
+            if not vat_check:
                 return request.website.render("webshop_dermanord.failed_vat_check")
-
 
         redirection = self.checkout_redirection(order)
         if redirection:
