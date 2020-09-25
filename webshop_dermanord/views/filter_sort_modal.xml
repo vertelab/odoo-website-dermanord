@@ -1398,7 +1398,7 @@
     <template id="campaign_products" name="campaigns">
 
       <h1 class="page-header text-center" t-field="campaign.name"/>
-    <div id="desktop_product_navigator" class="col-md-10 text-center">
+    <div id="desktop_product_navigator" class="col-md-12 text-center">
     <p t-field="campaign.website_description" class="text-center"/> 
     </div>
 
