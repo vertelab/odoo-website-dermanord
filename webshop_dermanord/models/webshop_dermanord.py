@@ -1750,6 +1750,9 @@ class WebsiteSale(website_sale):
                 )
         if len(products_html) == 0:
             no_product_message = _('This campaign has no produtcs')
+        if len(products_html) == 1: 
+            campaign1 = product_for_campaign = request.env['product.product'].search([('campaign_ids','in', campaign.id)])
+            return request.redirect('/dn_shop/variant/%s' % campaign1.id )
     
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
             return request.website.render("webshop_dermanord.products_list_reseller_view", {
