@@ -1749,8 +1749,7 @@ class WebsiteSale(website_sale):
                 pricelist=campaign.get_current_phase(True).pricelist_id
                 )
         if len(products_html) == 0:
-            no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
-        pricelist_chart_type_id = request.env['pricelist_chart.type'].sudo().search_read([('pricelist', '=', request.context['pricelist'])], ['id'])[0]['id']
+            no_product_message = _('This campaign has no produtcs')
     
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
             return request.website.render("webshop_dermanord.products_list_reseller_view", {
@@ -1764,7 +1763,6 @@ class WebsiteSale(website_sale):
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products_html) < PPG else False,
                 'filter_version': request.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version'),
-                'pricelist_chart_type_id': pricelist_chart_type_id,
             })
         else:
             return request.website.render("webshop_dermanord.products", {
@@ -1780,7 +1778,6 @@ class WebsiteSale(website_sale):
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products_html) < PPG else False,
                 'filter_version': request.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version'),
-                'pricelist_chart_type_id': pricelist_chart_type_id,
             })
 
     @http.route([
