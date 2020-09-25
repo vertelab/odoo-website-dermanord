@@ -101,6 +101,7 @@
       </t>
     </template>
     <template id="products" name="Products">
+      <t t-call="website.layout">
         <t t-set="additional_title">Shop</t>
           <t t-if="campaign">
               <t t-call="webshop_dermanord.campaign_products"/>
@@ -110,6 +111,7 @@
           <t t-call="webshop_dermanord.dn_shop" />
           <div class="oe_structure mb32" />
         </div>
+      </t>
     </template>
     <template id="dn_shop" name="DN Shop">
       <t t-if="current_ingredient">

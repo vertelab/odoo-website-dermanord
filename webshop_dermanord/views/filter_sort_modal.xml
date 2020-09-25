@@ -1394,14 +1394,8 @@
                 <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_filter_form" />
             </div>
         </template>
-<!-- 
-        <template id="campaign_products_thumb" name="campaigns">
-           <div id="desktop_product_navigator" class="col-md-10 text-center">
-                <p t-field="campaign.website_description" class="text-center"/> 
-          </div>
-        </template> -->
 
-      <template id="campaign_products" name="campaigns">
+    <template id="campaign_products" name="campaigns">
 
       <h1 class="page-header text-center" t-field="campaign.name"/>
     <div id="desktop_product_navigator" class="col-md-10 text-center">
