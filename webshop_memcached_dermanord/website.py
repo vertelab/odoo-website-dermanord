@@ -52,6 +52,7 @@ class Website(models.Model):
             return u'Slutkonsument'
         else:
             return u''
+        
             
 
 
@@ -139,7 +140,9 @@ class WebsiteSaleHome(website_sale_home):
     def info_update(self, home_user=None, **post):
         res = super(WebsiteSaleHome, self).info_update(home_user=home_user, **post)
         if home_user and post:
-            home_user.sudo().partner_id.commercial_partner_id.memcached_time = fields.Datetime.now()
+            home_user.sudo().commercial_partner_id.memcached_time = fields.Datetime.now()
+        # ~ if home_user and post:
+            # ~ home_user.sudo().partner_id.memcached_time = fields.Datetime.now()
         return res
 
     # flush memcached contact image
@@ -161,12 +164,7 @@ class CachedWebsitePage(WebsiteOld):
     def page(self, page, **opt):
         return super(CachedWebsitePage, self).page(page, **opt)
         
-    @http.route(['/web/<model("res.users"):home_user>/info_update'], type='http', auth="user", website=True)
-    def info_update(self, home_user=None, **post):
-        res = super(CachedWebsitePage, self).info_update(home_user=home_user, **post)
-        if home_user and post:
-            home_user.sudo().partner_id.commercial_partner_id.memcached_time = fields.Datetime.now()
-        return res
+    
 
 class reseller_register(reseller_register):
 
