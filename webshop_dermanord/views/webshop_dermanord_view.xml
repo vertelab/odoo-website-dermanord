@@ -355,12 +355,7 @@
                                 <label>
                                     <input type="checkbox" id='terms_and_conditions' />
                                     I Agree with the
-                                      <t t-if="not request.env.user.has_group('webshop_dermanord.group_dn_sk')">
                                          <a href="#" onclick="window.open('/page/terms-and-conditions', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>                                    
-                                    </t>
-                                   <t t-if="not request.env.user.has_group('webshop_dermanord.group_dn_sk')">
-                                         <a href="#" onclick="window.open('/page/terms-and-conditions', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>                                    
-                                    </t>
                                     <t t-if="website_sale_order.website_order_line.filtered(lambda l: l.product_id.purchase_type == 'edu')">
                                         and confirm that <u>I understand that some products in my order are intended only for educational purposes</u>
                                     </t>
