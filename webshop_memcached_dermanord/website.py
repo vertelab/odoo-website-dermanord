@@ -153,16 +153,16 @@ class WebsiteSaleHome(website_sale_home):
             partner.sudo().memcached_time = fields.Datetime.now()
         return res
 
-class CachedWebsitePage(WebsiteOld):
+# ~ class CachedWebsitePage(WebsiteOld):
 
     # ~ @http.route('/page/<page:page>', type='http', auth="user", website=True)
-    @memcached.route(
-        flush_type=lambda kw: 'page',
-        key=lambda kw: '{db},/page/%s,{employee},{logged_in},{publisher},{designer},{lang} %s %s' % (
-            kw.get('page') or '',
-            request.website.memcached_get_page_timestamp(kw.get('page')), request.website.get_dn_groups()))
-    def page(self, page, **opt):
-        return super(CachedWebsitePage, self).page(page, **opt)
+    # ~ @memcached.route(
+        # ~ flush_type=lambda kw: 'page',
+        # ~ key=lambda kw: '{db},/page/%s,{employee},{logged_in},{publisher},{designer},{lang} %s %s' % (
+            # ~ kw.get('page') or '',
+            # ~ request.website.memcached_get_page_timestamp(kw.get('page')), request.website.get_dn_groups()))
+    # ~ def page(self, page, **opt):
+        # ~ return super(CachedWebsitePage, self).page(page, **opt)
         
     
 
