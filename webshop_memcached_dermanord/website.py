@@ -53,8 +53,6 @@ class Website(models.Model):
         else:
             return u''
         
-            
-
 
     def get_webshop_type(self, post):
         if not request.env.user.webshop_type or request.env.user.webshop_type not in ['dn_shop', 'dn_list']: # first time use filter
@@ -153,17 +151,7 @@ class WebsiteSaleHome(website_sale_home):
             partner.sudo().memcached_time = fields.Datetime.now()
         return res
 
-# ~ class CachedWebsitePage(WebsiteOld):
 
-    # ~ @http.route('/page/<page:page>', type='http', auth="user", website=True)
-    # ~ @memcached.route(
-        # ~ flush_type=lambda kw: 'page',
-        # ~ key=lambda kw: '{db},/page/%s,{employee},{logged_in},{publisher},{designer},{lang} %s %s' % (
-            # ~ kw.get('page') or '',
-            # ~ request.website.memcached_get_page_timestamp(kw.get('page')), request.website.get_dn_groups()))
-    # ~ def page(self, page, **opt):
-        # ~ return super(CachedWebsitePage, self).page(page, **opt)
-        
     
 
 class reseller_register(reseller_register):
