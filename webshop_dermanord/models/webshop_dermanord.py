@@ -1711,9 +1711,7 @@ class WebsiteSale(website_sale):
 
         # product.product.campaign_ids many2many crm.tracking.campaign
         # ----- 
-        _logger.warn("~ type - campaign_id  %s" % campaign_id)
-        campaign_id_list = []
-        campaign_id_list.append(campaign_id)
+        product_domain = []
         product_for_campaign = request.env['product.product'].search([('campaign_ids','in', campaign.id)])
         for product in product_for_campaign: 
             product_domain = [('id', 'in', product_for_campaign.mapped('id'))]
@@ -1721,10 +1719,6 @@ class WebsiteSale(website_sale):
         # campaign.campaign_product_ids (one2many) crm.campaign.products 
         # crm.campaign.products innehåller fältet product_id
         # product_id (many2one) product.template 
-
-        if not request.context.get('pricelist'):
-            request.context['pricelist'] = int(self.get_pricelist())
-
         user = request.env['res.users'].browse(request.uid)
 
         no_product_message = ''
@@ -1748,14 +1742,22 @@ class WebsiteSale(website_sale):
                 #product_ids=campaign.campaign_product_ids.read(['display_name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'memcached_time']), 
                 pricelist=campaign.get_current_phase(True).pricelist_id
                 )
-        if len(products_html) == 0:
+
+
+        _logger.warning("~ product_for_campaign %s" % len(product_for_campaign)) 
+        # Do not use product_html
+        if len(product_for_campaign) == 0:
             no_product_message = _('This campaign has no produtcs')
-        if len(products_html) == 1: 
-            campaign1 = product_for_campaign = request.env['product.product'].search([('campaign_ids','in', campaign.id)])
-            return request.redirect('/dn_shop/variant/%s' % campaign1.id )
+        if len(product_for_campaign) == 1: 
+            if product_for_campaign.product_variant_ids == False: 
+                return request.redirect('/dn_shop/variant/%s' % product_for_campaign.id)
+            return request.redirect('/dn_shop/product/%s' % product_for_campaign.id)
+
+
+        # pricelist_chart_type_id = request.env['pricelist_chart.type'].sudo().search_read([(campaign.get_current_phase(True).pricelist_id.id)], ['id'])[0]['id']
     
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
-            return request.website.render("webshop_dermanord.products_list_reseller_view", {
+            return request.website.render("webshop_dermanord.products_list_campaign_view", {
                 'title': _('Shop'),
                 'products': products_html,
                 'campaign': campaign,
@@ -1766,9 +1768,10 @@ class WebsiteSale(website_sale):
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products_html) < PPG else False,
                 'filter_version': request.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version'),
+                #'pricelist_chart_type_id': pricelist_chart_type_id
             })
         else:
-            return request.website.render("webshop_dermanord.products", {
+            return request.website.render("webshop_dermanord.products_view_campaign", {
                 'products': products_html,
                 'product_ids': request.env['product.template'].sudo(user).search_read(request.session.get('current_domain'), fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=PPG, order=request.session.get('current_order'),offset=0),
                 'rows': PPR,
@@ -1781,6 +1784,7 @@ class WebsiteSale(website_sale):
                 'no_product_message': no_product_message,
                 'all_products_loaded': True if len(products_html) < PPG else False,
                 'filter_version': request.env['ir.config_parameter'].get_param('webshop_dermanord.filter_version'),
+                #'pricelist_chart_type_id': pricelist_chart_type_id
             })
 
     @http.route([

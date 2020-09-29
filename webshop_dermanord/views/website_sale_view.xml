@@ -100,12 +100,25 @@
         </t>
       </t>
     </template>
+      <template id="products_view_campaign" name="Products">
+      <t t-call="website.layout">
+        <t t-set="additional_title">Shop</t>
+
+        <h1 class="page-header text-center" t-field="campaign.name"/>
+        <div id="desktop_product_navigator" class="col-md-12 text-center">
+          <p t-field="campaign.website_description" class="text-center"/> 
+        </div>
+
+        <div id="wrap" class="js_sale">
+          <div class="oe_structure" />
+          <t t-call="webshop_dermanord.dn_shop" />
+          <div class="oe_structure mb32" />
+        </div>
+      </t>
+    </template>
     <template id="products" name="Products">
       <t t-call="website.layout">
         <t t-set="additional_title">Shop</t>
-          <t t-if="campaign">
-              <t t-call="webshop_dermanord.campaign_products"/>
-           </t>
         <div id="wrap" class="js_sale autoload_grid">
           <div class="oe_structure" />
           <t t-call="webshop_dermanord.dn_shop" />
@@ -157,10 +170,12 @@
             -->
           </t>
         </div>
+        <t t-if="not campaign">
         <div id="loading" class="col-md-offset-3 col-md-9 col-xs-12 text-center hidden">
           <img src="/web/static/src/img/throbber-large.gif" />
           <h3>Loading more products...</h3>
         </div>
+      </t>
       </div>
     </template>
     <!-- fastest -->
@@ -235,14 +250,61 @@
            </script>
       -->
     </template>
+    <template id="products_list_campaign_view" name="Product List For Reseller">
+      <t t-call="website.layout">
+        <t t-set="additional_title">Shop</t>
+        <div id="wrap" class="js_sale">
+          <div class="oe_structure" />
+
+            <h1 class="page-header text-center" t-field="campaign.name"/>
+             <div id="desktop_product_navigator" class="col-md-12 text-center">
+              <p t-field="campaign.website_description" class="text-center"/> 
+             </div>
+
+          <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
+          
+            <div class="container oe_website_sale">
+              <div id="desktop_product_navigator" class="col-md-2 hidden-xs"/>
+
+              <div id="desktop_product_list" class="col-md-9 col-xs-12">
+                <t t-if="no_product_message != ''">
+                  <h2 class="text-center mt128" t-esc="no_product_message" />
+                </t>
+                <table t-if="no_product_message == ''" class="product_list_table table table-striped" style="width: 100%;">
+                  <thead>
+                    <tr>
+                      <th />
+                      <th class="hidden-xs" />
+                      <th class="hidden-xs">Art. nr</th>
+                      <th>Produkt</th>
+                      <th class="hidden-xs">Säljstart kund</th>
+                      <th style="min-width: 100px;">Ditt pris</th>
+                      <th />
+                      <th />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <t t-set="pricelist_af" t-value="request.env.ref('webshop_dermanord.pricelist_af')" />
+                    <t t-set="pricelist_special" t-value="request.env.ref('webshop_dermanord.pricelist_special')" />
+                    <t t-set="pricelist_us" t-value="request.env.ref('webshop_dermanord.pricelist_us')" />
+                    <t t-set="pricelist_eu" t-value="request.env.ref('webshop_dermanord.pricelist_eu')" />
+                    <t t-foreach="products" t-as="product">
+                      <t t-raw="product" />
+                    </t>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </t>
+          <div class="oe_structure mb32" />
+        </div>
+      </t>
+    </template>
     <template id="products_list_reseller_view" name="Product List For Reseller">
       <t t-call="website.layout">
         <t t-set="additional_title">Shop</t>
         <div id="wrap" class="js_sale autoload_list">
           <div class="oe_structure" />
-           <t t-if="campaign">
-              <t t-call="webshop_dermanord.campaign_products"/>
-           </t>
 
           <t t-if="user_id.partner_id.property_product_pricelist and user_id.partner_id.property_product_pricelist.for_reseller">
           
@@ -260,10 +322,6 @@
                 </t>
               </div>
               </t>
-
-            <t t-if="campaign">
-              <div id="desktop_product_navigator" class="col-md-2 hidden-xs"/>
-            </t>
 
               <div id="desktop_product_list" class="col-md-9 col-xs-12">
                 <t t-if="no_product_message != ''">
