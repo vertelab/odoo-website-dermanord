@@ -219,13 +219,15 @@
 -->
               </div>
 
-              <div id="shop_cart_div" class="col-xs-2" groups="base.group_user,webshop_dermanord.group_dn_af,webshop_dermanord.group_dn_sk">
-                <div class="hidden-lg hidden-md hidden-sm">
-                  <a href="/shop/cart" style="color: #000;">
-                    <i class="fa fa-shopping-cart fa-2x" />
-                    <sup class="my_cart_quantity label label-primary dn_cart_qty_sm" />
-                  </a>
-                </div>
+              <div id="shop_cart_div" class="col-xs-2" >
+                <t t-if="user_id != website.env.ref('base.public_user')" >
+                    <div class="hidden-lg hidden-md hidden-sm">
+                      <a href="/shop/cart" style="color: #000;">
+                        <i class="fa fa-shopping-cart fa-2x" />
+                        <sup class="my_cart_quantity label label-primary dn_cart_qty_sm" />
+                      </a>
+                    </div>
+                </t>
               </div>
             </div>
           </div>
@@ -239,21 +241,23 @@
               </a>
             </div>
 
-            <div class="col-md-12 col-sm-12 hidden-xs" groups="base.group_user,webshop_dermanord.group_dn_af,webshop_dermanord.group_dn_sk">
-              <t t-set="website_sale_order" t-value="website_sale_order or website.sale_get_order()" />
-              <a href="/shop/cart" class="pull-right kepler_std_i" style="color: #000;">
-                <i class="fa fa-shopping-cart" />
-                <i>Bag:</i>
-                <i class="my_cart_total">
-                  &amp;nbsp;
-                  <span class="my_cart_currency" style="white-space: nowrap;" />
-                  <span class="oe_currency_value" />
-                </i>
-                <i class="my_cart_quantity" />
-              </a>
+            <div class="col-md-12 col-sm-12 hidden-xs" >
+              <t t-if="user_id != website.env.ref('base.public_user')" >
+                  <t t-set="website_sale_order" t-value="website_sale_order or website.sale_get_order()" />
+                  <a href="/shop/cart" class="pull-right kepler_std_i" style="color: #000;">
+                    <i class="fa fa-shopping-cart" />
+                    <i>Bag:</i>
+                    <i class="my_cart_total">
+                      &amp;nbsp;
+                      <span class="my_cart_currency" style="white-space: nowrap;" />
+                      <span class="oe_currency_value" />
+                    </i>
+                    <i class="my_cart_quantity" />
+                  </a>
               <!--
                    My cart <sup t-attf-class="my_cart_quantity label label-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or ''"/>
               -->
+              </t>
             </div>
           </div>
         </div>
