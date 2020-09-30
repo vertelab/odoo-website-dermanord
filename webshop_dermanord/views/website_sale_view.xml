@@ -111,7 +111,7 @@
 
         <div id="wrap" class="js_sale">
           <div class="oe_structure" />
-          <t t-call="webshop_dermanord.dn_shop" />
+          <t t-call="webshop_dermanord.dn_shop_campaign" />
           <div class="oe_structure mb32" />
         </div>
       </t>
@@ -125,6 +125,42 @@
           <div class="oe_structure mb32" />
         </div>
       </t>
+    </template>
+    <template id="dn_shop_campaign" name="DN Shop">
+      <t t-if="current_ingredient">
+        <div id="ingredient_div" class="container">
+          <h6 class="text-center">
+            <span t-field="current_ingredient.name" />
+          </h6>
+          <t t-if="current_ingredient.image">
+            <img t-att-src="'/imagefield/product.ingredient/image/%s/ref/%s' %(current_ingredient.id, 'webshop_dermanord.img_ingredients_big')" />
+          </t>
+          <t t-if="not current_ingredient.image">
+            <img src="/web/static/src/img/placeholder.png" />
+          </t>
+          <p class="mt16">
+            <span t-field="current_ingredient.description" />
+          </p>
+          <h3 class="mt32 mb32 text-center">Examples of products containing this ingredient</h3>
+        </div>
+      </t>
+      <div class="container oe_website_sale">
+       
+        <div id="desktop_product_navigator" class="col-md-3 hidden-xs">
+        </div>
+
+        <div id="desktop_product_grid" class="col-md-9 col-xs-12">
+          <t t-if="no_product_message != ''">
+            <h2 class="text-center mt128" t-esc="no_product_message" />
+          </t>
+          <t t-foreach="products" t-as="product">
+            <t t-raw="product" />
+            <!--
+                 <div t-call="webshop_dermanord.products_item" />
+            -->
+          </t>
+        </div>
+      </div>
     </template>
     <template id="dn_shop" name="DN Shop">
       <t t-if="current_ingredient">
@@ -148,17 +184,14 @@
        
         <div id="desktop_product_navigator" class="col-md-3 hidden-xs">
           <!-- navigator -->
-          <t t-if="not campaign">
           <t t-if="filter_version == 'webshop_old'">
             <t t-call="webshop_dermanord.desktop_product_navigator" />
           </t>
           <t t-if="filter_version == 'webshop'">
             <t t-call="webshop_dermanord.webshop_dermanord_desktop_product_filter_navigator" />
           </t>
-          </t>
-        </div>
-
    
+        </div>
         <div id="desktop_product_grid" class="col-md-9 col-xs-12">
           <t t-if="no_product_message != ''">
             <h2 class="text-center mt128" t-esc="no_product_message" />
@@ -170,12 +203,10 @@
             -->
           </t>
         </div>
-        <t t-if="not campaign">
         <div id="loading" class="col-md-offset-3 col-md-9 col-xs-12 text-center hidden">
           <img src="/web/static/src/img/throbber-large.gif" />
           <h3>Loading more products...</h3>
         </div>
-      </t>
       </div>
     </template>
     <!-- fastest -->
