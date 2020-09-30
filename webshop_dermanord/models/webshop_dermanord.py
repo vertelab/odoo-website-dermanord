@@ -1701,16 +1701,11 @@ class WebsiteSale(website_sale):
 
 
     @http.route(['/campaigns', '/campaign/<int:campaign_id>'], type='http', website=True)
-    def consumer(self, campaign_id, **kw):        
+    def consumer(self, campaign_id, **kw):
         PPG = 21 # Products Per Page
         PPR = 3  # Products Per Row
         campaign = request.env['crm.tracking.campaign'].sudo().browse(campaign_id)
-        # product = request.env['product.product'].search_read('campaigns_ids')
-        # campaign = request.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
-        # campaign = request.env['product.product'].browse('campaign_ids')
 
-        # product.product.campaign_ids many2many crm.tracking.campaign
-        # ----- 
         product_domain = []
         product_for_campaign = request.env['product.product'].search([('campaign_ids','in', campaign.id)])
         for product in product_for_campaign: 
@@ -1733,26 +1728,18 @@ class WebsiteSale(website_sale):
             product_template_ids = []
             for campaign_product in request.env['crm.campaign.product'].search([('id', 'in', campaign.campaign_product_ids.mapped('id'))]):
                 for product in campaign_product.product_id: 
-                    _logger.warn("~ product.name %s" % product.name)
                     product_template_ids.append(product)
 
             product_ids = request.env['product.template'].sudo(user).search_read(request.session.get('current_domain'), fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=PPG, order=request.session.get('current_order'),offset=0)
             products_html=request.env['product.template'].get_thumbnail_default_variant2(
-                product_ids=product_template_ids, #.read(['display_name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'memcached_time']), 
-                #product_ids=campaign.campaign_product_ids.read(['display_name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'memcached_time']), 
+                product_ids=product_template_ids,
                 pricelist=campaign.get_current_phase(True).pricelist_id
                 )
-
-
-        _logger.warning("~ product_for_campaign %s" % len(product_for_campaign)) 
-        # Do not use product_html
         if len(product_for_campaign) == 0:
             no_product_message = _('This campaign has no produtcs')
         if len(product_for_campaign) == 1: 
-            if product_for_campaign.product_variant_ids == False: 
-                return request.redirect('/dn_shop/variant/%s' % product_for_campaign.id)
-            return request.redirect('/dn_shop/product/%s' % product_for_campaign.id)
 
+            return request.redirect('/dn_shop/variant/%s' % product_for_campaign.id)
 
         # pricelist_chart_type_id = request.env['pricelist_chart.type'].sudo().search_read([(campaign.get_current_phase(True).pricelist_id.id)], ['id'])[0]['id']
     
@@ -1846,7 +1833,6 @@ class WebsiteSale(website_sale):
         no_product_message = ''
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
             products=request.env['product.product'].get_list_row(request.session.get('current_domain'),request.context['pricelist'],limit=PPG, order=request.session.get('current_order'))
-            _logger.warning('sandra %s' % products)
         else:
             product_ids = request.env['product.template'].sudo(user).search_read(request.session.get('current_domain'), fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=PPG, order=request.session.get('current_order'),offset=0)
             
