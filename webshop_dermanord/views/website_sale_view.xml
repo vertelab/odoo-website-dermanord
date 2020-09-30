@@ -297,7 +297,7 @@
             <div class="container oe_website_sale">
               <div id="desktop_product_navigator" class="col-md-2 hidden-xs"/>
 
-              <div id="desktop_product_list" class="col-md-9 col-xs-12">
+              <div id="desktop_product_list" class="col-md-12 col-xs-12">
                 <t t-if="no_product_message != ''">
                   <h2 class="text-center mt128" t-esc="no_product_message" />
                 </t>
