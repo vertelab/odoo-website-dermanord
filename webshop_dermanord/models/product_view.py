@@ -135,7 +135,11 @@ THUMBNAIL = u"""
                         <a href="/dn_shop/{view_type}/{product_id}">
                             <div class="dn_product_variants_div" style="visibility:{if_product_variants}">
                                 <h5 class="text-muted">
+<<<<<<< e357af9deb0035738c079f33a9f4ab34891abd62
                                     + {lang_variants}
+=======
+                                    + Avaliable in more varieties
+>>>>>>> project: odoo-website-dermanord
                                 </h5>
                             </div>
                         </a>
@@ -380,11 +384,16 @@ class product_template(models.Model):
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
+<<<<<<< e357af9deb0035738c079f33a9f4ab34891abd62
 
                     #LUKAS
                     if_product_variants = 'visible' if (product['product_variant_count'] > 1) else 'hidden',
                     lang_variants = _('Available in more variants'),
 
+=======
+                    if_product_variants = 'visible' if (product['product_variant_count'] > 1) else 'hidden',
+                    
+>>>>>>> project: odoo-website-dermanord
                     key_raw=key_raw,
                     key=key,
                     view_type='product',
