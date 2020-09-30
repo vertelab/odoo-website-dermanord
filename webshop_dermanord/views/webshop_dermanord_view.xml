@@ -348,23 +348,38 @@
                         <small>Please observe that your order may be delayed if you leave a comment due to the order being handled manually.</small>
                     </div>
                    </t>
-                    <div class="row" id="terms_and_conditions">
-                        <div class="col-lg-5 col-sm-6">
-                            <h4>Terms and Conditions</h4>
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" id='terms_and_conditions' />
-                                    I Agree with the
-                                         <a href="#" onclick="window.open('/page/terms-and-conditions', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>                                    
-                                    <t t-if="website_sale_order.website_order_line.filtered(lambda l: l.product_id.purchase_type == 'edu')">
-                                        and confirm that <u>I understand that some products in my order are intended only for educational purposes</u>
-                                    </t>
-
-
-                                </label>
+                    <t t-if="not request.env.user.has_group('webshop_dermanord.group_dn_sk')">
+                        <div class="row" id="terms_and_conditions">
+                            <div class="col-lg-5 col-sm-6">
+                                <h4>Terms and Conditions</h4>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" id='terms_and_conditions' />
+                                        I Agree with the
+                                            <a href="#" onclick="window.open('/page/terms-and-conditions', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>                                    
+                                        <t t-if="website_sale_order.website_order_line.filtered(lambda l: l.product_id.purchase_type == 'edu')">
+                                            and confirm that <u>I understand that some products in my order are intended only for educational purposes</u>
+                                        </t>
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </t>
+
+                    <t t-if="not request.env.user.has_group('webshop_dermanord.group_dn_sk')">
+                        <div class="row" id="terms_and_conditions-consumer">
+                            <div class="col-lg-5 col-sm-6">
+                                <h4>Terms and Conditions for Consumer</h4>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" id='terms_and_conditions-consumer' />
+                                        Click on this link:
+                                            <a href="#" onclick="window.open('/page/terms-and-conditions-consumer', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>                                    
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
                 </div>
             </xpath>
             <xpath expr="//div[@t-if='acquirers and website_sale_order.amount_total']" position="attributes">
