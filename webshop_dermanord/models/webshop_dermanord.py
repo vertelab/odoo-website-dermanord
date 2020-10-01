@@ -1834,7 +1834,7 @@ class WebsiteSale(website_sale):
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
             products=request.env['product.product'].get_list_row(request.session.get('current_domain'),request.context['pricelist'],limit=PPG, order=request.session.get('current_order'))
         else:
-            product_ids = request.env['product.template'].sudo(user).search_read(request.session.get('current_domain'), fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=PPG, order=request.session.get('current_order'),offset=0)
+            product_ids = request.env['product.template'].sudo(user).search_read(request.session.get('current_domain'), fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src','product_variant_count'], limit=PPG, order=request.session.get('current_order'),offset=0)
             
             products=request.env['product.template'].get_thumbnail_default_variant2(request.context['pricelist'],product_ids)
         if len(products) == 0:

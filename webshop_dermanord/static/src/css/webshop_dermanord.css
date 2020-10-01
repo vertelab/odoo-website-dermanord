@@ -318,6 +318,14 @@ div.shipping-address, div.invoicing-address {
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
+.dn_product_variants_div {
+    position: relative;
+    margin: auto;
+    width: 75%;
+    height: 100%;
+    border: 1px solid #eee;
+}
+
 .facet_div {
     padding: 0px !important;
     overflow: hidden;

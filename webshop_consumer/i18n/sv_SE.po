@@ -1186,6 +1186,11 @@ msgid "Product"
 msgstr "Produkt"
 
 #. module: webshop_dermanord
+#: code:addons/webshop_dermanord/product_view.py:386
+msgid "Available in more variants"
+msgstr "Finns i fler varianter"
+
+#. module: webshop_dermanord
 #: field:product.facet,category_ids:0
 msgid "Product Category"
 msgstr "Produktkategori"
