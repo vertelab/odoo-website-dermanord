@@ -133,15 +133,9 @@ THUMBNAIL = u"""
 
                         <!-- Available in more variants LUKAS -->
                         <a href="/dn_shop/{view_type}/{product_id}">
-<<<<<<< 6ebe0d831b847260bc460ed1baf657c96f9bbd5f
                             <div class="dn_product_variants_div" {if_product_variants}">
                                 <h5 class="text-muted">
                                     + {lang_variants}
-=======
-                            <div class="dn_product_variants_div" style="visibility:{if_product_variants}">
-                                <h5 class="text-muted">
-                                    + Avaliable in more varieties
->>>>>>> project: odoo-website-dermanord
                                 </h5>
                             </div>
                         </a>
@@ -384,17 +378,12 @@ class product_template(models.Model):
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
-<<<<<<< 6ebe0d831b847260bc460ed1baf657c96f9bbd5f
 
                     #LUKAS
                     if_product_variants = 'style="visibility:visible; pointer-events:none"' if (product.get('product_variant_count', 0) > 1) else 'style="visibility:hidden"',
                     #if_product_variants = 'visible' if (product.get('product_variant_count', 0) > 1) else 'hidden',
                     lang_variants = _('Available in more variants'),
 
-=======
-                    if_product_variants = 'visible' if (product['product_variant_count'] > 1) else 'hidden',
-                    
->>>>>>> project: odoo-website-dermanord
                     key_raw=key_raw,
                     key=key,
                     view_type='product',
