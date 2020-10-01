@@ -356,9 +356,9 @@
                                     <label>
                                         <input type="checkbox" id='terms_and_conditions' />
                                         I Agree with the
-                                            <a href="#" onclick="window.open('/page/terms-and-conditions', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>                                    
+                                        <a href="#" onclick="window.open('/page/terms-and-conditions', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>                                    
                                         <t t-if="website_sale_order.website_order_line.filtered(lambda l: l.product_id.purchase_type == 'edu')">
-                                            and confirm that <u>I understand that some products in my order are intended only for educational purposes</u>
+                                           and confirm that <u>I understand that some products in my order are intended only for educational purposes</u>
                                         </t>
                                     </label>
                                 </div>
@@ -367,14 +367,17 @@
                     </t>
 
                     <t t-if="not request.env.user.has_group('webshop_dermanord.group_dn_sk')">
-                        <div class="row" id="terms_and_conditions-consumer">
+                        <div class="row" id="terms_and_conditions_reseller">
                             <div class="col-lg-5 col-sm-6">
-                                <h4>Terms and Conditions for Consumer</h4>
+                                <h4>Terms and Conditions (for Reseller)</h4>
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" id='terms_and_conditions-consumer' />
-                                        Click on this link:
-                                            <a href="#" onclick="window.open('/page/terms-and-conditions-consumer', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>                                    
+                                        <input type="checkbox" id='terms_and_conditions_reseller' />
+                                        I Agree with the
+                                        <a href="#" onclick="window.open('/page/terms-and-conditions-reseller', 'newwindow', 'width=600,height=500,centerscreen=yes,status=0,location=0,toolbar=0,resizable=1,location=0,titlebar=0,scrollbars=1,dialog=1,modal=1,dependent=1'); return false;">Terms and Conditions</a>                                    
+                                        <t t-if="website_sale_order.website_order_line.filtered(lambda l: l.product_id.purchase_type == 'edu')">
+                                            and confirm that <u>I understand that some products in my order are intended only for educational purposes</u>
+                                        </t>
                                     </label>
                                 </div>
                             </div>
