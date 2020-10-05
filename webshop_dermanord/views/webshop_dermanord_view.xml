@@ -369,7 +369,7 @@
                     <t t-if="request.env.user.has_group('webshop_dermanord.group_dn_sk')">
                         <div class="row" id="terms_and_conditions_consumer">
                             <div class="col-lg-5 col-sm-6">
-                                <h4>Terms and Conditions (for Reseller)</h4>
+                                <h4>Terms and Conditions Consumer</h4>
                                 <div class="checkbox">
                                     <label>
                                         <input type="checkbox" id='terms_and_conditions_consumer' />
