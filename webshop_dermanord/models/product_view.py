@@ -450,8 +450,8 @@ class product_template(models.Model):
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (variant['dv_ribbon'] and (ribbon_promo.html_class in variant['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (variant['dv_ribbon'] and (ribbon_limited.html_class in variant['dv_ribbon'])) else '',
                     
-                    #LUKAS
-                    if_product_variants = 'style="visibility:visible; pointer-events:none"' if (variant.get('product_variant_count', 0) > 1) else 'style="visibility:hidden"',    
+                    # LUKAS
+                    if_product_variants = 'style="visibility:visible; pointer-events:none"' if (variant.get('product_variant_count', 0) > 1) else 'style="visibility:hidden"',
                     lang_variants = _('Available in more variants'),
 
                     key_raw=key_raw,
