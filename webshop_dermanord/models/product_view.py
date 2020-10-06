@@ -133,7 +133,7 @@ THUMBNAIL = u"""
 
                         <!-- Available in more variants LUKAS -->
                         <a href="/dn_shop/{view_type}/{product_id}">
-                            <div class="dn_product_variants_div" {if_product_variants}">
+                            <div class="dn_product_variants_div" {if_product_variants}>
                                 <h5 class="text-muted">
                                     + {lang_variants}
                                 </h5>
@@ -312,6 +312,7 @@ class product_template(models.Model):
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
+                    
                     key_raw=key_raw,
                     key=key,
                     view_type='product',
@@ -328,8 +329,7 @@ class product_template(models.Model):
     def get_thumbnail_default_variant2(self,pricelist,product_ids):
         if isinstance(pricelist,int):
             pricelist = self.env['product.pricelist'].sudo().browse(pricelist)
-        # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % ('Start'))
-        # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % self.env['product.template'].search_read(domain, fields=['id','name', 'dv_ribbon' ,'is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=limit, order=order,offset=offset))
+
         thumbnail = []
         flush_type = 'thumbnail_product'
         ribbon_promo = None
@@ -379,8 +379,9 @@ class product_template(models.Model):
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
 
-                    #LUKAS
-                    if_product_variants = 'style="visibility:visible; pointer-events:none"' if (product.get('product_variant_count', 0) > 1) else 'style="visibility:hidden"',
+                    #LUKASS
+                    #if_product_variants = 'style="visibility:visible; pointer-events:none"' if (product.get('product_variant_count', 0) > 1) else 'style="visibility:hidden"',
+                    if_product_variants = 'style="visibility:visible; pointer-events:none"' if (product['product_variant_count'] > 1) else 'style="visibility:hidden"',
                     lang_variants = _('Available in more variants'),
 
                     key_raw=key_raw,
@@ -389,7 +390,7 @@ class product_template(models.Model):
                     render_time='%s' % (timer() - render_start),
                     price_from=_('Price From'),
                 ).encode('utf-8')
-                # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (page))
+
                 self.env['website'].put_page_dict(key_raw, flush_type, page, 'product.template,%s' % product['id'])
                 page_dict['page'] = base64.b64encode(page)
             thumbnail.append(page_dict.get('page', '').decode('base64'))
@@ -399,8 +400,7 @@ class product_template(models.Model):
     def get_thumbnail_variant(self, pricelist, variant_ids):
         if isinstance(pricelist,int):
             pricelist = self.env['product.pricelist'].sudo().browse(pricelist)
-        # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % ('Start'))
-        # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % self.env['product.template'].search_read(domain, fields=['id','name', 'dv_ribbon' ,'is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=limit, order=order,offset=offset))
+
         thumbnail = []
         flush_type = 'thumbnail_variant'
         ribbon_promo = None
@@ -411,7 +411,6 @@ class product_template(models.Model):
         _logger.warn('Notice get_thunmb2 --------> %s user %s %s %s ' % (self.env.ref('base.public_user'), self.env.user, self._uid,user))
 
         for variant in variant_ids:
-            # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
             key_raw = 'thumbnail_variant %s %s %s %s' % (
                 self.env.cr.dbname, 
                 variant['id'], 
@@ -420,7 +419,6 @@ class product_template(models.Model):
 
             key, page_dict = self.env['website'].get_page_dict(key_raw)
 
-            # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
             if not page_dict:
                 render_start = timer()
                 if not ribbon_limited:
@@ -972,7 +970,7 @@ class product_product(models.Model):
                             <div class="container hidden-xs">
                                 <h2 class="text-center dn_uppercase mt32 mb32">Suggested alternatives:</h2>""")
                 
-                thumb_list = self.product_tmpl_id.get_thumbnail_default_variant2(partner.property_product_pricelist.id, variant.alternative_product_ids.read(['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',]))
+                thumb_list = self.product_tmpl_id.get_thumbnail_default_variant2(partner.property_product_pricelist.id, variant.alternative_product_ids.read(['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src', 'product_variant_count']))
                 for th in thumb_list:
                     page += th.decode('utf-8').replace("col-md-4", "col-md-6", 1)
                 

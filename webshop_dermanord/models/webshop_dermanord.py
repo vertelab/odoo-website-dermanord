@@ -1726,19 +1726,19 @@ class WebsiteSale(website_sale):
             )
         else:
             product_template_ids = []
-            for campaign_product in request.env['crm.campaign.product'].search([('id', 'in', campaign.campaign_product_ids.mapped('id'))]):
-                for product in campaign_product.product_id: 
+            all_campaign_products = request.env['crm.campaign.product'].search([('id', 'in', campaign.campaign_product_ids.mapped('id'))])
+            for campaign_product in all_campaign_products:
+                for product in campaign_product.product_id:
                     product_template_ids.append(product)
 
-            product_ids = request.env['product.template'].sudo(user).search_read(request.session.get('current_domain'), fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=PPG, order=request.session.get('current_order'),offset=0)
             products_html=request.env['product.template'].get_thumbnail_default_variant2(
                 product_ids=product_template_ids,
                 pricelist=campaign.get_current_phase(True).pricelist_id
                 )
+                
         if len(product_for_campaign) == 0:
             no_product_message = _('This campaign has no produtcs')
         if len(product_for_campaign) == 1: 
-
             return request.redirect('/dn_shop/variant/%s' % product_for_campaign.id)
 
         # pricelist_chart_type_id = request.env['pricelist_chart.type'].sudo().search_read([(campaign.get_current_phase(True).pricelist_id.id)], ['id'])[0]['id']
@@ -1760,7 +1760,7 @@ class WebsiteSale(website_sale):
         else:
             return request.website.render("webshop_dermanord.products_view_campaign", {
                 'products': products_html,
-                'product_ids': request.env['product.template'].sudo(user).search_read(request.session.get('current_domain'), fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=PPG, order=request.session.get('current_order'),offset=0),
+                'product_ids': request.env['product.template'].sudo(user).search_read(request.session.get('current_domain'), fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src','product_variant_count'], limit=PPG, order=request.session.get('current_order'),offset=0),
                 'rows': PPR,
                 'campaign': campaign,
                 'is_reseller': request.env.user.partner_id.property_product_pricelist.for_reseller,
