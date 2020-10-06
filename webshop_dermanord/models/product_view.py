@@ -272,7 +272,7 @@ class product_template(models.Model):
             # ~ _logger.warn('get_thumbnail_default_variant product --------> %s' % (p))
             # ~ product = self.env['product.template'].read(p.id,['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',])
 
-        for product in self.env['product.template'].search_read(domain, fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',], limit=limit, order=order,offset=offset):
+        for product in self.env['product.template'].search_read(domain, fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src', 'product_variant_count'], limit=limit, order=order,offset=offset):
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
             key_raw = 'thumbnail_default_variant %s %s %s %s' % (
                 self.env.cr.dbname, 
@@ -312,6 +312,10 @@ class product_template(models.Model):
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
+                    
+                    # LUKAS
+                    if_product_variants = 'style="visibility:visible;"' if (product['product_variant_count'] > 1) else 'style="visibility:hidden"',
+                    lang_variants = _('Available in more variants'),
                     
                     key_raw=key_raw,
                     key=key,
@@ -378,12 +382,11 @@ class product_template(models.Model):
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
-
-                    #LUKASS
-                    #if_product_variants = 'style="visibility:visible; pointer-events:none"' if (product.get('product_variant_count', 0) > 1) else 'style="visibility:hidden"',
-                    if_product_variants = 'style="visibility:visible; pointer-events:none"' if (product['product_variant_count'] > 1) else 'style="visibility:hidden"',
+                    
+                    # LUKAS
+                    if_product_variants = 'style="visibility:visible;"' if (product['product_variant_count'] > 1) else 'style="visibility:hidden"',
                     lang_variants = _('Available in more variants'),
-
+                    
                     key_raw=key_raw,
                     key=key,
                     view_type='product',
@@ -451,9 +454,9 @@ class product_template(models.Model):
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (variant['dv_ribbon'] and (ribbon_limited.html_class in variant['dv_ribbon'])) else '',
                     
                     # LUKAS
-                    if_product_variants = 'style="visibility:visible; pointer-events:none"' if (variant.get('product_variant_count', 0) > 1) else 'style="visibility:hidden"',
+                    if_product_variants = 'style="visibility:visible;"' if (variant.get('product_variant_count', 0) > 1) else 'style="visibility:hidden"',
                     lang_variants = _('Available in more variants'),
-
+                    
                     key_raw=key_raw,
                     key=key,
                     view_type='variant',
