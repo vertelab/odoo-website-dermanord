@@ -827,7 +827,7 @@ class product_product(models.Model):
                 "@type": "Offer",
                 "url": "https://mariaakerberg.com/dn_shop/variant/%s" % variant.id,
                 "priceCurrency": "SEK",
-                "price": variant.sudo().pricelist_chart_ids.with_context(pricelist = pricelist).filtered(lambda p: p.pricelist_chart_id.pricelist == p._context.get('pricelist')).price,
+                "price": variant.sudo().get_pricelist_chart_line(pricelist).price,
                 "itemCondition": "https://schema.org/UsedCondition",
                 "availability": u"$LEFT_MASVINGE$%s$RIGHT_MASVINGE$" % ('%s_google_stock_status' % variant.id),
                 "seller": {
