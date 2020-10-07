@@ -610,7 +610,7 @@ class product_public_category(models.Model):
         spec = self.env.ref('webshop_dermanord.facet_specialforpackningar')
         rese = self.env.ref('webshop_dermanord.facet_value_reseforpackningar')
         salong = self.env.ref('webshop_dermanord.facet_value_salongsprodukter')
-        af_groups_users = self.env.ref('webshop_dermanord.group_dn_af').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_ht').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_spa').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_sk').sudo().mapped('users')
+        af_groups_users = self.env.ref('webshop_dermanord.group_dn_af').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_ht').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_spa').sudo().mapped('users')
         af = self.env.user in af_groups_users
         html_code = ''
         spec_facet_values = self.env['product.facet.value'].search([('facet_id', '=', spec.id)])
