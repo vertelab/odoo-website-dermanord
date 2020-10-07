@@ -1699,31 +1699,34 @@ class WebsiteSale(website_sale):
         request.env.user.webshop_type = webshop_type
         return request.redirect('/webshop')
 
-
     @http.route(['/campaigns', '/campaign/<int:campaign_id>'], type='http', website=True)
     def consumer(self, campaign_id, **kw):
         PPG = 21 # Products Per Page
         PPR = 3  # Products Per Row
         campaign = request.env['crm.tracking.campaign'].sudo().browse(campaign_id)
 
-        product_domain = []
-        product_for_campaign = request.env['product.product'].search([('campaign_ids','in', campaign.id)])
-        for product in product_for_campaign: 
-            product_domain = [('id', 'in', product_for_campaign.mapped('id'))]
+        # all products in the campaignn
+        product_for_campaign = request.env['product.template'].search([('campaign_ids','in', campaign.id)])
+        # all variants of the products in the campaign
+        variant_for_campaign = request.env['product.product'].search([('campaign_ids','in', campaign.id)])
 
-        # campaign.campaign_product_ids (one2many) crm.campaign.products 
-        # crm.campaign.products innehåller fältet product_id
-        # product_id (many2one) product.template 
+        if len(product_for_campaign) == 0:
+            no_product_message = _('This campaign has no products')
+        elif len(product_for_campaign) == 1:
+            return request.redirect('/dn_shop/variant/%s' % variant_for_campaign[0].id)
+
+        product_domain = [('id', 'in', variant_for_campaign.mapped('id'))]
         user = request.env['res.users'].browse(request.uid)
 
         no_product_message = ''
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
+            # this should list product.templates? 
             products_html=request.env['product.product'].sudo().get_list_row(
                 domain = product_domain, 
                 pricelist = campaign.get_current_phase(True).pricelist_id, 
-                limit=PPG, 
-                order=request.session.get('current_order')
-            )
+                limit = PPG, 
+                order = request.session.get('current_order')
+                )
         else:
             product_template_ids = []
             all_campaign_products = request.env['crm.campaign.product'].search([('id', 'in', campaign.campaign_product_ids.mapped('id'))])
@@ -1731,18 +1734,11 @@ class WebsiteSale(website_sale):
                 for product in campaign_product.product_id:
                     product_template_ids.append(product)
 
-            products_html=request.env['product.template'].get_thumbnail_default_variant2(
-                product_ids=product_template_ids,
-                pricelist=campaign.get_current_phase(True).pricelist_id
+            products_html = request.env['product.template'].get_thumbnail_default_variant2(
+                product_ids = product_template_ids,
+                pricelist = campaign.get_current_phase(True).pricelist_id
                 )
                 
-        if len(product_for_campaign) == 0:
-            no_product_message = _('This campaign has no produtcs')
-        if len(product_for_campaign) == 1: 
-            return request.redirect('/dn_shop/variant/%s' % product_for_campaign.id)
-
-        # pricelist_chart_type_id = request.env['pricelist_chart.type'].sudo().search_read([(campaign.get_current_phase(True).pricelist_id.id)], ['id'])[0]['id']
-    
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
             return request.website.render("webshop_dermanord.products_list_campaign_view", {
                 'title': _('Shop'),
