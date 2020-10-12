@@ -151,9 +151,6 @@ class WebsiteSaleHome(website_sale_home):
             partner.sudo().memcached_time = fields.Datetime.now()
         return res
 
-
-    
-
 class reseller_register(reseller_register):
 
     # flush memcached top_image
