@@ -139,8 +139,6 @@ class WebsiteSaleHome(website_sale_home):
         res = super(WebsiteSaleHome, self).info_update(home_user=home_user, **post)
         if home_user and post:
             home_user.sudo().commercial_partner_id.memcached_time = fields.Datetime.now()
-        # ~ if home_user and post:
-            # ~ home_user.sudo().partner_id.memcached_time = fields.Datetime.now()
         return res
 
     # flush memcached contact image
@@ -150,14 +148,8 @@ class WebsiteSaleHome(website_sale_home):
         if partner and post:
             partner.sudo().memcached_time = fields.Datetime.now()
         return res
-    # flush memcahced reseller page    
-    @http.route(['/my/reseller/<model("res.users"):home_user>/reseller_info_update'], type='http', auth='user', website=True)
-    def reseller_info_update(self, home_user=None, **post):
-        res = super(WebsiteSaleHome, self).reseller_info_update(home_user=home_user, **post)
-        if home_user and post and len(home_user.agents) >0:
-            home_user.sudo().agents[0].memcached_time = fields.Datetime.now()
-    
-        return res
+        
+
 
 class reseller_register(reseller_register):
 
