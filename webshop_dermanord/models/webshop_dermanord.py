@@ -1715,7 +1715,6 @@ class WebsiteSale(website_sale):
             return request.redirect('/dn_shop/variant/%s' % variants_for_campaign[0].id)
 
         variant_domain = [('id', 'in', variants_for_campaign.mapped('id'))]
-
         user = request.env['res.users'].browse(request.uid)
 
         no_product_message = ''
