@@ -131,7 +131,7 @@ THUMBNAIL = u"""
                             </b>                            
                         </div>
 
-                        <!-- Available in more variants LUKAS -->
+                        <!-- Available in more variants -->
                         <a href="/dn_shop/{view_type}/{product_id}">
                             <div class="dn_product_variants_div" {if_product_variants}>
                                 <h5 class="text-muted">
@@ -288,18 +288,6 @@ class product_template(models.Model):
                     ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
 
-                #
-                # TODO: get_html_price_long(pricelist) and variant.image_main_id[0].id  dv_ribbon
-                #
-
-                # ~ product = self.env['product.template'].browse(pid['id'])
-                # ~ if not product.product_variant_ids:
-                    # ~ continue
-                # ~ variant = product.product_variant_ids[0]
-                # ~ variant = product.get_default_variant()
-                # ~ if not variant:
-                    # ~ continue
-
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
                     product_id=product['id'],
@@ -313,7 +301,6 @@ class product_template(models.Model):
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
                     
-                    # LUKAS
                     if_product_variants = 'style="visibility:visible;"' if (product['product_variant_count'] > 1) else 'style="visibility:hidden"',
                     lang_variants = _('Available in more variants'),
                     
@@ -358,18 +345,6 @@ class product_template(models.Model):
                     ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
 
-                #
-                # TODO: get_html_price_long(pricelist) and variant.image_main_id[0].id  dv_ribbon
-                #
-
-                # ~ product = self.env['product.template'].browse(pid['id'])
-                # ~ if not product.product_variant_ids:
-                    # ~ continue
-                # ~ variant = product.product_variant_ids[0]
-                # ~ variant = product.get_default_variant()
-                # ~ if not variant:
-                    # ~ continue
-                
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
                     product_id=product['id'],
@@ -383,7 +358,6 @@ class product_template(models.Model):
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
                     
-                    # LUKAS
                     if_product_variants = 'style="visibility:visible;"' if (product['product_variant_count'] > 1) else 'style="visibility:hidden"',
                     lang_variants = _('Available in more variants'),
                     
@@ -428,18 +402,6 @@ class product_template(models.Model):
                     ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
 
-                #
-                # TODO: get_html_price_long(pricelist) and variant.image_main_id[0].id  dv_ribbon
-                #
-
-                # ~ product = self.env['product.template'].browse(pid['id'])
-                # ~ if not product.product_variant_ids:
-                    # ~ continue
-                # ~ variant = product.product_variant_ids[0]
-                # ~ variant = product.get_default_variant()
-                # ~ if not variant:
-                    # ~ continue
-
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
                     product_id=variant['id'],
@@ -453,8 +415,7 @@ class product_template(models.Model):
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (variant['dv_ribbon'] and (ribbon_promo.html_class in variant['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (variant['dv_ribbon'] and (ribbon_limited.html_class in variant['dv_ribbon'])) else '',
                     
-                    # LUKAS
-                    if_product_variants = 'style="visibility:visible;"' if (variant.get('product_variant_count', 0) > 1) else 'style="visibility:hidden"',
+                    if_product_variants = 'style="visibility:visible;"' if (variant['product_variant_count'] > 1) else 'style="visibility:hidden"',
                     lang_variants = _('Available in more variants'),
                     
                     key_raw=key_raw,

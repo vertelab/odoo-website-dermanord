@@ -1704,26 +1704,28 @@ class WebsiteSale(website_sale):
         PPG = 21 # Products Per Page
         PPR = 3  # Products Per Row
         campaign = request.env['crm.tracking.campaign'].sudo().browse(campaign_id)
-
+        
+        _logger.warn('Lukas camp id: %s' % campaign.id) # 165
+        
         # all products in the campaignn
-        #product_for_campaign = request.env['product.template'].search([('campaign_ids','in', campaign.id)])
+        #products_for_campaign = request.env['product.template'].search([('campaign_ids','in', campaign.id)])
         # all variants of the products in the campaign
         variants_for_campaign = request.env['product.product'].search([('campaign_ids','in', campaign.id)])
-
-        _logger.warn('Lukas variants: %s' % variants_for_campaign.mapped('id'))
+        _logger.warn('Lukas prods: %s' % variants_for_campaign)
 
         if len(variants_for_campaign) == 0:
             no_product_message = _('This campaign has no products')
         elif len(variants_for_campaign) == 1:
+            # redirecting should be done in .../my/home
             return request.redirect('/dn_shop/variant/%s' % variants_for_campaign[0].id)
 
-        product_domain = [('id', 'in', variants_for_campaign.mapped('id'))]
+        variant_domain = [('id', 'in', variants_for_campaign.mapped('id'))]
         user = request.env['res.users'].browse(request.uid)
 
         no_product_message = ''
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
             products_html=request.env['product.product'].sudo().get_list_row(
-                domain = product_domain, 
+                domain = variant_domain, 
                 pricelist = campaign.get_current_phase(True).pricelist_id, 
                 limit = PPG, 
                 order = request.session.get('current_order')
@@ -1743,14 +1745,15 @@ class WebsiteSale(website_sale):
                 #'pricelist_chart_type_id': pricelist_chart_type_id
             })
         else:
-            product_template_ids = []
-            all_campaign_products = request.env['crm.campaign.product'].search([('id', 'in', campaign.campaign_product_ids.mapped('id'))])
-            for campaign_product in all_campaign_products:
-                for product in campaign_product.product_id:
-                    product_template_ids.append(product)
+            #product_template_ids = []
+            #all_campaign_products = request.env['crm.campaign.product'].search([('id', 'in', campaign.campaign_product_ids.mapped('id'))])
+            #for campaign_product in all_campaign_products:
+            #    for product in campaign_product.product_id:
+            #        product_template_ids.append(product)
 
-            products_html = request.env['product.template'].get_thumbnail_default_variant2(
-                product_ids = product_template_ids,
+            products_html = request.env['product.template'].get_thumbnail_variant(
+                #product_ids = product_template_ids,
+                variant_ids = variants_for_campaign,
                 pricelist = campaign.get_current_phase(True).pricelist_id
                 )
 
