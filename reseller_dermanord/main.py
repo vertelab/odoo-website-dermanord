@@ -630,7 +630,6 @@ class website_sale_home(website_sale_home):
     @http.route(['/my/salon/<model("res.users"):home_user>/info_update'], type='http', auth="user", website=True)
     def info_update(self, home_user=None, **post):
         # update data for main partner
-        
         self.validate_user(home_user)
         if not self.check_admin_portal(home_user):
             return request.website.render('website.403', {})
