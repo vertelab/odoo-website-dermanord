@@ -45,6 +45,7 @@ class res_partner(models.Model):
     social_youtube = fields.Char(string='Youtube link')
     social_twitter = fields.Char(string='Twitter link')
     brand_name = fields.Char(string='Brand Name')
+    consume_name = fields.Char(string='Name')
     is_reseller = fields.Boolean(string='Show Reseller in websearch')
     always_searchable = fields.Boolean(string='Always searchable', help='When checked. Reseller is always searchable.')
     top_image = fields.Binary(string='Top Image')
@@ -634,6 +635,8 @@ class website_sale_home(website_sale_home):
             return request.website.render('website.403', {})
         if home_user == request.env.user:
             home_user = home_user.sudo()
+            if home_user.has_group('webshop_dermanord.group_dn_sk'):
+				home_user.name = post.get('consume_name')
         if home_user.partner_id.commercial_partner_id.is_reseller:
             commercial_partner = home_user.partner_id.commercial_partner_id
             commercial_partner.brand_name = post.get('brand_name')
@@ -644,6 +647,7 @@ class website_sale_home(website_sale_home):
                 self.update_opening_weekday(commercial_partner, weekday, post)
             if post.get('opening_hours_exceptions') != None and post.get('opening_hours_exceptions') != commercial_partner.opening_hours_exceptions:
                 commercial_partner.opening_hours_exceptions = post.get('opening_hours_exceptions')
+		
         self.update_info(home_user, post)
         # ~ SOCIAL MEDIA
         self.update_social_media(home_user, post)
