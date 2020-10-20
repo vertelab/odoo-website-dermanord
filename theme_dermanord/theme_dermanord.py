@@ -46,7 +46,6 @@ class website(models.Model):
     social_instagram = fields.Char(string='Instagram')
     social_snapchat = fields.Char(string='Snapchat')
    
-
     def current_menu(self, path):
         menu = self.env['website.menu'].search([('url', '=', path)])
         url = [x.split('-')[-1] if x.split('-')[-1].isdigit() else x for x in path.split('/')]
@@ -65,10 +64,61 @@ class website(models.Model):
         else:
             return menu
 
+    # returns the url and name of a parent category
+    def get_category_url(self, categ_name):
+        for category in self.get_mega_menu_categories():
+            if category.name == categ_name:
+                url = category.name.lower() + '-' + str(category.id)
+                url = url.replace(' ', '-')
+                return url
+        
+        return ""
+    
+    def get_categ_name(self, categ_id):
+        for categ in self.get_mega_menu_categories():
+            if int(categ.id) == int(categ_id):
+                return categ.name
+        return ""
+    
+    # checks if name is an existing category name
+    def valid_name(self, name):
+        name = name.replace('-', ' ').upper()
+        
+        for categ in self.get_mega_menu_categories():
+            categ_name = categ_name.replace('-', ' ').upper()
+            if categ.name == name:
+                return True
+                
+        return False
+    
+    # url is in format .../[parent]-[child]-[child-id] (ex. .../hair-shampoo-182)
+    # we need a way to separate parent from child (cant split on '-' b/c of the category 'DIETARY-AND-MINERAL-SUPPLEMNT')
+    # this func. removes one word at a time from the url from the right until a valid parent name is found ...
+    def split_childcateg_from_parent(self, url):
+        url = url.split('-')
+        
+        child = []
+        while url:
+            if valid_name('-'.join(url)):
+                return ('-'.join(url), '-'.join(child))
+                
+            child = url[-1] + child
+            del url[-1]
+            
+        return ("", "")
+    
+    # returns true iff categ_id is a parent category
+    def is_parent_categ(self, categ_id):
+        for category in self.get_mega_menu_categories():
+            if int(category.id) == int(categ_id):
+                return True
+        return False
+
     def get_breadcrumb(self, path, **params):
         """Generates a breadcrumb.
         Extra parameters can be supplied by setting the breadcrumb_params variable before rendering of website.layout.
         """
+        
         try:
             breadcrumb = []
             if path.startswith('/dn_shop/product/') or path.startswith('/dn_shop/variant/'): # url is a product
@@ -82,14 +132,37 @@ class website(models.Model):
                         category = product.public_categ_ids[0]
                     # [18213] Webbshoppen -Brödsmulan detaljvyn
                     while category:
-                        breadcrumb.append('<li><a href="/webshop/category/%s">%s</a></li>' % (category.id, category.name))
+                        breadcrumb.append('<li><a href="/webshop/category/%s">%s</a></li>' % (category.id, category.name.upper()))
                         category = category.parent_id
-            
+                        
                 menu = self.env.ref('webshop_dermanord.menu_dn_shop')
                 home_menu = self.env.ref('website.menu_homepage')
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
                 return ''.join(reversed(breadcrumb))
+                
+            elif path.startswith('/webshop'): # url is in webshop, but not on a specific product
+                if path.startswith('/webshop/category/'):
+                    category_id = path.split('-')[-1]
+                    
+                    category = request.env['product.public.category'].search([('id', '=', str(path.split('-')[-1]))])
+                    while category:
+                        _logger.warn("~~ category name: %s, id: %s" % (category.name.upper(), category.id))
+                        breadcrumb.append('<li><a href="/webshop/category/%s">%s</a></li>' % (category.id, category.name.upper()))
+                        _logger.warn("~~ category %s" % category.read())
+                        try:
+                            category = category.parent_id
+                        except:
+                            break
+                    
+                menu = self.env.ref('webshop_dermanord.menu_dn_shop')
+                breadcrumb.append('<li><a href="%s">%s</a></li>' % (menu.url, "PRODUCTS"))
+
+                home_menu = self.env.ref('website.menu_homepage')
+                breadcrumb.append('<li><a href="%s">%s</a></li>' % (home_menu.url, home_menu.name))
+                   
+                return ''.join(reversed(breadcrumb))
+                
             elif path.startswith('/event'): # url is an event
                 home_menu = self.env.ref('website.menu_homepage')
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
@@ -179,7 +252,7 @@ class website(models.Model):
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
                 return ''.join(reversed(breadcrumb))
         except:
-            _logger.warning('Error in breadcrumb rendering', exc_info=True)
+            _logger.warning('~~ Error in breadcrumb rendering', exc_info=True)
             return '<li><a href="/">Home</a></li>'
 
     def enumerate_pages(self, cr, uid, ids, query_string=None, context=None):
