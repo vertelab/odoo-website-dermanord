@@ -64,56 +64,6 @@ class website(models.Model):
         else:
             return menu
 
-    # returns the url and name of a parent category
-    def get_category_url(self, categ_name):
-        for category in self.get_mega_menu_categories():
-            if category.name == categ_name:
-                url = category.name.lower() + '-' + str(category.id)
-                url = url.replace(' ', '-')
-                return url
-        
-        return ""
-    
-    def get_categ_name(self, categ_id):
-        for categ in self.get_mega_menu_categories():
-            if int(categ.id) == int(categ_id):
-                return categ.name
-        return ""
-    
-    # checks if name is an existing category name
-    def valid_name(self, name):
-        name = name.replace('-', ' ').upper()
-        
-        for categ in self.get_mega_menu_categories():
-            categ_name = categ_name.replace('-', ' ').upper()
-            if categ.name == name:
-                return True
-                
-        return False
-    
-    # url is in format .../[parent]-[child]-[child-id] (ex. .../hair-shampoo-182)
-    # we need a way to separate parent from child (cant split on '-' b/c of the category 'DIETARY-AND-MINERAL-SUPPLEMNT')
-    # this func. removes one word at a time from the url from the right until a valid parent name is found ...
-    def split_childcateg_from_parent(self, url):
-        url = url.split('-')
-        
-        child = []
-        while url:
-            if valid_name('-'.join(url)):
-                return ('-'.join(url), '-'.join(child))
-                
-            child = url[-1] + child
-            del url[-1]
-            
-        return ("", "")
-    
-    # returns true iff categ_id is a parent category
-    def is_parent_categ(self, categ_id):
-        for category in self.get_mega_menu_categories():
-            if int(category.id) == int(categ_id):
-                return True
-        return False
-
     def get_breadcrumb(self, path, **params):
         """Generates a breadcrumb.
         Extra parameters can be supplied by setting the breadcrumb_params variable before rendering of website.layout.
