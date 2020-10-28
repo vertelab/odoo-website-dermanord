@@ -1918,8 +1918,7 @@ class WebsiteSale(website_sale):
         res = {'amount_untaxed': '0.00', 'cart_quantity': '0', 'currency': 'SEK', 'decimal_point': dp, 'thousands_sep': ts}
         if order:
             # [19075] switch the cart price based on user (with or without tax):
-            #if  request.env.user.id == request.env.ref('base.public_user'):
-            if request.env.user.id == 3847:
+            if request.env.user.has_group('webshop_dermanord.group_dn_sk'):
                 res['amount_untaxed'] = request.website.price_format(order.amount_total)
                 res['amount_float'] = order.amount_total
             else:
