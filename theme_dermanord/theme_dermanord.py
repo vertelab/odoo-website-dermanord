@@ -97,9 +97,7 @@ class website(models.Model):
                     
                     category = request.env['product.public.category'].search([('id', '=', str(path.split('-')[-1]))])
                     while category:
-                        _logger.warn("~~ category name: %s, id: %s" % (category.name.upper(), category.id))
                         breadcrumb.append('<li><a href="/webshop/category/%s">%s</a></li>' % (category.id, category.name.upper()))
-                        _logger.warn("~~ category %s" % category.read())
                         try:
                             category = category.parent_id
                         except:
