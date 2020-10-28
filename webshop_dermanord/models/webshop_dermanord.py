@@ -1917,10 +1917,9 @@ class WebsiteSale(website_sale):
         dp = dp and dp[0]['decimal_point'] or '.'
         res = {'amount_untaxed': '0.00', 'cart_quantity': '0', 'currency': 'SEK', 'decimal_point': dp, 'thousands_sep': ts}
         if order:
-            _logger.warn("~~ request.env.ref(base.public_user) mapped: %s" % request.env.ref('base.public_user').mapped('id'))
-            _logger.warn("~~ request.env.ref(base.public_user) id: %s" % request.env.ref('base.public_user').id)
-            _logger.warn("~~ user id: %s" % request.env.user.id)
-            if  request.env.user.id == 3847:
+            # [19075] switch the cart price based on user (with or without tax):
+            #if  request.env.user.id == request.env.ref('base.public_user'):
+            if request.env.user.id == 3847:
                 res['amount_untaxed'] = request.website.price_format(order.amount_total)
                 res['amount_float'] = order.amount_total
             else:
