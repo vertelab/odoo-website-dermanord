@@ -1907,7 +1907,7 @@ class WebsiteSale(website_sale):
         if locked:
             self.dn_cart_lock.release()
         product_name = request.env['product.product'].sudo().search_read([('id', '=', product_id)], ['display_name'])[0]['display_name']
-        return [request.website.price_format(res['amount_untaxed']), res['cart_quantity'], res['amount_untaxed'], product_name]
+        return [request.website.price_format(res['amount_total']), res['cart_quantity'], res['amount_total'], product_name]
 
     @http.route(['/website_sale_update_cart'], type='json', auth="public", website=True)
     def website_sale_update_cart(self):
@@ -1917,10 +1917,17 @@ class WebsiteSale(website_sale):
         dp = dp and dp[0]['decimal_point'] or '.'
         res = {'amount_untaxed': '0.00', 'cart_quantity': '0', 'currency': 'SEK', 'decimal_point': dp, 'thousands_sep': ts}
         if order:
-            res['amount_untaxed'] = request.website.price_format(order.amount_untaxed)
+            # [19075] switch the cart price based on user (with or without tax):
+            if request.env.user.has_group('webshop_dermanord.group_dn_sk'):
+                res['amount_untaxed'] = request.website.price_format(order.amount_total)
+                res['amount_float'] = order.amount_total
+            else:
+                res['amount_untaxed'] = request.website.price_format(order.amount_untaxed)
+                res['amount_float'] = order.amount_untaxed
+            
             res['cart_quantity'] = order.cart_quantity
             res['currency'] = order.pricelist_id.currency_id.name
-            res['amount_float'] = order.amount_untaxed
+            
         else:
             res['currency'] = request.env.user.partner_id.property_product_pricelist.currency_id.name
             res['amount_float'] = 0.0
