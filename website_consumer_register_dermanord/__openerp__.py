@@ -20,22 +20,22 @@
 ##############################################################################
 
 {
-    'name': 'Webshop MemCached Dermanord',
-    'version': '1.0',
-    'category': 'other',
-    'summary': 'website acceleration for webshop Dermanord using memcached',
+    'name': 'Website Reseller Register Dermanord',
+    'version': '0.1',
+    'category': 'website',
     'description': """
-Add mechanisms to cache rendered sale pages
-This module depends on website_memcached
-
+Dermanord special reseller register
+===================================
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['website_memcached','webshop_dermanord', 'reseller_dermanord', 'website_consumer_register_dermanord', 'website_memcached_event'],
-    'external_dependencies': {'python': ['pymemcache',]},
+    'depends': ['website_reseller_register', 'reseller_dermanord', 'theme_dermanord',],
     'data': [
-],
+        'website_view.xml',
+    ],
     'application': False,
+    'installable': True,
 }
+# vim:expandtab:smartindent:tabstop=4s:softtabstop=4:shiftwidth=4:
 

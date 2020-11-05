@@ -27,6 +27,7 @@ from openerp.addons.website.controllers.main import Website as WebsiteOld
 from openerp.addons.webshop_dermanord.models.webshop_dermanord import WebsiteSale
 from openerp.addons.reseller_dermanord.main import website_sale_home
 from openerp.addons.website_reseller_register_dermanord.website import reseller_register
+from openerp.addons.website_consumer_register_dermanord.website import consumer_register
 from openerp.addons.website_sale.controllers.main import get_pricelist
 
 import logging
@@ -167,6 +168,27 @@ class reseller_register(reseller_register):
     @http.route(['/reseller_register/<int:issue_id>/contact/new', '/reseller_register/<int:issue_id>/contact/<int:contact>'], type='http', auth='public', website=True)
     def reseller_contact_new(self, issue_id=None, contact=0, **post):
         res = super(reseller_register, self).reseller_contact_new(issue_id=issue_id, contact=contact, **post)
+        if contact and contact != 0 and post:
+            contact = request.env['res.partner'].sudo().browse(contact)
+            contact.memcached_time = fields.Datetime.now()
+        return res
+        
+class consumer_register(consumer_register):
+
+    # flush memcached top_image
+    @http.route(['/consumer_register/new', '/consumer_register/<int:issue_id>', '/consumer_register/<int:issue_id>/<string:action>'], type='http', auth='public', website=True)
+    def consumer_register_new(self, issue_id=None, action=None, **post):
+        res = super(consumer_register, self).consumer_register_new(issue_id=issue_id, action=action, **post)
+        if issue_id and post:
+            issue = self.get_issue(issue_id, post.get('token'))
+            if issue:
+                issue.sudo().partner_id.memcached_time = fields.Datetime.now()
+        return res
+
+    # flush memcached contact image
+    @http.route(['/consumer_register/<int:issue_id>/contact/new', '/consumer_register/<int:issue_id>/contact/<int:contact>'], type='http', auth='public', website=True)
+    def consumer_contact_new(self, issue_id=None, contact=0, **post):
+        res = super(consumer_register, self).consumer_contact_new(issue_id=issue_id, contact=contact, **post)
         if contact and contact != 0 and post:
             contact = request.env['res.partner'].sudo().browse(contact)
             contact.memcached_time = fields.Datetime.now()
