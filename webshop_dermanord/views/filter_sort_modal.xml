@@ -1083,7 +1083,11 @@
                 <t t-if="shop_footer and filter_version == 'webshop'">
                     <t t-set="filter_facets" t-value="request.env['product.facet'].get_filtered_facets(request.session.get('form_values'))" />
                     <t t-set="filter_categories" t-value="request.env['product.public.category'].search([('parent_id', '=', None)])" />
+                                        
+                    <t t-raw="website.get_breadcrumb_from_id(request.session.get('form_values'))"/>
+                    
                     <div id="webshop_dermanord_mobile_filter_modal" class="modal fade hidden-lg hidden-md hidden-sm" role="dialog">
+                        
                         <div class="modal-dialog" style="margin: 0px; width: 100%;">
                             <div class="modal-content">
                                 <div class="modal-header">
