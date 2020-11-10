@@ -376,13 +376,6 @@ class product_facet(models.Model):
 
     @api.multi
     def get_filtered_facets(self, form_values):
-        
-        #### LUKAS
-        categ_id = form_values[list(form_values)[0]]
-        path = "/webshop/category/-" + str(categ_id)
-        _logger.warn("~ breadcrumb = %s" % self.env['website'].get_breadcrumb(path))
-        #### KALLAS ÄVEN PÅ AV TOPMENYN, OM DU KALLAR PÅ GET_BREADCRUMB HÄR SÅ KALLAS DEN PÅ 2 GGR
-        
         categories = []
         if form_values and len(form_values) > 0:
             for k, v in form_values.iteritems():
@@ -472,7 +465,6 @@ class product_public_category(models.Model):
                 if parent_categ:
                     parent_categ_bg = 'background-color: %s; border: 1px solid #ddd; %s' %(category.bg_hex or '#fff', '' if last else 'border-bottom: none;')
                     parent_categ_text = 'color: %s;' %category.text_hex
-                
                 return u"""
                 <div class="panel-heading {category_heading_level}" style="{parent_categ_bg}">
                     <h4 class="panel-title parent_category_panel_title container">
@@ -565,7 +557,7 @@ class product_public_category(models.Model):
                 return ''
 
         current_domain = request.session.get('current_domain')
-        
+
         form_values = request.session.get('form_values')
         # _logger.warn(request.session)
         current_category = 0

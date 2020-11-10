@@ -64,13 +64,6 @@ class website(models.Model):
         else:
             return menu
 
-    # breadcumb for the filterview
-    def get_breadcrumb_from_id(self, form_values):
-        categ_id = str(form_values[list(form_values)[0]])
-        path = "/webshop/category/-" + str(categ_id)
-        _logger.warn("~ breadcrumb = %s" % self.env['website'].get_breadcrumb(path))
-        return self.get_breadcrumb(self, path)
-
     def get_breadcrumb(self, path, **params):
         """Generates a breadcrumb.
         Extra parameters can be supplied by setting the breadcrumb_params variable before rendering of website.layout.
