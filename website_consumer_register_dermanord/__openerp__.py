@@ -20,7 +20,7 @@
 ##############################################################################
 
 {
-    'name': 'Website Reseller Register Dermanord',
+    'name': 'Website Consumer Register Dermanord',
     'version': '0.1',
     'category': 'website',
     'description': """
@@ -30,7 +30,7 @@ Dermanord special reseller register
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['website_reseller_register', 'reseller_dermanord', 'theme_dermanord',],
+    'depends': ['website_consumer_register','theme_dermanord',],
     'data': [
         'website_view.xml',
     ],
