@@ -26,6 +26,7 @@ from openerp.tools.misc import file_open
 from datetime import datetime
 from lxml import html
 import werkzeug
+import re
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -91,24 +92,35 @@ class website(models.Model):
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
                 return ''.join(reversed(breadcrumb))
             
-            elif path.startswith('/webshop'): # url is in webshop, but not on a specific product
-                if path.startswith('/webshop/category/'):
-                    category_id = path.split('-')[-1]
+            elif path.startswith('/webshop'):                
+                # calculating which product category you pressed based on form values.
+                form_categories_id = request.session.get('form_values').values()
+                chosen_category = False
+                for category_name, category_id in request.session.get('form_values').items():
+                    # make sure the form value is a category, i.e. value is like {'category_XXX': XXX}
+                    if str(category_id).isdigit() and re.match("^category_\d+$", category_name):
+                        category = request.env['product.public.category'].browse(category_id)
+                        if category and category.parent_id.id not in form_categories_id:
+                             chosen_category = category
 
-                    category = request.env['product.public.category'].search([('id', '=', str(path.split('-')[-1]))])
+                # if a category was found
+                if chosen_category:
+                    breadcrumb = []
+
+                    category = chosen_category
                     while category:
                         breadcrumb.append('<li><a href="/webshop/category/%s">%s</a></li>' % (category.id, category.name.upper()))
                         try:
                             category = category.parent_id
                         except:
                             break
-
+                
                 menu = self.env.ref('webshop_dermanord.menu_dn_shop')
                 breadcrumb.append('<li><a href="%s">%s</a></li>' % (menu.url, "PRODUCTS"))
 
                 home_menu = self.env.ref('website.menu_homepage')
                 breadcrumb.append('<li><a href="%s">%s</a></li>' % (home_menu.url, home_menu.name))
-
+                
                 return ''.join(reversed(breadcrumb))
 
             elif path.startswith('/event'): # url is an event
