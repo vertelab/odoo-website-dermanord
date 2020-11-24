@@ -26,6 +26,7 @@ from openerp.tools.misc import file_open
 from datetime import datetime
 from lxml import html
 import werkzeug
+import re
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -91,16 +92,18 @@ class website(models.Model):
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
                 return ''.join(reversed(breadcrumb))
                 
-            elif path.startswith('/webshop'):  
-                # Calculating which product category you pressed based on form values.
+            elif path.startswith('/webshop'):                
+                # calculating which product category you pressed based on form values.
                 form_categories_id = request.session.get('form_values').values()
                 chosen_category = False
-                for category_id in form_categories_id:
-                    category = request.env['product.public.category'].browse(category_id)
-                    if category.parent_id.id not in form_categories_id:
-                         chosen_category = category
+                for category_name, category_id in request.session.get('form_values').items():
+                    # make sure the form value is a category, i.e. value is like {'category_XXX': XXX}
+                    if str(category_id).isdigit() and re.match("^category_\d+$", category_name):
+                        category = request.env['product.public.category'].browse(category_id)
+                        if category and category.parent_id.id not in form_categories_id:
+                             chosen_category = category
 
-                # If a category was found based on form_values
+                # if a category was found
                 if chosen_category:
                     breadcrumb = []
 
