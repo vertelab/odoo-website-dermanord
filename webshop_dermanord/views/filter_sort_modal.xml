@@ -1295,7 +1295,7 @@
         <template id="webshop_dermanord_desktop_product_filter_form" name="Webshop Dermanord Desktop Product Filter Form">
             <form action="/webshop" method="post">
             <div id="filter_view">
-                <div class="col-md-7 col-sm-7 col-xs-7" style="padding: 0px;">
+                <div class="col-md-9 col-sm-7 col-xs-7" style="padding: 0px;">
                     <select id="webshop_dermanord_desktop_sort_selector" name="order" class="form-control selectpicker dropdown dn_selection_dropdown" onchange="this.form.submit();">
                         <option value="name asc, default_code asc" t-att="{'selected': '1'} if request.session.get('current_order') == 'name asc, default_code asc' else {}">Name Ascending</option>
                         <option value="name desc, default_code desc" t-att="{'selected': '1'} if request.session.get('current_order') == 'name desc, default_code desc' else {}">Name Descending</option>
