@@ -919,7 +919,9 @@ function load_products_list(page){
     var start_render = new Date();
     $("div#loading").removeClass("hidden");
     $('html,body').css('cursor', 'wait');
-    var url = "/" + $("button#site_lang").data("lang") + "/dn_shop_json_list";
+    //var url = "/" + $("button#site_lang").data("lang") + "/dn_shop_json_list";
+    var url = "/dn_shop_json_list";
+    
     openerp.jsonRpc(url, "call", {
         'page': current_page,
     }).done(function(data){
