@@ -116,7 +116,7 @@ class website(models.Model):
                             break
                 
                 menu = self.env.ref('webshop_dermanord.menu_dn_shop')
-                breadcrumb.append('<li><a href="%s">%s</a></li>' % (menu.url, "PRODUCTS"))
+                breadcrumb.append('<li><a href="%s">%s</a></li>' % (menu.url, _("PRODUCTS")))
 
                 home_menu = self.env.ref('website.menu_homepage')
                 breadcrumb.append('<li><a href="%s">%s</a></li>' % (home_menu.url, home_menu.name))
@@ -213,7 +213,7 @@ class website(models.Model):
                 return ''.join(reversed(breadcrumb))
         except:
             _logger.warn('Error in breadcrumb rendering', exc_info=True)
-            return '<li><a href="/">Home</a></li>'
+            return '<li><a href="/">%s</a></li>' % (self.env.ref('website.menu_homepage').name) 
 
     def enumerate_pages(self, cr, uid, ids, query_string=None, context=None):
         """ Available pages in the website/CMS. This is mostly used for links
