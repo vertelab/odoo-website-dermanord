@@ -297,7 +297,7 @@ class product_template(models.Model):
                     product_price = self.env['product.template'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=product['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
-                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and pricelist.for_reseller == False) else '',
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
                     
@@ -411,7 +411,7 @@ class product_template(models.Model):
                     product_price = self.env['product.product'].sudo().browse(variant['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=variant['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
-                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (variant['is_offer_product_reseller'] and pricelist.for_reseller == True) or (variant['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (variant['is_offer_product_reseller'] and pricelist.for_reseller == True) or (variant['is_offer_product_consumer'] and pricelist.for_reseller == False) else '',
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (variant['dv_ribbon'] and (ribbon_promo.html_class in variant['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (variant['dv_ribbon'] and (ribbon_limited.html_class in variant['dv_ribbon'])) else '',
                     
@@ -642,12 +642,12 @@ class product_product(models.Model):
 
                 if pricelist.for_reseller:
                     if product['is_offer_product_reseller'] or template['is_offer_product_reseller']:
-                        if campaign.date_start and campaign.date_start <= str(date.today()) and (campaign.date_stop >= str(date.today()) or not campaign.date_stop):
+                        if campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop):
                             product_ribbon_offer  = True
                             product_ribbon_offer_mobile  = True
                 else:
                     if product['is_offer_product_consumer'] or template['is_offer_product_consumer']:
-                        if campaign.date_start and campaign.date_start <= str(date.today()) and (campaign.date_stop >= str(date.today()) or not campaign.date_stop):
+                        if campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop):
                             product_ribbon_offer  = True
                             product_ribbon_offer_mobile  = True
 
@@ -1190,8 +1190,8 @@ class product_product(models.Model):
                     edu_purchase = int(is_edu_purchase),
                     buy_button = buttons['product_view'],
                     stock_notify_button = '<button type="button" class="stock_notify_button dn_btn dn_primary mt8 text-center {%s_notify_stock_button_hidden}" data-toggle="modal" data-variant-id="%s" data-target="#">%s</button>' % (variant.id, variant.id, _('Notify me when item is back in stock')),
-                    product_startdate = _('Available on %s') %campaign.date_start if campaign and campaign.date_start and campaign.date_start <= str(date.today()) and (not campaign.date_stop or campaign.date_stop >= str(date.today())) else '',
-                    product_stopdate = _('to %s') %campaign.date_stop if campaign and campaign.date_start and (campaign.date_stop >= str(date.today())) else '',
+                    product_startdate = _('Available on %s') %campaign.date_start if campaign and (campaign.date_start and campaign.date_start <= str(date.today())) and (not campaign.date_stop or campaign.date_stop >= str(date.today())) else '',
+                    product_stopdate = _('to %s') %campaign.date_stop if campaign and campaign.date_stop >= str(date.today()) else '',
                     stock_status = '{%s_stock_status}' % variant.id,
                     html_product_detail_desc = html_product_detail_desc(variant, partner, pricelist),
                     html_product_detail_image = html_product_detail_image(variant, partner),
