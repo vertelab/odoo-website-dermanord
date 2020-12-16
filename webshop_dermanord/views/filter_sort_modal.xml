@@ -1083,7 +1083,9 @@
                 <t t-if="shop_footer and filter_version == 'webshop'">
                     <t t-set="filter_facets" t-value="request.env['product.facet'].get_filtered_facets(request.session.get('form_values'))" />
                     <t t-set="filter_categories" t-value="request.env['product.public.category'].search([('parent_id', '=', None)])" />
+                    
                     <div id="webshop_dermanord_mobile_filter_modal" class="modal fade hidden-lg hidden-md hidden-sm" role="dialog">
+                        
                         <div class="modal-dialog" style="margin: 0px; width: 100%;">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -1293,7 +1295,7 @@
         <template id="webshop_dermanord_desktop_product_filter_form" name="Webshop Dermanord Desktop Product Filter Form">
             <form action="/webshop" method="post">
             <div id="filter_view">
-                <div class="col-md-7 col-sm-7 col-xs-7" style="padding: 0px;">
+                <div class="col-md-9 col-sm-7 col-xs-7" style="padding: 0px;">
                     <select id="webshop_dermanord_desktop_sort_selector" name="order" class="form-control selectpicker dropdown dn_selection_dropdown" onchange="this.form.submit();">
                         <option value="name asc, default_code asc" t-att="{'selected': '1'} if request.session.get('current_order') == 'name asc, default_code asc' else {}">Name Ascending</option>
                         <option value="name desc, default_code desc" t-att="{'selected': '1'} if request.session.get('current_order') == 'name desc, default_code desc' else {}">Name Descending</option>

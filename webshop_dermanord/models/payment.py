@@ -80,6 +80,10 @@ class PaymentTransaction(models.Model):
                             msg.append(u"Säljlag ej satt till %s." % sale_team.name)
                         if order.note:
                             msg.append(u"Ordern har en kommentar.")
+                        if order.order_exceedes_credit_limit(order.partner_id):
+                            partner_id = order.partner_id.commercial_partner_id if order.partner_id.commercial_partner_id else order.partner_id
+                            msg.append(u"Ordersumman %s övertrasserar %s's kreditgräns på %s. (nuvarande kredit: %s)" % (order.amount_total, partner_id.name, partner_id.credit_limit, partner_id.credit))
+                            _logger.warn("Order value %s exceeds %s's credit limit of %s. (current credit: %s)" % (order.amount_total, partner_id.name, partner_id.credit_limit, partner_id.credit))
                         if order.partner_id.sale_warn in ('warning', 'block'):
                             msg.append(u"Kunden har en varning:\n%s\n" % order.partner_id.sale_warn_msg)
                             warnings.append((order.partner_id.sale_warn_msg, u"Kunden har en varning"))

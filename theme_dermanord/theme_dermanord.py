@@ -26,6 +26,7 @@ from openerp.tools.misc import file_open
 from datetime import datetime
 from lxml import html
 import werkzeug
+import re
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -68,7 +69,7 @@ class website(models.Model):
         """Generates a breadcrumb.
         Extra parameters can be supplied by setting the breadcrumb_params variable before rendering of website.layout.
         """
-        
+
         try:
             breadcrumb = []
             if path.startswith('/dn_shop/product/') or path.startswith('/dn_shop/variant/'): # url is a product
@@ -90,27 +91,38 @@ class website(models.Model):
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(menu.url, menu.name))
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
                 return ''.join(reversed(breadcrumb))
-                
-            elif path.startswith('/webshop'): # url is in webshop, but not on a specific product
-                if path.startswith('/webshop/category/'):
-                    category_id = path.split('-')[-1]
-                    
-                    category = request.env['product.public.category'].search([('id', '=', str(path.split('-')[-1]))])
+            
+            elif path.startswith('/webshop'):                
+                # calculating which product category you pressed based on form values.
+                form_categories_id = request.session.get('form_values').values()
+                chosen_category = False
+                for category_name, category_id in request.session.get('form_values').items():
+                    # make sure the form value is a category, i.e. value is like {'category_XXX': XXX}
+                    if str(category_id).isdigit() and re.match("^category_\d+$", category_name):
+                        category = request.env['product.public.category'].browse(category_id)
+                        if category and category.parent_id.id not in form_categories_id:
+                             chosen_category = category
+
+                # if a category was found
+                if chosen_category:
+                    breadcrumb = []
+
+                    category = chosen_category
                     while category:
                         breadcrumb.append('<li><a href="/webshop/category/%s">%s</a></li>' % (category.id, category.name.upper()))
                         try:
                             category = category.parent_id
                         except:
                             break
-                    
+                
                 menu = self.env.ref('webshop_dermanord.menu_dn_shop')
-                breadcrumb.append('<li><a href="%s">%s</a></li>' % (menu.url, "PRODUCTS"))
+                breadcrumb.append('<li><a href="%s">%s</a></li>' % (menu.url, _("PRODUCTS")))
 
                 home_menu = self.env.ref('website.menu_homepage')
                 breadcrumb.append('<li><a href="%s">%s</a></li>' % (home_menu.url, home_menu.name))
-                   
-                return ''.join(reversed(breadcrumb))
                 
+                return ''.join(reversed(breadcrumb))
+
             elif path.startswith('/event'): # url is an event
                 home_menu = self.env.ref('website.menu_homepage')
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
@@ -200,8 +212,8 @@ class website(models.Model):
                 breadcrumb.append('<li><a href="%s">%s</a></li>' %(home_menu.url, home_menu.name))
                 return ''.join(reversed(breadcrumb))
         except:
-            _logger.warning('~~ Error in breadcrumb rendering', exc_info=True)
-            return '<li><a href="/">Home</a></li>'
+            _logger.warn('Error in breadcrumb rendering', exc_info=True)
+            return '<li><a href="/">%s</a></li>' % (self.env.ref('website.menu_homepage').name) 
 
     def enumerate_pages(self, cr, uid, ids, query_string=None, context=None):
         """ Available pages in the website/CMS. This is mostly used for links

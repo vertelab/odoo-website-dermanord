@@ -35,11 +35,17 @@ class consumer_register(consumer_register):
 
     def get_address_type(self):
         res = super(consumer_register, self).get_address_type()
+        
         return res + ['visit']
+        _logger.warn('Haze dermanord res %s' % res)
+        
+        
 
     def consumer_fields(self):
         value = super(consumer_register, self).consumer_fields()
-        return value + ['consumer_name']
+        
+        return value + ['consumer_name'] + ['reseller_id']
+        _logger.warn('Haze dermanord value %s' % value)
 
     def update_consumer_info(self, issue, post):
         super(consumer_register, self).update_consumer_info(issue, post)
