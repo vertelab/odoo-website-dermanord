@@ -964,6 +964,7 @@
                  </form>
             -->
             <form action="/webshop" method="post" class="container">
+                <!-- Over categories -->
                 <div class="btn-group">
                     <button class="mt32 dn_btn dn_success dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
                     <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
@@ -1266,15 +1267,6 @@
                     </div>
                 </div>
 
-                <div class="btn-group filter">
-                    <button class="mt32 dn_btn dn_success dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
-                    <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
-                        <i class="fa fa-trash-o" />
-                        Clear All
-                    </button>
-                    <t t-call="webshop_dermanord.dn_website_group_info" />
-                </div>
-
                 <div class="panel-group">
                     <div class="panel panel-default">
                         <div class="panel-heading" style="border: 1px solid #ddd; border-bottom: none; background-color: #fff;">
@@ -1291,6 +1283,15 @@
                         </div>
                         <t t-raw="request.env['product.public.category'].dn_facet_desktop_tree_html(mobile=mobile)" />
                     </div>
+                </div>
+
+                <div class="btn-group filter">
+                    <button class="mt32 dn_btn dn_success dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
+                    <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
+                        <i class="fa fa-trash-o" />
+                        Clear All
+                    </button>
+                    <t t-call="webshop_dermanord.dn_website_group_info" />
                 </div>
             </div>
         </template>
