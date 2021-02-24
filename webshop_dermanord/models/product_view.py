@@ -272,7 +272,7 @@ class product_template(models.Model):
             # ~ _logger.warn('get_thumbnail_default_variant product --------> %s' % (p))
             # ~ product = self.env['product.template'].read(p.id,['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',])
 
-        for product in self.env['product.template'].search_read(domain, fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src', 'product_variant_count'], limit=limit, order=order,offset=offset):
+        for product in self.env['product.template'].search_read(domain, fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src', 'product_variant_count','campaign_ids'], limit=limit, order=order,offset=offset):
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
             key_raw = 'thumbnail_default_variant %s %s %s %s' % (
                 self.env.cr.dbname,
@@ -289,8 +289,11 @@ class product_template(models.Model):
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
 
                 # Within campaign check
+                _logger.warn("MyTag: Template campaign IDs: {}".format(product))
                 campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
                 within_campaign_period = campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop) # Not applicable to Python 3.
+                _logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
+
 
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
@@ -350,8 +353,10 @@ class product_template(models.Model):
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
 
                 # Within campaign check
+                _logger.warn("MyTag: Campaign IDs: {}".format(product))
                 campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
                 within_campaign_period = campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop) # Not applicable to Python 3.
+                _logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
 
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
@@ -410,6 +415,13 @@ class product_template(models.Model):
                     ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
 
+                # Within campaign check
+                _logger.warn("MyTag: Variant campaign IDs: {}".format(variant))
+                campaign = self.env['crm.tracking.campaign'].browse(variant['campaign_ids'][0] if variant['campaign_ids'] else 0)
+                within_campaign_period = campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop) # Not applicable to Python 3.
+                _logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
+
+
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
                     product_id=variant['id'],
@@ -419,7 +431,7 @@ class product_template(models.Model):
                     product_price = self.env['product.product'].browse(variant['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=variant['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
-                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (variant['is_offer_product_reseller'] and pricelist.for_reseller == True) or (variant['is_offer_product_consumer'] and pricelist.for_reseller == False) else '',
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (variant['is_offer_product_reseller'] and pricelist.for_reseller == True) or (variant['is_offer_product_consumer'] and pricelist.for_reseller == False) and within_campaign_period else '',
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (variant['dv_ribbon'] and (ribbon_promo.html_class in variant['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (variant['dv_ribbon'] and (ribbon_limited.html_class in variant['dv_ribbon'])) else '',
 
@@ -943,7 +955,7 @@ class product_product(models.Model):
                             <div class="container hidden-xs">
                                 <h2 class="text-center dn_uppercase mt32 mb32">Suggested alternatives:</h2>""")
 
-                thumb_list = self.product_tmpl_id.get_thumbnail_default_variant2(partner.property_product_pricelist.id, variant.alternative_product_ids.read(['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src', 'product_variant_count']))
+                thumb_list = self.product_tmpl_id.get_thumbnail_default_variant2(partner.property_product_pricelist.id, variant.alternative_product_ids.read(['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src', 'product_variant_count','campaign_ids']))
                 for th in thumb_list:
                     page += th.decode('utf-8').replace("col-md-4", "col-md-6", 1)
 
@@ -959,7 +971,7 @@ class product_product(models.Model):
                 page = _(u"""<div id="accessory_div">
                             <div class="container hidden-xs">
                                 <h2 class="text-center dn_uppercase mt32 mb32">Suggested accessories:</h2>""")
-                thumb_list = self.product_tmpl_id.get_thumbnail_variant(partner.property_product_pricelist.id, variant.accessory_product_ids.read(['display_name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'memcached_time', 'product_variant_count']))
+                thumb_list = self.product_tmpl_id.get_thumbnail_variant(partner.property_product_pricelist.id, variant.accessory_product_ids.read(['display_name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'memcached_time', 'product_variant_count','campaign_ids']))
                 for th in thumb_list:
                     page += th.decode('utf-8').replace("col-md-4", "col-md-6", 1)
                 page += u"""</div></div>"""
