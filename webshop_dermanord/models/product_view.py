@@ -289,10 +289,10 @@ class product_template(models.Model):
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
 
                 # Within campaign check
-                _logger.warn("MyTag: Template campaign IDs: {}".format(product))
+                #_logger.warn("MyTag: Template campaign IDs: {}".format(product))
                 campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
                 within_campaign_period = campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop) # Not applicable to Python 3.
-                _logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
+                #_logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
 
 
                 page = THUMBNAIL.format(
@@ -353,10 +353,10 @@ class product_template(models.Model):
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
 
                 # Within campaign check
-                _logger.warn("MyTag: Campaign IDs: {}".format(product))
+                #_logger.warn("MyTag: Campaign IDs: {}".format(product))
                 campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
                 within_campaign_period = campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop) # Not applicable to Python 3.
-                _logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
+                #_logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
 
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
@@ -416,10 +416,10 @@ class product_template(models.Model):
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
 
                 # Within campaign check
-                _logger.warn("MyTag: Variant campaign IDs: {}".format(variant))
+                #_logger.warn("MyTag: Variant campaign IDs: {}".format(variant))
                 campaign = self.env['crm.tracking.campaign'].browse(variant['campaign_ids'][0] if variant['campaign_ids'] else 0)
                 within_campaign_period = campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop) # Not applicable to Python 3.
-                _logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
+                #_logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
 
 
                 page = THUMBNAIL.format(
