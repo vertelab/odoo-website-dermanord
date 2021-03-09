@@ -304,7 +304,7 @@ class product_template(models.Model):
                     product_price = self.env['product.template'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=product['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
-                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and pricelist.for_reseller == False) and within_campaign_period else '',
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and pricelist.for_reseller == False) else '', # and within_campaign_period
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
 
@@ -367,7 +367,7 @@ class product_template(models.Model):
                     product_price = self.env['product.template'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=product['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
-                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) and within_campaign_period else '',
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',# and within_campaign_period
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
 
@@ -431,7 +431,7 @@ class product_template(models.Model):
                     product_price = self.env['product.product'].browse(variant['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=variant['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
-                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (variant['is_offer_product_reseller'] and pricelist.for_reseller == True) or (variant['is_offer_product_consumer'] and pricelist.for_reseller == False) and within_campaign_period else '',
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (variant['is_offer_product_reseller'] and pricelist.for_reseller == True) or (variant['is_offer_product_consumer'] and pricelist.for_reseller == False) else '', # and within_campaign_period
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (variant['dv_ribbon'] and (ribbon_promo.html_class in variant['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (variant['dv_ribbon'] and (ribbon_limited.html_class in variant['dv_ribbon'])) else '',
 
