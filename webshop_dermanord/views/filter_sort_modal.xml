@@ -964,7 +964,6 @@
                  </form>
             -->
             <form action="/webshop" method="post" class="container">
-                <!-- Over categories -->
                 <div class="btn-group">
                     <button class="mt32 dn_btn dn_success dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
                     <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
@@ -1084,9 +1083,9 @@
                 <t t-if="shop_footer and filter_version == 'webshop'">
                     <t t-set="filter_facets" t-value="request.env['product.facet'].get_filtered_facets(request.session.get('form_values'))" />
                     <t t-set="filter_categories" t-value="request.env['product.public.category'].search([('parent_id', '=', None)])" />
-
+                    
                     <div id="webshop_dermanord_mobile_filter_modal" class="modal fade hidden-lg hidden-md hidden-sm" role="dialog">
-
+                        
                         <div class="modal-dialog" style="margin: 0px; width: 100%;">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -1156,15 +1155,47 @@
         <template id="webshop_dermanord_desktop_product_filter_content" name="Webshop Dermanord Desktop Filter Content">
             <t t-set="ressal" t-value="[request.env.ref('webshop_dermanord.facet_specialforpackningar').id]" />
             <div t-att-id="'mobile_product_navigator_filter' if mobile else 'desktop_product_navigator_filter'">
-                <!-- Category selection -->
-                <!--<div class="panel-group mt32 category_filter">
-                    <div class="panel panel-default">
+                <t t-if="mobile == False">
+                    <div class="panel-group mt32 category_filter">
+                        <div class="panel panel-default">
+                            <t t-raw="request.env['product.public.category'].get_dn_category_desktop_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True), ('group_ids', 'in', request.env.user.commercial_partner_id.access_group_ids.mapped('id'))]), mobile=mobile)" />
+                        </div>
+                    </div>
+                    <div class="btn-group filter">
+                        <button class="mt32 dn_btn dn_success dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
+                        <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
+                            <i class="fa fa-trash-o" />
+                            Clear All
+                        </button>
+                        <t t-call="webshop_dermanord.dn_website_group_info" />
+                    </div>
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="border: 1px solid #ddd; border-bottom: none; background-color: #fff;">
+                                <h4 class="panel-title container">
+                                    <input type="checkbox" class="heading_checkbox col-md-1 col-sm-1" name="current_offer" value="current_offer" t-att="{'checked': 'checked'} if request.session.get('form_values').get('current_offer') == 'current_offer' else {}" />
+                                    <a class="onrs_style col-md-11 col-sm-11" style="padding-left: 3px; cursor: pointer;" href="javascript:void(0);" onclick="onclick_submit($(this));">Offers</a>
+                                </h4>
+                            </div>
+                            <div class="panel-heading" style="border: 1px solid #ddd; border-bottom: none; background-color: #fff;">
+                                <h4 class="panel-title container">
+                                    <input type="checkbox" class="heading_checkbox col-md-1 col-sm-1" name="current_news" value="current_news" t-att="{'checked': 'checked'} if request.session.get('form_values').get('current_news') == 'current_news' else {}" />
+                                    <a class="onrs_style col-md-11 col-sm-11" style="padding-left: 3px; cursor: pointer;" href="javascript:void(0);" onclick="onclick_submit($(this));">News</a>
+                                </h4>
+                            </div>
+
+                            <t t-raw="request.env['product.public.category'].dn_facet_desktop_tree_html(mobile=mobile)" />
+                        </div>
+                    </div>
+                </t>
+                <!--    Get categories in order to show filters.    -->
+                <t t-if="mobile == True">
+                    <div class="hidden">
                         <t t-raw="request.env['product.public.category'].get_dn_category_desktop_tree_html(request.env['product.public.category'].search([('parent_id', '=', None), ('website_published', '=', True), ('group_ids', 'in', request.env.user.commercial_partner_id.access_group_ids.mapped('id'))]), mobile=mobile)" />
                     </div>
-                </div>-->
-
+                </t>
                 <h4 class="dn_uppercase">Filter</h4>
-                <div class="panel-group" style="background-color:lightgrey; min-height:32px">
+                <div class="panel-group">
                     <div class="panel panel-default">
                         <t t-foreach="filter_facets.with_context(ressal=ressal).filtered(lambda f: f.id not in f._context.get('ressal'))" t-as="facet">
                             <div class="panel-heading facet_panel_heading hidden" t-att-data-facet="facet.id" t-att-data-mobile="'mobile' if mobile else 'desktop'" t-att-data-categories="facet.category_ids.mapped('id')">
@@ -1266,33 +1297,35 @@
                         </div>
                     </div>
                 </div>
+                <t t-if="mobile == True">
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="border: 1px solid #ddd; border-bottom: none; background-color: #fff;">
+                                <h4 class="panel-title container">
+                                    <input type="checkbox" class="heading_checkbox col-md-1 col-sm-1" name="current_offer" value="current_offer" t-att="{'checked': 'checked'} if request.session.get('form_values').get('current_offer') == 'current_offer' else {}" />
+                                    <a class="onrs_style col-md-11 col-sm-11" style="padding-left: 3px; cursor: pointer;" href="javascript:void(0);" onclick="onclick_submit($(this));">Offers</a>
+                                </h4>
+                            </div>
+                            <div class="panel-heading" style="border: 1px solid #ddd; border-bottom: none; background-color: #fff;">
+                                <h4 class="panel-title container">
+                                    <input type="checkbox" class="heading_checkbox col-md-1 col-sm-1" name="current_news" value="current_news" t-att="{'checked': 'checked'} if request.session.get('form_values').get('current_news') == 'current_news' else {}" />
+                                    <a class="onrs_style col-md-11 col-sm-11" style="padding-left: 3px; cursor: pointer;" href="javascript:void(0);" onclick="onclick_submit($(this));">News</a>
+                                </h4>
+                            </div>
 
-                <div class="panel-group">
-                    <div class="panel panel-default">
-                        <div class="panel-heading" style="border: 1px solid #ddd; border-bottom: none; background-color: #fff;">
-                            <h4 class="panel-title container">
-                                <input type="checkbox" class="heading_checkbox col-md-1 col-sm-1" name="current_offer" value="current_offer" t-att="{'checked': 'checked'} if request.session.get('form_values').get('current_offer') == 'current_offer' else {}" />
-                                <a class="onrs_style col-md-11 col-sm-11" style="padding-left: 3px; cursor: pointer;" href="javascript:void(0);" onclick="onclick_submit($(this));">Offers</a>
-                            </h4>
+                            <t t-raw="request.env['product.public.category'].dn_facet_desktop_tree_html(mobile=mobile)" />
                         </div>
-                        <div class="panel-heading" style="border: 1px solid #ddd; border-bottom: none; background-color: #fff;">
-                            <h4 class="panel-title container">
-                                <input type="checkbox" class="heading_checkbox col-md-1 col-sm-1" name="current_news" value="current_news" t-att="{'checked': 'checked'} if request.session.get('form_values').get('current_news') == 'current_news' else {}" />
-                                <a class="onrs_style col-md-11 col-sm-11" style="padding-left: 3px; cursor: pointer;" href="javascript:void(0);" onclick="onclick_submit($(this));">News</a>
-                            </h4>
-                        </div>
-                        <t t-raw="request.env['product.public.category'].dn_facet_desktop_tree_html(mobile=mobile)" />
                     </div>
-                </div>
-
-                <div class="btn-group filter">
-                    <button class="mt32 dn_btn dn_success dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
-                    <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
-                        <i class="fa fa-trash-o" />
-                        Clear All
-                    </button>
-                    <t t-call="webshop_dermanord.dn_website_group_info" />
-                </div>
+                    
+                    <div class="btn-group filter">
+                        <button class="mt32 dn_btn dn_success dn_ok" name="post_form" value="ok" type="submit" style="padding: 12px 20px;">Search</button>
+                        <button class="mt32 dn_btn dn_default" name="post_form" value="ok" type="submit" onclick="webshop_restore_filter()" style="padding: 12px 20px;">
+                            <i class="fa fa-trash-o" />
+                            Clear All
+                        </button>
+                        <t t-call="webshop_dermanord.dn_website_group_info" />
+                    </div>
+                </t>
             </div>
         </template>
         <template id="webshop_dermanord_desktop_product_filter_form" name="Webshop Dermanord Desktop Product Filter Form">
@@ -1318,7 +1351,7 @@
                     </t>
                 </div>
                 <input type="hidden" name="order" t-att-value="request.session.get('form_values', {}).get('order') or 'name desc'" />
-
+            
             </form>
         </template>
         <!--
