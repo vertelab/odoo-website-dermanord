@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# OpenERP, Open Source Management Solution, third party addon
+# odoo, Open Source Management Solution, third party addon
 # Copyright (C) 2004-2015 Vertel AB (<http://vertel.se>).
 #
 # This program is free software: you can redistribute it and/or modify
@@ -19,20 +19,20 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, _
-from openerp import http
-from openerp.http import request
-from openerp.tools.translate import _
-from openerp.tools import html_escape as escape
-from openerp.tools import float_compare
-from openerp.exceptions import except_orm
+from odoo import models, fields, api, _
+from odoo import http
+from odoo.http import request
+from odoo.tools.translate import _
+from odoo.tools import html_escape as escape
+from odoo.tools import float_compare
+from odoo.exceptions import except_orm
 from datetime import datetime, date, timedelta
 from lxml import html
-from openerp.addons.website_sale.controllers.main import website_sale, QueryURL, table_compute
-from openerp.addons.website.models.website import slug
-from openerp.addons.website_fts.website_fts import WebsiteFullTextSearch
-import openerp.addons.decimal_precision as decpre
-from openerp.addons.base.ir.ir_qweb import HTMLSafe
+from odoo.addons.website_sale.controllers.main import website_sale, QueryURL, table_compute
+from odoo.addons.website.models.website import slug
+from odoo.addons.website_fts.website_fts import WebsiteFullTextSearch
+import odoo.addons.decimal_precision as decpre
+from odoo.addons.base.ir.ir_qweb import HTMLSafe
 import werkzeug
 from heapq import nlargest
 import math
@@ -42,15 +42,15 @@ import sys, traceback
 import urlparse
 
 from cStringIO import StringIO
-from openerp.report.report_sxw import report_sxw
-from openerp.api import Environment
+from odoo.report.report_sxw import report_sxw
+from odoo.api import Environment
 
 import logging
 _logger = logging.getLogger(__name__)
 
 # import xlsxwriter
 
-from openerp import SUPERUSER_ID
+from odoo import SUPERUSER_ID
 
 from timeit import default_timer as timer
 
@@ -69,7 +69,7 @@ class stock_notification(models.Model):
     status = fields.Selection(string='Status', selection=[ ('pending', 'Pending'), ('sent', 'Sent') ], default='pending')
     created_datetime = fields.Datetime('Created', select=True, default=lambda self: fields.datetime.now())
     
-    @api.multi
+    
     def send_notification(self):
         author = self.env.ref('base.main_partner').sudo()
         template = self.env.ref('webshop_dermanord.stock_notify_message', False)
@@ -89,7 +89,7 @@ class stock_notification(models.Model):
         
         self.write({'status' : 'sent'})
 
-    @api.multi
+    
     def send_inactive_notification(self):
         author = self.env.ref('base.main_partner').sudo()
         template = self.env.ref('webshop_dermanord.stock_notify_inactive_message', False)
@@ -139,7 +139,7 @@ class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
 
 
-    @api.multi
+    
     def write(self, vals):
         for r in self:
             for o in r.object_ids:
@@ -163,7 +163,6 @@ class crm_tracking_campaign(models.Model):
 class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
 
-    @api.one
     def _product_price(self):
         if self.object_id._name == 'product.template':
             variant = self.object_id.get_default_variant()
@@ -181,7 +180,7 @@ class crm_campaign_object(models.Model):
             self.env['product.product'].browse(int(vals.get('object_id').split(',')[1])).product_tmpl_id._is_offer_product()
         return res
 
-    @api.multi
+    
     def write(self, vals):
         for r in self:
             if r.object_id and r.object_id._name == 'product.template':
@@ -194,7 +193,6 @@ class crm_campaign_object(models.Model):
 class product_template(models.Model):
     _inherit = 'product.template'
 
-    @api.one
     def _blog_post_ids(self):
         if type(self.id) is int:
             blog_posts = self.env['blog.post'].search_read(['&', ('website_published', '=', True),'|', ('product_tmpl_ids', 'in', self.id), ('product_public_categ_ids', 'in', self.public_categ_ids.mapped('id'))],['id'])
@@ -245,7 +243,7 @@ $$;""")
             order_by_elements.append('dn_product_template_price_chart_sort("%s"."id", %s) %s' % (alias, order[0], order[1]))
         return order_by_elements
 
-    @api.multi
+    
     def get_default_variant(self):
         self.ensure_one()
         variants = self.product_variant_ids.filtered(lambda v: self.env.ref('website_sale.image_promo') in v.website_style_ids_variant)
@@ -256,14 +254,14 @@ $$;""")
             return super(product_template, self).get_default_variant()
 
     # get defualt variant ribbon. if there's not one, get the template's ribbon
-    @api.multi
+    
     def Xget_default_variant_ribbon(self):
         if self.get_default_variant() and len(self.get_default_variant().website_style_ids_variant) > 0:
             return ' '.join([s.html_class for s in self.get_default_variant().website_style_ids_variant])
         else:
             return ' '.join([s.html_class for s in self.website_style_ids])
 
-    @api.multi
+    
     def format_facets(self,facet):
         self.ensure_one()
         values = []
@@ -274,7 +272,7 @@ $$;""")
         return ', '.join(values)
 
 
-    @api.multi
+    
     def fts_search_suggestion(self):
         """
         Return a search result for search_suggestion.
@@ -296,7 +294,6 @@ class ProductProduct(models.Model):
     height = fields.Float('Height (cm)', digits_compute= decpre.get_precision('Product Unit of Measure'), help='Product height in cm')
     depth = fields.Float('Depth (cm)', digits_compute= decpre.get_precision('Product Unit of Measure'), help='Product depth in cm')
 
-    @api.one
     def _fullname(self):
         self.fullname = '%s %s' % (self.name, ', '.join(self.attribute_value_ids.mapped('name')))
     fullname = fields.Char(compute='_fullname')
@@ -362,7 +359,7 @@ $$;""")
         return None
 
 
-    @api.multi
+    
     def fts_search_suggestion(self):
         """
         Return a search result for search_suggestion.
@@ -374,7 +371,7 @@ $$;""")
 class product_facet(models.Model):
     _inherit = 'product.facet'
 
-    @api.multi
+    
     def get_filtered_facets(self, form_values):
         categories = []
         if form_values and len(form_values) > 0:
@@ -407,7 +404,7 @@ class product_pricelist(models.Model):
     _sql_constraints = [
          ('unique_code', 'unique (code)','Code must be unique!')]
 
-    # ~ @api.multi
+    # ~ 
     # ~ def price_get(self, prod_id, qty, partner=None):
         # ~ return super(product_pricelist, self).price_get(prod_id, qty, partner)
 
@@ -675,7 +672,6 @@ class SaleOrder(models.Model):
     
     website_order_line = fields.One2many(domain=[('is_delivery', '=', False), ('is_min_order_fee', '=', False), ('is_tester', '=', False)])
     
-    @api.one
     def verify_testers(self):
         """Remove any tester products that are invalid."""
         def tester_ok(products, tester):
@@ -689,21 +685,21 @@ class SaleOrder(models.Model):
             products = wol.filtered(lambda l: l.product_id.has_tester and l.product_id.tester_product_id == tester).mapped('product_id')
             if not tester_ok(products, tester):
                 tester_line.unlink()
-    @api.multi
+                
     def has_tester(self, product):
         """Check if this order contains a tester for the given product."""
         if self.order_line.filtered(lambda l: l.is_tester and l.product_id == product.tester_product_id):
             return True
         return False
     
-    @api.multi
+    
     def tester_ready(self, product):
         """Check if we're ready to add the tester for this product."""
         minimum = product.tester_min
         quantity = sum(self.order_line.filtered(lambda l: l.product_id == product and not l.is_tester).mapped('product_uom_qty'))
         return quantity >= minimum
     
-    @api.multi
+    
     def onchange_delivery_id(self, company_id, partner_id, delivery_id, fiscal_position):
         """Get the carrier from the delivery address."""
         result = super(SaleOrder, self).onchange_delivery_id(company_id, partner_id, delivery_id, fiscal_position)
@@ -715,7 +711,7 @@ class SaleOrder(models.Model):
                 result['value']['carrier_id'] = dtype
         return result
 
-    @api.multi
+    
     def _cart_update(self, product_id=None, line_id=None, add_qty=0, set_qty=0, **kwargs):
         """ Add or set product quantity, add_qty can be negative """
         self.ensure_one()
@@ -800,7 +796,7 @@ class SaleOrder(models.Model):
                 'amount_untaxed': self.amount_untaxed,
             }
 
-    @api.multi
+    
     def action_button_confirm(self):
         self.ensure_one()
         if not self.client_order_ref:
@@ -835,7 +831,7 @@ class SaleOrderLine(models.Model):
     
     is_tester = fields.Boolean(string='Tester', help="This line contains a tester product.")
     
-    @api.multi
+    
     def get_tester_line(self):
         """Get the tester line that belongs to this order line."""
         if not self.product_id and self.product_id.has_tester and self.product_id.tester_product_id:
@@ -845,7 +841,7 @@ class SaleOrderLine(models.Model):
         if line:
             return line[0]
     
-    @api.multi
+    
     def tester_html_attributes(self):
         """Build HTML attributes for the Add / Remove Tester buttons."""
         res = {
@@ -878,7 +874,7 @@ class SaleOrderLine(models.Model):
                 if partner_country not in (value.color or '').split():
                     return _("%s appears to not be in your preferred language. Are you sure this is the correct product?") % self.product_id.name
     
-    @api.multi
+    
     def sale_home_confirm_copy(self):
         if self.is_delivery or self.is_min_order_fee:
             return False

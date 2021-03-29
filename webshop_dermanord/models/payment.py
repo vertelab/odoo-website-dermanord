@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# OpenERP, Open Source Management Solution, third party addon
+# odoo, Open Source Management Solution, third party addon
 # Copyright (C) 2004-2018 Vertel AB (<http://vertel.se>).
 #
 # This program is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
-from openerp.addons.website_sale.models.payment import PaymentTransaction as WebsiteSalePaymentTransaction
-from openerp.tools import float_compare
+from odoo import models, fields, api
+from odoo.addons.website_sale.models.payment import PaymentTransaction as WebsiteSalePaymentTransaction
+from odoo.tools import float_compare
 import traceback
 
 import logging

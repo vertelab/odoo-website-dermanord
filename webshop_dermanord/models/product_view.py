@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# OpenERP, Open Source Management Solution, third party addon
+# odoo, Open Source Management Solution, third party addon
 # Copyright (C) 2004-2018 Vertel AB (<http://vertel.se>).
 #
 # This program is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, _
+from odoo import models, fields, api, _
 from datetime import datetime, date, timedelta
-from openerp.addons.website_memcached import memcached
+from odoo.addons.website_memcached import memcached
 import base64
 import werkzeug
-from openerp.addons.website.models.website import slug 
+from odoo.addons.website.models.website import slug 
 
-from openerp import http
-from openerp.http import request
+from odoo import http
+from odoo.http import request
 
 from timeit import default_timer as timer
 import sys, traceback
@@ -36,10 +36,10 @@ import json
 import logging
 _logger = logging.getLogger(__name__)
 
-from openerp.tools.translate import GettextAlias
-from openerp import SUPERUSER_ID
+from odoo.tools.translate import GettextAlias
+from odoo import SUPERUSER_ID
 import inspect
-import openerp
+import odoo
 
 class GettextAlias(GettextAlias):
     def __init__(self, name=None):
@@ -61,7 +61,7 @@ class GettextAlias(GettextAlias):
                 cr, is_new_cr = self._get_cr(frame)
                 if cr:
                     # Try to use ir.translation to benefit from global cache if possible
-                    registry = openerp.registry(cr.dbname)
+                    registry = odoo.registry(cr.dbname)
                     res = registry['ir.translation']._get_source(cr, SUPERUSER_ID, self.name, ('code','sql_constraint'), lang, source)
                 else:
                     _logger.debug('no context cursor detected, skipping translation for "%r"', source)
@@ -160,7 +160,6 @@ class product_template(models.Model):
         """Return a list of fields that should trigger an update of memcached."""
         return ['name']
     
-    @api.multi
     def write(self, values):
         for field in self.get_memcached_fields():
             if field in values:
@@ -168,11 +167,9 @@ class product_template(models.Model):
                 break
         return super(product_template, self).write(values)
     
-    @api.multi
     def dn_clear_cache(self):
         self.memcached_time = fields.Datetime.now()
 
-    @api.multi
     @api.depends('name', 'list_price', 'taxes_id', 'default_code', 'description_sale', 'image', 'image_attachment_ids', 'image_attachment_ids.datas', 'image_attachment_ids.sequence', 'product_variant_ids.image_attachment_ids', 'product_variant_ids.image_attachment_ids.datas', 'product_variant_ids.image_medium', 'product_variant_ids.image_attachment_ids.sequence', 'website_style_ids', 'attribute_line_ids.value_ids', 'sale_ok', 'product_variant_ids.sale_ok')
     def _get_all_variant_data(self):
         placeholder = '/web/static/src/img/placeholder.png'
@@ -435,7 +432,6 @@ class product_product(models.Model):
     
     purchase_type = fields.Selection(selection=[('none', 'None'), ('consumer', 'Consumer Purchase'), ('buy', 'Purchase'), ('edu', 'Educational Purchase')], string='Purchase Type', compute='_compute_purchase_type', help="Purchase type for active user.")
     
-    @api.one
     def _compute_purchase_type(self):
         """ Checks what kind of purchase the given product should have for the active user."""
         partner = request.env.user.partner_id.commercial_partner_id
@@ -498,7 +494,6 @@ class product_product(models.Model):
             
         self.purchase_type = get_purchase_type()
     
-    @api.multi
     def get_add_to_cart_buttons(self):
         """ Returns a dict with the relevant kinds of 'add to cart' buttons """
         res = {}
@@ -540,7 +535,6 @@ class product_product(models.Model):
             )
         return res
     
-    @api.multi
     def dn_clear_cache(self):
         # We need to clear the exact same stuff as for the template,
         # since the variant data comes into play on the template pages,

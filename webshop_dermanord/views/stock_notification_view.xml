@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<openerp>
+<odoo>
     <data>
         <record id="stock_notification_tree" model="ir.ui.view">
             <field name="name">stock.notification_tree</field>
@@ -28,31 +28,31 @@
         </record>
 
         <record id="student_search_view" model="ir.ui.view">
-			<field name="name">stock.notification_search</field>
-			<field name="model">stock.notification</field>
-			<field name="arch" type="xml">
-				<search string="Notifications">
-					<field name="created_datetime"/>
+            <field name="name">stock.notification_search</field>
+            <field name="model">stock.notification</field>
+            <field name="arch" type="xml">
+                <search string="Notifications">
+                    <field name="created_datetime"/>
                     <field name="product_id"/>
                     <field name="partner_id"/>
                     <field name="status"/>
-					<group expand="0" string="Group By">
-						<filter name="groupby_date_day" string="Day" domain="[]" context="{'group_by':'created_datetime:day'}"
-							help="Group notifications by day"/>
-						<filter name="groupby_date_month" context="{'group_by': 'created_datetime:month'}" string="Month"
-							help="Group notifications by month" />
+                    <group expand="0" string="Group By">
+                        <filter name="groupby_date_day" string="Day" domain="[]" context="{'group_by':'created_datetime:day'}"
+                            help="Group notifications by day"/>
+                        <filter name="groupby_date_month" context="{'group_by': 'created_datetime:month'}" string="Month"
+                            help="Group notifications by month" />
                         <filter name="groupby_date_year" context="{'group_by': 'created_datetime:year'}" string="Year"
-							help="Group notifications by year" />
-						<filter name="groupby_product" string="Product" domain="[]" context="{'group_by':'product_id'}"
-							help="Group notifications by product"/>
+                            help="Group notifications by year" />
+                        <filter name="groupby_product" string="Product" domain="[]" context="{'group_by':'product_id'}"
+                            help="Group notifications by product"/>
                         <filter name="groupby_product" string="Partner" domain="[]" context="{'group_by':'partner_id'}"
-							help="Group notifications by partner"/>
-					</group>
-					<filter name="filter_by_status" string="Pending notifications" domain="[('status','=','pending')]"
-						help="Show only pending notifications" />
-				</search>
-			</field>
-		</record>
+                            help="Group notifications by partner"/>
+                    </group>
+                    <filter name="filter_by_status" string="Pending notifications" domain="[('status','=','pending')]"
+                        help="Show only pending notifications" />
+                </search>
+            </field>
+        </record>
 
         <record id="action_stock_noftification" model="ir.actions.act_window">
             <field name="name">Stock notification</field>
@@ -63,4 +63,4 @@
         
         <menuitem action="action_stock_noftification" id="action_menu_stock_noftification" parent="stock.menu_stock_product" name="Stock notifications" sequence="1"/>
     </data>
-</openerp>
+</odoo>

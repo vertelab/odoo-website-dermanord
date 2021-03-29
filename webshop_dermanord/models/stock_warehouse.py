@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# OpenERP, Open Source Management Solution, third party addon
+# odoo, Open Source Management Solution, third party addon
 # Copyright (C) 2004-2018 Vertel AB (<http://vertel.se>).
 #
 # This program is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, _
+from odoo import models, fields, api, _
 from datetime import datetime, date, timedelta
-from openerp.addons.website_memcached import memcached
+from odoo.addons.website_memcached import memcached
 import base64
 import werkzeug
-from openerp.addons.website.models.website import slug 
+from odoo.addons.website.models.website import slug 
 
-from openerp import http
-from openerp.http import request
+from odoo import http
+from odoo.http import request
 
 from timeit import default_timer as timer
 import sys, traceback
@@ -36,10 +36,10 @@ import json
 import logging
 _logger = logging.getLogger(__name__)
 
-from openerp.tools.translate import GettextAlias
-from openerp import SUPERUSER_ID
+from odoo.tools.translate import GettextAlias
+from odoo import SUPERUSER_ID
 import inspect
-import openerp
+import odoo
 
 
 # ~ class product_template(models.Model):

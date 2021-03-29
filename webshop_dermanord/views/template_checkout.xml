@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
   <data>
 
     <template id="checkout_dermanord" name="Checkout Dermanord" inherit_id="website_sale.checkout">
@@ -133,18 +133,18 @@
 
       </xpath>
       
-		<xpath expr="//div[@class='col-lg-offset-1 col-lg-3 col-md-3 text-muted']/div[@class='row']" position="replace">
-			<div class="row">
-				<div class="col-sm-6 col-xs-6 text-right">Subtotal: </div>
-				<div class="col-sm-6 col-xs-6"><span style="white-space: nowrap;" t-field="website_sale_order.amount_untaxed" t-field-options="{                       &quot;widget&quot;: &quot;monetary&quot;,                       &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                       &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                   }"/></div>
-				<div class="col-sm-6 col-xs-6 text-right">Taxes: </div>
-				<div class="col-sm-6 col-xs-6"><span style="white-space: nowrap;" t-field="website_sale_order.amount_tax" t-field-options="{                       &quot;widget&quot;: &quot;monetary&quot;,                       &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                       &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                   }"/></div>
-				<div class="col-sm-6 col-xs-6 text-right"><h4>Total To Pay: </h4></div>
-				<div class="col-sm-6 col-xs-6"><h4><span style="white-space: nowrap;" t-field="website_sale_order.amount_total" t-field-options="{                       &quot;widget&quot;: &quot;monetary&quot;,                       &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                       &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                   }"/></h4></div>
-			</div>
-		</xpath>
+        <xpath expr="//div[@class='col-lg-offset-1 col-lg-3 col-md-3 text-muted']/div[@class='row']" position="replace">
+            <div class="row">
+                <div class="col-sm-6 col-xs-6 text-right">Subtotal: </div>
+                <div class="col-sm-6 col-xs-6"><span style="white-space: nowrap;" t-field="website_sale_order.amount_untaxed" t-field-options="{                       &quot;widget&quot;: &quot;monetary&quot;,                       &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                       &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                   }"/></div>
+                <div class="col-sm-6 col-xs-6 text-right">Taxes: </div>
+                <div class="col-sm-6 col-xs-6"><span style="white-space: nowrap;" t-field="website_sale_order.amount_tax" t-field-options="{                       &quot;widget&quot;: &quot;monetary&quot;,                       &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                       &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                   }"/></div>
+                <div class="col-sm-6 col-xs-6 text-right"><h4>Total To Pay: </h4></div>
+                <div class="col-sm-6 col-xs-6"><h4><span style="white-space: nowrap;" t-field="website_sale_order.amount_total" t-field-options="{                       &quot;widget&quot;: &quot;monetary&quot;,                       &quot;from_currency&quot;: &quot;website_sale_order.pricelist_id.currency_id&quot;,                       &quot;display_currency&quot;: &quot;user_id.partner_id.property_product_pricelist.currency_id&quot;                   }"/></h4></div>
+            </div>
+        </xpath>
       
     </template>
  
   </data>
-</openerp>
+</odoo>

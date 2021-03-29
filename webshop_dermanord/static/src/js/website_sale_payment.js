@@ -18,7 +18,7 @@ $(document).ready(function () {
         if (! acquirer_id) {
           return false;
         }
-        openerp.jsonRpc('/shop/payment/transaction/' + acquirer_id, 'call', {}).then(function (data) {
+        odoo.jsonRpc('/shop/payment/transaction/' + acquirer_id, 'call', {}).then(function (data) {
             $('html,body').css('cursor', 'wait');
             var html_content = data.replace('<button', '<button disabled="disabled"').replace('</button>', '</button><div style="display: inline;"><img src="/web/static/src/img/throbber-large.gif" style="height: 34px;"/></div>');
             $form.html(html_content);
@@ -27,7 +27,7 @@ $(document).ready(function () {
     });
 
     $("#client_order_ref").find("[name='client_order_ref']").on('change', function () {
-        openerp.jsonRpc("/shop/order/client_order_ref", 'call', {
+        odoo.jsonRpc("/shop/order/client_order_ref", 'call', {
             'client_order_ref': $(this).val(),
         });
     });

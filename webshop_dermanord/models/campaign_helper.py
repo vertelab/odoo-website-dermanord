@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# OpenERP, Open Source Management Solution, third party addon
+# odoo, Open Source Management Solution, third party addon
 # Copyright (C) 2004-2018 Vertel AB (<http://vertel.se>).
 #
 # This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, _
+from odoo import models, fields, api, _
 from datetime import datetime, date, timedelta
 import logging
 _logger = logging.getLogger(__name__)
@@ -36,7 +36,6 @@ class crm_tracking_campaign_helper(models.Model):
     for_reseller        = fields.Boolean(related='campaign_phase_id.reseller_pricelist')
     salon               = fields.Boolean(string='Salon', compute='compute_salon', store=True)
     
-    @api.one
     @api.depends('campaign_id.phase_ids.reseller_pricelist')
     def compute_salon(self):
         # Salon offers don't have a consumer phase
@@ -54,7 +53,6 @@ class crm_tracking_campaign_helper(models.Model):
         
         _logger.info('Cron job updating crm.tracking.campaign.helper done')
     
-    @api.multi
     def update_campaign_helper(self,campaign):
         d = datetime.now()
 
@@ -94,7 +92,6 @@ class product_product(models.Model):
     is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', search='_search_is_offer_product_consumer')
     is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', search='_search_is_offer_product_reseller')
 
-    @api.one
     def _is_offer_product(self):
         self.is_offer_product_reseller = bool(self.env['crm.tracking.campaign.helper'].sudo().search([('variant_id' , '=', self.id), ('for_reseller', '=', True), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)]))
         if not self.is_offer_product_reseller:
@@ -136,7 +133,6 @@ class product_template(models.Model):
     is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', search='_search_is_offer_product_consumer')
     is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', search='_search_is_offer_product_reseller')
     
-    @api.one
     def _is_offer_product(self):
         self.is_offer_product_reseller = bool(self.env['crm.tracking.campaign.helper'].sudo().search(['|',('product_id' , '=', self.id), ('variant_id', 'in', self.product_variant_ids.mapped('id')), ('for_reseller', '=', True), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)]))
         self.is_offer_product_consumer = bool(self.env['crm.tracking.campaign.helper'].sudo().search(['|',('product_id' , '=', self.id), ('variant_id', 'in', self.product_variant_ids.mapped('id')), ('for_reseller', '=', False), ('country_id', '=', self.env.user.partner_id.commercial_partner_id.country_id.id)]))

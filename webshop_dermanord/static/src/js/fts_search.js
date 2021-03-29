@@ -4,7 +4,7 @@ $(document).ready(function(){
         if (event.which == 13) {
             $(this).parents('form').submit()
         } else if ($(this).val().trim().length > 2) {
-            openerp.jsonRpc("/search_suggestion", "call", {
+            odoo.jsonRpc("/search_suggestion", "call", {
                 search: $(this).val(),
                 res_model: ['product.template', 'product.product', 'product.public.category', 'blog.post'], //, 'product.facet.line'],
                 limit: 15, // [2554] Webbshop - Utöka antal sökträffar i toppsökning

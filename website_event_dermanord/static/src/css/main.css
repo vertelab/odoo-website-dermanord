@@ -1,7 +1,0 @@
-#left_column ~ div.col-md-6 > ul.pagination {
-    margin: 0px;
-}
-
-ul#comment.media-list {
-    display: none !important;
-}

@@ -1,4 +1,4 @@
-var website = openerp.website;
+var website = odoo.website;
 website.add_template_file('/webshop_dermanord/static/src/xml/product.xml');
 var current_page = 0;
 var page_count = 0;
@@ -13,7 +13,7 @@ $("select.attr_sel").on('change', function() {
         sel_lst.push($(this).val());
     });
     // validate attribute_value exists on variant
-    //~ openerp.jsonRpc("/validate_attibute_value", "call", {
+    //~ odoo.jsonRpc("/validate_attibute_value", "call", {
         //~ 'product_id': $self.attr("name").split("-")[1],
         //~ 'attribute_value_id': $self.val(),
         //~ 'attribute_value_list': sel_lst
@@ -152,10 +152,10 @@ $(function(){
         let min_value  = parseInt($this.parent().data('tester-min'));
         
         if (quantity < min_value) {
-            alert (_.str.sprintf(openerp._t("You have to buy at least %s products to get a tester"), min_value));
+            alert (_.str.sprintf(odoo._t("You have to buy at least %s products to get a tester"), min_value));
         }
         else {
-            openerp.jsonRpc("/webshop_dermanord/add_tester", 'call', {'product_id': product_id})
+            odoo.jsonRpc("/webshop_dermanord/add_tester", 'call', {'product_id': product_id})
                 .then(function (data){
                     console.log(data);
                     // {
@@ -178,7 +178,7 @@ $(function(){
     $(".remove-tester").click(function(){
         var $this = $(this);
         var product_id = parseInt($this.parents("td").find("input[type='number']").data('product-id'));
-        openerp.jsonRpc("/webshop_dermanord/remove_tester", 'call', {'product_id': product_id})
+        odoo.jsonRpc("/webshop_dermanord/remove_tester", 'call', {'product_id': product_id})
             .then(function (data){
                 console.log(data);
                     // {
@@ -223,7 +223,7 @@ $(function(){
          var $this = $(this);
          var variant_id = parseInt($this.data('variant-id'));
     
-             openerp.jsonRpc("/webshop_dermanord/stock/notify", 'call', {'product_id': variant_id})
+             odoo.jsonRpc("/webshop_dermanord/stock/notify", 'call', {'product_id': variant_id})
             .then(function (data) {
            
                alert(data);
@@ -386,7 +386,7 @@ $(function(){
     mobile_filter_count();
     check_in_check_out_parent();
 
-    openerp.jsonRpc("/website_sale_update_cart", "call", {
+    odoo.jsonRpc("/website_sale_update_cart", "call", {
     }).done(function(data){
         $(".my_cart_total").data('thousands_sep', data['thousands_sep']);
         $(".my_cart_total").data('decimal_point', data['decimal_point']);
@@ -483,7 +483,7 @@ $(function(){
             // TODO: Next row causes type 200 error to be thrown. [product_ids[0]] or product_ids[0] both cause errors.
             // product_ids[0] throws error on product list page.
             // [product_ids[0]] throws error on product page.
-            openerp.jsonRpc("/shop/get_unit_price", 'call', {'product_ids': product_ids[0], 'add_qty': parseInt(qty)})
+            odoo.jsonRpc("/shop/get_unit_price", 'call', {'product_ids': product_ids[0], 'add_qty': parseInt(qty)})
             .then(function (data) {
                 var current = $product_dom.data("attribute_value_ids");
                 for(var j=0; j < current.length; j++){
@@ -513,7 +513,7 @@ $(function(){
             var product_name = $input.data('product-name');
             var product_attribute = $input.data('product-attribute');
             var product_ids = [product_id];
-            var notify_text = ' \n ' + openerp._t('Has been added to the cart');
+            var notify_text = ' \n ' + odoo._t('Has been added to the cart');
             $dom_optional.each(function(){
                 product_ids.push($(this).find('span[data-product-id]').data('product-id'));
             });
@@ -531,7 +531,7 @@ $(function(){
                 check_tester_buttons(tester);
             }
             $input.data('update_change', true);
-            openerp.jsonRpc("/shop/get_unit_price", 'call', {
+            odoo.jsonRpc("/shop/get_unit_price", 'call', {
                 'product_ids': product_ids,
                 'add_qty': value,
                 'use_order_pricelist': true,
@@ -548,7 +548,7 @@ $(function(){
                     $(this).find("span.oe_currency_value").last().text(price_to_str(res[id]));
                     $(this).find('.text-danger').toggle(res[id]<price && (price-res[id]>price/100));
                 });
-                openerp.jsonRpc("/shop/cart/update_json", 'call', {
+                odoo.jsonRpc("/shop/cart/update_json", 'call', {
                 'line_id': line_id,
                 'product_id': parseInt($input.data('product-id'),10),
                 'set_qty': value})
@@ -655,7 +655,7 @@ $(function(){
             });
             if (isNaN(value)) value = 0;
             $input.data('update_change', true);
-            openerp.jsonRpc("/shop/get_unit_price", 'call', {
+            odoo.jsonRpc("/shop/get_unit_price", 'call', {
                 'product_ids': product_ids,
                 'add_qty': value,
                 'use_order_pricelist': true,
@@ -669,7 +669,7 @@ $(function(){
                     $input.find("span.oe_currency_value").last().text(price_to_str(res[id]));
                     $input.find('.text-danger').toggle(res[id]<price && (price-res[id]>price/100));
                 });
-                openerp.jsonRpc("/shop/cart/update_json", 'call', {
+                odoo.jsonRpc("/shop/cart/update_json", 'call', {
                 'line_id': line_id,
                 'product_id': parseInt($input.data('product-id'),10),
                 'set_qty': value})
@@ -742,7 +742,7 @@ $(function(){
             return result.reverse().join(separator);
         }
         function insert_thousand_seps(num) {
-            var l10n = openerp._t.database.parameters;
+            var l10n = odoo._t.database.parameters;
             var negative = num[0] === '-';
             num = (negative ? num.slice(1) : num);
             // retro-compatibilit: if no website_id and so l10n.grouping = []
@@ -752,7 +752,7 @@ $(function(){
         }
 
         function price_to_str(price) {
-            var l10n = openerp._t.database.parameters;
+            var l10n = odoo._t.database.parameters;
             var precision = 2;
             if ($(".decimal_precision").length) {
                 var dec_precision = $(".decimal_precision").first().data('precision');
@@ -894,7 +894,7 @@ function load_products_grid(page){
     $('html,body').css('cursor', 'wait');
     $("div#loading").removeClass("hidden");
     var url = "/dn_shop_json_grid";
-    openerp.jsonRpc(url, "call", {
+    odoo.jsonRpc(url, "call", {
         'page': current_page.toString(),
     }).done(function(data){
         var product_count = 0;
@@ -922,7 +922,7 @@ function load_products_list(page){
     //var url = "/" + $("button#site_lang").data("lang") + "/dn_shop_json_list";
     var url = "/dn_shop_json_list";
     
-    openerp.jsonRpc(url, "call", {
+    odoo.jsonRpc(url, "call", {
         'page': current_page,
     }).done(function(data){
         var product_count = 0;
@@ -999,7 +999,7 @@ $(document).on('click', '.dn_js_options ul[name="style"] a', function (event) {
     var $product = $a.closest(".dn_oe_product").find(".dn_product_div");
 
     $li.parent().removeClass("active");
-    openerp.jsonRpc('/shop/change_styles', 'call', {'id': $data.data('id'), 'style_id': $a.data("id")})
+    odoo.jsonRpc('/shop/change_styles', 'call', {'id': $data.data('id'), 'style_id': $a.data("id")})
         .then(function (result) {
             $product.toggleClass($a.data("class"));
             $li.toggleClass("active", result);
@@ -1054,9 +1054,9 @@ $(document).on('click', '.dn_list_add_to_cart, .dn_list_add_to_cart_edu, #add_to
     var cart_qty = cart_html.substring(cart_html.lastIndexOf("(")+1,cart_html.lastIndexOf(")"));
     var current_total = cart_total + unit_price * parseFloat(add_qty);
     setCartPriceQuantity(parseFloat(current_total).toFixed(2), '' + (parseInt(add_qty) + parseInt(cart_qty)), current_total);
-    var notify_text = ' \n ' + openerp._t('Has been added to the cart');
+    var notify_text = ' \n ' + odoo._t('Has been added to the cart');
 
-   openerp.jsonRpc("/shop/cart/update", "call", {
+   odoo.jsonRpc("/shop/cart/update", "call", {
         'product_id': product_id,
         'add_qty': add_qty,
 
@@ -1112,7 +1112,7 @@ function setPosition(position, doneFunction) {
     $("input#pos_lng").val(position.coords.longitude);
     $("input#pos_lat").val(position.coords.latitude);
 
-    openerp.jsonRpc("/website_set_location", "call", {
+    odoo.jsonRpc("/website_set_location", "call", {
         'longitude': position.coords.longitude,
         'latitude': position.coords.latitude
     }).done(function(data){

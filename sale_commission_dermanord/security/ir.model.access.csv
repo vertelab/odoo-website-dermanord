@@ -1,7 +1,0 @@
-id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
-access_sale_commission_settlement_portal,sale.commission.settlement - Portal,sale_commission.model_sale_commission_settlement,base.group_portal,1,0,0,0
-access_sale_order_line_agent_portal,sale.order.line.agent - Portal,sale_commission.model_sale_order_line_agent,base.group_portal,1,0,0,0
-access_account_invoice_line_agent_portal,account.invoice.line.agent - Portal,sale_commission.model_account_invoice_line_agent,base.group_portal,1,0,0,0
-access_sale_commission_settlement_line_portal,sale.commission.settlement.line – Portal,sale_commission.model_sale_commission_settlement_line,base.group_portal,1,0,0,0
-access_sale_order_group_agent,sale.order - Agent,sale.model_sale_order,group_agent,1,1,1,1
-access_sale_order_line_group_agent,sale.order.line - Agent,sale.model_sale_order_line,group_agent,1,1,1,1
