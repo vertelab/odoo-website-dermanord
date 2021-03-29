@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_webshop_dermanord_emergency_fix/_webshop_dermanord_emergency_fix/,webshop_dermanord_emergency_fix/.webshop_dermanord_emergency_fix/,model_webshop_dermanord_emergency_fix/_webshop_dermanord_emergency_fix/,base.group_user,1,1,1,1
