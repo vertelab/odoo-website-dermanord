@@ -7,14 +7,14 @@ $(document).ready(function(){
             openerp.jsonRpc("/search_suggestion", "call", {
                 search: $(this).val(),
                 res_model: ['product.template', 'product.product', 'product.public.category', 'blog.post'], //, 'product.facet.line'],
-                limit: 15, // [2554] Webbshop - Utöka antal sökträffar i toppsökning
+                limit: 25, // [20665] Eskalerad: Ännu en utökning i hopp om att Serum C ska synas
                 offset: 0
             }).done(function(data){
                 //~ var content_front = '<div class="result_suggestion">';
                 //~ var content_behind = '</div>';
                 //~ var content = '';
                 let content = $('<div class="result_suggestion">');
-                
+
                 $.each(data, function(key, info) {
                     let li = $('<li>');
                     let a = $('<a>');
