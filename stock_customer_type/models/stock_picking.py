@@ -4,9 +4,6 @@ from odoo import models, fields, api, http
 from odoo.addons.website_sale_stock.controllers.variant import WebsiteSaleStockVariantController
 from odoo.addons.stock.models.stock_picking import Picking
 
-import logging
-_logger = logging.getLogger(__name__)
-
 
 class Picking(models.Model):
     _inherit = 'stock.picking'
