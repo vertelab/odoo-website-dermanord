@@ -1,0 +1,25 @@
+<odoo>
+    <record model="ir.ui.view" id="stock_picking_customer">
+            <field name="name">stock_picking_customer</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <group name="other_infos" position="inside">
+                    <field name="is_reseller"></field>
+                </group>
+            </field>
+    </record>
+    <record model="ir.ui.view" id="product_pricelist_customer_type">
+            <field name="name">product_pricelist_customer_type_</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view"/>
+            <field name="arch" type="xml">
+                <group name="pricelist_discounts" position="after">
+                    <group name="customer_type" string="Customer type">
+                        <field name="for_reseller"></field>
+                    </group>
+                </group>
+            </field>
+    </record>
+</odoo>
+
