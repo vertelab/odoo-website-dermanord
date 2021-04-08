@@ -20,16 +20,17 @@
     'version': '0.001',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base', 'stock', 'sale'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/journal_security.xml',
+        'security/ir.model.access.csv',
         'views/sale_journal_view.xml',
         'views/sale_journal_data.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
-        'demo/demo.xml',
+    #    'demo/demo.xml',
     ],
 }

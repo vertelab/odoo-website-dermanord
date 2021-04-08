@@ -5,36 +5,26 @@ from odoo.addons.website_sale_stock.controllers.variant import WebsiteSaleStockV
 import logging
 _logger = logging.getLogger(__name__)
 
+
 class sale_journal_invoice_type(models.Model):
     _name = 'sale_journal.invoice.type'
     _description = 'Invoice Types'
-    _columns = {
-        'name': fields.char('Invoice Type', required=True),
-        'active': fields.boolean('Active', help="If the active field is set to False, it will allow you to hide the invoice type without removing it."),
-        'note': fields.text('Note'),
-        'invoicing_method': fields.selection([('simple', 'Non grouped'), ('grouped', 'Grouped')], 'Invoicing method', required=True),
-    }
-    _defaults = {
-        'active': True,
-        'invoicing_method': 'simple'
-    }
-
     
+    name = fields.Char('Invoice Type', required=True)
+    active = fields.Boolean('Active', help="If the active field is set to False, it will allow you to hide the invoice type without removing it.", default=True)
+    note = fields.Text('Note')
+    invoicing_method = fields.Selection([('simple', 'Non grouped'), ('grouped', 'Grouped')], 'Invoicing method', required=True, default='simple')
 
-#==============================================
-# sale journal inherit
-#==============================================
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
-    _columns = {
-        'property_invoice_type': fields.property(
-            type = 'many2one',
-            relation = 'sale_journal.invoice.type',
+
+    property_invoice_type = fields.Many2one(
+            comodel_name = 'sale_journal.invoice.type',
             string = "Invoicing Type",
             group_name = "Accounting Properties",
-            help = "This invoicing type will be used, by default, to invoice the current partner."),
-    }
+            company_dependent=True,
+            help = "This invoicing type will be used, by default, to invoice the current partner.")
 
     def _commercial_fields(self, cr, uid, context=None):
         return super(res_partner, self)._commercial_fields(cr, uid, context=context) + ['property_invoice_type']
@@ -42,9 +32,8 @@ class res_partner(models.Model):
 
 class picking(models.Model):
     _inherit = "stock.picking"
-    _columns = {
-        'invoice_type_id': fields.many2one('sale_journal.invoice.type', 'Invoice Type', readonly=True)
-    }
+
+    invoice_type_id = fields.Many2one('sale_journal.invoice.type', 'Invoice Type', readonly=True)
 
 
 class stock_move(models.Model):
@@ -70,17 +59,17 @@ class stock_move(models.Model):
 
 class sale(models.Model):
     _inherit = "sale.order"
-    _columns = {
-        'invoice_type_id': fields.many2one('sale_journal.invoice.type', 'Invoice Type', help="Generate invoice based on the selected option.")
-    }
+
+    invoice_type_id = fields.Many2one('sale_journal.invoice.type', 'Invoice Type', help="Generate invoice based on the selected option.")
 
     def onchange_partner_id(self, cr, uid, ids, part, context=None):
+        """ Blaha bla bla.
+            :param part: En del.
+            :returns: Något häftigt.
+        """
         result = super(sale, self).onchange_partner_id(cr, uid, ids, part, context=context)
         if part:
             itype = self.pool.get('res.partner').browse(cr, uid, part, context=context).property_invoice_type
             if itype:
                 result['value']['invoice_type_id'] = itype.id
         return result
-
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
