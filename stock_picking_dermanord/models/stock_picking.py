@@ -18,6 +18,10 @@ class stock_picking(models.Model):
         order_date = fields.Datetime.from_string(date)
         start_date = order_date.replace(hour=0, minute=0, second=0, microsecond=0)
         expected_date = order_date
+        
+        # set max iterations to stop any possibility of an infinite loop, 
+        # although it should never need more than a couple of iterations
+        # in the case where there are multiple red days in a row
         max_iterations = 100
         iterations = 0
         while True:
@@ -26,9 +30,8 @@ class stock_picking(models.Model):
             _logger.warn(daily_schedule)
             if daily_schedule != [[]]:
                 daily_start = daily_schedule[0][0][0]
-                daily_end = daily_schedule[0][0][1]
                 if order_date < daily_start:
-                     expected_date = daily_end
+                     expected_date = daily_schedule[0][0][1]
                      break
             start_date += datetime.timedelta(days=1)
             if max_iterations < iterations:
