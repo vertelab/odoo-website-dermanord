@@ -1,0 +1,15 @@
+<odoo>
+    <record id="view_users_form_link" model="ir.ui.view">
+            <field name="name">res.users.form.link</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group/field[@name='partner_id']" position="replace">
+                    <group>
+                        <field name="partner_id"/>
+                    </group>
+                </xpath>
+            </field>
+    </record>
+</odoo>
+
