@@ -21,5 +21,19 @@
                 </group>
             </field>
     </record>
+
+    <template id="stock_picking_customer_pdf" inherit_id="stock.report_picking">
+        <xpath expr="//div[@name='div_state']" positon="after">
+            <div class="col-auto" name="div_customer_type">
+                <strong>Customer Type:</strong>
+                <t t-if="o.is_reseller">
+                  <p>Reseller</p>
+                </t>
+                <t t-else="">
+                  <p>Customer</p>
+                </t>
+            </div>
+        </xpath>
+    </template>
 </odoo>
 
