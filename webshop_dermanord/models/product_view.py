@@ -1142,7 +1142,7 @@ class product_product(models.Model):
         <div class="col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
             <h1 itemprop="name">{product_name}</h1>
             <h4 class="text-muted default_code">{default_code}</h4>
-            <h4 class="text-muted ean13">{ean13}</h4>
+            <h4 class="text-muted ean13">EAN: {ean13}</h4>
             <form action="/shop/cart/update" class="js_add_cart_variants" data-attribute_value_ids="{variant_ids}" method="POST">
                 <div class="js_product">
                     <input class="product_id" name="product_id" value="{variant_id}" type="hidden">
@@ -1201,7 +1201,7 @@ class product_product(models.Model):
                     publish = _('Publish'),
                     action = '<a href="/web#return_label=Website&amp;view_type=form&amp;model=product.template&amp;id=%s&amp;action=%s" title="%s">Edit</a>' %(product.id, 'product.product_template_action', _('Edit in backend')),
                     product_name = variant.name,
-                    default_code = variant.default_code or '',
+                    default_code = _('Article Number: %s') %variant.default_code or '',
                     ean13 = variant.ean13,
                     variant_ids = product.product_variant_ids.mapped('id'),
                     data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, '{%s_in_stock}' % p.id] for p in product.product_variant_ids],
