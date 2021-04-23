@@ -1,11 +1,9 @@
 from openerp import models, fields, api, _
 import datetime
 
-
+# ~ from openerp1.exceptions import except_orm, Warning, RedirectWarning
 import logging
 _logger = logging.getLogger(__name__)
-
-
 class stock_picking(models.Model):
     _inherit  = "stock.picking"
 
