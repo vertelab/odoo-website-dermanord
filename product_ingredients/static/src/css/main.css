@@ -12,10 +12,10 @@
     max-height: 12em;
     overflow: hidden;
     position: relative;
-    white-space: nowrap;
+    white-space: normal;
 }
 
-.ingredient_desc h6::after {
+/*.ingredient_desc h6::after {
     content: "";
     position: absolute;
     bottom: 0;
@@ -23,7 +23,7 @@
     width: 10%;
     height: 1em;
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
-}
+}*/
 
 .ingredient_desc img {
     width: 100%;
