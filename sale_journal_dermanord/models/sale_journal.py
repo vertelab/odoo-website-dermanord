@@ -9,12 +9,12 @@ _logger = logging.getLogger(__name__)
 class sale_journal_invoice_type(models.Model):
     _name = 'sale_journal.invoice.type'
     _description = 'Invoice Types'
-    
+
     name = fields.Char('Invoice Type', required=True)
     active = fields.Boolean('Active', help="If the active field is set to False, it will allow you to hide the invoice type without removing it.", default=True)
     note = fields.Text('Note')
     invoicing_method = fields.Selection([('simple', 'Non grouped'), ('grouped', 'Grouped')], 'Invoicing method', required=True, default='simple')
-
+    _logger.warning("G"*999)
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
@@ -63,10 +63,6 @@ class sale(models.Model):
     invoice_type_id = fields.Many2one('sale_journal.invoice.type', 'Invoice Type', help="Generate invoice based on the selected option.")
 
     def onchange_partner_id(self, cr, uid, ids, part, context=None):
-        """ Blaha bla bla.
-            :param part: En del.
-            :returns: Något häftigt.
-        """
         result = super(sale, self).onchange_partner_id(cr, uid, ids, part, context=context)
         if part:
             itype = self.pool.get('res.partner').browse(cr, uid, part, context=context).property_invoice_type

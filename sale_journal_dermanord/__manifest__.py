@@ -24,10 +24,10 @@
 
     # always loaded
     'data': [
-        'security/journal_security.xml',
-        'security/ir.model.access.csv',
+        #'security/journal_security.xml',
         'views/sale_journal_view.xml',
-        'views/sale_journal_data.xml'
+        'views/sale_journal_data.xml',
+        'security/ir.model.access.csv',
     ],
     # only loaded in demonstration mode
     'demo': [
