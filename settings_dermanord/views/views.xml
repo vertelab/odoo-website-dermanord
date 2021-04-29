@@ -1,0 +1,233 @@
+<odoo>
+  <data>
+    <!-- Companies: -->
+        <!-- Maria Åkerberg: -->
+            <record id="partner_maria_akerberg" model="res.partner">
+                <field name="name">MARIA ÅKERBERG AB</field>
+            </record>
+            <record id="company_maria_akerberg" model="res.company">
+                <field name="name">Input</field>
+                <field name="partner_id" ref="res.partner_maria_akerberg"/>
+                <field name="location_id" search="[('name', '=', 'WH')]"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+    
+    <!-- Locations: -->
+        <!-- WH/Input: -->
+            <record id="location_wh_input" model="stock.location">
+                <field name="name">Input</field>
+                <field name="location_id" search="[('name', '=', 'WH')]"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/Input/Order Processing: -->
+            <record id="location_wh_input_order_processing" model="stock.location">
+                <field name="name">Order Processing</field>
+                <field name="location_id" ref="stock.location_wh_input"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/Input/Order Processing/Dispatch Zone: -->
+            <record id="location_wh_input_processing_dispatch_zone" model="stock.location">
+                <field name="name">Dispatch Zone</field>
+                <field name="location_id" ref="stock.location_wh_input_order_processing"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/Input/Order Processing/Dispatch Zone/Gate A: -->
+            <record id="location_wh_input_processing_dispatch_zone_gate_a" model="stock.location">
+                <field name="name">Gate A</field>
+                <field name="location_id" ref="stock.location_wh_input_order_processing_dispatch_zone"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/Input/Order Processing/Dispatch Zone/Gate B: -->
+            <record id="location_wh_input_processing" model="stock.location">
+                <field name="name">Gate B</field>
+                <field name="location_id" ref="stock.location_wh_input_order_processing_dispatch_zone"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/Post-Production: -->
+            <record id="location_wh_post_production" model="stock.location">
+                <field name="name">Post-Production</field>
+                <field name="location_id" ref="__export__.stock_location_7_d7a25228"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/Pre-Production: -->
+            <record id="location_wh_pre_production" model="stock.location">
+                <field name="name">Pre-Production</field>
+                <field name="location_id" ref="__export__.stock_location_7_d7a25228"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/stock: -->
+            <record id="location_wh_stock" model="stock.location">
+                <field name="name">Stock</field>
+                <field name="location_id" ref="__export__.stock_location_7_d7a25228"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/stock/bufferlager: -->
+            <record id="location_wh_stock_Bufferlager" model="stock.location">
+                <field name="name">Bufferlager</field>
+                <field name="location_id" ref="stock.location_wh_stock"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/stock/bufferlager/bufferplats1: -->
+            <record id="location_wh_stock_Bufferlager_buffertplats1" model="stock.location">
+                <field name="name">Buffertplats 1</field>
+                <field name="location_id" ref="stock.location_wh_stock_Bufferlager"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/stock/bufferlager/bufferplats2: -->
+            <record id="location_wh_stock_Bufferlager_buffertplats1" model="stock.location">
+                <field name="name">Buffertplats 2</field>
+                <field name="location_id" ref="stock.location_wh_stock_Bufferlager"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/stock/bufferlager/bufferplats3: -->
+            <record id="location_wh_stock_Bufferlager_buffertplats1" model="stock.location">
+                <field name="name">Buffertplats 3</field>
+                <field name="location_id" ref="stock.location_wh_stock_Bufferlager"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/stock/plocklager: -->
+            <record id="location_wh_stock_plocklager" model="stock.location">
+                <field name="name">Plocklager</field>
+                <field name="location_id" ref="stock.location_wh_stock"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+         <!-- WH/stock/plocklager/shelf1: -->
+            <record id="location_wh_stock_plocklager_shelf1" model="stock.location">
+                <field name="name">Shelf 1</field>
+                <field name="location_id" ref="stock.location_wh_stock_plocklager"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+         <!-- WH/stock/plocklager/shelf2: -->
+            <record id="location_wh_stock_plocklager_shelf2" model="stock.location">
+                <field name="name">Shelf 2</field>
+                <field name="location_id" ref="stock.location_wh_stock_plocklager"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/stock/plocklager/shelf2/small_refrigerator: -->
+            <record id="location_wh_stock_plocklager_shelf2_small_refrigerator" model="stock.location">
+                <field name="name">Small Refrigerator</field>
+                <field name="location_id" ref="stock.location_wh_stock_plocklager_shelf2"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/tillverkning: -->
+            <record id="location_wh_tillverkning" model="stock.location">
+                <field name="name">Tillverkning</field>
+                <field name="location_id" ref="__export__.stock_location_7_d7a25228"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/tillverkning/karantän: -->
+            <record id="location_wh_tillverkning_karantän" model="stock.location">
+                <field name="name">Karantän</field>
+                <field name="location_id" ref="stock.location_wh_tillverkning"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/tillverkning/monteringslager: -->
+            <record id="location_wh_tillverkning_monteringslager" model="stock.location">
+                <field name="name">Monteringslager</field>
+                <field name="location_id" ref="stock.location_wh_tillverkning"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/tillverkning/producerat: -->
+            <record id="location_wh_tillverkning_producerat" model="stock.location">
+                <field name="name">Producerat</field>
+                <field name="location_id" ref="stock.location_wh_tillverkning"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/tillverkning/renrumslager: -->
+            <record id="location_wh_tillverkning_renrumslager" model="stock.location">
+                <field name="name">Renrumslager</field>
+                <field name="location_id" ref="stock.location_wh_tillverkning"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+        <!-- WH/tillverkning/slussen: -->
+            <record id="location_wh_tillverkning_slussen" model="stock.location">
+                <field name="name">Slussen</field>
+                <field name="location_id" ref="stock.location_wh_tillverkning"/>
+                <field name="usage">internal</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+            </record>
+
+     <!-- Warehouses: -->
+        <!-- Lager_wh: -->
+            <record id="warehouse_lager_wh" model="stock.warehouse">
+                <field name="name">Lager</field>
+                <field name="short_name">WH</field>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+                <field name="partner_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.partner"/>
+                <field name="reception_steps">two_steps</field>
+                <field name="delivery_steps">ship_only</field>
+                <field name="buy_to_resupply">True</field>
+                <field name="manufacture_to_resupply">True</field>
+                <field name="manufacture_steps">pbm_sam</field>
+                <field name="view_location_id" search="[('name', '=', 'WH')]" model="stock.location"/>
+                <field name="wh_qc_stock_loc_id" search="[('name', '=', 'Quality Control')]" model="stock.location"/>
+                <field name="wh_pack_stock_loc_id" search="[('name', '=', 'Packing Zone')]" model="stock.location"/>
+                <field name="wh_output_stock_loc_id" search="[('name', '=', 'Output')]" model="stock.location"/>
+                <field name="sam_loc_id" search="[('name', '=', 'Post-Production')]" model="stock.location"/>
+                <field name="pbm_loc_id" search="[('name', '=', 'Pre-Production')]" model="stock.location"/>
+                <field name="in_type_id" ref="stock.picking_type_in"/>
+                <field name="int_type_id" ref="stock.picking_type_internal"/>
+                <field name="pick_type_id" search="[('name', '=', 'Pick')]" model="stock.picking.type"/>
+                <field name="pack_type_id" search="[('name', '=', 'Pack')]" model="stock.picking.type"/>
+                <field name="sam_type_id" ref="__export__.stock_picking_type_13_9170cedc"/>
+                <field name="pbm_type_id" ref="__export__.stock_picking_type_12_915d685e"/>
+                <field name="manu_type_id" ref="__export__.stock_picking_type_14_b9f200d5"/>
+            </record>
+            
+    <!-- Rules: -->
+        <!-- Buy: -->
+            <record id="rule_buy" model="stock.rule">
+                <field name="name">WH: Input (Buy)</field>
+                <field name="action">buy</field>
+                <field name="picking_type_id" ref="stock.picking_type_in"/>
+                <field name="location_id" ref="stock.location_wh_input"/>
+                <field name="warehouse_id" ref="stock.warehouse_lager_wh"/>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+                <field name="sequence">20</field>
+                <field name="group_propagation_option">none</field>
+            </record>
+        <!-- Manifacture: -->
+<!--
+            <record id="rule_manifacture" model="stock.rule">
+                <field name="name">WH: Post-Production (Production)</field>
+                <field name="action">manufacture</field>
+                <field name="picking_type_id" ref="__export__.stock_picking_type_14_b9f200d5"/>
+                <field name="location_id" ref="stock.location_wh_tillverkning"/>
+                <field name="warehouse_id" ref="stock.warehouse_lager_wh"/>
+                <field name="company_id" search="[('name', '=', 'MARIA ÅKERBERG AB')]" model="res.company"/>
+                <field name="sequence">20</field>
+                <field name="group_propagation_option">none</field>
+            </record>
+-->
+    <!-- Routes: -->
+        <!-- Buy: -->
+            <record id="route_buy" model="stock.location.route">
+                <field name="name">Buy</field>
+                <field name="sequence">3</field>
+                <field name="product_selectable">True</field>
+                <field name="rule_ids" ref="stock.rule_buy"/>
+            </record>
+  </data>
+</odoo>
