@@ -12,6 +12,7 @@
     'depends': [
         'stock',
         'resource',
+        'sale',
     ],
     'data': [
     'data/scheme_data.xml',
