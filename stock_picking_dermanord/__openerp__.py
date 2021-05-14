@@ -15,7 +15,7 @@
         'sale',
     ],
     'data': [
-    'data/scheme_data.xml',
+    'data/schedule_data.xml',
     ],
     'application': False,
 }
