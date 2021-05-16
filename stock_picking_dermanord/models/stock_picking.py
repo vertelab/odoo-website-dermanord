@@ -7,20 +7,6 @@ _logger = logging.getLogger(__name__)
 class stock_picking(models.Model):
     _inherit  = "stock.picking"
 
-    # ~ @api.model
-    # ~ def _set_min_date(self, field, value, arg):
-        # ~ _logger.warn("#"*99)
-        # ~ _logger.warn(value)
-        # ~ _logger.warn("#"*99)
-        # ~ super(stock_picking, self)._set_min_date(field, value, arg)
-
-    # ~ @api.model
-    # ~ def get_min_max_date(self, field_name, arg):
-        # ~ res = super(stock_picking, self).get_min_max_date(cr, uid, ids, field_name, arg, context=None)
-        # ~ _logger.warn("#"*99)
-        # ~ _logger.warn(res)
-        # ~ _logger.warn("#"*99)
-        # ~ return res
     @api.model
     def get_next_picking_time(self, resource_calendar, date):
         order_date = fields.Datetime.from_string(date)
@@ -34,7 +20,7 @@ class stock_picking(models.Model):
         while True:
             iterations += 1
             daily_schedule = resource_calendar.get_working_intervals_of_day(start_date)
-            _logger.warn(daily_schedule)
+            #_logger.warning("MyTag: Date: {} Schedule: {}".format(start_date, daily_schedule))
             if daily_schedule != [[]]:
                 daily_start = daily_schedule[0][0][0]
                 if order_date < daily_start:
@@ -47,19 +33,26 @@ class stock_picking(models.Model):
 
     @api.model
     def create(self, vals):
+        #_logger.warning("MyTag: Create vals: {}".format(vals))
         if 'date' in vals:
             date = vals['date']
             if date < fields.Datetime.now():
                 date = fields.Datetime.now()
         else:
             date = fields.Datetime.now()
-        # ~ _logger.warn(self.env['procurement.order'].read())
-        _logger.warn("date: " + date)
-        resource_calendar = self.env.ref('stock_picking_dermanord.picking_schedule')
+        resource_calendar = self.env.ref('stock_picking_dermanord.picking_schedule') # Todo : set this in a system param or something
         expected_date = self.get_next_picking_time(resource_calendar, date)
+        #_logger.warning("MyTag: expected_date: {}".format(expected_date))
+
+        # min_date has to be recorded on the stock.move's.
         vals['min_date'] = expected_date.strftime("%Y-%m-%d %H:%M:%S")
-        _logger.warn("min_date: " + vals['min_date'])
-        _logger.warn(vals)
+        for line in vals["move_lines"]:
+            # line is [0,False,Dict(...)]
+            #_logger.warning("MyTag: min_date: " + vals['min_date'])
+            line[2]["date_expected"] = vals["min_date"]
+            #_logger.warning("MyTag: min_date: " + line[2]["date_expected"])
+
+        #_logger.warning("MyTag: Post edit Create vals: {}".format(vals))
         return super(stock_picking, self).create(vals)
         
         
