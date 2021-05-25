@@ -1,0 +1,74 @@
+<odoo>
+  <data>
+    <record id="product_packaging_dermanord_form" model="ir.ui.view">
+        <field name="name">res.package.type.form</field>
+        <field name="model">res.package.type</field>
+        <field name="arch" type="xml">
+            <form string="Packaging Types">
+                <group>
+                    <field name="name"/>
+                    <field name="package_type"/>
+                    <field name="height"/>
+                    <field name="width"/>
+                    <field name="length"/>
+                    <field name="weight"/>
+                </group>
+            </form>
+        </field>
+    </record>
+    
+    <record id="product_packaging_dermanord_tree" model="ir.ui.view">
+        <field name="name">res.package.type.tree</field>
+        <field name="model">res.package.type</field>
+        <field name="arch" type="xml">
+            <tree string="Referenceable models">
+                <field name="name"/>
+                <field name="package_type"/>
+            </tree>
+        </field>
+    </record>
+    <record id="product_packaging_dermanord_add_type" model="ir.actions.act_window">
+        <field name="name">Referenceable model</field>
+        <field name="res_model">res.package.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="product_packaging_dermanord_tree"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Click to add a packaging type
+          </p><p>
+            Add to add more products
+          </p>
+        </field>
+    </record>
+    <record id="product_packaging_dermanord_pallet" model="ir.ui.view">
+        <field name ="inherit_id" ref = "product.product_packaging_form_view"/>
+        <field name="model">product.packaging</field>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="after">
+                <sheet>
+                    <h1>
+                        Palletering
+                    </h1>
+                    
+                    <group>
+                        <group>
+                            <field name="ul_container"></field>
+                            <field name="ul_qty"></field>
+                        </group>
+                        <group>
+                            <field name="weight"></field>
+                            <field name="rows"></field>
+                        </group>
+                    </group>
+                </sheet>
+            </xpath>
+        </field>
+        
+    </record>
+    <menuitem action="product_packaging_dermanord_add_type" name="Packaging types"
+            id="menu_product_packaging_types-act" parent="website_sale.menu_product_settings"/>
+  </data>
+</odoo>
+
+
+

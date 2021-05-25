@@ -1,0 +1,117 @@
+
+<odoo>
+    <record id="product_packaging_dermanord_box_small" model="res.package.type">
+       <field name="name">Box Liten 270x325x106 mm (0x0x0)</field>
+       <field name="package_type">pack</field>
+       <field name="height">106</field>
+       <field name="width">270</field>
+       <field name="length">325</field>
+       <field name="weight">0.02</field>
+    </record>
+   
+    <record id="product_packaging_dermanord_box_middle" model = "res.package.type">
+       <field name = "name">Låda Medel 270z325x190 mm (0x0x0)</field>
+       <field name = "package_type">box</field>
+       <field name = "height">190</field>
+       <field name = "width">270</field>
+       <field name = "length">325</field>
+       <field name = "weight">0.04</field>
+    </record>
+    
+    <record id="product_packaging_dermanord_box_20x20x40" model = "res.package.type">
+       <field name = "name">Box 20x20x40 mm (0x0x0)</field>
+       <field name = "package_type">box</field>
+       <field name = "height">40</field>
+       <field name = "width">20</field>
+       <field name = "length">20</field>
+       <field name = "weight">0</field>
+    </record>
+    
+	<record id="product_packaging_dermanord_box_30x40x60" model = "res.package.type">
+       <field name = "name">Box 30x40x60 mm (0x0x0)</field>
+       <field name = "package_type">box</field>
+       <field name = "height">60</field>
+       <field name = "width">30</field>
+       <field name = "length">40</field>
+       <field name = "weight">0</field>
+    </record>
+    
+	<record id="product_packaging_dermanord_pall" model = "res.package.type">
+       <field name = "name">Pall</field>
+       <field name = "package_type">pallet</field>
+       <field name = "height">0</field>
+       <field name = "width">0</field>
+       <field name = "length">0</field>
+       <field name = "weight">0</field>
+    </record>
+    
+	<record id="product_packaging_dermanord_bag" model = "res.package.type">
+       <field name = "name">Påse (0x0x0)</field>
+       <field name = "package_type">pack</field>
+       <field name = "height">0</field>
+       <field name = "width">0</field>
+       <field name = "length">0</field>
+       <field name = "weight">0</field>
+    </record>
+	<record id="product_packaging_dermanord_pce" model = "res.package.type">
+       <field name = "name">PCE (0x0x0)</field>
+       <field name = "package_type">unit</field>
+       <field name = "height">0</field>
+       <field name = "width">0</field>
+       <field name = "length">0</field>
+       <field name = "weight">0</field>
+    </record>
+	<record id="product_packaging_dermanord_kartong" model = "res.package.type">
+       <field name = "name">Kartong (0x0x0)</field>
+       <field name = "package_type">box</field>
+       <field name = "height">0</field>
+       <field name = "width">0</field>
+       <field name = "length">0</field>
+       <field name = "weight">0</field>
+    </record>
+    
+    <record id="product_packaging_dermanord_förpackning" model = "res.package.type">
+       <field name = "name">Förpackning (0x0x0)</field>
+       <field name = "package_type">pack</field>
+       <field name = "height">0</field>
+       <field name = "width">0</field>
+       <field name = "length">0</field>
+       <field name = "weight">0</field>
+    </record>
+    
+    <record id="product_packaging_dermanord_box_500ml" model = "res.package.type">
+       <field name = "name">Box 5000ml, 256 x 190 x 236 mm (0x0x0)</field>
+       <field name = "package_type">box</field>
+       <field name = "height">236</field>
+       <field name = "width">196</field>
+       <field name = "length">265</field>
+       <field name = "weight">0.05</field>
+    </record>
+
+	<record id="product_packaging_dermanord_high_well_box" model = "res.package.type">
+       <field name = "name">High Well Box MA</field>
+       <field name = "package_type">pack</field>
+       <field name = "height">245</field>
+       <field name = "width">195</field>
+       <field name = "length">260</field>
+       <field name = "weight">0.20</field>
+    </record>
+
+	<record id="product_packaging_dermanord_mid_well_box" model = "res.package.type">
+       <field name = "name">Mid Well box MA</field>
+       <field name = "package_type">pack</field>
+       <field name = "height">196</field>
+       <field name = "width">192</field>
+       <field name = "length">258</field>
+       <field name = "weight">0.20</field>
+    </record>
+    
+	<record id="product_packaging_dermanord_small_well_box" model = "res.package.type">
+       <field name = "name">Small Well Box MA</field>
+       <field name = "package_type">pack</field>
+       <field name = "height">124</field>
+       <field name = "width">192</field>
+       <field name = "length">258</field>
+       <field name = "weight">0.20</field>
+    </record>
+</odoo>
