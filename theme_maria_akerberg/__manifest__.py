@@ -20,6 +20,6 @@
     ],
 
     # Your information
-    'author': "My Company",
-    'website': "",
+    'author': "Vertel AB",
+    'website': "www.vertel.se",
 }
