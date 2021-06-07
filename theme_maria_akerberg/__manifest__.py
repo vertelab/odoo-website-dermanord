@@ -5,7 +5,7 @@
     """,
     'category': 'Theme/Vertel',
     'version': '1.0',
-    'depends': ['website','theme_common',],
+    'depends': ['website',],
 
     # templates
     'data': [
