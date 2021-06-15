@@ -8,7 +8,8 @@ h3 {
 
 h6 {
     font-family: "kepler-std-display";
-    }
+    font-size: 1.75rem !important;
+   }
 
 p {
     margin-bottom: calc(calc(10/var(--fs))*1rem);
@@ -21,11 +22,25 @@ p {
     font-family: futura-pt-medium;
 }
 
+.btn-secondary {
+    background-color: #7f9b9d;
+    border-color: #7f9b9d;
+    color: #ffffff;
+    font-family: futura-pt-medium;
+}
+
+.btn-secondary:hover {
+    background-color: #e0e0e0;
+    border-color: #e0e0e0;
+    color: #000000;
+    font-family: futura-pt-medium;
+}
+
 .btn {
     padding: calc(calc(6/var(--fs))*1rem) calc(calc(12/var(--fs))*1rem);
     font-size: calc(calc(14/var(--fs))*1rem);
     font-weight: 500;
-    border-radius: 0px;
+    border-radius: 5px;
 }
 
 .btn-xs {
