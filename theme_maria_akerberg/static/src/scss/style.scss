@@ -10,9 +10,7 @@
         }
 
         .progress-wizard-steplabel {
-
         }
-
         &.active {
             .progress-wizard-dot {
                 animation: fadeIn 1s ease 0s 1 normal none running;
@@ -20,12 +18,10 @@
                 box-shadow: 0 0 0 0.1875rem white, 0 0 0 0.25rem #7f9b9d;
 
             }
-
             .progress-wizard-steplabel {
 
             }
         }
-
         &.complete {
             .progress-wizard-dot {
                 background: none;
