@@ -12,7 +12,7 @@ $o-color-palettes: (
 
         'o-cc1-bg': 'o-color-1',
         'o-cc1-headings': 'o-color-5',
-        'o-cc1-text': 'o-color-4',
+        'o-cc1-text': 'o-color-5',
         'o-cc1-link': 'o-color-3',
         'o-cc1-btn-primary': 'o-color-2',
         'o-cc1-btn-secondary': 'o-color-5',
@@ -55,22 +55,23 @@ $o-color-palettes: (
 // Fonts
 //------------------------------------------------------------------------------
 
-//$o-theme-h1-font-size-multiplier: (48.83 / 16);
-//$o-theme-h2-font-size-multiplier: (39.06 / 16);
-//$o-theme-h3-font-size-multiplier: (31.25 / 16);
-//$o-theme-h4-font-size-multiplier: (25.00 / 16);
-//$o-theme-h5-font-size-multiplier: (20.00 / 16);
-//$o-theme-h6-font-size-multiplier: 1.1;
+$o-theme-h1-font-size-multiplier: (39 / 18);
+$o-theme-h2-font-size-multiplier: (23 / 18);
+$o-theme-h3-font-size-multiplier: (30 / 18);
+$o-theme-h4-font-size-multiplier: (18 / 18);
+$o-theme-h5-font-size-multiplier: (34 / 18);
+$o-theme-h6-font-size-multiplier: (60 / 18);
 
 $o-theme-font-configs: (
     'Lato': (
         'family': ('Lato', serif),
         'url': 'Lato:400,400i,600,600i,800,800i',
     ),
-
-    'Abril Fatface': (
-        'family': ('Abril Fatface', serif),
-        'url': 'Abril+Fatface:300,300i,400,400i,700,700i',
+    'Futura PT Light': (
+        'family': ('futura-pt-light', serif),
+    ),
+    'Futura PT Medium': (
+        'family': ('futura-pt-medium', serif),
     ),
 );
 
@@ -81,13 +82,12 @@ $o-theme-font-configs: (
 
 $o-website-values-palettes: (
     (
-        'font': 'Lato',
-        'headings-font': 'Lato',
+        'font': 'Futura PT Light',
+        'headings-font': 'Futura PT Medium',
         'navbar-font': 'Lato',
-        'buttons-font': 'Lato',
+        'buttons-font': 'Futura PT Light',
 
-        'font-size-base': (14 / 16) * 1rem,
-        'header-font-size': (14 / 16) * 1rem,
+        'font-size-base': (18 / 16) * 1rem,
 
         'hamburger-type': 'off-canvas',
         'menu-box-shadow': false,

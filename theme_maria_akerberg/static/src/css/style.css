@@ -1,0 +1,61 @@
+:root {
+    --fs: 16;
+}
+
+h3 {
+    font-family: "kepler-std-display";
+    }
+
+h6 {
+    font-family: "kepler-std-display";
+    }
+
+p {
+    margin-bottom: calc(calc(10/var(--fs))*1rem);
+}
+
+.btn-primary {
+    background-color: #7f9b9d;
+    border-color: #7f9b9d;
+    color: #ffffff;
+    font-family: futura-pt-medium;
+}
+
+.btn {
+    padding: calc(calc(6/var(--fs))*1rem) calc(calc(12/var(--fs))*1rem);
+    font-size: calc(calc(14/var(--fs))*1rem);
+    font-weight: 500;
+    border-radius: 0px;
+}
+
+.btn-xs {
+    padding: calc(calc(1/var(--fs))*1rem) calc(calc(5/var(--fs))*1rem);
+    font-size: calc(calc(12/var(--fs))*1rem);
+    line-height: 1.5;
+}
+
+.btn-lg {
+    padding: calc(calc(10/var(--fs))*1rem) calc(calc(16/var(--fs))*1rem);
+    font-size: 1rem;
+    line-height: 1.33;
+    font-weight: bold;
+}
+
+.btn-success {
+    background-color: #000000;
+    border-color: #000000;
+    color: #ffffff;
+    font-family: futura-pt-medium;
+}
+
+.btn-warning {
+    background-color: #ec971f;
+    border-color: #ec971f;
+    color: #ffffff;
+}
+
+.btn-sm {
+    padding: calc(calc(5/var(--fs))*1rem) calc(calc(10/var(--fs))*1rem);
+    font-size: calc(calc(12/var(--fs))*1rem);
+    line-height: 1.5;
+}
