@@ -12,6 +12,8 @@
         # ~ 'views/options.xml',
         # ~ 'views/snippets.xml',
         'views/assets.xml',
+        'views/variant_template.xml',
+        'views/templates.xml',
     ],
 
     # demo pages
