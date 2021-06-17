@@ -14,6 +14,20 @@ p {
     margin-bottom: calc(calc(10/var(--fs))*1rem);
 }
 
+a:hover {
+    text-decoration: none;
+    color: #7f9b9d;
+}
+
+
+.btn {
+    padding: calc(calc(6/var(--fs))*1rem) calc(calc(12/var(--fs))*1rem);
+    font-size: calc(calc(14/var(--fs))*1rem);
+    font-weight: 500;
+    border-radius: 0px;
+    border: 1px solid #cccccc;
+}
+
 .btn-primary {
     background-color: #7f9b9d;
     border-color: #7f9b9d;
@@ -21,15 +35,21 @@ p {
     font-family: futura-pt-medium;
 }
 
-.btn {
-    padding: calc(calc(6/var(--fs))*1rem) calc(calc(12/var(--fs))*1rem);
-    font-size: calc(calc(14/var(--fs))*1rem);
-    font-weight: 500;
-    border-radius: 0px;
+
+.btn-primary:hover {
+    color: #ffffff;
+    background-color: #788A87;
+    border-color: #788A87;
 }
 
 .btn-xs {
     padding: calc(calc(1/var(--fs))*1rem) calc(calc(5/var(--fs))*1rem);
+    font-size: calc(calc(12/var(--fs))*1rem);
+    line-height: 1.5;
+}
+
+.btn-sm {
+    padding: calc(calc(5/var(--fs))*1rem) calc(calc(10/var(--fs))*1rem);
     font-size: calc(calc(12/var(--fs))*1rem);
     line-height: 1.5;
 }
@@ -48,14 +68,67 @@ p {
     font-family: futura-pt-medium;
 }
 
+.btn-success:hover {
+    background-color: #000000;
+}
+
 .btn-warning {
+    background-color: #f0ad4e;
+    border-color: #eea236;
+    color: #ffffff;
+}
+
+.btn-warning:hover {
     background-color: #ec971f;
     border-color: #ec971f;
     color: #ffffff;
 }
 
-.btn-sm {
-    padding: calc(calc(5/var(--fs))*1rem) calc(calc(10/var(--fs))*1rem);
-    font-size: calc(calc(12/var(--fs))*1rem);
-    line-height: 1.5;
+.btn-info {
+    color: #fff;
+    background-color: #5bc0de;
+    border-color: #46b8da;
+}
+
+.btn-info:hover {
+    background-color: #31b0d5;
+    border-color: #269abc;
+}
+
+.btn-default:hover {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+
+.btn-danger {
+    color: #ffffff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}
+
+.btn-danger:hover {
+    background-color: #c9302c;
+    border-color: #ac2925;
+}
+
+.text-primary {
+    color: #7f9b9d !important;
+}
+
+.text-success {
+    color: #000 !important;
+}
+
+.text-info {
+    color: #7f9b9d;
+}
+
+.text-warning {
+    color: #ec971f;
+}
+
+.bg-danger {
+    background-color: #f2dede !important;
+    color: #000000;
 }
