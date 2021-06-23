@@ -14,6 +14,7 @@
         'views/assets.xml',
         'views/variant_template.xml',
         'views/templates.xml',
+        'views/customizations.xml',
     ],
 
     # demo pages

@@ -51,6 +51,16 @@ $o-color-palettes: (
     ),
 );
 
+ $o-theme-color-palettes: (
+    (
+    'success': #000000,
+    'info': #5bc0de,
+    'warning': #f0ad4e,
+    'danger': #d9534f,
+    ),
+);
+
+
 //------------------------------------------------------------------------------
 // Fonts
 //------------------------------------------------------------------------------
@@ -91,6 +101,7 @@ $o-website-values-palettes: (
 
         'hamburger-type': 'off-canvas',
         'menu-box-shadow': false,
+        'header-links-style': 'block',
 
         'btn-primary-outline': false,
         'btn-secondary-outline': false,

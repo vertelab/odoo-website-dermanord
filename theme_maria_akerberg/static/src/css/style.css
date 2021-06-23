@@ -1,5 +1,8 @@
+/* Fonts & buttons*/
+
 :root {
     --fs: 16;
+    
 }
 
 h3 {
@@ -61,37 +64,35 @@ a:hover {
     font-weight: bold;
 }
 
+
 .btn-success {
-    background-color: #000000;
     border-color: #000000;
     color: #ffffff;
     font-family: futura-pt-medium;
 }
-
+/*
 .btn-success:hover {
     background-color: #000000;
 }
-
+*/
 .btn-warning {
-    background-color: #f0ad4e;
     border-color: #eea236;
     color: #ffffff;
 }
 
 .btn-warning:hover {
-    background-color: #ec971f;
+/*    background-color: #ec971f;*/
     border-color: #ec971f;
     color: #ffffff;
 }
 
 .btn-info {
     color: #fff;
-    background-color: #5bc0de;
     border-color: #46b8da;
 }
 
 .btn-info:hover {
-    background-color: #31b0d5;
+/*    background-color: #31b0d5;*/
     border-color: #269abc;
 }
 
@@ -132,3 +133,33 @@ a:hover {
     background-color: #f2dede !important;
     color: #000000;
 }
+
+/* Header */
+
+#top_menu {
+    width: 100%;
+}
+
+#oe_structure_header_default_1 {
+    display:none;
+}
+
+#top_menu a {
+    font-family: futura-pt-medium;
+    text-transform: uppercase;
+}
+
+#top_menu a:hover {
+    color: #ffffff;
+    background-color: #000000;
+}
+
+.o_wsale_my_cart {
+    margin-left: 100px;
+}
+/*
+header a:hover {
+    background color: #000000 !important;
+}
+*/
+

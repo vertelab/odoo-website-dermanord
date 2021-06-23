@@ -7,12 +7,17 @@
 </li>
 </template>
 
-<template id="remove_margin" inherit_id="website_sale.template_header_default" name="Removes the left-margin class">
+<template id="remove_divider_margin" inherit_id="website_sale.template_header_default" name="Removes the left-margin class">
 <t t-set="_item_class" t-value="'nav-item mx-lg-3'" position="replace">
 <t t-set="_item_class" t-value="'nav-item'"/>
 </t>
 </template>
 
+<template id="remove_user_margin" inherit_id="website.template_header_default" name="Removes the left-margin class">
+<t t-set="_item_class" t-value="'nav-item dropdown ml-lg-auto'" position="replace">
+<t t-set="_item_class" t-value="'nav-item dropdown'"/>
+</t>
+</template>
 
 <!--
 template_header_image
