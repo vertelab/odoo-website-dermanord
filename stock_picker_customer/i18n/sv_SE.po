@@ -21,6 +21,11 @@ msgid "Displays if the end customer is a reseller or not"
 msgstr "Visar om slutkunden är en återsäljare eller inte"
 
 #. module: stock_picker_customer
+#: view:website:stock.report_picking
+msgid "For End Customer"
+msgstr "För Slutkund"
+
+#. module: stock_picker_customer
 #: field:stock.picking,is_reseller:0
 msgid "For Reseller"
 msgstr "Till Återsäljare"

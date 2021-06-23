@@ -6,6 +6,9 @@
         <div t-if="o.is_reseller">
           <span><strong>For Reseller</strong></span>
         </div>
+        <div t-if="not o.is_reseller">
+          <span><strong>For End Customer</strong></span>
+        </div>
       </xpath>
     </template>
   </data>
