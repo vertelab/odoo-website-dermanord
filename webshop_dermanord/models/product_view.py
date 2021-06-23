@@ -1138,7 +1138,6 @@ class product_product(models.Model):
                                 <i class="fa fa-minus"></i>
                             </a>
                         </span>
-                        {input_qty}
                         <input class="js_quantity form-control" data-min="1" data-max="{edu_max}" data-edu-purchase="{edu_purchase}" name="add_qty" value="1" type="number"/>
                         <span class="input-group-addon">
                             <a href="#" class="mb8 float_left js_add_cart_json">
