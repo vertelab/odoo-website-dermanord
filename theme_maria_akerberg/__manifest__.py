@@ -5,7 +5,7 @@
     """,
     'category': 'Theme/Vertel',
     'version': '1.0',
-    'depends': ['website',],
+    'depends': ['website', 'website_sale'],
 
     # templates
     'data': [
@@ -15,6 +15,7 @@
         'views/variant_template.xml',
         'views/templates.xml',
         'views/customizations.xml',
+        'views/product_views.xml',
     ],
 
     # demo pages
