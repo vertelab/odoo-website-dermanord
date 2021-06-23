@@ -297,7 +297,7 @@ class product_template(models.Model):
                     product_price = self.env['product.template'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=product['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
-                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and pricelist.for_reseller == False) else '',
+                    product_ribbon_offer = '<div class="ribbon ribbon_offer btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and pricelist.for_reseller == False) else '',
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
                     
@@ -319,7 +319,7 @@ class product_template(models.Model):
     @api.model
     def get_thumbnail_default_variant2(self,pricelist,product_ids):
         if isinstance(pricelist,int):
-            pricelist = self.env['product.pricelist'].sudo().browse(pricelist)
+            pricelist = self.env['product.pricelist'].browse(pricelist)
 
         thumbnail = []
         flush_type = 'thumbnail_product'
@@ -351,7 +351,7 @@ class product_template(models.Model):
                     # ~ product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0].id, 'snippet_dermanord.img_product') if variant.image_main_id else '',
                     product_image=product['dv_image_src'],
                     product_name=product['name'],
-                    product_price = self.env['product.template'].sudo().browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
+                    product_price = self.env['product.template'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=product['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
@@ -376,7 +376,7 @@ class product_template(models.Model):
     @api.model
     def get_thumbnail_variant(self, pricelist, variant_ids):
         if isinstance(pricelist,int):
-            pricelist = self.env['product.pricelist'].sudo().browse(pricelist)
+            pricelist = self.env['product.pricelist'].browse(pricelist)
 
         thumbnail = []
         flush_type = 'thumbnail_variant'
@@ -408,7 +408,7 @@ class product_template(models.Model):
                     # ~ product_image=self.env['website'].imagefield_hash('ir.attachment', 'datas', variant.image_main_id[0].id, 'snippet_dermanord.img_product') if variant.image_main_id else '',
                     product_image=variant['dv_image_src'],
                     product_name=variant['display_name'][0] == '[' and variant['display_name'].split('] ', 1)[1] or variant['display_name'],
-                    product_price = self.env['product.product'].sudo().browse(variant['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
+                    product_price = self.env['product.product'].browse(variant['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=variant['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
                     product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (variant['is_offer_product_reseller'] and pricelist.for_reseller == True) or (variant['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
@@ -1088,8 +1088,6 @@ class product_product(models.Model):
                     # ~ price += _("No price available")
                 pricelist_line = variant.get_pricelist_chart_line(pricelist)
                 campaign = variant.campaign_ids[0] if variant.campaign_ids else None
-                input_qty = '<input class="" data-min="1" data-max="5" data-edu-purchase="1" name="add_qty" value="1" type="number"/>'
-                
                 page += u"""<t t-set="title" t-value="{product_name}"/>
     <section id="section_{attribute_value}" class="product_detail container mt8 oe_website_sale discount {hide_variant}">
     <div class="row">
@@ -1141,7 +1139,7 @@ class product_product(models.Model):
                             </a>
                         </span>
                         {input_qty}
-                        <!-- <input class="js_quantity form-control" data-min="1" data-max="{edu_max}" data-edu-purchase="{edu_purchase}" name="add_qty" value="1" type="number"/>-->
+                        <input class="js_quantity form-control" data-min="1" data-max="{edu_max}" data-edu-purchase="{edu_purchase}" name="add_qty" value="1" type="number"/>
                         <span class="input-group-addon">
                             <a href="#" class="mb8 float_left js_add_cart_json">
                                 <i class="fa fa-plus"></i>
@@ -1189,7 +1187,6 @@ class product_product(models.Model):
                     decimal_precision = decimal_precision,
                     product_price = pricelist_line.get_html_price_long(),
                     spinner_hidden = '{%s_buy_button_hidden}' % variant.id,
-                    input_qty=input_qty if True else '',
                     edu_max= '5' if is_edu_purchase else '',
                     edu_purchase = int(is_edu_purchase),
                     buy_button = buttons['product_view'],
