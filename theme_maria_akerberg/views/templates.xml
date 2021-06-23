@@ -140,8 +140,8 @@
         </xpath>
     </template>
 
-    <template id="add_grid_or_list_option" inherit_id="website_sale.add_grid_or_list_option">
-        <xpath expr="//div[hasclass('o_wsale_apply_layout')]" position="after">
+    <template id="sort" inherit_id="website_sale.sort">
+        <xpath expr="//div[hasclass('dropdown_sorty_by')]" position="before">
             <div class="search-duplicate">
                 <t t-call="website_sale.search">
                     <t t-set="_classes" t-valuef="w-100 w-md-auto mt-2"/>
