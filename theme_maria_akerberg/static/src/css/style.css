@@ -150,16 +150,21 @@ a:hover {
 }
 
 #top_menu a:hover {
-    color: #ffffff;
     background-color: #000000;
 }
 
 .o_wsale_my_cart {
     margin-left: 100px;
 }
-/*
-header a:hover {
-    background color: #000000 !important;
-}
-*/
 
+.o_cc .dropdown-menu .dropdown-item:hover {
+    color: #ffffff !important;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: #000000 !important;
+}
+
+.navbar-light .navbar-nav .nav-link:hover {
+    color: #ffffff !important;
+}

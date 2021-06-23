@@ -13,17 +13,18 @@
 </t>
 </template>
 
-<template id="remove_user_margin" inherit_id="website.template_header_default" name="Removes the left-margin class">
+<template id="remove_user_margin" inherit_id="website.template_header_default" name="Removes the left-margin class on the usermenu">
 <t t-set="_item_class" t-value="'nav-item dropdown ml-lg-auto'" position="replace">
 <t t-set="_item_class" t-value="'nav-item dropdown'"/>
 </t>
 </template>
 
 <!--
-template_header_image
-<t t-set="_item_class" t-value="'nav-item dropdown ml-lg-auto'"/>
+<template id="remove_login_margin" inherit_id="website.template_header_image" name="Removes the left-margin class on the loginmenu">
+<t t-set="_item_class" t-value="'nav-item ml-lg-auto'" position="replace">
+<t t-set="_item_class" t-value="'nav-item'"/>
+</t>
+</template>
 -->
-
-
 
 </odoo>

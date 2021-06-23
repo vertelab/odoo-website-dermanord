@@ -1,10 +1,4 @@
-from odoo import models, http
-#from odoo.addons.website.controllers.main import Website
-#from odoo.http import request
-
-#import logging
-#_logger = logging.getLogger(__name__)
-
+from odoo import models
 
 class ThemeMariaAkerberg(models.AbstractModel):
     _inherit = 'theme.utils'
