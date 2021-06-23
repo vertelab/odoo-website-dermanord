@@ -68,14 +68,14 @@ class stock_notification(models.Model):
     partner_id = fields.Many2one(comodel_name='res.partner', string='Partner')
     status = fields.Selection(string='Status', selection=[ ('pending', 'Pending'), ('sent', 'Sent') ], default='pending')
     created_datetime = fields.Datetime('Created', select=True, default=lambda self: fields.datetime.now())
-    
+
     @api.multi
     def send_notification(self):
         author = self.env.ref('base.main_partner').sudo()
         template = self.env.ref('webshop_dermanord.stock_notify_message', False)
-        
+
         for notify in self:
-               
+
             ctx = {
                 'default_model': 'stock.notification',
                 'default_res_id': notify.id,
@@ -86,16 +86,16 @@ class stock_notification(models.Model):
             }
             composer = self.env['mail.compose.message'].sudo().with_context(ctx).create({})
             composer.send_mail()
-        
+
         self.write({'status' : 'sent'})
 
     @api.multi
     def send_inactive_notification(self):
         author = self.env.ref('base.main_partner').sudo()
         template = self.env.ref('webshop_dermanord.stock_notify_inactive_message', False)
-        
+
         for notify in self:
-               
+
             ctx = {
                 'default_model': 'stock.notification',
                 'default_res_id': notify.id,
@@ -106,9 +106,9 @@ class stock_notification(models.Model):
             }
             composer = self.env['mail.compose.message'].sudo().with_context(ctx).create({})
             composer.send_mail()
-        
+
         self.write({'status' : 'sent'})
-        
+
     @api.model
     def cron_notify(self):
         notifications = self.search([])
@@ -125,9 +125,9 @@ class stock_notification(models.Model):
             to_send.send_notification()
         if to_send_inactive:
             to_send_inactive.send_inactive_notification()
-            
+
         self.search([('status', '=', 'sent'), ('message_last_post', '<', fields.Datetime.to_string(datetime.now() + timedelta(days=-7)))]).unlink()
-        
+
 
 class blog_post(models.Model):
     _inherit = 'blog.post'
@@ -471,7 +471,7 @@ class product_public_category(models.Model):
                         <input type="checkbox" name="{category_name}" value="{category_value}" class="category_checkbox hidden hidden{category_heading_parents_col}" data-category="{desktop_category}" data-parent_category="{desktop_parent_category}" {category_checked}/>
                         <span class="{category_title_level}" style="padding-left: 3px; cursor: pointer; {parent_categ_text}">
                             {desktop_category_name}
-                            
+
                         </span>
                         {desktop_category_collapse}
                         {desktop_category_filter_match}
@@ -610,7 +610,7 @@ class product_public_category(models.Model):
         spec = self.env.ref('webshop_dermanord.facet_specialforpackningar')
         rese = self.env.ref('webshop_dermanord.facet_value_reseforpackningar')
         salong = self.env.ref('webshop_dermanord.facet_value_salongsprodukter')
-        af_groups_users = self.env.ref('webshop_dermanord.group_dn_af').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_ht').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_spa').sudo().mapped('users') 
+        af_groups_users = self.env.ref('webshop_dermanord.group_dn_af').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_ht').sudo().mapped('users') | self.env.ref('webshop_dermanord.group_dn_spa').sudo().mapped('users')
         af = self.env.user in af_groups_users
         html_code = ''
         spec_facet_values = self.env['product.facet.value'].search([('facet_id', '=', spec.id)])
@@ -672,9 +672,9 @@ class ResPartner(models.Model):
 
 class SaleOrder(models.Model):
     _inherit='sale.order'
-    
+
     website_order_line = fields.One2many(domain=[('is_delivery', '=', False), ('is_min_order_fee', '=', False), ('is_tester', '=', False)])
-    
+
     @api.one
     def verify_testers(self):
         """Remove any tester products that are invalid."""
@@ -695,14 +695,14 @@ class SaleOrder(models.Model):
         if self.order_line.filtered(lambda l: l.is_tester and l.product_id == product.tester_product_id):
             return True
         return False
-    
+
     @api.multi
     def tester_ready(self, product):
         """Check if we're ready to add the tester for this product."""
         minimum = product.tester_min
         quantity = sum(self.order_line.filtered(lambda l: l.product_id == product and not l.is_tester).mapped('product_uom_qty'))
         return quantity >= minimum
-    
+
     @api.multi
     def onchange_delivery_id(self, company_id, partner_id, delivery_id, fiscal_position):
         """Get the carrier from the delivery address."""
@@ -779,7 +779,7 @@ class SaleOrder(models.Model):
         elif add_qty != None:
             quantity = line.product_uom_qty + (add_qty or 0)
 
-        # Do not allow more than 5 if educational purchase    
+        # Do not allow more than 5 if educational purchase
         if (line.product_id.purchase_type == 'edu') and (quantity > 5):
             quantity = 5
 
@@ -832,9 +832,9 @@ class SaleOrder(models.Model):
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
-    
+
     is_tester = fields.Boolean(string='Tester', help="This line contains a tester product.")
-    
+
     @api.multi
     def get_tester_line(self):
         """Get the tester line that belongs to this order line."""
@@ -844,7 +844,7 @@ class SaleOrderLine(models.Model):
         line = self.order_id.order_line.filtered(lambda l: l.is_tester and l.product_id == tester)
         if line:
             return line[0]
-    
+
     @api.multi
     def tester_html_attributes(self):
         """Build HTML attributes for the Add / Remove Tester buttons."""
@@ -866,7 +866,7 @@ class SaleOrderLine(models.Model):
         for key, value in res.iteritems():
             res[key] = '%s' % value
         return result
-    
+
     def check_product_lang(self):
         for value in self.product_id.attribute_value_ids:
             lang_attr = self.env.ref("__export__.product_attribute_290")
@@ -877,7 +877,7 @@ class SaleOrderLine(models.Model):
                     partner_country = '*'
                 if partner_country not in (value.color or '').split():
                     return _("%s appears to not be in your preferred language. Are you sure this is the correct product?") % self.product_id.name
-    
+
     @api.multi
     def sale_home_confirm_copy(self):
         if self.is_delivery or self.is_min_order_fee:
@@ -1060,7 +1060,7 @@ class Website(models.Model):
         env = api.Environment(cr, uid, context)
         sale_order_obj = env['sale.order']
         sale_order_id = request.session.get('sale_order_id')
-        
+
         #~ if sale_order_id: # Check if order has been tampered on backoffice
             #~ sale_order = sale_order_obj.sudo().browse(sale_order_id)
             #~ if sale_order and sale_order.order_line.filtered(lambda l: l.state not in ['draft']):
@@ -1159,7 +1159,7 @@ class Website(models.Model):
             dp = request.env['res.lang'].search_read([('code', '=', request.env.lang)], ['decimal_point'])
             dp = dp and dp[0]['decimal_point'] or '.'
         return ('%.2f' %price).replace('.', dp)
-    
+
     def dn_handle_webshop_session(self, category, preset, post, require_cat_preset=False):
         """Save session data for /webshop."""
         if preset:
@@ -1197,13 +1197,13 @@ class WebsiteSale(website_sale):
 
         if order.pricelist_id.code != promo:
             return request.redirect(referer + '?coupon_error=1' or '/shop/cart?coupon_error=1')
-        
+
         return request.redirect(referer or '/shop/cart')
 
     @http.route('/webshop_dermanord/add_tester', type='json', auth="user", website=True)
     def add_tester(self, product_id=None, **post):
         """Add a tester product to the customers cart."""
-        product = request.env['product.product'].sudo().browse(product_id)
+        product = request.env['product.product'].browse(product_id)
         order = request.website.sale_get_order()
         # Kontrollera och addera tester
         res = {}
@@ -1242,7 +1242,7 @@ class WebsiteSale(website_sale):
             notify.create({'product_id':product_id, 'partner_id': partner.id})
             return _("A mail will be sent to %s, when %s is back in stock") % (partner.email, product.display_name)
         return _("Your mail is already registered for notifications on this product")
-            
+
     @http.route('/shop/payment/validate', type='http', auth="public", website=True)
     def payment_validate(self, transaction_id=None, sale_order_id=None, **post):
         if sale_order_id is None:
@@ -1322,7 +1322,7 @@ class WebsiteSale(website_sale):
                 order.carrier_id = False
             try:
             # ~ _logger.warn('order_info[carrier_id] 1085  :%s' % ( order.carrier_id )
-    
+
                 if order.carrier_id:
                     order.delivery_set()
             except except_orm as e:
@@ -1368,7 +1368,7 @@ class WebsiteSale(website_sale):
                     'type': 'email',
                     'auto_delete': True,
                     'email_to': 'support@dermanord.se',
-                })    
+                })
         values = {
             'order': order.sudo()
         }
@@ -1388,10 +1388,10 @@ class WebsiteSale(website_sale):
                         'return_url': '/shop/payment/validate',
                     })[0]
         _logger.warn('Partner_id (payment) %s shipping %s invoice %s res %s' % (order.partner_id,order.partner_shipping_id,order.partner_invoice_id,values))
-        
+
         if post.get('coupon_error'):
             values['coupon_error'] = post.get('coupon_error')
-        
+
         return request.website.render("website_sale.payment", values)
 
     mandatory_billing_fields = ["name", "phone", "email", "street", "city", "country_id"]
@@ -1689,7 +1689,7 @@ class WebsiteSale(website_sale):
             'shop_footer': True,
         }
         return request.website.render("webshop_dermanord.product_detail_view", values)
-    
+
     @http.route([
         '/webshop/webshop_type/<string:webshop_type>',
         ], type='http', auth="public", website=True)
@@ -1720,9 +1720,9 @@ class WebsiteSale(website_sale):
         no_product_message = ''
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
             products_html=request.env['product.product'].sudo().get_list_row(
-                domain = variant_domain, 
-                pricelist = campaign.get_current_phase(True).pricelist_id, 
-                limit = PPG, 
+                domain = variant_domain,
+                pricelist = campaign.get_current_phase(True).pricelist_id,
+                limit = PPG,
                 order = request.session.get('current_order')
                 )
 
@@ -1807,7 +1807,7 @@ class WebsiteSale(website_sale):
             request.website.dn_shop_set_session('product.template', post, '/webshop')
             # ~ if category:
                 # ~ update_current_domain('product.template')
-        
+
         request.website.dn_handle_webshop_session(category, preset, post)
 
         if not request.context.get('pricelist'):
@@ -1816,13 +1816,13 @@ class WebsiteSale(website_sale):
             post["search"] = search
         user = request.env['res.users'].browse(request.uid)
 
-                  
+
         no_product_message = ''
         if request.env.user.webshop_type == 'dn_list' and request.env.user != request.env.ref('base.public_user'):
             products=request.env['product.product'].get_list_row(request.session.get('current_domain'),request.context['pricelist'],limit=PPG, order=request.session.get('current_order'))
         else:
-            product_ids = request.env['product.template'].sudo(user).search_read(request.session.get('current_domain'), fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src', 'product_variant_count'], limit=PPG, order=request.session.get('current_order'),offset=0)
-            
+            product_ids = request.env['product.template'].sudo(user).search_read(request.session.get('current_domain'), fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src', 'product_variant_count','campaign_ids'], limit=PPG, order=request.session.get('current_order'),offset=0)
+
             products=request.env['product.template'].get_thumbnail_default_variant2(request.context['pricelist'],product_ids)
         if len(products) == 0:
             no_product_message = _('Your filtering did not match any results. Please choose something else and try again.')
@@ -1924,10 +1924,10 @@ class WebsiteSale(website_sale):
             else:
                 res['amount_untaxed'] = request.website.price_format(order.amount_untaxed)
                 res['amount_float'] = order.amount_untaxed
-            
+
             res['cart_quantity'] = order.cart_quantity
             res['currency'] = order.pricelist_id.currency_id.name
-            
+
         else:
             res['currency'] = request.env.user.partner_id.property_product_pricelist.currency_id.name
             res['amount_float'] = 0.0
@@ -1991,13 +1991,12 @@ class WebsiteSale(website_sale):
 
 class delivery_carrier(models.Model):
     _inherit = "delivery.carrier"
-    
+
     is_company_delivery = fields.Boolean('Company Delivery')
-    
+
 
 
 class stock_picking(models.Model):
     _inherit = 'stock.picking'
-    
+
     is_company_delivery = fields.Boolean(related='carrier_id.is_company_delivery')
-    

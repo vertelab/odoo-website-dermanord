@@ -24,7 +24,7 @@ from datetime import datetime, date, timedelta
 from openerp.addons.website_memcached import memcached
 import base64
 import werkzeug
-from openerp.addons.website.models.website import slug 
+from openerp.addons.website.models.website import slug
 
 from openerp import http
 from openerp.http import request
@@ -128,7 +128,7 @@ THUMBNAIL = u"""
                                 <h4 style="font-size: 0.9em;">
                                     {product_price}
                                 </h4>
-                            </b>                            
+                            </b>
                         </div>
 
                         <!-- Available in more variants -->
@@ -154,12 +154,12 @@ class product_template(models.Model):
     _inherit = 'product.template'
 
     memcached_time = fields.Datetime(string='Memcached Timestamp', default=lambda *args, **kwargs: fields.Datetime.now(), help="Last modification relevant to memcached.")
-    
+
     @api.model
     def get_memcached_fields(self):
         """Return a list of fields that should trigger an update of memcached."""
         return ['name']
-    
+
     @api.multi
     def write(self, values):
         for field in self.get_memcached_fields():
@@ -167,7 +167,7 @@ class product_template(models.Model):
                 values['memcached_time'] = fields.Datetime.now()
                 break
         return super(product_template, self).write(values)
-    
+
     @api.multi
     def dn_clear_cache(self):
         self.memcached_time = fields.Datetime.now()
@@ -272,14 +272,14 @@ class product_template(models.Model):
             # ~ _logger.warn('get_thumbnail_default_variant product --------> %s' % (p))
             # ~ product = self.env['product.template'].read(p.id,['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src',])
 
-        for product in self.env['product.template'].search_read(domain, fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src', 'product_variant_count'], limit=limit, order=order,offset=offset):
+        for product in self.env['product.template'].search_read(domain, fields=['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src', 'product_variant_count','campaign_ids'], limit=limit, order=order,offset=offset):
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
             key_raw = 'thumbnail_default_variant %s %s %s %s' % (
-                self.env.cr.dbname, 
-                product['id'], 
-                pricelist.id, 
+                self.env.cr.dbname,
+                product['id'],
+                pricelist.id,
                 self.env.lang)   # db produkt prislista språk
-                
+
             key,page_dict = self.env['website'].get_page_dict(key_raw)
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
             if not page_dict:
@@ -287,6 +287,13 @@ class product_template(models.Model):
                 if not ribbon_limited:
                     ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
+
+                # Within campaign check
+                #_logger.warn("MyTag: Template campaign IDs: {}".format(product))
+                campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
+                within_campaign_period = campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop) # Not applicable to Python 3.
+                #_logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
+
 
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
@@ -297,13 +304,13 @@ class product_template(models.Model):
                     product_price = self.env['product.template'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=product['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
-                    product_ribbon_offer = '<div class="ribbon ribbon_offer btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and pricelist.for_reseller == False) else '',
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and pricelist.for_reseller == False) else '', # and within_campaign_period
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
-                    
+
                     if_product_variants = 'style="visibility:visible;"' if (product['product_variant_count'] > 1) else 'style="visibility:hidden"',
                     lang_variants = _('Available in more variants'),
-                    
+
                     key_raw=key_raw,
                     key=key,
                     view_type='product',
@@ -333,9 +340,9 @@ class product_template(models.Model):
         for product in product_ids:
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s' % (product))
             key_raw = 'thumbnail_default_variant %s %s %s %s' % (
-                self.env.cr.dbname, 
-                product['id'], 
-                pricelist.id, 
+                self.env.cr.dbname,
+                product['id'],
+                pricelist.id,
                 self.env.lang)   # db produkt prislista språk
             key, page_dict = self.env['website'].get_page_dict(key_raw)
             # ~ _logger.warn('get_thumbnail_default_variant --------> %s %s' % (key,page_dict))
@@ -344,6 +351,12 @@ class product_template(models.Model):
                 if not ribbon_limited:
                     ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
+
+                # Within campaign check
+                #_logger.warn("MyTag: Campaign IDs: {}".format(product))
+                campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
+                within_campaign_period = campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop) # Not applicable to Python 3.
+                #_logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
 
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
@@ -354,13 +367,13 @@ class product_template(models.Model):
                     product_price = self.env['product.template'].browse(product['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=product['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
-                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (product['is_offer_product_reseller'] and pricelist.for_reseller == True) or (product['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',# and within_campaign_period
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (product['dv_ribbon'] and (ribbon_promo.html_class in product['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (product['dv_ribbon'] and (ribbon_limited.html_class in product['dv_ribbon'])) else '',
-                    
+
                     if_product_variants = 'style="visibility:visible;"' if (product['product_variant_count'] > 1) else 'style="visibility:hidden"',
                     lang_variants = _('Available in more variants'),
-                    
+
                     key_raw=key_raw,
                     key=key,
                     view_type='product',
@@ -372,7 +385,7 @@ class product_template(models.Model):
                 page_dict['page'] = base64.b64encode(page)
             thumbnail.append(page_dict.get('page', '').decode('base64'))
         return thumbnail
-        
+
     @api.model
     def get_thumbnail_variant(self, pricelist, variant_ids):
         if isinstance(pricelist,int):
@@ -389,9 +402,9 @@ class product_template(models.Model):
 
         for variant in variant_ids:
             key_raw = 'thumbnail_variant %s %s %s %s' % (
-                self.env.cr.dbname, 
-                variant['id'], 
-                pricelist.id, 
+                self.env.cr.dbname,
+                variant['id'],
+                pricelist.id,
                 self.env.lang)  # db produkt prislista språk
 
             key, page_dict = self.env['website'].get_page_dict(key_raw)
@@ -402,6 +415,13 @@ class product_template(models.Model):
                     ribbon_limited = request.env.ref('webshop_dermanord.image_limited')
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
 
+                # Within campaign check
+                #_logger.warn("MyTag: Variant campaign IDs: {}".format(variant))
+                campaign = self.env['crm.tracking.campaign'].browse(variant['campaign_ids'][0] if variant['campaign_ids'] else 0)
+                within_campaign_period = campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop) # Not applicable to Python 3.
+                #_logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
+
+
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
                     product_id=variant['id'],
@@ -411,13 +431,13 @@ class product_template(models.Model):
                     product_price = self.env['product.product'].browse(variant['id']).get_pricelist_chart_line(pricelist).get_html_price_long(),
                     product_ribbon=variant['dv_ribbon'],
                     # ~ product_ribbon=' '.join([c for c in self.env['product.style'].browse(ribbon_ids).mapped('html_class') if c]),
-                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (variant['is_offer_product_reseller'] and pricelist.for_reseller == True) or (variant['is_offer_product_consumer'] and  pricelist.for_reseller == False) else '',
+                    product_ribbon_offer  = '<div class="ribbon ribbon_offer   btn btn-primary">%s</div>' % _('Offer') if (variant['is_offer_product_reseller'] and pricelist.for_reseller == True) or (variant['is_offer_product_consumer'] and pricelist.for_reseller == False) else '', # and within_campaign_period
                     product_ribbon_promo  = '<div class="ribbon ribbon_news    btn btn-primary">' + _('New') + '</div>' if (variant['dv_ribbon'] and (ribbon_promo.html_class in variant['dv_ribbon'])) else '',
                     product_ribbon_limited= '<div class="ribbon ribbon_limited btn btn-primary">' + _('Limited<br/>Edition') + '</div>' if (variant['dv_ribbon'] and (ribbon_limited.html_class in variant['dv_ribbon'])) else '',
-                    
+
                     if_product_variants = 'style="visibility:visible;"' if (variant['product_variant_count'] > 1) else 'style="visibility:hidden"',
                     lang_variants = _('Available in more variants'),
-                    
+
                     key_raw=key_raw,
                     key=key,
                     view_type='variant',
@@ -432,9 +452,9 @@ class product_template(models.Model):
 
 class product_product(models.Model):
     _inherit = 'product.product'
-    
+
     purchase_type = fields.Selection(selection=[('none', 'None'), ('consumer', 'Consumer Purchase'), ('buy', 'Purchase'), ('edu', 'Educational Purchase')], string='Purchase Type', compute='_compute_purchase_type', help="Purchase type for active user.")
-    
+
     @api.one
     def _compute_purchase_type(self):
         """ Checks what kind of purchase the given product should have for the active user."""
@@ -444,17 +464,17 @@ class product_product(models.Model):
                 if group in self.access_group_ids:
                     return True
             return False
-        
+
         sk  = self.env.ref('webshop_dermanord.group_dn_sk')     # id: 286
         af  = self.env.ref('webshop_dermanord.group_dn_af')     # id: 283
         spa = self.env.ref('webshop_dermanord.group_dn_spa')    # id: 285
         ht  = self.env.ref('webshop_dermanord.group_dn_ht')     # id: 284
-        
+
         #                       1   2   3       4   5   6       7   8   9       10  11  12
         #    Kundtyp            Slutkonsument   Återförsäljare  Spa-terapeut    Hud-terapeut
         #    -------------------------------------------------------------------------------
         #    Produktgrupper  |  Se  Utb Köp     Se  Utb Köp     Se  Utb Köp     Se  Utb Köp
-        # A  SK              |  x       x                                              
+        # A  SK              |  x       x
         # B  SK, ÅF          |  x       x       x       x       x       x       x       x
         # C  SK, SPA, HT     |  x       x       x   x           x       x       x       x
         # D  SK, HT          |  x       x       x   x           x   x           x       x
@@ -462,7 +482,7 @@ class product_product(models.Model):
         # F  ÅF              |                  x       x       x       x       x       x
         # G  SPA             |                  x               x       x       x       x
         # H  HT              |                  x               x               x       x
-        
+
         def get_purchase_type():
             if sk in partner.access_group_ids:
                 # Slutkonsument
@@ -495,14 +515,14 @@ class product_product(models.Model):
                     # Utb
                     return 'edu'
             return 'none'
-            
+
         self.purchase_type = get_purchase_type()
-    
+
     @api.multi
     def get_add_to_cart_buttons(self):
         """ Returns a dict with the relevant kinds of 'add to cart' buttons """
         res = {}
-       
+
         if self.env.uid != self.env.ref('base.public_user').id and self.purchase_type == 'consumer':
             res['list_view'] = u"""<a class="btn btn-default dn_list_add_to_cart" href="javascript:void(0);"><i class="fa fa-shopping-cart" style="color: #839794;"></i></a>""".format(
                 text = _('Add to cart')
@@ -511,12 +531,12 @@ class product_product(models.Model):
                 buy_button_hidden = '{%s_buy_button_hidden}' % self.id,
                 text = _('Add to cart')
             )
-        
+
         elif self.purchase_type == 'none':
-            res['list_view'] = u"""""" # There is never a reseller button on the list view. 
+            res['list_view'] = u"""""" # There is never a reseller button on the list view.
             res['product_view'] = u""""""
         elif self.purchase_type == 'consumer':
-            res['list_view'] = u"""""" # There is never a reseller button on the list view. 
+            res['list_view'] = u"""""" # There is never a reseller button on the list view.
             res['product_view'] = u"""<button type="button" class="add_to_cart_consumer dn_btn dn_primary mt8 text-center {buy_button_hidden}" data-toggle="modal" data-target="#reseller_search" ">{text}</button>""".format(
                 buy_button_hidden = '',
                 text = _('Find Reseller')
@@ -539,20 +559,20 @@ class product_product(models.Model):
                 text = _('Add to cart')
             )
         return res
-    
+
     @api.multi
     def dn_clear_cache(self):
         # We need to clear the exact same stuff as for the template,
         # since the variant data comes into play on the template pages,
         # and the other variant pages as well.
         self.mapped('product_tmpl_id').dn_clear_cache()
-            
+
     inventory_availability = fields.Selection([
         ('never', 'Never sell'),
         ('always', 'Sell regardless of inventory'),
         ('threshold', 'Only prevent sales if not enough stock'),
     ], string='Inventory Availability', help='Adds an inventory availability status on the web product page.', default='threshold')
-    
+
     @api.model
     def get_packaging_info(self, product_id):
         packaging_ids = self.env['product.product'].sudo().search_read([('id','=',product_id)],['packaging_ids'])
@@ -620,7 +640,7 @@ class product_product(models.Model):
             state = 'few'
         state = state or 'short'
         return (state in ['in', 'few'], state, '' if  product.get('type') == 'consu' else {'in': _(' '), 'few': _('Few in stock'), 'short': _('Shortage')}[state].encode('utf-8'))  # in_stock,state,info
-    
+
     @api.model
     def get_list_row(self, domain, pricelist, limit=21, order='', offset=0):
         if isinstance(pricelist,int):
@@ -634,6 +654,7 @@ class product_product(models.Model):
             key_raw = 'list_row %s %s %s %s %s %s %s Groups: %s' % (self.env.cr.dbname, flush_type, product['id'], pricelist.id, self.env.lang, request.session.get('device_type', 'md'), product['memcached_time'], request.website.get_dn_groups())  # db flush_type produkt prislista språk användargrupp
             key, page_dict = self.env['website'].get_page_dict(key_raw)
             if not page_dict:
+                _logger.info("Rebuilding product view HTML for product {}" % product)
                 render_start = timer()
                 campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
                 template = self.env['product.template'].search_read([('id', '=', product['product_tmpl_id'][0])], fields=['is_offer_product_reseller', 'is_offer_product_consumer'])[0]
@@ -642,17 +663,17 @@ class product_product(models.Model):
 
                 if pricelist.for_reseller:
                     if product['is_offer_product_reseller'] or template['is_offer_product_reseller']:
-                        if campaign.date_start and campaign.date_start <= str(date.today()) and (campaign.date_stop >= str(date.today()) or not campaign.date_stop):
+                        if campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop):
                             product_ribbon_offer  = True
                             product_ribbon_offer_mobile  = True
                 else:
                     if product['is_offer_product_consumer'] or template['is_offer_product_consumer']:
-                        if campaign.date_start and campaign.date_start <= str(date.today()) and (campaign.date_stop >= str(date.today()) or not campaign.date_stop):
+                        if campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop):
                             product_ribbon_offer  = True
                             product_ribbon_offer_mobile  = True
 
                 product_obj = self.env['product.product'].browse(product['id'])
-                
+
                 is_edu_purchase = product_obj.purchase_type == 'edu'
                 buttons = product_obj.get_add_to_cart_buttons()
                 page = u"""<tr class="tr_lst ">
@@ -717,7 +738,7 @@ class product_product(models.Model):
                                                 </div>
                                                 {buy_button}
                                             </div>
-                                   
+
                                         </form>
                                     </div>
                                     <span class="dn_list_instock">{product_stock}</span>
@@ -923,34 +944,34 @@ class product_product(models.Model):
                 html_alternative_products = generate_alternative_products(variant, partner),
                 html_accessory_products =  generate_accessory_products(variant, partner),
             )
-            
+
             return page
 
         def generate_alternative_products(variant, partner):
             if variant.alternative_product_ids:
 
-                
+
                 page = _(u"""<div id="alternatives_div">
                             <div class="container hidden-xs">
                                 <h2 class="text-center dn_uppercase mt32 mb32">Suggested alternatives:</h2>""")
-                
-                thumb_list = self.product_tmpl_id.get_thumbnail_default_variant2(partner.property_product_pricelist.id, variant.alternative_product_ids.read(['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src', 'product_variant_count']))
+
+                thumb_list = self.product_tmpl_id.get_thumbnail_default_variant2(partner.property_product_pricelist.id, variant.alternative_product_ids.read(['name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer','dv_image_src', 'product_variant_count','campaign_ids']))
                 for th in thumb_list:
                     page += th.decode('utf-8').replace("col-md-4", "col-md-6", 1)
-                
+
                 page += """</div></div>"""
-                
+
             else:
                 page = u""""""
-            
+
             return page
-            
+
         def generate_accessory_products(variant, partner):
             if variant.accessory_product_ids:
                 page = _(u"""<div id="accessory_div">
                             <div class="container hidden-xs">
                                 <h2 class="text-center dn_uppercase mt32 mb32">Suggested accessories:</h2>""")
-                thumb_list = self.product_tmpl_id.get_thumbnail_variant(partner.property_product_pricelist.id, variant.accessory_product_ids.read(['display_name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'memcached_time', 'product_variant_count']))
+                thumb_list = self.product_tmpl_id.get_thumbnail_variant(partner.property_product_pricelist.id, variant.accessory_product_ids.read(['display_name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'memcached_time', 'product_variant_count','campaign_ids']))
                 for th in thumb_list:
                     page += th.decode('utf-8').replace("col-md-4", "col-md-6", 1)
                 page += u"""</div></div>"""
@@ -1002,11 +1023,11 @@ class product_product(models.Model):
         flush_type = 'get_product_detail'
         memcached_time = max([accessory.memcached_time for accessory in product.accessory_product_ids] + [product.memcached_time])
         key_raw = 'product_detail %s %s %s %s %s %s %s' % (
-            self.env.cr.dbname, 
-            product.id, 
+            self.env.cr.dbname,
+            product.id,
             variant_id,
-            pricelist.id, 
-            self.env.lang, 
+            pricelist.id,
+            self.env.lang,
             memcached_time,
             self.env.user in self.sudo().env.ref('base.group_website_publisher').users)
 
@@ -1121,6 +1142,7 @@ class product_product(models.Model):
         <div class="col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
             <h1 itemprop="name">{product_name}</h1>
             <h4 class="text-muted default_code">{default_code}</h4>
+            <h4 class="text-muted ean13">EAN: {ean13}</h4>
             <form action="/shop/cart/update" class="js_add_cart_variants" data-attribute_value_ids="{variant_ids}" method="POST">
                 <div class="js_product">
                     <input class="product_id" name="product_id" value="{variant_id}" type="hidden">
@@ -1179,7 +1201,8 @@ class product_product(models.Model):
                     publish = _('Publish'),
                     action = '<a href="/web#return_label=Website&amp;view_type=form&amp;model=product.template&amp;id=%s&amp;action=%s" title="%s">Edit</a>' %(product.id, 'product.product_template_action', _('Edit in backend')),
                     product_name = variant.name,
-                    default_code = variant.default_code or '',
+                    default_code = _('Article Number: %s') %variant.default_code or '',
+                    ean13 = variant.ean13,
                     variant_ids = product.product_variant_ids.mapped('id'),
                     data_attribute_value_ids = [[p.id, [v.id for v in p.attribute_value_ids if v.attribute_id.id in visible_attrs], pricelist_line.price, pricelist_line.rec_price, '{%s_in_stock}' % p.id] for p in product.product_variant_ids],
                     attr_sel = attr_sel,
@@ -1190,8 +1213,8 @@ class product_product(models.Model):
                     edu_purchase = int(is_edu_purchase),
                     buy_button = buttons['product_view'],
                     stock_notify_button = '<button type="button" class="stock_notify_button dn_btn dn_primary mt8 text-center {%s_notify_stock_button_hidden}" data-toggle="modal" data-variant-id="%s" data-target="#">%s</button>' % (variant.id, variant.id, _('Notify me when item is back in stock')),
-                    product_startdate = _('Available on %s') %campaign.date_start if campaign and campaign.date_start and campaign.date_start <= str(date.today()) and (not campaign.date_stop or campaign.date_stop >= str(date.today())) else '',
-                    product_stopdate = _('to %s') %campaign.date_stop if campaign and campaign.date_start and (campaign.date_stop >= str(date.today())) else '',
+                    product_startdate = _('Available on %s') %campaign.date_start if campaign and (campaign.date_start and campaign.date_start <= str(date.today())) and (not campaign.date_stop or campaign.date_stop >= str(date.today())) else '',
+                    product_stopdate = _('to %s') %campaign.date_stop if campaign and campaign.date_stop >= str(date.today()) else '',
                     stock_status = '{%s_stock_status}' % variant.id,
                     html_product_detail_desc = html_product_detail_desc(variant, partner, pricelist),
                     html_product_detail_image = html_product_detail_image(variant, partner),
@@ -1204,7 +1227,7 @@ class product_product(models.Model):
                     key=key,
                     render_time='%s' % (timer() - render_start),
                 ).encode('utf-8')
-            
+
 
             page += "\n<!-- render_time_total %s -->\n" % (timer() - render_start_tot)
             self.env['website'].put_page_dict(key_raw, flush_type, page, '%s,%s' % (product._model, product.id))
@@ -1232,17 +1255,17 @@ class product_product(models.Model):
                 stock['%s_notify_stock_button_hidden' % variant.id] = 'hidden'
             else:
 				#Customers is reseller
-				if not (variant.sale_ok and variant.purchase_type != 'none'): 
+				if not (variant.sale_ok and variant.purchase_type != 'none'):
 					#Product is not sellable
 					stock['%s_buy_button_hidden' % variant.id] = 'hidden'
 					stock['%s_notify_stock_button_hidden' % variant.id] = 'hidden'
 				elif stock['%s_in_stock' %variant.id]:
 					# Product is in stock
 					stock['%s_notify_stock_button_hidden' % variant.id] = 'hidden'
-				else:   
-					# Product is not in stock    
+				else:
+					# Product is not in stock
 					stock['%s_buy_button_hidden' % variant.id] = 'hidden'
-                
+
         try:
             # ~ _logger.warn(stock)
             return page_dict.get('page','').decode('base64').format(**stock)

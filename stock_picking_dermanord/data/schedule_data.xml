@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="picking_schedule" model="resource.calendar">
+            <field name="name">Picking Schedule</field>
+            <field name="attendance_ids" eval="[(0, 0,{'name': 'monday', 'dayofweek': '0', 'hour_from': 9.5, 'hour_to': 14}),
+            (0, 0,{'name': 'tuesday', 'dayofweek': '1', 'hour_from': 9.5, 'hour_to': 14}),
+            (0, 0,{'name': 'wednesday', 'dayofweek': '2', 'hour_from': 9.5, 'hour_to': 14}),
+            (0, 0,{'name': 'thursday', 'dayofweek': '3', 'hour_from': 9.5, 'hour_to': 14}),
+            (0, 0,{'name': 'friday', 'dayofweek': '4', 'hour_from': 9.5, 'hour_to': 14})]"/>
+        </record>
+    </data>
+</openerp>
