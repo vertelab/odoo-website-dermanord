@@ -265,6 +265,12 @@ msgid "Art. nr"
 msgstr "Artikelnr"
 
 #. module: webshop_dermanord
+#: code:addons/webshop_dermanord/models/product_view.py:1204
+#, python-format
+msgid "Article Number: %s"
+msgstr "Artikelnummer: %s"
+
+#. module: webshop_dermanord
 #: model:res.groups,comment:webshop_dermanord.group_dn_ht
 msgid "As a Skin Therapist, you have access to see and purchase all products in our product range."
 msgstr "Som Hudterapeut har du behörighet att se och köpa samtliga produkter i vårt sortiment."
