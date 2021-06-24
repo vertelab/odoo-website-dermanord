@@ -71,13 +71,14 @@
 
     label {
         display: inline-block;
-        //background-color: #e0e0e0;
-        background-color: white;
-        padding: 1px 5px;
-        border: 1px solid #444;
-        border-radius: 4px;
+        background-color: #e0e0e0;
+        // padding: 1px 5px;
+        padding: 0.1rem 0.4rem;
+        padding-bottom: 0.35rem;
+        // border: 1px solid #444;
+        // border-radius: 4px;
         cursor: pointer;
-        font-size: 17px;
+        font-size: 0.80rem;
     }
 
     input[type="radio"]:focus + label {
