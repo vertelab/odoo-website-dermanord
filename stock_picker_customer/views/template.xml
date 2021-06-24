@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+    <template inherit_id="stock.report_picking" id="add_reseller_field">
+      <xpath expr="//div[@class='col-xs-6']/div[1]" position="before">
+        <div t-if="o.is_reseller">
+          <span><strong>For Reseller</strong></span>
+        </div>
+        <div t-if="not o.is_reseller">
+          <span><strong>For End Customer</strong></span>
+        </div>
+      </xpath>
+    </template>
+  </data>
+</openerp>
