@@ -30,7 +30,7 @@
                                                 t-att-data-is_single_and_custom="single_and_custom"
                                             />
                                             <div class="radio_input_value">
-                                                <span t-field="ptav.name"/>
+                                                <span t-field="ptav.name" style="font-weight: lighter;"/>
 <!--                                                <span class="badge badge-pill badge-secondary" t-if="ptav.price_extra">-->
 <!--                                                    &lt;!&ndash; see note above about price_extra &ndash;&gt;-->
 <!--                                                    <t t-esc="ptav.price_extra > 0 and '+' or '-'"/>-->

@@ -7,7 +7,7 @@
 
     <template id="shop_product_carousel" inherit_id="website_sale.shop_product_carousel" name="Shop Product Carousel">
         <xpath expr="//div[@id='o-carousel-product']/div[1]" position="attributes">
-            <attribute name="style">border: 1px solid;</attribute>
+            <attribute name="style">border: 1px solid rgba(0, 0, 0, 0.125);</attribute>
         </xpath>
         <xpath expr="//div[@id='o-carousel-product']/div[2]" position="attributes">
             <attribute name="style">display: none !important</attribute>
@@ -86,6 +86,14 @@
 
 
     <template id="product_list" inherit_id="website_sale.product">
+        <xpath expr="//section[@id='product_detail']/div[2]/div[1]" position="attributes">
+            <attribute name="class">col-md-6 col-xl-7</attribute>
+        </xpath>
+
+        <xpath expr="//div[@id='product_details']" position="attributes">
+            <attribute name="class">col-md-6 col-xl-5</attribute>
+        </xpath>
+
         <xpath expr="//t[@t-placeholder='select']" position="replace">
             <t t-placeholder="select">
                 <input type="hidden" class="product_id" name="product_id" t-att-value="product_variant.id" />
@@ -106,13 +114,13 @@
                 <div class="container">
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home1" role="tab" aria-controls="home" aria-selected="true">Description</a>
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home1" role="tab" aria-controls="home" aria-selected="true" style="text-transform: uppercase;">Description</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile1" role="tab" aria-controls="profile" aria-selected="false">Usage</a>
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile1" role="tab" aria-controls="profile" aria-selected="false" style="text-transform: uppercase;">Usage</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact1" role="tab" aria-controls="contact" aria-selected="false">Ingredients</a>
+                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact1" role="tab" aria-controls="contact" aria-selected="false" style="text-transform: uppercase;">Ingredients</a>
                         </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
@@ -216,6 +224,12 @@
                     <div class="o_wsale_product_btn"/>
                 </div>
             </form>
+        </xpath>
+    </template>
+
+    <template id="option_collapse_categories_recursive" inherit_id="website_sale.option_collapse_categories_recursive">
+        <xpath expr="//li/a[@t-field='c.name']" position="attributes">
+            <attribute name="t-att-style">'font-weight:bold;' if children else 'font-weight:unset;'</attribute>
         </xpath>
     </template>
 
