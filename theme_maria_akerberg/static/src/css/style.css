@@ -164,3 +164,8 @@ a:hover {
 .navbar-light .navbar-nav .nav-link:hover {
     color: #ffffff !important;
 }
+
+.fa-shopping-cart {
+    font-size: 1.5rem !important;
+}
+
