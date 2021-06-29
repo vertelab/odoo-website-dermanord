@@ -138,6 +138,7 @@ a:hover {
 
 #top_menu {
     width: 100%;
+    font-size: 0.95rem !important;
 }
 
 #oe_structure_header_default_1 {
@@ -166,6 +167,9 @@ a:hover {
 }
 
 .fa-shopping-cart {
-    font-size: 1.5rem !important;
+    font-size: 1.20rem !important;
 }
 
+.fa-heart {
+    font-size: 1.20rem !important;
+}
