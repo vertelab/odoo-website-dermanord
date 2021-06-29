@@ -116,8 +116,14 @@
 }
 
 .o_wsale_products_item_title {
+    font-family: unset;
+    text-align: left;
     a {
         text-transform: uppercase;
+    }
+    ol, ul, dl {
+        margin-top: 0;
+        margin-bottom: -15px;
     }
 }
 
@@ -127,4 +133,8 @@
             color: green;
         }
     }
+}
+
+.js_add_cart_variants {
+    margin-bottom: -15px !important;
 }
