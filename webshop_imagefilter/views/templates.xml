@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="product_recipe" inherit_id="website_sale.products_item" name="Replaces the product image with a ImageMagick recipe">
+    <xpath expr="//form//a[1]" position="replace">
+      <a t-att-href="product_href" class="d-block h-100" itemprop="url">
+        <t t-set="pid" t-value="product.id" />
+        <img t-if="product.image_1920" t-att-src="website.imagefield_hash('product.template','image_1920',pid,'webshop_imagefilter.img_product')" />
+      </a>
+    </xpath>
+  </template>
+</odoo>

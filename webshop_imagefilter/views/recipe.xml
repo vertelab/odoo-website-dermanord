@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="img_product" model="image.recipe">
+      <field name="name">Products</field>
+      <field name="description">
+        Define the canvas size to limit the image maximum size.
+        PS: The canvas will always be the given size
+      </field>
+      <field name="recipe">
+bg = Image()
+bg.blank(width=int(canvas_size), height=int(canvas_size))
+bg.format = 'png'
+image.transform(resize='%sx%s' %(int(canvas_size), int(canvas_size)))
+if image.width &gt;= image.height:
+    bg.composite(image, 0, (int(canvas_size)-image.height)/2)
+else:
+    bg.composite(image, (int(canvas_size)-image.width)/2, 0)
+res = bg
+      </field>
+    </record>
+    <record id="img_product_param_canvas_xs" model="image.recipe.param">
+      <field name="name">canvas_size</field>
+      <field name="value">281</field>
+      <field name="device_type">xs</field>
+      <field name="recipe_id" ref="webshop_imagefilter.img_product" />
+    </record>
+    <record id="img_product_param_canvas_sm" model="image.recipe.param">
+      <field name="name">canvas_size</field>
+      <field name="value">339</field>
+      <field name="device_type">sm</field>
+      <field name="recipe_id" ref="webshop_imagefilter.img_product" />
+    </record>
+    <record id="img_product_param_canvas_md" model="image.recipe.param">
+      <field name="name">canvas_size</field>
+      <field name="value">293</field>
+      <field name="device_type">md</field>
+      <field name="recipe_id" ref="webshop_imagefilter.img_product" />
+    </record>
+    <record id="img_product_param_canvas_lg" model="image.recipe.param">
+      <field name="name">canvas_size</field>
+      <field name="value">257</field>
+      <field name="device_type">lg</field>
+      <field name="recipe_id" ref="webshop_imagefilter.img_product" />
+    </record>
+    <record id="img_product_param_bg_color" model="image.recipe.param">
+      <field name="name">bg_color</field>
+      <field name="value">#f4f4f4</field>
+      <field name="recipe_id" ref="webshop_imagefilter.img_product" />
+    </record>
+  </data>
+</odoo>
