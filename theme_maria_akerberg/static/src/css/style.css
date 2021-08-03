@@ -2,16 +2,20 @@
 
 :root {
     --fs: 16;
-    
+    --o-color-1: #ffffff;
+    --o-color-2: #e0e0e0;
+    --o-color-3: #7f9b9d;
+    --o-color-4: #596f70;
+    --o-color-5: #000000;
 }
 
 h3 {
     font-family: "kepler-std-display";
     }
 
-h6 {
+/* h6 {
     font-family: "kepler-std-display";
-    }
+    } */
 
 p {
     margin-bottom: calc(calc(10/var(--fs))*1rem);
@@ -19,21 +23,20 @@ p {
 
 a:hover {
     text-decoration: none;
-    color: #7f9b9d;
+    color: var(--o-color-3);
 }
 
 
 .btn {
-    padding: calc(calc(6/var(--fs))*1rem) calc(calc(12/var(--fs))*1rem);
+    padding: calc(calc(6/var(--fs))*1.5rem) calc(calc(12/var(--fs))*1rem);
     font-size: calc(calc(14/var(--fs))*1rem);
     font-weight: 500;
-    border-radius: 0px;
-    border: 1px solid #cccccc;
+    border-radius: 0.5em;
 }
 
 .btn-primary {
-    background-color: #7f9b9d;
-    border-color: #7f9b9d;
+    background-color: var(--o-color-3);
+    border-color: var(--o-color-3);
     color: #ffffff;
     font-family: futura-pt-medium;
 }
@@ -114,7 +117,7 @@ a:hover {
 }
 
 .text-primary {
-    color: #7f9b9d !important;
+    color: var(--o-color-3) !important;
 }
 
 .text-success {
@@ -122,7 +125,7 @@ a:hover {
 }
 
 .text-info {
-    color: #7f9b9d;
+    color: var(--o-color-3);
 }
 
 .text-warning {
@@ -173,3 +176,166 @@ a:hover {
 .fa-heart {
     font-size: 1.20rem !important;
 }
+
+/* Card Styles */
+.oe_product_cart:hover .o_wsale_product_information {
+    background-color: var(--o-color-1) !important;
+}
+
+.o_wsale_products_item_title {
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+/* Pagenation Styles */
+.form-control::placeholder {
+    color: var(--o-color-4);
+    opacity: 1;
+    font-weight: 900;
+}
+
+.pagination.m-0.mt-2.ml-md-2 {
+    font-weight: 900;
+    margin: 1rem auto 1rem 0 !important;
+}
+
+.o_wsale_products_searchbar_form.w-100.w-md-auto.mt-2 {
+    margin: 1rem 0 1rem 0 !important;
+}
+
+.dropdown.mt-2.ml-md-2 {
+    margin: 1rem 0 1rem 0.5rem !important;
+}
+
+.page-item.active .page-link {
+    color: var(--o-color-1);
+    background-color: var(--o-color-3);
+    border-color: var(--o-color-3);
+}
+.page-item.active .page-link:hover {
+    background-color: #788A87;
+}
+
+.dropdown-toggle::after {
+    vertical-align: 0.155em;
+}
+
+.dropup .dropdown-toggle::after {
+    vertical-align: -0.045em;
+}
+
+.p-2 {
+    padding: 0 0 0 0.5rem !important;
+}
+
+/* DIRTY FIX */
+
+.list-inline-item:not(:last-child) {
+    margin: 0.25rem 0.5rem auto 0;
+}
+
+.js_add_cart_variants {
+    margin-bottom: 0px !important;
+}
+
+.mt16 {
+    margin-top: 8px !important;
+}
+
+.variant_attribute {
+    padding-bottom: 0 !important;
+}
+
+.variant_attribute:only-child {
+    padding-bottom: 0.5rem !important;
+}
+
+.oe_price {
+    font-family: "futura-pt-light", "Odoo Unicode Support Noto", serif;
+    font-size: 1.05rem;
+    color: var(--dark);
+    font-weight: 400;
+}
+
+.badge-primary {
+    color: var(--o-cc1-bg);
+    background-color: var(--o-cc1-btn-secondary);
+}
+
+.row {
+    flex-wrap: nowrap;
+}
+
+.product_grid_wrapper {
+    width: 100%;
+}
+
+#products_grid_before {
+    padding-top: 1rem;
+}
+
+div.products_pager {
+    justify-content: left !important;
+}
+
+/* THESE STYLES ARE FOR WHEN WE HAVE ADDED THE SEARCH AND PAIGNATION WRAPPER INSIDE THE PRODUCTS GRID DIV AND KEPT THE EXISITING ONE WHERE IT IS NOW. */
+
+/* HIDE EXSISITING PAGNATION AND SEARCH WRAPPER WHEN DISPLAYING LARGER SIZES */
+/* #1- Large desktop */
+@media (min-width: 769px) {
+    div.small {
+        display: none;
+    }
+    div.o_wsale_apply_layout {
+        margin: 0.5rem 0 0.5rem 0.5rem;
+    }
+ }
+
+/* HIDE ADDED PAGNATION AND SEARCH WRAPPER WHEN DISPLAYING ON SMALLER SIZES */
+/* #3- Landscape phone to portrait tablet */
+@media (max-width: 768px) {
+    .pagination.m-0.mt-2.ml-md-2 {
+        margin: 0 0.5rem 0.5rem 0 !important;
+        order: 0
+    }
+
+    div.o_wsale_apply_layout {
+        margin: 0.5rem 0.5rem 0.5rem 0 !important;
+    }
+
+    .search-duplicate {
+        margin-bottom: 8px !important;
+        margin-left: 10px !important;
+        order: 2;
+    }
+    .dropdown.mt-2.ml-md-2 {
+        margin: 0 0 0.5rem 0.5rem !important;
+        order: 1;
+    }
+
+    .o_wsale_products_searchbar_form.w-100.w-md-auto.mt-2 {
+        margin: 0 !important;
+    }
+
+    .products_pager .search-duplicate {
+        width: 40%;
+    }
+
+    .o_wsale_products_main_row {
+        flex-wrap: wrap;
+    }
+
+    div.o_wsale_apply_layout {
+        margin: 0.5rem 0 0.5rem 0.5rem;
+    }
+
+    .btn.btn-link.d-lg-none {
+        color: var(--o-color-1);
+        text-decoration: none;
+        background: var(--o-color-3);
+    }
+
+    .btn.btn-link.d-lg-none:hover {
+        background: var(--o-color-4);
+    }
+ }
