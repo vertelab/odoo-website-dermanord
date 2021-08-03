@@ -242,10 +242,6 @@ a:hover {
     margin-top: 8px !important;
 }
 
-.variant_attribute {
-    padding-bottom: 0 !important;
-}
-
 .variant_attribute:only-child {
     padding-bottom: 0.5rem !important;
 }
