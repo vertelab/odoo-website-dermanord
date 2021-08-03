@@ -262,9 +262,16 @@ a:hover {
     background-color: var(--o-cc1-btn-secondary);
 }
 
+/*
 .row {
     flex-wrap: nowrap;
+} 
+*/
+
+.o_wsale_products_main_row {
+    flex-wrap: nowrap;
 }
+
 
 .product_grid_wrapper {
     width: 100%;
