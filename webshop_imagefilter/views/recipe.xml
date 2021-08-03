@@ -2,6 +2,7 @@
 <odoo>
   <data>
     <record id="img_product" model="image.recipe">
+      <field name="image_format">png</field>
       <field name="name">Products</field>
       <field name="description">
         Define the canvas size to limit the image maximum size.
