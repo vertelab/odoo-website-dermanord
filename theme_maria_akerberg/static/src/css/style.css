@@ -26,6 +26,10 @@ a:hover {
     color: var(--o-color-3);
 }
 
+.fa-facebook, .fa-twitter, .fa-linkedin, .fa-instagram {
+    font-size: 2.2rem;
+    color: black;
+}
 
 .btn {
     padding: calc(calc(6/var(--fs))*1.5rem) calc(calc(12/var(--fs))*1rem);
@@ -261,6 +265,11 @@ a:hover {
 .o_wsale_products_main_row {
     flex-wrap: nowrap;
 }
+
+.o_wsale_products_main_row {
+    flex-wrap: nowrap;
+}
+
 
 .product_grid_wrapper {
     width: 100%;
