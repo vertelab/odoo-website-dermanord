@@ -60,135 +60,6 @@ _logger = logging.getLogger(__name__)
 PPG = 21 # Products Per Page
 PPR = 3  # Products Per Row
 
-class stock_notification(models.Model):
-    _name = 'stock.notification'
-    _inherit = ['mail.thread']
-
-    product_id = fields.Many2one(comodel_name='product.product', string='Product')
-    partner_id = fields.Many2one(comodel_name='res.partner', string='Partner')
-    status = fields.Selection(string='Status', selection=[ ('pending', 'Pending'), ('sent', 'Sent') ], default='pending')
-    created_datetime = fields.Datetime('Created', select=True, default=lambda self: fields.datetime.now())
-    
-    
-    def send_notification(self):
-        author = self.env.ref('base.main_partner').sudo()
-        template = self.env.ref('webshop_dermanord.stock_notify_message', False)
-        
-        for notify in self:
-               
-            ctx = {
-                'default_model': 'stock.notification',
-                'default_res_id': notify.id,
-                'default_use_template': True,
-                'default_template_id': template.id,
-                'default_composition_mode': 'comment',
-                'lang': notify.partner_id.lang,
-            }
-            composer = self.env['mail.compose.message'].sudo().with_context(ctx).create({})
-            composer.send_mail()
-        
-        self.write({'status' : 'sent'})
-
-    
-    def send_inactive_notification(self):
-        author = self.env.ref('base.main_partner').sudo()
-        template = self.env.ref('webshop_dermanord.stock_notify_inactive_message', False)
-        
-        for notify in self:
-               
-            ctx = {
-                'default_model': 'stock.notification',
-                'default_res_id': notify.id,
-                'default_use_template': True,
-                'default_template_id': template.id,
-                'default_composition_mode': 'comment',
-                'lang': notify.partner_id.lang,
-            }
-            composer = self.env['mail.compose.message'].sudo().with_context(ctx).create({})
-            composer.send_mail()
-        
-        self.write({'status' : 'sent'})
-        
-    @api.model
-    def cron_notify(self):
-        notifications = self.search([])
-        notifications_inactive = self.search([])
-        products = notifications.mapped('product_id')
-        to_send = self.browse()
-        to_send_inactive = self.browse()
-        for product in products.filtered('active'):
-            if product.get_stock_info(product.id)[0]:
-                 to_send |= notifications.filtered(lambda n: n.product_id == product and n.status == 'pending')
-        for product in products.filtered(lambda n: not n.active):
-            to_send_inactive |= notifications_inactive.filtered(lambda n: n.product_id == product and n.status == 'pending')
-        if to_send:
-            to_send.send_notification()
-        if to_send_inactive:
-            to_send_inactive.send_inactive_notification()
-            
-        self.search([('status', '=', 'sent'), ('message_last_post', '<', fields.Datetime.to_string(datetime.now() + timedelta(days=-7)))]).unlink()
-        
-
-class blog_post(models.Model):
-    _inherit = 'blog.post'
-
-    product_public_categ_ids = fields.Many2many(comodel_name='product.public.category', string='Product Public Categories')
-    product_tmpl_ids = fields.Many2many(comodel_name='product.template', string='Product Templates')
-
-class crm_tracking_campaign(models.Model):
-    _inherit = 'crm.tracking.campaign'
-
-
-    
-    def write(self, vals):
-        for r in self:
-            for o in r.object_ids:
-                if o.object_id._name == 'product.template':
-                    o.object_id._is_offer_product()
-                elif o.object_id._name == 'product.product':
-                    o.object_id.product_tmpl_id._is_offer_product()
-        return super(crm_tracking_campaign, self).write(vals)
-
-    @api.model
-    def create(self, vals):
-        res = super(crm_tracking_campaign, self).create(vals)
-        for o in res.object_ids:
-            if o.object_id._name == 'product.template':
-                o.object_id._is_offer_product()
-            elif o.object_id._name == 'product.product':
-                o.object_id.product_tmpl_id._is_offer_product()
-        return res
-
-
-class crm_campaign_object(models.Model):
-    _inherit = 'crm.campaign.object'
-
-    def _product_price(self):
-        if self.object_id._name == 'product.template':
-            variant = self.object_id.get_default_variant()
-            self.product_price = self.env.ref('product.list0').price_get(variant.id, 1)[1] + sum([c.get('amount', 0.0) for c in variant.sudo().taxes_id.compute_all(self.env.ref('product.list0').price_get(variant.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
-        if self.object_id._name == 'product.product':
-            self.product_price = self.env.ref('product.list0').price_get(self.object_id.id, 1)[1] + sum([c.get('amount', 0.0) for c in self.object_id.sudo().taxes_id.compute_all(self.env.ref('product.list0').price_get(self.object_id.id, 1)[1], 1, None, self.env.user.partner_id)['taxes']])
-    product_price = fields.Float(string='Price for public', compute='_product_price')
-
-    @api.model
-    def create(self, vals):
-        res = super(crm_campaign_object, self).create(vals)
-        if vals.get('object_id') and vals.get('object_id').split(',')[0] == 'product.template':
-            self.env['product.template'].browse(int(vals.get('object_id').split(',')[1]))._is_offer_product()
-        elif vals.get('object_id') and vals.get('object_id').split(',')[0] == 'product.product':
-            self.env['product.product'].browse(int(vals.get('object_id').split(',')[1])).product_tmpl_id._is_offer_product()
-        return res
-
-    
-    def write(self, vals):
-        for r in self:
-            if r.object_id and r.object_id._name == 'product.template':
-                r.object_id._is_offer_product()
-            elif r.object_id and r.object_id._name == 'product.product':
-                r.object_id.product_tmpl_id._is_offer_product()
-        return super(crm_campaign_object, self).write(vals)
-
 
 class product_template(models.Model):
     _inherit = 'product.template'
@@ -1178,7 +1049,7 @@ class Website(models.Model):
         else:
             self.dn_shop_set_session('product.template', post, '/dn_shop')
 
-class WebsiteSale(website_sale):
+class WebsiteSale(WebsiteSale):
 
     FACETS = {}  # Static variable
     dn_cart_lock = Lock()
