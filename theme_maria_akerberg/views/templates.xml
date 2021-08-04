@@ -168,7 +168,6 @@
         </xpath>
 
         <xpath expr="//div[@class='products_pager form-inline flex-md-nowrap justify-content-between justify-content-md-center']" position="replace">
-            <span/>
         </xpath>
 
         <xpath expr="//div[@id='products_grid']/t[@t-if='category']" position="replace">
@@ -244,15 +243,48 @@
         </div>
     </xpath>
 
-    <xpath expr="//div[@class='products_pager form-inline justify-content-center py-3']" position="replace">
-        <span/>
+    <xpath expr="//div[hasclass('product_grid_wrapper')]/div[hasclass('products_pager')]/t[@t-call][last()]" position="after">
+        <div class="btn-group btn-group-toggle mt-2 ml-md-2 d-none d-sm-inline-flex o_wsale_apply_layout" data-toggle="buttons">
+            <label t-attf-class="btn btn-secondary #{'active' if layout_mode != 'list' else None} fa fa-th-large o_wsale_apply_grid" title="Grid">
+                <input type="radio" name="wsale_products_layout" t-att-checked="'checked' if layout_mode != 'list' else None"/>
+            </label>
+            <label t-attf-class="btn btn-secondary #{'active' if layout_mode == 'list' else None} fa fa-th-list o_wsale_apply_list" title="List">
+                <input type="radio" name="wsale_products_layout" t-att-checked="'checked' if layout_mode == 'list' else None"/>
+            </label>
+        </div>
     </xpath>
 
-    <!-- <xpath expr="//div[@class='dropdown-toggle btn btn-secondary']" position="replace">
-        <span/>
-    </xpath> -->
+    <xpath expr="//div[hasclass('product_grid_wrapper')]/div[hasclass('products_pager')]/t[@t-call][last()]" position="after">
+        <t t-set="list_price_desc_label">Catalog price: High to Low</t>
+        <t t-set="list_price_asc_label">Catalog price: Low to High</t>
+        <t t-set="name_asc_label">Name: A to Z</t>
+        <t t-set="name_desc_label">Name: Z to A</t>
+        <t t-set="website_sale_sortable" t-value="[                 (list_price_desc_label, 'list_price desc'),                 (list_price_asc_label, 'list_price asc'),                 (name_asc_label, 'name asc'),                 (name_desc_label, 'name desc')             ]"/>
+        <t t-set="website_sale_sortable_current" t-value="[sort for sort in website_sale_sortable if sort[1]==request.params.get('order', '')]"/>
+        <div class="dropdown mt-2 ml-md-2 dropdown_sorty_by">
+            <a role="button" href="#" class="dropdown-toggle btn btn-secondary" data-toggle="dropdown">
+                <span class="d-none d-lg-inline">
+                    <t t-if="len(website_sale_sortable_current)">
+                        Sorting by : <t t-raw="website_sale_sortable_current[0][0]"/>
+                    </t>
+                    <t t-else="1">
+                        Sort by
+                    </t>
+                </span>
+                <i class="fa fa-sort-amount-asc d-lg-none"/>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" role="menu">
+                <t t-foreach="website_sale_sortable" t-as="sortby">
+                    <a role="menuitem" rel="noindex,nofollow" t-att-href="keep('/shop', order=sortby[1])" class="dropdown-item">
+                        <span t-raw="sortby[0]"/>
+                    </a>
+                </t>
+            </div>
+        </div>
+    </xpath>
 
-    <xpath expr="//div[hasclass('products_pager')]/t[@t-call='website_sale.search']" position="replace">
+    <!-- Removes the footer pagination -->
+    <xpath expr="//div[@class='products_pager form-inline justify-content-center py-3']" position="replace">
         <span/>
     </xpath>
 </template>

@@ -22,6 +22,9 @@
     'demo': [
         # ~ 'demo/pages.xml',
     ],
+    # misc settings
+    'installable': True,
+    'application': False,
 
     # Your information
     'author': "Vertel AB",

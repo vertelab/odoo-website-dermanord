@@ -258,7 +258,7 @@ a:hover {
     background-color: var(--o-cc1-btn-secondary);
 }
 
-.row {
+.o_wsale_products_main_row {
     flex-wrap: nowrap;
 }
 
