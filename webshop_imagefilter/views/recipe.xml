@@ -23,7 +23,7 @@ res = bg
     </record>
 
     <record id="img_productview" model="image.recipe">
-      <field name="image_format">progressive_jpeg</field>
+      <field name="image_format">png</field>
       <field name="name">Product</field>
       <field name="description">
         Define the canvas size to limit the image maximum size.
