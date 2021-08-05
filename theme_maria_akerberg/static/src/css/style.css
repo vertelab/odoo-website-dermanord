@@ -182,13 +182,36 @@ a:hover {
 }
 
 /* Card Styles */
-.oe_product_cart:hover .o_wsale_product_information {
-    background-color: var(--o-color-1) !important;
+ul.shop-variant {
+    display: flex;
+}
+
+.card-body {
+    flex: 0 0 auto;
+}
+
+#o-variant-product {
+    height: 185px;
+}
+
+.oe_product {
+    height: 290px;
+}
+
+.card.oe_product_cart {
+    height: 275px;
+}
+
+.oe_product_cart .o_wsale_product_information {
+    flex: 1 0 auto !important;
 }
 
 .o_wsale_products_item_title {
     margin-top: 5px;
     margin-bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 0.5rem;
 }
 
 /* Pagenation Styles */
@@ -243,11 +266,12 @@ a:hover {
 }
 
 .mt16 {
-    margin-top: 8px !important;
+    margin-top: 0 !important;
 }
 
-.variant_attribute:only-child {
-    padding-bottom: 0.5rem !important;
+.variant_attribute {
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
 }
 
 .oe_price {
@@ -265,11 +289,6 @@ a:hover {
 .o_wsale_products_main_row {
     flex-wrap: nowrap;
 }
-
-.o_wsale_products_main_row {
-    flex-wrap: nowrap;
-}
-
 
 .product_grid_wrapper {
     width: 100%;

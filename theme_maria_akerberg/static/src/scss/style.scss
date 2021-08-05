@@ -119,6 +119,7 @@
     text-align: left;
     a {
         text-transform: uppercase;
+	white-space: nowrap;
     }
     ol, ul, dl {
         margin-top: 0;
@@ -133,12 +134,6 @@
         }
     }
 }
-
-.js_add_cart_variants {
-    margin-bottom: -15px !important;
-}
-
-
 
 .td-qty {
     .input-group-prepend > .btn, .input-group-append > .btn {
