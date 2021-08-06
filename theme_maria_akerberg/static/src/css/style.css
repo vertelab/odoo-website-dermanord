@@ -195,11 +195,11 @@ ul.shop-variant {
 }
 
 .oe_product {
-    height: 290px;
+    height: 325px;
 }
 
 .card.oe_product_cart {
-    height: 275px;
+    height: 305px;
 }
 
 .oe_product_cart .o_wsale_product_information {
@@ -210,8 +210,18 @@ ul.shop-variant {
     margin-top: 5px;
     margin-bottom: 0;
     overflow: hidden;
-    text-overflow: ellipsis;
-    padding-right: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+div.radio_input_value {
+    white-space: nowrap;
+}
+
+.bottom {
+    position: absolute;
+    bottom: 0; 
 }
 
 /* Pagenation Styles */
@@ -226,8 +236,8 @@ ul.shop-variant {
     margin: 1rem auto 1rem 0 !important;
 }
 
-.o_wsale_products_searchbar_form.w-100.w-md-auto.mt-2 {
-    margin: 1rem 0 1rem 0 !important;
+.o_wsale_products_searchbar_form.w-md-auto.mt-2 {
+    margin: 1rem 0 1rem 1rem !important;
 }
 
 .dropdown.mt-2.ml-md-2 {
@@ -252,7 +262,7 @@ ul.shop-variant {
 }
 
 .p-2 {
-    padding: 0 0 0 0.5rem !important;
+    padding: 0 0.5rem 0 0.5rem !important;
 }
 
 /* DIRTY FIX */
@@ -265,12 +275,12 @@ ul.shop-variant {
     margin-bottom: 0px !important;
 }
 
-.mt16 {
+.product_price.mt16 {
     margin-top: 0 !important;
 }
 
 .variant_attribute {
-    padding-top: 3px !important;
+    padding-top: 0 !important;
     padding-bottom: 3px !important;
 }
 
@@ -302,6 +312,10 @@ div.products_pager {
     justify-content: left !important;
 }
 
+.mt-2 {
+    margin-top: 0 !important;
+}
+
 /* THESE STYLES ARE FOR WHEN WE HAVE ADDED THE SEARCH AND PAIGNATION WRAPPER INSIDE THE PRODUCTS GRID DIV AND KEPT THE EXISITING ONE WHERE IT IS NOW. */
 
 /* HIDE EXSISITING PAGNATION AND SEARCH WRAPPER WHEN DISPLAYING LARGER SIZES */
@@ -310,14 +324,18 @@ div.products_pager {
     div.small {
         display: none;
     }
-    div.o_wsale_apply_layout {
+    /* div.o_wsale_apply_layout {
         margin: 0.5rem 0 0.5rem 0.5rem;
     }
+    */
  }
 
 /* HIDE ADDED PAGNATION AND SEARCH WRAPPER WHEN DISPLAYING ON SMALLER SIZES */
 /* #3- Landscape phone to portrait tablet */
 @media (max-width: 768px) {
+    #products_grid_before {
+    	padding-bottom:0.5rem;
+    }
     .pagination.m-0.mt-2.ml-md-2 {
         margin: 0 0.5rem 0.5rem 0 !important;
         order: 0
@@ -333,11 +351,11 @@ div.products_pager {
         order: 2;
     }
     .dropdown.mt-2.ml-md-2 {
-        margin: 0 0 0.5rem 0.5rem !important;
+        margin: 1rem 0 1rem 0.5rem !important;
         order: 1;
     }
 
-    .o_wsale_products_searchbar_form.w-100.w-md-auto.mt-2 {
+    .o_wsale_products_searchbar_form.w-md-auto.mt-2 {
         margin: 0 !important;
     }
 

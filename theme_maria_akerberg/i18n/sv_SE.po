@@ -94,7 +94,7 @@ msgstr "Senast redigerad"
 #. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
 msgid "List"
-msgstr ""
+msgstr "Lista"
 
 #. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
@@ -144,7 +144,7 @@ msgstr "Tema Verktyg"
 #. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products_item
 msgid "This combination does not exist."
-msgstr "Denna komnination existerar inte."
+msgstr "Denna kombination existerar inte."
 
 #. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products_item

@@ -149,15 +149,15 @@
         </xpath>
     </template>
 
-    <template id="sort" inherit_id="website_sale.sort">
-        <xpath expr="//div[hasclass('dropdown_sorty_by')]" position="before">
-            <div class="search-duplicate">
+    <!-- <template id="sort" inherit_id="website_sale.sort">
+           <xpath expr="//div[hasclass('dropdown_sorty_by')]" position="before">
+              <div class="search-duplicate">
                 <t t-call="website_sale.search">
-                    <t t-set="_classes" t-valuef="w-100 w-md-auto mt-2"/>
+                    <t t-set="_classes" t-valuef="w-75 w-md-auto mt-2"/>
                 </t>
-            </div>
-        </xpath>
-    </template>
+              </div>
+           </xpath>
+         </template> -->
 
     <template id="products" inherit_id="website_sale.products">
         <xpath expr="//div[hasclass('products_pager')]" position="before">
@@ -185,7 +185,7 @@
                         <t t-set="_classes" t-valuef="mt-2 ml-md-2" />
                     </t>
                     <t t-call="website_sale.search">
-                        <t t-set="_classes" t-valuef="w-100 w-md-auto mt-2" />
+                        <t t-set="_classes" t-valuef="w-75 w-md-auto mt-2" />
                     </t>
                     <t t-call="website_sale.pricelist_list">
                         <t t-set="_classes" t-valuef="mt-2 ml-md-2" />
@@ -289,13 +289,15 @@
     </xpath>
 </template>
 
-<template id="products_item" inherit_id="website_sale.products_item" name="Products">
+<template id="products_item" inherit_id="website_sale.products_item" name="Products">	
+
     <xpath expr="//form[hasclass('oe_product_cart')]" position="replace">
-        <form action="/shop/cart/update" method="post" class="card oe_product_cart" t-att-data-publish="product.website_published and 'on' or 'off'" itemscope="itemscope" itemtype="http://schema.org/Product" t-att-href="product_href" itemprop="url">
-            <div class="card-body p-1 oe_product_image" id="o-variant-product">
+        <form action="/shop/cart/update" method="post" class="card oe_product_cart" t-att-data-publish="product.website_published and 'on' or 'off'" itemscope="itemscope" itemtype="http://schema.org/Product">
+	<a t-att-href="product_href" itemprop="url">
+	    <div class="card-body p-1 oe_product_image" id="o-variant-product">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
                 <!--<div id="o-carousel-product">-->
-                <a class="d-block h-100">
+                <a t-att-href="product_href" class="d-block h-100" itemprop="url">
                     <t t-set="image_holder" t-value="product._get_image_holder()"/>
                     <span t-field="image_holder.image_1920" t-options="{'widget': 'image', 'preview_image': 'image_1024' if product_image_big else 'image_256'}" class="d-flex h-100 justify-content-center align-items-center"/>
                 </a>
@@ -311,7 +313,7 @@
                         <a role="button" t-if="not product.website_published" t-att-href="product_href" class="btn btn-sm btn-danger" title="This product is unpublished.">Unpublished</a>
                     </h6>
 
-                    <div class="js_product js_main_product" style="text-align: left;">
+                    <div class="js_product js_main_product bottom" style="text-align: left;">
                         <t t-placeholder="select">
                             <input type="hidden" class="product_id" name="product_id" t-att-value="product_variant.id" />
                             <input type="hidden" class="product_template_id" name="product_template_id" t-att-value="product.id" />
@@ -332,7 +334,8 @@
 
                 </div>
                 <div class="o_wsale_product_btn"/>
-            </div>
+	     </div>
+	</a>
         </form>
     </xpath>
 </template>
