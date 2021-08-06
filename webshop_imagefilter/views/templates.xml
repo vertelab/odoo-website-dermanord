@@ -9,7 +9,7 @@
     </xpath>
   </template>
   
-    <template id="product_recipe" inherit_id="website_sale.shop_product_carousel" name="Replaces the product image with a ImageMagick recipe" priority="99" >
+    <template id="productview_recipe" inherit_id="website_sale.shop_product_carousel" name="Replaces the product image with a ImageMagick recipe" priority="99" >
     <xpath expr="//div[@t-else]" position="replace">
       <div t-att-href="product_href" class="d-flex align-items-center justify-content-center h-100" itemprop="url">
         <t t-set="pid" t-value="product.id" />

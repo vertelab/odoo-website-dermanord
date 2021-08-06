@@ -23,7 +23,7 @@ res = bg
     </record>
 
     <record id="img_productview" model="image.recipe">
-      <field name="image_format">png</field>
+      <field name="image_format">progressive_jpeg</field>
       <field name="name">Product</field>
       <field name="description">
         Define the canvas size to limit the image maximum size.
@@ -33,7 +33,10 @@ res = bg
 canvas_size=398
 if image.height &gt;= canvas_size:
     image.transform(resize='x%s' %(canvas_size))
-res = image
+bg = Image()
+bg.blank(width=image.width, height=image.height,background='white')
+bg.composite(image)
+res = bg
       </field>
     </record>
 
