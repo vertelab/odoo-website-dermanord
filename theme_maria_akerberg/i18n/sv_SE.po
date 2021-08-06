@@ -28,7 +28,7 @@ msgstr "En kort beskrivning som också kommer dycka up på document"
 #. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.shop_product_carousel
 msgid "Accessories Products:"
-msgstr "Accessoar Produkter:"
+msgstr "Tillbehör"
 
 #. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.shop_product_carousel
@@ -38,7 +38,7 @@ msgstr "Lägg till i Kundvagn"
 #. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.shop_product_carousel
 msgid "Alternative Products:"
-msgstr "Alternativa Produkter:"
+msgstr "Alternativprodukter"
 
 #. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
