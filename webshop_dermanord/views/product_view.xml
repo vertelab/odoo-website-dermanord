@@ -26,5 +26,24 @@
                 </group>
             </field>
         </record>
+        <record id="product_template_only_form_view_dv" model="ir.ui.view">
+            <field name="name">product.template.form.inherited.webshop_dermanord</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view" />
+            <field name="arch" type="xml">
+                <field name="barcode" position="after">
+                    <group name="default_variant" string="Default Variant">
+                        <field name="dv_id" />
+                        <field name="dv_default_code" />
+                        <field name="dv_description_sale" />
+<!--
+                        <field name="dv_image_src" />
+-->
+                        <field name="dv_name" />
+                        <field name="dv_ribbon" />
+                    </group>
+                </field>
+            </field>
+        </record>
     </data>
 </odoo>
