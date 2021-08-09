@@ -44,34 +44,34 @@ res = bg
       <field name="name">canvas_size</field>
       <field name="value">281</field>
       <field name="device_type">xs</field>
-      <field name="recipe_id" ref="webshop_imagefilter.img_product" />
+      <field name="recipe_id" ref="theme_maria_akerberg.img_product" />
     </record>
     
     <record id="img_product_param_canvas_sm" model="image.recipe.param">
       <field name="name">canvas_size</field>
       <field name="value">339</field>
       <field name="device_type">sm</field>
-      <field name="recipe_id" ref="webshop_imagefilter.img_product" />
+      <field name="recipe_id" ref="theme_maria_akerberg.img_product" />
     </record>
     
     <record id="img_product_param_canvas_md" model="image.recipe.param">
       <field name="name">canvas_size</field>
       <field name="value">293</field>
       <field name="device_type">md</field>
-      <field name="recipe_id" ref="webshop_imagefilter.img_product" />
+      <field name="recipe_id" ref="theme_maria_akerberg.img_product" />
     </record>
     
     <record id="img_product_param_canvas_lg" model="image.recipe.param">
       <field name="name">canvas_size</field>
       <field name="value">177</field>
       <field name="device_type">lg</field>
-      <field name="recipe_id" ref="webshop_imagefilter.img_product" />
+      <field name="recipe_id" ref="theme_maria_akerberg.img_product" />
     </record>
     
     <record id="img_product_param_bg_color" model="image.recipe.param">
       <field name="name">bg_color</field>
       <field name="value">#f4f4f4</field>
-      <field name="recipe_id" ref="webshop_imagefilter.img_product" />
+      <field name="recipe_id" ref="theme_maria_akerberg.img_product" />
     </record>
   </data>
 </odoo>

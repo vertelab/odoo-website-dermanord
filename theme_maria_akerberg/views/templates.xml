@@ -289,7 +289,7 @@
     </xpath>
 </template>
 
-<template id="products_item" inherit_id="website_sale.products_item" name="Products">	
+<template id="products_item" inherit_id="website_sale.products_item" name="Products" priority="99">	
 
     <xpath expr="//form[hasclass('oe_product_cart')]" position="replace">
         <form action="/shop/cart/update" method="post" class="card oe_product_cart" t-att-data-publish="product.website_published and 'on' or 'off'" itemscope="itemscope" itemtype="http://schema.org/Product">
@@ -337,6 +337,22 @@
 	     </div>
 	</a>
         </form>
+    </xpath>
+    
+     <xpath expr="//a[@class='d-block h-100'][1]" position="replace">
+      <a t-att-href="product_href" class="d-block h-100" itemprop="url">
+        <t t-set="pid" t-value="product.id" />
+        <img t-if="product.image_1920" t-att-src="website.imagefield_hash('product.template','image_1920',pid,'theme_maria_akerberg.img_product')" />
+      </a>
+    </xpath>
+</template>
+
+<template id="productview_recipe" inherit_id="website_sale.shop_product_carousel" name="Replaces the product image with a ImageMagick recipe" priority="99" >
+    <xpath expr="//div[@t-else]" position="replace">
+      <div t-att-href="product_href" class="d-flex align-items-center justify-content-center h-100" itemprop="url">
+        <t t-set="pid" t-value="product.id" />
+        <img class="img img-fluid product_detail_img mh-100" t-if="product.image_1920" t-att-src="website.imagefield_hash('product.template','image_1920',pid,'theme_maria_akerberg.img_productview')" />
+      </div>
     </xpath>
 </template>
 
