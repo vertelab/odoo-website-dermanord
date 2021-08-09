@@ -5,21 +5,30 @@
     """,
     'category': 'Theme/Vertel',
     'version': '1.0',
-    'depends': ['website','theme_common',],
+    'depends': ['website', 'website_sale', 'website_imagemagick',
+    ],
 
     # templates
     'data': [
         # ~ 'views/options.xml',
         # ~ 'views/snippets.xml',
         'views/assets.xml',
+        'views/variant_template.xml',
+        'views/templates.xml',
+        'views/recipe.xml',
+        'views/customizations.xml',
+        'views/product_views.xml',
     ],
 
     # demo pages
     'demo': [
         # ~ 'demo/pages.xml',
     ],
+    # misc settings
+    'installable': True,
+    'application': False,
 
     # Your information
-    'author': "My Company",
-    'website': "",
+    'author': "Vertel AB",
+    'website': "www.vertel.se",
 }

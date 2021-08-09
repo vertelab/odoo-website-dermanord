@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<template id="divider_adjust" inherit_id="website_sale.header_cart_link" name="Makes the divider visible">
+<li t-attf-class="#{_item_class} divider d-none" position="replace">
+<li t-attf-class="#{_item_class} mx-auto divider"/>
+</li>
+</template>
+
+<template id="remove_divider_margin" inherit_id="website_sale.template_header_default" name="Removes the left-margin class">
+<t t-set="_item_class" t-value="'nav-item mx-lg-3'" position="replace">
+<t t-set="_item_class" t-value="'nav-item'"/>
+</t>
+</template>
+
+<template id="remove_user_margin" inherit_id="website.template_header_default" name="Removes the left-margin class on the user/login-menu">
+<t t-set="_item_class" t-value="'nav-item ml-lg-auto'" position="replace">
+<t t-set="_item_class" t-value="'nav-item'"/>
+</t>
+<t t-set="_item_class" t-value="'nav-item dropdown ml-lg-auto'" position="replace">
+<t t-set="_item_class" t-value="'nav-item dropdown'"/>
+</t>
+</template>
+
+</odoo>

@@ -1,0 +1,167 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* theme_maria_akerberg
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0-20210312\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-08-03 12:28+0000\n"
+"PO-Revision-Date: 2021-08-03 12:28+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "\" category."
+msgstr ""
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.product_list
+msgid "A short description that will also appear on documents."
+msgstr "En kort beskrivning som också kommer dycka up på document"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.shop_product_carousel
+msgid "Accessories Products:"
+msgstr "Tillbehör"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.shop_product_carousel
+msgid "Add to Cart"
+msgstr "Lägg till i Kundvagn"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.shop_product_carousel
+msgid "Alternative Products:"
+msgstr "Alternativprodukter"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "Catalog price: High to Low"
+msgstr "Katalogpris: Högt till lågt"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "Catalog price: Low to High"
+msgstr "Katalogpris: Lågt till högt"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid ""
+"Click <i>'New'</i> in the top-right corner to create your first product."
+msgstr ""
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.product_list
+msgid "Description"
+msgstr "Beskrivning"
+
+#. module: theme_maria_akerberg
+#: model:ir.model.fields,field_description:theme_maria_akerberg.field_theme_utils__display_name
+msgid "Display Name"
+msgstr "Visningsnamn"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "Drag building blocks here to customize the header for \""
+msgstr ""
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "Grid"
+msgstr "Rutnätsvy"
+
+#. module: theme_maria_akerberg
+#: model:ir.model.fields,field_description:theme_maria_akerberg.field_theme_utils__id
+msgid "ID"
+msgstr "ID"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.product_list
+msgid "Ingredients"
+msgstr "Ingredienser"
+
+#. module: theme_maria_akerberg
+#: model:ir.model.fields,field_description:theme_maria_akerberg.field_theme_utils____last_update
+msgid "Last Modified on"
+msgstr "Senast redigerad"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "List"
+msgstr "Lista"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "Name: A to Z"
+msgstr "Namn: A till Ö"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "Name: Z to A"
+msgstr "Namn: Ö till A"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "No product defined"
+msgstr "Ingen produkt definerad"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "No product defined in category \""
+msgstr "Ingen produkt definerad i kategorin \""
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "No results"
+msgstr "Inga resultat"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "No results for \""
+msgstr "Inga resultat för \""
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "Sort by"
+msgstr "Sortera efter"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "Sorting by :"
+msgstr "Sorterar efter :"
+
+#. module: theme_maria_akerberg
+#: model:ir.model,name:theme_maria_akerberg.model_theme_utils
+msgid "Theme Utils"
+msgstr "Tema Verktyg"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products_item
+msgid "This combination does not exist."
+msgstr "Denna kombination existerar inte."
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products_item
+msgid "This product is unpublished."
+msgstr "Denna produkt är opublicerad"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products_item
+msgid "Unpublished"
+msgstr "Opublicerad"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.product_list
+msgid "Usage"
+msgstr "Användning"
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
+msgid "in category \""
+msgstr "I Kategori \""
