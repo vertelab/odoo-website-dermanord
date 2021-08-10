@@ -4,8 +4,4 @@
         <xpath expr="//t[@t-call='portal.portal_docs_entry']" position="replace">
         </xpath>
     </template>
-    <template id="portal_my_home_invoice" inherit_id="account.portal_my_home_invoice" priority="30">
-        <xpath expr="//t[@t-call='portal.portal_docs_entry'][2]" position="replace">
-        </xpath>
-    </template>
 </odoo>
