@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_sale" inherit_id="sale.portal_my_home_sale" priority="20">
+        <xpath expr="//t[@t-call='portal.portal_docs_entry']" position="replace">
+        </xpath>
+    </template>
+    <template id="portal_my_home_invoice" inherit_id="account.portal_my_home_invoice" priority="30">
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][2]" position="replace">
+        </xpath>
+    </template>
+</odoo>
