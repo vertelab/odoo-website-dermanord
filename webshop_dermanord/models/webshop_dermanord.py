@@ -285,14 +285,6 @@ class ProductProduct(models.Model):
     _inherit = 'product.product'
 
     #~ so_line_ids = fields.One2many(comodel_name='sale.order.line', inverse_name='product_id')  # performance hog, do we need it?
-    sold_qty = fields.Integer(string='Sold', default=0)
-    website_style_ids_variant = fields.Many2many(comodel_name='product.style', string='Styles for Variant')
-    has_tester = fields.Boolean(string='Has Tester')
-    tester_product_id = fields.Many2one(comodel_name='product.product', string='Tester Product')
-    tester_min = fields.Float(string='Minimum Quantity', default=6)
-    width = fields.Float('Width (cm)', digits_compute= decpre.get_precision('Product Unit of Measure'), help='Product width in cm')
-    height = fields.Float('Height (cm)', digits_compute= decpre.get_precision('Product Unit of Measure'), help='Product height in cm')
-    depth = fields.Float('Depth (cm)', digits_compute= decpre.get_precision('Product Unit of Measure'), help='Product depth in cm')
 
     def _fullname(self):
         self.fullname = '%s %s' % (self.name, ', '.join(self.attribute_value_ids.mapped('name')))

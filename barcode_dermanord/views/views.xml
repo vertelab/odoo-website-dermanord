@@ -1,0 +1,35 @@
+<odoo>
+  <data>
+    <record id="product_variant_easy_edit_view_ean13" model="ir.ui.view">
+        <field name="name">product.product.view.form.easy.ean13</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+        <field name="arch" type="xml">
+            <field name="barcode" position="replace">
+                    <field name="ean13"/>
+            </field>
+        </field>
+    </record>
+    <record id="product_normal_form_view_ean13" model="ir.ui.view">
+        <field name="name">product.product.view.form.normal.ean13</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <field name="barcode" position="replace">
+                    <field name="ean13"/>
+            </field>
+        </field>
+    </record>
+    <record id="product_product_tree_view_ean13" model="ir.ui.view">
+        <field name="name">product.product.view.form.normal.ean13</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="barcode" position="replace">
+                    <field name="ean13"/>
+            </field>
+        </field>
+    </record>
+  </data>
+</odoo>
+
