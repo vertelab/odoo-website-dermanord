@@ -25,8 +25,8 @@
                                     <t t-set="product_variant" t-value="alt_product.env['product.product'].browse(combination_info['product_id'])"/>
                                     <input type="hidden" name="product-id" t-att-data-product-id="product_variant.id"/>
                                     <a class="o_carousel_product_img_link" t-att-href="alt_product.website_url">
-                                        <div t-if="product_variant" t-field="product_variant.image_128" t-options="{'widget': 'image', 'qweb_img_responsive': False, 'class': 'rounded shadow o_alternative_product o_carousel_product_card_img_top card-img-top' }" />
-                                        <div t-else="" t-field="alt_product.image_128" t-options="{'widget': 'image', 'qweb_img_responsive': False, 'class': 'rounded shadow o_alternative_product o_carousel_product_card_img_top card-img-top' }" />
+                                        <img class="rounded shadow o_alternative_product o_carousel_product_card_img_top card-img-top" t-if="product_variant" t-att-src="website.imagefield_hash('product.template','image_1920',alt_product.id,'theme_maria_akerberg.img_product')" />
+                                        <img class="rounded shadow o_alternative_product o_carousel_product_card_img_top card-img-top" t-else="" t-att-src="website.imagefield_hash('product.template','image_1920',alt_product.id,'theme_maria_akerberg.img_product')" />
                                     </a>
                                     <div class="o_carousel_product_card_body card-body border-top">
                                         <a t-att-href="alt_product.website_url" class="text-decoration-none">
@@ -58,7 +58,8 @@
                                 <div class="o_carousel_product_card card h-100">
                                     <input type="hidden" name="product-id" t-att-data-product-id="product.id"/>
                                     <a class="o_carousel_product_img_link" t-att-href="product.website_url">
-                                        <div t-field="product.image_128" t-options="{'widget': 'image', 'qweb_img_responsive': False, 'class': 'rounded shadow o_alternative_product o_carousel_product_card_img_top card-img-top' }" />
+                                        <img class="rounded shadow o_alternative_product o_carousel_product_card_img_top card-img-top" t-att-src="website.imagefield_hash('product.template','image_1920',product.id,'theme_maria_akerberg.img_product')" />
+
                                     </a>
                                     <div class="o_carousel_product_card_body card-body border-top">
                                         <a t-att-href="product.website_url" class="text-decoration-none">
@@ -82,6 +83,13 @@
                 </div>
             </div>
         </xpath>
+
+        <xpath expr="//div[@t-else]" position="replace">
+      <div t-att-href="product_href" class="d-flex align-items-center justify-content-center h-100" itemprop="url">
+        <t t-set="pid" t-value="product.id" />
+        <img class="img img-fluid product_detail_img mh-100" t-if="product.image_1920" t-att-src="website.imagefield_hash('product.template','image_1920',pid,'theme_maria_akerberg.img_productview')" />
+      </div>
+    </xpath>
     </template>
 
 
@@ -344,15 +352,6 @@
         <t t-set="pid" t-value="product.id" />
         <img t-if="product.image_1920" t-att-src="website.imagefield_hash('product.template','image_1920',pid,'theme_maria_akerberg.img_product')" />
       </a>
-    </xpath>
-</template>
-
-<template id="productview_recipe" inherit_id="website_sale.shop_product_carousel" name="Replaces the product image with a ImageMagick recipe" priority="99" >
-    <xpath expr="//div[@t-else]" position="replace">
-      <div t-att-href="product_href" class="d-flex align-items-center justify-content-center h-100" itemprop="url">
-        <t t-set="pid" t-value="product.id" />
-        <img class="img img-fluid product_detail_img mh-100" t-if="product.image_1920" t-att-src="website.imagefield_hash('product.template','image_1920',pid,'theme_maria_akerberg.img_productview')" />
-      </div>
     </xpath>
 </template>
 
