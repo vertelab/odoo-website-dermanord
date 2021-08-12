@@ -386,6 +386,12 @@
         </xpath>
     </template>
 
+    <template id="address_kanban_extended" inherit_id="website_sale.address_kanban">
+        <xpath expr="//div[hasclass('card-body')]/a[1]" position="attributes">
+            <attribute name="style">display: none !important</attribute>
+        </xpath>
+    </template>
+
     <data>
         <template id="report_invoice_document" inherit_id="account.report_invoice_document">
             <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')]/h2[1]" position="attributes">
