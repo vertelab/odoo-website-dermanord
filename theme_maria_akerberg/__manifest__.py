@@ -9,7 +9,7 @@ Website theme for Maria Åkerberg
         "website",
         "website_sale",
         "website_imagemagick",
-        "sale_commission",
+        # "sale_commission",
     ],
     "data": [
         "views/assets.xml",
