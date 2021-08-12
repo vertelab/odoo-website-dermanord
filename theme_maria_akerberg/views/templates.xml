@@ -58,7 +58,7 @@
                                 <div class="o_carousel_product_card card h-100">
                                     <input type="hidden" name="product-id" t-att-data-product-id="product.id"/>
                                     <a class="o_carousel_product_img_link" t-att-href="product.website_url">
-                                        <img class="rounded shadow o_alternative_product o_carousel_product_card_img_top card-img-top" t-att-src="website.imagefield_hash('product.template','image_1920',product.id,'theme_maria_akerberg.img_product')" />
+                                        <img class="rounded shadow o_alternative_product o_carousel_product_card_img_top card-img-top" t-att-src="website.imagefield_hash('product.template','image_1920',product.product_tmpl_id.id,'theme_maria_akerberg.img_product')" />
 
                                     </a>
                                     <div class="o_carousel_product_card_body card-body border-top">
