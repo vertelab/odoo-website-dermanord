@@ -25,8 +25,8 @@
                                     <t t-set="product_variant" t-value="alt_product.env['product.product'].browse(combination_info['product_id'])"/>
                                     <input type="hidden" name="product-id" t-att-data-product-id="product_variant.id"/>
                                     <a class="o_carousel_product_img_link" t-att-href="alt_product.website_url">
-                                        <div t-if="product_variant" t-field="product_variant.image_128" t-options="{'widget': 'image', 'qweb_img_responsive': False, 'class': 'rounded shadow o_alternative_product o_carousel_product_card_img_top card-img-top' }" />
-                                        <div t-else="" t-field="alt_product.image_128" t-options="{'widget': 'image', 'qweb_img_responsive': False, 'class': 'rounded shadow o_alternative_product o_carousel_product_card_img_top card-img-top' }" />
+                                        <img class="rounded shadow o_alternative_product o_carousel_product_card_img_top card-img-top" t-if="product_variant" t-att-src="website.imagefield_hash('product.template','image_1920',alt_product.id,'theme_maria_akerberg.img_product')" />
+                                        <img class="rounded shadow o_alternative_product o_carousel_product_card_img_top card-img-top" t-else="" t-att-src="website.imagefield_hash('product.template','image_1920',alt_product.id,'theme_maria_akerberg.img_product')" />
                                     </a>
                                     <div class="o_carousel_product_card_body card-body border-top">
                                         <a t-att-href="alt_product.website_url" class="text-decoration-none">
@@ -58,7 +58,8 @@
                                 <div class="o_carousel_product_card card h-100">
                                     <input type="hidden" name="product-id" t-att-data-product-id="product.id"/>
                                     <a class="o_carousel_product_img_link" t-att-href="product.website_url">
-                                        <div t-field="product.image_128" t-options="{'widget': 'image', 'qweb_img_responsive': False, 'class': 'rounded shadow o_alternative_product o_carousel_product_card_img_top card-img-top' }" />
+                                        <img class="rounded shadow o_alternative_product o_carousel_product_card_img_top card-img-top" t-att-src="website.imagefield_hash('product.template','image_1920',product.product_tmpl_id.id,'theme_maria_akerberg.img_product')" />
+
                                     </a>
                                     <div class="o_carousel_product_card_body card-body border-top">
                                         <a t-att-href="product.website_url" class="text-decoration-none">
@@ -82,8 +83,14 @@
                 </div>
             </div>
         </xpath>
-    </template>
 
+        <xpath expr="//div[@t-else]" position="replace">
+            <div t-att-href="product_href" class="d-flex align-items-center justify-content-center h-100" itemprop="url">
+                <t t-set="pid" t-value="product.id" />
+                <img class="img img-fluid product_detail_img mh-100" t-if="product.image_1920" t-att-src="website.imagefield_hash('product.template','image_1920',pid,'theme_maria_akerberg.img_productview')" />
+            </div>
+        </xpath>
+    </template>
 
     <template id="product_list" inherit_id="website_sale.product">
         <xpath expr="//section[@id='product_detail']/div[2]/div[1]" position="attributes">
@@ -148,16 +155,6 @@
             </div>
         </xpath>
     </template>
-
-    <!-- <template id="sort" inherit_id="website_sale.sort">
-           <xpath expr="//div[hasclass('dropdown_sorty_by')]" position="before">
-              <div class="search-duplicate">
-                <t t-call="website_sale.search">
-                    <t t-set="_classes" t-valuef="w-75 w-md-auto mt-2"/>
-                </t>
-              </div>
-           </xpath>
-         </template> -->
 
     <template id="products" inherit_id="website_sale.products">
         <xpath expr="//div[hasclass('products_pager')]" position="before">
@@ -232,62 +229,62 @@
                                 <h3 class="mt8">No results</h3>
                                 <p>No results for "<strong t-esc="search"/>"<t t-if="category"> in category "<strong t-esc="category.display_name"/>"</t>.
                             </p>
+                            </t>
+                            <p t-ignore="true" groups="sales_team.group_sale_manager">Click <i>'New'</i> in the top-right corner to create your first product.</p>
+                        </div>
+                    </t>
+                </div>
+                <div class="products_pager form-inline justify-content-center py-3 col">
+                    <t t-call="website.pager"/>
+                </div>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('product_grid_wrapper')]/div[hasclass('products_pager')]/t[@t-call][last()]" position="after">
+            <div class="btn-group btn-group-toggle mt-2 ml-md-2 d-none d-sm-inline-flex o_wsale_apply_layout" data-toggle="buttons">
+                <label t-attf-class="btn btn-secondary #{'active' if layout_mode != 'list' else None} fa fa-th-large o_wsale_apply_grid" title="Grid">
+                    <input type="radio" name="wsale_products_layout" t-att-checked="'checked' if layout_mode != 'list' else None"/>
+                </label>
+                <label t-attf-class="btn btn-secondary #{'active' if layout_mode == 'list' else None} fa fa-th-list o_wsale_apply_list" title="List">
+                    <input type="radio" name="wsale_products_layout" t-att-checked="'checked' if layout_mode == 'list' else None"/>
+                </label>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('product_grid_wrapper')]/div[hasclass('products_pager')]/t[@t-call][last()]" position="after">
+            <t t-set="list_price_desc_label">Catalog price: High to Low</t>
+            <t t-set="list_price_asc_label">Catalog price: Low to High</t>
+            <t t-set="name_asc_label">Name: A to Z</t>
+            <t t-set="name_desc_label">Name: Z to A</t>
+            <t t-set="website_sale_sortable" t-value="[                 (list_price_desc_label, 'list_price desc'),                 (list_price_asc_label, 'list_price asc'),                 (name_asc_label, 'name asc'),                 (name_desc_label, 'name desc')             ]"/>
+            <t t-set="website_sale_sortable_current" t-value="[sort for sort in website_sale_sortable if sort[1]==request.params.get('order', '')]"/>
+            <div class="dropdown mt-2 ml-md-2 dropdown_sorty_by">
+                <a role="button" href="#" class="dropdown-toggle btn btn-secondary" data-toggle="dropdown">
+                    <span class="d-none d-lg-inline">
+                        <t t-if="len(website_sale_sortable_current)">
+                            Sorting by : <t t-raw="website_sale_sortable_current[0][0]"/>
                         </t>
-                        <p t-ignore="true" groups="sales_team.group_sale_manager">Click <i>'New'</i> in the top-right corner to create your first product.</p>
-                    </div>
-                </t>
-            </div>
-            <div class="products_pager form-inline justify-content-center py-3 col">
-                <t t-call="website.pager"/>
-            </div>
-        </div>
-    </xpath>
-
-    <xpath expr="//div[hasclass('product_grid_wrapper')]/div[hasclass('products_pager')]/t[@t-call][last()]" position="after">
-        <div class="btn-group btn-group-toggle mt-2 ml-md-2 d-none d-sm-inline-flex o_wsale_apply_layout" data-toggle="buttons">
-            <label t-attf-class="btn btn-secondary #{'active' if layout_mode != 'list' else None} fa fa-th-large o_wsale_apply_grid" title="Grid">
-                <input type="radio" name="wsale_products_layout" t-att-checked="'checked' if layout_mode != 'list' else None"/>
-            </label>
-            <label t-attf-class="btn btn-secondary #{'active' if layout_mode == 'list' else None} fa fa-th-list o_wsale_apply_list" title="List">
-                <input type="radio" name="wsale_products_layout" t-att-checked="'checked' if layout_mode == 'list' else None"/>
-            </label>
-        </div>
-    </xpath>
-
-    <xpath expr="//div[hasclass('product_grid_wrapper')]/div[hasclass('products_pager')]/t[@t-call][last()]" position="after">
-        <t t-set="list_price_desc_label">Catalog price: High to Low</t>
-        <t t-set="list_price_asc_label">Catalog price: Low to High</t>
-        <t t-set="name_asc_label">Name: A to Z</t>
-        <t t-set="name_desc_label">Name: Z to A</t>
-        <t t-set="website_sale_sortable" t-value="[                 (list_price_desc_label, 'list_price desc'),                 (list_price_asc_label, 'list_price asc'),                 (name_asc_label, 'name asc'),                 (name_desc_label, 'name desc')             ]"/>
-        <t t-set="website_sale_sortable_current" t-value="[sort for sort in website_sale_sortable if sort[1]==request.params.get('order', '')]"/>
-        <div class="dropdown mt-2 ml-md-2 dropdown_sorty_by">
-            <a role="button" href="#" class="dropdown-toggle btn btn-secondary" data-toggle="dropdown">
-                <span class="d-none d-lg-inline">
-                    <t t-if="len(website_sale_sortable_current)">
-                        Sorting by : <t t-raw="website_sale_sortable_current[0][0]"/>
+                        <t t-else="1">
+                            Sort by
+                        </t>
+                    </span>
+                    <i class="fa fa-sort-amount-asc d-lg-none"/>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" role="menu">
+                    <t t-foreach="website_sale_sortable" t-as="sortby">
+                        <a role="menuitem" rel="noindex,nofollow" t-att-href="keep('/shop', order=sortby[1])" class="dropdown-item">
+                            <span t-raw="sortby[0]"/>
+                        </a>
                     </t>
-                    <t t-else="1">
-                        Sort by
-                    </t>
-                </span>
-                <i class="fa fa-sort-amount-asc d-lg-none"/>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right" role="menu">
-                <t t-foreach="website_sale_sortable" t-as="sortby">
-                    <a role="menuitem" rel="noindex,nofollow" t-att-href="keep('/shop', order=sortby[1])" class="dropdown-item">
-                        <span t-raw="sortby[0]"/>
-                    </a>
-                </t>
+                </div>
             </div>
-        </div>
-    </xpath>
+        </xpath>
 
-    <!-- Removes the footer pagination -->
-    <xpath expr="//div[@class='products_pager form-inline justify-content-center py-3']" position="replace">
-        <span/>
-    </xpath>
-</template>
+        <!-- Removes the footer pagination -->
+        <xpath expr="//div[@class='products_pager form-inline justify-content-center py-3']" position="replace">
+            <span/>
+        </xpath>
+    </template>
 
     <template id="products_item" inherit_id="website_sale.products_item" name="Products" priority="99">
 
@@ -395,4 +392,3 @@
     </data>
 
 </odoo>
-

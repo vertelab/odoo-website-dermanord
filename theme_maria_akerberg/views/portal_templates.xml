@@ -4,4 +4,10 @@
         <xpath expr="//t[@t-call='portal.portal_docs_entry']" position="replace">
         </xpath>
     </template>
+
+    <template id="sale_order_portal_content" inherit_id="sale.sale_order_portal_content">
+        <xpath expr="//t[@t-set='invoices']" position="attributes">
+            <attribute name="t-value">0</attribute>
+        </xpath>
+    </template>
 </odoo>
