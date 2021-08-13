@@ -392,6 +392,19 @@
         </xpath>
     </template>
 
+    <template id="header_cart_link_extended" inherit_id="website_sale.header_cart_link">
+        <xpath expr="//li[2]" position="replace">
+            <li t-attf-class="o_wsale_my_cart #{not show_cart and 'd-none'} #{_item_class}">
+                <t t-set="is_connected" t-value="not user_id._is_public()"/>
+                <a t-if="is_connected" href="/shop/cart" t-attf-class="#{_link_class}">
+                    <i t-if="_icon" class="fa fa-shopping-cart"/>
+                    <span t-if="_text">My Cart</span>
+                    <sup class="my_cart_quantity badge badge-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or '0'" t-att-data-order-id="website_sale_order and website_sale_order.id or ''"/>
+                </a>
+            </li>
+        </xpath>
+    </template>
+
     <data>
         <template id="report_invoice_document" inherit_id="account.report_invoice_document">
             <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')]/h2[1]" position="attributes">
