@@ -30,7 +30,7 @@
                                     </a>
                                     <div class="o_carousel_product_card_body card-body border-top">
                                         <a t-att-href="alt_product.website_url" class="text-decoration-none">
-                                            <h6 class="card-title mb-0 text-truncate" t-raw="alt_product.display_name"/>
+                                            <h6 class="card-title mb-0 text-truncate" t-raw="alt_product.name"/>
                                         </a>
                                     </div>
                                     <div class="o_carousel_product_card_footer card-footer d-flex align-items-center">
@@ -63,7 +63,7 @@
                                     </a>
                                     <div class="o_carousel_product_card_body card-body border-top">
                                         <a t-att-href="product.website_url" class="text-decoration-none">
-                                            <h6 class="card-title mb-0 text-truncate" t-raw="product.display_name"/>
+                                            <h6 class="card-title mb-0 text-truncate" t-raw="product.name"/>
                                         </a>
                                     </div>
                                     <div class="o_carousel_product_card_footer card-footer d-flex align-items-center">
