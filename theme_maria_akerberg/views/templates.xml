@@ -374,6 +374,24 @@
         </xpath>
     </template>
 
+    <template id="payment_extends" inherit_id="website_sale.payment">
+        <xpath expr="//t[@t-call='website.layout']/div[@id='wrap']/div[hasclass('oe_website_sale')]/div[1]/div[hasclass('oe_cart')]/div[1]/div[@id='shipping_and_billing']/a[1]" position="attributes">
+            <attribute name="style">display: none !important</attribute>
+        </xpath>
+    </template>
+
+    <template id="portal_layout_extended" inherit_id="portal.portal_layout">
+        <xpath expr="//t[@t-call='portal.frontend_layout']/div[@id='wrap']/div[1]/t[@t-if='my_details']/div[1]/div[@id='o_my_sidebar']/div[hasclass('o_portal_my_details')]/h4[1]/a[1]" position="attributes">
+            <attribute name="style">display: none !important</attribute>
+        </xpath>
+    </template>
+
+    <template id="address_kanban_extended" inherit_id="website_sale.address_kanban">
+        <xpath expr="//div[hasclass('card-body')]/a[1]" position="attributes">
+            <attribute name="style">display: none !important</attribute>
+        </xpath>
+    </template>
+
     <data>
         <template id="report_invoice_document" inherit_id="account.report_invoice_document">
             <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')]/h2[1]" position="attributes">
