@@ -1,4 +1,20 @@
 <odoo>
+    <template id="product_page_pager" inherit_id="portal.pager">
+        <xpath expr="//ul[1]/li[1]/a[@t-attf-class='page-link #{extraLinkClass}']" position="replace">
+            <a t-att-href="pager['page_previous']['url'] if pager['page']['num'] != 1 else None" 
+               t-attf-class="page-link #{extraLinkClass}">
+                <i class="fa fa-chevron-left"></i>
+            </a>
+        </xpath>
+
+        <xpath expr="//li[2]/a[@t-attf-class='page-link #{extraLinkClass}']" position="replace">
+            <a t-att-href="pager['page_next']['url'] if pager['page']['num'] != pager['page_count'] else None" 
+               t-attf-class="page-link #{extraLinkClass}">
+                <i class="fa fa-chevron-right"></i>
+            </a>
+        </xpath>
+    </template>
+    
     <template id="recommended_products" inherit_id="website_sale.recommended_products">
         <xpath expr="//div[@t-if='product.alternative_product_ids']" position="attributes">
             <attribute name="style">display: none !important</attribute>
