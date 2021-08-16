@@ -12,6 +12,8 @@ Website theme for Maria Åkerberg
         "sale_commission",
     ],
     "data": [
+        "security/base_security.xml",
+
         "views/assets.xml",
         "views/variant_template.xml",
         "views/templates.xml",
