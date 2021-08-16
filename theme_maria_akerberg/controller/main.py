@@ -102,7 +102,7 @@ class WebsiteSaleImp(WebsiteSale):
             url = "/shop/category/%s" % slug(category)
 
         product_count = len(search_product)
-        pager = request.website.pager(url=url, total=product_count, page=page, step=ppg, scope=7, url_args=post)
+        pager = request.website.pager(url=url, total=product_count, page=page, step=ppg, scope=3, url_args=post)
         offset = pager['offset']
         products = search_product[offset: offset + ppg]
 
