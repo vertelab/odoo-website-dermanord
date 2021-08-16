@@ -397,6 +397,14 @@
     </template>
 
     <template id="portal_layout_extended" inherit_id="portal.portal_layout">
+        <xpath expr="//t[@t-call='portal.frontend_layout']/div[@id='wrap']/div[1]/t[@t-if='my_details']/div[1]/div[@id='o_my_sidebar']/div[hasclass('o_portal_my_details')]" position="after">
+            <div class="o_portal_my_agents" style="margin-top: 10px;" t-if="user_id.partner_id.agent_ids and len(user_id.partner_id.agent_ids) == 1">
+                <h4>Agents</h4>
+                <hr class="mt-1 mb-0"/>
+                <div t-field="user_id.partner_id.agent_ids" t-options='{"widget": "contact", "fields": ["email", "phone", "address", "name"]}'/>
+            </div>
+        </xpath>
+
         <xpath expr="//t[@t-call='portal.frontend_layout']/div[@id='wrap']/div[1]/t[@t-if='my_details']/div[1]/div[@id='o_my_sidebar']/div[hasclass('o_portal_my_details')]/h4[1]/a[1]" position="attributes">
             <attribute name="style">display: none !important</attribute>
         </xpath>
