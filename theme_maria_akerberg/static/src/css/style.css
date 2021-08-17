@@ -265,6 +265,22 @@ div.radio_input_value {
     padding: 0 0.5rem 0 0.5rem !important;
 }
 
+/* Category Styles */
+
+.nav-link.active.o_not_editable {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: "futura-pt-medium", "Odoo Unicode Support Noto", serif;
+}
+
+#o_shop_collapse_category li i.fa {
+    color: var(--o-color-5) !important;
+}
+
+li.nav-item i ~ a.nav-link {
+    font-family: "futura-pt-medium", "Odoo Unicode Support Noto", serif;
+}
+
 /* DIRTY FIX */
 
 .list-inline-item:not(:last-child) {
@@ -284,11 +300,11 @@ div.radio_input_value {
     padding-bottom: 3px !important;
 }
 
-.oe_price {
+.oe_price_h4, .oe_price {
     font-family: "futura-pt-light", "Odoo Unicode Support Noto", serif;
     font-size: 1.05rem;
     color: var(--dark);
-    font-weight: 400;
+    font-weight: 400 !important;
 }
 
 .badge-primary {
