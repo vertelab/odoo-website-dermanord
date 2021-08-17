@@ -303,13 +303,11 @@
     </template>
 
     <template id="products_item" inherit_id="website_sale.products_item" name="Products" priority="99">
-
         <xpath expr="//form[hasclass('oe_product_cart')]" position="replace">
             <form action="/shop/cart/update" method="post" class="card oe_product_cart" t-att-data-publish="product.website_published and 'on' or 'off'" itemscope="itemscope" itemtype="http://schema.org/Product">
                 <a t-att-href="product_href" itemprop="url">
                     <div class="card-body p-1 oe_product_image" id="o-variant-product">
                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
-                        <!--<div id="o-carousel-product">-->
                         <a t-att-href="product_href" class="d-block h-100" itemprop="url">
                             <t t-set="image_holder" t-value="product._get_image_holder()"/>
                             <span t-field="image_holder.image_1920" t-options="{'widget': 'image', 'preview_image': 'image_1024' if product_image_big else 'image_256'}" class="d-flex h-100 justify-content-center align-items-center"/>
@@ -341,7 +339,6 @@
 
                                     <t t-call="website_sale.product_price" />
                                     <p t-if="True" class="css_not_available_msg alert alert-warning">This combination does not exist.</p>
-
                                 </t>
                             </div>
                         </div>
