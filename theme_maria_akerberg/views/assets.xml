@@ -19,9 +19,5 @@
             <script src="/theme_maria_akerberg/static/src/js/variant_mixin.js"/>
             <script src="/theme_maria_akerberg/static/src/js/accessories_alternative_products.js"/>
         </xpath>
-  </template>
-
-
-
-
+    </template>
 </odoo>
