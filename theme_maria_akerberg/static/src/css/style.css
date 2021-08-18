@@ -186,9 +186,9 @@ ul.shop-variant {
     display: flex;
 }
 
-.card-body {
-    flex: 0 0 auto;
-}
+/*.card-body {*/
+/*    flex: 0 0 auto;*/
+/*}*/
 
 #o-variant-product {
     height: 185px;
