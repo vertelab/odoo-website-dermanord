@@ -15,8 +15,9 @@ class mail_compose_message(models.Model):
                 context.get('default_res_id') and context.get('mark_invoice_as_sent'):
             # Hopefully no customer has WSSO in their name...
             invoice = self.env['account.invoice'].browse(context['default_res_id'])
-            if 'WSSO' not in invoice.name:
-                invoice = invoice.with_context(mail_post_autofollow=True)
-                invoice.write({'sent': True})
-                invoice.message_post(body=_("Invoice sent"))
+            if 'WSSO' in invoice.name:
+                return
+            invoice = invoice.with_context(mail_post_autofollow=True)
+            invoice.write({'sent': True})
+            invoice.message_post(body=_("Invoice sent"))
         return super(mail_compose_message, self).send_mail()
