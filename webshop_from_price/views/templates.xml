@@ -1,0 +1,32 @@
+<odoo>
+    <!-- Adds the form field to toggle use_form_price on and off -->
+    <record id="product_attribute_from_form" model="ir.ui.view">
+        <field name="name">product.attribute.form.ma</field>
+        <field name="model">product.attribute</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="product.product_attribute_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='display_type']" position="after">
+                <field name="use_from_price" />
+            </xpath>
+        </field>
+    </record>
+    <record id="product_attribute_from_tree" model="ir.ui.view">
+        <field name="name">product.attribute.tree</field>
+        <field name="model">product.attribute</field>
+        <field name="type">tree</field>
+        <field name="inherit_id" ref="product.attribute_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='create_variant']" position="after">
+                <field name="use_from_price" />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Renders from price conditionally in "tumnagelvy" -->
+    <template id="products_page_price" inherit_id="website_sale.product_price">
+        <xpath expr="//b[@class='oe_price'][1]" position="before">
+            <span t-if="combination_info['use_from_price'] and ppr">from</span>
+        </xpath>
+    </template>
+</odoo>
