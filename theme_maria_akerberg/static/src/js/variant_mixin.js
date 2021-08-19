@@ -15,7 +15,6 @@ odoo.define('theme_maria_akerberg.VariantMixin', function (require) {
 
         _updateProductImage: function ($productContainer, displayImage, productId, productTemplateId, newCarousel, isCombinationPossible) {
             var $carousel = $productContainer.find('#o-carousel-product');
-            console.log('kdkkdkd')
             // When using the web editor, don't reload this or the images won't
             // be able to be edited depending on if this is done loading before
             // or after the editor is ready.
