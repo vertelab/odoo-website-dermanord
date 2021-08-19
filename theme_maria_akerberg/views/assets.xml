@@ -16,7 +16,7 @@
         <xpath expr="//link[last()]" position="after">
             <link rel="stylesheet" type="text/css" href="/theme_maria_akerberg/static/src/css/style.css" />
             <link rel="stylesheet" type="text/scss" href="/theme_maria_akerberg/static/src/scss/style.scss" />
-            <script src="/theme_maria_akerberg/static/src/js/variant_mixin.js"/>
+<!--            <script src="/theme_maria_akerberg/static/src/js/variant_mixin.js"/>-->
             <script src="/theme_maria_akerberg/static/src/js/accessories_alternative_products.js"/>
         </xpath>
     </template>
