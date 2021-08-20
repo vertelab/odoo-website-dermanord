@@ -102,10 +102,10 @@
 
         <xpath expr="//div[@t-else]" position="replace">
             <div t-att-href="product_href" class="d-flex align-items-center justify-content-center h-100" itemprop="url">
-                <t t-set="pid" t-value="product.id" />
-                <img class="img img-fluid product_detail_img mh-100" t-if="product.image_1920" t-att-src="website.imagefield_hash('product.template','image_1920',pid,'theme_maria_akerberg.img_productview')" />
+                <img class="img img-fluid product_detail_img mh-100" t-if="product.image_1920" t-att-src="website.imagefield_hash(product_image._name,'image_1920',product_image.id,'theme_maria_akerberg.img_productview')" />
             </div>
         </xpath>
+
     </template>
 
     <template id="product_list" inherit_id="website_sale.product">
@@ -423,7 +423,7 @@
         </xpath>
     </template>
 
-    <template id="cart_noorderubtotal" inherit_id="website_sale.total" name="Remove subtotal">
+    <template id="cart_noordersubtotal" inherit_id="website_sale.total" name="Remove subtotal">
         <xpath expr="//tr[@id='order_total_untaxed']" position="replace">
         </xpath>
     </template>
