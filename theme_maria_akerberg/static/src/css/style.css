@@ -190,6 +190,10 @@ ul.shop-variant {
     flex: 0 0 auto;
 }
 
+.list-inline {
+    white-space: nowrap;
+}
+
 .oe_product_cart div.oe_product_image {
     height: 185px;
 }
