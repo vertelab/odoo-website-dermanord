@@ -186,9 +186,13 @@ ul.shop-variant {
     display: flex;
 }
 
-/*.card-body {*/
-/*    flex: 0 0 auto;*/
-/*}*/
+.card-body {
+    flex: 0 0 auto;
+}
+
+.oe_product_cart div.oe_product_image {
+    height: 185px;
+}
 
 #o-variant-product {
     height: 185px;
@@ -267,7 +271,7 @@ div.radio_input_value {
 
 /* Category Styles */
 
-.nav-link.active.o_not_editable {
+.nav-link.o_not_editable {
     text-transform: uppercase;
     font-weight: 700;
     font-family: "futura-pt-medium", "Odoo Unicode Support Noto", serif;
