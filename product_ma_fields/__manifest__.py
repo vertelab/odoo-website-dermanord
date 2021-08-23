@@ -29,7 +29,7 @@
         "sale",
     ],
     'data': [
-        "views/product_template_form.xml",
+        "views/product_product_form.xml",
     ],
     'qweb': [
     ],
