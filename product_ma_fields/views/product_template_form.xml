@@ -1,0 +1,16 @@
+<odoo>
+    <!-- Adds the form field to toggle use_form_price on and off -->
+    <record id="product_attribute_from_form" model="ir.ui.view">
+        <field name="name">product.template.common.form.ma</field>
+        <field name="model">product.template</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <field name="description_sale" position="after">
+                <field name="description_webshop" nolabel="1" placeholder="The descripton on the webshop."/>
+                <field name="description_use" nolabel="1" placeholder="The use descripton on the webshop."/>
+                <field name="description_ingredients" nolabel="1" placeholder="The ingredients on the webshop."/>
+            </field>
+        </field>
+    </record>
+</odoo>
