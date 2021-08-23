@@ -21,6 +21,7 @@ Website theme for Maria Åkerberg
         "views/customizations.xml",
         "views/product_views.xml",
         "views/portal_templates.xml",
+        "views/home_portal.xml",
     ],
     "demo": [],
     "installable": True,

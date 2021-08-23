@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_sale_wishlist" name="Show Wishlist" customize_show="True" inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">My wishlist</t>
+                <t t-set="url" t-value="'/shop/wishlist'"/>
+                <t t-set="count" t-value="len(request.env['product.wishlist'].current())"/>
+            </t>
+        </xpath>
+    </template>
+</odoo>
