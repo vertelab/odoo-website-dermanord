@@ -29,4 +29,11 @@
             <span t-if="combination_info['use_from_price'] and ppr">from</span>
         </xpath>
     </template>
+
+    <template id="assets_frontend_override" inherit_id="website_sale.assets_frontend">
+            <!-- Customize javascript -->
+            <xpath expr="//script[@src='/website_sale/static/src/js/variant_mixin.js']" position="after">
+                <script type="text/javascript" src="/webshop_from_price/static/src/js/variant_mixin.js" />
+            </xpath>
+        </template>
 </odoo>
