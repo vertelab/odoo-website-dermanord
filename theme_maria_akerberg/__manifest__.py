@@ -10,10 +10,10 @@ Website theme for Maria Åkerberg
         "website_sale",
         "website_imagemagick",
         "sale_commission",
+        "product_ma_fields",
     ],
     "data": [
         "security/base_security.xml",
-
         "views/assets.xml",
         "views/variant_template.xml",
         "views/templates.xml",

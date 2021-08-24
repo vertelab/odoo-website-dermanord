@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
             <field name="description_sale" position="after">
-                <field name="description_webshop" nolabel="1" placeholder="The descripton on the webshop."/>
-                <field name="description_use" nolabel="1" placeholder="The use descripton on the webshop."/>
+                <field name="description_webshop" nolabel="1" placeholder="The description on the webshop."/>
+                <field name="description_use" nolabel="1" placeholder="The use description on the webshop."/>
                 <field name="description_ingredients" nolabel="1" placeholder="The ingredients on the webshop."/>
             </field>
         </field>
