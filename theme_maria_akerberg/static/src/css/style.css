@@ -405,3 +405,19 @@ div.products_pager {
         background: var(--o-color-4);
     }
  }
+
+ /* Color variants styling */
+
+ .css_attribute_color {
+     margin-right: 10rem;
+     /* line-height: 1.1rem; */
+ }
+
+ .css_attribute_color.active {
+    color: red;
+}
+
+ .color_name {
+    margin-left: 1.8rem;
+    white-space: nowrap;
+}
