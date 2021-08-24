@@ -27,7 +27,8 @@
     'version': '1.0',
     'depends': [
         "sale",
-        "product"
+        "product",
+        "website_sale",
     ],
     'data': [
         "views/templates.xml",
