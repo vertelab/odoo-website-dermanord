@@ -324,7 +324,7 @@
                         <input type="hidden" class="product_id" name="product_id" t-att-value="product_variant.id" />
                         <input type="hidden" class="product_template_id" name="product_template_id" t-att-value="product.id" />
 
-                        <t t-if="combination" t-call="theme_maria_akerberg.product_variants">
+                        <t t-if="combination" t-call="theme_maria_akerberg.product_variants_grid">
                             <t t-set="ul_class" t-value="'flex-row'" />
                             <t t-set="parent_combination" t-value="None" />
                         </t>
