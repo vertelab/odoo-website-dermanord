@@ -408,16 +408,16 @@ div.products_pager {
 
  /* Color variants styling */
 
- .css_attribute_color {
+ #product_details .css_attribute_color {
      margin-right: 10rem;
      /* line-height: 1.1rem; */
  }
 
- .css_attribute_color.active {
+ #product_details .css_attribute_color.active {
     color: red;
 }
 
- .color_name {
+#product_details .color_name {
     margin-left: 1.8rem;
     white-space: nowrap;
 }
