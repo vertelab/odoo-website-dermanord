@@ -17,8 +17,10 @@ odoo.define('webshop_dermanord.VariantMixin', function (require) {
     var $price = $parent.find(".oe_price:first .oe_currency_value");
     var $default_price = $parent.find(".oe_default_price:first .oe_currency_value");
     var $optional_price = $parent.find(".oe_optional:first .oe_currency_value");
-    // $price.text(self._priceToStr(combination.price));
-    // $default_price.text(self._priceToStr(combination.list_price));
+    $price.text(self._priceToStr(combination.price));
+    $default_price.text(self._priceToStr(combination.list_price));
+    console.log(`Price is ${JSON.stringify($price)}`)
+    console.log(`Default price is ${$default_price}`)
 
     var isCombinationPossible = true;
     if (!_.isUndefined(combination.is_combination_possible)) {
