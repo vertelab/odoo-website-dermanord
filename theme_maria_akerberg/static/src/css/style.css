@@ -444,7 +444,9 @@ div.products_pager {
 
  #product_details .css_attribute_color {
      margin-right: 10rem;
-     /* line-height: 1.1rem; */
+     margin-bottom: 1rem;
+     vertical-align: middle;
+     line-height: 1.1rem; 
  }
 
  #product_details .css_attribute_color.active {
