@@ -10,8 +10,8 @@
 }
 
 h3 {
-    font-family: "kepler-std-display";
-    }
+    font-family: "futura-pt-medium", "Odoo Unicode Support Noto", serif;
+}
 
 /* h6 {
     font-family: "kepler-std-display";
@@ -35,7 +35,7 @@ a:hover {
     padding: calc(calc(6/var(--fs))*1.5rem) calc(calc(12/var(--fs))*1rem);
     font-size: calc(calc(14/var(--fs))*1rem);
     font-weight: 500;
-    border-radius: 0.5em;
+    border-radius: 0.3em;
 }
 
 .btn-primary {
@@ -67,8 +67,9 @@ a:hover {
 .btn-lg {
     padding: calc(calc(10/var(--fs))*1rem) calc(calc(16/var(--fs))*1rem);
     font-size: 1rem;
-    line-height: 1.33;
+    line-height: 1.188;
     font-weight: bold;
+    margin-bottom: 5px;
 }
 
 
@@ -182,9 +183,6 @@ a:hover {
 }
 
 /* Card Styles */
-ul.shop-variant {
-    display: flex;
-}
 
 .card-body {
     flex: 0 0 auto;
@@ -230,6 +228,10 @@ div.radio_input_value {
 .bottom {
     position: absolute;
     bottom: 0; 
+}
+
+#products_grid ul.shop-variant {
+    margin-bottom: 0;
 }
 
 /* Pagenation Styles */
@@ -285,9 +287,24 @@ div.radio_input_value {
     color: var(--o-color-5) !important;
 }
 
-li.nav-item i ~ a.nav-link {
+#o_shop_collapse_category > li.nav-item > i ~ a.nav-link {
     font-family: "futura-pt-medium", "Odoo Unicode Support Noto", serif;
 }
+
+/* Product Detail Page */
+
+#product_detail .js_product.js_main_product {
+    margin-bottom: 2rem;
+}
+
+ul#myTab li.nav-item {
+    font-family: "futura-pt-medium", "Odoo Unicode Support Noto", serif;
+}
+
+#product_detail .o_carousel_product_card_body .card-title {
+    text-transform: uppercase;
+}
+
 
 /* DIRTY FIX */
 
@@ -295,7 +312,7 @@ li.nav-item i ~ a.nav-link {
     margin: 0.25rem 0.5rem auto 0;
 }
 
-.js_add_cart_variants {
+div.oe_website_sale.js_add_cart_variants {
     margin-bottom: 0px !important;
 }
 
@@ -308,11 +325,29 @@ li.nav-item i ~ a.nav-link {
     padding-bottom: 3px !important;
 }
 
-.oe_price_h4, .oe_price {
+#products_grid .oe_price_h4 {
     font-family: "futura-pt-light", "Odoo Unicode Support Noto", serif;
     font-size: 1.05rem;
-    color: var(--dark);
+    color: var(--o-palette-1-o-color-5);
     font-weight: 400 !important;
+}
+
+#products_grid .oe_price_h4 .oe_price{
+    font-weight: 400 !important;
+}
+
+#product_detail .oe_price_h4 {
+    font-family: "futura-pt-medium", "Odoo Unicode Support Noto", serif;
+    font-size: 1.75rem;
+    color: var(--o-palette-1-o-color-5);
+}
+
+#product_detail .oe_price_h4 .oe_price{
+    font-weight: 400 !important;
+}
+
+#product_detail .o_wsale_products_searchbar_form {
+    display: none;
 }
 
 .badge-primary {
@@ -405,7 +440,6 @@ div.products_pager {
         background: var(--o-color-4);
     }
  }
-
  /* Color variants styling */
 
  #product_details .css_attribute_color {

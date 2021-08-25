@@ -35,7 +35,7 @@
                     <h3>Alternative Products:</h3>
                     <div class="row mt16" style="">
                         <t t-foreach="product.alternative_product_ids" t-as="alt_product">
-                            <div t-attf-class="o_carousel_product_card_wrap col-md-4">
+                            <div t-attf-class="o_carousel_product_card_wrap col-md-6">
                                 <div class="o_carousel_product_card card h-100">
                                     <t t-set="combination_info" t-value="alt_product._get_combination_info()"/>
                                     <t t-set="product_variant" t-value="alt_product.env['product.product'].browse(combination_info['product_id'])"/>
@@ -51,8 +51,8 @@
                                     </div>
                                     <div class="o_carousel_product_card_footer card-footer d-flex align-items-center">
                                         <div class="product_price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
-                                            <del t-attf-class="text-danger mr-2 {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
-                                            <span t-if="combination_info['price']" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                            <del t-attf-class="text-danger mr-2 {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id, 'decimal_places': 0}" />
+                                            <span t-if="combination_info['price']" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id, 'decimal_places': 0}"/>
                                             <span itemprop="price" style="display:none;" t-esc="combination_info['price']" />
                                             <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
                                         </div>
@@ -70,7 +70,7 @@
                     <h3>Accessories Products:</h3>
                     <div class="row mt16" style="">
                         <t t-foreach="product.accessory_product_ids" t-as="product">
-                            <div t-attf-class="o_carousel_product_card_wrap col-md-4">
+                            <div t-attf-class="o_carousel_product_card_wrap col-md-6">
                                 <div class="o_carousel_product_card card h-100">
                                     <input type="hidden" name="product-id" t-att-data-product-id="product.id"/>
                                     <a class="o_carousel_product_img_link" t-att-href="product.website_url">
@@ -84,7 +84,7 @@
                                     </div>
                                     <div class="o_carousel_product_card_footer card-footer d-flex align-items-center">
                                         <div class="product_price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
-                                            <span t-if="product['lst_price']" t-esc="product['lst_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                            <span t-if="product['lst_price']" t-esc="product['lst_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id, 'decimal_places': 0}"/>
                                             <span itemprop="lst_price" style="display:none;" t-esc="product['lst_price']" />
                                             <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
                                         </div>
@@ -115,6 +115,13 @@
 
         <xpath expr="//div[@id='product_details']" position="attributes">
             <attribute name="class">col-md-6 col-xl-5</attribute>
+        </xpath>
+
+        <xpath expr="//hr[@t-if='product.description_sale']" position="replace">
+        </xpath>
+
+        <xpath expr="//a[@id='add_to_cart']" position="replace">
+            <a role="button" id="add_to_cart" class="btn btn-primary btn-lg js_check_product a-submit d-block d-sm-inline-block" href="#">Add to Cart</a>
         </xpath>
 
         <xpath expr="//t[@t-placeholder='select']" position="replace">
@@ -150,7 +157,7 @@
                         <div class="tab-pane fade show active" id="home1" role="tabpanel" aria-labelledby="home-tab">
                             <p t-field="product.description_sale" class="text-muted mt-3" placeholder="A short description that will also appear on documents." />
                             <div id="product_attributes_simple">
-                                <hr t-if="sum([(1 if len(l.value_ids)==1 else 0) for l in product.attribute_line_ids])"/>
+                                <!-- <hr t-if="sum([(1 if len(l.value_ids)==1 else 0) for l in product.attribute_line_ids])"/> -->
                                 <p class="text-muted">
                                     <t t-set="single_value_attributes" t-value="product.valid_product_template_attribute_line_ids._prepare_single_value_for_display()"/>
                                     <t t-foreach="single_value_attributes" t-as="attribute">
@@ -174,6 +181,12 @@
                     </div>
                 </div>
             </div>
+        </xpath>
+    </template>
+
+    <template id="product_price_int" inherit_id="website_sale.product_price">
+        <xpath expr="//b[@class='oe_price']" position="replace">
+            <b class="oe_price" style="white-space: nowrap;" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id, 'decimal_places': 0}"/>
         </xpath>
     </template>
 

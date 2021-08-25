@@ -11,14 +11,14 @@ odoo.define('webshop_dermanord.VariantMixin', function (require) {
      * @param {$.Element} $parent
      * @param {Array} combination
      */
-     VariantMixin._onChangeCombination = function (ev, $parent, combination) {
+    VariantMixin._onChangeCombination = function (ev, $parent, combination) {
     var self = this;
     console.log('VariantMixin override!', this)
     var $price = $parent.find(".oe_price:first .oe_currency_value");
     var $default_price = $parent.find(".oe_default_price:first .oe_currency_value");
     var $optional_price = $parent.find(".oe_optional:first .oe_currency_value");
-    $price.text(self._priceToStr(combination.price));
-    $default_price.text(self._priceToStr(combination.list_price));
+    // $price.text(self._priceToStr(combination.price));
+    // $default_price.text(self._priceToStr(combination.list_price));
 
     var isCombinationPossible = true;
     if (!_.isUndefined(combination.is_combination_possible)) {
