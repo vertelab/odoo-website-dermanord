@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0-20210312\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-03 12:28+0000\n"
-"PO-Revision-Date: 2021-08-03 12:28+0000\n"
+"POT-Creation-Date: 2021-08-25 06:44+0000\n"
+"PO-Revision-Date: 2021-08-25 06:44+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -28,17 +28,23 @@ msgstr "En kort beskrivning som också kommer dycka up på document"
 #. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.shop_product_carousel
 msgid "Accessories Products:"
-msgstr "Tillbehör"
+msgstr "Accessoar Produkter:"
 
 #. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.product_list
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.shop_product_carousel
 msgid "Add to Cart"
 msgstr "Lägg till i Kundvagn"
 
 #. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.portal_layout_extended
+msgid "Agents"
+msgstr ""
+
+#. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.shop_product_carousel
 msgid "Alternative Products:"
-msgstr "Alternativprodukter"
+msgstr "Alternativa Produkter:"
 
 #. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
@@ -72,14 +78,14 @@ msgid "Drag building blocks here to customize the header for \""
 msgstr ""
 
 #. module: theme_maria_akerberg
-#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
-msgid "Grid"
-msgstr "Rutnätsvy"
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.portal_invoice_page_extend
+msgid "History"
+msgstr ""
 
 #. module: theme_maria_akerberg
 #: model:ir.model.fields,field_description:theme_maria_akerberg.field_theme_utils__id
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 #. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.product_list
@@ -92,9 +98,14 @@ msgid "Last Modified on"
 msgstr "Senast redigerad"
 
 #. module: theme_maria_akerberg
-#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
-msgid "List"
-msgstr "Lista"
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.header_cart_link_extended
+msgid "My Cart"
+msgstr ""
+
+#. module: theme_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.portal_my_home_sale_wishlist
+msgid "My wishlist"
+msgstr ""
 
 #. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products
@@ -144,7 +155,7 @@ msgstr "Tema Verktyg"
 #. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products_item
 msgid "This combination does not exist."
-msgstr "Denna kombination existerar inte."
+msgstr "Denna komnination existerar inte."
 
 #. module: theme_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_maria_akerberg.products_item
