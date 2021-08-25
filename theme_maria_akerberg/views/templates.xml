@@ -56,9 +56,9 @@
                                             <span itemprop="price" style="display:none;" t-esc="combination_info['price']" />
                                             <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
                                         </div>
-                                        <button type="button" role="button" class="btn btn-primary alternative_js_add_cart ml-auto" title="Add to Cart">
+                                        <!-- <button type="button" role="button" class="btn btn-primary alternative_js_add_cart ml-auto" title="Add to Cart">
                                             <i class="fa fa-fw fa-shopping-cart"/>
-                                        </button>
+                                        </button> -->
                                     </div>
                                 </div>
                             </div>
