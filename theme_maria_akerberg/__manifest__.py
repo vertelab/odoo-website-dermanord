@@ -11,6 +11,7 @@ Website theme for Maria Åkerberg
         "website_imagemagick",
         "sale_commission",
         "product_ma_fields",
+        "currency_decimal_options"
     ],
     "data": [
         "security/base_security.xml",
