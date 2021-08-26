@@ -29,6 +29,9 @@
     'depends': [
         "base"
     ],
+    'data': [
+        "views/res_currency_decimal.xml",
+    ],
     'installable': True,
     'application': False,
     'author': "Vertel AB",
