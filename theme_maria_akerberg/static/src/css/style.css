@@ -442,14 +442,14 @@ div.products_pager {
  }
  /* Color variants styling */
 
- #product_details .css_attribute_color {
-     margin-right: 10rem;
-     margin-bottom: 1rem;
-     vertical-align: middle;
-     line-height: 1.1rem; 
+#product_details .css_attribute_color {
+    margin-right: 10rem;
+    margin-bottom: 1rem;
+    vertical-align: middle;
+    line-height: 1.1rem; 
  }
 
- #product_details .css_attribute_color.active {
+#product_details .css_attribute_color.active {
     color: var(--o-color-3);
 }
 
@@ -460,8 +460,4 @@ div.products_pager {
 #product_details .color_name {
     margin-left: 1.8rem;
     white-space: nowrap;
-}
-
-div#wrapwrap main div#wrap.js_sale section#product_detail.container.py-2.oe_website_sale div.row div.col-md-6.col-xl-7 div#o-carousel-product.carousel.slide div div.container.mt32 div.row.mt16 div.o_carousel_product_card_wrap.col-md-4 div.o_carousel_product_card.card.h-100 div.o_carousel_product_card_footer.card-footer.d-flex.align-items-center button.btn.btn-primary.alternative_js_add_cart.ml-auto{
-    display:none;
 }

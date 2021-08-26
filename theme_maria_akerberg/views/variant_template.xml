@@ -41,7 +41,7 @@
 				    </t>
 
 				    <t t-if="ptal.attribute_id.display_type == 'color'">
-						<ul t-att-data-attribute_id="ptal.attribute_id.id" t-attf-class="#{'d-none' if single_and_custom else ''}" style="margin-left: 0.1rem !important;">
+						<ul t-att-data-attribute_id="ptal.attribute_id.id" t-attf-class="#{'d-none' if single_and_custom else ''}" style="margin-left: -2.3rem !important;">
 						    <li t-foreach="ptal.product_template_value_ids._only_active()" t-as="ptav" class="list-inline-item" id="attrs-color" >
 							<label t-attf-style="background-color:#{ptav.html_color or ptav.product_attribute_value_id.name if not ptav.is_custom else ''}"
 							    t-attf-class="css_attribute_color #{'active' if ptav in combination else ''} #{'custom_value' if ptav.is_custom else ''}">
