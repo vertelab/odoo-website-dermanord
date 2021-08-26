@@ -1,20 +1,18 @@
 <odoo>
     <template id="product_page_pager" inherit_id="portal.pager">
         <xpath expr="//ul[1]/li[1]/a[@t-attf-class='page-link #{extraLinkClass}']" position="replace">
-            <a t-att-href="pager['page_previous']['url'] if pager['page']['num'] != 1 else None" 
-               t-attf-class="page-link #{extraLinkClass}">
+            <a t-att-href="pager['page_previous']['url'] if pager['page']['num'] != 1 else None" t-attf-class="page-link #{extraLinkClass}">
                 <i class="fa fa-chevron-left"></i>
             </a>
         </xpath>
 
         <xpath expr="//li[2]/a[@t-attf-class='page-link #{extraLinkClass}']" position="replace">
-            <a t-att-href="pager['page_next']['url'] if pager['page']['num'] != pager['page_count'] else None" 
-               t-attf-class="page-link #{extraLinkClass}">
+            <a t-att-href="pager['page_next']['url'] if pager['page']['num'] != pager['page_count'] else None" t-attf-class="page-link #{extraLinkClass}">
                 <i class="fa fa-chevron-right"></i>
             </a>
         </xpath>
     </template>
-    
+
     <template id="recommended_products" inherit_id="website_sale.recommended_products">
         <xpath expr="//div[@t-if='product.alternative_product_ids']" position="attributes">
             <attribute name="style">display: none !important</attribute>
@@ -161,7 +159,8 @@
                                 <p class="text-muted">
                                     <t t-set="single_value_attributes" t-value="product.valid_product_template_attribute_line_ids._prepare_single_value_for_display()"/>
                                     <t t-foreach="single_value_attributes" t-as="attribute">
-                                        <span t-field="attribute.name"/>:
+                                        <span t-field="attribute.name"/>
+:
                                         <t t-foreach="single_value_attributes[attribute]" t-as="ptal">
                                             <span t-field="ptal.product_template_value_ids._only_active().name"/>
                                             <t t-if="not ptal_last">, </t>
@@ -185,6 +184,17 @@
     </template>
 
     <template id="product_price_int" inherit_id="website_sale.product_price">
+
+        <xpath expr="//h4[@class='css_non_editable_mode_hidden decimal_precision'][1]" position="replace">
+            <h4 class="css_non_editable_mode_hidden decimal_precision" t-att-data-precision="str(website.currency_id.website_decimal_places)">
+                <span t-field="product.list_price" t-options='{
+                   "widget": "monetary",
+                   "display_currency": product.currency_id, 
+                   "decimal_places": 0
+               }'/>
+            </h4>
+        </xpath>
+
         <xpath expr="//b[@class='oe_price']" position="replace">
             <b class="oe_price" style="white-space: nowrap;" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id, 'decimal_places': 0}"/>
         </xpath>
@@ -193,7 +203,8 @@
     <template id="products" inherit_id="website_sale.products">
         <xpath expr="//div[hasclass('products_pager')]" position="before">
             <t t-if="category">
-                <t t-set='editor_msg'>Drag building blocks here to customize the header for "<t t-esc='category.name'/>" category.</t>
+                <t t-set='editor_msg'>Drag building blocks here to customize the header for "<t t-esc='category.name'/>
+" category.</t>
                 <div class="mb16" id="category_header" t-att-data-editor-message="editor_msg" t-field="category.website_description"/>
             </t>
         </xpath>
@@ -224,7 +235,8 @@
                 </div>
                 <div id="products_grid" t-attf-class="col #{'o_wsale_layout_list' if layout_mode == 'list' else ''}">
                     <t t-if="category">
-                        <t t-set="editor_msg">Drag building blocks here to customize the header for "<t t-esc="category.name"/>" category.</t>
+                        <t t-set="editor_msg">Drag building blocks here to customize the header for "<t t-esc="category.name"/>
+" category.</t>
                         <div class="mb16" id="category_header" t-att-data-editor-message="editor_msg" t-field="category.website_description"/>
                     </t>
                     <div t-if="bins" class="o_wsale_products_grid_table_wrapper">
@@ -257,24 +269,27 @@
                         <div class="text-center text-muted">
                             <t t-if="not search">
                                 <h3 class="mt8">No product defined</h3>
-                                <p t-if="category">No product defined in category "<strong t-esc="category.display_name"/>".</p>
+                                <p t-if="category">No product defined in category "<strong t-esc="category.display_name"/>
+".</p>
                             </t>
                             <t t-else="">
                                 <h3 class="mt8">No results</h3>
-                                <p>No results for "<strong t-esc="search"/>"<t t-if="category"> in category "<strong t-esc="category.display_name"/>"</t>.
+                                <p>No results for "<strong t-esc="search"/>
+"                                <t t-if="category"> in category "<strong t-esc="category.display_name"/>
+"</t>.
                             </p>
-                            </t>
-                            <p t-ignore="true" groups="sales_team.group_sale_manager">Click <i>'New'</i> in the top-right corner to create your first product.</p>
-                        </div>
-                    </t>
-                </div>
-                <div class="products_pager form-inline justify-content-center py-3 col">
-                    <t t-call="website.pager"/>
-                </div>
+                        </t>
+                        <p t-ignore="true" groups="sales_team.group_sale_manager">Click <i>'New'</i> in the top-right corner to create your first product.</p>
+                    </div>
+                </t>
             </div>
-        </xpath>
+            <div class="products_pager form-inline justify-content-center py-3 col">
+                <t t-call="website.pager"/>
+            </div>
+        </div>
+    </xpath>
 
-        <!-- <xpath expr="//div[hasclass('product_grid_wrapper')]/div[hasclass('products_pager')]/t[@t-call][last()]" position="after">
+    <!-- <xpath expr="//div[hasclass('product_grid_wrapper')]/div[hasclass('products_pager')]/t[@t-call][last()]" position="after">
             <div class="btn-group btn-group-toggle mt-2 ml-md-2 d-none d-sm-inline-flex o_wsale_apply_layout" data-toggle="buttons">
                 <label t-attf-class="btn btn-secondary #{'active' if layout_mode != 'list' else None} fa fa-th-large o_wsale_apply_grid" title="Grid">
                     <input type="radio" name="wsale_products_layout" t-att-checked="'checked' if layout_mode != 'list' else None"/>
@@ -285,165 +300,165 @@
             </div>
         </xpath> -->
 
-        <xpath expr="//div[hasclass('product_grid_wrapper')]/div[hasclass('products_pager')]/t[@t-call][last()]" position="after">
-            <t t-set="list_price_desc_label">Catalog price: High to Low</t>
-            <t t-set="list_price_asc_label">Catalog price: Low to High</t>
-            <t t-set="name_asc_label">Name: A to Z</t>
-            <t t-set="name_desc_label">Name: Z to A</t>
-            <t t-set="website_sale_sortable" t-value="[                 (list_price_desc_label, 'list_price desc'),                 (list_price_asc_label, 'list_price asc'),                 (name_asc_label, 'name asc'),                 (name_desc_label, 'name desc')             ]"/>
-            <t t-set="website_sale_sortable_current" t-value="[sort for sort in website_sale_sortable if sort[1]==request.params.get('order', '')]"/>
-            <div class="dropdown mt-2 ml-md-2 dropdown_sorty_by">
-                <a role="button" href="#" class="dropdown-toggle btn btn-secondary" data-toggle="dropdown">
-                    <span class="d-none d-lg-inline">
-                        <t t-if="len(website_sale_sortable_current)">
+    <xpath expr="//div[hasclass('product_grid_wrapper')]/div[hasclass('products_pager')]/t[@t-call][last()]" position="after">
+        <t t-set="list_price_desc_label">Catalog price: High to Low</t>
+        <t t-set="list_price_asc_label">Catalog price: Low to High</t>
+        <t t-set="name_asc_label">Name: A to Z</t>
+        <t t-set="name_desc_label">Name: Z to A</t>
+        <t t-set="website_sale_sortable" t-value="[                 (list_price_desc_label, 'list_price desc'),                 (list_price_asc_label, 'list_price asc'),                 (name_asc_label, 'name asc'),                 (name_desc_label, 'name desc')             ]"/>
+        <t t-set="website_sale_sortable_current" t-value="[sort for sort in website_sale_sortable if sort[1]==request.params.get('order', '')]"/>
+        <div class="dropdown mt-2 ml-md-2 dropdown_sorty_by">
+            <a role="button" href="#" class="dropdown-toggle btn btn-secondary" data-toggle="dropdown">
+                <span class="d-none d-lg-inline">
+                    <t t-if="len(website_sale_sortable_current)">
                             Sorting by : <t t-raw="website_sale_sortable_current[0][0]"/>
-                        </t>
-                        <t t-else="1">
+                    </t>
+                    <t t-else="1">
                             Sort by
-                        </t>
-                    </span>
-                    <i class="fa fa-sort-amount-asc d-lg-none"/>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" role="menu">
-                    <t t-foreach="website_sale_sortable" t-as="sortby">
-                        <a role="menuitem" rel="noindex,nofollow" t-att-href="keep('/shop', order=sortby[1])" class="dropdown-item">
-                            <span t-raw="sortby[0]"/>
-                        </a>
                     </t>
-                </div>
-            </div>
-        </xpath>
-
-        <!-- Removes the footer pagination -->
-        <xpath expr="//div[@class='products_pager form-inline justify-content-center py-3']" position="replace">
-            <span/>
-        </xpath>
-    </template>
-
-    <template id="products_item" inherit_id="website_sale.products_item" name="Products">
-        <xpath expr="//form[hasclass('oe_product_cart')]/div[hasclass('o_wsale_product_information')]/div[hasclass('o_wsale_product_information_text')]" position="replace">
-            <div class="p-2 o_wsale_product_information_text">
-                <t t-set="combination" t-value="product._get_first_possible_combination()"/>
-                <t t-set="combination_info" t-value="product._get_combination_info(combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
-                <t t-set="product_variant" t-value="product.env['product.product'].browse(combination_info['product_id'])"/>
-
-                <h6 class="o_wsale_products_item_title">
-                    <a itemprop="name" t-att-href="product_href" t-att-content="product.name" t-field="product.name" />
-                    <a role="button" t-if="not product.website_published" t-att-href="product_href" class="btn btn-sm btn-danger" title="This product is unpublished.">Unpublished</a>
-                </h6>
-
-                <div class="js_product js_main_product bottom" style="text-align: left;">
-                    <t t-placeholder="select">
-                        <input type="hidden" class="product_id" name="product_id" t-att-value="product_variant.id" />
-                        <input type="hidden" class="product_template_id" name="product_template_id" t-att-value="product.id" />
-
-                        <t t-if="combination" t-call="theme_maria_akerberg.product_variants_grid">
-                            <t t-set="ul_class" t-value="'flex-row'" />
-                            <t t-set="parent_combination" t-value="None" />
-                        </t>
-                        <t t-else="">
-                            <ul class="d-none js_add_cart_variants" t-att-data-attribute_exclusions="{'exclusions: []'}"/>
-                        </t>
-
-                        <t t-call="website_sale.product_price" />
-                        <p t-if="True" class="css_not_available_msg alert alert-warning">This combination does not exist.</p>
-                    </t>
-                </div>
-            </div>
-        </xpath>
-
-         <xpath expr="//a[@class='d-block h-100'][1]" position="replace">
-             <a t-att-href="product_href" class="d-block h-100" itemprop="url">
-                 <t t-set="pid" t-value="product.id" />
-                 <img t-if="product.image_1920" t-att-src="website.imagefield_hash('product.template','image_1920',pid,'theme_maria_akerberg.img_product')" />
-             </a>
-         </xpath>
-    </template>
-
-    <template id="option_collapse_categories_recursive" inherit_id="website_sale.option_collapse_categories_recursive">
-        <xpath expr="//li/a[@t-field='c.name']" position="attributes">
-            <attribute name="t-att-style">'font-weight:bold;' if children else 'font-weight:unset;'</attribute>
-        </xpath>
-    </template>
-
-    <template id="sale_order_portal_templates" inherit_id="sale.sale_order_portal_template">
-        <xpath expr="//div[hasclass('o_portal_sale_sidebar')]/div[@id='quote_content']/div[@id='sale_order_communication']" position="attributes">
-            <attribute name="style">display: none !important;</attribute>
-        </xpath>
-    </template>
-
-    <template id="invoice_order_portal_templates" inherit_id="account.portal_invoice_page">
-        <xpath expr="//div[hasclass('o_portal_invoice_sidebar')]/div[@id='invoice_content']/div[@id='invoice_communication']" position="attributes">
-            <attribute name="style">display: none !important;</attribute>
-        </xpath>
-    </template>
-
-    <template id="portal_invoice_page_extend" inherit_id="account.portal_invoice_page" active="False" customize_show="True" name="Show History">
-        <xpath expr="//div[hasclass('o_portal_invoice_sidebar')]/div[@id='invoice_content']/div[@id='invoice_communication']" position="after">
-            <!-- chatter -->
-            <div id="invoice_communication" class="mt-4">
-                <h2>History</h2>
-                <t t-call="portal.message_thread">
-                    <t t-set="object" t-value="invoice"/>
+                </span>
+                <i class="fa fa-sort-amount-asc d-lg-none"/>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" role="menu">
+                <t t-foreach="website_sale_sortable" t-as="sortby">
+                    <a role="menuitem" rel="noindex,nofollow" t-att-href="keep('/shop', order=sortby[1])" class="dropdown-item">
+                        <span t-raw="sortby[0]"/>
+                    </a>
                 </t>
             </div>
-        </xpath>
-    </template>
+        </div>
+    </xpath>
 
-    <template id="payment_extends" inherit_id="website_sale.payment">
-        <xpath expr="//t[@t-call='website.layout']/div[@id='wrap']/div[hasclass('oe_website_sale')]/div[1]/div[hasclass('oe_cart')]/div[1]/div[@id='shipping_and_billing']/a[1]" position="attributes">
-            <attribute name="style">display: none !important</attribute>
-        </xpath>
-    </template>
+    <!-- Removes the footer pagination -->
+    <xpath expr="//div[@class='products_pager form-inline justify-content-center py-3']" position="replace">
+        <span/>
+    </xpath>
+</template>
 
-    <template id="portal_layout_extended" inherit_id="portal.portal_layout">
-        <xpath expr="//t[@t-call='portal.frontend_layout']/div[@id='wrap']/div[1]/t[@t-if='my_details']/div[1]/div[@id='o_my_sidebar']/div[hasclass('o_portal_my_details')]" position="after">
-            <div class="o_portal_my_agents" style="margin-top: 10px;" t-if="user_id.partner_id.agent_ids and len(user_id.partner_id.agent_ids) == 1">
-                <h4>Agents</h4>
-                <hr class="mt-1 mb-0"/>
-                <div t-field="user_id.partner_id.agent_ids" t-options='{"widget": "contact", "fields": ["email", "phone", "address", "name"]}'/>
+<template id="products_item" inherit_id="website_sale.products_item" name="Products">
+    <xpath expr="//form[hasclass('oe_product_cart')]/div[hasclass('o_wsale_product_information')]/div[hasclass('o_wsale_product_information_text')]" position="replace">
+        <div class="p-2 o_wsale_product_information_text">
+            <t t-set="combination" t-value="product._get_first_possible_combination()"/>
+            <t t-set="combination_info" t-value="product._get_combination_info(combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
+            <t t-set="product_variant" t-value="product.env['product.product'].browse(combination_info['product_id'])"/>
+
+            <h6 class="o_wsale_products_item_title">
+                <a itemprop="name" t-att-href="product_href" t-att-content="product.name" t-field="product.name" />
+                <a role="button" t-if="not product.website_published" t-att-href="product_href" class="btn btn-sm btn-danger" title="This product is unpublished.">Unpublished</a>
+            </h6>
+
+            <div class="js_product js_main_product bottom" style="text-align: left;">
+                <t t-placeholder="select">
+                    <input type="hidden" class="product_id" name="product_id" t-att-value="product_variant.id" />
+                    <input type="hidden" class="product_template_id" name="product_template_id" t-att-value="product.id" />
+
+                    <t t-if="combination" t-call="theme_maria_akerberg.product_variants_grid">
+                        <t t-set="ul_class" t-value="'flex-row'" />
+                        <t t-set="parent_combination" t-value="None" />
+                    </t>
+                    <t t-else="">
+                        <ul class="d-none js_add_cart_variants" t-att-data-attribute_exclusions="{'exclusions: []'}"/>
+                    </t>
+
+                    <t t-call="website_sale.product_price" />
+                    <p t-if="True" class="css_not_available_msg alert alert-warning">This combination does not exist.</p>
+                </t>
             </div>
-        </xpath>
+        </div>
+    </xpath>
 
-        <xpath expr="//t[@t-call='portal.frontend_layout']/div[@id='wrap']/div[1]/t[@t-if='my_details']/div[1]/div[@id='o_my_sidebar']/div[hasclass('o_portal_my_details')]/h4[1]/a[1]" position="attributes">
-            <attribute name="style">display: none !important</attribute>
-        </xpath>
-    </template>
+    <xpath expr="//a[@class='d-block h-100'][1]" position="replace">
+        <a t-att-href="product_href" class="d-block h-100" itemprop="url">
+            <t t-set="pid" t-value="product.id" />
+            <img t-if="product.image_1920" t-att-src="website.imagefield_hash('product.template','image_1920',pid,'theme_maria_akerberg.img_product')" />
+        </a>
+    </xpath>
+</template>
 
-    <template id="address_kanban_extended" inherit_id="website_sale.address_kanban">
-        <xpath expr="//div[hasclass('card-body')]/a[1]" position="attributes">
-            <attribute name="style">display: none !important</attribute>
-        </xpath>
-    </template>
+<template id="option_collapse_categories_recursive" inherit_id="website_sale.option_collapse_categories_recursive">
+    <xpath expr="//li/a[@t-field='c.name']" position="attributes">
+        <attribute name="t-att-style">'font-weight:bold;' if children else 'font-weight:unset;'</attribute>
+    </xpath>
+</template>
 
-    <template id="header_cart_link_extended" inherit_id="website_sale.header_cart_link">
-        <xpath expr="//li[2]" position="replace">
-            <li t-attf-class="o_wsale_my_cart #{not show_cart and 'd-none'} #{_item_class}">
-                <t t-set="is_connected" t-value="not user_id._is_public()"/>
-                <a t-if="is_connected" href="/shop/cart" t-attf-class="#{_link_class}">
-                    <i t-if="_icon" class="fa fa-shopping-cart"/>
-                    <span t-if="_text">My Cart</span>
-                    <sup class="my_cart_quantity badge badge-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or '0'" t-att-data-order-id="website_sale_order and website_sale_order.id or ''"/>
-                </a>
-            </li>
-        </xpath>
-    </template>
+<template id="sale_order_portal_templates" inherit_id="sale.sale_order_portal_template">
+    <xpath expr="//div[hasclass('o_portal_sale_sidebar')]/div[@id='quote_content']/div[@id='sale_order_communication']" position="attributes">
+        <attribute name="style">display: none !important;</attribute>
+    </xpath>
+</template>
 
-    <template id="report_invoice_document" inherit_id="account.report_invoice_document">
-        <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')]/h2[1]" position="attributes">
-            <attribute name="style">display: none !important</attribute>
-        </xpath>
-    </template>
+<template id="invoice_order_portal_templates" inherit_id="account.portal_invoice_page">
+    <xpath expr="//div[hasclass('o_portal_invoice_sidebar')]/div[@id='invoice_content']/div[@id='invoice_communication']" position="attributes">
+        <attribute name="style">display: none !important;</attribute>
+    </xpath>
+</template>
 
-    <template id="shop_shipping_tax" inherit_id="website_sale_delivery.payment_delivery_methods" name="Delivery taxes">
-        <xpath expr="//t[starts-with(@t-esc,'delivery.rate_shipment')]" position="replace">
-            <t t-esc="delivery.rate_shipment(website_sale_order)['price_tax'] if delivery.free_over else delivery.fixed_price" t-options="{&quot;widget&quot;: &quot;monetary&quot;,                            &quot;from_currency&quot;: website_sale_order.currency_id if delivery.free_over else delivery.product_id.company_id.currency_id or website_sale_order.company_id.currency_id,                            &quot;display_currency&quot;: website_sale_order.currency_id}"/>
-        </xpath>
-    </template>
+<template id="portal_invoice_page_extend" inherit_id="account.portal_invoice_page" active="False" customize_show="True" name="Show History">
+    <xpath expr="//div[hasclass('o_portal_invoice_sidebar')]/div[@id='invoice_content']/div[@id='invoice_communication']" position="after">
+        <!-- chatter -->
+        <div id="invoice_communication" class="mt-4">
+            <h2>History</h2>
+            <t t-call="portal.message_thread">
+                <t t-set="object" t-value="invoice"/>
+            </t>
+        </div>
+    </xpath>
+</template>
 
-    <template id="cart_noordersubtotal" inherit_id="website_sale.total" name="Remove subtotal">
-        <xpath expr="//tr[@id='order_total_untaxed']" position="replace">
-        </xpath>
-    </template>
+<template id="payment_extends" inherit_id="website_sale.payment">
+    <xpath expr="//t[@t-call='website.layout']/div[@id='wrap']/div[hasclass('oe_website_sale')]/div[1]/div[hasclass('oe_cart')]/div[1]/div[@id='shipping_and_billing']/a[1]" position="attributes">
+        <attribute name="style">display: none !important</attribute>
+    </xpath>
+</template>
+
+<template id="portal_layout_extended" inherit_id="portal.portal_layout">
+    <xpath expr="//t[@t-call='portal.frontend_layout']/div[@id='wrap']/div[1]/t[@t-if='my_details']/div[1]/div[@id='o_my_sidebar']/div[hasclass('o_portal_my_details')]" position="after">
+        <div class="o_portal_my_agents" style="margin-top: 10px;" t-if="user_id.partner_id.agent_ids and len(user_id.partner_id.agent_ids) == 1">
+            <h4>Agents</h4>
+            <hr class="mt-1 mb-0"/>
+            <div t-field="user_id.partner_id.agent_ids" t-options='{"widget": "contact", "fields": ["email", "phone", "address", "name"]}'/>
+        </div>
+    </xpath>
+
+    <xpath expr="//t[@t-call='portal.frontend_layout']/div[@id='wrap']/div[1]/t[@t-if='my_details']/div[1]/div[@id='o_my_sidebar']/div[hasclass('o_portal_my_details')]/h4[1]/a[1]" position="attributes">
+        <attribute name="style">display: none !important</attribute>
+    </xpath>
+</template>
+
+<template id="address_kanban_extended" inherit_id="website_sale.address_kanban">
+    <xpath expr="//div[hasclass('card-body')]/a[1]" position="attributes">
+        <attribute name="style">display: none !important</attribute>
+    </xpath>
+</template>
+
+<template id="header_cart_link_extended" inherit_id="website_sale.header_cart_link">
+    <xpath expr="//li[2]" position="replace">
+        <li t-attf-class="o_wsale_my_cart #{not show_cart and 'd-none'} #{_item_class}">
+            <t t-set="is_connected" t-value="not user_id._is_public()"/>
+            <a t-if="is_connected" href="/shop/cart" t-attf-class="#{_link_class}">
+                <i t-if="_icon" class="fa fa-shopping-cart"/>
+                <span t-if="_text">My Cart</span>
+                <sup class="my_cart_quantity badge badge-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or '0'" t-att-data-order-id="website_sale_order and website_sale_order.id or ''"/>
+            </a>
+        </li>
+    </xpath>
+</template>
+
+<template id="report_invoice_document" inherit_id="account.report_invoice_document">
+    <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')]/h2[1]" position="attributes">
+        <attribute name="style">display: none !important</attribute>
+    </xpath>
+</template>
+
+<template id="shop_shipping_tax" inherit_id="website_sale_delivery.payment_delivery_methods" name="Delivery taxes">
+    <xpath expr="//t[starts-with(@t-esc,'delivery.rate_shipment')]" position="replace">
+        <t t-esc="delivery.rate_shipment(website_sale_order)['price_tax'] if delivery.free_over else delivery.fixed_price" t-options="{&quot;widget&quot;: &quot;monetary&quot;,                            &quot;from_currency&quot;: website_sale_order.currency_id if delivery.free_over else delivery.product_id.company_id.currency_id or website_sale_order.company_id.currency_id,                            &quot;display_currency&quot;: website_sale_order.currency_id}"/>
+    </xpath>
+</template>
+
+<template id="cart_noordersubtotal" inherit_id="website_sale.total" name="Remove subtotal">
+    <xpath expr="//tr[@id='order_total_untaxed']" position="replace">
+    </xpath>
+</template>
 
 </odoo>

@@ -80,6 +80,12 @@
         font-size: 0.80rem;
     }
 
+    label.col-form-label.active input[type="radio"] ~ div.radio_input_value {
+        font-weight: bolder;
+        font-family: "futura-pt-medium", "Odoo Unicode Support Noto", serif;
+        color: var(--o-color-3);
+    }
+
     input[type="radio"]:focus + label {
         border: 2px dashed #444;
     }
@@ -113,6 +119,12 @@
         &:hover {
             background-color: #E9ECEF;
         }
+    }
+
+    label.col-form-label.active input[type="radio"] ~ div.radio_input_value {
+        font-weight: bolder;
+        font-family: "futura-pt-medium", "Odoo Unicode Support Noto", serif;
+        color: var(--o-color-3);
     }
 
     input[type="radio"]:focus + label {
