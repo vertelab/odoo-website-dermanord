@@ -327,7 +327,7 @@
                 <t t-set="combination_info" t-value="product._get_combination_info(combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
                 <t t-set="product_variant" t-value="product.env['product.product'].browse(combination_info['product_id'])"/>
 
-                <h6 class="o_wsale_products_item_title">
+                <h6 class="o_wsale_products_item_title" t-att-title="product.name">
                     <a itemprop="name" t-att-href="product_href" t-att-content="product.name" t-field="product.name" />
                     <a role="button" t-if="not product.website_published" t-att-href="product_href" class="btn btn-sm btn-danger" title="This product is unpublished.">Unpublished</a>
                 </h6>
