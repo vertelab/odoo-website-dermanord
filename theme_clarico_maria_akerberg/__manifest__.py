@@ -10,6 +10,7 @@ Website theme for Maria Åkerberg, based on Clarico
     ],
     "data": [
         "security/base_security.xml",
+        "views/templates.xml",
     ],
     "demo": [],
     "installable": True,
