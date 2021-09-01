@@ -10,3 +10,4 @@ class ProductProduct(models.Model):
     description_webshop = fields.Text(string="Webshop Description")
     description_use = fields.Text(string="Use description")
     description_ingredients = fields.Text(string="Ingredients")
+    ean13 = fields.Char(string="EAN13 Barcode")
