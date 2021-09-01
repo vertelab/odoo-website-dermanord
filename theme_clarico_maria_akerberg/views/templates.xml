@@ -16,8 +16,6 @@
             </li>
         </xpath>
 
-<!-- Note: Content in tabs is still Work In Progress -->
-
         <xpath expr="//div[div[@t-field='product.website_description']]" position="replace">
             <div class="tab-pane fade show active py-3" id="nav_tabs_content_description" role="tabpanel" aria-labelledby="nav_tabs_link_description">
                 <div itemprop="description" t-field="product.product_variant_id.description_webshop" class="col-lg-12 pt-3" id="product_full_description"/>
@@ -32,4 +30,16 @@
             </div>
         </xpath>
     </template>
+
+    <template id="portal_layout_maria" inherit_id="portal.portal_layout" name="portal_layout_maria">
+        <xpath expr="//div[@class='o_portal_my_details']//h4" position="replace">
+            <h4>Details</h4>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_sale" inherit_id="sale.portal_my_home_sale" priority="20">
+        <xpath expr="//t[@t-call='portal.portal_docs_entry']" position="replace">
+        </xpath>
+    </template>
+    
 </odoo>

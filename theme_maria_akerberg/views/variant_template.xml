@@ -17,7 +17,7 @@
 						<ul t-att-data-attribute_id="ptal.attribute_id.id" t-attf-class="list-unstyled #{'d-none' if single_and_custom else ''}" id="attrs-radio">
 						    <t t-foreach="ptal.product_template_value_ids._only_active()" t-as="ptav">
 								<li class="form-group js_attribute_value" style="margin: 7px 7px 0 0;">
-								    <label class="col-form-label">
+								    <label t-attf-class="col-form-label #{'active' if ptav in combination else ''}">
 										<div>
 										    <input type="radio"
 											t-attf-class="js_variant_change radio_input #{ptal.attribute_id.create_variant}"
@@ -41,7 +41,7 @@
 				    </t>
 
 				    <t t-if="ptal.attribute_id.display_type == 'color'">
-						<ul t-att-data-attribute_id="ptal.attribute_id.id" t-attf-class="#{'d-none' if single_and_custom else ''}" style="margin-left: -2.3rem !important;">
+						<ul t-att-data-attribute_id="ptal.attribute_id.id" t-attf-class="#{'d-none' if single_and_custom else ''}" style="margin-left: -2.4rem !important;">
 						    <li t-foreach="ptal.product_template_value_ids._only_active()" t-as="ptav" class="list-inline-item" id="attrs-color" >
 							<label t-attf-style="background-color:#{ptav.html_color or ptav.product_attribute_value_id.name if not ptav.is_custom else ''}"
 							    t-attf-class="css_attribute_color #{'active' if ptav in combination else ''} #{'custom_value' if ptav.is_custom else ''}">
@@ -96,7 +96,7 @@
 									t-att-data-is_single_and_custom="single_and_custom"
 								    />
 								    <div class="radio_input_value">
-									<span t-field="ptav.name" style="font-weight: lighter;"/>
+										<span t-field="ptav.name"/>
 								    </div>
 								</div>
 						    </label>
