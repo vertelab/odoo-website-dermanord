@@ -79,4 +79,25 @@
         </xpath>
     </template>
 
+    <template id="payment_sale_note_maria" inherit_id="website_sale.payment_sale_note" name="Maria Akerberg terms">
+        <xpath expr="//label/a" position="replace">
+            <a data-toggle="modal" data-target="#terms_view" href="">terms &amp; conditions</a>
+        </xpath>
+
+        <xpath expr="//div[@class='custom-control custom-checkbox float-right mt-2 oe_accept_cgv_button']" position="after">
+            <div class="modal fade" id="terms_view" tabindex='-1'>
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content quick_view_modal">
+                        <button type="button" class="quick_close" data-dismiss="modal"
+                                aria-label="Close" tabindex="-1">
+                        </button>
+                        <div class="modal-body">
+                            <t t-call="theme_clarico_maria_akerberg.terms"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
 </odoo>
