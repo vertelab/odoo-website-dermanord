@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="maria_product_tabs" inherit_id="theme_clarico.html_content_tabs_ept" name="Maria product_tabs">
+        <xpath expr="//t[li[a[@id='nav_tabs_link_specification']]]" position="replace">
+        </xpath>
+        <xpath expr="//div[@id='nav_tabs_content_specification']" position="replace">
+        </xpath>
+
         <xpath expr="//li[a[@id='nav_tabs_link_description']]" position="after">
             <li class="nav-item">
                 <a class="nav-link te_tab_mb_nav_link" id="nav_tabs_link_use" data-toggle="tab" href="#nav_tabs_content_use" role="tab" aria-controls="nav_tabs_content_use" aria-selected="false">
