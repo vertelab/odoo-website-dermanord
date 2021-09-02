@@ -1229,7 +1229,7 @@ msgstr ""
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.blank_details
 msgid "Address :"
-msgstr ""
+msgstr "Adress :"
 
 #. module: theme_clarico
 #. openerp-web
@@ -1714,7 +1714,7 @@ msgstr ""
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.blank_details
 msgid "Email :"
-msgstr ""
+msgstr "Email :"
 
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.contact_us_1
@@ -3108,7 +3108,7 @@ msgstr ""
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.portal_home_gridview
 msgid "My Dashboard"
-msgstr ""
+msgstr "Mitt Konto"
 
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.home_page_5
@@ -3272,7 +3272,7 @@ msgstr ""
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.blank_details
 msgid "Name :"
-msgstr ""
+msgstr "Namn :"
 
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.home_page_1
@@ -3416,7 +3416,7 @@ msgstr ""
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.blank_details
 msgid "Phone :"
-msgstr ""
+msgstr "Telefon :"
 
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.contact_us_1
@@ -3893,12 +3893,12 @@ msgstr ""
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.contact_us_1
 msgid "Your Name"
-msgstr ""
+msgstr "Ditt Namn"
 
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.contact_us_1
 msgid "Your Question"
-msgstr ""
+msgstr "Din Fråga"
 
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.p_slider
@@ -4190,3 +4190,8 @@ msgid ""
 msgstr ""
 "<span class=\"fa fa-sort-amount-desc mr-2\"/>\n"
 "                    <span class=\"nav_tab_title\">Användning</span>"
+
+#. module: theme_clarico_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_clarico_maria_akerberg.payment_sale_note_maria
+msgid "terms &amp; conditions"
+msgstr "köpvillkoren"
