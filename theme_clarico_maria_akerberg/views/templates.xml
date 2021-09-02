@@ -62,6 +62,12 @@
         </xpath>
     </template>
 
+    <template id="products_attributes_maria" inherit_id="theme_clarico.products_attributes_ept">
+        <xpath expr="//t[@t-if=&quot;a.display_type == 'select'&quot;]" position="attributes">
+            <attribute name="t-if">a.display_type in ['select', 'button']</attribute>
+        </xpath>
+    </template>
+
     <template id="portal_layout_maria" inherit_id="portal.portal_layout" name="portal_layout_maria">
         <xpath expr="//div[@class='o_portal_my_details']//h4" position="replace">
             <h4>Details</h4>
