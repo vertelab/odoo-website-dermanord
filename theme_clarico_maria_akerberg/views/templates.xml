@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <template id="short_cart_summary_maria" inherit_id="website_sale.short_cart_summary" name="Short Cart right column Maria">
+        <xpath expr="//a[@href='/shop/checkout?express=1']" position="replace">
+        </xpath>
+    </template>
+
     <template id="maria_product_tabs" inherit_id="theme_clarico.html_content_tabs_ept" name="Maria product_tabs">
         <xpath expr="//t[li[a[@id='nav_tabs_link_specification']]]" position="replace">
         </xpath>
