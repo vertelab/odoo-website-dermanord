@@ -31,18 +31,33 @@
         </xpath>
     </template>
 
-    <template id="product_detail_item" inherit_id="website_sale.product">
-        <xpath expr="//t[@t-placeholder='select']" position="replace">
-            <t t-placeholder="select">
-                <input type="hidden" class="product_id" name="product_id" t-att-value="product_variant.id" />
-                <input type="hidden" class="product_template_id" name="product_template_id" t-att-value="product.id" />
-                <t t-if="combination" t-call="theme_clarico_maria_akerberg.product_variants">
-                    <t t-set="ul_class" t-value="'flex-row'" />
-                    <t t-set="parent_combination" t-value="None" />
-                </t>
-                <t t-else="">
-                    <ul class="d-none js_add_cart_variants" t-att-data-attribute_exclusions="{'exclusions: []'}"/>
-                </t>
+    <template id="variants_maria_button" inherit_id="sale.variants">
+        <xpath expr="//t[@t-if=&quot;ptal.attribute_id.display_type == 'color'&quot;]" position="after">
+            <t t-if="ptal.attribute_id.display_type in ['button']">
+                <ul t-att-data-attribute_id="ptal.attribute_id.id" t-attf-class="list-unstyled #{'d-none' if single_and_custom else ''}" id="attrs-radio">
+                    <t t-foreach="ptal.product_template_value_ids._only_active()" t-as="ptav">
+                        <li class="form-group js_attribute_value" style="margin: 7px 7px 0 0;">
+                            <label t-attf-class="col-form-label #{'active' if ptav in combination else ''}">
+                                <div>
+                                    <input type="radio"
+                                    t-attf-class="js_variant_change radio_input #{ptal.attribute_id.create_variant}"
+                                    t-att-checked="ptav in combination"
+                                    t-att-name="'ptal-%s' % ptal.id"
+                                    t-att-value="ptav.id"
+                                    t-att-data-value_id="ptav.id"
+                                    t-att-data-value_name="ptav.name"
+                                    t-att-data-attribute_name="ptav.attribute_id.name"
+                                    t-att-data-is_custom="ptav.is_custom"
+                                    t-att-data-is_single_and_custom="single_and_custom"
+                                    />
+                                    <div class="radio_input_value">
+                                        <span t-field="ptav.name" style="font-weight: lighter;"/>
+                                    </div>
+                                </div>
+                            </label>
+                        </li>
+                    </t>
+                </ul>
             </t>
         </xpath>
     </template>
@@ -57,5 +72,5 @@
         <xpath expr="//t[@t-call='portal.portal_docs_entry']" position="replace">
         </xpath>
     </template>
-    
+
 </odoo>
