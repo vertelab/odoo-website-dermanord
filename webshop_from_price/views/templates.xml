@@ -11,6 +11,7 @@
             </xpath>
         </field>
     </record>
+
     <record id="product_attribute_from_tree" model="ir.ui.view">
         <field name="name">product.attribute.tree</field>
         <field name="model">product.attribute</field>
@@ -29,4 +30,5 @@
             <span t-if="combination_info['use_from_price'] and ppr">from</span>
         </xpath>
     </template>
+
 </odoo>
