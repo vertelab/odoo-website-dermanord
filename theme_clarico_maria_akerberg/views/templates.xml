@@ -110,4 +110,12 @@
         </xpath>
     </template>
 
+    <template id="products_item" inherit_id="website_sale.products_item" name="Products">
+        <xpath expr="//h6[@class='o_wsale_products_item_title']" position="replace">
+            <h6 class="o_wsale_products_item_title product_name" t-att-title="product.name">
+                <a itemprop="name" t-att-href="product_href" t-att-content="product.name" t-field="product.name"/>
+                <a role="button" t-if="not product.website_published" t-att-href="product_href" class="btn btn-sm btn-danger" title="This product is unpublished.">Unpublished</a>
+            </h6>
+        </xpath>
+    </template>
 </odoo>
