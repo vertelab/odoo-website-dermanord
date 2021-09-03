@@ -51,6 +51,12 @@
         margin-bottom: 0px;
     }
 }
+
+#nav_tabs_content_description, #nav_tabs_content_use, #nav_tabs_content_ingredients {
+    white-space: pre-line;
+}
+
+
 /* BUtton style 12 - Clarico overwrite! */
 .te_theme_button {
     position: relative;
