@@ -20,9 +20,11 @@ odoo.define('webshop_dermanord.VariantMixin', function (require) {
      */
     VariantMixin._onChangeCombination = function (ev, $parent, combination) {
         var self = this;
+        console.debug(combination)
         var $price = $parent.find(".oe_price:first .oe_currency_value");
         var $default_price = $parent.find(".oe_default_price:first .oe_currency_value");
         var $optional_price = $parent.find(".oe_optional:first .oe_currency_value");
+        let $description = $(':root').find('.product-body');
         $price.text(self._priceToStr(combination.price));
         $default_price.text(self._priceToStr(combination.list_price));
 
@@ -89,9 +91,31 @@ odoo.define('webshop_dermanord.VariantMixin', function (require) {
             .first()
             .text(combination.price)
             .trigger('change');
+            
+        $parent
+            .find('.col-form-label')
+            .removeClass("active")
+            .filter(':has(input:checked)')
+            .addClass("active");
 
+        $description
+            .find('#nav_tabs_content_description')
+            .children()
+            .text(combination.description_webshop)
+
+        $description
+            .find('#nav_tabs_content_use')
+            .children()
+            .text(combination.description_use)
+            
+        $description
+            .find('#nav_tabs_content_ingredients')
+            .children()
+            .text(combination.description_ingredients)
+            
         this.handleCustomValues($(ev.target));
     }
+
     VariantMixin._onChangeColorAttribute = function (ev) {
         var $parent = $(ev.target).closest('.js_product');
         $parent.find('.css_attribute_color')
