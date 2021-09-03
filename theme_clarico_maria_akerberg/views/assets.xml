@@ -10,4 +10,10 @@
             <link rel="stylesheet" type="text/scss" href="/theme_clarico_maria_akerberg/static/src/scss/style.scss" />
         </xpath>
     </template>
+    <template id="assets_frontend_override" inherit_id="website_sale.assets_frontend">
+            <!-- Customize javascript -->
+            <xpath expr="//script[@src='/website_sale/static/src/js/variant_mixin.js']" position="after">
+                <script type="text/javascript" src="/theme_clarico_maria_akerberg/static/src/js/variant_mixin.js" />
+            </xpath>
+    </template>
 </odoo>
