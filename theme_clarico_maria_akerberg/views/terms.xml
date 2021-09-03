@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+<data noupdate="1">
 <template id="terms" name="Maria Akerberg Terms Conditions">
     <div id="wrap">
       <div class="oe_structure" id="oe_structure_website_sale_terms_1">
@@ -108,14 +109,14 @@
                       </div>
                     </section>
                     <section style="color: rgb(51, 51, 51); font-family: Lato, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);">
-                      <div class="container" style="padding-right: 15px; padding-left: 15px; width: 1170px;">
+                      <div class="container" style="padding-right: 15px; padding-left: 15px;">
                         <div class="readable" style="font-size: 16.8px;">
                           <h6 class="text-left" style="font-family: kepler-std-display, serif; line-height: 1.1; margin-top: 10px; margin-bottom: 10px; font-size: 60px; font-style: italic; padding-top: 40px; overflow-wrap: break-word;">Särskilda villkor – webbshop</h6>
                         </div>
                       </div>
                     </section>
                     <section class="mb16" style="color: rgb(51, 51, 51); font-family: Lato, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);">
-                      <div class="container" style="padding-right: 15px; padding-left: 15px; width: 1170px;">
+                      <div class="container" style="padding-right: 15px; padding-left: 15px;">
                         <div class="readable" style="font-size: 16.8px;">
                           <p style="margin-right: 0px; margin-bottom: 10px; margin-left: 0px; font-size: 18px; line-height: 1.2; font-family: futura-pt-light, sans-serif;">Återförsäljaren har endast rätt att sälja Produkter från MARIA ÅKERBERG AB på den marknaden man har sitt säte. Avtalet avser försäljning av Produkter från MARIA ÅKERBERG AB på egen salong och i webbshop. Återförsäljaren ansvarar till 100 % för installation, drift samt underhåll av sin webbshop. Detta inkluderar även leveranser och kundsupport.</p>
                           <h3 style="font-family: kepler-std-display, serif; line-height: 1.1; margin-top: 20px; margin-bottom: 10px; font-size: 30px; font-style: italic;">1. Ansvar för webbshop</h3>
@@ -135,14 +136,14 @@
                       </div>
                     </section>
                     <section style="color: rgb(51, 51, 51); font-family: Lato, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);">
-                      <div class="container" style="padding-right: 15px; padding-left: 15px; width: 1170px;">
+                      <div class="container" style="padding-right: 15px; padding-left: 15px;">
                         <div class="readable" style="font-size: 16.8px;">
                           <h6 class="text-left" style="font-family: kepler-std-display, serif; line-height: 1.1; margin-top: 10px; margin-bottom: 10px; font-size: 60px; font-style: italic; padding-top: 40px; overflow-wrap: break-word;">Köpvillkor</h6>
                         </div>
                       </div>
                     </section>
                     <section class="mb16 o_colored_level" style="color: rgb(51, 51, 51); font-family: Lato, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255); height: 2080px; overflow: hidden;">
-                      <div class="container" style="padding-right: 15px; padding-left: 15px; width: 1170px;">
+                      <div class="container" style="padding-right: 15px; padding-left: 15px;">
                         <div class="readable" style="font-size: 16.8px;">
                           <p style="margin-right: 0px; margin-bottom: 10px; margin-left: 0px; font-size: 18px; line-height: 1.2; font-family: futura-pt-light, sans-serif;">Vid beställning av Produkter från MARIA&amp;nbsp;ÅKERBERG via telefon eller e-post, uppge alltid kundnummer (finns på faktura och följesedel). Detta behöver inte göras vid beställning via vår webbshop. Vid frågor angående beställning, uppge även ordernummer eller fakturanummer.</p>
                           <p style="margin-right: 0px; margin-bottom: 10px; margin-left: 0px; font-size: 18px; line-height: 1.2; font-family: futura-pt-light, sans-serif;">Beställning via MARIA&amp;nbsp;ÅKERBERG:s webbshop är idag endast möjlig för befintliga återförsäljare. Användaruppgifter skapas av oss med hjälp av information som finns registrerat i vårt system.</p>
@@ -212,4 +213,5 @@
       <div class="oe_structure" id="oe_structure_website_sale_terms_2"/>
     </div>
 </template>
+</data>
 </odoo>
