@@ -82,12 +82,6 @@
         </xpath>
     </template>
 
-    <template id="portal_layout_maria" inherit_id="portal.portal_layout" name="portal_layout_maria">
-        <xpath expr="//div[@class='o_portal_my_details']//h4" position="replace">
-            <h4>Details</h4>
-        </xpath>
-    </template>
-
     <template id="portal_my_home_sale" inherit_id="sale.portal_my_home_sale" priority="20">
         <xpath expr="//t[@t-call='portal.portal_docs_entry']" position="replace">
         </xpath>
@@ -303,4 +297,18 @@
         </xpath>
     </template>
 
+    <!-- Add agents to my portal view and remove Edit button -->
+    <template id="portal_layout_maria" inherit_id="theme_clarico.blank_details" name="Maria Akerberg Agents" priority ="98">
+        <xpath expr="//address[1]" position="after">
+            <div class="o_portal_my_agents" style="margin-top: 10px;" t-if="user_id.partner_id.agent_ids and len(user_id.partner_id.agent_ids) == 1">
+                <h4>Agents</h4>
+                <hr class="mt-1 mb-0"/>
+            <div t-field="user_id.partner_id.agent_ids" t-options='{"widget": "contact", "fields": ["email", "phone", "address", "name"]}'/>
+        </div>
+    </xpath>
+
+    <xpath expr="//a" position="replace">        
+    </xpath>
+    </template>
+    
 </odoo>
