@@ -52,6 +52,17 @@
     }
 }
 
+header {
+
+    div#top_menu_container {
+        flex-direction: row-reverse;
+        
+        a.navbar-brand {
+            margin: auto;
+        }
+    }
+}
+
 #nav_tabs_content_description, #nav_tabs_content_use, #nav_tabs_content_ingredients {
     white-space: pre-line;
 }
