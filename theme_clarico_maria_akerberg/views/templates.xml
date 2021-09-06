@@ -82,8 +82,8 @@
     </template>
 
     <template id="products_attributes_maria" inherit_id="theme_clarico.products_attributes_ept">
-        <xpath expr="//t[@t-if=&quot;a.display_type == 'select'&quot;]" position="attributes">
-            <attribute name="t-if">a.display_type in ['select', 'button']</attribute>
+        <xpath expr="//t[@t-if=&quot;a.display_type == 'radio'&quot;]" position="attributes">
+            <attribute name="t-if">a.display_type in ['radio', 'button']</attribute>
         </xpath>
     </template>
 
