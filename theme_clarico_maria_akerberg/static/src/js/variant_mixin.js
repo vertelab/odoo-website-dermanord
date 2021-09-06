@@ -100,17 +100,17 @@ odoo.define('webshop_dermanord.VariantMixin', function (require) {
         $description
             .find('#nav_tabs_content_description')
             .children()
-            .text(combination.description_webshop)
+            .text(combination.description_webshop || "")
 
         $description
             .find('#nav_tabs_content_use')
             .children()
-            .text(combination.description_use)
+            .text(combination.description_use || "")
             
         $description
             .find('#nav_tabs_content_ingredients')
             .children()
-            .text(combination.description_ingredients)
+            .text(combination.description_ingredients || "" )
             
         this.handleCustomValues($(ev.target));
     }
