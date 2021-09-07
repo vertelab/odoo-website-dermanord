@@ -140,4 +140,23 @@
     <xpath expr="//a" position="replace">
     </xpath>
     </template>
+
+    <template id="accessories" inherit_id="theme_clarico.product_ept" name="Maria Product accessories">
+<!--         <xpath expr="//a[@t-attf-href='/shop/product/#{ slug(alt_product.product_tmpl_id) }']" position="replace">
+            <div class="new_span dd_shop_prod_bg">
+                <t t-if="website.is_lazy_load">
+                    <img t-attf-data-src="/web/image/product.product/#{alt_product.id}/image_512" t-attf-src="/web/image/website/#{website.id}/lazy_load_image" class="img img-fluid lazyload" alt="Product image"/>
+                </t>
+                <t t-else="">
+                    <div t-field="alt_product.image_512" class="new_span dd_shop_prod_bg" t-options="{&quot;widget&quot;: &quot;image&quot;, &quot;alt-field&quot;: &quot;name&quot;}"/>
+                </t>
+            </div>
+        </xpath> -->
+        <xpath expr="//div[@t-if=&quot;product.accessory_product_ids&quot;]//img" position="attributes">
+            <attribute name="t-attf-data-src">/web/image/product.product/#{alt_product.id}/image_512</attribute>
+        </xpath>
+        <xpath expr="//div[@t-if=&quot;product.accessory_product_ids&quot;]//a" position="attributes">
+            <attribute name="t-attf-href">/shop/product/#{ slug(alt_product.product_tmpl_id) }#attr=#{ alt_product.product_template_attribute_value_ids[0].id }</attribute>
+        </xpath>
+    </template>
 </odoo>
