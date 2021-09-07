@@ -30,9 +30,11 @@ class ProductTemplate(models.Model):
         )
 
         product = self.env["product.product"].browse(res["product_id"])
+        template = self.env["product.template"].browse(res["product_template_id"])
 
         res["description_webshop"] = product.description_webshop
         res["description_use"] = product.description_use
         res["description_ingredients"] = product.description_ingredients
+        res["has_variants"] = True if len(template.attribute_line_ids.mapped('value_ids')) > 1 else False
 
         return res

@@ -125,6 +125,29 @@
                 <a role="button" t-if="not product.website_published" t-att-href="product_href" class="btn btn-sm btn-danger" title="This product is unpublished.">Unpublished</a>
             </h6>
         </xpath>
+
+        <xpath expr="//div[hasclass('product_price')]" position="replace"></xpath>
+
+        <xpath expr="//h6[hasclass('o_wsale_products_item_title')]" position="after">
+            <div id="price_row" class="row m-0">
+                <div class="product_price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                    <del t-attf-class="text-danger mr-2 {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                    <span t-if="combination_info['price']" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                    <span itemprop="price" t-esc="combination_info['price']"/>
+                    <span itemprop="priceCurrency" t-esc="website.currency_id.name"/>
+                </div>
+                <div class="variants_button ml-auto" t-if="combination_info['has_variants']">
+                    <span>+ Variants</span>
+                </div>
+            </div>
+        </xpath>
+
+        <xpath expr="//h6[hasclass('o_wsale_products_item_title')]/a" position="attributes">
+            <attribute name="t-attf-class">
+                product_name
+                #{'te_2_line' if (website.number_of_product_line == '2') else 'te_3_line' if (website.number_of_product_line == '3') else ''}
+            </attribute>
+        </xpath>
     </template>
 
     <template id="products_item_discount_message_maria" inherit_id="theme_clarico.products_item_discount_message" name="Products maria clarico">

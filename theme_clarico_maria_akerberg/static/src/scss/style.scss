@@ -63,6 +63,29 @@ header {
     }
 }
 
+#price_row {
+    height: 34px;
+}
+
+.variants_button {
+    padding: 5px 10px;
+    background-color: #ececec;
+}
+
+#products_grid div.product_price {
+    margin: auto 0 !important;
+
+}
+
+#products_grid .te_shop_grid .product_price .te_p_sm{
+    display: none;
+}
+
+#products_grid .te_shop_grid h6.o_wsale_products_item_title .te_2_line {
+    display: flex !important;
+    align-items: flex-end;
+}
+
 #nav_tabs_content_description, #nav_tabs_content_use, #nav_tabs_content_ingredients {
     white-space: pre-line;
 }
