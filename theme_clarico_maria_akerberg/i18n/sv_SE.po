@@ -1207,7 +1207,7 @@ msgstr ""
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.product_ept
 msgid "Accessories Products"
-msgstr ""
+msgstr "Tillbehör"
 
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.ajax_cart_template
@@ -1260,7 +1260,7 @@ msgstr ""
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.product_ept
 msgid "Alternative Products"
-msgstr ""
+msgstr "Alternativprodukter"
 
 #. module: theme_clarico
 #: model_terms:theme.ir.ui.view,arch:theme_clarico.about_us_3
