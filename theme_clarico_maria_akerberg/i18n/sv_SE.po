@@ -4203,3 +4203,8 @@ msgstr "köpvillkoren"
 #: model_terms:theme.ir.ui.view,arch:theme_clarico_maria_akerberg.products_item_discount_message_maria
 msgid "from"
 msgstr "från"
+
+#. module: theme_clarico_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_clarico_maria_akerberg.products_item
+msgid "<span>+ variants</span>"
+msgstr "<span>+ varianter</span>"

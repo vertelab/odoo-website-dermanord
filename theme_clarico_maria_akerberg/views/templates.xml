@@ -129,15 +129,15 @@
         <xpath expr="//div[hasclass('product_price')]" position="replace"></xpath>
 
         <xpath expr="//h6[hasclass('o_wsale_products_item_title')]" position="after">
-            <div id="price_row" class="row m-0">
+            <div id="price_row" class="row m-0 te_p_sm">
                 <div class="product_price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
                     <del t-attf-class="text-danger mr-2 {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
                     <span t-if="combination_info['price']" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
-                    <span itemprop="price" t-esc="combination_info['price']"/>
-                    <span itemprop="priceCurrency" t-esc="website.currency_id.name"/>
+                    <span itemprop="price" style="display:none" t-esc="combination_info['price']"/>
+                    <span itemprop="priceCurrency" style="display:none" t-esc="website.currency_id.name"/>
                 </div>
                 <div class="variants_button ml-auto" t-if="combination_info['has_variants']">
-                    <span>+ Variants</span>
+                    <span>+ variants</span>
                 </div>
             </div>
         </xpath>
@@ -152,7 +152,7 @@
 
     <template id="products_item_discount_message_maria" inherit_id="theme_clarico.products_item_discount_message" name="Products maria clarico">
         <xpath expr="//span[@t-if=&quot;combination_info['price']&quot;]" position="before">
-            <span t-if="combination_info['use_from_price']" class="te_p_sm">from</span>
+            <span t-if="combination_info['use_from_price'] and combination_info['has_variants']">from</span>
         </xpath>
     </template>
 
@@ -171,16 +171,6 @@
     </template>
 
     <template id="accessories" inherit_id="theme_clarico.product_ept" name="Maria Product accessories">
-<!--         <xpath expr="//a[@t-attf-href='/shop/product/#{ slug(alt_product.product_tmpl_id) }']" position="replace">
-            <div class="new_span dd_shop_prod_bg">
-                <t t-if="website.is_lazy_load">
-                    <img t-attf-data-src="/web/image/product.product/#{alt_product.id}/image_512" t-attf-src="/web/image/website/#{website.id}/lazy_load_image" class="img img-fluid lazyload" alt="Product image"/>
-                </t>
-                <t t-else="">
-                    <div t-field="alt_product.image_512" class="new_span dd_shop_prod_bg" t-options="{&quot;widget&quot;: &quot;image&quot;, &quot;alt-field&quot;: &quot;name&quot;}"/>
-                </t>
-            </div>
-        </xpath> -->
         <xpath expr="//div[@t-if=&quot;product.accessory_product_ids&quot;]//img" position="attributes">
             <attribute name="t-attf-data-src">/web/image/product.product/#{alt_product.id}/image_512</attribute>
         </xpath>
