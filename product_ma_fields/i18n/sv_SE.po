@@ -1,0 +1,94 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* product_ma_fields
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0-20210312\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-09-06 13:05+0000\n"
+"PO-Revision-Date: 2021-09-06 13:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_ma_fields
+#: model:ir.model.fields.selection,name:product_ma_fields.selection__product_attribute__display_type__button
+msgid "Button"
+msgstr "Knapp"
+
+#. module: product_ma_fields
+#: model:ir.model.fields,field_description:product_ma_fields.field_product_attribute__display_name
+#: model:ir.model.fields,field_description:product_ma_fields.field_product_product__display_name
+msgid "Display Name"
+msgstr "Visningsnamn"
+
+#. module: product_ma_fields
+#: model:ir.model.fields,field_description:product_ma_fields.field_product_attribute__display_type
+msgid "Display Type"
+msgstr "Visningstyp"
+
+#. module: product_ma_fields
+#: model:ir.model.fields,field_description:product_ma_fields.field_product_product__ean13
+msgid "EAN13 Barcode"
+msgstr "EAN13-streckkod"
+
+#. module: product_ma_fields
+#: model:ir.model.fields,field_description:product_ma_fields.field_product_attribute__id
+#: model:ir.model.fields,field_description:product_ma_fields.field_product_product__id
+msgid "ID"
+msgstr ""
+
+#. module: product_ma_fields
+#: model:ir.model.fields,field_description:product_ma_fields.field_product_product__description_ingredients
+msgid "Ingredients"
+msgstr "Ingredienser"
+
+#. module: product_ma_fields
+#: model:ir.model.fields,field_description:product_ma_fields.field_product_attribute____last_update
+#: model:ir.model.fields,field_description:product_ma_fields.field_product_product____last_update
+msgid "Last Modified on"
+msgstr "Senast redigerad"
+
+#. module: product_ma_fields
+#: model:ir.model,name:product_ma_fields.model_product_product
+msgid "Product"
+msgstr "Produkt"
+
+#. module: product_ma_fields
+#: model:ir.model,name:product_ma_fields.model_product_attribute
+msgid "Product Attribute"
+msgstr "Produktattribut"
+
+#. module: product_ma_fields
+#: model_terms:ir.ui.view,arch_db:product_ma_fields.product_normal_ma_form_view
+msgid "The description on the webshop."
+msgstr "Beskrivning i webbshoppen."
+
+#. module: product_ma_fields
+#: model:ir.model.fields,help:product_ma_fields.field_product_attribute__display_type
+msgid "The display type used in the Product Configurator."
+msgstr ""
+
+#. module: product_ma_fields
+#: model_terms:ir.ui.view,arch_db:product_ma_fields.product_normal_ma_form_view
+msgid "The ingredients on the webshop."
+msgstr "Ingredienserna i webbshoppen."
+
+#. module: product_ma_fields
+#: model_terms:ir.ui.view,arch_db:product_ma_fields.product_normal_ma_form_view
+msgid "The use description on the webshop."
+msgstr "Användningsinstruktioner i webbshoppen."
+
+#. module: product_ma_fields
+#: model:ir.model.fields,field_description:product_ma_fields.field_product_product__description_use
+msgid "Use description"
+msgstr "Använgningsinstruktioner"
+
+#. module: product_ma_fields
+#: model:ir.model.fields,field_description:product_ma_fields.field_product_product__description_webshop
+msgid "Webshop Description"
+msgstr "Beskrivning (webbshop)"

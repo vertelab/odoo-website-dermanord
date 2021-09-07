@@ -7,7 +7,7 @@ from odoo import api, fields, models, _
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 
-    description_webshop = fields.Text(string="Webshop Description")
-    description_use = fields.Text(string="Use description")
-    description_ingredients = fields.Text(string="Ingredients")
+    description_webshop = fields.Text(string="Webshop Description", help="Webshop Description")
+    description_use = fields.Text(string="Use description", help="Use description")
+    description_ingredients = fields.Text(string="Ingredients", help="Ingredients")
     ean13 = fields.Char(string="EAN13 Barcode")
