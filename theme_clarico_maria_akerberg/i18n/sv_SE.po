@@ -4198,3 +4198,8 @@ msgstr ""
 #: model_terms:theme.ir.ui.view,arch:theme_clarico_maria_akerberg.payment_sale_note_maria
 msgid "terms &amp; conditions"
 msgstr "köpvillkoren"
+
+#. module: theme_clarico_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_clarico_maria_akerberg.products_item_discount_message_maria
+msgid "from"
+msgstr "från"
