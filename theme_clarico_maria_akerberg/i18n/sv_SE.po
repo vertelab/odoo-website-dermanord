@@ -4176,20 +4176,23 @@ msgstr ""
 #. module: theme_clarico_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_clarico_maria_akerberg.maria_product_tabs
 msgid ""
-"<span class=\"fa fa-sort-amount-desc mr-2\"/>\n"
-"                    <span class=\"nav_tab_title\">Ingredients</span>"
+"<span class=\"nav_tab_title\">Description</span>"
 msgstr ""
-"<span class=\"fa fa-sort-amount-desc mr-2\"/>\n"
-"                    <span class=\"nav_tab_title\">Ingredienser</span>"
+"<span class=\"nav_tab_title\">Beskrivning</span>"
 
 #. module: theme_clarico_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_clarico_maria_akerberg.maria_product_tabs
 msgid ""
-"<span class=\"fa fa-sort-amount-desc mr-2\"/>\n"
-"                    <span class=\"nav_tab_title\">Use</span>"
+"<span class=\"nav_tab_title\">Ingredients</span>"
 msgstr ""
-"<span class=\"fa fa-sort-amount-desc mr-2\"/>\n"
-"                    <span class=\"nav_tab_title\">Användning</span>"
+"<span class=\"nav_tab_title\">Ingredienser</span>"
+
+#. module: theme_clarico_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_clarico_maria_akerberg.maria_product_tabs
+msgid ""
+"<span class=\"nav_tab_title\">Use</span>"
+msgstr ""
+"<span class=\"nav_tab_title\">Användning</span>"
 
 #. module: theme_clarico_maria_akerberg
 #: model_terms:theme.ir.ui.view,arch:theme_clarico_maria_akerberg.payment_sale_note_maria

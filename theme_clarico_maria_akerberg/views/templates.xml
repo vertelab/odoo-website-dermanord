@@ -12,16 +12,20 @@
         <xpath expr="//div[@id='nav_tabs_content_specification']" position="replace">
         </xpath>
 
+        <xpath expr="//a[@id='nav_tabs_link_description']" position="replace">
+            <a class="nav-link te_tab_mb_nav_link active show" id="nav_tabs_link_description" data-toggle="tab" itemprop="description" href="#nav_tabs_content_description" role="tab" aria-controls="nav_tabs_content_description" aria-selected="true">
+                <span class="nav_tab_title">Description</span>
+            </a>
+        </xpath>
+
         <xpath expr="//li[a[@id='nav_tabs_link_description']]" position="after">
             <li class="nav-item">
                 <a class="nav-link te_tab_mb_nav_link" id="nav_tabs_link_use" data-toggle="tab" href="#nav_tabs_content_use" role="tab" aria-controls="nav_tabs_content_use" aria-selected="false">
-                    <span class="fa fa-sort-amount-desc mr-2"/>
                     <span class="nav_tab_title">Use</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link te_tab_mb_nav_link" id="nav_tabs_link_ingredients" data-toggle="tab" href="#nav_tabs_content_ingredients" role="tab" aria-controls="nav_tabs_content_ingredients" aria-selected="false">
-                    <span class="fa fa-sort-amount-desc mr-2"/>
                     <span class="nav_tab_title">Ingredients</span>
                 </a>
             </li>
@@ -121,5 +125,19 @@
                 <a role="button" t-if="not product.website_published" t-att-href="product_href" class="btn btn-sm btn-danger" title="This product is unpublished.">Unpublished</a>
             </h6>
         </xpath>
+    </template>
+
+    <!-- Add agents to my portal view and remove Edit button -->
+    <template id="portal_layout_maria" inherit_id="theme_clarico.blank_details" name="Maria Akerberg Agents" priority ="98">
+        <xpath expr="//address[1]" position="after">
+            <div class="o_portal_my_agents" style="margin-top: 10px;" t-if="user_id.partner_id.agent_ids and len(user_id.partner_id.agent_ids) == 1">
+                <h4>Agents</h4>
+                <hr class="mt-1 mb-0"/>
+            <div t-field="user_id.partner_id.agent_ids" t-options='{"widget": "contact", "fields": ["email", "phone", "address", "name"]}'/>
+        </div>
+    </xpath>
+
+    <xpath expr="//a" position="replace">
+    </xpath>
     </template>
 </odoo>
