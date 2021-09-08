@@ -20,6 +20,15 @@ class ProductProduct(models.Model):
     variant_name = fields.Char(
         string="Name", help="Friendly product name", compute="_compute_variant_name"
     )  # TODO: make stored to increase preformance.
+    variant_accessory_product_ids = fields.Many2many(
+        "product.product",
+        "prod_prod_accessory_rel",
+        "src_id",
+        "dest_id",
+        string="Accessory Products",
+        check_company=True,
+        help="Accessories show up when the customer reviews the cart before payment (cross-sell strategy).",
+    )
 
     def _compute_variant_name(self):
         for rec in self:

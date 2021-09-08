@@ -35,6 +35,13 @@ class ProductTemplate(models.Model):
         res["description_webshop"] = product.description_webshop
         res["description_use"] = product.description_use
         res["description_ingredients"] = product.description_ingredients
-        res["has_variants"] = True if len(template.attribute_line_ids.mapped('value_ids')) > 1 else False
+        res["has_variants"] = (
+            True if len(template.attribute_line_ids.mapped("value_ids")) > 1 else False
+        )
+        res["product_accessories"] = (
+            product.variant_accessory_product_ids.mapped("id")
+            if product.variant_accessory_product_ids
+            else False
+        )
 
         return res

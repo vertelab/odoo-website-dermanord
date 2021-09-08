@@ -27,6 +27,7 @@
     'version': '1.0',
     'depends': [
         "sale",
+        "website_sale",
     ],
     'data': [
         "views/product_product_form.xml",

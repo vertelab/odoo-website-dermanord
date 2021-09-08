@@ -14,6 +14,9 @@
                 <field name="description_use" nolabel="1" placeholder="The use description on the webshop."/>
                 <field name="description_ingredients" nolabel="1" placeholder="The ingredients on the webshop."/>
             </field>
+            <field name="accessory_product_ids" position="replace">
+                <field name="variant_accessory_product_ids" widget="many2many_tags"/>
+            </field>
         </field>
     </record>
 </odoo>
