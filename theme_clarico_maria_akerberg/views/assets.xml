@@ -6,14 +6,14 @@
         </xpath>
     </template>
     <template id="_assets_frontend" inherit_id="website.assets_frontend" priority="1">
+        <!-- Style Imports -->
         <xpath expr="//link[last()]" position="after">
             <link rel="stylesheet" type="text/scss" href="/theme_clarico_maria_akerberg/static/src/scss/style.scss" />
         </xpath>
-    </template>
-    <template id="assets_frontend_override" inherit_id="website_sale.assets_frontend">
-            <!-- Customize javascript -->
-            <xpath expr="//script[@src='/website_sale/static/src/js/variant_mixin.js']" position="after">
-                <script type="text/javascript" src="/theme_clarico_maria_akerberg/static/src/js/variant_mixin.js" />
-            </xpath>
+        <!-- Javascript Imports -->
+        <xpath expr="script[last()]" position="after">
+            <script type="text/javascript" src="/theme_clarico_maria_akerberg/static/src/js/variant_mixin.js" />
+            <script type="text/javascript" src="/theme_clarico_maria_akerberg/static/src/js/clarico_variant_accessories.js" />
+        </xpath>
     </template>
 </odoo>
