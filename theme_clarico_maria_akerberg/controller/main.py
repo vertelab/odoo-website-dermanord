@@ -22,28 +22,54 @@
 import logging
 
 from odoo import fields, http, SUPERUSER_ID, tools, _
-from odoo.addons.website_sale.controllers.main import WebsiteSale, TableCompute
 from odoo.http import request
-from odoo.addons.http_routing.models.ir_http import slug
-from odoo.addons.website.controllers.main import QueryURL
-from werkzeug.exceptions import Forbidden, NotFound
+from odoo.addons.emipro_theme_base.controllers.main import WebsiteSale
 
 _logger = logging.getLogger(__name__)
 
-class WebsiteSale(http.Controller):
+
+class WebsiteSale(WebsiteSale):
     # --------------------------------------------------------------------------
     # Accessory Products
     # --------------------------------------------------------------------------
-    @http.route('/shop/products/variant_accessories', type='json', auth='public', website=True)
+    @http.route(
+        "/shop/products/variant_accessories", type="json", auth="public", website=True
+    )
     def variant_accessories(self, variant_id, **kwargs):
         return self._get_variant_accessories(variant_id)
 
     def _get_variant_accessories(self, variant_id):
         """
-        Returns list of accesories for the specific variant
+        Returns list of accessories for the specific variant
         """
-        _logger.warning("Hello from start of _get_variant_accessories")
-        max_number_of_product_for_carousel = 4
-        visitor = request.env['website.visitor']._get_visitor_from_request()
-        _logger.warning("Hello from end of _get_variant_accessories")
+        variant = (
+            request.env["product.product"]
+            .with_context(display_default_code=False)
+            .browse(variant_id)
+        )
+
+        if variant_id.exists():
+            FieldMonetary = request.env["ir.qweb.field.monetary"]
+            monetary_options = {
+                "display_currency": request.website.get_current_pricelist().currency_id,
+            }
+            rating = request.website.viewref("website_sale.product_comment").active
+            res = {"products": []}
+            for product in variant_id.variant_accessory_product_ids:
+                combination_info = product._get_combination_info_variant()
+                res_product = product.read(["id", "name", "website_url"])[0]
+                res_product.update(combination_info)
+                res_product["price"] = FieldMonetary.value_to_html(
+                    res_product["price"], monetary_options
+                )
+                if rating:
+                    res_product["rating"] = request.env["ir.ui.view"]._render_template(
+                        "portal_rating.rating_widget_stars_static",
+                        values={
+                            "rating_avg": product.rating_avg,
+                            "rating_count": product.rating_count,
+                        },
+                    )
+                res["products"].append(res_product)
+            return res
         return {}
