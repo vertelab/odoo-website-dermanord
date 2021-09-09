@@ -24,6 +24,7 @@ import logging
 from odoo import fields, http, SUPERUSER_ID, tools, _
 from odoo.http import request
 from odoo.addons.emipro_theme_base.controller.main import WebsiteSale
+import json
 
 _logger = logging.getLogger(__name__)
 
@@ -35,8 +36,9 @@ class WebsiteSale(WebsiteSale):
     @http.route(
         "/shop/products/variant_accessories", type="json", auth="public", website=True
     )
-    def variant_accessories(self, variant_id, **kwargs):
-        return self._get_variant_accessories(variant_id)
+    def variant_accessories(self, **kwargs):
+        data = json.loads(request.httprequest.data)
+        return self._get_variant_accessories(int(data['variant_id']))
 
     def _get_variant_accessories(self, variant_id):
         """
@@ -48,14 +50,14 @@ class WebsiteSale(WebsiteSale):
             .browse(variant_id)
         )
 
-        if variant_id.exists():
+        if variant.exists():
             FieldMonetary = request.env["ir.qweb.field.monetary"]
             monetary_options = {
                 "display_currency": request.website.get_current_pricelist().currency_id,
             }
             rating = request.website.viewref("website_sale.product_comment").active
             res = {"products": []}
-            for product in variant_id.variant_accessory_product_ids:
+            for product in variant.variant_accessory_product_ids:
                 combination_info = product._get_combination_info_variant()
                 res_product = product.read(["id", "name", "website_url"])[0]
                 res_product.update(combination_info)
