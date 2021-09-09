@@ -90,7 +90,7 @@ odoo.define('webshop_dermanord.VariantMixin', function (require) {
             .first()
             .text(combination.price)
             .trigger('change');
-            
+
         $parent
             .find('.col-form-label')
             .removeClass("active")
@@ -106,12 +106,12 @@ odoo.define('webshop_dermanord.VariantMixin', function (require) {
             .find('#nav_tabs_content_use')
             .children()
             .text(combination.description_use || "")
-            
+
         $description
             .find('#nav_tabs_content_ingredients')
             .children()
             .text(combination.description_ingredients || "" )
-            
+
         this.handleCustomValues($(ev.target));
     }
 
