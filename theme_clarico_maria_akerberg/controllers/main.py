@@ -23,7 +23,7 @@ import logging
 
 from odoo import fields, http, SUPERUSER_ID, tools, _
 from odoo.http import request
-from odoo.addons.emipro_theme_base.controllers.main import WebsiteSale
+from odoo.addons.emipro_theme_base.controller.main import WebsiteSale
 
 _logger = logging.getLogger(__name__)
 
