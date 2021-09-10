@@ -194,6 +194,7 @@
         </xpath>
     </template>
 
+    <!-- Add taxes to the shipping cost in the Checkout view -->
     <template id="shop_shipping_tax" inherit_id="website_sale_delivery.payment_delivery_methods" name="Delivery taxes">
         <xpath expr="//t[starts-with(@t-esc,'delivery.rate_shipment')]" position="replace">
             <t t-esc="delivery.rate_shipment(website_sale_order)['price_tax'] if delivery.free_over else delivery.fixed_price" t-options="{&quot;widget&quot;: &quot;monetary&quot;,                            &quot;from_currency&quot;: website_sale_order.currency_id if delivery.free_over else delivery.product_id.company_id.currency_id or website_sale_order.company_id.currency_id,                            &quot;display_currency&quot;: website_sale_order.currency_id}"/>
@@ -202,6 +203,24 @@
 
     <template id="cart_noordersubtotal" inherit_id="website_sale.total" name="Remove subtotal">
         <xpath expr="//tr[@id='order_total_untaxed']" position="replace">
+        </xpath>
+    </template>
+
+    <!-- Remove Invoices and Delivery orders from Sale order view in the customer portal -->
+    <template id="sale_order_portal_content" inherit_id="sale.sale_order_portal_content">
+        <xpath expr="//t[@t-set='invoices']" position="attributes">
+            <attribute name="t-value">0</attribute>
+        </xpath>
+    </template>
+
+    <template id="sale_order_stock" inherit_id="sale_stock.sale_order_portal_content_inherit_sale_stock">
+        <xpath expr="//t[@t-if='sale_order.picking_ids']" position="replace">
+        </xpath>
+    </template>
+
+    <!-- Remove the download-button from the Sale order view in the customer portal -->
+    <template id="template_id" inherit_id="sale.sale_order_portal_template" name="template_name">
+        <xpath expr="//div[contains(@class,'o_download_pdf')]/div" position="replace">
         </xpath>
     </template>
 
