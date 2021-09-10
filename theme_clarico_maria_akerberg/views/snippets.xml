@@ -2,10 +2,10 @@
 <odoo>
     <template id="header_template_MA" inherit_id="theme_clarico.header_custom_options">
         <xpath expr="//we-select[@data-variable='header-template']/we-button[last()]" position="after">
-            <we-button title="Header Style MA" 
-                       data-name="header_style_MA_opt" 
+            <we-button title="Header Style MA"
+                       data-name="header_style_MA_opt"
                        data-customize-website-views="theme_clarico.option_header_03_assets,theme_clarico.customize_header_style_MA"
-                       data-customize-website-variable="'header_style_MA'" 
+                       data-customize-website-variable="'header_style_MA'"
                        data-img="/theme_clarico/static/src/img/customise_option/h_style-3.jpg"/>
         </xpath>
     </template>

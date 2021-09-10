@@ -170,6 +170,18 @@
     </xpath>
     </template>
 
+    <template id="sale_order_portal_templates" inherit_id="sale.sale_order_portal_template">
+        <xpath expr="//div[hasclass('o_portal_sale_sidebar')]/div[@id='quote_content']/div[@id='sale_order_communication']" position="attributes">
+            <attribute name="style">display: none !important;</attribute>
+        </xpath>
+    </template>
+
+    <template id="invoice_order_portal_templates" inherit_id="account.portal_invoice_page">
+        <xpath expr="//div[hasclass('o_portal_invoice_sidebar')]/div[@id='invoice_content']/div[@id='invoice_communication']" position="attributes">
+            <attribute name="style">display: none !important;</attribute>
+        </xpath>
+    </template>
+
     <template id="accessories" inherit_id="theme_clarico.product_ept" name="Maria Product accessories">
         <xpath expr="//div[@t-if=&quot;product.accessory_product_ids&quot;]//img" position="attributes">
             <attribute name="t-attf-data-src">/web/image/product.product/#{alt_product.id}/image_512</attribute>
@@ -182,6 +194,7 @@
             <attribute name="t-att-title">alt_product.variant_name</attribute>
         </xpath>
     </template>
+
     <template id="sale_order_portal_templates" inherit_id="sale.sale_order_portal_template">
         <xpath expr="//div[hasclass('o_portal_sale_sidebar')]/div[@id='quote_content']/div[@id='sale_order_communication']" position="attributes">
             <attribute name="style">display: none !important;</attribute>
