@@ -9,14 +9,16 @@ odoo.define('webshop_dermanord.clarico_variant_accessories', function (require) 
     var ajax = require('web.ajax');
     var VariantMixin = require('sale.VariantMixin');
     var qweb = core.qweb;
-    
+
+
     VariantMixin.events = {
         'change .col-form-label input': (e) => {
-            a.prototype._getVariationInfo(e);
+            let test = publicWidget.registry.claricoVariantAccessories;
+            test.prototype._getVariationInfo(e);
         },
     }
 
-    var a = publicWidget.registry.claricoVariantAccessories = publicWidget.Widget.extend({
+    publicWidget.registry.claricoVariantAccessories = publicWidget.Widget.extend({
         selector: '.accessory_product_main',
         xmlDependencies: ['/theme_clarico_maria_akerberg/static/src/xml/clarico_variant_accessories.xml'],
         disabledInEditableMode: false,
@@ -37,13 +39,18 @@ odoo.define('webshop_dermanord.clarico_variant_accessories', function (require) 
         /**
          * @override
          */
+        start: function (id) {
+            if (id === undefined) {
+                id = $('#mainSlider').find('[data-oe-model="product.product"]').attr('data-oe-id')
+            }
+            this._dp.add(this._fetch(id)).then(this._render.bind(this));
+            $(window).resize(() => {
+                this._onResizeChange();
+            });
+            return this._super.apply(this, arguments);
+        },
         render: function (id) {
-            var self = this;
-            console.log(self);
             this._fetch(id).then(this._render.bind(this));
-            // $(window).resize(() => {
-            //     this._onResizeChange();
-            // });
         },
         /**
         * Will return the list of selected product.template.attribute.value ids
@@ -270,8 +277,8 @@ odoo.define('webshop_dermanord.clarico_variant_accessories', function (require) 
                 'pricelist_id': this.pricelistId || false,
                 'parent_combination': parentCombination,
             }).then(function (combinationData) {
-                a.prototype.render(combinationData.product_id)
-                console.log(combinationData)
+                let test = publicWidget.registry.claricoVariantAccessories;
+                test.prototype.render(combinationData.product_id)
             });
         },
     })
