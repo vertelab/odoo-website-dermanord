@@ -8,6 +8,7 @@ Website theme for Maria Åkerberg, based on Clarico
     "depends": [
         "theme_clarico",
         "sale_commission",
+        "delivery_tax",
     ],
     "data": [
         "security/base_security.xml",

@@ -193,4 +193,16 @@
             <attribute name="style">display: none !important;</attribute>
         </xpath>
     </template>
+
+    <template id="shop_shipping_tax" inherit_id="website_sale_delivery.payment_delivery_methods" name="Delivery taxes">
+        <xpath expr="//t[starts-with(@t-esc,'delivery.rate_shipment')]" position="replace">
+            <t t-esc="delivery.rate_shipment(website_sale_order)['price_tax'] if delivery.free_over else delivery.fixed_price" t-options="{&quot;widget&quot;: &quot;monetary&quot;,                            &quot;from_currency&quot;: website_sale_order.currency_id if delivery.free_over else delivery.product_id.company_id.currency_id or website_sale_order.company_id.currency_id,                            &quot;display_currency&quot;: website_sale_order.currency_id}"/>
+        </xpath>
+    </template>
+
+    <template id="cart_noordersubtotal" inherit_id="website_sale.total" name="Remove subtotal">
+        <xpath expr="//tr[@id='order_total_untaxed']" position="replace">
+        </xpath>
+    </template>
+
 </odoo>
