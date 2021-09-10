@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
     <!-- Recently Viewed Products Carousel -->
-    <t t-name="website_sale.productsRecentlyViewed">
+    <t t-name="website_sale.claricoVariantAccessories">
         <div t-att-id="uniqueId" class="carousel slide o_not_editable" data-interval="false">
             <div class="carousel-inner">
                 <t t-foreach="productsGroups" t-as="products">
@@ -22,9 +22,9 @@
                                         </div>
                                         <div class="o_carousel_product_card_footer card-footer d-flex align-items-center">
                                             <div class="d-block font-weight-bold" t-raw="product.price"/>
-                                            <button type="button" role="button" class="btn btn-primary js_add_cart ml-auto" title="Add to Cart">
+                                            <!-- <button type="button" role="button" class="btn btn-primary js_add_cart ml-auto" title="Add to Cart">
                                                 <i class="fa fa-fw fa-shopping-cart"/>
-                                            </button>
+                                            </button> -->
                                         </div>
                                     </div>
                                 </div>

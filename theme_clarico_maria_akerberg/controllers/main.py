@@ -38,7 +38,7 @@ class WebsiteSale(WebsiteSale):
     )
     def variant_accessories(self, **kwargs):
         data = json.loads(request.httprequest.data)
-        return self._get_variant_accessories(int(data['variant_id']))
+        return self._get_variant_accessories(int(data.get('params', {}).get('variant_id')))
 
     def _get_variant_accessories(self, variant_id):
         """

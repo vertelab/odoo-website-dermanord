@@ -67,6 +67,12 @@ main {
     min-height: auto !important;
 }
 
+section.alt_detail_section .js_add_cart {
+    padding: 0.25rem 0.4rem;
+    font-size: 1.15rem;
+    float: right;
+}
+
 #price_row {
     height: 34px;
 }

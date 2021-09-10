@@ -19,6 +19,7 @@ odoo.define('webshop_dermanord.VariantMixin', function (require) {
      * @param {Array} combination
      */
     VariantMixin._onChangeCombination = function (ev, $parent, combination) {
+
         var self = this;
         var $price = $parent.find(".oe_price:first .oe_currency_value");
         var $default_price = $parent.find(".oe_default_price:first .oe_currency_value");
@@ -110,7 +111,7 @@ odoo.define('webshop_dermanord.VariantMixin', function (require) {
         $description
             .find('#nav_tabs_content_ingredients')
             .children()
-            .text(combination.description_ingredients || "" )
+            .text(combination.description_ingredients || "")
 
         this.handleCustomValues($(ev.target));
     }
