@@ -24,13 +24,15 @@
     Adds additional product fields.
     """,
     'category': 'Util/Vertel',
-    'version': '1.0',
+    'version': '14.0.1.1.0',
     'depends': [
         "sale",
         "website_sale",
+        "emipro_theme_product_label"
     ],
     'data': [
-        "views/product_product_form.xml",
+        "views/product_product_views.xml",
+        "views/product_template_views.xml",
     ],
     'qweb': [
     ],

@@ -4,9 +4,11 @@
 Website theme for Maria Åkerberg, based on Clarico
     """,
     "category": "Theme/Vertel",
-    "version": "1.0",
+    "version": "14.0.1.1.0",
     "depends": [
         "theme_clarico",
+        "sale_commission",
+        "delivery_tax",
     ],
     "data": [
         "security/base_security.xml",
