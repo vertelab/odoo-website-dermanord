@@ -96,6 +96,21 @@ section.alt_detail_section .js_add_cart {
     white-space: pre-line;
 }
 
+#myCarousel_acce_prod {
+    .title-padding {
+        padding: 0.5rem 0.5rem 0.5rem 1rem;
+        a {
+            color: #000000;
+        }
+    }
+    .variant-background {
+        padding: 0.5rem 0.5rem 0.5rem 1rem;
+        border-top: 0;
+        background-color: #FFFFFF;
+    }
+}
+
+
 
 /* BUtton style 12 - Clarico overwrite! */
 .te_theme_button {
@@ -114,12 +129,20 @@ section.alt_detail_section .js_add_cart {
     #top_menu_container .te_login_right {
         display: none;
     }
+
+    .o_carousel_product_card .o_carousel_product_card_img_top {
+        height: 19.5rem !important;
+      }
 }
 
 @media all and (min-width: 768px) and (max-width: 1280px) {
     #top_menu_container .te_login_right {
         display: none;
     }
+
+    .o_carousel_product_card .o_carousel_product_card_img_top {
+        height: 8rem !important;
+      }
 }
 
 @media all and (min-width: 480px) and (max-width: 768px) {
@@ -141,6 +164,10 @@ section.alt_detail_section .js_add_cart {
     .te_header_search div.te_search_popover {
         top: 120px;
     }
+
+    .o_carousel_product_card .o_carousel_product_card_img_top {
+        height: 12rem !important;
+      }
 }
 
 @media all and (max-width: 480px) {

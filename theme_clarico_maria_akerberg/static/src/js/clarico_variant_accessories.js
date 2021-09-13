@@ -41,7 +41,7 @@ odoo.define('webshop_dermanord.clarico_variant_accessories', function (require) 
          */
         start: function (id) {
             if (id === undefined) {
-                id = $('#mainSlider').find('[data-oe-model="product.product"]').attr('data-oe-id')
+                id = $('#product_details').find('.product_id').attr('value')
             }
             this._dp.add(this._fetch(id)).then(this._render.bind(this));
             $(window).resize(() => {
