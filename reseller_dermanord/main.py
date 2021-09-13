@@ -33,6 +33,9 @@ from dateutil.relativedelta import relativedelta
 #from openerp.addons.website_sale_home.website_sale import website_sale_home
 from openerp.addons.website_portal_sale_1028.controllers.main import website_account as website_sale_home
 
+import math
+import geopy
+
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -510,6 +513,63 @@ class Main(http.Controller):
             'placeholder': _('Search...'),
         })
 
+    EARTH_CIRCUMFERENCE = 2*math.pi * 6.371e6 # [m] , naive sphere, other ellipsoids are used for maps.
+    def latlonbox(self,coord,dist):
+        '''
+        Get a naive lat-lon-box with sides dist centerered around coordinate coord.
+
+        Parameters
+        ==========
+        coord : tuple
+            Tuple-like object containing latitude and longitude in decimal degrees.
+        dist : number
+            Approximate width and height of box in meters.
+
+        Returns
+        =======
+        tuple :
+            lat_min, lat_max, lon_min, lon_max
+        '''
+        lat = coord[0]
+        lon = coord[1]
+
+        local_circ = EARTH_CIRCUMFERENCE * math.cos(lat*math.pi/180) # Circumference (lon) at latitude
+        delta_lon = dist * 360/local_circ / 2.0
+        delta_lat = dist * 360 /EARTH_CIRCUMFERENCE / 2.0
+
+        return lat-delta_lat, lat+delta_lat, lon -delta_lon, lon + delta_lon
+
+    def _get_reseller_by_latlon(self,coord,radius=20e3,limit=32):
+        '''
+        Retrieve resellers based on latlon.
+        Utilise geopy and OpenStreet-maps Nominatim. The latter is heavily rate-limited.
+        '''
+        lat_min,lat_max,lon_min,lon_max = self.latlonbox(coord,radius)
+        domain = [
+            ['partner_latitude'  ,'>', lat_min],
+            ['partner_latitude'  ,'<', lat_max],
+            ['partner_longitude' ,'>', lon_min,
+            ['partner_longitude' ,'<', lon_max],
+            ["is_reseller",'=',True],
+            ['is_company','=',True] ]
+        rs = request.env['res.partner'].search(domain, limit=limit)
+        # Todo narrow down a little more with geopy distance function
+        return rs
+
+    def _geo_search(self, search_query,radius,limit=32):
+        '''
+        Find resellers within radius meters of search_query
+        '''
+        nm = geopy.Nominatim(user_agent="odoo_ma") # User agent seem arbitrary
+                                                   # Nominatim is rate limited ~1query/s
+        query_res = geocode(search_query)
+        if not query_res:
+            return None
+        #else:
+        ret = self._get_reseller_by_latlon(query_res.point, radius,limit)
+        ret = ret.sorted(lambda r : geodist.distance(query_res.point, (r.partner_latitude,r.partner_longitude)).km )
+        return ret
+
     @http.route(['/resellers'], type='http', auth="public", website=True)
     def reseller(self, country=None, city='', competence=None, **post):
         partner_obj = request.env['res.partner']
@@ -582,7 +642,7 @@ class Main(http.Controller):
                 webshop=False,
                 limit=limit - len(resellers))
         return request.website.render('reseller_dermanord.resellers', {'resellers': resellers, 'search_resellers': words, 'placeholder': 'Search...'})
-        
+
     @http.route(['/reseller/<int:partner_id>',], type='http', auth="public", website=True)
     def reseller_page(self, partner_id=None, **post):
         partner = request.env['res.partner'].sudo().search([('id', '=', partner_id), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')])
