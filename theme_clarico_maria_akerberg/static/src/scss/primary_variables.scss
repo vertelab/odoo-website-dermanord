@@ -50,3 +50,73 @@ $o-color-palettes: (
 //        'copyright': 'black-15',
     ),
 );
+
+//------------------------------------------------------------------------------
+// Fonts
+//------------------------------------------------------------------------------
+
+$o-theme-h1-font-size-multiplier: (39 / 18);
+$o-theme-h2-font-size-multiplier: (23 / 18);
+$o-theme-h3-font-size-multiplier: (30 / 18);
+$o-theme-h4-font-size-multiplier: (18 / 18);
+$o-theme-h5-font-size-multiplier: (34 / 18);
+$o-theme-h6-font-size-multiplier: (20 / 18);
+
+$o-theme-font-configs: (
+    'Roboto': (
+        'family': ('Roboto', sans-serif),
+        'url': 'Roboto:300,300i,400,400i,700,700i',
+    ),
+    'Open Sans': (
+        'family': ('Open Sans', sans-serif),
+        'url': 'Open+Sans:300,300i,400,400i,700,700i',
+    ),
+    'Source Sans Pro': (
+        'family': ('Source Sans Pro', sans-serif),
+        'url': 'Source+Sans+Pro:300,300i,400,400i,700,700i',
+    ),
+    'Raleway': (
+        'family': ('Raleway', sans-serif),
+        'url': 'Raleway:300,300i,400,400i,700,700i',
+    ),
+    'Noto Serif': (
+        'family': ('Noto Serif', serif),
+        'url': 'Noto+Serif:300,300i,400,400i,700,700i',
+    ),
+    'Arvo': (
+        'family': ('Arvo', Times, serif),
+        'url': 'Arvo:300,300i,400,400i,700,700i',
+    ),
+    'Futura PT Light': (
+        'family': ('futura-pt-light', sans-serif),
+    ),
+    'Futura PT Medium': (
+        'family': ('futura-pt-medium', sans-serif),
+    ),
+    'Futura PT Heavy': (
+        'family': ('futura-pt-heavy', sans-serif),
+    ),
+    'Futura PT Demi': (
+        'family': ('futura-pt-demi', sans-serif),
+    ),
+    'KeplerStd-Italic': (
+        'family': ('kepler-std-display', serif),
+    ),
+);
+
+
+//------------------------------------------------------------------------------
+// Website customizations
+//------------------------------------------------------------------------------
+
+$o-website-values-palettes: (
+    (
+        'font': 'Futura PT Light',
+        'headings-font': 'Futura PT Medium',
+        'navbar-font': 'Lato',
+        'buttons-font': 'Futura PT Light',
+
+        'font-size-base': (18 / 16) * 1rem,
+
+    ),
+);

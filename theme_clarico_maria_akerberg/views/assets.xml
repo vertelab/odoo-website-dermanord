@@ -21,4 +21,9 @@
             <script type="text/javascript" src="/theme_clarico_maria_akerberg/static/src/js/clarico_variant_accessories.js" />
         </xpath>
     </template>
+    <template id="_assets_frontend_helpers" inherit_id="website._assets_frontend_helpers" priority="1">
+        <xpath expr="//link" position="before">
+            <link rel="stylesheet" type="text/scss" href="/theme_clarico_maria_akerberg/static/src/scss/font-face.scss"/>
+        </xpath>
+    </template>
 </odoo>
