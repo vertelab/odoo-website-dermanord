@@ -33,7 +33,7 @@ class stock_picking(models.Model):
 
     @api.model
     def create(self, vals):
-        #_logger.warning("MyTag: Create vals: {}".format(vals))
+        _logger.warning("MyTag: Create vals: {}".format(vals))
         if 'date' in vals:
             date = vals['date']
             if date < fields.Datetime.now():
@@ -46,13 +46,14 @@ class stock_picking(models.Model):
 
         # min_date has to be recorded on the stock.move's.
         vals['min_date'] = expected_date.strftime("%Y-%m-%d %H:%M:%S")
-        for line in vals["move_lines"]:
-            # line is [0,False,Dict(...)]
-            #_logger.warning("MyTag: min_date: " + vals['min_date'])
-            line[2]["date_expected"] = vals["min_date"]
-            #_logger.warning("MyTag: min_date: " + line[2]["date_expected"])
+        if "move_lines" in vals:
+            for line in vals["move_lines"]:
+                # line is [0,False,Dict(...)]
+                #_logger.warning("MyTag: min_date: " + vals['min_date'])
+                line[2]["date_expected"] = vals["min_date"]
+                #_logger.warning("MyTag: min_date: " + line[2]["date_expected"])
 
-        #_logger.warning("MyTag: Post edit Create vals: {}".format(vals))
+        _logger.warning("MyTag: Post edit Create vals: {}".format(vals))
         return super(stock_picking, self).create(vals)
         
         
