@@ -8,20 +8,20 @@
                     <div t-attf-class="carousel-item #{!products_index and 'active' or ''}">
                         <div class="row">
                             <t t-foreach="products" t-as="product">
-                                <div t-attf-class="o_carousel_product_card_wrap col-md-#{12 / productFrame}">
+                                <div t-attf-class="o_carousel_product_card_wrap mt8 col-md-#{12 / productFrame}">
                                     <div class="o_carousel_product_card card h-100">
                                         <input type="hidden" name="product-id" t-att-data-product-id="product.id"/>
                                         <a class="o_carousel_product_img_link" t-att-href="product.website_url">
                                             <img class="o_carousel_product_card_img_top card-img-top" t-attf-src="/web/image/product.product/#{product.id}#{productFrame == 1 ? '/image_256' : '/image_512'}" t-att-alt="product.display_name"/>
                                         </a>
-                                        <div class="o_carousel_product_card_body card-body border-top">
+                                        <div class="o_carousel_product_card_body card-body title-padding border-top">
                                             <a t-att-href="product.website_url" class="text-decoration-none">
                                                 <h6 class="card-title mb-0 text-truncate" t-raw="product.display_name"/>
                                             </a>
                                             <t t-if="product.rating" t-raw="product.rating"/>
                                         </div>
-                                        <div class="o_carousel_product_card_footer card-footer d-flex align-items-center">
-                                            <div class="d-block font-weight-bold" t-raw="product.price"/>
+                                        <div class="o_carousel_product_card_footer card-footer variant-background d-flex align-items-center">
+                                            <div class="d-block" t-raw="product.price"/>
                                             <!-- <button type="button" role="button" class="btn btn-primary js_add_cart ml-auto" title="Add to Cart">
                                                 <i class="fa fa-fw fa-shopping-cart"/>
                                             </button> -->
