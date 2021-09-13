@@ -102,6 +102,9 @@ section.alt_detail_section .js_add_cart {
        	text-transform: uppercase;
        	a {
             color: #000000;
+	    &:hover {
+		text-decoration: underline !important;
+	    }
         }
     }
     .variant-background {
