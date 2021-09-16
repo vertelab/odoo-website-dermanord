@@ -35,6 +35,7 @@ from openerp.addons.website_portal_sale_1028.controllers.main import website_acc
 
 import math
 import geopy
+from geopy import distance as geodist
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -189,7 +190,7 @@ class res_partner(models.Model):
         # Todo narrow down a little more with geopy distance function
         return rs
 
-    def geo_search(self, search_query,radius,limit=32):
+    def geopy_search(self, search_query,radius,limit=32):
         '''
         Find resellers within radius meters of search_query
         '''
@@ -201,6 +202,8 @@ class res_partner(models.Model):
         #else:
         ret = self.get_reseller_by_latlon(query_res.point, radius)
         ret = ret.sorted(lambda r : geodist.distance(query_res.point, (r.partner_latitude,r.partner_longitude)).km )
+        for r in ret:
+            _logger.warn("Distance: {}".format(geodist.distance(query_res.point, (r.partner_latitude,r.partner_longitude)).km) )
         return ret[:limit]
 
 class Main(http.Controller):
@@ -633,7 +636,7 @@ class Main(http.Controller):
 #            lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name),
 #            params={'all_visit_ids': all_visit_ids},
 #            limit=limit)
-        resellers = partner_obj.geo_search(words,radius=100e3,limit=limit) # Note: Reducing limit doesn't reduce search load.
+        resellers = partner_obj.geopy_search(words,radius=100e3,limit=limit) # Note: Reducing limit doesn't reduce search load.
         if len(resellers) < limit:
             matched_reseller_ids = resellers.mapped('id')
             resellers += self.get_resellers(
