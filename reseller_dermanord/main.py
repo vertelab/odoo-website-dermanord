@@ -193,17 +193,27 @@ class res_partner(models.Model):
     def geopy_search(self, search_query,radius,limit=32):
         '''
         Find resellers within radius meters of search_query
+
+        Returns
+        =======
+        RecordSet :
+            A RecordSet of all resellers within the search limit
+
         '''
         nm = geopy.Nominatim(user_agent="odoo_ma") # User agent seem arbitrary
                                                    # Nominatim is rate limited ~1query/s
         query_res = nm.geocode(search_query)
         if not query_res:
-            return None
+            return self.env['res.partner'] # Empty set
+        # Only geo search around areas, not random buildings matching search terms.
+        valid_classes = ("place",) # Append as needed
+        if query_res.raw["class"] not in valid_classes:
+            return self.env['res.partner']
         #else:
         ret = self.get_reseller_by_latlon(query_res.point, radius)
         ret = ret.sorted(lambda r : geodist.distance(query_res.point, (r.partner_latitude,r.partner_longitude)).km )
-        for r in ret:
-            _logger.warn("Distance: {}".format(geodist.distance(query_res.point, (r.partner_latitude,r.partner_longitude)).km) )
+        #for r in ret:
+        #    _logger.warn("Distance: {}".format(geodist.distance(query_res.point, (r.partner_latitude,r.partner_longitude)).km) )
         return ret[:limit]
 
 class Main(http.Controller):
@@ -578,65 +588,68 @@ class Main(http.Controller):
     @http.route(['/resellers'], type='http', auth="public", website=True)
     def reseller(self, country=None, city='', competence=None, **post):
         partner_obj = request.env['res.partner']
-        #
-        #def search_partner_name(word, all_visit_ids=None, limit=None, previous_hits=None):
-        #    all_visit_ids = all_visit_ids or []
-        #    domain = [
-        #        ('is_company', '=', True),
-        #        ('is_reseller', '=', True),
-        #        ('child_ids', 'in', all_visit_ids),
-        #        '|', '|',
-        #            ('child_category_ids.name', 'ilike', word),
-        #            ('brand_name', 'ilike', word),
-        #            '&',
-        #                ('name', 'ilike', word),
-        #                ('brand_name', '=', False),
-        #    ]
-        #    if previous_hits:
-        #        domain.append(('id', 'in', previous_hits))
+
+        words = post.get('search_resellers')
+        limit = 30
+
+        resellers = partner_obj.geopy_search(words,radius=100e3,limit=limit) # Note: Reducing limit doesn't reduce search load.
+
+        def search_partner_name(word, all_visit_ids=None, limit=None, previous_hits=None):
+            all_visit_ids = all_visit_ids or []
+            domain = [
+                ('is_company', '=', True),
+                ('is_reseller', '=', True),
+                ('child_ids', 'in', all_visit_ids),
+                '|', '|',
+                    ('child_category_ids.name', 'ilike', word),
+                    ('brand_name', 'ilike', word),
+                    '&',
+                        ('name', 'ilike', word),
+                        ('brand_name', '=', False),
+            ]
+            if previous_hits:
+               domain.append(('id', 'in', previous_hits))
             # ~ return partner_obj.sudo().search(domain, limit=limit).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
-        #    return [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'], limit=limit)]
+            return [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'], limit=limit)]
 
         def search_partner(word, all_visit_ids=None, limit=None, previous_hits=None):
-           all_visit_ids = all_visit_ids or []
-           domain = [
-               '|', '|', '|', '|',
-                   ('id', 'in', all_visit_ids),
-                   ('street', 'ilike', word),
-                   ('street2', 'ilike', word),
-                   ('zip', 'ilike', word),
-                   ('state_id.name', 'ilike', word),
-                   ('country_id.name', 'ilike', word)
-           ]
-           if previous_hits:
-               domain.append(('parent_id', 'in', previous_hits))
-           matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'])]
-           domain = [
+            all_visit_ids = all_visit_ids or []
+            domain = [
+                '|', '|', '|', '|',
+                    ('id', 'in', all_visit_ids),
+                    ('street', 'ilike', word),
+                    ('street2', 'ilike', word),
+                    ('zip', 'ilike', word),
+                    ('state_id.name', 'ilike', word),
+                    ('country_id.name', 'ilike', word)
+            ]
+            if previous_hits:
+                domain.append(('parent_id', 'in', previous_hits))
+            matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'])]
+            domain = [
                ('is_company', '=', True),
                ('is_reseller', '=', True),
                ('child_ids', 'in', all_visit_ids),
                '|',
                    ('child_ids', 'in', matching_visit_ids),
                    ('child_category_ids.name', 'ilike', word)
-           ]
-           if previous_hits:
+            ]
+            if previous_hits:
                domain.append(('id', 'in', previous_hits))
-           # ~ res = partner_obj.sudo().search(domain, limit=limit).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
-           res = [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'], limit=limit)]
-           return res
+            # ~ res = partner_obj.sudo().search(domain, limit=limit).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
+            res = [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'], limit=limit)]
+            return res
 
         all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
         domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids', 'in', all_visit_ids)]
-        words = post.get('search_resellers')
-        limit = 30
-#        resellers = self.get_resellers(
-#            words,
-#            domain,
-#            search_partner_name,
-#            lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name),
-#            params={'all_visit_ids': all_visit_ids},
-#            limit=limit)
-        resellers = partner_obj.geopy_search(words,radius=100e3,limit=limit) # Note: Reducing limit doesn't reduce search load.
+
+        resellers += self.get_resellers(
+           words,
+           domain,
+           search_partner_name,
+           lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name),
+           params={'all_visit_ids': all_visit_ids},
+           limit=limit - len(resellers))
         if len(resellers) < limit:
             matched_reseller_ids = resellers.mapped('id')
             resellers += self.get_resellers(
