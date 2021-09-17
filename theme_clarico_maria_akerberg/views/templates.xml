@@ -162,12 +162,36 @@
             <div class="o_portal_my_agents" style="margin-top: 10px;" t-if="user_id.partner_id.agent_ids and len(user_id.partner_id.agent_ids) == 1">
                 <h4>Agents</h4>
                 <hr class="mt-1 mb-0"/>
-            <div t-field="user_id.partner_id.agent_ids" t-options='{"widget": "contact", "fields": ["email", "phone", "address", "name"]}'/>
-        </div>
-    </xpath>
+            <t t-foreach="user_id.partner_id.agent_ids" t-as="agent">
+                <address class="mb-0" itemscope="itemscope" itemtype="http://schema.org/Organization">
+                    <div>
+                        <span itemprop="name" t-esc="agent.name"></span>
+                    </div>        
+                    <div itemprop="address" itemscope="itemscope" itemtype="http://schema.org/PostalAddress">
+                        <div class="d-flex align-items-baseline">
+                            <i class="fa fa-map-marker fa-fw" role="img" aria-label="Adress" title="Adress"></i>
+                            <span class="w-100 o_force_ltr d-block" itemprop="streetAddress" >
+                            <t t-esc="agent.street" />
+                            <br />
+                            <t t-esc="agent.city" />&amp;nbsp;<t t-esc="agent.zip" />
+                            </span>
+                        </div>
+                        <div><i class="fa fa-phone fa-fw" role="img" aria-label="Telefon" title="Telefon"></i> <span class="o_force_ltr" itemprop="telephone" t-esc="agent.phone"></span></div>
+                        <div><i class="fa fa-envelope fa-fw" role="img" aria-label="E-post" title="E-post"></i> <span><a t-att-href="'mailto: %s' % agent.email" itemprop="email" t-esc="agent.email"></a></span></div>
+                    </div>
+                </address>
+            </t>           
+            </div>
+        </xpath>
 
     <xpath expr="//a" position="replace">
     </xpath>
+    </template>
+
+    <!-- Remove Account Security from My Account view -->
+    <template id="portal_layout" inherit_id="portal.portal_layout">
+        <xpath expr="//div[contains(@class,'o_portal_my_security')]" position="replace">
+        </xpath>
     </template>
 
     <template id="sale_order_portal_templates" inherit_id="sale.sale_order_portal_template">

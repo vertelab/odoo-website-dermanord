@@ -142,7 +142,7 @@ odoo.define('webshop_dermanord.clarico_variant_accessories', function (require) 
             }));
             this.webCarousel = $(qweb.render('website_sale.claricoVariantAccessories', {
                 uniqueId: this.uniqueId,
-                productFrame: 4,
+                productFrame: 2,
                 productsGroups: webProducts,
             }));
             this._addCarousel();
