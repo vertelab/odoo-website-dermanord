@@ -63,6 +63,13 @@ header {
     }
 }
 
+div.o_search_product_item {
+
+    & p.mb-0 {
+        display: none;
+    }
+}
+
 main {
     min-height: auto !important;
 }
