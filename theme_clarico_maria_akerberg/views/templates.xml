@@ -166,7 +166,7 @@
                 <address class="mb-0" itemscope="itemscope" itemtype="http://schema.org/Organization">
                     <div>
                         <span itemprop="name" t-esc="agent.name"></span>
-                    </div>        
+                    </div>
                     <div itemprop="address" itemscope="itemscope" itemtype="http://schema.org/PostalAddress">
                         <div class="d-flex align-items-baseline">
                             <i class="fa fa-map-marker fa-fw" role="img" aria-label="Adress" title="Adress"></i>
@@ -180,7 +180,7 @@
                         <div><i class="fa fa-envelope fa-fw" role="img" aria-label="E-post" title="E-post"></i> <span><a t-att-href="'mailto: %s' % agent.email" itemprop="email" t-esc="agent.email"></a></span></div>
                     </div>
                 </address>
-            </t>           
+            </t>
             </div>
         </xpath>
 
@@ -217,6 +217,7 @@
             <attribute name="t-field">alt_product.variant_name</attribute>
             <attribute name="t-att-title">alt_product.variant_name</attribute>
         </xpath>
+        <xpath expr="//p[@t-field='product.description_sale']" position="replace"/>
     </template>
 
     <template id="sale_order_portal_templates" inherit_id="sale.sale_order_portal_template">
