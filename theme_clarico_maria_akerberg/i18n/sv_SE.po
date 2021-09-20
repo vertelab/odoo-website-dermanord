@@ -4208,3 +4208,8 @@ msgstr "från"
 #: model_terms:theme.ir.ui.view,arch:theme_clarico_maria_akerberg.products_item
 msgid "<span>+ variants</span>"
 msgstr "<span>+ varianter</span>"
+
+#. module: theme_clarico_maria_akerberg
+#: model_terms:theme.ir.ui.view,arch:theme_clarico_maria_akerberg.change_delivery_adress_payment
+msgid "<b>Delivery Adress: </b>"
+msgstr "<b>Leveransadress: </b>"

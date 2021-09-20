@@ -262,4 +262,15 @@
         </xpath>
     </template>
 
+    <template id="remove_change_button_payment" inherit_id="website_sale.payment" name="Remove change button for payment">
+        <xpath expr="//a[hasclass('no-decoration')]" position="replace">
+        </xpath>
+    </template>
+
+    <template id="change_delivery_adress_payment" inherit_id="website_sale.payment" name="Delivery Adress">
+        <xpath expr="//div[@id='shipping_and_billing']/div[1]" position="replace">
+            <div><b>Delivery Adress: </b><span t-esc='order.partner_id' t-options="dict(widget='contact', fields=['address'], no_marker=True, separator=', ')" class="address-inline"/></div>
+        </xpath>
+    </template>
+
 </odoo>
