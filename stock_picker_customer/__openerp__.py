@@ -21,7 +21,7 @@
     'version': '8.0.0.0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'stock'],
+    'depends': ['base', 'stock', 'stock_dermanord'],
 
     # always loaded
     'data': [
