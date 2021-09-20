@@ -49,6 +49,7 @@ odoo.define('webshop_dermanord.clarico_variant_accessories', function (require) 
             });
             return this._super.apply(this, arguments);
         },
+
         render: function (id) {
             this._fetch(id).then(this._render.bind(this));
         },
@@ -121,6 +122,10 @@ odoo.define('webshop_dermanord.clarico_variant_accessories', function (require) 
          * @private
          */
         _render: function (res) {
+            if(res.products.length === 0) {
+                return;
+            }
+
             var products = res['products'];
             var mobileProducts = [], webProducts = [], productsTemp = [];
             _.each(products, function (product) {
@@ -146,13 +151,6 @@ odoo.define('webshop_dermanord.clarico_variant_accessories', function (require) 
                 productsGroups: webProducts,
             }));
             this._addCarousel();
-        },
-        /**
-         * @private
-         */
-        _update: function () {
-            console.log("Hello from variants update!");
-            $(":root").find('.col-form-label input');
         },
         /**
          * Add the right carousel depending on screen size.
@@ -254,7 +252,6 @@ odoo.define('webshop_dermanord.clarico_variant_accessories', function (require) 
         * @returns {Deferred}
         */
         _getVariationInfo: function (e) {
-            console.log(e)
             var self = this;
 
             if ($(e.target).hasClass('variant_custom_value')) {
