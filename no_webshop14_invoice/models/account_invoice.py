@@ -5,19 +5,6 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class AccountInvoice(models.Model):
-    _inherit = 'account.invoice'
-
-    @api.multi
-    def invoice_validate(self):
-        # fetch the partner's id and subscribe the partner to the invoice
-        res = super(AccountInvoice, self).invoice_validate()
-        for invoice in self:
-            if invoice.invoice_type_id == self.env.ref("invoice_type.invoice_webshop") and invoice.move_lines:
-                invoice.move_lines.write({'blocked': True})
-        return res
-
-
 class mail_compose_message(models.Model):
     _inherit = 'mail.compose.message'
 
