@@ -1,7 +1,0 @@
-<!-- OVERWRITES /products PRODUCT_VIEWS.XML FILE -->
-<odoo>
-    <template id="description_sale_override" inherit_id="website_sale.product" priority="50">
-        <xpath expr="//div[@id='product_details']//p[@t-field='product.description_sale']" position="replace">
-        </xpath>
-    </template>
-</odoo>
