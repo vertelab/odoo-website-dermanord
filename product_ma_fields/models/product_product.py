@@ -32,6 +32,10 @@ class ProductProduct(models.Model):
 
     def _compute_variant_name(self):
         for rec in self:
+            # Consider changing this to using
+            # rec.with_context(display_default_code=False).display_name
+            # for products with only 1 variant this will exclude the
+            # attribute values though. Does this solution too?
             res = (
                 rec.display_name.split("] ")[1]
                 if "] " in rec.display_name

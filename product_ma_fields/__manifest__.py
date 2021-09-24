@@ -24,7 +24,7 @@
     Adds additional product fields.
     """,
     'category': 'Util/Vertel',
-    'version': '14.0.1.1.0',
+    'version': '14.0.1.2.0',
     'depends': [
         "sale",
         "website_sale",
@@ -37,7 +37,7 @@
     'qweb': [
     ],
     'installable': True,
-    'application': True,
+    'application': False,
     'author': "Vertel AB",
     'website': "www.vertel.se",
 }

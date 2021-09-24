@@ -17,6 +17,11 @@
             <field name="accessory_product_ids" position="replace">
                 <field name="variant_accessory_product_ids" widget="many2many_tags"/>
             </field>
+            <group name="product_template_images" position="after">
+                <group name="product_variant_images" string="Extra Variant Media">
+                    <field name="product_variant_image_ids" class="o_website_sale_image_list" context="{'default_name': name}" mode="kanban" options="{'create_text':'Add a Media'}" nolabel="1"/>
+                </group>
+            </group>
         </field>
     </record>
 </odoo>
