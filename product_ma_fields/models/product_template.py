@@ -35,6 +35,7 @@ class ProductTemplate(models.Model):
         res["description_webshop"] = product.description_webshop
         res["description_use"] = product.description_use
         res["description_ingredients"] = product.description_ingredients
+        res["ean13_details"] = product.ean13
         res["has_variants"] = (
             True if len(template.attribute_line_ids.mapped("value_ids")) > 1 else False
         )
