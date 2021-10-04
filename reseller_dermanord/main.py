@@ -33,12 +33,16 @@ from dateutil.relativedelta import relativedelta
 #from openerp.addons.website_sale_home.website_sale import website_sale_home
 from openerp.addons.website_portal_sale_1028.controllers.main import website_account as website_sale_home
 
+import math
+import geopy
+from geopy import distance as geodist
+
 import logging
 _logger = logging.getLogger(__name__)
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
-    
+
     # ~ [1593] Hitta ÅF - Länkar till sociala medier
     social_facebook = fields.Char(string='Facebook link')
     social_instagram = fields.Char(string='Instagram link')
@@ -53,9 +57,9 @@ class res_partner(models.Model):
     webshop_category_ids = fields.Many2many(comodel_name='product.public.category', string='Product Categories', domain=[('website_published', '=', True)])
     website_short_description = fields.Text(string='Website Partner Short Description', translate=True)
     webshop_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Recommended Pricelist')
-    
+
         # ~ visit_city = fields.Char(string='Visit Adress City', compute='_compute_visit_city', store=True)
-        
+
     # ~ #env['res.partner'].search([('is_reseller', 's=', True), ('child_ids.type', '=', 'visit')])._compute_visit_city()
     # ~ @api.one
     # ~ def _compute_visit_city(self):
@@ -140,6 +144,77 @@ class res_partner(models.Model):
             partner_lst.append([l, p.webshop_category_ids.mapped('id')])
         self.env['ir.config_parameter'].set_param(key='reseller_dermanord.highest_sales_resellers', value=str(partner_lst))
 
+    @api.model
+    def latlonbox(self,coord,dist):
+        '''
+        Get a naive lat-lon-box with sides dist centerered around coordinate coord.
+
+        Parameters
+        ==========
+        coord : tuple
+            Tuple-like object containing latitude and longitude in decimal degrees.
+        dist : number
+            Approximate width and height of box in meters.
+
+        Returns
+        =======
+        tuple :
+            lat_min, lat_max, lon_min, lon_max
+        '''
+        # Quirk of Odoo - circ need to live here.
+        EARTH_CIRCUMFERENCE = 2*math.pi * 6.371e6 # [m] , naive sphere, other ellipsoids are used for maps.
+
+        lat = coord[0]
+        lon = coord[1]
+
+        local_circ = EARTH_CIRCUMFERENCE * math.cos(lat*math.pi/180) # Circumference (lon) at latitude
+        delta_lon = dist * 360/local_circ / 2.0
+        delta_lat = dist * 360 /EARTH_CIRCUMFERENCE / 2.0
+
+        return lat-delta_lat, lat+delta_lat, lon -delta_lon, lon + delta_lon
+    @api.model
+    def get_reseller_by_latlon(self,coord,radius=20e3):
+        '''
+        Retrieve resellers based on latlon.
+        Utilise geopy and OpenStreet-maps Nominatim. The latter is heavily rate-limited.
+        '''
+        lat_min,lat_max,lon_min,lon_max = self.latlonbox(coord,radius)
+        domain = [ # This is not good performance-wise, but current partner table is limited.
+            ['partner_latitude'  ,'>', lat_min],
+            ['partner_latitude'  ,'<', lat_max],
+            ['partner_longitude' ,'>', lon_min],
+            ['partner_longitude' ,'<', lon_max],
+            ["is_reseller",'=',True],
+            ['is_company','=',True] ]
+        rs = self.env['res.partner'].sudo().search(domain) # TODO: Ways to get around this sudo.
+        # Todo narrow down a little more with geopy distance function
+        return rs
+
+    def geopy_search(self, search_query,radius,limit=32):
+        '''
+        Find resellers within radius meters of search_query
+
+        Returns
+        =======
+        RecordSet :
+            A RecordSet of all resellers within the search limit
+
+        '''
+        nm = geopy.Nominatim(user_agent="odoo_ma") # User agent seem arbitrary
+                                                   # Nominatim is rate limited ~1query/s
+        query_res = nm.geocode(search_query)
+        if not query_res:
+            return self.env['res.partner'] # Empty set
+        # Only geo search around areas, not random buildings matching search terms.
+        valid_classes = ("place",) # Append as needed
+        if query_res.raw["class"] not in valid_classes:
+            return self.env['res.partner']
+        #else:
+        ret = self.get_reseller_by_latlon(query_res.point, radius)
+        ret = ret.sorted(lambda r : geodist.distance(query_res.point, (r.partner_latitude,r.partner_longitude)).km )
+        #for r in ret:
+        #    _logger.warn("Distance: {}".format(geodist.distance(query_res.point, (r.partner_latitude,r.partner_longitude)).km) )
+        return ret[:limit]
 
 class Main(http.Controller):
 
@@ -215,7 +290,7 @@ class Main(http.Controller):
                 # Not in the original list. Position last.
                 return len(order)
         records.sorted(sorter)
-    
+
     def check_for_city(self, country, word_list):
         """Check if the given word is a city. Deletes the first found city from word_list.
         :returns: city name or None."""
@@ -233,7 +308,7 @@ class Main(http.Controller):
                 # Its a city
                 del word_list[i]
                 return city['city']
-    
+
     def check_for_postal_code(self, country, word_list):
         """Check word_list for a postal code. Deletes the first found code from word_list.
         :returns: postal code or None."""
@@ -297,11 +372,11 @@ class Main(http.Controller):
                         del word_list[i-1]
                         return code['postalcode']
                 first_part = None
-    
+
     # Return result of resellers with postcode, domain searching
     def get_resellers(self, words, domain, search_partner, sort_partners, params=None, webshop=False, limit=99):
         """Find resellers.
-        
+
         :param words: Search terms.
         :param domain: Extra domain values to use.
         :param search_partner: Search function to use for text values.
@@ -339,7 +414,7 @@ class Main(http.Controller):
                     # TODO: country search has been broken.
             if isinstance(country, basestring):
                 country = request.env['res.country'].search([('code', '=', country)]) or request.env.ref('base.se')
-            
+
             # Check for a postal code and city.
             postal_code = self.check_for_postal_code(country.code, word_list)
             city = self.check_for_city(country.code, word_list)
@@ -354,18 +429,18 @@ class Main(http.Controller):
                 partner_ids += partner_obj.geo_zip_search('position', country.code, postal_code, domain_visit + [('parent_id', 'in', domain_resellers), ('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit) # this is supposed to be a limited distance
                 if partner_ids:
                     search_type = 'postal'
-            
+
             if not partner_ids and city:
                 # Perform city search
                 partner_ids = partner_obj.geo_city_search('position', country.code, city, domain_visit + [('parent_id', 'in', domain_resellers), ('partner_latitude', '!=', 0.0), ('partner_longitude', '!=', 0.0)], distance=360, limit=limit)
                 # ~ _logger.warn('city search %s %s' % (city, partner_ids))
                 if partner_ids:
                     search_type = 'city'
-            
+
             if partner_ids:
                 # get objects from list of ids
                 resellers = partner_obj.browse(partner_ids)
-                
+
             # Search using search terms
             # Should this be combined with geo search results?
             if not partner_ids:
@@ -389,7 +464,7 @@ class Main(http.Controller):
                 resellers = partner_obj.browse(resellers).sorted(sort_partners)
                 self.restore_original_order(resellers, partner_ids)
                 # ~ _logger.warn('\nresellers: %s' % resellers)
-                
+
         else:
             # No search terms. Perform geo search.
             search_type = 'geo'
@@ -513,7 +588,12 @@ class Main(http.Controller):
     @http.route(['/resellers'], type='http', auth="public", website=True)
     def reseller(self, country=None, city='', competence=None, **post):
         partner_obj = request.env['res.partner']
-        
+
+        words = post.get('search_resellers')
+        limit = 30
+
+        resellers = partner_obj.geopy_search(words,radius=100e3,limit=limit) # Note: Reducing limit doesn't reduce search load.
+
         def search_partner_name(word, all_visit_ids=None, limit=None, previous_hits=None):
             all_visit_ids = all_visit_ids or []
             domain = [
@@ -528,10 +608,10 @@ class Main(http.Controller):
                         ('brand_name', '=', False),
             ]
             if previous_hits:
-                domain.append(('id', 'in', previous_hits))
+               domain.append(('id', 'in', previous_hits))
             # ~ return partner_obj.sudo().search(domain, limit=limit).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
             return [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'], limit=limit)]
-        
+
         def search_partner(word, all_visit_ids=None, limit=None, previous_hits=None):
             all_visit_ids = all_visit_ids or []
             domain = [
@@ -547,30 +627,29 @@ class Main(http.Controller):
                 domain.append(('parent_id', 'in', previous_hits))
             matching_visit_ids = [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'])]
             domain = [
-                ('is_company', '=', True),
-                ('is_reseller', '=', True),
-                ('child_ids', 'in', all_visit_ids),
-                '|',
-                    ('child_ids', 'in', matching_visit_ids),
-                    ('child_category_ids.name', 'ilike', word)
+               ('is_company', '=', True),
+               ('is_reseller', '=', True),
+               ('child_ids', 'in', all_visit_ids),
+               '|',
+                   ('child_ids', 'in', matching_visit_ids),
+                   ('child_category_ids.name', 'ilike', word)
             ]
             if previous_hits:
-                domain.append(('id', 'in', previous_hits))
+               domain.append(('id', 'in', previous_hits))
             # ~ res = partner_obj.sudo().search(domain, limit=limit).sorted(key=lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name))
             res = [p['id'] for p in partner_obj.sudo().search_read(domain, ['id'], limit=limit)]
             return res
-        
+
         all_visit_ids = [p['id'] for p in partner_obj.sudo().search_read([('type', '=', 'visit'), ('street', '!=', '')], ['id'])]
         domain = [('is_company', '=', True), ('is_reseller', '=', True), ('child_ids', 'in', all_visit_ids)]
-        words = post.get('search_resellers')
-        limit = 30
-        resellers = self.get_resellers(
-            words,
-            domain,
-            search_partner_name,
-            lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name),
-            params={'all_visit_ids': all_visit_ids},
-            limit=limit)
+
+        resellers += self.get_resellers(
+           words,
+           domain,
+           search_partner_name,
+           lambda p: (p.child_ids.filtered(lambda c: c.type == 'visit').mapped('city'), p.brand_name),
+           params={'all_visit_ids': all_visit_ids},
+           limit=limit - len(resellers))
         if len(resellers) < limit:
             matched_reseller_ids = resellers.mapped('id')
             resellers += self.get_resellers(
@@ -582,7 +661,7 @@ class Main(http.Controller):
                 webshop=False,
                 limit=limit - len(resellers))
         return request.website.render('reseller_dermanord.resellers', {'resellers': resellers, 'search_resellers': words, 'placeholder': 'Search...'})
-        
+
     @http.route(['/reseller/<int:partner_id>',], type='http', auth="public", website=True)
     def reseller_page(self, partner_id=None, **post):
         partner = request.env['res.partner'].sudo().search([('id', '=', partner_id), ('is_reseller', '=', True), ('child_ids.type', '=', 'visit')])
@@ -647,7 +726,7 @@ class website_sale_home(website_sale_home):
                 self.update_opening_weekday(commercial_partner, weekday, post)
             if post.get('opening_hours_exceptions') != None and post.get('opening_hours_exceptions') != commercial_partner.opening_hours_exceptions:
                 commercial_partner.opening_hours_exceptions = post.get('opening_hours_exceptions')
-		
+
         self.update_info(home_user, post)
         # ~ SOCIAL MEDIA
         self.update_social_media(home_user, post)
