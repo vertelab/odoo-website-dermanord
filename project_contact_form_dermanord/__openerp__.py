@@ -21,7 +21,7 @@
 
 {
     'name': 'Project Contact Form',
-    'version': '1.0',
+    'version': '8.0.1.1.0',
     'category': '',
     'summary': '',
     'description': """

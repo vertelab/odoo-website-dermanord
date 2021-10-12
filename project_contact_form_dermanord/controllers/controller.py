@@ -26,6 +26,8 @@ import werkzeug.urls
 from openerp import http
 from openerp.http import request
 from openerp.tools.translate import _
+from openerp.exceptions import AccessDenied
+
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -48,31 +50,27 @@ class ContactUs(http.Controller):
         # ~ _logger.warn('Project_id: %s post: %s' %(project_id, post))
         project = request.env['project.project'].sudo().browse(project_id)
 
-        partner = request.env['res.partner'].search([('email', '=', post.get('email_from'))], limit=1)
+        # It is possible to run the POST-request with other projects
+        if not project.use_contact_form:
+            _logger.warn("Contact form: invalid project selected.")
+            raise ValueError("Invalid project selected.")
+
+        # Plenty of sudo()'s here. Keep security in mind.
+        partner = request.env['res.partner'].sudo().search([('email', '=', post.get('email_from'))], limit=1)
         if not partner:
-            partner = request.env['res.partner'].create({
-                'name':post.get('contact_name'),
+            partner = request.env['res.partner'].sudo().create({
+                'name':"CONTACT FORM: "+post.get('contact_name'),
                 'email':post.get('email_from'),
                 'phone':post.get('phone')
                 })
 
-        request.env[project.alias_model].create({
+        request.env[project.alias_model].sudo().create({
             'project_id': project.id,
             'partner_id':partner.id,
             'name': post.get('name'), 
             'description': post.get('description'),
             'message_follower_ids':[(4,partner.id)]
         })
-        
+
         values = {}
         return request.website.render("theme_dermanord.contactus_response", values)
-
-
-
-
-
-
-
-
-
-        
