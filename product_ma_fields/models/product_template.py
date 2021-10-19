@@ -32,12 +32,18 @@ class ProductTemplate(models.Model):
         product = self.env["product.product"].browse(res["product_id"])
         template = self.env["product.template"].browse(res["product_template_id"])
 
+
+        # Check if there is potential for more than one product combination
+        has_variants = False
+        for attribute_line in template.attribute_line_ids:
+            if len(attribute_line.value_ids) > 1:
+                has_variants = True
+
+        res['product_variant_labels'] = product_variant_lables
         res["description_webshop"] = product.description_webshop
         res["description_use"] = product.description_use
         res["description_ingredients"] = product.description_ingredients
         res["ean13_details"] = product.ean13
-        res["has_variants"] = (
-            True if len(template.attribute_line_ids.mapped("value_ids")) > 1 else False
-        )
+        res["has_variants"] = has_variants
 
         return res
