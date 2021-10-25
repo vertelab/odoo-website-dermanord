@@ -3,15 +3,13 @@
     <data>
         <template id="website_contactus_recaptcha" inherit_id="website.contactus" name="Contact us reCAPTCHA">
             <xpath expr="//div[@class='form-group' and ./div/button='Send']" position="before">
-                <h1>Hello XPath</h1>
-<!--
-<div t-attf-class="form-group form-field o_website_form_required_custom #{error and 'recaptcha' in error and 'has-error' or ''}">
+                <!--<h1>Hello XPath</h1>-->
+                <div t-attf-class="form-group form-field o_website_form_required_custom #{error and 'recaptcha' in error and 'has-error' or ''}">
                     <label class="col-md-3 col-sm-4 control-label" for="g-recaptcha-response">Human?</label>
                     <div class="col-md-7 col-sm-8">
                         <span class="o_website_form_recaptcha" />
                     </div>
                 </div>
--->
             </xpath>
 <!--
                                     </div>
