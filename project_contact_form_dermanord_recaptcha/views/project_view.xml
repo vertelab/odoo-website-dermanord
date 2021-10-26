@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <template id="assets_frontend" inherit_id="website.assets_frontend">
+            <xpath expr="/t" position="inside">
+                <script type="text/javascript" src="/project_contact_form_dermanord_recaptcha/static/src/js/project_contact_form_dermanord_recaptcha.js" />
+            </xpath>
+        </template>
         <template id="website_contactus_recaptcha" inherit_id="website.contactus" name="Contact us reCAPTCHA">
             <xpath expr="//div[@class='form-group' and ./div/button='Send']" position="before">
-                <!--<h1>Hello XPath</h1>-->
                 <div t-attf-class="form-group form-field o_website_form_required_custom #{error and 'recaptcha' in error and 'has-error' or ''}">
-                    <label class="col-md-3 col-sm-4 control-label" for="g-recaptcha-response">Human?</label>
+                    <label class="col-md-3 col-sm-4 control-label" for="g-recaptcha-response">I'm not a bot</label>
                     <div class="col-md-7 col-sm-8">
                         <span class="o_website_form_recaptcha" />
                     </div>

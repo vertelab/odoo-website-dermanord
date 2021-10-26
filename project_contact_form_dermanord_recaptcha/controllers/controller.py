@@ -18,20 +18,42 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import base64
 
 from openerp import http
 from openerp.http import request
 from openerp.tools.translate import _
+from openerp.exceptions import ValidationError
+from openerp.addons.website_form_recaptcha.controllers.main import WebsiteForm
 
-from odoo.addons.project_contact_form_dermanord.controllers.controller import ContactUs
+from openerp.addons.project_contact_form_dermanord.controllers.controller import ContactUs
 
 import logging
 _logger = logging.getLogger(__name__)
 
-@http.route()
-class ContactUsReCaptcha(ContactUs):
-    @route()
-    def _verify_recaptcha(self):
-        _logger.warn("MyTag: Got Here!!!")
-        return super(Extension, self).handler()
+
+class ContactUsReCaptcha(WebsiteForm, ContactUs):
+    @http.route()
+    def send_mail(self, **kwargs):
+        '''Append reCAPTCHA test on the project_contact_us_form'''
+        # Try except modified from OCA's website_crm_recaptcha
+        try:
+            self.extract_data(**kwargs)
+            # Test to more easily test failures
+            # Note: Validation failure otherwise never happen with the test key
+            captcha_obj = request.env['website.form.recaptcha']
+            if not kwargs.get(captcha_obj.RESPONSE_ATTR):
+                _logger.warn("reCAPTCHA validation token of length 0")
+                raise ValidationError("reCAPTCHA validation token of length 0")
+        except ValidationError as e:
+            # Mock super() to make it fail by removing a required field
+            kwargs.pop("description", None)
+            #bad = True
+            # Note: Failure never happen with the test key
+            _logger.warn("reCAPTCHA verification unsuccessful")
+            # TODO: Change to appropriate response and message
+            values = {}
+            return request.website.render("theme_dermanord.contactus_response", values)
+
+        # TODO: Don't super if reCAPTCHA fail
+        # TODO: Make a failure page
+        return super(ContactUsReCaptcha, self).send_mail()

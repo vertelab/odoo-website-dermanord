@@ -37,10 +37,10 @@ Extension of Project Contact Form adding reCAPTCHA v2 support to the contact for
     'website': 'http://www.vertel.se',
     'depends': [
         'project_contact_form_dermanord',
+        'website_form_recaptcha'
     ],
     'data': [
         'views/project_view.xml',
     ],
     'application': False,
 }
-
