@@ -33,7 +33,6 @@ class ProductTemplate(models.Model):
         template = self.env["product.template"].browse(res["product_template_id"])
 
         product_variant_labels = product.mapped('label_line_variant_ids').mapped('label').mapped('display_name')
-        product_template_labels = product.mapped('label_line_ids').mapped('label').mapped('display_name')
 
         # Check if there is potential for more than one product combination
         has_variants = False
@@ -41,7 +40,6 @@ class ProductTemplate(models.Model):
             if len(attribute_line.value_ids) > 1:
                 has_variants = True
 
-        res['product_labels'] = product_template_labels
         res['product_variant_labels'] = product_variant_labels
         res["description_webshop"] = product.description_webshop
         res["description_use"] = product.description_use
