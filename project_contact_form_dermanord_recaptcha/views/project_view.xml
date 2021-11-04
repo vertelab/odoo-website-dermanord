@@ -31,5 +31,13 @@
                                 </form>
 -->
         </template>
+
+        <!-- Overload old script with tweaked one -->
+        <template id="assets_recaptcha_repl" name="website_form_recaptcha Assets" inherit_id="website_form_recaptcha.assets_recaptcha">
+            <xpath expr="//script[@src='/website_form_recaptcha/static/src/js/field_recaptcha.js']" position="replace">
+                <script src="/project_contact_form_dermanord_recaptcha/static/src/js/project_contact_form_recaptcha.js" />
+            </xpath>
+        </template>
+
     </data>
 </openerp>
