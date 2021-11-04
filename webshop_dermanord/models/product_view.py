@@ -1249,22 +1249,22 @@ class product_product(models.Model):
             stock['%s_buy_button_hidden' % variant.id] = ''
             stock['%s_notify_stock_button_hidden' % variant.id] = ''
             if not pricelist.for_reseller and not self.env.ref('webshop_dermanord.group_dn_sk'):
-				#Customers is consumer
+                #Customers is consumer
                 stock['%s_stock_status' % variant.id] = ''
                 stock['%s_buy_button_hidden' % variant.id] = 'hidden'
                 stock['%s_notify_stock_button_hidden' % variant.id] = 'hidden'
             else:
-				#Customers is reseller
-				if not (variant.sale_ok and variant.purchase_type != 'none'):
-					#Product is not sellable
-					stock['%s_buy_button_hidden' % variant.id] = 'hidden'
-					stock['%s_notify_stock_button_hidden' % variant.id] = 'hidden'
-				elif stock['%s_in_stock' %variant.id]:
-					# Product is in stock
-					stock['%s_notify_stock_button_hidden' % variant.id] = 'hidden'
-				else:
-					# Product is not in stock
-					stock['%s_buy_button_hidden' % variant.id] = 'hidden'
+                #Customers is reseller
+                if not (variant.sale_ok and variant.purchase_type != 'none'):
+                    #Product is not sellable
+                    stock['%s_buy_button_hidden' % variant.id] = 'hidden'
+                    stock['%s_notify_stock_button_hidden' % variant.id] = 'hidden'
+                elif stock['%s_in_stock' %variant.id]:
+                    # Product is in stock
+                    stock['%s_notify_stock_button_hidden' % variant.id] = 'hidden'
+                else:
+                    # Product is not in stock
+                    stock['%s_buy_button_hidden' % variant.id] = 'hidden'
 
         try:
             # ~ _logger.warn(stock)
