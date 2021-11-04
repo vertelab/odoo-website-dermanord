@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="assets_frontend" inherit_id="website.assets_frontend">
+            <xpath expr="/t" position="inside">
+                <script type="text/javascript" src="/project_contact_form_dermanord_recaptcha/static/src/js/project_contact_form_dermanord_recaptcha.js" />
+            </xpath>
+        </template>
+        <template id="website_contactus_recaptcha" inherit_id="website.contactus" name="Contact us reCAPTCHA">
+            <xpath expr="//div[@class='form-group' and ./div/button='Send']" position="before">
+                <div t-attf-class="form-group form-field o_website_form_required_custom #{error and 'recaptcha' in error and 'has-error' or ''}">
+                    <label class="col-md-3 col-sm-4 control-label" for="g-recaptcha-response">I'm not a bot</label>
+                    <div class="col-md-7 col-sm-8">
+                        <span class="o_website_form_recaptcha" />
+                    </div>
+                </div>
+            </xpath>
+<!--
+                                    </div>
+                                    <div t-attf-class="form-group #{error and 'description' in error and 'has-error' or ''}">
+                                        <label class="col-md-3 col-sm-4 control-label" for="description">Your Question</label>
+                                        <div class="col-md-7 col-sm-8">
+                                            <textarea class="form-control" name="description" t-esc="description or ''" style="min-height: 120px" required="True"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-offset-3 col-sm-offset-4 col-sm-8 col-md-7">
+                                            <button class="btn btn-primary btn-lg">Send</button>
+                                        </div>
+                                    </div>
+                                </form>
+-->
+        </template>
+
+        <!-- Overload old script with tweaked one -->
+        <template id="assets_recaptcha_repl" name="website_form_recaptcha Assets" inherit_id="website_form_recaptcha.assets_recaptcha">
+            <xpath expr="//script[@src='/website_form_recaptcha/static/src/js/field_recaptcha.js']" position="replace">
+                <script src="/project_contact_form_dermanord_recaptcha/static/src/js/project_contact_form_recaptcha.js" />
+            </xpath>
+        </template>
+
+    </data>
+</openerp>
