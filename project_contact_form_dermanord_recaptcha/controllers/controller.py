@@ -31,8 +31,8 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class ContactUsReCaptcha(WebsiteForm, ContactUs):
-    @http.route()
+class ContactUsReCaptcha(ContactUs,WebsiteForm):
+    @http.route(['/project_contact_form'], method='POST', auth='public', website=True)
     def send_mail(self, **kwargs):
         '''Append reCAPTCHA test on the project_contact_us_form'''
         # Try except modified from OCA's website_crm_recaptcha
@@ -56,4 +56,4 @@ class ContactUsReCaptcha(WebsiteForm, ContactUs):
 
         # TODO: Don't super if reCAPTCHA fail
         # TODO: Make a failure page
-        return super(ContactUsReCaptcha, self).send_mail()
+        return super(ContactUsReCaptcha, self).send_mail(**kwargs)
