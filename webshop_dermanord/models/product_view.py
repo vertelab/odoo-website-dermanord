@@ -289,11 +289,8 @@ class product_template(models.Model):
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
 
                 # Within campaign check
-                #_logger.warn("MyTag: Template campaign IDs: {}".format(product))
                 campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
                 within_campaign_period = campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop) # Not applicable to Python 3.
-                #_logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
-
 
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
@@ -353,10 +350,8 @@ class product_template(models.Model):
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
 
                 # Within campaign check
-                #_logger.warn("MyTag: Campaign IDs: {}".format(product))
                 campaign = self.env['crm.tracking.campaign'].browse(product['campaign_ids'][0] if product['campaign_ids'] else 0)
                 within_campaign_period = campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop) # Not applicable to Python 3.
-                #_logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
 
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
@@ -416,11 +411,8 @@ class product_template(models.Model):
                     ribbon_promo   = request.env.ref('website_sale.image_promo')
 
                 # Within campaign check
-                #_logger.warn("MyTag: Variant campaign IDs: {}".format(variant))
                 campaign = self.env['crm.tracking.campaign'].browse(variant['campaign_ids'][0] if variant['campaign_ids'] else 0)
                 within_campaign_period = campaign.date_start <= str(date.today()) or not campaign.date_start and (campaign.date_stop >= str(date.today()) or not campaign.date_stop) # Not applicable to Python 3.
-                #_logger.warn("MyTag: Within campaign_ids: {}".format(within_campaign_period))
-
 
                 page = THUMBNAIL.format(
                     details=_('DETAILS'),
@@ -454,6 +446,8 @@ class product_product(models.Model):
     _inherit = 'product.product'
 
     purchase_type = fields.Selection(selection=[('none', 'None'), ('consumer', 'Consumer Purchase'), ('buy', 'Purchase'), ('edu', 'Educational Purchase')], string='Purchase Type', compute='_compute_purchase_type', help="Purchase type for active user.")
+    dv_variant_image_src = fields.Char(compute='_compute_dn_thumbnail_url', store=True)
+
 
     @api.one
     def _compute_purchase_type(self):
@@ -517,6 +511,15 @@ class product_product(models.Model):
             return 'none'
 
         self.purchase_type = get_purchase_type()
+
+    @api.multi
+    @api.depends('image_main_id')
+    def _compute_dn_thumbnail_url(self):
+        placeholder = '/web/static/src/img/placeholder.png'
+        for r in self:
+            r.dv_variant_image_src = self.env['website'].imagefield_hash(
+                'ir.attachment', 'datas', r.image_main_id.id ,
+                'snippet_dermanord.img_product') if r.image_main_id else placeholder
 
     @api.multi
     def get_add_to_cart_buttons(self):
@@ -971,7 +974,12 @@ class product_product(models.Model):
                 page = _(u"""<div id="accessory_div">
                             <div class="container hidden-xs">
                                 <h2 class="text-center dn_uppercase mt32 mb32">Suggested accessories:</h2>""")
-                thumb_list = self.product_tmpl_id.get_thumbnail_variant(partner.property_product_pricelist.id, variant.accessory_product_ids.read(['display_name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer', 'dv_image_src', 'memcached_time', 'product_variant_count','campaign_ids']))
+                readdicts = variant.accessory_product_ids.read(['display_name', 'dv_ribbon','is_offer_product_reseller', 'is_offer_product_consumer', 'dv_variant_image_src', 'memcached_time', 'product_variant_count','campaign_ids'])
+                # Naughty key replacement since the defualt functionality work with template images
+                for d in readdicts:
+                    d["dv_image_src"] = d["dv_variant_image_src"]
+                    del d['dv_variant_image_src']
+                thumb_list = self.product_tmpl_id.get_thumbnail_variant(partner.property_product_pricelist.id, readdicts)
                 for th in thumb_list:
                     page += th.decode('utf-8').replace("col-md-4", "col-md-6", 1)
                 page += u"""</div></div>"""
