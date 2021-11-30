@@ -28,8 +28,6 @@
 Project contact form reCAPTCHA
 ==============================
 
-NOT READY FOR INSTALLATION.
-
 Extension of Project Contact Form adding reCAPTCHA v2 support to the contact form.
 """,
     'author': 'Vertel AB',
