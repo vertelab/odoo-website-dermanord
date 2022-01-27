@@ -2139,3 +2139,14 @@ msgstr "virtual available minus incoming"
 msgid "Återförsäljare 45"
 msgstr "Återförsäljare 45"
 
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/models/product_view.py:550
+#, python-format
+msgid "Login as reseller"
+msgstr "Logga in som återförsäljare"
+
+#. module: webshop_dermanord
+#: code:addons/webshop_dermanord/models/product_view.py:546
+#, python-format
+msgid "Shop as end consumer"
+msgstr "Handla som slutkonsument"
