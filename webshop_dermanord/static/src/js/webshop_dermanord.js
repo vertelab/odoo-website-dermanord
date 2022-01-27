@@ -115,12 +115,12 @@ function setCartPriceQuantity(price, quantity, price_float) {
 }
 
 $(function(){
-    
+
     function check_tester_buttons(buttons){
         // Show/hide correct tester buttons
         console.log('check_tester_buttons');
         console.log(buttons);
-        
+
         buttons.each(function(i, button_vanilla){
             let button = $(button_vanilla);
             let quantity = parseInt(button.parents("td").find("input[type='number']").val());
@@ -144,13 +144,13 @@ $(function(){
             }
         })
     };
-    
+
     $(".add-tester").click(function(){
         let $this = $(this);
         let product_id = parseInt($this.parents("td").find("input[type='number']").data('product-id'));
         let quantity   = parseInt($this.parents("td").find("input[type='number']").val());
         let min_value  = parseInt($this.parent().data('tester-min'));
-        
+
         if (quantity < min_value) {
             alert (_.str.sprintf(openerp._t("You have to buy at least %s products to get a tester"), min_value));
         }
@@ -174,7 +174,7 @@ $(function(){
                 });
         }
     });
-    
+
     $(".remove-tester").click(function(){
         var $this = $(this);
         var product_id = parseInt($this.parents("td").find("input[type='number']").data('product-id'));
@@ -194,7 +194,7 @@ $(function(){
                         check_tester_buttons(buttons);
                     }
             });
-        
+
     });
 
     $("input.category_checkbox").change(function() {
@@ -217,17 +217,17 @@ $(function(){
         check_in_check_out_parent();
         $input.closest("form").submit();
     });
-    
+
      $(".stock_notify_button").click(function() {
-        
+
          var $this = $(this);
          var variant_id = parseInt($this.data('variant-id'));
-    
+
              openerp.jsonRpc("/webshop_dermanord/stock/notify", 'call', {'product_id': variant_id})
             .then(function (data) {
-           
+
                alert(data);
-            }); 
+            });
     });
 
 
@@ -479,7 +479,7 @@ $(function(){
                     $input.val(parseInt(qty));
                 }
             }
-            
+
             // TODO: Next row causes type 200 error to be thrown. [product_ids[0]] or product_ids[0] both cause errors.
             // product_ids[0] throws error on product list page.
             // [product_ids[0]] throws error on product page.
@@ -522,7 +522,7 @@ $(function(){
                 if (value > 5) {
                     value = 5;
                     $input.val(value);
-                } 
+                }
             }
             // Handle testers
             let tester = $input.parents('td').find('.tester-buttons');
@@ -601,7 +601,7 @@ $(function(){
                                     }
                                 }
                             });
-                            
+
                             $.notify(value + 'x ' + product_name + notify_text, {
                                 style: 'cart_notify',
                                 className: 'green_notify'
@@ -921,7 +921,7 @@ function load_products_list(page){
     $('html,body').css('cursor', 'wait');
     //var url = "/" + $("button#site_lang").data("lang") + "/dn_shop_json_list";
     var url = "/dn_shop_json_list";
-    
+
     openerp.jsonRpc(url, "call", {
         'page': current_page,
     }).done(function(data){
@@ -1082,7 +1082,7 @@ $(document).on('click', '.dn_list_add_to_cart, .dn_list_add_to_cart_edu, #add_to
         });
 
 
-        $.notify(add_qty + 'x ' + data[3] + notify_text, 
+        $.notify(add_qty + 'x ' + data[3] + notify_text,
         {
             style: 'cart_notify',
             className: 'green_notify'
@@ -1131,4 +1131,14 @@ $(function(){
             })
     });
 
+});
+
+// Old reseller search button defined in reseller_dermanord_webshop
+// click trigger: buy button
+$("button.add_to_cart_consumer_webshop").on("click", function(){
+    window.location.href = "https://shop.mariaakerberg.com";
+});
+// click trigger: Secondary buy-button
+$("button.add_to_cart_login").on("click", function(){
+    window.location.href = "/web/login";
 });
