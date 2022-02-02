@@ -2148,5 +2148,5 @@ msgstr "Logga in som återförsäljare"
 #. module: webshop_dermanord
 #: code:addons/webshop_dermanord/models/product_view.py:546
 #, python-format
-msgid "Shop as end consumer"
-msgstr "Handla som slutkonsument"
+msgid "Shop as private customer"
+msgstr "Handla som privatkund"

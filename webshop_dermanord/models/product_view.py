@@ -543,7 +543,7 @@ class product_product(models.Model):
             res['list_view'] = u"""""" # There is never a reseller button on the list view.
             res['product_view'] = u"""<button type="button" class="add_to_cart_consumer_webshop dn_btn dn_primary mt8 text-center {buy_button_hidden}" data-target="#reseller_search" ">{text}</button>""".format(
                 buy_button_hidden = '',
-                text = _('Shop as end consumer')
+                text = _('Shop as private customer')
             )
             res['product_view'] += u"""&nbsp;<button type="button" class="add_to_cart_login dn_btn dn_primary mt8 text-center {buy_button_hidden}" data-target="#reseller_search" ">{text}</button>""".format(
                 buy_button_hidden = '',
