@@ -1,21 +1,26 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#   * website_reseller_register_dermanord
+#	* website_reseller_register_dermanord
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 8.0-20171009\n"
+"Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-24 14:05+0000\n"
-"PO-Revision-Date: 2018-04-24 16:13+0200\n"
+"POT-Creation-Date: 2022-02-14 08:04+0000\n"
+"PO-Revision-Date: 2022-02-14 08:04+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
-"Language: sv\n"
-"X-Generator: Poedit 2.0.4\n"
+
+#. module: website_reseller_register_dermanord
+#: view:website:website_reseller_register.register_form
+msgid "Are you an already existing reseller? In the menu above, you can log in to see your account. \n"
+"            Is this your first time visiting the webpage? Please, contact us to receive login details:"
+msgstr "Har du ett konto sedan tidigare? Du kan logga in via menyn ovan för att komma åt ditt konto.\n"
+"Är detta ditt första besök på den här webbplatsen? Var vänlig kontakta oss för att få loginuppgifter:"
 
 #. module: website_reseller_register_dermanord
 #: model:website.menu,name:website_reseller_register_dermanord.footer_menu_reseller_register
@@ -24,8 +29,8 @@ msgstr "BLI ÅTERFÖRSÄLJARE"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
-msgid "Salon Name"
-msgstr "Salongsnamn"
+msgid "Choose country"
+msgstr "Välj Land"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
@@ -55,12 +60,23 @@ msgstr "E-post"
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
 msgid "Exceptions"
-msgstr "Exceptions"
+msgstr "Undantag"
+
+#. module: website_reseller_register_dermanord
+#: view:website:website_reseller_register.register_form
+msgid "Existing reseller?"
+msgstr "Befintlig återförsäljare?"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
 msgid "Friday:"
 msgstr "Fredag:"
+
+#. module: website_reseller_register_dermanord
+#: code:addons/website_reseller_register_dermanord/website.py:96
+#, python-format
+msgid "If the street is not filled in, your salon will not appear in reseller searching."
+msgstr "Om gatan inte är ifylld visas din salong inte i återförsäljaresökning."
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register_dermanord.menu_header
@@ -70,7 +86,7 @@ msgstr "Information"
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
 msgid "Lunch End"
-msgstr "Lunchslut"
+msgstr "Stämmer"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
@@ -83,19 +99,15 @@ msgid "Monday:"
 msgstr "Måndag:"
 
 #. module: website_reseller_register_dermanord
-#: view:website:website_reseller_register.register_form
-msgid "Opening Hours"
-msgstr "Öppettider"
+#: code:addons/website_reseller_register_dermanord/website.py:103
+#, python-format
+msgid "Notice: This image will be cut to 1366x450 px."
+msgstr "OBS. Den här bilden kommer att skäras till 1366x450 px."
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
 msgid "Opening Time"
-msgstr "Öppettider"
-
-#. module: website_reseller_register_dermanord
-#: model:ir.model,name:website_reseller_register_dermanord.model_res_partner
-msgid "Partner"
-msgstr "Partner"
+msgstr "Öppnar"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
@@ -110,17 +122,27 @@ msgstr "Registrering"
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
 msgid "Reseller Description"
-msgstr "Beskrivning av verksamheten"
-
-#. module: website_reseller_register_dermanord
-#: view:website:website_reseller_register.register_form
-msgid "This text will be shown for end consumers on our list of resellers"
-msgstr "Denna text kommer att synas för slutkonsument på vår lista över återförsäljare"
+msgstr "Salongsbeskrivning"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
 msgid "Salon Information"
 msgstr "Salongsinformation"
+
+#. module: website_reseller_register_dermanord
+#: view:website:website_reseller_register.register_form
+msgid "Salon Name"
+msgstr "Salongsnamn"
+
+#. module: website_reseller_register_dermanord
+#: view:website:website_reseller_register.register_form
+msgid "Same as delivery address"
+msgstr "Samma som leveransadressen"
+
+#. module: website_reseller_register_dermanord
+#: view:website:website_reseller_register.register_form
+msgid "Same as invoice address"
+msgstr "Samma som faktureringsadressen"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
@@ -140,7 +162,7 @@ msgstr "Gata rad 2"
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
 msgid "Sunday:"
-msgstr "Sönday:"
+msgstr "Söndag:"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
@@ -148,21 +170,20 @@ msgid "This field is used to print dates when the salon is closed and that are e
 msgstr "Detta fält används för att skriva ut dagar då salongen inte har öppet och som är undantag från öppettiderna ovan. Om detta fält är ifyllt kommer det att visas i anslutning till salongens öppettider."
 
 #. module: website_reseller_register_dermanord
-#: code:addons/website_reseller_register_dermanord/website.py:98
+#: code:addons/website_reseller_register_dermanord/website.py:102
 #, python-format
 msgid "This image will be shown for end consumers on our list of resellers"
 msgstr "Denna bild kommer att synas för slutkonsument på vår lista över återförsäljare"
 
 #. module: website_reseller_register_dermanord
-#: code:addons/website_reseller_register_dermanord/website.py:99
-#, python-format
-msgid "Notice: This image will be cut to 1366x450 px."
-msgstr "OBS. Den här bilden kommer att skäras till 1366x450 px."
+#: view:website:website_reseller_register.register_form
+msgid "This text will be shown for end consumers on our list of resellers"
+msgstr "Denna text kommer att synas för slutkonsument på vår lista över återförsäljare"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
 msgid "Thursday:"
-msgstr "Torsday:"
+msgstr "Torsdag:"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
@@ -172,7 +193,7 @@ msgstr "Toppbild"
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
 msgid "Tuesday:"
-msgstr "Tisday:"
+msgstr "Tisdag:"
 
 #. module: website_reseller_register_dermanord
 #: view:website:website_reseller_register.register_form
@@ -204,13 +225,3 @@ msgstr "Vill du att din salong ska visas på vår lista över återförsäljare?
 msgid "Zip"
 msgstr "Postnummer"
 
-#. module: website_reseller_register_dermanord
-#: view:website:website_reseller_register.contact_form
-msgid "theme_dermanord.submenu_dermanord"
-msgstr "theme_dermanord.submenu_dermanord"
-
-#. module: website_reseller_register_dermanord
-#: code:addons/website_reseller_register_dermanord/website.py:92
-#, python-format
-msgid "If the street is not filled in, your salon will not appear in reseller searching."
-msgstr "Om gatan inte är ifylld visas din salong inte i återförsäljaresökning."

@@ -39,6 +39,7 @@
                 <div class="mt16">
                     <t t-if="product_product and product_product.ingredients">
                         <p><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" t-field="product_product.ingredients"/></p>
+                        <p>Please note that our lists of ingredients may be updated with each batch. Read on the back of your product for the correct ingredient list.</p>
                     </t>
                 </div>
             </div>
@@ -95,6 +96,7 @@
             <div id="ingredients_description_mobile" class="container hidden-lg hidden-md hidden-sm">
                 <t t-if="product_product and product_product.ingredients">
                     <p><strong class="dn_uppercase">ingredients: </strong><span class="text-muted" t-field="product_product.ingredients"/></p>
+                    <p>Please note that our lists of ingredients may be updated with each batch. Read on the back of your product for the correct ingredient list.</p>
                 </t>
             </div>
         </xpath>

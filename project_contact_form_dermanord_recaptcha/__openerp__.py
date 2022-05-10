@@ -20,24 +20,25 @@
 ##############################################################################
 
 {
-    'name': 'Project Contact Form',
-    'version': '8.0.1.1.0',
+    'name': 'Project Contact Form reCAPTCHA',
+    'version': '8.0.0.1.0',
     'category': '',
     'summary': '',
     'description': """
-Project contact form
-==============
+Project contact form reCAPTCHA
+==============================
+
+Extension of Project Contact Form adding reCAPTCHA v2 support to the contact form.
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': [
-        'project',
-        'website',
+        'project_contact_form_dermanord',
+        'website_form_recaptcha'
     ],
     'data': [
         'views/project_view.xml',
     ],
     'application': False,
 }
-

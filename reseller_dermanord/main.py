@@ -202,9 +202,12 @@ class res_partner(models.Model):
         '''
         nm = geopy.Nominatim(user_agent="odoo_ma") # User agent seem arbitrary
                                                    # Nominatim is rate limited ~1query/s
-        query_res = nm.geocode(search_query)
-        if not query_res:
-            return self.env['res.partner'] # Empty set
+        try:
+            query_res = nm.geocode(search_query)
+            if not query_res:
+                return self.env['res.partner'] # Empty set
+        except:
+                return self.env['res.partner'] # Empty set
         # Only geo search around areas, not random buildings matching search terms.
         valid_classes = ("place",) # Append as needed
         if query_res.raw["class"] not in valid_classes:
@@ -592,7 +595,7 @@ class Main(http.Controller):
         words = post.get('search_resellers')
         limit = 30
 
-        resellers = partner_obj.geopy_search(words,radius=100e3,limit=limit) # Note: Reducing limit doesn't reduce search load.
+        resellers = partner_obj.sudo().geopy_search(words,radius=100e3,limit=limit) # Note: Reducing limit doesn't reduce search load.
 
         def search_partner_name(word, all_visit_ids=None, limit=None, previous_hits=None):
             all_visit_ids = all_visit_ids or []

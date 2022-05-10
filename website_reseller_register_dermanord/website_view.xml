@@ -75,7 +75,7 @@
                 <t t-call="website_reseller_register_dermanord.menu_header"/>
             </xpath>
             <xpath expr="//div[@id='company_website_short_description']" position="replace"/>
-            <xpath expr="//ul[@class='nav nav-tabs']" position="before">
+            <xpath expr="//div[@id='no_navtabs']" position="before">
                 <h4 id="title_salon" class="col-md-12">
                     <strong>Salon Information</strong>
                 </h4>
@@ -171,7 +171,7 @@
                     </div>
                 </div>
             </xpath>
-            <xpath expr="//li[@id='nav_invoice']" position="after">
+<!--             <xpath expr="//li[@id='nav_invoice']" position="after">
                 <li id="nav_visit" class="">
                     <a data-toggle="tab" href="#visit" class="hidden-xs">Visit Address</a>
                     <a data-toggle="tab" href="#visit" class="hidden-lg hidden-md hidden-sm">
@@ -186,10 +186,14 @@
                         <i class="fa fa-clock-o" />
                     </a>
                 </li>
-            </xpath>
+            </xpath> -->
             <xpath expr="//div[@id='invoice']" position="after">
-                <div id="visit" class="tab-pane fade">
-                    <p id="instruction_visit" />
+                <!-- <div id="visit" class="tab-pane fade"> -->
+                <h4 id="visit_address">
+                    <strong>Visit Address</strong>
+                </h4>
+                <div id="visit">
+<!--                     <p id="instruction_visit" /> -->
                     <div class="form-group checkbox">
                         <div class="col-md-7 col-md-offset-3 col-sm-8 col-sm-offset-4 mb32">
                             <label><input type="checkbox" class="oe_reseller_register_copy_address" name="visit_copy_delivery"/>Same as delivery address</label>
