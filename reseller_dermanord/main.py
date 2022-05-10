@@ -173,26 +173,72 @@ class res_partner(models.Model):
 
         return lat-delta_lat, lat+delta_lat, lon -delta_lon, lon + delta_lon
     @api.model
-    def get_reseller_by_latlon(self,coord,radius=20e3):
+    def get_reseller_by_latlon(self,coord,radius=20e3,type=None):
         '''
         Retrieve resellers based on latlon.
         Utilise geopy and OpenStreet-maps Nominatim. The latter is heavily rate-limited.
+
+        Parameters
+        ==========
+        coord : tuple
+            Tuple-like object containing latitude and longitude in decimal degrees.
+        radius : float
+            Approximate distance from coord to search in meters
+        type : str
+            (Optional) Type of contact card to use in for the geo-comparison.
+
+        Returns
+        =======
+        RecordSet : res.partner
+             RecordSet of primary contacts.
         '''
         lat_min,lat_max,lon_min,lon_max = self.latlonbox(coord,radius)
         domain = [ # This is not good performance-wise, but current partner table is limited.
-            ['partner_latitude'  ,'>', lat_min],
-            ['partner_latitude'  ,'<', lat_max],
-            ['partner_longitude' ,'>', lon_min],
-            ['partner_longitude' ,'<', lon_max],
-            ["is_reseller",'=',True],
-            ['is_company','=',True] ]
-        rs = self.env['res.partner'].sudo().search(domain) # TODO: Ways to get around this sudo.
-        # Todo narrow down a little more with geopy distance function
-        return rs
+                ['partner_latitude'  ,'>', lat_min],
+                ['partner_latitude'  ,'<', lat_max],
+                ['partner_longitude' ,'>', lon_min],
+                ['partner_longitude' ,'<', lon_max]]
+        if not type:
+            domain += [("is_reseller",'=',True),
+                ('is_company','=',True) ]
+            rs = self.env['res.partner'].sudo().search(domain) # TODO: Ways to get around this sudo.
+            # Todo narrow down a little more with geopy distance function
+            return rs
+        else:
+            domain += [('type', '=', type), ('street', '!=', '')]
+            geo_visit_ids = [p['id'] for p in self.sudo().search_read([('type', '=', type), ('street', '!=', '')], ['id'])]
+            domain = [("is_reseller",'=',True),('is_company','=',True),('child_ids',"in", geo_visit_ids)]
+            rs = self.env['res.partner'].sudo().search(domain)
+            return rs
 
-    def geopy_search(self, search_query,radius,limit=32):
+    def _geopy_dist_sort(self, type=None):
+        '''
+        Return a coordinate to use for the distance sort. IE use coord from child of designated type.
+
+        Defaults to self coord.
+        '''
+        self.ensure_one()
+        if type:
+            rs = self.child_ids.filtered(lambda r: r.type == type and r.street)
+            if rs:
+                rs = rs[0]
+                return rs.partner_latitude, rs.partner_longitude
+        return self.partner_latitude, self.partner_longitude
+
+    def geopy_search(self, search_query,radius,limit=32,type=None):
         '''
         Find resellers within radius meters of search_query
+
+        Parameters
+        ==========
+        search_query : str
+            Search terms to use
+        radius : float
+             Approximate search radius/box in meters
+        limit : int
+            (Optional) Limit search result
+        type : str
+             (Optional) Use contact type for the geo comparison. The main contact is still returned.
 
         Returns
         =======
@@ -214,7 +260,8 @@ class res_partner(models.Model):
             return self.env['res.partner']
         #else:
         ret = self.get_reseller_by_latlon(query_res.point, radius)
-        ret = ret.sorted(lambda r : geodist.distance(query_res.point, (r.partner_latitude,r.partner_longitude)).km )
+        ret = ret.sorted(lambda r : geodist.distance(query_res.point, r._geopy_dist_sort(type)).km )
+
         #for r in ret:
         #    _logger.warn("Distance: {}".format(geodist.distance(query_res.point, (r.partner_latitude,r.partner_longitude)).km) )
         return ret[:limit]
@@ -595,7 +642,7 @@ class Main(http.Controller):
         words = post.get('search_resellers')
         limit = 30
 
-        resellers = partner_obj.sudo().geopy_search(words,radius=100e3,limit=limit) # Note: Reducing limit doesn't reduce search load.
+        resellers = partner_obj.sudo().geopy_search(words,radius=100e3,limit=limit,type="visit") # Note: Reducing limit doesn't reduce search load.
 
         def search_partner_name(word, all_visit_ids=None, limit=None, previous_hits=None):
             all_visit_ids = all_visit_ids or []
