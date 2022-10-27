@@ -19,7 +19,7 @@
 ################################################################################
 
 {
-    'name': 'Webshop Search Filter',
+    'name': 'Dermanord: Webshop Search Filter',
     'version': '14.0.0.0.0',
     'category': 'website',
     'summary': '',
@@ -39,3 +39,4 @@
     ],
     'application': False,
 }
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
