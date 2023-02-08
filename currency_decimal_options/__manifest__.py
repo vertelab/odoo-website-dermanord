@@ -41,9 +41,7 @@
     'maintainer': 'Vertel AB',
     # Any module necessary for this one to work correctly
     'repository': 'https://github.com/vertelab/odoo-website-dermanord',
-    'depends': [
-        "base"
-    ],
+    'depends': ['base',],
     'data': [
         "views/res_currency_decimal.xml",
     ],
