@@ -41,11 +41,7 @@
     # Any module necessary for this one to work correctly
     'repository': 'https://github.com/vertelab/odoo-website-dermanord',
 
-    'depends': [
-        "sale",
-        "website_sale",
-        "emipro_theme_product_label"
-    ],
+    'depends': ['sale','website_sale','emipro_theme_product_label',],
     'data': [
         "views/product_product_views.xml",
         "views/product_template_views.xml",
