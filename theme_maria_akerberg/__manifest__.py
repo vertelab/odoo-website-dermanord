@@ -40,14 +40,7 @@
     'maintainer': 'Vertel AB',
     'repository': 'https://github.com/vertelab/odoo-website-dermanord',
     # Any module necessary for this one to work correctly
-    "depends": [
-        "website",
-        "website_sale",
-        "website_imagemagick",
-        "sale_commission",
-        "product_ma_fields",
-        "currency_decimal_options"
-    ],
+    'depends': ['website','website_sale','website_imagemagick','sale_commission','product_ma_fields','currency_decimal_options',],
     "data": [
         "security/base_security.xml",
         "views/assets.xml",
