@@ -42,8 +42,6 @@
     'repository': 'https://github.com/vertelab/odoo-website-dermanord',
     # Any module necessary for this one to work correctly
 
-    'category': 'Theme',
-    'summary': 'A Snippet Library',
     'depends': ['webshop_dermanord','website_imagemagick', 'sale_promotions','crm_campaign_product','crm_campaign_blog',
         'crm_campaign_phase',
         'product_private',
