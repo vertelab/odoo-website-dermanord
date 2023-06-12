@@ -30,7 +30,6 @@
     'category': 'Website',
     'description': """
     Move to webshop_dermanord.
-        'category': 'Uncategorized',
         'version': '12.0.0.0.1',
 
     """,
