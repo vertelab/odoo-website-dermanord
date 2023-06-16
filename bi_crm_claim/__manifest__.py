@@ -37,7 +37,8 @@
     """,
     'sequence': '5',
     'author': 'BrowseInfo',
-    'website': 'https://www.browseinfo.in',
+    ##### 'website': 'https://www.browseinfo.in',
+    'website': 'https://vertel.se/apps/odoo-website-dermanord/bi_crm_claim',
     'images': ['static/description/banner.png'], # 560x280 px.
     'license':'OPL-1',
     'contributor': '',
