@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Odoo SA, Open Source Management Solution, third party addon
-#    Copyright (C) 2022- Vertel AB (<https://vertel.se>).
+#    Copyright (C) 2022- Vertel Sverige AB (<https://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,7 @@
 
 {
     'name': 'Dermanord: Theme Maria Åkerberg',
-    'version': '14.0.0.0.0',
+    'version': "18.0.0.0.0",
     # Version ledger: 14.0 = Odoo version. 1 = Major. Non regressionable code. 2 = Minor. New features that are regressionable. 3 = Bug fixes
     'summary': 'Website theme for Maria Åkerberg.',
     # Categories can be used to filter modules in modules listing
@@ -32,12 +32,12 @@
     Website theme for Maria Åkerberg.
     """,
     #'sequence': '1',
-    'author': 'Vertel AB',
+    'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-website-dermanord/theme_maria_akerberg',
     'images': ['static/description/banner.png'], # 560x280 px.
     'license': 'AGPL-3',
     'contributor': '',
-    'maintainer': 'Vertel AB',
+    'maintainer': 'Vertel Sverige AB',
     'repository': 'https://github.com/vertelab/odoo-website-dermanord',
     # Any module necessary for this one to work correctly
     'depends': ['website','website_sale','website_imagemagick','sale_commission','product_ma_fields','currency_decimal_options',],
@@ -55,7 +55,7 @@
     "demo": [],
     "installable": True,
     "application": False,
-    "author": "Vertel AB",
+    "author": "Vertel Sverige AB",
     "website": "www.vertel.se",
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Odoo SA, Open Source Management Solution, third party addon
-#    Copyright (C) 2022- Vertel AB (<https://vertel.se>).
+#    Copyright (C) 2022- Vertel Sverige AB (<https://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,7 @@
 
 {
     'name': 'Dermanord: CRM Claim Management',
-    'version': '14.0.0.0.0',
+    'version': "18.0.0.0.0",
     # Version ledger: 14.0 = Odoo version. 1 = Major. Non regressionable code. 2 = Minor. New features that are regressionable. 3 = Bug fixes
     'summary': 'This plugin helps to manage after sales services as claim management',
     # Categories can be used to filter modules in modules listing
@@ -42,7 +42,7 @@
     'images': ['static/description/banner.png'], # 560x280 px.
     'license':'OPL-1',
     'contributor': '',
-    'maintainer': 'Vertel AB',
+    'maintainer': 'Vertel Sverige AB',
     # Any module necessary for this one to work correctly
     'repository': 'https://github.com/vertelab/odoo-website-dermanord',
 
