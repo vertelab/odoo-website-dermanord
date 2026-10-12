@@ -20,7 +20,7 @@
 
 {
     'name': 'Dermanord: Webshop Search Filter',
-    'version': '14.0.0.0.0',
+    'version': "18.0.0.0.0",
     'category': 'website',
     'summary': 'Webshop Search Filter',
     'description': """
